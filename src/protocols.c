@@ -49,12 +49,9 @@ get_packet_prot (const guint8 * p)
       /* prot = g_string_new ("LLC"); */
       get_fddi_type ();
       break;
-    case L_PPP:
-      /* TODO Call the ip routines from here */
-      prot = g_string_new ("PPP/IP");
-      break;
-    case L_SLIP:
-      prot = g_string_new ("SLIP/IP");
+    case L_RAW:		/* Both for PPP and SLIP */
+      prot = g_string_new ("RAW/IP");
+      get_ip ();
       break;
     default:
       break;

@@ -55,6 +55,21 @@ get_packet_names (GList ** protocols,
   g_strfreev (tokens);
 }				/* get_packet_names */
 
+
+/* Raw is used for ppp and slip. There is actually no information,
+ * so we just jump to the next protocol */
+static void
+get_raw_name (void)
+{
+
+  level++;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_raw_name */
+
 static void
 get_eth_name (void)
 {

@@ -47,18 +47,20 @@ static GTree *prot_functions = NULL;
 static prot_function_t *next_func = NULL;
 
 static void get_eth_name (void);
+static void get_raw_name (void);
 static void get_ip_name (void);
 static void get_tcp_name (void);
 static void add_name (gchar * numeric, gchar * resolved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 5
+#define KNOWN_PROTS 6
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
   {"802.2", get_eth_name},
   {"802.3", get_eth_name},
   {"ISL", get_eth_name},
+  {"RAW", get_raw_name},
   {"IP", get_ip_name},
   {"TCP", get_tcp_name}
 };
