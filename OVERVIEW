@@ -1,11 +1,11 @@
 
- Etherape Code Overview
+ EtherApe Code Overview
  ======================
  Current as of 0.4.2
 
 --------------------------------------------------------------------
 
-Here I'll try to explain the workings of etherape, both for new
+Here I'll try to explain the workings of EtherApe, both for new
 contributors to have a clearer view of the program and for self
 future reference.
 
@@ -55,7 +55,7 @@ src/callbacks.c
 1. Basic Architecture
 ---------------------
 
-   Etherape is running on a gtk_look started in main(). There are
+   EtherApe is running on a gtk_look started in main(). There are
 two callbacks functions active that execute code. One is a
 timeout set each refresh_period to update the diagram on the
 screen, update_diagram, and the other is a gdk_input called each

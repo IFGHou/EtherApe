@@ -1,18 +1,18 @@
 General Information
 ------- -----------
 
-Etherape is a network traffic browser. It displays network activity
+EtherApe is a network traffic browser. It displays network activity
 graphically. It uses GNOME libraries as it's user interface, and 
 libpcap, a packet capture and filtering library.
 
-Etherape started as an etherman clone, but now it has some unique
+EtherApe started as an etherman clone, but now it has some unique
 features. It can run in "interape" mode with -m ip, and in
 "tcp-ape" mode with -m tcp. Expect more modes to come soon.
 
-Etherape will use /etc/ethers if there is one. If not, it will 
+EtherApe will use /etc/ethers if there is one. If not, it will 
 try to reverse lookup the ip address. 
 
-IMPORTANT! It is particularly important when running etherape
+IMPORTANT! It is particularly important when running EtherApe
 to have the ethernet address of your router in /etc/ethers.
 If not, your router will have as name whatever IP address
 it was forwarding traffic from when it was first heard.
@@ -26,7 +26,7 @@ program, as is the case with any libpcap based application.
 If you are not running on a high-color or better display, you
 might want to use the --no-fade option.
 
-Note: Etherape is being _actively_ developed: I tend to release
+Note: EtherApe is being _actively_ developed: I tend to release
 daily. If you liked the program, I suggest you take a look at
 the webpage and look for the latest version.
 
@@ -50,13 +50,13 @@ in the INSTALL file.
 
 Porting:
 --------
-Etherape has been compiled in at least:
+EtherApe has been compiled in at least:
 * Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1,
   modified linuxppc 1999, Debian m68k
 * NetBSD 1.4T (i386)
 * Sparc Solaris 7 with gcc 2.95.2
 
-Etherape should probably compile and run in other Unix-like OS. If
+EtherApe should probably compile and run in other Unix-like OS. If
 you manage to compile it in a configuration other than the ones
 listed, please post it to the mailing list
 <etherape-users@lists.sourceforge.net> No need to subscribe.
@@ -65,11 +65,11 @@ listed, please post it to the mailing list
 Further information:
 --------------------
 
-See the etherape web page at
+See the EtherApe web page at
 http://etherape.sourceforge.net/
 
 	   
-Subscribe to the etherape mailing list. To subscribe, point your 
+Subscribe to the EtherApe mailing list. To subscribe, point your 
 browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
 To post a message, mail to 'etherape-users@lists.sourceforge.net'
 Be advised that emails sent to me will always be replied to the
@@ -77,7 +77,7 @@ list, and bcc'ed to you as an attempt to minimise the number
 of times I have to answer a question. Being so you might as 
 well write to the list directly. :-)
 
-To receive a message whenever a new version of Etherape is 
+To receive a message whenever a new version of EtherApe is 
 available, go to http://sourceforge.net/project/?group_id=2712 and
 click on the "Monitor this module" link.
 

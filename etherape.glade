@@ -2,7 +2,7 @@
 <GTK-Interface>
 
 <project>
-  <name>Etherape</name>
+  <name>EtherApe</name>
   <program_name>etherape</program_name>
   <directory></directory>
   <source_directory>src</source_directory>
@@ -26,7 +26,7 @@
     <handler>on_app1_delete_event</handler>
     <last_modification_time>Tue, 22 Feb 2000 17:55:15 GMT</last_modification_time>
   </signal>
-  <title>Etherape</title>
+  <title>EtherApe</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -625,7 +625,7 @@ Web: http://etherape.sourceforge.net</comments>
   <class>GnomeDialog</class>
   <name>diag_pref</name>
   <visible>False</visible>
-  <title>Etherape: Preferences</title>
+  <title>EtherApe: Preferences</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>

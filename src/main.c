@@ -1,4 +1,4 @@
-/* Etherape
+/* EtherApe
  * Copyright (C) 2000 Juan Toledo
  * $Id$
  *
@@ -71,7 +71,7 @@ main (int argc, char *argv[])
 
 
   /* We initiate the application and read command line options */
-  gnome_init_with_popt_table ("Etherape", VERSION, argc, argv, optionsTable,
+  gnome_init_with_popt_table ("EtherApe", VERSION, argc, argv, optionsTable,
 			      0, NULL);
 
 
