@@ -105,7 +105,8 @@ create_app1 (void)
   GtkObject *link_to_spin_adj;
   GtkWidget *link_to_spin;
   GtkWidget *label25;
-  GtkWidget *label10;
+  GtkWidget *frame3;
+  GtkWidget *prot_table;
   GtkWidget *appbar1;
 
   app1 = gnome_app_new ("Etherape", _ ("Etherape"));
@@ -456,13 +457,19 @@ create_app1 (void)
   gtk_box_pack_start (GTK_BOX (vbox8), label25, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
 
-  label10 = gtk_label_new (_ ("Place Holder for The Color Coded Protocols display"));
-  gtk_widget_ref (label10);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "label10", label10,
+  frame3 = gtk_frame_new (_ ("Protocols"));
+  gtk_widget_ref (frame3);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "frame3", frame3,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label10);
-  gtk_box_pack_start (GTK_BOX (vbox1), label10, TRUE, FALSE, 0);
-  gtk_label_set_line_wrap (GTK_LABEL (label10), TRUE);
+  gtk_widget_show (frame3);
+  gtk_box_pack_start (GTK_BOX (vbox1), frame3, TRUE, TRUE, 0);
+
+  prot_table = gtk_table_new (1, 2, TRUE);
+  gtk_widget_ref (prot_table);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "prot_table", prot_table,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prot_table);
+  gtk_container_add (GTK_CONTAINER (frame3), prot_table);
 
   appbar1 = gnome_appbar_new (TRUE, TRUE, GNOME_PREFERENCES_NEVER);
   gtk_widget_ref (appbar1);

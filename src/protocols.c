@@ -91,7 +91,7 @@ get_eth_type (const guint8 * packet)
 gchar *
 get_packet_prot (const guint8 * packet)
 {
-  gchar *prot = "";
+  gchar *prot = "UNKNOWN";
 
   switch (mode)
     {
@@ -100,9 +100,7 @@ get_packet_prot (const guint8 * packet)
       break;
     case IP:
     case TCP:
-    case UDP:
-    case DEFAULT:
-      prot = "";
+    default:
     }
 
   return prot;

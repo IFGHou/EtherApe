@@ -545,14 +545,71 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   return FALSE;
 }				/* check_new_node */
 
+void
+check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
+{
+  GtkWidget *prot_table;
+  GtkWidget *label, *app1;
+  GtkArg args[2];
+  guint n_rows, n_columns;
+
+  args[0].name = "n_rows";
+  args[1].name = "n_columns";
+
+  g_message ("Checking prot %s", protocol->name);
+  /* First, we check whether the diagram already knows about this protocol,
+   * checking whether it is shown on the legend. */
+  if (lookup_widget (GTK_WIDGET (canvas), protocol->name))
+    return;
+
+  /* It's not, so we build a new entry on the legend */
+  /* First, we add a new row to the table */
+  prot_table = lookup_widget (GTK_WIDGET (canvas), "prot_table");
+  gtk_object_getv (GTK_OBJECT (prot_table),
+		   2,
+		   args);
+  n_rows = args[0].d.int_data;
+  n_columns = args[0].d.int_data;
+  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
+
+  /* Then we add the new label widgets */
+  label = gtk_label_new (protocol->name);
+  gtk_widget_ref (label);
+  /* I'm not really sure what this exactly does. I just copied it from 
+   * interface.c, but what I'm trying to do is set the name of the widget */
+  app1 = lookup_widget (GTK_WIDGET (canvas), "app1");
+  gtk_object_set_data_full (GTK_OBJECT (app1), protocol->name, label,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label);
+  gtk_table_attach_defaults (GTK_TABLE (prot_table), label,
+			     1, 2, n_rows - 1, n_rows);
+
+
+  g_message ("New protocol %s, rows %d", protocol->name, n_rows);
+
+}
+
+/* Refreshes the diagram. Called each refresh_period ms
+ * 1. Checks for new protocols and displays them
+ * 2. Updates nodes looks
+ * 3. Updates links looks
+ */
 guint
 update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
-  guint n_links = 0, n_links_new = 1;
+  guint n_links = 0, n_links_new = 1, n_protocols_new;
   guint n_nodes_before = 0, n_nodes_after = 1;
+  static guint n_protocols = 0;
 
   gettimeofday (&now, NULL);
+
+  /* We search for new protocols */
+  if (n_protocols != (n_protocols_new = g_list_length (protocols)))
+    {
+      g_list_foreach (protocols, (GFunc) check_new_protocol, canvas);
+      n_protocols = n_protocols_new;
+    }
 
 /* Now we update the status bar with the number of present nodes 
  * TODO Find a nice use for the status bar. I can thik of very little */

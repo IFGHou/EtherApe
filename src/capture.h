@@ -15,8 +15,9 @@
 		       (guint32)*((guint8 *)p+2)<<8|   \
 		       (guint32)*((guint8 *)p+3)<<0)
 
-GTree *nodes;
-GTree *links;
+GTree *nodes;			/* Has all the nodes heard on the network */
+GTree *links;			/* Has all links heard on the net */
+GList *protocols;		/* Has all protocols heard on the net */
 
 
 /* 
@@ -128,6 +129,9 @@ typedef struct
     gchar *name;		/* Name of the protocol */
     gdouble accumulated;	/* Accumulated traffic in bytes for this protocol */
     guint n_packets;		/* Number of packets containing this protocol */
+    guint32 color;		/* The color associated with this protocol. It's here
+				 * so that I can use the same structure and lookup functions
+				 * in capture.c and diagram.c */
   }
 protocol_t;
 
