@@ -5,4 +5,5 @@ src/callbacks.c
 src/capture.c
 src/menus.c
 src/diagram.c
+src/protocols.c
 src/glade-strings

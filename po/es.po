@@ -5,141 +5,234 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-02 20:55+0200\n"
+"POT-Creation-Date: 2001-05-04 20:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
+# src/main.c:39
+# src/main.c:39
+# src/main.c:39
 #: src/main.c:39
 msgid "mode of operation"
 msgstr "modo de operación"
 
+# src/main.c:39
+# src/main.c:39
+# src/main.c:39
 #: src/main.c:39
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|fddi|ip|tcp>"
 
+# src/main.c:41
+# src/main.c:41
+# src/main.c:41
 #: src/main.c:41
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
+# src/main.c:41
+# src/main.c:41
+# src/main.c:41
 #: src/main.c:41
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
+# src/main.c:43
+# src/main.c:43
+# src/main.c:43
 #: src/main.c:43
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
+# src/main.c:43
+# src/main.c:43
+# src/main.c:43
 #: src/main.c:43
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
+# src/main.c:45
+# src/main.c:45
+# src/main.c:45
 #: src/main.c:45
 msgid "set input file"
 msgstr "definir el fichero de entrada"
 
+# src/main.c:45
+# src/main.c:45
+# src/main.c:45
 #: src/main.c:45
 msgid "<file name>"
 msgstr "<nombre de archivo>"
 
+# src/main.c:47
+# src/main.c:47
+# src/main.c:47
 #: src/main.c:47
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
+# src/main.c:49
+# src/main.c:49
+# src/main.c:49
 #: src/main.c:49
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
+# src/main.c:51
+# src/main.c:51
+# src/main.c:51
 #: src/main.c:51
 msgid "do not fade old links"
 msgstr "no desvanecer enlaces en desuso"
 
+# src/main.c:53
+# src/main.c:53
+# src/main.c:53
 #: src/main.c:53
 msgid "don't move nodes around"
 msgstr "no mover los nodos"
 
+# src/main.c:55
+# src/main.c:55
+# src/main.c:55
 #: src/main.c:55
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
+# src/main.c:55
+# src/main.c:55
+# src/main.c:55
 #: src/main.c:55
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
+# src/main.c:57
+# src/main.c:57
+# src/main.c:57
 #: src/main.c:57
 msgid "Don't show warnings"
 msgstr "no mostrar mensajes de aviso"
 
+# src/main.c:59
+# src/main.c:59
+# src/main.c:59
 #: src/main.c:59
 msgid "set the node color"
 msgstr "fijar el color de los nodos"
 
+# src/main.c:59 src/main.c:61 src/main.c:63
+# src/main.c:59 src/main.c:61 src/main.c:63
+# src/main.c:59 src/main.c:61 src/main.c:63
 #: src/main.c:59 src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "color"
 
+# src/main.c:61
+# src/main.c:61
+# src/main.c:61
 #: src/main.c:61
 msgid "set the link color"
 msgstr "fijar el color de los enlaces"
 
+# src/main.c:63
+# src/main.c:63
+# src/main.c:63
 #: src/main.c:63
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
+# src/main.c:146
+# src/main.c:146
+# src/main.c:146
 #: src/main.c:146
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
-#: src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
+# src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
+# src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
+# src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
+#: src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
 
-#: src/main.c:256
+# src/main.c:256
+# src/main.c:256
+# src/main.c:259
+#: src/main.c:259
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
-msgstr "El Nivel de Pila de Protocols no está fijado en El más alto reconocido. Por favor, compruebe en el diálogo de preferencias que eso es lo que realmente quiere"
+msgstr ""
+"El Nivel de Pila de Protocols no está fijado en El más alto reconocido. Por "
+"favor, compruebe en el diálogo de preferencias que eso es lo que realmente "
+"quiere"
 
-#: src/main.c:342
+# src/main.c:342
+# src/main.c:342
+# src/main.c:347
+#: src/main.c:347
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
+# src/capture.c:82
+# src/capture.c:82
+# src/capture.c:82
 #: src/capture.c:82
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Error buscando dispositivo: %s"
 
+# src/capture.c:101
+# src/capture.c:101
+# src/capture.c:101
 #: src/capture.c:101
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
+# src/capture.c:113
+# src/capture.c:113
+# src/capture.c:113
 #: src/capture.c:113
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 "No se pueden abrir a la vez %s y el dispositivo %s. Por favor, escoja uno."
 
+# src/capture.c:119
+# src/capture.c:119
+# src/capture.c:119
 #: src/capture.c:119
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
 
+# src/capture.c:122
+# src/capture.c:122
+# src/capture.c:122
 #: src/capture.c:122
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
 
 # src/capture.c:134
+# src/capture.c:134
+# src/capture.c:134
+# src/capture.c:134
 #: src/capture.c:134
 msgid "Link type is Ethernet"
 msgstr "Tipo de enlace es Ethernet"
 
+# src/capture.c:142
+# src/capture.c:142
+# src/capture.c:142
 # src/capture.c:142
 #. The case for PPP or SLIP, for instance
 #: src/capture.c:142
@@ -147,11 +240,17 @@ msgid "Link type is RAW"
 msgstr "Tipo de enlace es RAW"
 
 # src/capture.c:150
+# src/capture.c:150
+# src/capture.c:150
+# src/capture.c:150
 #. We are assuming LLC async frames only
 #: src/capture.c:150
 msgid "Link type is FDDI"
 msgstr "Tipo de enlace es FDDI"
 
+# src/capture.c:159
+# src/capture.c:159
+# src/capture.c:159
 # src/capture.c:159
 #. As far as I know IEEE802 is Token Ring
 #: src/capture.c:159
@@ -159,88 +258,150 @@ msgid "Link type is Token Ring"
 msgstr "Tipo de enlace es Token Ring"
 
 # src/capture.c:167
+# src/capture.c:167
+# src/capture.c:167
+# src/capture.c:167
 #. Loopback
 #: src/capture.c:167
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
+# src/capture.c:175
+# src/capture.c:175
+# src/capture.c:175
 #: src/capture.c:175
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
+# src/capture.c:228
+# src/capture.c:228
+# src/capture.c:228
 #: src/capture.c:228
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
+# src/capture.c:250
+# src/capture.c:250
+# src/capture.c:250
 #: src/capture.c:250
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
+# src/capture.c:276 src/capture.c:302
+# src/capture.c:276 src/capture.c:302
+# src/capture.c:276 src/capture.c:302
 #: src/capture.c:276 src/capture.c:302
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
-msgstr "No se puede usar el filtro: No se pudo obtener información de la máscara (%s)."
+msgstr ""
+"No se puede usar el filtro: No se pudo obtener información de la máscara "
+"(%s)."
 
+# src/capture.c:282 src/capture.c:308
+# src/capture.c:282 src/capture.c:308
+# src/capture.c:282 src/capture.c:308
 #: src/capture.c:282 src/capture.c:308
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
+# src/capture.c:287 src/capture.c:313
+# src/capture.c:287 src/capture.c:313
+# src/capture.c:287 src/capture.c:313
 #: src/capture.c:287 src/capture.c:313
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
+# src/capture.c:324
+# src/capture.c:324
+# src/capture.c:324
 #: src/capture.c:324
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
+# src/capture.c:330
+# src/capture.c:330
+# src/capture.c:330
 #: src/capture.c:330
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
+# src/capture.c:337
+# src/capture.c:337
+# src/capture.c:337
 #: src/capture.c:337
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
+# src/capture.c:354
+# src/capture.c:354
+# src/capture.c:354
 #: src/capture.c:354
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
+# src/capture.c:358
+# src/capture.c:358
+# src/capture.c:358
 #: src/capture.c:358
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
+# src/capture.c:364
+# src/capture.c:364
+# src/capture.c:364
 #: src/capture.c:364
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
+# src/capture.c:371
+# src/capture.c:371
+# src/capture.c:371
 #: src/capture.c:371
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
+# src/capture.c:389
+# src/capture.c:389
+# src/capture.c:389
 #: src/capture.c:389
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
+# src/capture.c:395
+# src/capture.c:395
+# src/capture.c:395
 #: src/capture.c:395
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
+# src/capture.c:401
+# src/capture.c:401
+# src/capture.c:401
 #: src/capture.c:401
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
+# src/capture.c:409
+# src/capture.c:409
+# src/capture.c:409
 #: src/capture.c:409
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
 
+# src/capture.c:584
+# src/capture.c:584
+# src/capture.c:585
 #. TODO Write proper assertion code here
-#: src/capture.c:584
+#: src/capture.c:585
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
-#: src/capture.c:631
+# src/capture.c:631
+# src/capture.c:631
+# src/capture.c:632
+#: src/capture.c:632
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -258,7 +419,10 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:569
 # src/capture.c:742
 # src/capture.c:758
-#: src/capture.c:762
+# src/capture.c:762
+# src/capture.c:762
+# src/capture.c:768
+#: src/capture.c:768
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -277,7 +441,10 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:607
 # src/capture.c:780
 # src/capture.c:796
-#: src/capture.c:800
+# src/capture.c:800
+# src/capture.c:800
+# src/capture.c:806
+#: src/capture.c:806
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -296,7 +463,10 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:832
 # src/capture.c:855
 # src/capture.c:895
-#: src/capture.c:899
+# src/capture.c:899
+# src/capture.c:899
+# src/capture.c:907
+#: src/capture.c:907
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -315,7 +485,10 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:901
 # src/capture.c:984
 # src/capture.c:1018
-#: src/capture.c:1043
+# src/capture.c:1043
+# src/capture.c:1043
+# src/capture.c:1080
+#: src/capture.c:1080
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -334,14 +507,23 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1120
 # src/capture.c:1216
 # src/capture.c:1249
-#: src/capture.c:1281
+# src/capture.c:1281
+# src/capture.c:1281
+# src/capture.c:1318
+#: src/capture.c:1318
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
+# src/menus.c:67
+# src/menus.c:67
+# src/menus.c:67
 #: src/menus.c:67
 msgid "No suitables interfaces for capture have been found"
 msgstr "No se han encontrado interfaces adecuados para capturar"
 
+# src/menus.c:73
+# src/menus.c:73
+# src/menus.c:73
 #: src/menus.c:73
 msgid "Available interfaces for capture:"
 msgstr "Dispositivos de captura disponibles:"
@@ -360,11 +542,17 @@ msgstr "Dispositivos de captura disponibles:"
 # src/main.c:40
 # src/main.c:41
 # src/main.c:41
+# src/menus.c:211
+# src/menus.c:211
+# src/menus.c:211
 #: src/menus.c:211
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Interfaz de captura fijado a %s en el GUI"
 
+# src/menus.c:262
+# src/menus.c:262
+# src/menus.c:262
 #: src/menus.c:262
 #, c-format
 msgid "Mode set to %s in GUI"
@@ -372,27 +560,42 @@ msgstr "Modo fijado en %s en el GUI"
 
 # src/capture.c:387
 # src/capture.c:389
+# src/menus.c:429
+# src/menus.c:429
+# src/menus.c:429
 #: src/menus.c:429
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
+# src/menus.c:523
+# src/menus.c:523
+# src/menus.c:523
 #. Sets the appbar
 #: src/menus.c:523
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
+# src/menus.c:530 src/menus.c:648
+# src/menus.c:530 src/menus.c:648
+# src/menus.c:530 src/menus.c:648
 #: src/menus.c:530 src/menus.c:648
 msgid "default interface"
 msgstr "interfaz por defecto"
 
 # src/glade-strings:10
 # src/glade-strings:12
+# src/menus.c:535
+# src/menus.c:535
+# src/menus.c:535
 #: src/menus.c:535
 msgid " in FDDI mode"
 msgstr " en modo FDDI"
 
 # src/glade-strings:12
 # src/glade-strings:14
+# src/menus.c:538
+# src/menus.c:538
+# src/menus.c:538
 #: src/menus.c:538
 msgid " in Ethernet mode"
 msgstr " en modo Ethernet"
@@ -411,18 +614,27 @@ msgstr " en modo Ethernet"
 # src/glade-strings:45
 # src/glade-strings:14
 # src/glade-strings:16
+# src/menus.c:541
+# src/menus.c:541
+# src/menus.c:541
 #: src/menus.c:541
 msgid " in IP mode"
 msgstr " en modo IP"
 
 # src/glade-strings:16
 # src/glade-strings:18
+# src/menus.c:544
+# src/menus.c:544
+# src/menus.c:544
 #: src/menus.c:544
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
 # src/glade-strings:18
 # src/glade-strings:20
+# src/menus.c:547
+# src/menus.c:547
+# src/menus.c:547
 #: src/menus.c:547
 msgid " in UDP mode"
 msgstr " en modo UDP"
@@ -441,18 +653,27 @@ msgstr " en modo UDP"
 # src/glade-strings:58
 # src/glade-strings:75
 # src/glade-strings:84
+# src/menus.c:557
+# src/menus.c:557
+# src/menus.c:557
 #: src/menus.c:557
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
 # src/capture.c:352
 # src/capture.c:354
+# src/menus.c:570
+# src/menus.c:570
+# src/menus.c:570
 #: src/menus.c:570
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
 # src/glade-strings:37
 # src/glade-strings:38
+# src/menus.c:593
+# src/menus.c:593
+# src/menus.c:593
 #. Sets the appbar
 #: src/menus.c:593
 msgid "Paused"
@@ -472,12 +693,18 @@ msgstr "Pausado"
 # src/glade-strings:58
 # src/glade-strings:75
 # src/glade-strings:84
+# src/menus.c:598
+# src/menus.c:598
+# src/menus.c:598
 #: src/menus.c:598
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
 # src/capture.c:387
 # src/capture.c:389
+# src/menus.c:612
+# src/menus.c:612
+# src/menus.c:612
 #: src/menus.c:612
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
@@ -496,6 +723,9 @@ msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 # src/main.c:42
 # src/main.c:43
 # src/main.c:43
+# src/menus.c:641
+# src/menus.c:641
+# src/menus.c:641
 #. Sets the appbar
 #: src/menus.c:641
 msgid "Ready to capture from "
@@ -515,6 +745,9 @@ msgstr "Listo para capturar de "
 # src/glade-strings:58
 # src/glade-strings:75
 # src/glade-strings:84
+# src/menus.c:653
+# src/menus.c:653
+# src/menus.c:653
 #: src/menus.c:653
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
@@ -524,20 +757,32 @@ msgstr "Diagrama parado"
 # src/main.c:54
 # src/main.c:55
 # src/main.c:55
-#: src/diagram.c:288
+# src/diagram.c:288
+# src/diagram.c:288
+# src/diagram.c:299
+#: src/diagram.c:299
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
-#: src/diagram.c:292
+# src/diagram.c:292
+# src/diagram.c:292
+# src/diagram.c:303
+#: src/diagram.c:303
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
 
-#: src/diagram.c:294
+# src/diagram.c:294
+# src/diagram.c:294
+# src/diagram.c:305
+#: src/diagram.c:305
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
-#: src/diagram.c:296
+# src/diagram.c:296
+# src/diagram.c:296
+# src/diagram.c:307
+#: src/diagram.c:307
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
@@ -555,31 +800,23 @@ msgstr ". TIMEOUT."
 # src/capture.c:569
 # src/capture.c:742
 # src/capture.c:758
-#: src/diagram.c:481
+# src/diagram.c:481
+# src/diagram.c:481
+# src/diagram.c:495
+#: src/diagram.c:495
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
-# src/capture.c:409
-# src/capture.c:408
-# src/capture.c:411
-# src/capture.c:411
-# src/capture.c:346
-# src/capture.c:346
-# src/capture.c:708
-# src/capture.c:746
-# src/capture.c:760
-# src/capture.c:777
-# src/capture.c:813
-# src/capture.c:832
-# src/capture.c:855
-# src/capture.c:895
-#: src/diagram.c:526
-#, c-format
-msgid "Removing canvas_node. Number of node %d"
-msgstr "Borrando nodo de diagrama: %s. Número de nodos: %d"
+# src/diagram.c:557
+#: src/diagram.c:557
+msgid "Main node protocol not found in update_canvas_nodes"
+msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
-#: src/diagram.c:566
+# src/diagram.c:566
+# src/diagram.c:566
+# src/diagram.c:582
+#: src/diagram.c:582
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
@@ -597,51 +834,85 @@ msgstr "Valor desconocido en node_size_variable"
 # src/capture.c:607
 # src/capture.c:780
 # src/capture.c:796
-#: src/diagram.c:881
+# src/diagram.c:881
+# src/diagram.c:881
+# src/diagram.c:902
+#: src/diagram.c:902
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
-# src/capture.c:438 src/capture.c:443
-# src/capture.c:437 src/capture.c:442
-# src/capture.c:440 src/capture.c:445
-# src/capture.c:440 src/capture.c:445
-# src/capture.c:375 src/capture.c:380
-# src/capture.c:375 src/capture.c:380
-# src/capture.c:769
-# src/capture.c:808
-# src/capture.c:828
-# src/capture.c:846
-# src/capture.c:882
-# src/capture.c:901
-# src/capture.c:984
-# src/capture.c:1018
-#: src/diagram.c:921
-#, c-format
-msgid "Removing canvas link. Number of links %d"
-msgstr "Borrando enlace de diagrama: %s-%s. Número de enlaces: %d"
+# src/diagram.c:963
+#: src/diagram.c:963
+msgid "Main link protocol not found in update_canvas_links"
+msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
-#: src/diagram.c:1118
+# src/diagram.c:1118
+# src/diagram.c:1118
+# src/diagram.c:1141
+#: src/diagram.c:1141
 msgid "No node_id in on_node_info_delete_event"
 msgstr "No node_id en on_node_info_delete_event"
 
-#: src/diagram.c:1125
+# src/diagram.c:1125
+# src/diagram.c:1125
+# src/diagram.c:1148
+#: src/diagram.c:1148
 msgid "No node_info_window in on_node_info_delete_event"
 msgstr "No node_info_window en on_node_info_delete_event"
 
 # src/glade-strings:83
-#: src/diagram.c:1150
+# src/diagram.c:1150
+# src/diagram.c:1150
+# src/diagram.c:1173
+#: src/diagram.c:1173
 msgid "No info available"
-msgstr "No información disponible"
+msgstr "No hay información disponible"
 
-#: src/diagram.c:1217
+# src/diagram.c:1217
+# src/diagram.c:1217
+# src/diagram.c:1240
+#: src/diagram.c:1240
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
-#: src/diagram.c:1220
+# src/diagram.c:1220
+# src/diagram.c:1220
+# src/diagram.c:1243
+#: src/diagram.c:1243
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
+
+# src/protocols.c:646
+# src/protocols.c:646
+#: src/protocols.c:646
+#, c-format
+msgid "Failed to open %s. No TCP or UDP services will be recognized"
+msgstr ""
+"No se ha podido abrir %s. Los servicios TCP o UDP no podrán ser reconocidos"
+
+# src/protocols.c:652
+# src/protocols.c:652
+#: src/protocols.c:652
+#, c-format
+msgid "Reading TCP and UDP services from %s"
+msgstr "Leyendo servicios TCP y UDP de %s"
+
+# src/capture.c:282 src/capture.c:308
+# src/protocols.c:697
+# src/protocols.c:697
+#: src/protocols.c:697
+#, c-format
+msgid "Unable to  parse line %s"
+msgstr "Imposible analizar la línea %s"
+
+# src/protocols.c:719
+# src/protocols.c:719
+#: src/protocols.c:719
+#, c-format
+msgid "DDP protocols not supported in %s"
+msgstr "Protocolos DDP no soportados en %s"
 
 # src/interface.c:107
 # src/interface.c:106
@@ -657,6 +928,10 @@ msgstr "Protocolo principal del enlace desconocido"
 # src/glade-strings:7
 # src/glade-strings:7
 # src/glade-strings:7
+# src/glade-strings:7
+# src/glade-strings:7
+# src/glade-strings:7
+#. load_services
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -678,10 +953,16 @@ msgstr "EtherApe"
 # src/glade-strings:66
 # src/glade-strings:8
 # src/glade-strings:8
+# src/glade-strings:8
+# src/glade-strings:8
+# src/glade-strings:8
 #: src/glade-strings:8
 msgid "_Capture"
 msgstr "_Captura"
 
+# src/glade-strings:9
+# src/glade-strings:9
+# src/glade-strings:9
 # src/glade-strings:9
 # src/glade-strings:9
 #: src/glade-strings:9
@@ -690,10 +971,16 @@ msgstr "_Modo"
 
 # src/glade-strings:16
 # src/glade-strings:10
+# src/glade-strings:10
+# src/glade-strings:10
+# src/glade-strings:10
 #: src/glade-strings:10
 msgid "Set Token Ring mode"
 msgstr "Activar modo Toke Ring"
 
+# src/glade-strings:11
+# src/glade-strings:11
+# src/glade-strings:11
 # src/glade-strings:11
 #: src/glade-strings:11
 msgid "Token _Ring"
@@ -701,17 +988,26 @@ msgstr "Token _Ring"
 
 # src/glade-strings:10
 # src/glade-strings:12
+# src/glade-strings:12
+# src/glade-strings:12
+# src/glade-strings:12
 #: src/glade-strings:12
 msgid "Set FDDI mode"
 msgstr "Activar modo FDDI"
 
 # src/glade-strings:11
 # src/glade-strings:13
+# src/glade-strings:13
+# src/glade-strings:13
+# src/glade-strings:13
 #: src/glade-strings:13
 msgid "_FDDI"
 msgstr "_FDDI"
 
 # src/glade-strings:12
+# src/glade-strings:14
+# src/glade-strings:14
+# src/glade-strings:14
 # src/glade-strings:14
 #: src/glade-strings:14
 msgid "Set Ethernet mode"
@@ -731,6 +1027,9 @@ msgstr "Activar modo Ethernet"
 # src/glade-strings:7
 # src/glade-strings:13
 # src/glade-strings:15
+# src/glade-strings:15
+# src/glade-strings:15
+# src/glade-strings:15
 #: src/glade-strings:15
 msgid "_Ethernet"
 msgstr "_Ethernet"
@@ -749,11 +1048,17 @@ msgstr "_Ethernet"
 # src/glade-strings:45
 # src/glade-strings:14
 # src/glade-strings:16
+# src/glade-strings:16
+# src/glade-strings:16
+# src/glade-strings:16
 #: src/glade-strings:16
 msgid "Set IP mode"
 msgstr "Activar modo IP"
 
 # src/glade-strings:15
+# src/glade-strings:17
+# src/glade-strings:17
+# src/glade-strings:17
 # src/glade-strings:17
 #: src/glade-strings:17
 msgid "_IP"
@@ -761,11 +1066,17 @@ msgstr "_IP"
 
 # src/glade-strings:16
 # src/glade-strings:18
+# src/glade-strings:18
+# src/glade-strings:18
+# src/glade-strings:18
 #: src/glade-strings:18
 msgid "Set TCP mode"
 msgstr "Activar modo TCP"
 
 # src/glade-strings:17
+# src/glade-strings:19
+# src/glade-strings:19
+# src/glade-strings:19
 # src/glade-strings:19
 #: src/glade-strings:19
 msgid "_TCP"
@@ -773,17 +1084,26 @@ msgstr "_TCP"
 
 # src/glade-strings:18
 # src/glade-strings:20
+# src/glade-strings:20
+# src/glade-strings:20
+# src/glade-strings:20
 #: src/glade-strings:20
 msgid "Set UDP mode"
 msgstr "Activar modo UDP"
 
 # src/glade-strings:19
 # src/glade-strings:21
+# src/glade-strings:21
+# src/glade-strings:21
+# src/glade-strings:21
 #: src/glade-strings:21
 msgid "_UDP"
 msgstr "_UDP"
 
 # src/glade-strings:20
+# src/glade-strings:22
+# src/glade-strings:22
+# src/glade-strings:22
 # src/glade-strings:22
 #: src/glade-strings:22
 msgid "_Interfaces"
@@ -801,6 +1121,9 @@ msgstr "_Interfaces"
 # src/glade-strings:8 src/glade-strings:18
 # src/glade-strings:22 src/glade-strings:34
 # src/glade-strings:23 src/glade-strings:35
+# src/glade-strings:23 src/glade-strings:35
+# src/glade-strings:23 src/glade-strings:35
+# src/glade-strings:23 src/glade-strings:35
 #: src/glade-strings:23 src/glade-strings:35
 msgid "Start capture"
 msgstr "Comenzar captura"
@@ -809,6 +1132,9 @@ msgstr "Comenzar captura"
 # src/glade-strings:9 src/glade-strings:19
 # src/glade-strings:9 src/glade-strings:19
 # src/glade-strings:23
+# src/glade-strings:24
+# src/glade-strings:24
+# src/glade-strings:24
 # src/glade-strings:24
 #: src/glade-strings:24
 msgid "_Start"
@@ -826,15 +1152,21 @@ msgstr "_Comenzar"
 # src/glade-strings:8 src/glade-strings:18
 # src/glade-strings:24 src/glade-strings:36
 # src/glade-strings:25 src/glade-strings:37
+# src/glade-strings:25 src/glade-strings:37
+# src/glade-strings:25 src/glade-strings:37
+# src/glade-strings:25 src/glade-strings:37
 #: src/glade-strings:25 src/glade-strings:37
 msgid "Pause capture"
 msgstr "Pausar captura"
 
 # src/glade-strings:25
 # src/glade-strings:26
+# src/glade-strings:26
+# src/glade-strings:26
+# src/glade-strings:26
 #: src/glade-strings:26
 msgid "_Pause"
-msgstr "_Pausa"
+msgstr "P_ausa"
 
 # src/interface.c:786
 # src/interface.c:786
@@ -848,6 +1180,9 @@ msgstr "_Pausa"
 # src/glade-strings:10 src/glade-strings:20
 # src/glade-strings:26 src/glade-strings:38
 # src/glade-strings:27 src/glade-strings:39
+# src/glade-strings:27 src/glade-strings:39
+# src/glade-strings:27 src/glade-strings:39
+# src/glade-strings:27 src/glade-strings:39
 #: src/glade-strings:27 src/glade-strings:39
 msgid "Stop capture"
 msgstr "Parar captura"
@@ -856,6 +1191,9 @@ msgstr "Parar captura"
 # src/glade-strings:11 src/glade-strings:21
 # src/glade-strings:11 src/glade-strings:21
 # src/glade-strings:27
+# src/glade-strings:28
+# src/glade-strings:28
+# src/glade-strings:28
 # src/glade-strings:28
 #: src/glade-strings:28
 msgid "St_op"
@@ -872,6 +1210,9 @@ msgstr "_Parar"
 # src/glade-strings:12
 # src/glade-strings:12
 # src/glade-strings:28
+# src/glade-strings:29
+# src/glade-strings:29
+# src/glade-strings:29
 # src/glade-strings:29
 #: src/glade-strings:29
 msgid "Show or hide the toolbar"
@@ -891,6 +1232,9 @@ msgstr "Muestra o oculta la barra de herramientas"
 # src/glade-strings:13
 # src/glade-strings:29
 # src/glade-strings:30
+# src/glade-strings:30
+# src/glade-strings:30
+# src/glade-strings:30
 #: src/glade-strings:30
 msgid "_Toolbar"
 msgstr "Barra de _herramientas"
@@ -906,6 +1250,9 @@ msgstr "Barra de _herramientas"
 # src/glade-strings:14
 # src/glade-strings:14
 # src/glade-strings:30
+# src/glade-strings:31
+# src/glade-strings:31
+# src/glade-strings:31
 # src/glade-strings:31
 #: src/glade-strings:31
 msgid "Show or hide the legend"
@@ -925,6 +1272,9 @@ msgstr "Muestra u oculta la leyenda"
 # src/glade-strings:15
 # src/glade-strings:31
 # src/glade-strings:32
+# src/glade-strings:32
+# src/glade-strings:32
+# src/glade-strings:32
 #: src/glade-strings:32
 msgid "_Legend"
 msgstr "_Leyenda"
@@ -940,6 +1290,9 @@ msgstr "_Leyenda"
 # src/glade-strings:16
 # src/glade-strings:16
 # src/glade-strings:32
+# src/glade-strings:33
+# src/glade-strings:33
+# src/glade-strings:33
 # src/glade-strings:33
 #: src/glade-strings:33
 msgid "Show or hide the status bar"
@@ -959,6 +1312,9 @@ msgstr "Muestra u oculta la barra de estado"
 # src/glade-strings:17
 # src/glade-strings:33
 # src/glade-strings:34
+# src/glade-strings:34
+# src/glade-strings:34
+# src/glade-strings:34
 #: src/glade-strings:34
 msgid "_Status Bar"
 msgstr "Barra de _estado"
@@ -968,11 +1324,17 @@ msgstr "Barra de _estado"
 # src/glade-strings:9 src/glade-strings:19
 # src/glade-strings:35
 # src/glade-strings:36
+# src/glade-strings:36
+# src/glade-strings:36
+# src/glade-strings:36
 #: src/glade-strings:36
 msgid "Start"
 msgstr "Comenzar"
 
 # src/glade-strings:37
+# src/glade-strings:38
+# src/glade-strings:38
+# src/glade-strings:38
 # src/glade-strings:38
 #: src/glade-strings:38
 msgid "Pause"
@@ -982,6 +1344,9 @@ msgstr "Pausa"
 # src/glade-strings:11 src/glade-strings:21
 # src/glade-strings:11 src/glade-strings:21
 # src/glade-strings:39
+# src/glade-strings:40
+# src/glade-strings:40
+# src/glade-strings:40
 # src/glade-strings:40
 #: src/glade-strings:40
 msgid "Stop"
@@ -999,6 +1364,9 @@ msgstr "Parar"
 # src/glade-strings:22
 # src/glade-strings:40
 # src/glade-strings:41
+# src/glade-strings:41
+# src/glade-strings:41
+# src/glade-strings:41
 #: src/glade-strings:41
 msgid "Preferences (Ctrl-P)"
 msgstr "Preferencias (Ctrl-P)"
@@ -1007,6 +1375,9 @@ msgstr "Preferencias (Ctrl-P)"
 # src/glade-strings:23
 # src/glade-strings:23
 # src/glade-strings:41
+# src/glade-strings:42
+# src/glade-strings:42
+# src/glade-strings:42
 # src/glade-strings:42
 #: src/glade-strings:42
 msgid "Pref."
@@ -1026,6 +1397,9 @@ msgstr "Pref."
 # src/glade-strings:24
 # src/glade-strings:42
 # src/glade-strings:43
+# src/glade-strings:43
+# src/glade-strings:43
+# src/glade-strings:43
 #: src/glade-strings:43
 msgid "Protocols"
 msgstr "Protocolos"
@@ -1044,6 +1418,9 @@ msgstr "Protocolos"
 # src/glade-strings:25
 # src/glade-strings:43
 # src/glade-strings:44
+# src/glade-strings:44
+# src/glade-strings:44
+# src/glade-strings:44
 #: src/glade-strings:44
 msgid "Copyright 2001 Juan Toledo"
 msgstr "Copyright 2001 Juan Toledo"
@@ -1061,6 +1438,9 @@ msgstr "Copyright 2001 Juan Toledo"
 # src/glade-strings:26
 # src/glade-strings:26
 # src/glade-strings:44
+# src/glade-strings:45
+# src/glade-strings:45
+# src/glade-strings:45
 # src/glade-strings:45
 #: src/glade-strings:45
 msgid ""
@@ -1084,6 +1464,9 @@ msgstr ""
 # src/glade-strings:28
 # src/glade-strings:46
 # src/glade-strings:47
+# src/glade-strings:47
+# src/glade-strings:47
+# src/glade-strings:47
 #: src/glade-strings:47
 msgid "window1"
 msgstr "window1"
@@ -1101,6 +1484,9 @@ msgstr "window1"
 # src/glade-strings:29
 # src/glade-strings:29
 # src/glade-strings:47
+# src/glade-strings:48
+# src/glade-strings:48
+# src/glade-strings:48
 # src/glade-strings:48
 #: src/glade-strings:48
 msgid "name"
@@ -1120,6 +1506,9 @@ msgstr "nombre"
 # src/glade-strings:30
 # src/glade-strings:48
 # src/glade-strings:49
+# src/glade-strings:49
+# src/glade-strings:49
+# src/glade-strings:49
 #: src/glade-strings:49
 msgid "accumulated"
 msgstr "acumulado"
@@ -1137,6 +1526,9 @@ msgstr "acumulado"
 # src/glade-strings:31
 # src/glade-strings:31
 # src/glade-strings:49
+# src/glade-strings:50
+# src/glade-strings:50
+# src/glade-strings:50
 # src/glade-strings:50
 #: src/glade-strings:50
 msgid "average"
@@ -1156,11 +1548,17 @@ msgstr "media"
 # src/glade-strings:32
 # src/glade-strings:50
 # src/glade-strings:51
+# src/glade-strings:51
+# src/glade-strings:51
+# src/glade-strings:51
 #: src/glade-strings:51
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
 
 # src/glade-strings:51
+# src/glade-strings:52
+# src/glade-strings:52
+# src/glade-strings:52
 # src/glade-strings:52
 #: src/glade-strings:52
 msgid "Information"
@@ -1175,6 +1573,9 @@ msgstr "Información"
 # src/glade-strings:33
 # src/glade-strings:33
 # src/glade-strings:52
+# src/glade-strings:53
+# src/glade-strings:53
+# src/glade-strings:53
 # src/glade-strings:53
 #: src/glade-strings:53
 msgid "EtherApe: Preferences"
@@ -1194,6 +1595,9 @@ msgstr "EtherApe: Preferencias"
 # src/glade-strings:34
 # src/glade-strings:53
 # src/glade-strings:54
+# src/glade-strings:54
+# src/glade-strings:54
+# src/glade-strings:54
 #: src/glade-strings:54
 msgid "Save"
 msgstr "Guardar"
@@ -1207,6 +1611,9 @@ msgstr "Guardar"
 # src/glade-strings:35
 # src/glade-strings:35
 # src/glade-strings:54
+# src/glade-strings:55
+# src/glade-strings:55
+# src/glade-strings:55
 # src/glade-strings:55
 #: src/glade-strings:55
 msgid "Toggle whether text is shown on the diagram"
@@ -1225,6 +1632,9 @@ msgstr "Fijar si se muestra texto en el diagrama"
 # src/glade-strings:36
 # src/glade-strings:55
 # src/glade-strings:56
+# src/glade-strings:56
+# src/glade-strings:56
+# src/glade-strings:56
 #: src/glade-strings:56
 msgid "Click to toggle"
 msgstr "Pulse para cambiar la selección"
@@ -1240,6 +1650,9 @@ msgstr "Pulse para cambiar la selección"
 # src/glade-strings:37
 # src/glade-strings:37
 # src/glade-strings:56
+# src/glade-strings:57
+# src/glade-strings:57
+# src/glade-strings:57
 # src/glade-strings:57
 #: src/glade-strings:57
 msgid "No text"
@@ -1259,6 +1672,9 @@ msgstr "Sin texto"
 # src/glade-strings:38
 # src/glade-strings:57
 # src/glade-strings:58
+# src/glade-strings:58
+# src/glade-strings:58
+# src/glade-strings:58
 #: src/glade-strings:58
 msgid "Max. Node Radius"
 msgstr "Radio máx. de nodo"
@@ -1277,6 +1693,9 @@ msgstr "Radio máx. de nodo"
 # src/glade-strings:39
 # src/glade-strings:58
 # src/glade-strings:59
+# src/glade-strings:59
+# src/glade-strings:59
+# src/glade-strings:59
 #: src/glade-strings:59
 msgid "Max. Link Width"
 msgstr "Ancho máx. de enlace"
@@ -1289,13 +1708,21 @@ msgstr "Ancho máx. de enlace"
 # src/glade-strings:40
 # src/glade-strings:59
 # src/glade-strings:60
+# src/glade-strings:60
+# src/glade-strings:60
+# src/glade-strings:60
 #: src/glade-strings:60
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
-msgstr "Determinar cómo se calculan el radio de los nodos y el ancho de los enlaces a partir del tráfico medio"
+msgstr ""
+"Determinar cómo se calculan el radio de los nodos y el ancho de los enlaces "
+"a partir del tráfico medio"
 
 # src/glade-strings:60
+# src/glade-strings:61
+# src/glade-strings:61
+# src/glade-strings:61
 # src/glade-strings:61
 #: src/glade-strings:61
 msgid "Linear"
@@ -1303,11 +1730,17 @@ msgstr "Lineal"
 
 # src/glade-strings:61
 # src/glade-strings:62
+# src/glade-strings:62
+# src/glade-strings:62
+# src/glade-strings:62
 #: src/glade-strings:62
 msgid "Logarithmic"
 msgstr "Logarítmico"
 
 # src/glade-strings:62
+# src/glade-strings:63
+# src/glade-strings:63
+# src/glade-strings:63
 # src/glade-strings:63
 #: src/glade-strings:63
 msgid "Square Root"
@@ -1327,6 +1760,9 @@ msgstr "Raiz Cuadrada"
 # src/glade-strings:45
 # src/glade-strings:63
 # src/glade-strings:64
+# src/glade-strings:64
+# src/glade-strings:64
+# src/glade-strings:64
 #: src/glade-strings:64
 msgid "Size Mode"
 msgstr "Ajuste de tamaño"
@@ -1338,6 +1774,9 @@ msgstr "Ajuste de tamaño"
 # src/glade-strings:46
 # src/glade-strings:46
 # src/glade-strings:64
+# src/glade-strings:65
+# src/glade-strings:65
+# src/glade-strings:65
 # src/glade-strings:65
 #: src/glade-strings:65
 msgid "Choose the font used to display text in the diagram"
@@ -1356,6 +1795,9 @@ msgstr "Elegir el tipo de letra para mostrar texto en el diagrama"
 # src/glade-strings:47
 # src/glade-strings:65
 # src/glade-strings:66
+# src/glade-strings:66
+# src/glade-strings:66
+# src/glade-strings:66
 #: src/glade-strings:66
 msgid "Font"
 msgstr "Tipo de fuente"
@@ -1369,6 +1811,9 @@ msgstr "Tipo de fuente"
 # src/glade-strings:48
 # src/glade-strings:48
 # src/glade-strings:66
+# src/glade-strings:67
+# src/glade-strings:67
+# src/glade-strings:67
 # src/glade-strings:67
 #: src/glade-strings:67
 msgid "Refresh diagram every this many miliseconds"
@@ -1388,6 +1833,9 @@ msgstr "Refrescar el diagrama cada estos milisegundos"
 # src/glade-strings:49
 # src/glade-strings:67
 # src/glade-strings:68
+# src/glade-strings:68
+# src/glade-strings:68
+# src/glade-strings:68
 #: src/glade-strings:68
 msgid "Diagram refresh period (ms)"
 msgstr "Periodo de refresco (ms)"
@@ -1400,11 +1848,17 @@ msgstr "Periodo de refresco (ms)"
 # src/glade-strings:50
 # src/glade-strings:68
 # src/glade-strings:69 src/glade-strings:76
+# src/glade-strings:69 src/glade-strings:76
+# src/glade-strings:69 src/glade-strings:76
+# src/glade-strings:69 src/glade-strings:76
 #: src/glade-strings:69 src/glade-strings:76
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
 
 # src/glade-strings:69
+# src/glade-strings:70
+# src/glade-strings:70
+# src/glade-strings:70
 # src/glade-strings:70
 #: src/glade-strings:70
 msgid "Topmost recognized protocol"
@@ -1412,11 +1866,17 @@ msgstr "Protocolo más alto reconocido"
 
 # src/glade-strings:70
 # src/glade-strings:71
+# src/glade-strings:71
+# src/glade-strings:71
+# src/glade-strings:71
 #: src/glade-strings:71
 msgid "Level 2 (Eg: ETH_II)"
 msgstr "Nivel 2 (ej. ETH_II)"
 
 # src/glade-strings:71
+# src/glade-strings:72
+# src/glade-strings:72
+# src/glade-strings:72
 # src/glade-strings:72
 #: src/glade-strings:72
 msgid "Level 3 (Eg: IP)"
@@ -1424,11 +1884,17 @@ msgstr "Nivel 3 (ej. IP)"
 
 # src/glade-strings:72
 # src/glade-strings:73
+# src/glade-strings:73
+# src/glade-strings:73
+# src/glade-strings:73
 #: src/glade-strings:73
 msgid "Level 4 (Eg: TCP)"
 msgstr "Nivel 4 (ej. TCP)"
 
 # src/glade-strings:73
+# src/glade-strings:74
+# src/glade-strings:74
+# src/glade-strings:74
 # src/glade-strings:74
 #: src/glade-strings:74
 msgid "Level 5 (Eg: HTTP)"
@@ -1442,44 +1908,110 @@ msgstr "Nivel 5 (ej. HTTP)"
 # src/glade-strings:57
 # src/glade-strings:74
 # src/glade-strings:75
+# src/glade-strings:75
+# src/glade-strings:75
+# src/glade-strings:75
 #: src/glade-strings:75
 msgid "Protocol Stack Level"
 msgstr "Nivel de pila de protocolos"
 
+# src/glade-strings:77
+# src/glade-strings:77
+# src/glade-strings:77
 # src/glade-strings:77
 #: src/glade-strings:77
 msgid "Instantaneous traffic (In+Out)"
 msgstr "Tráfico inst. (Entrada/Salida)"
 
 # src/glade-strings:78
+# src/glade-strings:78
+# src/glade-strings:78
+# src/glade-strings:78
 #: src/glade-strings:78
 msgid "Instantaneous traffic (Inbound)"
 msgstr "Tráfico inst. (Entrada)"
 
+# src/glade-strings:79
+# src/glade-strings:79
+# src/glade-strings:79
 # src/glade-strings:79
 #: src/glade-strings:79
 msgid "Instantaneous traffic (Outbound)"
 msgstr "Tráfico inst. (Salida)"
 
 # src/glade-strings:80
+# src/glade-strings:80
+# src/glade-strings:80
+# src/glade-strings:80
 #: src/glade-strings:80
 msgid "Accumulated traffic (In+Out)"
 msgstr "Tráfico acumulado (Entrada/Salida)"
 
+# src/glade-strings:81
+# src/glade-strings:81
+# src/glade-strings:81
 # src/glade-strings:81
 #: src/glade-strings:81
 msgid "Accumulated traffic (Inbound)"
 msgstr "Tráfico acumulado (Entrada)"
 
 # src/glade-strings:82
+# src/glade-strings:82
+# src/glade-strings:82
+# src/glade-strings:82
 #: src/glade-strings:82
 msgid "Accumulated traffic (Outbound)"
 msgstr "Tráfico acumulado (Salida)"
 
 # src/glade-strings:83
+# src/glade-strings:83
+# src/glade-strings:83
+# src/glade-strings:83
 #: src/glade-strings:83
 msgid "Node size variable"
 msgstr "Variable de tamaño de nodo"
+
+# src/interface.c:664
+# src/interface.c:664
+# src/interface.c:865
+# src/interface.c:971
+# src/glade-strings:61
+# src/glade-strings:64
+# src/glade-strings:64
+# src/glade-strings:64
+# src/glade-strings:81
+# src/glade-strings:90
+# src/glade-strings:90
+# src/glade-strings:90
+# src/glade-strings:84
+#: src/glade-strings:84
+msgid ""
+"Remove this node from the diagram after this much time. 0 means never "
+"timeout."
+msgstr ""
+"Borrar este nodo del diagrama después de pasado este tiempo. 0 significa no "
+"borrar nunca"
+
+# src/interface.c:648
+# src/interface.c:650
+# src/interface.c:658
+# src/interface.c:658
+# src/interface.c:667
+# src/interface.c:667
+# src/interface.c:868
+# src/interface.c:976
+# src/glade-strings:62
+# src/glade-strings:65
+# src/glade-strings:65
+# src/glade-strings:65
+# src/glade-strings:82
+# src/glade-strings:91
+# src/glade-strings:91
+# src/glade-strings:91
+# src/glade-strings:85
+#: src/glade-strings:85
+msgid "Diagram Node Timeout (ms)"
+msgstr "Timeout de nodo de diagrama (ms)"
 
 # src/interface.c:510
 # src/interface.c:512
@@ -1495,7 +2027,10 @@ msgstr "Variable de tamaño de nodo"
 # src/glade-strings:58
 # src/glade-strings:75
 # src/glade-strings:84
-#: src/glade-strings:84
+# src/glade-strings:84
+# src/glade-strings:84
+# src/glade-strings:86
+#: src/glade-strings:86
 msgid "Diagram"
 msgstr "Diagrama"
 
@@ -1513,7 +2048,10 @@ msgstr "Diagrama"
 # src/glade-strings:59
 # src/glade-strings:76
 # src/glade-strings:85
-#: src/glade-strings:85
+# src/glade-strings:85
+# src/glade-strings:85
+# src/glade-strings:87
+#: src/glade-strings:87
 msgid "Capture filter"
 msgstr "Filtro de captura"
 
@@ -1527,7 +2065,10 @@ msgstr "Filtro de captura"
 # src/glade-strings:60
 # src/glade-strings:77
 # src/glade-strings:86
-#: src/glade-strings:86
+# src/glade-strings:86
+# src/glade-strings:86
+# src/glade-strings:88
+#: src/glade-strings:88
 msgid "Packet information is averaged for this amount of time"
 msgstr "Hacer media de la información durante este tiempo"
 
@@ -1545,7 +2086,10 @@ msgstr "Hacer media de la información durante este tiempo"
 # src/glade-strings:61
 # src/glade-strings:78
 # src/glade-strings:87
-#: src/glade-strings:87
+# src/glade-strings:87
+# src/glade-strings:87
+# src/glade-strings:89
+#: src/glade-strings:89
 msgid "Averaging Time (ms)"
 msgstr "Tiempo de medida (ms)"
 
@@ -1559,9 +2103,13 @@ msgstr "Tiempo de medida (ms)"
 # src/glade-strings:62
 # src/glade-strings:79
 # src/glade-strings:88
-#: src/glade-strings:88
+# src/glade-strings:88
+# src/glade-strings:88
+# src/glade-strings:90
+#: src/glade-strings:90
 msgid "Delete this link after this much time. 0 means never timeout."
-msgstr "Borrar este enlace después de pasado este tiempo. 0 significa no borrar nunca"
+msgstr ""
+"Borrar este enlace después de pasado este tiempo. 0 significa no borrar nunca"
 
 # src/interface.c:674
 # src/interface.c:676
@@ -1577,7 +2125,10 @@ msgstr "Borrar este enlace después de pasado este tiempo. 0 significa no borrar 
 # src/glade-strings:63
 # src/glade-strings:80
 # src/glade-strings:89
-#: src/glade-strings:89
+# src/glade-strings:89
+# src/glade-strings:89
+# src/glade-strings:91
+#: src/glade-strings:91
 msgid "Link Timeout (ms)"
 msgstr "Timeout de enlaces (ms)"
 
@@ -1591,9 +2142,15 @@ msgstr "Timeout de enlaces (ms)"
 # src/glade-strings:64
 # src/glade-strings:81
 # src/glade-strings:90
-#: src/glade-strings:90
-msgid "Delete this node after this much time. 0 means never timeout."
-msgstr "Borrar este nodo después de pasado este tiempo. 0 significa no borrar nunca"
+# src/glade-strings:90
+# src/glade-strings:90
+# src/glade-strings:92
+#: src/glade-strings:92
+msgid ""
+"Delete this node from memory after this much time. 0 means never timeout."
+msgstr ""
+"Borrar este nodo de la memoria después de pasado este tiempo. 0 significa no "
+"borrar nunca"
 
 # src/interface.c:648
 # src/interface.c:650
@@ -1609,7 +2166,10 @@ msgstr "Borrar este nodo después de pasado este tiempo. 0 significa no borrar nu
 # src/glade-strings:65
 # src/glade-strings:82
 # src/glade-strings:91
-#: src/glade-strings:91
+# src/glade-strings:91
+# src/glade-strings:91
+# src/glade-strings:93
+#: src/glade-strings:93
 msgid "Node Timeout (ms)"
 msgstr "Timeout de nodo (ms)"
 
@@ -1625,7 +2185,10 @@ msgstr "Timeout de nodo (ms)"
 # src/glade-strings:66
 # src/glade-strings:83
 # src/glade-strings:92
-#: src/glade-strings:92
+# src/glade-strings:92
+# src/glade-strings:92
+# src/glade-strings:94
+#: src/glade-strings:94
 msgid "Capture"
 msgstr "Captura"
 
@@ -1642,13 +2205,19 @@ msgstr "Captura"
 # src/glade-strings:67
 # src/glade-strings:84
 # src/glade-strings:93
-#: src/glade-strings:93
+# src/glade-strings:93
+# src/glade-strings:93
+# src/glade-strings:95
+#: src/glade-strings:95
 msgid "Select Font"
 msgstr "Seleccione tipo de fuente"
 
 # src/glade-strings:85
 # src/glade-strings:94
-#: src/glade-strings:94
+# src/glade-strings:94
+# src/glade-strings:94
+# src/glade-strings:96
+#: src/glade-strings:96
 msgid "EtherApe: Open Capture File"
 msgstr "EtherApe: Abrir archivo de captura"
 
@@ -1666,7 +2235,10 @@ msgstr "EtherApe: Abrir archivo de captura"
 # src/main.c:42
 # src/glade-strings:86
 # src/glade-strings:95
-#: src/glade-strings:95
+# src/glade-strings:95
+# src/glade-strings:95
+# src/glade-strings:97
+#: src/glade-strings:97
 msgid "EtherApe: Select capture file"
 msgstr "EtherApe: Seleccione archivo de captura"
 
@@ -1680,7 +2252,10 @@ msgstr "EtherApe: Seleccione archivo de captura"
 # src/glade-strings:33
 # src/glade-strings:87
 # src/glade-strings:96
-#: src/glade-strings:96
+# src/glade-strings:96
+# src/glade-strings:96
+# src/glade-strings:98
+#: src/glade-strings:98
 msgid "EtherApe: Select Capture File"
 msgstr "EtherApe: Seleccione archivo de captura"
 
@@ -1698,7 +2273,10 @@ msgstr "EtherApe: Seleccione archivo de captura"
 # src/main.c:42
 # src/glade-strings:88
 # src/glade-strings:97
-#: src/glade-strings:97
+# src/glade-strings:97
+# src/glade-strings:97
+# src/glade-strings:99
+#: src/glade-strings:99
 msgid "Select capture file"
 msgstr "Seleccione archivo de captura"
 
@@ -1716,7 +2294,10 @@ msgstr "Seleccione archivo de captura"
 # src/main.c:42
 # src/glade-strings:89
 # src/glade-strings:98
-#: src/glade-strings:98
+# src/glade-strings:98
+# src/glade-strings:98
+# src/glade-strings:100
+#: src/glade-strings:100
 msgid "Optionally, set a capture filter"
 msgstr "Opcionalmente, defina un filtro de captura"
 
@@ -1731,13 +2312,19 @@ msgstr "Opcionalmente, defina un filtro de captura"
 # src/glade-strings:15
 # src/glade-strings:90
 # src/glade-strings:99
-#: src/glade-strings:99
+# src/glade-strings:99
+# src/glade-strings:99
+# src/glade-strings:101
+#: src/glade-strings:101
 msgid "File:"
 msgstr "Archivo:"
 
 # src/glade-strings:91
 # src/glade-strings:100
-#: src/glade-strings:100
+# src/glade-strings:100
+# src/glade-strings:100
+# src/glade-strings:102
+#: src/glade-strings:102
 msgid "Filter:"
 msgstr "Filtro:"
 
@@ -1755,22 +2342,34 @@ msgstr "Filtro:"
 # src/glade-strings:29
 # src/glade-strings:47
 # src/glade-strings:101
-#: src/glade-strings:101
+# src/glade-strings:101
+# src/glade-strings:101
+# src/glade-strings:103
+#: src/glade-strings:103
 msgid "Name:"
 msgstr "Nombre:"
 
 # src/glade-strings:102 src/glade-strings:104
-#: src/glade-strings:102 src/glade-strings:104
+# src/glade-strings:102 src/glade-strings:104
+# src/glade-strings:102 src/glade-strings:104
+# src/glade-strings:104 src/glade-strings:106
+#: src/glade-strings:104 src/glade-strings:106
 msgid "This is a test node name"
 msgstr "Este es un nombre de nodo de prueba"
 
 # src/glade-strings:103
-#: src/glade-strings:103
+# src/glade-strings:103
+# src/glade-strings:103
+# src/glade-strings:105
+#: src/glade-strings:105
 msgid "Numeric Name:"
 msgstr "Nombre numérico"
 
 # src/glade-strings:105
-#: src/glade-strings:105
+# src/glade-strings:105
+# src/glade-strings:105
+# src/glade-strings:107
+#: src/glade-strings:107
 msgid "Show traffic"
 msgstr "Mostrar tráfico"
 
@@ -1788,19 +2387,31 @@ msgstr "Mostrar tráfico"
 # src/glade-strings:24
 # src/glade-strings:42
 # src/glade-strings:106
-#: src/glade-strings:106
+# src/glade-strings:106
+# src/glade-strings:106
+# src/glade-strings:108
+#: src/glade-strings:108
 msgid "Show protocols"
 msgstr "Mostrar protocolos"
 
 # src/glade-strings:107
-#: src/glade-strings:107
+# src/glade-strings:107
+# src/glade-strings:107
+# src/glade-strings:109
+#: src/glade-strings:109
 msgid "Instantaneous"
 msgstr "Instantáneo"
 
 # src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
 # src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
-#: src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
-#: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
+# src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
+# src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
+# src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
+# src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
+# src/glade-strings:110 src/glade-strings:112 src/glade-strings:114
+# src/glade-strings:116 src/glade-strings:118 src/glade-strings:120
+#: src/glade-strings:110 src/glade-strings:112 src/glade-strings:114
+#: src/glade-strings:116 src/glade-strings:118 src/glade-strings:120
 msgid "test label"
 msgstr "etiqueta de prueba"
 
@@ -1818,26 +2429,79 @@ msgstr "etiqueta de prueba"
 # src/glade-strings:30
 # src/glade-strings:48
 # src/glade-strings:109
-#: src/glade-strings:109
+# src/glade-strings:109
+# src/glade-strings:109
+# src/glade-strings:111
+#: src/glade-strings:111
 msgid "Accumulated"
 msgstr "Acumulado"
 
 # src/glade-strings:111
-#: src/glade-strings:111
+# src/glade-strings:111
+# src/glade-strings:111
+# src/glade-strings:113
+#: src/glade-strings:113
 msgid "Inst. Inbound"
 msgstr "Entrada Inst."
 
 # src/glade-strings:113
-#: src/glade-strings:113
+# src/glade-strings:113
+# src/glade-strings:113
+# src/glade-strings:115
+#: src/glade-strings:115
 msgid "Accu. Outbound"
 msgstr "Salida Acum."
 
 # src/glade-strings:115
-#: src/glade-strings:115
+# src/glade-strings:115
+# src/glade-strings:115
+# src/glade-strings:117
+#: src/glade-strings:117
 msgid "Accu. Inbound"
 msgstr "Entrada acum."
 
 # src/glade-strings:117
-#: src/glade-strings:117
+# src/glade-strings:117
+# src/glade-strings:117
+# src/glade-strings:119
+#: src/glade-strings:119
 msgid "Inst. Outbound"
 msgstr "Salida Inst"
+
+# src/capture.c:409
+# src/capture.c:408
+# src/capture.c:411
+# src/capture.c:411
+# src/capture.c:346
+# src/capture.c:346
+# src/capture.c:708
+# src/capture.c:746
+# src/capture.c:760
+# src/capture.c:777
+# src/capture.c:813
+# src/capture.c:832
+# src/capture.c:855
+# src/capture.c:895
+# src/diagram.c:526
+# src/diagram.c:526
+#~ msgid "Removing canvas_node. Number of node %d"
+#~ msgstr "Borrando nodo de diagrama: %s. Número de nodos: %d"
+
+# src/capture.c:438 src/capture.c:443
+# src/capture.c:437 src/capture.c:442
+# src/capture.c:440 src/capture.c:445
+# src/capture.c:440 src/capture.c:445
+# src/capture.c:375 src/capture.c:380
+# src/capture.c:375 src/capture.c:380
+# src/capture.c:769
+# src/capture.c:808
+# src/capture.c:828
+# src/capture.c:846
+# src/capture.c:882
+# src/capture.c:901
+# src/capture.c:984
+# src/capture.c:1018
+# src/diagram.c:921
+# src/diagram.c:921
+#~ msgid "Removing canvas link. Number of links %d"
+#~ msgstr "Borrando enlace de diagrama: %s-%s. Número de enlaces: %d"
