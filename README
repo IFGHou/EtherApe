@@ -12,9 +12,9 @@ features. It can run in "interape" mode with -m ip, and in
 (Note that -I is gone. Use -m ip)
 
 Etherape will use /etc/ethers if there is one. If not, it will 
-display dotted quad ip addresses. You can even ask for ip
-name resolution with the -r option, but beware of very long
-DNS timeout times.
+display dotted quad ip addresses. 
+
+Check the NEWS file for the latest options and advances.
 
 IMPORTANT! It is particularly important when running etherape
 to have the ethernet address of your router in /etc/ethers.
