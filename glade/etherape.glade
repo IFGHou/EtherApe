@@ -348,6 +348,26 @@
 
 	    <widget>
 	      <class>GtkCheckMenuItem</class>
+	      <name>protocols_check</name>
+	      <tooltip>Show or hide the protocols window</tooltip>
+	      <signal>
+		<name>activate</name>
+		<handler>on_protocols_check_activate</handler>
+		<last_modification_time>Wed, 15 Mar 2000 20:59:38 GMT</last_modification_time>
+	      </signal>
+	      <label>_Protocols</label>
+	      <active>False</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
+	      <name>separator2</name>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
 	      <name>toolbar_check</name>
 	      <tooltip>Show or hide the toolbar</tooltip>
 	      <signal>
@@ -504,6 +524,20 @@
 	  <child>
 	    <new_group>True</new_group>
 	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <child_name>Toolbar:button</child_name>
+	  <name>protocols_toolbar_button</name>
+	  <tooltip>Display the protocols window</tooltip>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_protocols_toolbar_button_clicked</handler>
+	    <last_modification_time>Tue, 08 May 2001 10:30:00 GMT</last_modification_time>
+	  </signal>
+	  <label>Prot.</label>
+	  <stock_pixmap>GNOME_STOCK_PIXMAP_INDEX</stock_pixmap>
 	</widget>
       </widget>
     </widget>
