@@ -1,0 +1,354 @@
+# Translation of etherape messages
+# Copyright (C) 2000 Frederic Peters
+# Frederic Peters <fpeters@debian.org>, 2000
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2000-03-17 21:56+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+# src/main.c:58
+#: src/main.c:58
+msgid "don't convert addresses to names"
+msgstr "no convertir las direcciones en nombres"
+
+# src/main.c:61
+#: src/main.c:61
+msgid "don't display any node text identification"
+msgstr "no mostrar ninguna identificación de texto del nodo"
+
+# src/main.c:64
+#: src/main.c:64
+msgid "mode of operation"
+msgstr "modo de operación"
+
+# src/main.c:64
+#: src/main.c:64
+msgid "<ethernet|ip|tcp|udp>"
+msgstr "<ethernet|ip|tcp|udp>"
+
+# src/main.c:67
+#: src/main.c:67
+msgid "set interface to listen to"
+msgstr "definir el interfaz a escuchar"
+
+# src/main.c:67
+#: src/main.c:67
+msgid "<interface name>"
+msgstr "<nombre del interfaz>"
+
+# src/main.c:70
+#: src/main.c:70
+msgid "set capture filter"
+msgstr "definir el filtro de captura"
+
+# src/main.c:70
+#: src/main.c:70
+msgid "<capture filter>"
+msgstr "<filtro de captura>"
+
+# src/main.c:73
+#: src/main.c:73
+msgid "do not fade old links"
+msgstr "no desvanecer enlaces en desuso"
+
+# src/main.c:76
+#: src/main.c:76
+msgid "set the node color"
+msgstr "fijar el color de los nodos"
+
+# src/main.c:76 src/main.c:79 src/main.c:82
+#: src/main.c:76 src/main.c:79 src/main.c:82
+msgid "color"
+msgstr "color"
+
+# src/main.c:79
+#: src/main.c:79
+msgid "set the link color"
+msgstr "fijar el color de los enlaces"
+
+# src/main.c:82
+#: src/main.c:82
+msgid "set the text color"
+msgstr "fijar el color del texto"
+
+# src/main.c:118
+#: src/main.c:118
+msgid "Unrecognized mode. Do etherape --help for a list of modes"
+msgstr ""
+"Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
+
+# src/interface.c:23
+#: src/interface.c:23
+msgid "._New File"
+msgstr "_Archivo Nuevo"
+
+# src/interface.c:46
+#: src/interface.c:46
+msgid "_Toolbar"
+msgstr "Barra de _herramientas"
+
+# src/interface.c:53
+#: src/interface.c:53
+msgid "_Legend"
+msgstr "_Leyenda"
+
+# src/interface.c:60
+#: src/interface.c:60
+msgid "_Status Bar"
+msgstr "Barra de _estado"
+
+# src/interface.c:107
+#: src/interface.c:107
+msgid "Etherape"
+msgstr "Etherape"
+
+# src/interface.c:246
+#: src/interface.c:246
+msgid "New"
+msgstr "Nuevo"
+
+# src/interface.c:247
+#: src/interface.c:247
+msgid "Nuevo archivo"
+msgstr "Nuevo archivo"
+
+# src/interface.c:258
+#: src/interface.c:258
+msgid "Open"
+msgstr "Abrir"
+
+# src/interface.c:259
+#: src/interface.c:259
+msgid "Abrir archivo"
+msgstr "Abrir archivo"
+
+# src/interface.c:270
+#: src/interface.c:270
+msgid "Save"
+msgstr "Guardar"
+
+# src/interface.c:271
+#: src/interface.c:271
+msgid "Guardar archivo"
+msgstr "Guardar archivo"
+
+# src/interface.c:278
+#: src/interface.c:278
+msgid "Protocols"
+msgstr "Protocolos"
+
+# src/interface.c:348
+#: src/interface.c:349
+msgid "Copyright 2000 Juan Toledo"
+msgstr "Copyright 2000 Juan Toledo"
+
+# src/interface.c:350
+#: src/interface.c:351
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+"Un visualizador gráfico de red.\n"
+"Web: http://etherape.sourceforge.net"
+
+# src/interface.c:371
+#: src/interface.c:372
+msgid "window1"
+msgstr ""
+
+# src/interface.c:391
+#: src/interface.c:392
+msgid "name"
+msgstr "nombre"
+
+# src/interface.c:400
+#: src/interface.c:401
+msgid "accumulated"
+msgstr "acumulado"
+
+# src/interface.c:409
+#: src/interface.c:410
+msgid "average"
+msgstr "media"
+
+# src/interface.c:436
+#: src/interface.c:437
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
+
+# src/interface.c:510
+#: src/interface.c:514
+msgid "Diagram settings"
+msgstr "Parámetros del diagrama"
+
+# src/interface.c:545
+#: src/interface.c:549
+msgid "Averaging Time (ms)"
+msgstr "Tiempo de medida (ms)"
+
+# src/interface.c:570
+#: src/interface.c:574
+msgid "Diagram refresh period (ms)"
+msgstr "Periodo de refresco (ms)"
+
+# src/interface.c:596
+#: src/interface.c:600
+msgid "Max. Node Radius"
+msgstr "Radio máx. de nodo"
+
+# src/interface.c:622
+#: src/interface.c:626
+msgid "Max. Link Width"
+msgstr "Ancho máx. de enlace"
+
+# src/interface.c:648
+#: src/interface.c:652
+msgid "Node Timeout (ms)"
+msgstr "Timeout de nodo (ms)"
+
+# src/interface.c:674
+#: src/interface.c:678
+msgid "Link Timeout (ms)"
+msgstr "Timeout de enlaces (ms)"
+
+# src/interface.c:698
+#: src/interface.c:702
+msgid "Linear"
+msgstr "Lineal"
+
+# src/interface.c:701
+#: src/interface.c:705
+msgid "Logarithmic"
+msgstr "Logarítmico"
+
+# src/interface.c:704
+#: src/interface.c:708
+msgid "Square Root"
+msgstr "Raiz Cuadrada"
+
+# src/interface.c:709
+#: src/interface.c:713
+msgid "Size Mode"
+msgstr "Ajuste de tamaño"
+
+#: src/interface.c:730
+msgid "Click to set"
+msgstr ""
+
+#: src/interface.c:737
+msgid "Font"
+msgstr ""
+
+#: src/interface.c:774
+msgid "Seleccione Fuente"
+msgstr ""
+
+# src/callbacks.c:195 src/callbacks.c:206
+#: src/callbacks.c:200 src/callbacks.c:211
+#, c-format
+msgid "Adjustment value: %g. Radius multiplier %g"
+msgstr ""
+
+# src/support.c:98 src/support.c:136
+#: src/support.c:98 src/support.c:136
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr "Imposible encontrar el archivo de pixmap: %s"
+
+# src/support.c:114
+#: src/support.c:114
+#, c-format
+msgid "Couldn't create pixmap from file: %s"
+msgstr "Impossible crear un pixmap del archivo: %s"
+
+# src/capture.c:375
+#. TODO Write proper assertion code here
+#: src/capture.c:374
+msgid "Reached default in fill_names"
+msgstr ""
+
+# src/capture.c:388
+#: src/capture.c:387
+msgid "n/a"
+msgstr "n/d"
+
+# src/capture.c:409
+#: src/capture.c:408
+#, c-format
+msgid "Creating node: %s. Number of nodes %d"
+msgstr "Creando nodo: %s. Número de nodos: %d"
+
+# src/capture.c:438 src/capture.c:443
+#: src/capture.c:437 src/capture.c:442
+#, c-format
+msgid "Creating link: %s-%s. Number of links %d"
+msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
+
+# src/capture.c:499
+#: src/capture.c:498
+msgid "Null packet in check_packet"
+msgstr ""
+
+# src/capture.c:713
+#. TODO Write proper assertion code here
+#: src/capture.c:715
+msgid "Reached default in get_node_id"
+msgstr ""
+
+# src/capture.c:749
+#: src/capture.c:751
+msgid "Unsopported ape mode in get_link_id"
+msgstr "Modo no soportado en get_link_id"
+
+# src/capture.c:922
+#: src/capture.c:924
+#, c-format
+msgid "Error getting device: %s"
+msgstr "Error buscando dispositivo: %s"
+
+# src/capture.c:931
+#: src/capture.c:933
+#, c-format
+msgid "Error opening %s : %s - perhaps you need to be root?"
+msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
+
+# src/capture.c:942
+#: src/capture.c:944
+#, c-format
+msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
+msgstr ""
+
+# src/capture.c:948
+#: src/capture.c:950
+#, c-format
+msgid "Unable to parse filter string (%s)."
+msgstr "Imposible analizar el filtro (%s)."
+
+# src/capture.c:954
+#: src/capture.c:956
+#, c-format
+msgid "Can't install filter (%s)."
+msgstr "Imposible instalar el filtro (%s)."
+
+# src/capture.c:979
+#: src/capture.c:981
+msgid "Mode not available in this device"
+msgstr "Modo no disponible para este interfaz"
+
+# src/capture.c:986
+#: src/capture.c:988
+msgid "Link type not yet supported"
+msgstr "Tipo de enlace aún no soportado"
+
+# src/capture.c:1005
+#: src/capture.c:1007
+msgid "Ape mode not yet supported"
+msgstr "Modo aún no soportado"
