@@ -50,7 +50,7 @@ init_capture (void)
 
 
   device = interface;
-  if (!device)
+  if (!device && !input_file)
     {
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
@@ -81,9 +81,17 @@ init_capture (void)
 		   device, ebuf);
 	}
       /* This function will be calle right after gtk_main */
+#if 0       
       capture_timeout = gtk_timeout_add (1,
 					 (GtkFunction) get_offline_packet,
 					 NULL);
+#endif
+    g_timeout_add_full (G_PRIORITY_DEFAULT,
+			1,
+			(GtkFunction) get_offline_packet,
+			NULL,
+			(GDestroyNotify) cap_t_o_destroy);
+       
     }
 
 
@@ -183,7 +191,8 @@ set_filter (gchar * filter, gchar * device)
     current_device = g_strdup (device);
 
   /* A capture filter was specified; set it up. */
-  if (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0)
+  if (current_device 
+      && (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0))
     {
       g_warning (_
 		 ("Can't use filter:  Couldn't obtain netmask info (%s)."),
@@ -204,19 +213,19 @@ set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint
+static guint
 get_offline_packet (void)
 {
-  static guint i = 100;
   static guint8 *packet = NULL;
   static struct timeval last_time = { 0, 0 }, this_time, diff;
-  guint32 ms_to_next;
 
-  gtk_timeout_remove (capture_timeout);
-
+   
   if (packet)
     packet_read (packet, 0, GDK_INPUT_READ);
+
   packet = (guint8 *) pcap_next (pch, &phdr);
+  if (!packet) end_of_file=TRUE;
+
   if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
     {
       last_time.tv_sec = phdr.ts.tv_sec;
@@ -230,11 +239,23 @@ get_offline_packet (void)
   ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
 
   last_time = this_time;
-  capture_timeout = gtk_timeout_add (ms_to_next,
-				     (GtkFunction) get_offline_packet, NULL);
-  i *= 2;
+
   return FALSE;
 }				/* get_offline_packet */
+
+
+static void
+cap_t_o_destroy (gpointer data)
+{
+
+  if (!end_of_file)
+     g_timeout_add_full (G_PRIORITY_DEFAULT,
+			 ms_to_next,
+			 (GtkFunction) get_offline_packet,
+			 data,
+			 (GDestroyNotify) cap_t_o_destroy);
+
+}				/* capture_t_o_destroy */
 
 
 /* This function is called everytime there is a new packet in
@@ -459,10 +480,7 @@ static node_t *
 create_node (const guint8 * packet, const guint8 * node_id)
 {
   node_t *node;
-  gchar *na;
   guint i = STACK_SIZE;
-
-  na = g_strdup (_("n/a"));
 
   node = g_malloc (sizeof (node_t));
 
@@ -756,19 +774,23 @@ update_node (node_t * node)
 
 	  /* TODO remove all names information */
 
+	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		 _("Removing node: %s. Number of node %d"),
+		 node->name->str, g_tree_nnodes (nodes));
 	  node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	  g_tree_remove (nodes, node_id);
-	  g_my_debug ( _("Removing node: %s. Number of nodes: %d"),
-		      node->name->str, g_tree_nnodes (nodes));
 	  g_string_free (node->name, TRUE);
 	  g_string_free (node->numeric_name, TRUE);
 	  if (node->numeric_ip)
 	    g_string_free (node->numeric_ip, TRUE);
+	  for (;i + 1;i--)
+	     if (node->main_prot[i])
+		g_free (node->main_prot[i]);
 	  g_free (node);
+	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
 	  node = NULL;
 	}
@@ -782,7 +804,8 @@ update_node (node_t * node)
 	      i--;
 	    }
 	  node->accumulated = node->accumulated_in
-	    = node->accumulated_out = 0;
+	    = node->accumulated_out = 0.0;
+	  node->average = node->average_in = node->average_out = 0.0;
 	}
     }
 
@@ -813,12 +836,9 @@ update_link (link_t * link)
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	  while (i + 1)
-	    {
+	  for (;i + 1;i--)
 	      if (link->main_prot[i])
 		g_free (link->main_prot[i]);
-	      i--;
-	    }
 	  g_free (link->src_name);
 	  g_free (link->dst_name);
 	  g_free (link);
@@ -1105,6 +1125,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 		  g_free (protocol_info->name);
 		  node->protocols[i] =
 		    g_list_remove_link (node->protocols[i], protocol_item);
+		  g_free (protocol_info);
 		  g_list_free (protocol_item);
 		}
 	      i++;
@@ -1136,6 +1157,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 		  g_free (protocol_info->name);
 		  link->protocols[i] =
 		    g_list_remove_link (link->protocols[i], protocol_item);
+		  g_free (protocol_info);
 		  g_list_free (protocol_item);
 		}
 	      i++;

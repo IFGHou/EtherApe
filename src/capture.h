@@ -38,15 +38,17 @@ typedef enum
 create_node_type_t;
 
 static pcap_t *pch;		/* pcap structure */
-static gint capture_timeout;	/* timeout function used when 
-				 * reading capture data from
-				 * a file */
 static struct pcap_pkthdr phdr;
 
-
+static  guint32 ms_to_next;	/* Used for offline mode to store the amount
+				 * of time that we have to wait between
+				 * one packet and the next */
+static gboolean end_of_file=FALSE;	/* Marks that the end of the offline file
+				 * has been reached */
 
 /* Local funtions declarations */
-guint get_offline_packet (void);
+static guint get_offline_packet (void);
+static void cap_t_o_destroy (gpointer data);
 static void packet_read (guint8 * packet, gint source,
 			 GdkInputCondition condition);
 static guint8 *get_node_id (const guint8 * packet,
