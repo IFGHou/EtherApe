@@ -72,3 +72,8 @@ gboolean
 on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
+
+gboolean
+on_app1_destroy_event                  (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);

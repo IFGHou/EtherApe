@@ -177,7 +177,9 @@ main.o: main.c ../config.h /usr/include/gnome.h gnomesupport.h \
  /usr/include/libgnomeui/gnome-druid-page-start.h \
  /usr/include/libgnomeui/gnome-druid-page-standard.h \
  /usr/include/libgnomeui/gnome-druid-page-finish.h interface.h \
- support.h capture.h
+ support.h capture.h /usr/include/math.h /usr/include/bits/huge_val.h \
+ /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+ /usr/include/bits/mathinline.h
 main.c :
 ../config.h :
 /usr/include/gnome.h :
@@ -448,3 +450,8 @@ gnomesupport.h :
 interface.h :
 support.h :
 capture.h :
+/usr/include/math.h :
+/usr/include/bits/huge_val.h :
+/usr/include/bits/mathdef.h :
+/usr/include/bits/mathcalls.h :
+/usr/include/bits/mathinline.h :
