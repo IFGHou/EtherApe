@@ -67,3 +67,4 @@ static void get_netbios_ssn (void);
 static void get_netbios_dgm (void);
 static gboolean get_rpc (void);
 static void load_services (void);
+static guint16 choose_port (guint16 a, guint16 b);

@@ -378,7 +378,7 @@ get_tcp (void)
 {
 
   tcp_service_t *src_service, *dst_service, *chosen_service;
-  tcp_type_t src_port, dst_port;
+  tcp_type_t src_port, dst_port, chosen_port;
   guint8 th_off_x2;
   guint8 tcp_len;
   gchar *str;
@@ -406,12 +406,23 @@ get_tcp (void)
       return;
     }
 
+  chosen_port = choose_port (src_port, dst_port);
+
   if (!src_service && !dst_service)
     {
-      prot = g_string_append (prot, "/TCP_UNKNOWN");
+      prot = g_string_append (prot, "/TCP-Port ");
+      str = g_strdup_printf ("%d", chosen_port);
+      prot = g_string_append (prot, str);
+      g_free (str);
       return;
     }
 
+  if (!dst_service || ((src_port == chosen_port) && src_service))
+    chosen_service = src_service;
+  else
+    chosen_service = dst_service;
+
+#if 0
   /* Give priority to registered ports */
   if ((src_port < 1024) && (dst_port >= 1024))
     chosen_service = src_service;
@@ -421,6 +432,7 @@ get_tcp (void)
     chosen_service = src_service;
   else
     chosen_service = dst_service;
+#endif
 
   str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
@@ -433,7 +445,7 @@ static void
 get_udp (void)
 {
   udp_service_t *src_service, *dst_service, *chosen_service;
-  udp_type_t src_port, dst_port;
+  udp_type_t src_port, dst_port, chosen_port;
   gchar *str;
 
   if (!udp_services)
@@ -461,12 +473,23 @@ get_udp (void)
       return;
     }
 
+  chosen_port = choose_port (src_port, dst_port);
+
   if (!dst_service && !src_service)
     {
-      prot = g_string_append (prot, "/UDP_UNKNOWN");
+      prot = g_string_append (prot, "/UDP-Port ");
+      str = g_strdup_printf ("%d", chosen_port);
+      prot = g_string_append (prot, str);
+      g_free (str);
       return;
     }
 
+  if (!dst_service || ((src_port == chosen_port) && src_service))
+    chosen_service = src_service;
+  else
+    chosen_service = dst_service;
+
+#if 0
   /* Give priority to registered ports */
   if ((src_port < 1024) && (dst_port >= 1024))
     chosen_service = src_service;
@@ -476,6 +499,7 @@ get_udp (void)
     chosen_service = src_service;
   else
     chosen_service = dst_service;
+#endif
 
   str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
@@ -734,3 +758,24 @@ load_services (void)
   line = NULL;
   fclose (services);
 }				/* load_services */
+
+/* Given two port numbers, it returns the 
+ * one that is a privileged port if the other
+ * is not. If not, just returns the lower numbered */
+static guint16
+choose_port (guint16 a, guint16 b)
+{
+  guint ret;
+
+  if ((a < 1024) && (b >= 1024))
+    ret = a;
+  else if ((a >= 1024) && (b < 1024))
+    ret = b;
+  else if (a <= b)
+    ret = a;
+  else
+    ret = b;
+
+  return ret;
+
+}				/* choose_port */
