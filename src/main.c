@@ -24,126 +24,11 @@
 #include <gnome.h>
 
 #include "globals.h"
+#include "main.h"
 #include "interface.h"
 #include "support.h"
 
-static void
-session_die (GnomeClient * client, gpointer client_data)
-{
-  g_message ("in die");
-  gtk_main_quit ();
-}
 
-static gint
-save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gint is_shutdown, GnomeInteractStyle interact_style,
-	      gint is_fast, gpointer client_data)
-{
-  gchar **argv;
-  guint argc;
-
-  /* allocate 0-filled, so it will be NULL-terminated */
-  argv = g_malloc0 (sizeof (gchar *) * 4);
-  argc = 1;
-
-  argv[0] = client_data;
-
-  g_message ("In save_session");
-#if 0
-  if (message)
-    {
-      argv[1] = "--message";
-      argv[2] = message;
-      argc = 3;
-    }
-#endif
-
-  gnome_client_set_clone_command (client, argc, argv);
-  gnome_client_set_restart_command (client, argc, argv);
-
-  return TRUE;
-}
-
-void
-load_config (char *prefix)
-{
-  gboolean u;
-
-  gnome_config_push_prefix (prefix);
-  diagram_only =
-    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
-  /* Not yet, since we can't force fading
-     nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
-   */
-  node_timeout_time =
-    gnome_config_get_float_with_default
-    ("Diagram/node_timeout_time=60000000.0", &u);
-  if (nofade)
-    link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=5000000.0", &u);
-  else
-    link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=20000000.0", &u);
-  averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0",
-					 &u);
-  node_radius_multiplier =
-    gnome_config_get_float_with_default
-    ("Diagram/node_radius_multiplier=0.0005", &u);
-  if (u)
-    node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
-  link_width_multiplier =
-    gnome_config_get_float_with_default
-    ("Diagram/link_width_multiplier=0.0005", &u);
-  if (u)
-    link_width_multiplier = 0.0005;
-  mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
-  if (mode == IP || mode == TCP)
-    refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
-  else
-    refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
-
-  size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
-  stack_level =
-    gnome_config_get_int_with_default ("Diagram/stack_level=3", &u);
-  fontname =
-    gnome_config_get_string_with_default
-    ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
-
-  gnome_config_pop_prefix ();
-}				/* load_config */
-
-void
-save_config (char *prefix)
-{
-  gnome_config_push_prefix (prefix);
-  gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
-  gnome_config_set_bool ("Diagram/nofade", nofade);
-  gnome_config_set_float ("Diagram/node_timeout_time", node_timeout_time);
-  gnome_config_set_float ("Diagram/link_timeout_time", link_timeout_time);
-  gnome_config_set_float ("Diagram/averaging_time", averaging_time);
-  gnome_config_set_float ("Diagram/node_radius_multiplier",
-			  node_radius_multiplier);
-  gnome_config_set_float ("Diagram/link_width_multiplier",
-			  link_width_multiplier);
-#if 0				/* TODO should we save this? */
-  gnome_config_set_int ("General/mode", mode);
-#endif
-  gnome_config_set_int ("Diagram/refresh_period", refresh_period);
-  gnome_config_set_int ("Diagram/size_mode", size_mode);
-  gnome_config_set_int ("Diagram/stack_level", stack_level);
-  gnome_config_set_string ("Diagram/fontname", fontname);
-
-  gnome_config_sync ();
-  gnome_config_pop_prefix ();
-
-  g_message (_("Preferences saved"));
-
-}				/* save_config */
 
 int
 main (int argc, char *argv[])
@@ -155,7 +40,7 @@ main (int argc, char *argv[])
 
   struct poptOption optionsTable[] = {
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     _("mode of operation"), _("<ethernet|ip|tcp|udp>")},
+     _("mode of operation"), _("<ethernet|fddi|ip|tcp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _("set interface to listen to"), _("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &filter, 0,
@@ -229,6 +114,8 @@ main (int argc, char *argv[])
     {
       if (strstr (mode_string, "ethernet"))
 	mode = ETHERNET;
+      else if (strstr (mode_string, "fddi"))
+	mode = FDDI;
       else if (strstr (mode_string, "ip"))
 	mode = IP;
       else if (strstr (mode_string, "tcp"))
@@ -246,12 +133,18 @@ main (int argc, char *argv[])
     case IP:
       filter = g_strconcat ("ip ", filter, NULL);
       break;
+    case IPX:
+      filter = g_strconcat ("ipx ", filter, NULL);
+      break;
     case TCP:
       filter = g_strconcat ("tcp ", filter, NULL);
       break;
-    case DEFAULT:
     case UDP:
+      filter = g_strconcat ("udp ", filter, NULL);
+      break;
+    case DEFAULT:
     case ETHERNET:
+    case FDDI:
       break;
     }
 
@@ -288,3 +181,129 @@ main (int argc, char *argv[])
   gtk_main ();
   return 0;
 }				/* main */
+
+
+
+/* loads configuration from .gnome/Etherape */
+static void
+load_config (char *prefix)
+{
+  gboolean u;
+
+  gnome_config_push_prefix (prefix);
+  diagram_only =
+    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
+  /* Not yet, since we can't force fading
+     nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+   */
+  node_timeout_time =
+    gnome_config_get_float_with_default
+    ("Diagram/node_timeout_time=60000000.0", &u);
+  if (nofade)
+    link_timeout_time =
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=5000000.0", &u);
+  else
+    link_timeout_time =
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=20000000.0", &u);
+  averaging_time =
+    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0",
+					 &u);
+  node_radius_multiplier =
+    gnome_config_get_float_with_default
+    ("Diagram/node_radius_multiplier=0.0005", &u);
+  if (u)
+    node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
+  link_width_multiplier =
+    gnome_config_get_float_with_default
+    ("Diagram/link_width_multiplier=0.0005", &u);
+  if (u)
+    link_width_multiplier = 0.0005;
+  mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  if (mode == IP || mode == TCP)
+    refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
+  else
+    refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
+
+  size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  stack_level =
+    gnome_config_get_int_with_default ("Diagram/stack_level=3", &u);
+  fontname =
+    gnome_config_get_string_with_default
+    ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
+
+  gnome_config_pop_prefix ();
+}				/* load_config */
+
+/* saves configuration to .gnome/Etherape */
+/* It's not static since it will be called from the GUI */
+void
+save_config (char *prefix)
+{
+  gnome_config_push_prefix (prefix);
+  gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
+  gnome_config_set_bool ("Diagram/nofade", nofade);
+  gnome_config_set_float ("Diagram/node_timeout_time", node_timeout_time);
+  gnome_config_set_float ("Diagram/link_timeout_time", link_timeout_time);
+  gnome_config_set_float ("Diagram/averaging_time", averaging_time);
+  gnome_config_set_float ("Diagram/node_radius_multiplier",
+			  node_radius_multiplier);
+  gnome_config_set_float ("Diagram/link_width_multiplier",
+			  link_width_multiplier);
+#if 0				/* TODO should we save this? */
+  gnome_config_set_int ("General/mode", mode);
+#endif
+  gnome_config_set_int ("Diagram/refresh_period", refresh_period);
+  gnome_config_set_int ("Diagram/size_mode", size_mode);
+  gnome_config_set_int ("Diagram/stack_level", stack_level);
+  gnome_config_set_string ("Diagram/fontname", fontname);
+
+  gnome_config_sync ();
+  gnome_config_pop_prefix ();
+
+  g_message (_("Preferences saved"));
+
+}				/* save_config */
+
+
+/* the gnome session manager may call this function */
+static void
+session_die (GnomeClient * client, gpointer client_data)
+{
+  g_message ("in die");
+  gtk_main_quit ();
+}				/* session_die */
+
+/* the gnome session manager may call this function */
+static gint
+save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
+	      gint is_shutdown, GnomeInteractStyle interact_style,
+	      gint is_fast, gpointer client_data)
+{
+  gchar **argv;
+  guint argc;
+
+  /* allocate 0-filled, so it will be NULL-terminated */
+  argv = g_malloc0 (sizeof (gchar *) * 4);
+  argc = 1;
+
+  argv[0] = client_data;
+
+  g_message ("In save_session");
+#if 0
+  if (message)
+    {
+      argv[1] = "--message";
+      argv[2] = message;
+      argc = 3;
+    }
+#endif
+
+  gnome_client_set_clone_command (client, argc, argv);
+  gnome_client_set_restart_command (client, argc, argv);
+
+  return TRUE;
+}				/* save_session */

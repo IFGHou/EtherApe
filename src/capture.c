@@ -168,7 +168,8 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint set_filter (gchar * filter, gchar * device)
+gint
+set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -203,7 +204,8 @@ gint set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint get_offline_packet (void)
+guint
+get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
@@ -1030,7 +1032,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1059,7 +1062,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1086,7 +1090,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

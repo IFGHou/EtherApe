@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-04-03 14:16+0200\n"
+"POT-Creation-Date: 2000-04-04 16:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -394,87 +394,87 @@ msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Erreur à l'ouverture de %s : %s (vous devriez peut-être être root?)"
 
 # src/capture.c:979
-#: src/capture.c:108
+#: src/capture.c:108 src/capture.c:119
 msgid "Mode not available in this device"
 msgstr "Mode non disponible pour ce périphérique."
 
 # src/capture.c:986
-#: src/capture.c:115
+#: src/capture.c:126
 msgid "Link type not yet supported"
 msgstr "Type de liaison pas encore supporté"
 
 # src/capture.c:1005
-#: src/capture.c:131
+#: src/capture.c:145
 msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
 
 # src/capture.c:942
-#: src/capture.c:174
+#: src/capture.c:188
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "Impossible d'utiliser le filtre: impossible d'obtenir l'info de netmask (%s)."
 
 # src/capture.c:948
-#: src/capture.c:180
+#: src/capture.c:194
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Impossible d'analyser le filtre (%s)."
 
 # src/capture.c:954
-#: src/capture.c:185
+#: src/capture.c:199
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Impossible d'installer le filtre (%s)."
 
 # src/capture.c:713
 #. TODO Write proper assertion code here
-#: src/capture.c:311
+#: src/capture.c:331
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:350
+#: src/capture.c:374
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:388
-#: src/capture.c:434
+#: src/capture.c:458
 msgid "n/a"
 msgstr "n/a"
 
 # src/capture.c:409
-#: src/capture.c:455
+#: src/capture.c:479
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:493
+#: src/capture.c:517
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:375
 #. TODO Write proper assertion code here
-#: src/capture.c:641
+#: src/capture.c:672
 msgid "Reached default in fill_names"
 msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
-#: src/capture.c:710
+#: src/capture.c:741
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:772
+#: src/capture.c:803
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:893
+#: src/capture.c:924
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 

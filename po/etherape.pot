@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-04 15:18+0200\n"
+"POT-Creation-Date: 2000-04-04 16:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -343,59 +343,59 @@ msgstr ""
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:187
+#: src/capture.c:188
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:193
+#: src/capture.c:194
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:198
+#: src/capture.c:199
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:329
+#: src/capture.c:331
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:372
+#: src/capture.c:374
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:456
+#: src/capture.c:458
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:477
+#: src/capture.c:479
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:515
+#: src/capture.c:517
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:670
+#: src/capture.c:672
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:739
+#: src/capture.c:741
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:801
+#: src/capture.c:803
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:922
+#: src/capture.c:924
 msgid "Null packet in check_packet"
 msgstr ""

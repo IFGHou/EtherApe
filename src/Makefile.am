@@ -15,7 +15,7 @@ etherape_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	main.c globals.h\
+	main.c main.h globals.h\
 	diagram.c diagram.h \
 	capture.c capture.h \
 	protocols.c protocols.h tcpudp.h\
