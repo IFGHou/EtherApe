@@ -735,7 +735,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_show (label);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_CENTER);
   gtk_table_attach (GTK_TABLE (prot_table), label,
-		    1, 2, n_rows - 1, n_rows,
+		    0, 1, n_rows - 1, n_rows,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
