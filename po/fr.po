@@ -2,16 +2,16 @@
 # Copyright (C) 2000 Frederic Peters
 # Frederic Peters <fpeters@debian.org>, 2000
 # 
-#, fuzzy
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: etherape\n"
+"Project-Id-Version: 0.8.0\n"
 "POT-Creation-Date: 2001-08-12 16:37+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=8859-1\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:64
