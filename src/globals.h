@@ -282,6 +282,7 @@ guint update_diagram (GtkWidget * canvas);
 void init_diagram ();
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
+void set_appbar_status (gchar * str);
 
 /* From menus.c */
 void fatal_error_dialog (const gchar * message);
