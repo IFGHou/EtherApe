@@ -1,7 +1,7 @@
 Source: etherape
 Section: net
 Priority: optional
-Maintainer: Juan Toledo <toledo@users.sourceforge.net>
+Maintainer: Frederic Peters <fpeters@debian.org>
 Standards-Version: 3.0.1
 
 Package: etherape

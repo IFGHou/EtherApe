@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-18 15:22+0100\n"
+"POT-Creation-Date: 2000-03-18 17:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,219 +14,231 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:102
+#: src/main.c:129
+msgid "Preferences saved"
+msgstr ""
+
+#: src/main.c:142
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:105
+#: src/main.c:145
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:108
+#: src/main.c:148
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:108
+#: src/main.c:148
 msgid "<ethernet|ip|tcp|udp>"
 msgstr ""
 
-#: src/main.c:111
+#: src/main.c:151
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:111
+#: src/main.c:151
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:114
+#: src/main.c:154
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:114
+#: src/main.c:154
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:117
+#: src/main.c:157
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:120
+#: src/main.c:160
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:120 src/main.c:123 src/main.c:126
+#: src/main.c:160 src/main.c:163 src/main.c:166
 msgid "color"
 msgstr ""
 
-#: src/main.c:123
+#: src/main.c:163
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:126
+#: src/main.c:166
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:165
+#: src/main.c:203
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/interface.c:22
+#: src/interface.c:23
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:45
+#: src/interface.c:46
 msgid "_Toolbar"
 msgstr ""
 
-#: src/interface.c:46
+#: src/interface.c:47
 msgid "Show or hide the toolbar"
 msgstr ""
 
-#: src/interface.c:52
+#: src/interface.c:53
 msgid "_Legend"
 msgstr ""
 
-#: src/interface.c:53
+#: src/interface.c:54
 msgid "Show or hide the legend"
 msgstr ""
 
-#: src/interface.c:59
+#: src/interface.c:60
 msgid "_Status Bar"
 msgstr ""
 
-#: src/interface.c:60
+#: src/interface.c:61
 msgid "Show or hide the status bar"
 msgstr ""
 
-#: src/interface.c:106
+#: src/interface.c:107
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:245
+#: src/interface.c:246
 msgid "New"
 msgstr ""
 
-#: src/interface.c:246
+#: src/interface.c:247
 msgid "New File"
 msgstr ""
 
-#: src/interface.c:257
+#: src/interface.c:258
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:258
+#: src/interface.c:259
 msgid "Open File"
 msgstr ""
 
-#: src/interface.c:269
+#: src/interface.c:270 src/interface.c:800
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:270
+#: src/interface.c:271
 msgid "Save File"
 msgstr ""
 
-#: src/interface.c:277
+#: src/interface.c:278
 msgid "Protocols"
 msgstr ""
 
-#: src/interface.c:347
+#: src/interface.c:349
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:349
+#: src/interface.c:351
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:370
+#: src/interface.c:372
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:390
+#: src/interface.c:392
 msgid "name"
 msgstr ""
 
-#: src/interface.c:399
+#: src/interface.c:401
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:408
+#: src/interface.c:410
 msgid "average"
 msgstr ""
 
-#: src/interface.c:435
+#: src/interface.c:437
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
-#: src/interface.c:512
-msgid "Diagram settings"
-msgstr ""
-
-#: src/interface.c:547
+#: src/interface.c:555
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:572
+#: src/interface.c:580
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:598
+#: src/interface.c:606
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:624
+#: src/interface.c:632
 msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:650
+#: src/interface.c:658
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:676
+#: src/interface.c:684
 msgid "Link Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:700
+#: src/interface.c:708
 msgid "Linear"
 msgstr ""
 
-#: src/interface.c:703
+#: src/interface.c:711
 msgid "Logarithmic"
 msgstr ""
 
-#: src/interface.c:706
+#: src/interface.c:714
 msgid "Square Root"
 msgstr ""
 
-#: src/interface.c:711
+#: src/interface.c:719
 msgid "Size Mode"
 msgstr ""
 
-#: src/interface.c:728
-msgid "Click to set"
-msgstr ""
-
-#: src/interface.c:735
+#: src/interface.c:743
 msgid "Font"
 msgstr ""
 
-#: src/interface.c:772
+#: src/interface.c:760
+msgid "Click to toggle"
+msgstr ""
+
+#: src/interface.c:767
+msgid "No text"
+msgstr ""
+
+#: src/interface.c:775
+msgid "Diagram"
+msgstr ""
+
+#: src/interface.c:786
+msgid "Capture"
+msgstr ""
+
+#: src/interface.c:840
 msgid "Select Font"
 msgstr ""
 
-#: src/callbacks.c:200 src/callbacks.c:211
+#: src/callbacks.c:205 src/callbacks.c:216
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/support.c:97 src/support.c:135
+#: src/support.c:98 src/support.c:136
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:113
+#: src/support.c:114
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
