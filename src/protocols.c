@@ -359,6 +359,8 @@ get_tcp (void)
 {
   tcp_service_t *service;
   tcp_type_t src_port, dst_port;
+  guint8 th_off_x2;
+  guint8 tcp_len;
   gchar *str;
 
   if (!tcp_services)
@@ -366,7 +368,14 @@ get_tcp (void)
 
   src_port = pntohs (packet + offset);
   dst_port = pntohs (packet + offset + 2);
-
+  th_off_x2 = *(guint8 *)(packet + offset + 12 );
+  tcp_len = hi_nibble(th_off_x2) * 4;  /* TCP header length, in bytes */
+   
+  offset += tcp_len;
+  if ( offset >= capture_len )
+     return;			/* Continue only if there is room
+				 * for data in the packet */
+   
   if (!(service = g_tree_lookup (tcp_services, &src_port)))
     service = g_tree_lookup (tcp_services, &dst_port);
 
@@ -396,6 +405,9 @@ get_udp (void)
   dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
+   
+  /* TODO We should check up the size of the packet the same
+   * way it is done in TCP */
 
   if (!(service = g_tree_lookup (udp_services, &src_port)))
     service = g_tree_lookup (udp_services, &dst_port);

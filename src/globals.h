@@ -319,4 +319,7 @@ void gui_stop_capture (void);
 		       (guint32)*((guint8 *)p+2)<<8|   \
 		       (guint32)*((guint8 *)p+3)<<0)
 
+/* Takes the hi_nibble value from a byte */
+#define hi_nibble(b) ((b & 0xf0) >> 4)
+
 #endif
