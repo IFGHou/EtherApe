@@ -120,6 +120,7 @@ init_capture (void)
 	  sprintf (errorbuf, _("Error opening %s : %s"), input_file, ebuf);
 	  return errorbuf;
 	}
+      g_my_info (_("%s opened for offline capture"), input_file);
 
     }
 
@@ -260,9 +261,6 @@ set_filter (gchar * filter, gchar * device)
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
   static struct bpf_program fp;
-#if 0
-  static gchar *current_device = NULL;
-#endif
   gboolean ok = 1;
 
 
@@ -405,7 +403,7 @@ stop_capture (void)
 				 * created automatically */
 	  if (!g_source_remove (capture_source))
 	    {
-	      g_warning (_("Error while trying to stop capture"));
+	      g_warning (_("Error while removing capture source in stop_capture"));
 	      return FALSE;
 	    }
 	}
@@ -422,6 +420,8 @@ stop_capture (void)
       g_free (filter);
       filter = NULL;
     }
+   
+  pcap_close (pch);
 
   return TRUE;
 }				/* stop_capture */
