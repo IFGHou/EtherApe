@@ -327,7 +327,11 @@ start_capture (void)
       return FALSE;
     }
 
-  if (interface)
+  /*
+   * See pause_capture for an explanation of why we don't always
+   * add the source
+   */
+  if (interface && (status == STOP))
     {
       g_my_debug (_("Starting live capture"));
       capture_source = gdk_input_add (pcap_fd,
@@ -357,9 +361,16 @@ pause_capture (void)
 
   if (interface)
     {
+      /* Why would we want to miss packets while pausing to 
+       * better analyze a moment in time? If we wanted
+       * to do this it should be optional at least.
+       * In order for this to work, start_capture should only
+       * add the source if the pause was for an offline capture */
+#if 0 
       g_my_debug (_("Pausing live capture"));
       gdk_input_remove (capture_source);	/* gdk_input_remove does not
 						 * return an error code */
+#endif       
     }
   else
     {
