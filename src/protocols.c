@@ -425,19 +425,19 @@ get_udp (void)
   /* TODO We should check up the size of the packet the same
    * way it is done in TCP */
 
-   /* It's not possible to know in advance whether an UDP
-    * packet is an RPC packet. We'll try */
-   
-   if (get_rpc ())
-     return;
-   
+  /* It's not possible to know in advance whether an UDP
+   * packet is an RPC packet. We'll try */
+
+  if (get_rpc ())
+    return;
+
   if (!(service = g_tree_lookup (udp_services, &src_port)))
     service = g_tree_lookup (udp_services, &dst_port);
 
   if (!service)
     {
-       prot = g_string_append (prot, "/UDP_UNKNOWN");
-       return;
+      prot = g_string_append (prot, "/UDP_UNKNOWN");
+      return;
     }
   str = g_strdup_printf ("/%s", service->name);
   prot = g_string_append (prot, str);

@@ -25,6 +25,7 @@ etherape_SOURCES = \
 	diagram.c diagram.h \
 	capture.c capture.h \
 	names.c names.h \
+	names_netbios.c names_netbios.h \
 	protocols.c protocols.h \
 	prot_types.h \
 	gnomesupport.h

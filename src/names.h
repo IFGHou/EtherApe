@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "dns.h"
 #include "eth_resolv.h"
+#include "names_netbios.h"
 
 typedef void (p_func_t) (void);
 
@@ -49,10 +50,11 @@ static void get_null_name (void);
 static void get_llc_name (void);
 static void get_ip_name (void);
 static void get_tcp_name (void);
+static void get_nbss_name (void);
 static void add_name (gchar * numeric, gchar * resolved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 8
+#define KNOWN_PROTS 9
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
@@ -63,5 +65,6 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"NULL", get_null_name},
   {"LLC", get_llc_name},
   {"IP", get_ip_name},
-  {"TCP", get_tcp_name}
+  {"TCP", get_tcp_name},
+  {"NBSS", get_nbss_name}
 };

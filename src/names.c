@@ -166,6 +166,8 @@ static void
 get_tcp_name (void)
 {
   guint8 *id_buffer;
+  guint8 th_off_x2;
+  guint8 tcp_len;
   guint16 port;
   GString *numeric_name, *resolved_name;
   gchar *str;
@@ -212,13 +214,50 @@ get_tcp_name (void)
   resolved_name = NULL;
 
   level++;
-  offset += 20;
+
+  th_off_x2 = *(guint8 *) (p + offset + 12);
+  tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
+  offset += tcp_len;
 
   next_func = g_tree_lookup (prot_functions, tokens[level]);
   if (next_func)
     next_func->function ();
 
 }				/* get_tcp_name */
+
+static void
+get_nbss_name (void)
+{
+#define SESSION_REQUEST 0x81
+#define MAXDNAME        1025	/* maximum domain name length */
+#define NETBIOS_NAME_LEN  16
+
+  guint8 mesg_type;
+  guint16 length;
+  gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
+  int name_type;		/* TODO I hate to use an int here, while I have been
+				   * using glib data types all the time. But I just don't
+				   * know what it might mean in the ethereal implementation */
+
+
+  mesg_type = *(guint8 *) (p + offset);
+  length = pntohs ((p + 2));
+
+  if (mesg_type == SESSION_REQUEST)
+    {
+      ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
+      g_warning (name);
+    }
+
+
+  level++;
+  offset += length;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+}				/* get_nbss_name */
+
 
 
 static void
