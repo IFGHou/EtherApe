@@ -196,6 +196,11 @@ main (int argc, char *argv[])
       return 1;
    }
    
+   /* autoconnect any signals */
+   glade_xml_signal_autoconnect(xml_app1);
+   glade_xml_signal_autoconnect(xml_diag_pref);
+   
+   
 #if 0   
   /* We create main windows */
   app1 = create_app1 ();
