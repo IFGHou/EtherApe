@@ -16,6 +16,9 @@ Gôrkem Cetin	<gorkem@gelecek.com.tr>
 Laurent Deniel	<deniel@worldnet.fr>
   resolv.c
 
+Riccardo Ghetta <bchiara@users.sourceforge.net>
+  Patches
+
 Simon Kirby	<sim@neato.org>
   dns.c
 
