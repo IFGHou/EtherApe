@@ -135,10 +135,10 @@ typedef struct _ipxnet
 ipxnet_t;
 
 #if 0				/* JTC */
-static hashname_t *udp_port_table[HASHPORTSIZE];
-static hashname_t *tcp_port_table[HASHPORTSIZE];
 static hashipxnet_t *ipxnet_table[HASHIPXNETSIZE];
 #endif /* JTC */
+static hashname_t *udp_port_table[HASHPORTSIZE];
+static hashname_t *tcp_port_table[HASHPORTSIZE];
 static hashname_t *host_table[HASHHOSTSIZE];
 static hashmanuf_t *manuf_table[HASHMANUFSIZE];
 static hashether_t *eth_table[HASHETHSIZE];
@@ -164,7 +164,7 @@ gchar *g_manuf_path = EPATH_MANUF;	/* may only be changed before the   */
  *  Local function definitions 
  */
 
-#if 0				/* JTC */
+
 static u_char *
 serv_name_lookup (u_int port, u_int proto)
 {
@@ -237,7 +237,7 @@ serv_name_lookup (u_int port, u_int proto)
 
 }				/* serv_name_lookup */
 
-#endif /* JTC */
+
 
 #ifdef AVOID_DNS_TIMEOUT
 
@@ -1196,7 +1196,7 @@ add_host_name (u_int addr, u_char * name)
 
 }				/* add_host_name */
 
-#if 0 /* JTC */
+
 extern u_char *
 get_udp_port (u_int port)
 {
@@ -1253,7 +1253,6 @@ get_tcp_port (u_int port)
 
 }				/* get_tcp_port */
 
-#endif /* JTC */
 
 extern u_char *
 get_ether_name (const u_char * addr)

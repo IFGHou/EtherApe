@@ -27,17 +27,21 @@
 #include "diagram.h"
 #include "callbacks.h"
 
+/* TODO Organize global variables in a sensible way */
 gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
+gboolean fix_overlap = 0;
 gchar *interface;
 guint32 refresh_period = 800;
 gint diagram_timeout;
+gchar *filter = "";
+
 extern gchar *node_color, *link_color, *text_color;
 extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
   link_width_multiplier;
 extern apemode_t mode;
-gchar *filter = "";
+
 
 int
 main (int argc, char *argv[])
@@ -58,13 +62,16 @@ main (int argc, char *argv[])
      _ ("don't display any node text identification"), NULL
     },
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     _ ("mode of operation"), _("<ethernet|ip|tcp|udp>")
+     _ ("mode of operation"), _ ("<ethernet|ip|tcp|udp>")
     },
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _ ("set interface to listen to"), _ ("<interface name>")
     },
     {"filter", 'f', POPT_ARG_STRING, &filter, 0,
      _ ("set capture filter"), _ ("<capture filter>")
+    },
+    {"no-overlap", 'o', POPT_ARG_NONE, &fix_overlap, 0,
+     _ ("makes diagram more readable when it is crowded"), NULL
     },
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
      _ ("set the node color"), _ ("color")
@@ -90,27 +97,36 @@ main (int argc, char *argv[])
 
   /* If called as interape, act as interape */
   if (strstr (argv[0], "interape"))
-     mode=IP;
+    mode = IP;
 
 
   /* Find mode of operation */
-   if (mode_string) 
-     {
-	if (strstr (mode_string, "ethernet"))
-	  mode=ETHERNET;
-	else if (strstr (mode_string, "ip"))
-	  mode=IP;
-	else if (strstr (mode_string, "tcp"))
-	  mode=TCP;
-	else if (strstr (mode_string, "udp"))
-	  mode=UDP;
-	else
-	  g_warning (_("Unrecognized mode. Do etherape --help for a list of modes"));
-     }
+  if (mode_string)
+    {
+      if (strstr (mode_string, "ethernet"))
+	mode = ETHERNET;
+      else if (strstr (mode_string, "ip"))
+	mode = IP;
+      else if (strstr (mode_string, "tcp"))
+	mode = TCP;
+      else if (strstr (mode_string, "udp"))
+	mode = UDP;
+      else
+	g_warning (_ ("Unrecognized mode. Do etherape --help for a list of modes"));
+    }
 
-   /* Only ip traffic makes sense when used as interape */
-   if (mode==IP)
-    filter = g_strconcat ("ip ", filter, NULL);
+  /* Only ip traffic makes sense when used as interape */
+  switch (mode)
+     {
+      case IP:
+	filter = g_strconcat ("ip ", filter, NULL);
+	break;
+      case TCP:
+	filter = g_strconcat ("tcp ", filter, NULL);
+	break;
+      case UDP:
+      case ETHERNET:
+     }
 
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
 				 * socket without having initialized gnome, so that 
@@ -119,11 +135,11 @@ main (int argc, char *argv[])
 				 * mtr for reference */
 
   if (!numeric)
-     gnome_dns_init(2);		/* Number of servers to spawn. 2 suggested by the API 
+    gnome_dns_init (2);		/* Number of servers to spawn. 2 suggested by the API 
 				 * reference */
   app1 = create_app1 ();
-  if (mode==IP)
-     gtk_window_set_title (GTK_WINDOW (app1), "Interape");
+  if (mode == IP)
+    gtk_window_set_title (GTK_WINDOW (app1), "Interape");
 
   /* Sets controls to the values of variables */
   init_diagram (app1);

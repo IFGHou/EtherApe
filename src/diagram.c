@@ -56,14 +56,13 @@ extern double link_timeout_time;
 extern double node_timeout_time;
 extern guint32 refresh_period;
 extern guint node_id_length;
+extern gboolean fix_overlap;
 
 /* Extern functions declarations */
 
 extern gint node_id_compare (gconstpointer a, gconstpointer b);
 extern gint link_id_compare (gconstpointer a, gconstpointer b);
 extern gboolean diagram_only;
-extern gboolean interape;
-
 
 /* Local functions definitions */
 
@@ -99,7 +98,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canva
       node_popup = create_node_popup ();
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "name");
       gtk_label_set_text (label, canvas_node->node->name->str);
-#if 0       
+#if 0
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_str");
       gtk_label_set_text (label, canvas_node->node->ip_str->str);
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_numeric_str");
@@ -108,7 +107,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canva
       gtk_label_set_text (label, canvas_node->node->ether_str->str);
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_numeric_str");
       gtk_label_set_text (label, canvas_node->node->ether_numeric_str->str);
-#endif       
+#endif
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "accumulated");
       gtk_label_set_text (label,
 		    g_strdup_printf ("%g", canvas_node->node->accumulated));
@@ -133,7 +132,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
   static gfloat angle = 0.0;
   static guint node_i = 0, n_nodes = 0;
   double x, y, xmin, ymin, xmax, ymax, rad_max, text_compensation = 50;
-
+  double oddAngle = angle;
 
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &xmin,
@@ -151,8 +150,19 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 				 * TODO: Need a function to calculate
 				 * text_compensation depending on font size */
   rad_max = ((xmax - xmin) > (ymax - ymin)) ? 0.9 * (y = (ymax - ymin)) / 2 : 0.9 * (x = (xmax - xmin)) / 2;
-  x = rad_max * cos (angle);
-  y = rad_max * sin (angle);
+
+  if (n_nodes % 2 == 0)		/* spacing is better when n_nodes is odd and Y is linear */
+    oddAngle = (angle * n_nodes) / (n_nodes + 1);
+  if (fix_overlap)
+    {
+      x = rad_max * cos (oddAngle);
+      y = rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+    }
+  else
+    {
+      x = rad_max * cos (angle);
+      y = rad_max * sin (angle);
+    }
 
   gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
 			 "x", x,
@@ -195,8 +205,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   GtkArg args[2];
   gdouble link_size;
   struct timeval now, diff;
-  guint8 *node_id;
-
 
   link = canvas_link->link;
 
@@ -219,6 +227,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
 	  g_tree_remove (canvas_links, link_id);
 
+#if 0				/* TODO make proper debugging output */
 	  if (interape)
 	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
@@ -231,6 +240,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 		   get_ether_name (link_id + 6),
 		   get_ether_name (link_id),
 		   g_tree_nnodes (canvas_links));
+#endif
 
 
 	  link_id = link->link_id;	/* Since we are freeing the link
@@ -276,10 +286,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   points->coords[1] = args[1].d.double_data;
 
   /* And then for the destination node */
-  if (interape)
-    canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
-  else
-    canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
+  canvas_node = g_tree_lookup (canvas_nodes, link_id + node_id_length);
   if (!canvas_node)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
@@ -327,7 +334,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
       gettimeofday (&now, NULL);
       diff = substract_times (now, node->last_time);
 
-      if (((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time) 
+      if (((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time)
 	  && node_timeout_time)
 	{
 
@@ -335,6 +342,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 
 	  g_tree_remove (canvas_nodes, node_id);
 
+#if 0				/* TODO redo */
 	  if (interape)
 	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		 _ ("Removing node and canvas_node: %s. Number of node %d"),
@@ -345,6 +353,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 		_ ("Removing node and canvas_node: %s. Number of nodes %d"),
 		   get_ether_name (node_id),
 		   g_tree_nnodes (canvas_nodes));
+#endif
 
 
 	  node_id = node->node_id;	/* Since we are freeing the node
@@ -355,8 +364,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
-	   
-	  need_reposition=1;
+
+	  need_reposition = 1;
 
 	  return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
@@ -421,16 +430,16 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
-       
+
 
 /* TODO properly give link creating message */
 #if 0
-	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	       _ ("Creating canvas_link: %s-%s. Number of links %d"),
-	       (node_t *)(g_tree_lookup(nodes,new_canvas_link->canvas_link_id))->name->str,
-	       (node_t *)(g_tree_lookup(nodes,(new_canvas_link->canvas_link_id)+node_id_length))->name->str,
-	       g_tree_nnodes (canvas_links));
-#endif       
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _ ("Creating canvas_link: %s-%s. Number of links %d"),
+	     (node_t *) (g_tree_lookup (nodes, new_canvas_link->canvas_link_id))->name->str,
+	     (node_t *) (g_tree_lookup (nodes, (new_canvas_link->canvas_link_id) + node_id_length))->name->str,
+	     g_tree_nnodes (canvas_links));
+#endif
 
     }
 
@@ -491,8 +500,8 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 	     _ ("Creating canvas_node: %s. Number of nodes %d"), \
 	     new_canvas_node->node->name->str, \
 	     g_tree_nnodes (canvas_nodes));
-       
-      need_reposition=1;
+
+      need_reposition = 1;
 
     }
 
@@ -503,9 +512,8 @@ guint
 update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
-  static guint n_nodes = 0, n_nodes_new;
   guint n_links = 0, n_links_new = 1;
-   guint n_nodes_before=0, n_nodes_after = 1;
+  guint n_nodes_before = 0, n_nodes_after = 1;
 
 /* Now we update the status bar with the number of present nodes 
  * TODO Find a nice use for the status bar. I can thik of very little */
@@ -521,19 +529,17 @@ update_diagram (GtkWidget * canvas)
 
 
   /* Update nodes look and delete outdated nodes */
-  /* TODO: shouldn't we do the same thing we do with
-   * the links down there, to go on until no nodes are delete? */
   do
     {
-       n_nodes_before = g_tree_nnodes (nodes);
-       g_tree_traverse (canvas_nodes,
-			(GTraverseFunc) update_canvas_nodes,
-			G_IN_ORDER,
-			canvas);
-       n_nodes_after = g_tree_nnodes (nodes);
+      n_nodes_before = g_tree_nnodes (nodes);
+      g_tree_traverse (canvas_nodes,
+		       (GTraverseFunc) update_canvas_nodes,
+		       G_IN_ORDER,
+		       canvas);
+      n_nodes_after = g_tree_nnodes (nodes);
     }
-   while (n_nodes_before != n_nodes_after);
-   
+  while (n_nodes_before != n_nodes_after);
+
   /* Reposition canvas_nodes and update status bar if a node has been
    * added or deleted */
 
@@ -548,10 +554,10 @@ update_diagram (GtkWidget * canvas)
       /* TODO: Am I leaking here with each call to g_strdup_printf?
        * How should I do this if so? */
       gnome_appbar_push (appbar, g_strconcat (_ ("Number of nodes: "),
-					      g_strdup_printf ("%d", n_nodes_after),
+				      g_strdup_printf ("%d", n_nodes_after),
 					      NULL));
-       
-      need_reposition=0;
+
+      need_reposition = 0;
     }
 
 
