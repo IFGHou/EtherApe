@@ -35,6 +35,7 @@ void on_refresh_spin_adjustment_changed (GtkAdjustment * adj,
 void on_node_radius_slider_adjustment_changed (GtkAdjustment * adj);
 void on_link_width_slider_adjustment_changed (GtkAdjustment * adj);
 void on_node_to_spin_adjustment_changed (GtkAdjustment * adj);
+void on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj);
 void on_link_to_spin_adjustment_changed (GtkAdjustment * adj);
 void on_font_button_clicked (GtkButton * button, gpointer user_data);
 void on_ok_button1_clicked (GtkButton * button, gpointer user_data);

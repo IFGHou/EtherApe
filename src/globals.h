@@ -251,6 +251,8 @@ guint stack_level;		/* Which level of the protocol stack
 				 * we will concentrate on */
 gint node_limit;		/* Max number of nodes to show. If <0 it's not
 				 * limited */
+gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
+				 * for a node, it disappears from the diagram */
 
 /* Capture settings */
 
@@ -260,8 +262,8 @@ gdouble link_timeout_time;	/* After this time
 				 * has passed with no traffic in a 
 				 * link, it disappears */
 gdouble node_timeout_time;	/* After this time has passed 
-				 * with no traffic in/out a 
-				 * node, it disappears */
+				 * with no traffic in/out a
+				 * node, it is deleted from memory */
 gchar *interface;		/* Network interface to listen to */
 gchar *filter;			/* Pcap filter to be used */
 
@@ -327,7 +329,7 @@ void gui_stop_capture (void);
 						      format, ##args)
 
 #define IS_OLDER(diff, timeout)        ((diff.tv_sec > timeout/1000) | \
-					    (diff.tv_usec/1000 > timeout))
+					    (diff.tv_usec/1000 >= timeout))
 
 
 

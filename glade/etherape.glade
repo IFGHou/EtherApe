@@ -217,7 +217,7 @@
 		    <last_modification_time>Mon, 16 Apr 2001 19:09:00 GMT</last_modification_time>
 		  </signal>
 		  <label>_IP</label>
-		  <active>False</active>
+		  <active>True</active>
 		  <always_show_toggle>True</always_show_toggle>
 		  <group>capture_mode</group>
 		</widget>
@@ -1421,6 +1421,68 @@ Accumulated traffic (Outbound)
 	    </child>
 	  </widget>
 	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox26</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>gui_node_to_spin</name>
+	    <tooltip>Remove this node from the diagram after this much time. 0 means never timeout.</tooltip>
+	    <can_focus>True</can_focus>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_IF_VALID</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>10000</value>
+	    <lower>0</lower>
+	    <upper>3.6e+07</upper>
+	    <step>100</step>
+	    <page>1000</page>
+	    <page_size>10000</page_size>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label54</name>
+	    <label>Diagram Node Timeout (ms)</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
       </widget>
 
       <widget>
@@ -1654,7 +1716,7 @@ Accumulated traffic (Outbound)
 	  <widget>
 	    <class>GtkSpinButton</class>
 	    <name>node_to_spin</name>
-	    <tooltip>Delete this node after this much time. 0 means never timeout.</tooltip>
+	    <tooltip>Delete this node from memory after this much time. 0 means never timeout.</tooltip>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>

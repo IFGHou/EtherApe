@@ -79,7 +79,13 @@ void
 on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
   node_timeout_time = adj->value;	/* Control and value in ms */
-}
+}				/* on_node_to_spin_adjustment_changed */
+
+void
+on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  gui_node_timeout_time = adj->value;	/* Control and value in ms */
+}				/* on_gui_node_to_spin_adjustment_changed */
 
 void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
