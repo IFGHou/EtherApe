@@ -280,6 +280,22 @@ get_tcp_name (void)
 
 }				/* get_tcp_name */
 
+
+/* TODO I still have to properly implement this. Right now it's just
+ * a placeholder to get to the UDP/NETBIOS-DGM */
+static void
+get_udp_name (void)
+{
+
+  level++;
+  offset += 8;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_udp_name */
+
 static void
 get_nbss_name (void)
 {
@@ -294,36 +310,49 @@ get_nbss_name (void)
   guint16 length;
   gchar *numeric_name = NULL;
   gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
+  guint name_len;
   int name_type;		/* TODO I hate to use an int here, while I have been
 				   * using glib data types all the time. But I just don't
 				   * know what it might mean in the ethereal implementation */
 
 
   mesg_type = *(guint8 *) (p + offset);
-  length = pntohs ((p + 2));
-
-  g_my_debug ("In get_nbss_name");
+  length = pntohs ((p + offset + 2));
 
   if (mesg_type == SESSION_REQUEST)
     {
+#if 0
       if (dir == INBOUND)
 	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
       else
 	ethereal_nbns_name (p, offset + 4 + NETBIOS_NAME_LEN * 2 + 2,
 			    offset + 4 + NETBIOS_NAME_LEN * 2 + 2, name,
 			    &name_type);
+#endif
+      name_len =
+	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
+      if (dir == OUTBOUND)
+	ethereal_nbns_name (p, offset + name_len, offset + name_len, name,
+			    &name_type);
+
 
       /* We just want the name, not the space padding behind it */
 
       for (; i <= NETBIOS_NAME_LEN && name[i] != ' '; i++);
       name[i] = '\0';
 
-      numeric_name =
-	g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
-			 get_netbios_host_type (name_type));
+      /* Many packages will be straight TCP packages directed to the proper
+       * port which first byte happens to be SESSION_REQUEST. In those cases
+       * the name will be illegal, and we will not add it */
+      if (strcmp (name, "Illegal"))
+	{
+	  numeric_name =
+	    g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
+			     get_netbios_host_type (name_type));
 
-      add_name (numeric_name, name, TRUE);
-      g_free (numeric_name);
+	  add_name (numeric_name, name, TRUE);
+	  g_free (numeric_name);
+	}
 
     }
 
@@ -335,6 +364,62 @@ get_nbss_name (void)
   if (next_func)
     next_func->function ();
 }				/* get_nbss_name */
+
+static void
+get_nbdgm_name (void)
+{
+  guint8 mesg_type;
+  gchar *numeric_name = NULL;
+  gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
+  gboolean name_found = FALSE;
+  int name_type;
+  int len;
+  guint i = 0;
+
+  mesg_type = *(guint8 *) (p + offset);
+
+  offset += 10;
+
+  /* Magic numbers copied from ethereal, as usual
+   * They mean Direct (unique|group|broadcast) datagram */
+  if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
+    {
+      offset += 4;
+      len = ethereal_nbns_name (p, offset, offset, name, &name_type);
+
+      if (dir == INBOUND)
+	ethereal_nbns_name (p, offset + len, offset + len, name, &name_type);
+      name_found = TRUE;
+
+    }
+  else if (mesg_type == 0x14 || mesg_type == 0x15 || mesg_type == 0x16)
+    {
+      if (dir == INBOUND)
+	{
+	  len = ethereal_nbns_name (p, offset, offset, name, &name_type);
+	  name_found = TRUE;
+	}
+    }
+
+  /* We just want the name, not the space padding behind it */
+
+  for (; i <= NETBIOS_NAME_LEN && name[i] != ' '; i++);
+  name[i] = '\0';
+
+  /* The reasing here might not make sense as in the TCP case, but it
+   * doesn't hurt to check that we don't have an illegal name anyhow */
+  if (strcmp (name, "Illegal") && name_found)
+    {
+      numeric_name =
+	g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
+			 get_netbios_host_type (name_type));
+
+      add_name (numeric_name, name, TRUE);
+      g_free (numeric_name);
+    }
+
+
+}				/* get_nbdgm_name */
 
 
 

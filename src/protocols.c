@@ -548,7 +548,8 @@ get_netbios_dgm (void)
 
   mesg_type = *(guint8 *) (packet + offset);
 
-  /* Magic numbers copied from ethereal, as usual */
+  /* Magic numbers copied from ethereal, as usual
+   * They mean Direct (unique|group|broadcast) datagram */
   if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
     prot = g_string_append (prot, "/SMB");
 
