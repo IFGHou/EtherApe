@@ -36,7 +36,7 @@ glade_DATA = 				\
 	etherape.glade
 
 purge:
-	rm -f *~ *.bak
+	rm -f *~ *.bak *.tar.gz
 	cd src && make purge
 
 EXTRA_DIST = \
