@@ -1,0 +1,91 @@
+<HTML><title>Changelog for Etherape</title><BODY>
+<h3>Overview of changes in Etherape 0.1.6 (Monday 02-28-2000):</h3><ul>
+<li>Automated distribution process
+</ul>
+<h3>Overview of changes in Etherape 0.1.5 (Sunday 02-27-2000):</h3><ul>
+<li> More for readability: Click on a node and a pop-up window
+  appears with all node data.
+<li> You can change the network interface to listen to in the 
+  command line.
+<li> Fixed a bug in the dotted quad ip number display
+<li> Compiles without warnings
+<li> Updated README
+
+</ul><h3>Overview of changes in Etherape 0.1.4 (Sunday 02-27-2000):</h3><ul>
+<li> Now parses command line arguments:
+  <br>etherape options
+  <br>-n, --numeric               don't convert addresses to names
+  <br>-r, --with-dns-resolving    use IP name resolving. Caution! Long timeouts!
+  <br>-d, --diagram-only          don't display any node text identification
+<li> The resolver is turned off by default since it can potentially
+  freeze your display for too long
+<li> digram-only makes for a clearer display. It's intended to be
+  practical whenenver I have per-node pop-up windows ready.
+
+</ul><h3>Overview of changes in Etherape 0.1.3 (Saturday 02-26-2000):</h3><ul>
+<li> Links with no traffic disappear with time. Makes diagram
+  more readable.
+<li> IP host name displayed if no ether name available
+<li> Oops! Was confusing ether dst and src addresses. Solved.
+<li> Webpage now has a much more interesting screenshot thanks 
+  to Nico Lumma 
+<li> Buttons are in English now.
+<li>(This file I had to get out from download because it
+had the dangerous DNS behaviour by default. You see? That's
+what happens when you are rushed by deadlines! :-) )
+
+</ul><h3>Overview of changes in Etherape 0.1.2 (Saturday 02-26-2000):</h3><ul>
+<li> James Wallace provided code to automatically
+  detect proper network interface. It now compiles in NetBSD.
+<li> IP number displayed if no /etc/ethers is available.
+  IP host name will be there in the Saturday Night edition. :-)
+
+</ul><h3>Overview of changes in Etherape 0.1.1 (Friday 02-25-2000):</h3><ul>
+<li> First look at GUI side of things
+<li> Now you can dinamically reset the node radius using a slider
+<li> First users reports! Thanks R., Don!
+<li> Firts improvements due to user feedback:
+   <ul>
+   <li>Solved configuration problem for some people
+   <li>Improved web page and README: reference to /etc/ethers
+   </ul>
+
+</ul><h3>Overview of changes in Etherape 0.1.0 (Friday 02-25-2000):</h3><ul>
+<li> Diagram resizes with window
+<li> Basic functionality is all there now, and calls for a minor
+  version upgrade. :-)
+  
+</ul><h3>Overview of changes in Etherape 0.0.8 (Thursday 02-24-2000):</h3><ul>
+<li> Correctly (I hope) calculates average traffic intensity
+  for nodes and links. The proper constant multiplier
+  should be user defined.
+
+</ul><h3>Overview of changes in Etherape 0.0.7 (Thursday 02-24-2000):</h3><ul>
+<li> First version showing links among nodes
+<li> Aborts gracefully if run by non-root.
+<li> http://etherape.sourceforge.net has a screenshot.
+<li> Expect proper node size and link width calculation in 0.0.8
+
+</ul><h3>Overview of changes in Etherape 0.0.6 (Wednesday 02-23-2000):</h3><ul>
+<li> Copied proper libpcap autoconfigure detection function from ethereal
+<li> Added ethernet address resolution functions from ethereal
+
+</ul><h3>Overview of changes in Etherape 0.0.5 (Wednesday 02-23-2000):</h3><ul>
+<li> Now uses gnome_canvas to display the diagram
+
+</ul><h3>Overview of changes in Etherape 0.0.4 (Monday 02-21-2000):</h3><ul>
+<li> Node size is now an average of the last ten seconds traffic.
+<li> Proper distribution file.
+
+</ul><h3>Overview of changes in Etherape 0.0.3 (Sunday 02-20-2000):</h3><ul>
+<li> Added gnome support.
+<li> Substituted hash table for binary tree to store nodes
+<li> Correctly display hardware addresses.
+
+</ul><h3>Overview of changes in Etherape 0.0.2 (Saturday 02-19-2000):</h3><ul>
+<li> Displays circles representing nodes and text which will
+  identify it eventually.
+  
+</ul><h3>Overview of Etherape 0.0.1 (Friday 02-18-2000):</h3><ul>
+<li> Initial version. Don't even expect it to run.
+</BODY></HTML>
