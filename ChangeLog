@@ -1,17 +1,39 @@
-2002-09-22 14:19  toledo
+2002-10-04 18:39  bchiara
+
+	* src/: capture.c, protocols.c: 
+	ANSI doesn't allow #ifdef-ing on enum values.  Note: older gccs
+	apparently allowed this (broken) syntax, gcc 3 instead operates
+	correctly, thus considering #ifdef enum_value as #if 0
+
+2002-10-02 10:21  toledo
+
+	* src/capture.c: Need to return FALSE to make sure that all packet
+	lists for all nodes are updated
+
+2002-09-28 21:18  bchiara
+
+	* src/: dns.c, dns.h: 
+	aligned to mtr 0.51
+
+2002-09-22 13:44  toledo
+
+	* ChangeLog, Makefile.am: Added cvs2cl to the full distribution
+	target
+
+2002-09-22 13:19  toledo
 
 	* mkinstalldirs, tests/compare-mem.sh, tests/dns-test.sh,
 	tests/trace-mem.sh: Added a directory holding files helpful for
 	testing
 
-2002-09-22 14:16  toledo
+2002-09-22 13:16  toledo
 
 	* src/diagram.c: Whenever no protocol is found when trying to
 	decide the color of a node or a link, the color black is used by
 	default. TODO I think really a transparent color would be a better
 	idea, in case we make the background color configurable
 
-2002-09-22 14:15  toledo
+2002-09-22 13:15  toledo
 
 	* src/: capture.c, capture.h: Added a new function
 	(update_node_packets) to update_nodes, so as to make sure that all
@@ -21,39 +43,39 @@
 	node_id in the packet was a reference to the one in the now delete
 	node
 
-2002-09-21 11:57  toledo
+2002-09-21 10:57  toledo
 
 	* src/capture.c: Make sure pref.filter=NULL after freeing it
 
-2002-09-21 11:56  toledo
+2002-09-21 10:56  toledo
 
 	* src/diagram.c: Some sanity checks in update_canvas_links
 
-2002-09-21 11:54  toledo
+2002-09-21 10:54  toledo
 
 	* src/: dns.c, names.c, protocols.c, resolv.c: indentation
 
-2002-09-19 18:32  toledo
+2002-09-19 17:32  toledo
 
 	* po/: .cvsignore, ChangeLog, Rules-quot, en@boldquot.header,
 	insert-header.sin, quot.sed, remove-potcdate.sin, boldquot.sed,
 	en@quot.header: Added new po support files
 
-2002-09-19 18:30  toledo
+2002-09-19 17:30  toledo
 
 	* po/: ChangeLog, cat-id-tbl.c, stamp-cat-id: remove old po support
 	files
 
-2002-09-18 21:22  bchiara
+2002-09-18 20:22  bchiara
 
 	* AUTHORS, glade/etherape.glade: 
 	Added myself in a orgy of self-promotion
 
-2002-09-18 18:45  toledo
+2002-09-18 17:45  toledo
 
 	* AUTHORS, glade/etherape.glade: Added Gorkem's email
 
-2002-09-18 18:37  toledo
+2002-09-18 17:37  toledo
 
 	* README.CVS, mkinstalldirs, intl/ChangeLog, intl/Makefile,
 	intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
@@ -75,252 +97,252 @@
 	m4/uintmax_t.m4, m4/ulonglong.m4, po/ChangeLog: Adding m4 and intl
 	directories
 
-2002-09-18 18:09  toledo
+2002-09-18 17:09  toledo
 
 	* config.rpath, mkinstalldirs: More gettext needed files
 
-2002-09-18 18:03  toledo
+2002-09-18 17:03  toledo
 
 	* glade/etherape.glade: Added Gôrkem Cetin, for the Turkish
 	translation
 
-2002-09-18 18:00  toledo
+2002-09-18 17:00  toledo
 
 	* AUTHORS: Added Gôrkem Cetin, for the Turkish translation
 
-2002-09-18 17:47  toledo
+2002-09-18 16:47  toledo
 
 	* README.CVS: [no log message]
 
-2002-09-18 17:33  toledo
+2002-09-18 16:33  toledo
 
 	* configure.in: Add support for Turkish po file
 
-2002-09-18 17:32  toledo
+2002-09-18 16:32  toledo
 
 	* po/tr.po: New Turkish po file
 
-2002-09-18 17:32  toledo
+2002-09-18 16:32  toledo
 
 	* po/Makevars: Necessary with the newer gettext versions
 
-2002-09-18 16:29  toledo
+2002-09-18 15:29  toledo
 
 	* Makefile.am: Removed redundant intl SUBDIR
 
-2002-09-18 16:06  toledo
+2002-09-18 15:06  toledo
 
 	* po/: es.po, fr.po, nl.po: Changes to make comments permanent in
 	the files
 
-2002-09-18 16:04  toledo
+2002-09-18 15:04  toledo
 
 	* po/etherape.pot: Make comments permanent
 
-2002-09-15 18:58  toledo
+2002-09-15 17:58  toledo
 
 	* ABOUT-NLS, ChangeLog, Makefile.am, config.guess, config.sub,
 	configure.in, ltmain.sh, src/Makefile.am: Assorted patches to
 	compile in an updated environment
 
-2002-09-15 18:30  toledo
+2002-09-15 17:30  toledo
 
 	* po/: ChangeLog, Makefile.in.in, fr.po: Upgrade to gettext 0.11.5
 
-2002-09-15 18:16  toledo
+2002-09-15 17:16  toledo
 
 	* macros/autogen.sh: Include --intl option to gettextize
 
-2002-09-15 08:20  bchiara
+2002-09-15 07:20  bchiara
 
 	* src/dns.c: 
 	Resolved memory bug by limiting resolved names to 1024 entries and
 	arranging them in a simple LRU cache
 
-2001-08-12 15:38  toledo
+2001-08-12 14:38  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po, src/glade-strings: Version 0.8.2
 
-2001-08-12 15:35  toledo
+2001-08-12 14:35  toledo
 
 	* src/preferences.c: Added blank function definitions, to remove
 	run-time warnings. Filling those functions will come next
 
-2001-08-12 15:34  toledo
+2001-08-12 14:34  toledo
 
 	* src/diagram.c: Don't display a new node until it has been
 	assigned a position (should avoid node globbing)
 
-2001-08-10 12:43  toledo
+2001-08-10 11:43  toledo
 
 	* glade/etherape.glade: Added names tab to preferences
 
-2001-08-10 12:43  toledo
+2001-08-10 11:43  toledo
 
 	* po/: cat-id-tbl.c, es.po, etherape.pot, fr.po, nl.po: updated
 
-2001-08-08 18:00  toledo
+2001-08-08 17:00  toledo
 
 	* AUTHORS, glade/etherape.glade, src/capture.c, src/protocols.c:
 	Patches from Dave Yearke to regain compilability under Solaris
 	after having added DLT_LINUX_SLL
 
-2001-08-06 16:25  toledo
+2001-08-06 15:25  toledo
 
 	* configure.in, html/NEWS.html, po/cat-id-tbl.c, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po: Version 0.8.1
 
-2001-08-06 16:15  toledo
+2001-08-06 15:15  toledo
 
 	* src/preferences.c: Removes debugging text added to protocol
 	column when a new color was added to the color table
 
-2001-08-06 16:11  toledo
+2001-08-06 15:11  toledo
 
 	* src/: capture.c, names.c, names.h, protocols.c, protocols.h:
 	Added support for linux_sll (should add support for ISDN on linux)
 
-2001-08-06 15:44  toledo
+2001-08-06 14:44  toledo
 
 	* src/globals.h: Added new link types, including LINUX_SLL for ISDN
 
-2001-08-03 13:34  toledo
+2001-08-03 12:34  toledo
 
 	* TODO, html/NEWS.html: Version 0.8.0
 
-2001-08-03 13:33  toledo
+2001-08-03 12:33  toledo
 
 	* glade/etherape.glade: Added protocol edit dialog
 
-2001-08-03 13:29  toledo
+2001-08-03 12:29  toledo
 
 	* po/: cat-id-tbl.c, es.po, etherape.pot, fr.po, nl.po: update
 
-2001-08-03 13:28  toledo
+2001-08-03 12:28  toledo
 
 	* src/: diagram.c, glade-strings, globals.h, main.c, preferences.c:
 	Added support for cycle and fade settings
 
-2001-08-03 12:01  toledo
+2001-08-03 11:01  toledo
 
 	* src/: diagram.c, preferences.c: Colors must start with #. Use a
 	single system colormap
 
-2001-08-02 18:40  toledo
+2001-08-02 17:40  toledo
 
 	* src/: diagram.c, globals.h, main.c, preferences.c, preferences.h:
 	First try at using pref.colors for the diagram. Read changes from
 	the colors table into pref.colors
 
-2001-08-02 14:13  toledo
+2001-08-02 13:13  toledo
 
 	* po/: es.po, etherape.pot, fr.po, nl.po: updated
 
-2001-08-02 14:08  toledo
+2001-08-02 13:08  toledo
 
 	* src/preferences.c: Show color code on color_clist entries
 
-2001-08-02 13:36  toledo
+2001-08-02 12:36  toledo
 
 	* src/preferences.c: Edit protocol text
 
-2001-08-02 12:52  toledo
+2001-08-02 11:52  toledo
 
 	* src/: glade-strings, preferences.c: Fixes definition of
 	non-selection for color_clist
 
-2001-08-02 12:12  toledo
+2001-08-02 11:12  toledo
 
 	* src/preferences.c: Adding and removing colors to the color clist
 
-2001-08-02 10:49  toledo
+2001-08-02 09:49  toledo
 
 	* src/: capture.c, diagram.c, globals.h, info_windows.c, main.c,
 	menus.c, names.c, preferences.c: Turned all preferences into
 	elements of the global structure pref
 
-2001-08-01 11:39  toledo
+2001-08-01 10:39  toledo
 
 	* po/es.po: Remove useless comments
 
-2001-08-01 11:38  toledo
+2001-08-01 10:38  toledo
 
 	* html/NEWS.html: Remind of changes
 
-2001-08-01 11:38  toledo
+2001-08-01 10:38  toledo
 
 	* configure.in: Bump version
 
-2001-08-01 10:19  toledo
+2001-08-01 09:19  toledo
 
 	* TODO: Revised
 
-2001-07-31 14:21  valium
+2001-07-31 13:21  valium
 
 	* po/nl.po: Updated the translation. Nothing special. Just some new
 	strings.
 
-2001-07-31 12:55  toledo
+2001-07-31 11:55  toledo
 
 	* po/: cat-id-tbl.c, es.po, etherape.pot, fr.po, nl.po: [no log
 	message]
 
-2001-07-31 12:52  toledo
+2001-07-31 11:52  toledo
 
 	* glade/etherape.glade: Color picker
 
-2001-07-31 12:50  toledo
+2001-07-31 11:50  toledo
 
 	* src/: diagram.c, glade-strings, menus.c: Change infos for debugs
 
-2001-07-31 12:49  toledo
+2001-07-31 11:49  toledo
 
 	* src/preferences.c: First functions for color picker handling
 
-2001-07-31 12:02  toledo
+2001-07-31 11:02  toledo
 
 	* src/: diagram.c, glade-strings, menus.c: Added more info messages
 	for start, pause and stop
 
-2001-07-31 12:01  toledo
+2001-07-31 11:01  toledo
 
 	* src/capture.c: Fixed a bug for which after a pause in live
 	capture, also an offline capture was activated, and created all
 	sorts of problems
 
-2001-07-31 09:47  toledo
+2001-07-31 08:47  toledo
 
 	* glade/etherape.glade: Added color tab to preferences
 
-2001-07-15 15:26  toledo
+2001-07-15 14:26  toledo
 
 	* po/es.po: Change timeout translation in Spanish to expiración
 
-2001-07-14 10:30  toledo
+2001-07-14 09:30  toledo
 
 	* src/glade-strings: Glade generated comments are in Spanish
 
-2001-07-14 10:29  toledo
+2001-07-14 09:29  toledo
 
 	* src/conversations.c: Adds sys/types.h to the includes. Should fix
 	FreeBSD compilation
 
-2001-07-08 12:52  toledo
+2001-07-08 11:52  toledo
 
 	* html/FAQ.html: Tidy changes
 
-2001-07-08 12:44  toledo
+2001-07-08 11:44  toledo
 
 	* html/FAQ.html: Added styles and references to how to filter
 	to/from internet traffic
 
-2001-07-06 11:22  toledo
+2001-07-06 10:22  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po: Version 0.7.8
 
-2001-07-06 11:13  toledo
+2001-07-06 10:13  toledo
 
 	* src/callbacks.c, src/callbacks.h, src/capture.c, src/globals.h,
 	src/main.c, src/main.h, src/menus.c, src/menus.h,
@@ -328,237 +350,237 @@
 	is closed before leaving, so as to leave promisc mode. Handles TERM
 	and INT signals
 
-2001-06-22 09:50  toledo
+2001-06-22 08:50  toledo
 
 	* po/: es.po, etherape.pot, fr.po, nl.po: [no log message]
 
-2001-06-22 09:48  toledo
+2001-06-22 08:48  toledo
 
 	* TODO, configure.in, old.version, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po: Version 0.7.7
 
-2001-06-22 09:41  toledo
+2001-06-22 08:41  toledo
 
 	* src/: diagram.c, globals.h, menus.c: Turn already_updating into a
 	global variable. gui_stop_capture needs to know its value, so as to
 	fail if its happening
 
-2001-06-22 09:39  toledo
+2001-06-22 08:39  toledo
 
 	* src/info_windows.c: Adds a missing include to get rid of a
 	warning for the floor function
 
-2001-06-22 09:38  toledo
+2001-06-22 08:38  toledo
 
 	* src/capture.c: minor indentation
 
-2001-06-20 16:15  toledo
+2001-06-20 15:15  toledo
 
 	* src/capture.c: Names were not actually assigned using the order
 	defined in set_node_names, but rather the name highest in the
 	protocol stack
 
-2001-05-30 23:07  valium
+2001-05-30 22:07  valium
 
 	* po/nl.po: BUG: A space was missing from one translation.
 	Translated new messages too.
 
-2001-05-25 09:08  toledo
+2001-05-25 08:08  toledo
 
 	* README.help: Removed outdated entries
 
-2001-05-14 21:12  valium
+2001-05-14 20:12  valium
 
 	* po/nl.po: Updated one very bad translation. Added new ones.
 
-2001-05-14 01:42  toledo
+2001-05-14 00:42  toledo
 
 	* configure.in, old.version, services, doc/C/etherape.sgml,
 	html/NEWS.html: Version 0.7.6
 
-2001-05-14 01:27  toledo
+2001-05-14 00:27  toledo
 
 	* src/protocols.c: Renamed a couple of ipx protocols
 
-2001-05-14 01:27  toledo
+2001-05-14 00:27  toledo
 
 	* src/: names.c, names.h: Added IPX SAP resource name support
 
-2001-05-14 01:26  toledo
+2001-05-14 00:26  toledo
 
 	* src/capture.c: Added ipx-sap to the list of possible names in
 	ethernet mode
 
-2001-05-14 01:25  toledo
+2001-05-14 00:25  toledo
 
 	* po/: cat-id-tbl.c, es.po, etherape.pot, fr.po, nl.po: [no log
 	message]
 
-2001-05-14 00:26  toledo
+2001-05-13 23:26  toledo
 
 	* src/: prot_types.h, protocols.c: added ipx support
 
-2001-05-14 00:24  toledo
+2001-05-13 23:24  toledo
 
 	* src/diagram.c: Debugging code to help trace a segfault
 
-2001-05-13 21:48  valium
+2001-05-13 20:48  valium
 
 	* po/nl.po: Fixed one typo. Changed translations somewhat. They
 	make more sense now.  They are not the exact translations, but it's
 	easier for the user. :)
 
-2001-05-13 21:29  valium
+2001-05-13 20:29  valium
 
 	* po/nl.po: New translations added.
 
-2001-05-13 19:56  toledo
+2001-05-13 18:56  toledo
 
 	* src/: protocols.c, protocols.h: moved the ethernet type based
 	protocol string append to its own function, so that it can be
 	called from elsewhere
 
-2001-05-13 19:55  toledo
+2001-05-13 18:55  toledo
 
 	* src/etypes.h: etypes.h hasn't been in use for a long time
 
-2001-05-13 19:53  toledo
+2001-05-13 18:53  toledo
 
 	* src/menus.c: Fixes problem with not being able to set a mode from
 	the command line by not processing the on_mode_... request if in
 	start_capture. Improved pausing behavious, like by updating the
 	info windows
 
-2001-05-13 19:52  toledo
+2001-05-13 18:52  toledo
 
 	* src/info_windows.c: Indentation changes
 
-2001-05-13 19:51  toledo
+2001-05-13 18:51  toledo
 
 	* src/globals.h: One more protocol level is necessary to correctly
 	decode fddi frames, for instance
 
-2001-05-13 19:51  toledo
+2001-05-13 18:51  toledo
 
 	* src/: prot_types.h, etypes.h: Added many new ethernet packet
 	types
 
-2001-05-13 19:50  toledo
+2001-05-13 18:50  toledo
 
 	* src/capture.c: [no log message]
 
-2001-05-13 17:39  toledo
+2001-05-13 16:39  toledo
 
 	* services: Added a handful of services, like icq or napster
 
-2001-05-13 15:17  toledo
+2001-05-13 14:17  toledo
 
 	* src/: protocols.c, protocols.h: Added support for llc sap
 	decoding (can decode up to ipx or netbios in 802.3 frames)
 
-2001-05-13 15:16  toledo
+2001-05-13 14:16  toledo
 
 	* src/prot_types.h: added llc sap codes
 
-2001-05-13 15:15  toledo
+2001-05-13 14:15  toledo
 
 	* src/diagram.c: Fixes problem with not being able to set a mode
 	from the command line by not processing the on_mode_... request if
 	in start_capture. Improved pausing behavious, like by updating the
 	info windows
 
-2001-05-13 15:13  toledo
+2001-05-13 14:13  toledo
 
 	* src/globals.h: Add another macro to get values from packets. This
 	one used in nebios over llc
 
-2001-05-13 15:12  toledo
+2001-05-13 14:12  toledo
 
 	* src/: capture.c, diagram.c: Don't use anymore end_of_file as a
 	flag for pause, since we now have a proper status variable
 
-2001-05-12 17:09  toledo
+2001-05-12 16:09  toledo
 
 	* src/capture.c: Keep on analyzing packets (though not updating the
 	display) when in pause for live captures
 
-2001-05-12 13:09  toledo
+2001-05-12 12:09  toledo
 
 	* src/glade-strings, src/info_windows.c, glade/etherape.glade: Hide
 	and show protocols window columns
 
-2001-05-12 12:17  toledo
+2001-05-12 11:17  toledo
 
 	* src/capture.c, src/diagram.c, src/glade-strings, src/globals.h,
 	src/main.c, src/preferences.c, glade/etherape.glade: Add the option
 	to choose between grouping unknown protocols or listing them all
 
-2001-05-11 11:13  toledo
+2001-05-11 10:13  toledo
 
 	* configure.in, old.version, glade/etherape.glade, html/NEWS.html,
 	po/POTFILES.in, po/cat-id-tbl.c, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po, src/capture.c: Version 0.7.5
 
-2001-05-11 10:53  toledo
+2001-05-11 09:53  toledo
 
 	* src/protocols.c: Fixes a couple of potentials segfaults in
 	FTP-PASSIVE
 
-2001-05-11 10:52  toledo
+2001-05-11 09:52  toledo
 
 	* src/capture.h: Reduce capture length, for a minor CPU usage
 	improvement, that hopefully won't affect the dissection
 
-2001-05-11 10:51  toledo
+2001-05-11 09:51  toledo
 
 	* src/capture.c: Removed unnecessary calls to update_node and
 	update_link that were the cause of most of the CPU usage
 
-2001-05-10 17:27  toledo
+2001-05-10 16:27  toledo
 
 	* src/: capture.c, capture.h, globals.h: Made the necessary changes
 	to keep the list of packets with the global protocols as well, so
 	that the instantaneous per protocol traffic can be calculated
 
-2001-05-10 17:26  toledo
+2001-05-10 16:26  toledo
 
 	* src/: conversations.c, conversations.h: conversations support,
 	used in RPC and FTP-PASSIVE
 
-2001-05-10 17:25  toledo
+2001-05-10 16:25  toledo
 
 	* src/info_windows.c: Don't update the diagram while in pause.
 	Always update the instantaneous traffic column
 
-2001-05-10 17:22  toledo
+2001-05-10 16:22  toledo
 
 	* src/diagram.c: Don't set the already_updating flag unti not sure
 	that you will update. Call the new update_protocols. Added
 	debugging messages to show the number of packets heard and in
 	memory
 
-2001-05-10 11:16  toledo
+2001-05-10 10:16  toledo
 
 	* src/diagram.c: Make sure that only one instance of update_diagram
 	can be run at any single time
 
-2001-05-10 10:25  toledo
+2001-05-10 09:25  toledo
 
 	* src/glade-strings, src/info_windows.c, src/info_windows.h,
 	glade/etherape.glade: Added individual protocol info windows. More
 	columns to the protocols window table
 
-2001-05-10 10:24  toledo
+2001-05-10 09:24  toledo
 
 	* src/capture.c: Always update the protocol timestamp (was not
 	being updated with the first packet)
 
-2001-05-09 20:17  toledo
+2001-05-09 19:17  toledo
 
 	* configure.in, old.version, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po: Version 0.7.4
 
-2001-05-09 19:58  toledo
+2001-05-09 18:58  toledo
 
 	* src/diagram.c: Updates the GUI if too much time passes while on
 	the update_canvas_nodes process. Also makes sure that some Null
@@ -566,132 +588,132 @@
 	problem that was not showing before, but is is apparent now that
 	the canvas can be redrawn in the middle of the nodes update
 
-2001-05-09 19:55  toledo
+2001-05-09 18:55  toledo
 
 	* src/globals.h: Keep the number of packets in global variables
 
-2001-05-09 19:53  toledo
+2001-05-09 18:53  toledo
 
 	* src/: capture.c, capture.h: Allocate a single node_id, one per
 	node (we were storing a copy in each packet before). This saves
 	memory, and hopefully fixes a bug for which the list of node_ids in
 	the protocols was not being cleared
 
-2001-05-09 17:13  toledo
+2001-05-09 16:13  toledo
 
 	* src/: prot_types.h, protocols.c, protocols.h: Adds supports of
 	passive ftp by using the new conversations feature
 
-2001-05-09 17:12  toledo
+2001-05-09 16:12  toledo
 
 	* src/main.c: Fixes a segfault when an initial capture file was
 	given in the command line and another was set in the gui
 
-2001-05-09 17:11  toledo
+2001-05-09 16:11  toledo
 
 	* src/diagram.c: Fixes 100% CPU usage in pause. I believe what it
 	does is alternate between idle and timeout
 
-2001-05-09 14:00  toledo
+2001-05-09 13:00  toledo
 
 	* src/capture.c: Delete conversations in stop_capture
 
-2001-05-09 13:51  toledo
+2001-05-09 12:51  toledo
 
 	* src/: protocols.c, protocols.h: Added support for conversations.
 	Added support for RPC over TCP. Support for conversations in RPC
 	packets
 
-2001-05-09 13:50  toledo
+2001-05-09 12:50  toledo
 
 	* src/globals.h: Added the global conversations functions
 
-2001-05-09 13:50  toledo
+2001-05-09 12:50  toledo
 
 	* src/diagram.c: Pause the diagram, not stop it when an offline
 	capture finishes, so that it's possible to see the stats afterwords
 
-2001-05-09 13:49  toledo
+2001-05-09 12:49  toledo
 
 	* src/Makefile.am: Added the conversation files to the build
 
-2001-05-09 10:37  valium
+2001-05-09 09:37  valium
 
 	* po/nl.po: Updated fuzzy translations. Clarified the about-box.
 
-2001-05-08 20:23  toledo
+2001-05-08 19:23  toledo
 
 	* po/: es.po, etherape.pot, fr.po, nl.po: Version 0.7.3
 
-2001-05-08 20:18  toledo
+2001-05-08 19:18  toledo
 
 	* configure.in, old.version, glade/etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po: Version 0.7.3
 
-2001-05-08 20:02  toledo
+2001-05-08 19:02  toledo
 
 	* src/: protocols.c, protocols.h: Mark as an unique protocol any
 	non registered tcp or udp port
 
-2001-05-08 17:41  toledo
+2001-05-08 16:41  toledo
 
 	* src/: info_windows.c, info_windows.h: New version of the
 	protocols window that lets you sort on the different columns
 
-2001-05-08 17:40  toledo
+2001-05-08 16:40  toledo
 
 	* src/: capture.c, globals.h: Added a timestamp to the protocol_t
 	structure to know when it was last heard
 
-2001-05-08 17:38  toledo
+2001-05-08 16:38  toledo
 
 	* src/menus.c: Update info windows inmediately when stopping the
 	capture
 
-2001-05-08 14:39  valium
+2001-05-08 13:39  valium
 
 	* po/nl.po: Clarified some translations. o.a. Geaccumuleerd
 	->totaal en Instantaan -> direct
 
-2001-05-08 12:04  toledo
+2001-05-08 11:04  toledo
 
 	* src/info_windows.c, src/info_windows.h, glade/etherape.glade:
 	Turned display_protocols into toggle_protocols for an easier
 	implementation than also can be called from the delete event of the
 	window
 
-2001-05-08 11:52  toledo
+2001-05-08 10:52  toledo
 
 	* src/info_windows.c: Double clicking the legend updates the
 	protocols check menu item
 
-2001-05-08 11:49  toledo
+2001-05-08 10:49  toledo
 
 	* glade/etherape.glade: Added a toolbar button and a check menuitem
 	to display the protocols window
 
-2001-05-08 11:42  toledo
+2001-05-08 10:42  toledo
 
 	* src/: glade-strings, globals.h, info_windows.c, info_windows.h:
 	Added a toolbar button and a check menuitem to display the
 	protocols window
 
-2001-05-07 23:11  toledo
+2001-05-07 22:11  toledo
 
 	* configure.in, old.version, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po: Version 0.7.2
 
-2001-05-07 23:09  toledo
+2001-05-07 22:09  toledo
 
 	* po/nl.po: updated
 
-2001-05-07 22:53  toledo
+2001-05-07 21:53  toledo
 
 	* glade/etherape.glade: New update_protocols_window function. A new
 	window pops ups when double clicking the protocol legend. Moved
 	node_info related functions to info_windows.c
 
-2001-05-07 22:50  toledo
+2001-05-07 21:50  toledo
 
 	* src/: Makefile.am, diagram.c, diagram.h, glade-strings,
 	globals.h, info_windows.c, info_windows.h, main.c: New
@@ -699,81 +721,81 @@
 	clicking the protocol legend. Moved node_info related functions to
 	info_windows.c
 
-2001-05-07 21:55  valium
+2001-05-07 20:55  valium
 
 	* po/nl.po: Fixed some buggy translations. Thanks to Jeroen vd.
 	Vegt
 
-2001-05-07 17:02  toledo
+2001-05-07 16:02  toledo
 
 	* src/capture.c: Don't quit when 'Packet does not belong to node in
 	check_packet'. Just print the message and go on
 
-2001-05-07 17:00  toledo
+2001-05-07 16:00  toledo
 
 	* src/diagram.c: Fixes a problem with links not disappearing
 
-2001-05-07 10:20  valium
+2001-05-07 09:20  valium
 
 	* po/nl.po: Added new translations and polished the old ones.
 
-2001-05-06 20:59  toledo
+2001-05-06 19:59  toledo
 
 	* configure.in, old.version, html/NEWS.html, po/cat-id-tbl.c,
 	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, src/capture.h:
 	Version 0.7.1
 
-2001-05-06 20:50  toledo
+2001-05-06 19:50  toledo
 
 	* src/: diagram.c, diagram.h, menus.c, preferences.c: New
 	delete_gui_protocols function to empty the protocols table after
 	stopping or changing the stack setting
 
-2001-05-06 20:48  toledo
+2001-05-06 19:48  toledo
 
 	* src/: capture.c, globals.h: update_links and update_protocols
 	used in stop_capture to delete them all
 
-2001-05-06 18:37  toledo
+2001-05-06 17:37  toledo
 
 	* src/: capture.c, capture.h, globals.h: Protocols now hold a list
 	of nod_ids of all the nodes that have been using this protocol.
 	Also added variables to hold instanteneous traffic information
 
-2001-05-06 17:20  toledo
+2001-05-06 16:20  toledo
 
 	* src/protocols.c: Removes the displaying of verbose services load
 
-2001-05-06 17:18  toledo
+2001-05-06 16:18  toledo
 
 	* src/: capture.c, menus.c: Give support to Token Ring mode (mode,
 	not interface) and make sure data is reset before starting a new
 	offline capture
 
-2001-05-06 15:11  toledo
+2001-05-06 14:11  toledo
 
 	* src/: capture.c, capture.h, globals.h: Merged the changes from
 	the one packet copy brach
 
-2001-05-06 14:55  toledo
+2001-05-06 13:55  toledo
 
 	* src/: capture.c, capture.h, globals.h: Changes to keep a single
 	copy of the packet_t structure that nodes, links and later
 	protocols will reference
 
-2001-05-05 02:06  toledo
+2001-05-05 01:06  toledo
 
 	* README.thanks, configure.in, old.version, html/NEWS.html: Version
 	0.7.0
 
-2001-05-05 02:05  toledo
+2001-05-05 01:05  toledo
 
 	* src/glade-strings, src/globals.h, src/main.c, src/preferences.c,
 	src/preferences.h, glade/etherape.glade: New specific
 	gui_node_timeout spin control to distinguish the canvas from the
 	capture node
 
-2001-05-05 02:03  toledo
+2001-05-05 01:03  toledo
 
 	* src/diagram.c: Connects signals to the new spin control, fixes
 	some problems with potential and actual references to null
@@ -781,129 +803,129 @@
 	canvas if the actual nodes still have packets on them, or else they
 	will not reappear
 
-2001-05-05 02:01  toledo
+2001-05-05 01:01  toledo
 
 	* src/capture.c: Fixes some problems with the new new_nodes list
 
-2001-05-05 01:59  toledo
+2001-05-05 00:59  toledo
 
 	* po/: .cvsignore, ChangeLog, POTFILES.in, cat-id-tbl.c, es.po,
 	etherape.pot, fr.po, nl.po: Updated
 
-2001-05-04 20:42  toledo
+2001-05-04 19:42  toledo
 
 	* config.guess, config.sub, ltconfig, ltmain.sh: Libtool support
 	files
 
-2001-05-04 20:23  toledo
+2001-05-04 19:23  toledo
 
 	* po/cat-id-tbl.c: Back to the archive
 
-2001-05-04 19:48  toledo
+2001-05-04 18:48  toledo
 
 	* po/: .cvsignore, POTFILES, cat-id-tbl.c: Removed build time files
 	cat-id-tbl.c POTFILES
 
-2001-05-04 12:31  toledo
+2001-05-04 11:31  toledo
 
 	* src/: capture.c, capture.h, diagram.c, globals.h: Added a
 	new_nodes list to capture.c and a ape_get_new_node function so that
 	not every single known node has to be checked in order to see
 	whether a node should be displayed again in the diagram
 
-2001-05-04 11:50  toledo
+2001-05-04 10:50  toledo
 
 	* src/protocols.c: Made a couple of strings translatables
 
-2001-05-02 21:29  toledo
+2001-05-02 20:29  toledo
 
 	* po/: POTFILES, cat-id-tbl.c, es.po, etherape.pot, fr.po, nl.po:
 	updated with new files
 
-2001-05-02 21:29  toledo
+2001-05-02 20:29  toledo
 
 	* po/POTFILES.in: Added menus.c and diagram.c
 
-2001-05-02 17:12  toledo
+2001-05-02 16:12  toledo
 
 	* po/nl.po: Updated
 
-2001-04-26 17:52  toledo
+2001-04-26 16:52  toledo
 
 	* Makefile.am, po/es.po, po/etherape.pot, po/fr.po, po/nl.po:
 	Changes to help with releases
 
-2001-04-26 17:37  toledo
+2001-04-26 16:37  toledo
 
 	* configure.in, html/NEWS.html, po/cat-id-tbl.c, po/etherape.pot:
 	Version 0.6.9
 
-2001-04-26 17:35  toledo
+2001-04-26 16:35  toledo
 
 	* glade/etherape.glade: Added new node info window
 
-2001-04-26 17:30  toledo
+2001-04-26 16:30  toledo
 
 	* src/: diagram.c, diagram.h: Add a delete event callback to the
 	node_info windows, so that the the window is removed from the list
 
-2001-04-26 16:51  toledo
+2001-04-26 15:51  toledo
 
 	* src/diagram.c: Add a message to INFO when dumping node info to
 	know the total number of nodes and canvas_nodes
 
-2001-04-26 16:51  toledo
+2001-04-26 15:51  toledo
 
 	* src/dns.c: Removes unnecesary warnings (to stderr, no less)
 
-2001-04-26 16:22  toledo
+2001-04-26 15:22  toledo
 
 	* src/: diagram.c, diagram.h: Removed unnecesary debugging variable
 	from canvas_node
 
-2001-04-26 16:17  toledo
+2001-04-26 15:17  toledo
 
 	* src/: diagram.c, diagram.h, glade-strings, main.c: Add node info
 	windows that come up when nodes are double clicked. Removed the
 	node pop up windows
 
-2001-04-26 16:16  toledo
+2001-04-26 15:16  toledo
 
 	* src/menus.c: Hopefully reduces the number of about windows that
 	pop up
 
-2001-04-25 17:57  toledo
+2001-04-25 16:57  toledo
 
 	* src/: capture.c, diagram.c, diagram.h, glade-strings, globals.h,
 	main.c, preferences.c: Old nodes where reappearing in the diagram
 	because of an overflow in the age comparing code. Now timeout
 	variables are stored in milliseconds, instead of nanoseconds
 
-2001-04-25 16:07  toledo
+2001-04-25 15:07  toledo
 
 	* .cvsignore, Makefile.am, autogen.sh, configure.in, old.version,
 	html/NEWS.html, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
 	src/Makefile.am: Now uses libtool to fix missing symbols for
 	libglade in solaris
 
-2001-04-25 15:38  toledo
+2001-04-25 14:38  toledo
 
 	* src/diagram.c: Substituted non standard g_critical for my own
 	g_my_critical
 
-2001-04-24 23:48  toledo
+2001-04-24 22:48  toledo
 
 	* configure.in, glade/etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po, po/nl.po:
 	Version 0.6.8
 
-2001-04-24 23:25  toledo
+2001-04-24 22:25  toledo
 
 	* src/: capture.c, globals.h, menus.c, names.c, names.h,
 	protocols.c, protocols.h: Adds support for Token Ring. Fixes a
 	problem with FDDI names
 
-2001-04-24 21:35  toledo
+2001-04-24 20:35  toledo
 
 	* src/: capture.c, capture.h, diagram.c, diagram.h, globals.h,
 	gnomesupport.h, names.c, protocols.c: New update_nodes function in
@@ -911,127 +933,127 @@
 	global function called from diagram.c, now directly from
 	update_diagram
 
-2001-04-24 20:27  toledo
+2001-04-24 19:27  toledo
 
 	* src/protocols.c: Indentation
 
-2001-04-24 20:26  toledo
+2001-04-24 19:26  toledo
 
 	* src/names.c: Add reminder for the need to set up the name id in
 	the netbios case
 
-2001-04-24 20:25  toledo
+2001-04-24 19:25  toledo
 
 	* src/: diagram.c, diagram.h: Changes is_to_be_displayed for
 	display_node (function name change)
 
-2001-04-24 17:26  toledo
+2001-04-24 16:26  toledo
 
 	* src/protocols.c: Fixes some severe leaks
 
-2001-04-24 10:21  fpeters
+2001-04-24 09:21  fpeters
 
 	* Makefile.am, etherape.1, etherape.8: etherape in /usr/bin/,
 	manpage back from 8 to 1.
 
-2001-04-24 10:12  fpeters
+2001-04-24 09:12  fpeters
 
 	* debian/dirs: etherape now installs in /usr/bin
 
-2001-04-23 17:02  toledo
+2001-04-23 16:02  toledo
 
 	* src/diagram.c: Removes warning about possible use of
 	uninitialized node_size
 
-2001-04-23 16:58  toledo
+2001-04-23 15:58  toledo
 
 	* src/diagram.c: Fixes a potential segfault in link_item_event
 
-2001-04-23 14:41  toledo
+2001-04-23 13:41  toledo
 
 	* Makefile.am, html/NEWS.html, po/cat-id-tbl.c, po/etherape.pot:
 	Version 0.6.7
 
-2001-04-23 13:43  toledo
+2001-04-23 12:43  toledo
 
 	* src/: diagram.c, globals.h, main.c, preferences.c, preferences.h:
 	Added support for the node size variable optionmenu
 
-2001-04-23 12:45  toledo
+2001-04-23 11:45  toledo
 
 	* configure.in, etherape.spec.in, debian/menu, debian/rules,
 	html/FAQ.html, src/Makefile.am, src/capture.c, src/main.c: Moved
 	etherape to /usr/bin/ from /usr/sbin. Removed all mentions to
 	interape
 
-2001-04-23 12:43  toledo
+2001-04-23 11:43  toledo
 
 	* po/: es.po, etherape.pot, fr.po, nl.po: [no log message]
 
-2001-04-23 12:43  toledo
+2001-04-23 11:43  toledo
 
 	* glade/etherape.glade, src/glade-strings: Added new option menu to
 	choose node size variable
 
-2001-04-23 11:06  toledo
+2001-04-23 10:06  toledo
 
 	* src/diagram.c: Now that capture nodes aren't actually deleted, I
 	need to change the way to check if more canvas_nodes have to be
 	deleted
 
-2001-04-22 21:15  toledo
+2001-04-22 20:15  toledo
 
 	* src/: capture.c, diagram.c, diagram.h, globals.h: Don't delete
 	nodes after timeout, but rather the canvas_node. Create new
 	variables aver_accu to contain traffic to calculate average, so
 	that the accumulated traffic really contains what it implies
 
-2001-04-22 19:34  toledo
+2001-04-22 18:34  toledo
 
 	* src/diagram.c: Remove obsolete code
 
-2001-04-21 13:17  toledo
+2001-04-21 12:17  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po: Version 0.6.6
 
-2001-04-21 13:13  toledo
+2001-04-21 12:13  toledo
 
 	* src/capture.c: Fixes a very serious leak. It seems that we have
 	to update node and link when adding a packet, but I really don't
 	know why.
 
-2001-04-21 03:58  toledo
+2001-04-21 02:58  toledo
 
 	* configure.in, old.version, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po: Version 0.6.5
 
-2001-04-21 03:49  toledo
+2001-04-21 02:49  toledo
 
 	* src/: capture.c, names.h, protocols.c: Changed NBSS to more
 	descriptive NETBIOS-SSN
 
-2001-04-21 03:31  toledo
+2001-04-21 02:31  toledo
 
 	* po/es.po: Updated
 
-2001-04-21 03:20  toledo
+2001-04-21 02:20  toledo
 
 	* src/protocols.c: Removed more false positives protocols by: a)
 	Given priority to registered ( <1024 ) tcp and udp ports and b)
 	fixing a bug for which only RPC_REPLYs packets where being
 	recognized.
 
-2001-04-21 03:17  toledo
+2001-04-21 02:17  toledo
 
 	* src/capture.c: Dump node names one by the other, not in different
 	lines
 
-2001-04-20 16:25  toledo
+2001-04-20 15:25  toledo
 
 	* doc/C/Makefile.am: Undid a wrong change
 
-2001-04-20 16:04  toledo
+2001-04-20 15:04  toledo
 
 	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
 	etherape/docbook.css, etherape/index.html, etherape/license.html,
@@ -1050,52 +1072,52 @@
 	etherape/stylesheet-images/warning.gif: etherape directory needed
 	for people building from CVS
 
-2001-04-20 09:19  toledo
+2001-04-20 08:19  toledo
 
 	* src/: capture.c, capture.h, diagram.c, globals.h, names.c: Double
 	clicking a node gives you detailed information if you have setup
 	the env variable DEBUG to INFO
 
-2001-04-20 00:18  toledo
+2001-04-19 23:18  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po, src/names.c: Version 0.6.4
 
-2001-04-20 00:14  toledo
+2001-04-19 23:14  toledo
 
 	* src/names.c: Fixes a small bug with get_nbss_name
 
-2001-04-19 23:51  toledo
+2001-04-19 22:51  toledo
 
 	* src/: capture.c, names.c, names.h, protocols.c: Added support for
 	NETBIOS-DGM over UDP name capture
 
-2001-04-19 19:22  toledo
+2001-04-19 18:22  toledo
 
 	* src/: prot_types.h, protocols.c, protocols.h: Added support for 
 	netbios dgm over udp
 
-2001-04-19 17:56  toledo
+2001-04-19 16:56  toledo
 
 	* acinclude.m4, configure.in, html/NEWS.html: Added gethostby and
 	socket check functions from ethereal that should help in some
 	architectures
 
-2001-04-19 15:44  toledo
+2001-04-19 14:44  toledo
 
 	* doc/C/Makefile.am, po/cat-id-tbl.c, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po: Version 0.6.3
 
-2001-04-19 15:38  toledo
+2001-04-19 14:38  toledo
 
 	* README.bugs, configure.in, html/NEWS.html: Version 0.6.3
 
-2001-04-19 15:26  toledo
+2001-04-19 14:26  toledo
 
 	* src/capture.c: Add NBSS to ethernet mode and ARP to FDDI as
 	possible names to look for
 
-2001-04-19 13:48  toledo
+2001-04-19 12:48  toledo
 
 	* src/: capture.c, capture.h: node->protocols was being incorrectly
 	set to NULL when there were no more node packets. This was both a
@@ -1104,12 +1126,12 @@
 	dump_node_info, which dump everything known about a particular
 	node.
 
-2001-04-19 12:25  toledo
+2001-04-19 11:25  toledo
 
 	* src/: capture.c, names.c, names.h: Added support for ARP (IP
 	address in ARP packet) name resolution
 
-2001-04-19 11:55  toledo
+2001-04-19 10:55  toledo
 
 	* src/: capture.c, globals.h, names.c, names.h: Make it explicitly
 	known whether we have resolved a name or not. It is used for
@@ -1117,100 +1139,100 @@
 	/etc/ethers but we do know the manufacturer code. In that case
 	thename has NOT been solved
 
-2001-04-19 11:19  toledo
+2001-04-19 10:19  toledo
 
 	* src/capture.c: indentation changes
 
-2001-04-19 11:18  toledo
+2001-04-19 10:18  toledo
 
 	* src/names.c: Calling and called names were swapped in
 	netbios_ssn. Removed unnecesary string allocation.
 
-2001-04-19 11:16  toledo
+2001-04-19 10:16  toledo
 
 	* src/capture.c: I was removing protocol and name information when
 	there were no more packets left for that particular protocol, thus
 	losing important name information. Now all that is removed when the
 	node is actually deleted.  Irrelevant if 0ed code deleted
 
-2001-04-19 10:17  toledo
+2001-04-19 09:17  toledo
 
 	* src/protocols.c: Removed RCP_UNKNOWN from RPC so that UDP_UNKONWN
 	can get through. Added debugging messages to get_netbios_ssn
 
-2001-04-19 10:13  toledo
+2001-04-19 09:13  toledo
 
 	* src/: names_netbios.c, names_netbios.h: Added license and code to
 	determine netbios host type
 
-2001-04-19 10:11  toledo
+2001-04-19 09:11  toledo
 
 	* src/names.c: Calculate resolved and numeric names for NBSS and
 	call add_names
 
-2001-04-19 10:09  toledo
+2001-04-19 09:09  toledo
 
 	* src/capture.h: 60 bytes used to be enough capture length for our
 	dissecting capabilities. Not anymore. Bumped to 500
 
-2001-04-19 10:09  toledo
+2001-04-19 09:09  toledo
 
 	* src/capture.c: Added NBSS as preferential name for IP mode
 
-2001-04-18 23:34  toledo
+2001-04-18 22:34  toledo
 
 	* src/: Makefile.am, names.c, names.h, names_netbios.c,
 	names_netbios.h, protocols.c: Added the necesary functions from
 	ethereal to dissect a netbios name
 
-2001-04-18 23:32  toledo
+2001-04-18 22:32  toledo
 
 	* src/protocols.c: Try to recognize an RPC packet before some
 	random service port
 
-2001-04-18 18:25  toledo
+2001-04-18 17:25  toledo
 
 	* src/: capture.c, menus.c, prot_types.h, protocols.c, protocols.h:
 	Added support for NetBIOS Session and SMB protocol recognition
 
-2001-04-18 12:49  toledo
+2001-04-18 11:49  toledo
 
 	* src/protocols.c: Give priority to dst port when trying to
 	recognize tcp services
 
-2001-04-18 12:28  toledo
+2001-04-18 11:28  toledo
 
 	* src/: globals.h, protocols.c: Only decode the tcp service if the
 	tcp packet does have a payload
 
-2001-04-18 11:49  toledo
+2001-04-18 10:49  toledo
 
 	* src/menus.c: Added sanity checks to on_mode_radio_activate
 
-2001-04-18 11:47  toledo
+2001-04-18 10:47  toledo
 
 	* src/capture.c: Added pcap_close in stop_capture
 
-2001-04-18 11:44  toledo
+2001-04-18 10:44  toledo
 
 	* src/diagram.c: Removed useless #if 1
 
-2001-04-18 02:11  toledo
+2001-04-18 01:11  toledo
 
 	* configure.in, old.version, html/FAQ.html, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
 	src/glade-strings: Version 0.6.2
 
-2001-04-18 02:03  toledo
+2001-04-18 01:03  toledo
 
 	* src/util.c: Removed most of the #if 0's so that I can use
 	get_interface_list as well
 
-2001-04-18 02:02  toledo
+2001-04-18 01:02  toledo
 
 	* src/: protocols.c, protocols.h: Added support for RPC protocols.
 
-2001-04-18 02:01  toledo
+2001-04-18 01:01  toledo
 
 	* src/: menus.c, menus.h: Made on_file_combo_entry_changed
 	irrelevant.  Fixed on_file_ok_button_clicked so that neither
@@ -1218,21 +1240,21 @@
 	Added code to have the interfaces menu, which is created at
 	run-time.
 
-2001-04-18 01:58  toledo
+2001-04-18 00:58  toledo
 
 	* src/: main.c, main.h: Menu initialization moved to init_menus
 
-2001-04-18 01:58  toledo
+2001-04-18 00:58  toledo
 
 	* src/globals.h: Minor change to aid in recognizing RPC. Added
 	init_menus
 
-2001-04-18 01:56  toledo
+2001-04-18 00:56  toledo
 
 	* src/diagram.c: Added more checks to node_popup to avoid
 	segfaults. I believe this fixes a number of reported crashes
 
-2001-04-18 01:54  toledo
+2001-04-18 00:54  toledo
 
 	* src/: capture.c, capture.h: Fixed a bug that hanged EtherApe.
 	Every time init_capture was called dns was initiated as well with a
@@ -1240,107 +1262,107 @@
 	a wrong fd.  Small change to get_packet_prot declaration to support
 	RPC recognition
 
-2001-04-18 01:49  toledo
+2001-04-18 00:49  toledo
 
 	* glade/etherape.glade: Activated interfaces menu. Disabled UDP
 	mode which is not yet supported
 
-2001-04-18 01:49  toledo
+2001-04-18 00:49  toledo
 
 	* doc/C/topic.dat: Removed help entries since they are not there
 	yet. Bugs and limitations is, though
 
-2001-04-18 01:48  toledo
+2001-04-18 00:48  toledo
 
 	* doc/C/etherape.sgml: Mention to NFS not being properly recognized
 
-2001-04-17 11:05  toledo
+2001-04-17 10:05  toledo
 
 	* configure.in, doc/C/.cvsignore, html/NEWS.html, src/diagram.c:
 	Version 0.6.1
 
-2001-04-17 11:01  toledo
+2001-04-17 10:01  toledo
 
 	* src/globals.h: Moved appbar message setting into its own function
 	from update_diagram
 
-2001-04-17 10:59  toledo
+2001-04-17 09:59  toledo
 
 	* src/menus.c: gui_capture_stop, start and pause set an appropriate
 	appbar message
 
-2001-04-17 10:50  toledo
+2001-04-17 09:50  toledo
 
 	* src/diagram.c: Moved appbar message setting into its own function
 	from update_diagram
 
-2001-04-17 10:16  toledo
+2001-04-17 09:16  toledo
 
 	* glade/etherape.png: Added copy of app icon here
 
-2001-04-17 10:08  toledo
+2001-04-17 09:08  toledo
 
 	* glade/etherape.glade: Added mode radio menu items
 
-2001-04-16 20:01  toledo
+2001-04-16 19:01  toledo
 
 	* src/: capture.c, dns.c, names.c: Fixed bug for which once a name
 	had been requested as non FQDN, it will always show that way, no
 	matter if the mode was set to IP or TCP
 
-2001-04-16 17:33  toledo
+2001-04-16 16:33  toledo
 
 	* src/capture.c: Removed all mentions to fill_names()
 
-2001-04-16 17:14  toledo
+2001-04-16 16:14  toledo
 
 	* src/: capture.c, dns.c, menus.c, menus.h: indentation changes
 
-2001-04-16 17:05  toledo
+2001-04-16 16:05  toledo
 
 	* src/: capture.c, glade-strings, menus.c, menus.h: Add support for
 	on-the-fly mode change
 
-2001-04-16 02:29  toledo
+2001-04-16 01:29  toledo
 
 	* README.bugs, TODO, etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
 	src/diagram.c, src/glade-strings, src/menus.c: Version 0.6.0
 
-2001-04-16 02:20  toledo
+2001-04-16 01:20  toledo
 
 	* glade/: Makefile.am, etherape.glade, pause.xpm, play.xpm,
 	stop.xpm, .cvsignore: New glade directory for etherape.glade and
 	start, stop and pause pixmaps
 
-2001-04-16 02:16  toledo
+2001-04-16 01:16  toledo
 
 	* src/protocols.c: Don't display ddp protocols as warnings
 
-2001-04-16 02:15  toledo
+2001-04-16 01:15  toledo
 
 	* src/preferences.c: Cosmetic changes
 
-2001-04-16 02:14  toledo
+2001-04-16 01:14  toledo
 
 	* src/: names.c, names.h: New get_llc_name function to better
 	implement name recognition on FDDI frames.
 
-2001-04-16 02:13  toledo
+2001-04-16 01:13  toledo
 
 	* src/: menus.c, menus.h: * Functions to handle the new open
 	capture file dialog * A new function to properly implement entries
 	histories: update_history() * New functions to control capture
 	state: start, stop, pause.
 
-2001-04-16 02:11  toledo
+2001-04-16 01:11  toledo
 
 	* src/: main.c, main.h: * Moved default filter calculation for
 	specific modes to capture.c * Copy string values from popt
 	initialization into new variables.  * Leave capture initialization
 	to new function gui_start_capture
 
-2001-04-16 02:09  toledo
+2001-04-16 01:09  toledo
 
 	* src/globals.h: * Introduced a global state variable to know
 	whether we are stopped,   paused or playing. It's useful when
@@ -1348,17 +1370,17 @@
 	made global for the same last reason.  * New gui start, stop and
 	pause global functions
 
-2001-04-16 02:07  toledo
+2001-04-16 01:07  toledo
 
 	* src/dns.c: Indentation changes
 
-2001-04-16 02:06  toledo
+2001-04-16 01:06  toledo
 
 	* src/diagram.c: * Sets up history for the new file entry dialog *
 	Not do anything in update_diagra if paused.  * Delete display if
 	reproduction of capture file has finished.
 
-2001-04-16 02:03  toledo
+2001-04-16 01:03  toledo
 
 	* src/: capture.c, capture.h: * Introduced a global state variable
 	to know whether we are stopped,   paused or playing. It's useful
@@ -1368,32 +1390,32 @@
 	mode of operation later on.  * end_of_file has to be made global
 	for the same last reason.
 
-2001-04-16 01:54  toledo
+2001-04-16 00:54  toledo
 
 	* doc/C/etherape.sgml: Add a couple of mentions to bugs
 
-2001-04-16 01:51  toledo
+2001-04-16 00:51  toledo
 
 	* Makefile.am, configure.in: Moved etherape.glade  into its own
 	directory, together with some pixmaps
 
-2001-04-16 01:36  toledo
+2001-04-16 00:36  toledo
 
 	* old.version: 0.5.9
 
-2001-04-16 01:18  toledo
+2001-04-16 00:18  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, po/nl.po, src/dns.c: Version 0.5.9
 
-2001-04-16 01:11  toledo
+2001-04-16 00:11  toledo
 
 	* src/protocols.c: * As part of the leak hunting, made most
 	pointers default to NULL when first   defined, and set them to NULL
 	as well at freing time.  * Fixed a leak for PPP captures * Added
 	loopback device support. It shows a new linktype: L_NULL
 
-2001-04-16 01:09  toledo
+2001-04-16 00:09  toledo
 
 	* src/: names.c, names.h: * Added loopback device support. Added
 	get_null_name function * As part of the leak hunting, made most
@@ -1401,29 +1423,29 @@
 	as well at freing time.  * Made some variables local to a function,
 	instead of the static global as   they were
 
-2001-04-16 01:06  toledo
+2001-04-16 00:06  toledo
 
 	* src/: main.c, main.h: * Changed default mode to IP.  * Moved
 	fatal_error_dialog here
 
-2001-04-16 01:05  toledo
+2001-04-16 00:05  toledo
 
 	* src/globals.h: Changed init_capture declaration so that it
 	returns an error message
 
-2001-04-16 01:04  toledo
+2001-04-16 00:04  toledo
 
 	* src/diagram.c: * As part of the leak hunting, made most pointers
 	default to NULL when first   defined, and set them to NULL as well
 	at freing time.
 
-2001-04-16 01:00  toledo
+2001-04-16 00:00  toledo
 
 	* src/capture.h: * Changed check_packet definition so that it is
 	easier to determine when all   packets from a node or link have
 	been deleted
 
-2001-04-16 00:59  toledo
+2001-04-15 23:59  toledo
 
 	* src/capture.c: * Moved away fatal_error_dialog: I might turn
 	capture.c into a library someday,   and GUI portions have no
@@ -1436,170 +1458,170 @@
 	so long. I had forgotten   free all the names structures associated
 	with protocols when the protocols   were freed (in check_packet()).
 
-2001-04-16 00:49  toledo
+2001-04-15 23:49  toledo
 
 	* README.bugs, html/bug-reporting.html: Include mention to
 	GNOME_DISABLE_CRASH_DIALOG=1 to provide a backtrace
 
-2001-04-07 02:32  toledo
+2001-04-07 01:32  toledo
 
 	* html/: FAQ.html, NEWS.html: Trivial changes (indentation and
 	misc)
 
-2001-04-07 02:30  toledo
+2001-04-07 01:30  toledo
 
 	* doc/C/Makefile.am: Copied makefile structure from gcolorsel so
 	that the stylesheet icons will get copied
 
-2001-04-06 19:07  toledo
+2001-04-06 18:07  toledo
 
 	* src/: main.c, main.h: Don't add a whole submenu, add just to the
 	libglade generated help menu. Move UIInfo structure to main.h
 
-2001-04-06 18:45  toledo
+2001-04-06 17:45  toledo
 
 	* src/main.c: Add help menu by hand, so that the help topics are
 	shown
 
-2001-04-05 20:21  toledo
+2001-04-05 19:21  toledo
 
 	* configure.in, html/FAQ.html, html/NEWS.html, po/es.po, po/fr.po,
 	po/nl.po, src/diagram.c, src/main.c: Version 0.5.8
 
-2001-04-05 17:45  toledo
+2001-04-05 16:45  toledo
 
 	* src/main.c: Only set up a window icon if one hasn't already been
 	defined
 
-2001-04-05 17:23  toledo
+2001-04-05 16:23  toledo
 
 	* src/main.c: Fixed undisplayable default font. Seems like a
 	charset _must_ be provided.
 
-2001-04-05 16:49  toledo
+2001-04-05 15:49  toledo
 
 	* po/POTFILES.in~: Remove stale file
 
-2001-04-05 16:47  toledo
+2001-04-05 15:47  toledo
 
 	* TODO, acconfig.h, configure.in, old.version, debian/files,
 	html/bug-reporting.html, po/cat-id-tbl.c, po/etherape.pot,
 	src/glade-strings, src/main.c: Updates to include the window icon
 
-2001-04-05 12:34  toledo
+2001-04-05 11:34  toledo
 
 	* etherape.glade: Revised about box: included logo and Vincent
 
-2001-04-05 09:24  toledo
+2001-04-05 08:24  toledo
 
 	* Makefile.am, configure.in: Include doc directory
 
-2001-04-05 09:23  toledo
+2001-04-05 08:23  toledo
 
 	* doc/: .cvsignore, Makefile.am, etherape.sgml, C/.cvsignore,
 	C/Makefile.am, C/topic.dat: Initial release
 
-2001-04-04 15:53  toledo
+2001-04-04 14:53  toledo
 
 	* doc/C/etherape.sgml: initial release
 
-2001-04-04 15:37  toledo
+2001-04-04 14:37  toledo
 
 	* doc/etherape.sgml: Initial release
 
-2001-04-04 10:25  fpeters
+2001-04-04 09:25  fpeters
 
 	* debian/: .cvsignore, control, postinst.debhelper,
 	postrm.debhelper, prerm.debhelper, substvars: Removed automatically
 	generated files from CVS.
 
-2001-04-03 23:25  toledo
+2001-04-03 22:25  toledo
 
 	* debian/postrm.debhelper: Initial version
 
-2001-04-03 23:24  toledo
+2001-04-03 22:24  toledo
 
 	* Makefile.am: still revising auto rpm procedures
 
-2001-04-03 23:11  toledo
+2001-04-03 22:11  toledo
 
 	* Makefile.am: [no log message]
 
-2001-04-03 23:09  toledo
+2001-04-03 22:09  toledo
 
 	* po/: es.po, etherape.pot, fr.po, nl.po: version 0-5-7
 
-2001-04-03 22:59  toledo
+2001-04-03 21:59  toledo
 
 	* etherape.spec.in: Include desktop file and icon
 
-2001-04-03 22:57  toledo
+2001-04-03 21:57  toledo
 
 	* Makefile.am: Include png file. Create and release rpm
 	automatically
 
-2001-04-03 20:45  toledo
+2001-04-03 19:45  toledo
 
 	* README.bugs, etherape.desktop, etherape.png, old.version,
 	debian/files, debian/postinst.debhelper, debian/substvars,
 	html/NEWS.html, po/es.po, po/etherape.pot, po/fr.po: New version:
 	0.5.7
 
-2001-04-03 20:42  toledo
+2001-04-03 19:42  toledo
 
 	* src/protocols.c: Indentation updates
 
-2001-04-03 20:37  toledo
+2001-04-03 19:37  toledo
 
 	* src/names.c: Added debug message
 
-2001-04-03 20:37  toledo
+2001-04-03 19:37  toledo
 
 	* src/capture.c: Update node and link (try to delete unused ones)
 	in one more condition. Indentation updates
 
-2001-04-03 20:35  toledo
+2001-04-03 19:35  toledo
 
 	* debian/menu: Changed Etherape to EtherApe. Added longtitle and
 	icon
 
-2001-04-03 20:33  toledo
+2001-04-03 19:33  toledo
 
 	* configure.in: Added dutch to linguas
 
-2001-04-03 20:33  toledo
+2001-04-03 19:33  toledo
 
 	* Makefile.am: Added Development_data to include etherape.desktop
 
-2001-04-03 20:25  toledo
+2001-04-03 19:25  toledo
 
 	* INSTALL, OVERVIEW, README, README.thanks, etherape.glade,
 	debian/control, html/FAQ.html, html/bug-reporting.html, src/main.c:
 	Etherape to EtherApe name change
 
-2001-04-03 20:15  toledo
+2001-04-03 19:15  toledo
 
 	* AUTHORS: Added Vincent and request to contact me if anything is
 	wrong
 
-2001-04-03 19:31  toledo
+2001-04-03 18:31  toledo
 
 	* po/nl.po: Initial version. Thanks, Vincent.
 
-2001-04-03 18:54  toledo
+2001-04-03 17:54  toledo
 
 	* configure.in: Added test for res_init so that it won't fail
 	resolver test. It seems the problem came from a change in libc6
 
-2001-04-03 09:11  fpeters
+2001-04-03 08:11  fpeters
 
 	* debian/changelog: Copied official Debian changelog.
 
-2001-04-02 19:39  toledo
+2001-04-02 18:39  toledo
 
 	* Makefile.am: Changes to include etherape.desktop and etherape.png
 
-2001-04-02 17:59  toledo
+2001-04-02 16:59  toledo
 
 	* debian/rules: Added install menu command
 
@@ -1608,13 +1630,13 @@
 	* src/: capture.c, globals.h: added warning dialog when run as
 	non-root
 
-2000-05-11 18:14  fpeters
+2000-05-11 17:14  fpeters
 
 	* src/capture.c: Added exit(1) if there is an error opening the
 	network device (it was reported as bug #63951 on Debian and caused
 	a core dump)
 
-2000-05-10 18:02  fpeters
+2000-05-10 17:02  fpeters
 
 	* debian/: changelog, control, cron.d.ex, dirs, docs,
 	emacsen-install.ex, emacsen-remove.ex, emacsen-startup.ex,
@@ -1623,47 +1645,47 @@
 	example files and updated files to match the last changes in the
 	official Debian package
 
-2000-05-06 18:46  fpeters
+2000-05-06 17:46  fpeters
 
 	* debian/rules: updated rules to build correctly with libglade and
 	to _not_ provide /etc/etherape/services (since Debian /etc/services
 	is enough)
 
-2000-05-06 18:43  fpeters
+2000-05-06 17:43  fpeters
 
 	* src/protocols.c: added fallback to /etc/services when
 	$sysconfdir/etherape/services is missing
 
-2000-05-04 13:20  toledo
+2000-05-04 12:20  toledo
 
 	* etherape.spec.in, po/es.po, po/etherape.pot, po/fr.po: update
 	spec.in so that services is a configuration file
 
-2000-05-04 12:50  toledo
+2000-05-04 11:50  toledo
 
 	* html/NEWS.html, src/capture.c: Added debugging messages to tell
 	which link media we have
 
-2000-05-04 11:59  toledo
+2000-05-04 10:59  toledo
 
 	* Makefile.am, configure.in, po/etherape.pot: Added tar.gz to the
 	purge target
 
-2000-05-04 11:58  toledo
+2000-05-04 10:58  toledo
 
 	* src/: diagram.c, dns.c, main.c, main.h, names.c, protocols.c,
 	resolv.c: Redone indentation
 
-2000-05-04 11:57  toledo
+2000-05-04 10:57  toledo
 
 	* src/capture.c: Reset interface to device in init_capture so as to
 	know that we are in online mode. Redone indentation
 
-2000-05-04 09:58  toledo
+2000-05-04 08:58  toledo
 
 	* services: Initial release
 
-2000-05-04 09:55  toledo
+2000-05-04 08:55  toledo
 
 	* Makefile.am, configure.in, etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po,
@@ -1674,7 +1696,7 @@
 	src/protocols.c, src/protocols.h, src/resolv.c, src/util.c: Added
 	topmost recognized protocol to the stack level setting
 
-2000-05-04 09:44  toledo
+2000-05-04 08:44  toledo
 
 	* Makefile.am, configure.in, etherape.spec.in, html/NEWS.html,
 	src/Makefile.am, src/callbacks.c, src/capture.c, src/capture.h,
@@ -1684,12 +1706,12 @@
 	src/protocols.h, src/resolv.c, src/util.c: Added ability to read
 	services from a file
 
-2000-05-03 18:56  toledo
+2000-05-03 17:56  toledo
 
 	* src/: menus.c, menus.h, preferences.c, preferences.h: Reordering
 	the callbacks
 
-2000-05-03 18:50  toledo
+2000-05-03 17:50  toledo
 
 	* configure.in, etherape.glade, debian/control, debian/docs,
 	debian/rules, html/NEWS.html, po/cat-id-tbl.c, po/es.po,
@@ -1699,11 +1721,11 @@
 	src/names.c, src/resolv.c, src/util.c: Added start and stop
 	buttons. The toolbar is back, since it is now useful. :-)
 
-2000-05-01 12:48  toledo
+2000-05-01 11:48  toledo
 
 	* src/glade-strings: [no log message]
 
-2000-05-01 12:36  toledo
+2000-05-01 11:36  toledo
 
 	* OVERVIEW, configure.in, html/NEWS.html, po/cat-id-tbl.c,
 	po/es.po, po/etherape.pot, po/fr.po, src/capture.c, src/capture.h,
@@ -1713,57 +1735,57 @@
 	configuration and more the ability to use more criteria will come
 	next
 
-2000-05-01 12:23  toledo
+2000-05-01 11:23  toledo
 
 	* etherape.spec.in: Renamed to EtherApe
 
-2000-05-01 12:22  toledo
+2000-05-01 11:22  toledo
 
 	* etherape.glade: Fit in 640x480. Removed canvas scrollbars
 
-2000-04-30 17:51  toledo
+2000-04-30 16:51  toledo
 
 	* old.version, html/NEWS.html: Version 0.5.1
 
-2000-04-30 17:47  toledo
+2000-04-30 16:47  toledo
 
 	* src/: diagram.c, names.c: removed leaks
 
-2000-04-30 17:45  toledo
+2000-04-30 16:45  toledo
 
 	* src/: capture.c, capture.h: removed leaks. Allow to read from
 	file even if there is no device
 
-2000-04-30 17:36  toledo
+2000-04-30 16:36  toledo
 
 	* etherape.glade: hid toolbar
 
-2000-04-30 16:35  toledo
+2000-04-30 15:35  toledo
 
 	* src/names.c: Removed leak
 
-2000-04-30 16:32  toledo
+2000-04-30 15:32  toledo
 
 	* src/capture.c: Rearrangement and proper debug code in node
 	deletion
 
-2000-04-25 18:43  fpeters
+2000-04-25 17:43  fpeters
 
 	* debian/: control, rules: Updated to cope with libglade
 
-2000-04-17 18:09  fpeters
+2000-04-17 17:09  fpeters
 
 	* debian/docs: Added AUTHORS to the installed files
 
-2000-04-17 18:05  fpeters
+2000-04-17 17:05  fpeters
 
 	* po/fr.po: Updated French translation
 
-2000-04-17 10:47  toledo
+2000-04-17 09:47  toledo
 
 	* etherape.spec.in: Name change Etherape->EtherApe
 
-2000-04-15 22:48  toledo
+2000-04-15 21:48  toledo
 
 	* Makefile.am, configure.in, etherape.glade, etherape.spec.in,
 	html/NEWS.html, po/POTFILES, po/POTFILES.in, po/POTFILES.in~,
@@ -1771,74 +1793,74 @@
 	libglade dependency to etherape.spec.in Moved libglade checking
 	below gnome-config checking in configure.in
 
-2000-04-15 22:27  toledo
+2000-04-15 21:27  toledo
 
 	* src/: .cvsignore, callbacks.c, callbacks.h, diagram.c,
 	interface.c, interface.h, main.c, support.c, support.h: Fixed view
 	menu in callbacks, fixed popup in diagram, removed glade generated
 	files.
 
-2000-04-15 20:19  toledo
+2000-04-15 19:19  toledo
 
 	* Makefile.am, configure.in, etherape.glade, macros/gnome.m4,
 	po/cat-id-tbl.c, po/etherape.pot, src/Makefile.am, src/callbacks.c,
 	src/main.c: Proper installation of etherape.glade, and made sure
 	the code uses the right file
 
-2000-04-15 19:34  toledo
+2000-04-15 18:34  toledo
 
 	* src/: callbacks.c, diagram.c, globals.h, main.c: added new
 	legend_protocols list so that the legend works again. Now we count
 	legend protocols using the list, instead of checking directly the
 	legend widgets
 
-2000-04-15 17:02  toledo
+2000-04-15 16:02  toledo
 
 	* src/main.c: compiles and run, though with many errors
 
-2000-04-15 16:44  toledo
+2000-04-15 15:44  toledo
 
 	* src/: callbacks.c, main.c: compiles and run, though with many
 	errors
 
-2000-04-15 13:57  toledo
+2000-04-15 12:57  toledo
 
 	* src/: Makefile.am, callbacks.c, diagram.c, globals.h, main.c:
 	first attempts at converting to libglade
 
-2000-04-15 11:09  toledo
+2000-04-15 10:09  toledo
 
 	* src/: names.c, names.h, protocols.c: Fixed PPP and SLIP behaviour
 	by handling RAW protocol
 
-2000-04-14 18:49  toledo
+2000-04-14 17:49  toledo
 
 	* AUTHORS, OVERVIEW, configure.in, etherape.glade, old.version,
 	html/NEWS.html, po/cat-id-tbl.c, po/es.po, po/etherape.pot,
 	po/fr.po, src/interface.c: Added Bill Barth to AUTHORS and About
 	box
 
-2000-04-14 18:34  toledo
+2000-04-14 17:34  toledo
 
 	* src/diagram.c: Moved g_messages into g_debug. Appbar showing
 	number of nodes is only set when it changes
 
-2000-04-14 18:34  toledo
+2000-04-14 17:34  toledo
 
 	* src/capture.c: Added TODO note
 
-2000-04-14 18:21  toledo
+2000-04-14 17:21  toledo
 
 	* src/: globals.h, main.c, main.h: Added -q (quiet) option,
 	set_debug_level and log_handler so that only if DEBUG env variable
 	is set, INFO and DEBUG are shown. Added g_my_debug and g_my_info
 	macros
 
-2000-04-14 16:32  toledo
+2000-04-14 15:32  toledo
 
 	* src/main.c: Fixed filter set up. Was doing the opposite thing
 
-2000-04-14 16:30  toledo
+2000-04-14 15:30  toledo
 
 	* src/: callbacks.c, diagram.c: Added destroying_timeout and
 	destroying_idle. Whenever there has to be a switch between idle and
@@ -1846,92 +1868,92 @@
 	installed on the destroy function. When the refresh_period is
 	changed in the GUI, the source is removed
 
-2000-04-14 16:28  toledo
+2000-04-14 15:28  toledo
 
 	* src/globals.h: Added destroying_timeout and destroying_idle
 
-2000-04-14 16:26  toledo
+2000-04-14 15:26  toledo
 
 	* src/diagram.h: Added is_idle to capture globals
 
-2000-04-12 16:33  toledo
+2000-04-12 15:33  toledo
 
 	* src/main.c: popt is passed it's own gchar *, so that filter is
 	only g_alloced and it won't segfault if g_freed when applying
 	preferences
 
-2000-04-11 10:12  toledo
+2000-04-11 09:12  toledo
 
 	* src/diagram.c: New static mode from bbarth
 
-2000-04-10 22:11  fpeters
+2000-04-10 21:11  fpeters
 
 	* debian/README.debian: removed note about missing manpage in
 	debian doc
 
-2000-04-10 11:32  toledo
+2000-04-10 10:32  toledo
 
 	* configure.in, old.version, html/NEWS.html, po/cat-id-tbl.c,
 	po/es.po, po/etherape.pot, po/fr.po: [no log message]
 
-2000-04-10 11:24  toledo
+2000-04-10 10:24  toledo
 
 	* src/: capture.c, names.c: Added get_tcp_name Changes in add_name 
 	 accumulated and n_packets were only set when the node was created.
 	   names are set every time the name is heard, so that I don't have
 	   to do little tricks for IP and TCP
 
-2000-04-10 11:22  toledo
+2000-04-10 10:22  toledo
 
 	* src/diagram.c: Removed annoying debug message in
 	reposition_canvas_node
 
-2000-04-10 11:21  toledo
+2000-04-10 10:21  toledo
 
 	* src/names.h: Added get_tcp_name. Moved functions to static
 
-2000-04-09 21:52  toledo
+2000-04-09 20:52  toledo
 
 	* configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po: [no log message]
 
-2000-04-09 21:45  toledo
+2000-04-09 20:45  toledo
 
 	* src/: diagram.c, globals.h, main.c: Added new option stationary
 	and code to reposition_canvas_nodes to implement it
 
-2000-04-09 21:42  toledo
+2000-04-09 20:42  toledo
 
 	* src/capture.c: Changes to update_node_names and set_node_name so
 	that we can put the ethernet name before IP if it has been 'solved'
 	using /etc/ethers
 
-2000-04-09 21:39  toledo
+2000-04-09 20:39  toledo
 
 	* src/names.c: Uses mode in get_ip_name so that it's not FQDN in
 	ethernet name. Fixed bug which prevented to identify whether the
 	numeric option had been set
 
-2000-04-09 11:14  toledo
+2000-04-09 10:14  toledo
 
 	* .cvsignore, README.thanks, configure.in, etherape.spec,
 	old.version, html/NEWS.html, po/ChangeLog, po/es.po,
 	po/etherape.pot, po/fr.po: [no log message]
 
-2000-04-09 11:09  toledo
+2000-04-09 10:09  toledo
 
 	* src/: capture.c, capture.h: If0ed mentions to fill_names. Removed
 	debugging messages.
 
-2000-04-09 11:08  toledo
+2000-04-09 10:08  toledo
 
 	* src/names.c: ip identification was reversed in get_ip_name
 
-2000-04-09 10:21  toledo
+2000-04-09 09:21  toledo
 
 	* src/names.c: only indentation changes
 
-2000-04-09 10:06  toledo
+2000-04-09 09:06  toledo
 
 	* src/: capture.c, capture.h: The packet list is freed in
 	update_node and update_link. It used to work only by miracle. Added
@@ -1941,80 +1963,80 @@
 	set_name sets the node_name based on a protocol ordering given as a
 	parameter.
 
-2000-04-07 20:50  toledo
+2000-04-07 19:50  toledo
 
 	* src/: globals.h, names.c, names.h: Finished up ip names as well.
 	Now on to using those names
 
-2000-04-07 14:45  toledo
+2000-04-07 13:45  toledo
 
 	* src/: names.c, names.h: Added prot_functions_table so that the
 	next function to be called is taken from it
 
-2000-04-07 13:15  toledo
+2000-04-07 12:15  toledo
 
 	* src/: capture.c, globals.h, names.c, names.h: Initial code for
 	get_packet_names
 
-2000-04-07 13:07  toledo
+2000-04-07 12:07  toledo
 
 	* src/: Makefile.am, prot_types.h: protocols.h only has
 	declarations for private functions now. It includes prot_types.h
 
-2000-04-07 13:02  toledo
+2000-04-07 12:02  toledo
 
 	* src/protocols.h: protocols.h only has declarations for private
 	functions now. It includes prot_types.h
 
-2000-04-07 13:01  toledo
+2000-04-07 12:01  toledo
 
 	* src/: tcpudp.h, maketcpudp.sh: made the services tables static so
 	that both protocols and names get their own copy and the compiler
 	doesn't complain
 
-2000-04-07 10:40  toledo
+2000-04-07 09:40  toledo
 
 	* Makefile.am, configure.in, etherape.spec.in: rpm version in spec
 	file is now automatically set, since I moved etherape.spec to
 	eterape.spec.in
 
-2000-04-06 21:57  toledo
+2000-04-06 20:57  toledo
 
 	* html/NEWS.html, po/etherape.pot: [no log message]
 
-2000-04-06 21:52  toledo
+2000-04-06 20:52  toledo
 
 	* src/capture.c: Fixed prot_freq_compare. Was doing the opposite of
 	intended
 
-2000-04-06 21:51  toledo
+2000-04-06 20:51  toledo
 
 	* src/diagram.c: Node colors are those of its most common protocol
 
-2000-04-06 21:18  toledo
+2000-04-06 20:18  toledo
 
 	* src/: capture.c, capture.h: Keep track of protcols for nodes as
 	well. Changed get_main_prot so that it could work both for nodes
 	and links
 
-2000-04-06 21:17  toledo
+2000-04-06 20:17  toledo
 
 	* src/globals.h: Added color attribute to canvas_node
 
-2000-04-06 21:17  toledo
+2000-04-06 20:17  toledo
 
 	* src/protocols.c: Added IP fragment recognition
 
-2000-04-06 21:15  toledo
+2000-04-06 20:15  toledo
 
 	* AUTHORS, etherape.glade, src/interface.c: Added Eran's email
 	address
 
-2000-04-06 17:30  toledo
+2000-04-06 16:30  toledo
 
 	* po/.cvsignore: Added stamp-cat-id
 
-2000-04-06 17:27  toledo
+2000-04-06 16:27  toledo
 
 	* Makefile.am, OVERVIEW, README.bugs, README.help, html/FAQ.html,
 	html/NEWS.html, html/bug-reporting.html, html/etherape.css,
@@ -2024,47 +2046,47 @@
 	called in packet_read and the result is passed to add_node_packet
 	and add_link_packet, since it will be used in both places.
 
-2000-04-05 12:27  toledo
+2000-04-05 11:27  toledo
 
 	* OVERVIEW: initial version
 
-2000-04-05 12:02  toledo
+2000-04-05 11:02  toledo
 
 	* html/FAQ.html: All system messages are <tt> now. How to get rid
 	of debug messages.
 
-2000-04-05 11:06  toledo
+2000-04-05 10:06  toledo
 
 	* configure.in, old.version, po/es.po, po/etherape.pot, po/fr.po,
 	src/Makefile.am, src/capture.c, src/diagram.c, src/main.c,
 	src/main.h: Function ordering in main.c, thus added main.h Added
 	fddi to the list of modes available in --help
 
-2000-04-05 11:04  toledo
+2000-04-05 10:04  toledo
 
 	* src/capture.c: Better check whether current mode is relevant for
 	the device
 
-2000-04-05 11:03  toledo
+2000-04-05 10:03  toledo
 
 	* etherape.8: Added fddi mode. Problem with router entry only in
 	ethernet mode
 
-2000-04-05 11:02  toledo
+2000-04-05 10:02  toledo
 
 	* AUTHORS: Frederic did the manpage
 
-2000-04-04 18:01  fpeters
+2000-04-04 17:01  fpeters
 
 	* Makefile.am, etherape.1, etherape.8: Moved the manpage to section
 	8
 
-2000-04-04 17:58  fpeters
+2000-04-04 16:58  fpeters
 
 	* debian/: changelog, rules: updated debian/rules to install
 	manpage
 
-2000-04-04 15:01  toledo
+2000-04-04 14:01  toledo
 
 	* .cvsignore, FAQ, NEWS, TODO, html/NEWS.html, po/etherape.pot,
 	src/capture.c, src/diagram.c, src/globals.h, src/protocols.c,
@@ -2072,7 +2094,7 @@
 	FDDI to ape_modes, adding FDDI to fill_names and get_fddi_type to
 	protocols.c
 
-2000-04-04 13:55  toledo
+2000-04-04 12:55  toledo
 
 	* NEWS, README, acinclude.m4, configure.in, etherape.spec,
 	po/es.po, po/etherape.pot, po/fr.po, src/capture.c, src/diagram.c:
@@ -2080,38 +2102,38 @@
 	--enable-static-pcap option. This option is used in etherape.spec
 	to allow building an rpm file that will work in RedHat.
 
-2000-04-03 13:14  toledo
+2000-04-03 12:14  toledo
 
 	* Makefile.am, NEWS, etherape.spec, html/NEWS.html,
 	html/etherape.css, po/es.po, po/etherape.pot, po/fr.po,
 	src/capture.c, src/diagram.c: Appbar shows FPS. Added spec file.
 
-2000-04-02 16:00  fpeters
+2000-04-02 15:00  fpeters
 
 	* Makefile.am, etherape.1: Added manpage (manually generated from
 	etherape --help)
 
-2000-03-31 11:07  toledo
+2000-03-31 10:07  toledo
 
 	* NEWS, etherape.glade, html/NEWS.html, po/etherape.pot,
 	src/callbacks.c, src/capture.c, src/diagram.c, src/interface.c:
 	Fixed get_link_id so that src and dst are correctly placed
 	depending on ape_mode.
 
-2000-03-30 17:21  toledo
+2000-03-30 16:21  toledo
 
 	* configure.in, po/es.po, po/etherape.pot, po/fr.po, src/capture.c,
 	src/diagram.c, src/diagram.h, src/main.c: In main.c, nofade is not
 	loaded from file, since we can't unset it in any way.  Cleaned up
 	and reordered diagram.c
 
-2000-03-29 19:31  toledo
+2000-03-29 18:31  toledo
 
 	* NEWS, configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, src/capture.c, src/diagram.c: 
 	Doesn't really change anything.
 
-2000-03-29 17:13  toledo
+2000-03-29 16:13  toledo
 
 	* po/etherape.pot, src/capture.c, src/diagram.c, src/protocols.c: 
 	canvas_link->link_item is now a polygon, instead of a line.  In
@@ -2119,7 +2141,7 @@
 	applied at the source, and at destination width is 0.  Also fixed
 	compilation warnings "statement withougt effect".
 
-2000-03-29 15:37  toledo
+2000-03-29 14:37  toledo
 
 	* configure.in, etherape.glade, old.version, po/es.po,
 	po/etherape.pot, po/fr.po, src/capture.c, src/capture.h,
@@ -2130,7 +2152,7 @@
 	packet.  Changed diagram.c to display node_size as a function for
 	outbound package as default.
 
-2000-03-29 14:09  toledo
+2000-03-29 13:09  toledo
 
 	* AUTHORS, Makefile.am, NEWS, configure.in, etherape.glade,
 	old.version, html/NEWS.html, po/es.po, po/etherape.pot, po/fr.po,
@@ -2145,7 +2167,7 @@
 	update_diagram an idle function if refresh_period is too small for
 	the CPU
 
-2000-03-29 01:41  toledo
+2000-03-29 00:41  toledo
 
 	* NEWS, html/NEWS.html, po/etherape.pot, src/callbacks.c,
 	src/capture.c, src/diagram.c, src/diagram.h, src/globals.h,
@@ -2156,32 +2178,32 @@
 	are properly referenced when created, and all of then destroyed
 	when the canvas node is deleted. This fixes some more leaks.
 
-2000-03-28 21:07  toledo
+2000-03-28 20:07  toledo
 
 	* TODO, etherape.glade, html/NEWS.html, po/cat-id-tbl.c,
 	po/etherape.pot, src/callbacks.c, src/diagram.c, src/interface.c,
 	src/interface.h, src/support.c, src/support.h: Filter entry has
 	history. Prefs are raised when called.
 
-2000-03-27 20:28  toledo
+2000-03-27 19:28  toledo
 
 	* README, README.thanks, configure.in, old.version, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, src/capture.c,
 	src/globals.h: [no log message]
 
-2000-03-26 19:19  fpeters
+2000-03-26 18:19  fpeters
 
 	* debian/changelog: Updated changelog
 
-2000-03-26 19:17  fpeters
+2000-03-26 18:17  fpeters
 
 	* debian/control: Added 'Build-depends:' line
 
-2000-03-26 19:16  fpeters
+2000-03-26 18:16  fpeters
 
 	* po/fr.po: Updated french translation
 
-2000-03-26 13:22  fpeters
+2000-03-26 12:22  fpeters
 
 	* po/fr.po: updated french translation
 
@@ -2870,6 +2892,11 @@
 	src/support.c, src/util.c: 
 	Diagram resizes with window
 
+2000-02-25 13:17  toledo
+
+	* src/.deps/: callbacks.P, capture.P, interface.P, main.P,
+	resolv.P, support.P, util.P: [no log message]
+
 2000-02-25 13:09  toledo
 
 	* intl/: ChangeLog, Makefile, Makefile.in, VERSION, bindtextdom.c,
@@ -2899,7 +2926,9 @@
 
 2000-02-24 16:53  toledo
 
-	* src/: Makefile, main.c: [no log message]
+	* src/: Makefile, main.c, .deps/callbacks.P, .deps/capture.P,
+	.deps/interface.P, .deps/main.P, .deps/resolv.P, .deps/support.P,
+	.deps/util.P: [no log message]
 
 2000-02-24 07:52  toledo
 
@@ -2923,8 +2952,8 @@
 
 2000-02-23 17:54  toledo
 
-	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h:
-	
+	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h,
+	src/.deps/resolv.P, src/.deps/util.P: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -2935,7 +2964,7 @@
 	configure, configure.in, etherape.glade, intl/Makefile,
 	macros/Makefile, macros/Makefile.in, po/Makefile, po/Makefile.in,
 	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
-	src/capture.c, src/interface.c: 
+	src/capture.c, src/interface.c, src/.deps/capture.P: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -2949,7 +2978,7 @@
 
 2000-02-23 12:19  toledo
 
-	* src/: Makefile, capture.c, interface.c, main.c: 
+	* src/: Makefile, capture.c, interface.c, main.c, .deps/capture.P: 
 	
 	First gnome_canvas version
 
@@ -2980,14 +3009,14 @@
 2000-02-21 23:22  toledo
 
 	* README, po/etherape.pot, src/callbacks.h, src/capture.c,
-	src/capture.h, src/main.c: 
+	src/capture.h, src/main.c, src/.deps/main.P: 
 	
 	Node sizes as average traffic in the last 10 seconds
 
 2000-02-21 14:16  toledo
 
 	* src/: Makefile, callbacks.c, callbacks.h, capture.c, capture.h,
-	interface.c, main.c, support.c: 
+	interface.c, main.c, support.c, .deps/main.P: 
 	Added gnome support. Correctly displays ether addresses.
 
 2000-02-21 14:13  toledo
@@ -3031,7 +3060,8 @@
 	configure, configure.in, etherape.glade, src/Makefile,
 	src/Makefile.am, src/Makefile.in, src/callbacks.c, src/callbacks.h,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: 
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: 
 	
 	Added gnome support in order to use the gnome_canvas.
 
@@ -3057,12 +3087,13 @@
 2000-02-18 19:56  toledo
 
 	* src/: Makefile, Makefile.am, Makefile.in, callbacks.h, capture.c,
-	interface.h, main.c, support.h: [no log message]
+	interface.h, main.c, support.h, .deps/capture.P, .deps/main.P: [no
+	log message]
 
 2000-02-18 12:23  toledo
 
-	* Makefile, README, config.h, config.status, src/Makefile: [no log
-	message]
+	* Makefile, README, config.h, config.status, src/Makefile,
+	src/.deps/capture.P: [no log message]
 
 2000-02-18 11:48  toledo
 
@@ -3076,7 +3107,9 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: [no log message]
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: [no
+	log message]
 
 2000-02-18 11:31  toledo
 
@@ -3086,5 +3119,7 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: Initial revision
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P:
+	Initial revision
 
