@@ -610,6 +610,14 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 	     _("Creating canvas_node: %s. Number of nodes %d"),
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
 
+      /*
+       * We hide them until we are sure that they will get a proper position
+       * in reposition_nodes
+       */
+      gnome_canvas_item_hide (new_canvas_node->node_item);
+      gnome_canvas_item_hide (new_canvas_node->text_item);
+
+
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
       need_reposition = TRUE;
