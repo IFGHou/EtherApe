@@ -662,8 +662,14 @@
  <sect1 id="bugs">
   <title>Known Bugs and Limitations</title>
   <para>
-   This application has no known bugs.
+  As default, only IP traffic is shown. To see other protocols use
+ethernet mode (-m ethernet)
   </para>
+  <para>
+    libpcap has a bug for which a filter -f "ip" doesn't show
+  icmp traffic.
+  </para>
+
  </sect1>
 
 
