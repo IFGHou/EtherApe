@@ -537,7 +537,7 @@ get_netbios_ssn (void)
 #define SESSION_MESSAGE 0
   guint8 mesg_type;
 
-  prot = g_string_append (prot, "/NBSS");
+  prot = g_string_append (prot, "/NETBIOS-SSN");
 
   mesg_type = *(guint8 *) (packet + offset);
 

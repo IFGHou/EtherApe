@@ -71,6 +71,6 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"IP", get_ip_name},
   {"TCP", get_tcp_name},
   {"UDP", get_udp_name},
-  {"NBSS", get_nbss_name},
+  {"NETBIOS-SSN", get_nbss_name},
   {"NETBIOS-DGM", get_nbdgm_name}
 };
