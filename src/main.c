@@ -16,15 +16,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-#include <stdlib.h>
-
-#include <math.h>
+#include <gnome.h>
 
 #include "interface.h"
 #include "support.h"
@@ -147,33 +143,31 @@ draw_diagram (gpointer data)
   return TRUE;
 }
 
+
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *window_main;
+  GtkWidget *app1;
 
+#ifdef ENABLE_NLS
+  bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+  textdomain (PACKAGE);
+#endif
 
   init_capture ();
-
-  gtk_set_locale ();
-  gtk_init (&argc, &argv);
-
-  add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
-  add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
-
+   
+  gnome_init ("etherape", VERSION, argc, argv);
+   
   fixed_font = gdk_font_load ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
 
-  /*
-   * The following code was added by Glade to create one of each component
-   * (except popup menus), just so that you see something after building
-   * the project. Delete any components that you don't want shown initially.
-   */
-  window_main = create_window_main ();
-  gtk_widget_show (window_main);
+  app1 = create_app1 ();
+  gtk_widget_show (app1);
 
   gtk_timeout_add (100 /*ms */ ,
 		   draw_diagram,
 		   NULL);
+
   gtk_main ();
   return 0;
 }
+

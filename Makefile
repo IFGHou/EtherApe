@@ -40,7 +40,7 @@ pkgincludedir = $(includedir)/etherape
 
 top_builddir = .
 
-ACLOCAL = aclocal
+ACLOCAL = aclocal -I macros
 AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
@@ -57,21 +57,63 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+CATALOGS = 
+CATOBJEXT = .gmo
 CC = gcc
+DATADIRNAME = share
+GENCAT = 
+GMOFILES = 
+GMSGFMT = /usr/bin/msgfmt
+GNOMEGNORBA_LIBS = -rdynamic -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNOMEUI_LIBS = -rdynamic -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNOME_APPLETS_LIBS = 
+GNOME_CAPPLET_LIBS = 
+GNOME_CONFIG = /usr/bin/gnome-config
+GNOME_INCLUDEDIR = -I/usr/include -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/lib/glib/include -I/usr/X11R6/include
+GNOME_LIBDIR = -rdynamic -L/usr/lib -L/usr/X11R6/lib
+GNOME_LIBS = -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNORBA_CFLAGS = -I/usr/include -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/lib/glib/include -I/usr/X11R6/include
+GNORBA_LIBS = -rdynamic -L/usr/lib -L/usr/X11R6/lib -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GTKXMHTML_LIBS = -rdynamic -lgtkxmhtml -lXpm -ljpeg -lpng -lz -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 GTK_CFLAGS = -I/usr/X11R6/include -I/usr/lib/glib/include
 GTK_CONFIG = /usr/bin/gtk-config
-GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+GTK_LIBS = -lSM -lICE -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+GT_NO = 
+GT_YES = #YES#
+INCLUDE_LOCALE_H = #include <locale.h>
+INSTOBJEXT = .mo
+INTLDEPS = 
+INTLLIBS = 
+INTLOBJS = 
 MAKEINFO = /root/etherape/missing makeinfo
+MKINSTALLDIRS = ./mkinstalldirs
+MSGFMT = /usr/bin/msgfmt
+ORBIT_CFLAGS = -I/usr/lib/glib/include -I/usr/include
+ORBIT_CONFIG = /usr/bin/orbit-config
+ORBIT_IDL = /usr/bin/orbit-idl
+ORBIT_LIBS = -L/usr/lib -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = etherape
+PACKAGE_PIXMAPS_DIR = /usr/share/pixmaps/etherape
+POFILES = 
+POSUB = po
+PTHREAD_LIB = -lpthread
+RANLIB = ranlib
+USE_INCLUDED_LIBINTL = no
+USE_NLS = yes
 VERSION = 0.1
+XPM_LIBS = 
+ZVT_LIBS = -rdynamic -lzvt -lutil -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+cflags_set = yes
+cxxflags_set = @cxxflags_set@
+l = 
 
-SUBDIRS = src
+SUBDIRS = intl po macros src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
-Makefile.am Makefile.in NEWS acconfig.h aclocal.m4 config.h.in \
+DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
+INSTALL Makefile.am Makefile.in NEWS acconfig.h aclocal.m4 config.h.in \
 configure configure.in install-sh missing mkinstalldirs
 
 
@@ -226,7 +268,7 @@ distcheck: dist
 	mkdir $(distdir)/=inst
 	dc_install_base=`cd $(distdir)/=inst && pwd`; \
 	cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
+	  && ../configure --with-included-gettext --srcdir=.. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
 	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
 	  && $(MAKE) $(AM_MAKEFLAGS) check \
@@ -355,10 +397,10 @@ mostlyclean distclean maintainer-clean
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/pixmaps; \
+	  $(mkinstalldirs) $(DESTDIR)/usr/share/pixmaps/etherape; \
 	  for pixmap in $(srcdir)/pixmaps/*; do \
 	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(pkgdatadir)/pixmaps; \
+	      $(INSTALL_DATA) $$pixmap $(DESTDIR)/usr/share/pixmaps/etherape; \
 	    fi \
 	  done \
 	fi

@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	@GTK_CFLAGS@
+	-I$(top_srcdir)/intl \
+	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = etherape
 
@@ -10,7 +11,7 @@ etherape_SOURCES = \
 	capture.c capture.h \
 	support.c support.h \
 	interface.c interface.h \
-	callbacks.c callbacks.h 
+	callbacks.c callbacks.h
 
-etherape_LDADD = @GTK_LIBS@
+etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
 

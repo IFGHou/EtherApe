@@ -1,31 +1,82 @@
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
 
-configure:562: checking for a BSD compatible install
-configure:615: checking whether build environment is sane
-configure:672: checking whether make sets ${MAKE}
-configure:718: checking for working aclocal
-configure:731: checking for working autoconf
-configure:744: checking for working automake
-configure:757: checking for working autoheader
-configure:770: checking for working makeinfo
-configure:790: checking for gcc
-configure:903: checking whether the C compiler (gcc  ) works
-configure:919: gcc -o conftest    conftest.c  1>&5
-configure:945: checking whether the C compiler (gcc  ) is a cross-compiler
-configure:950: checking whether we are using GNU C
-configure:978: checking whether gcc accepts -g
-configure:1010: checking for POSIXized ISC
-configure:1033: checking for gcc
-configure:1146: checking whether the C compiler (gcc -g -O2 ) works
-configure:1162: gcc -o conftest -g -O2   conftest.c  1>&5
-configure:1188: checking whether the C compiler (gcc -g -O2 ) is a cross-compiler
-configure:1193: checking whether we are using GNU C
-configure:1221: checking whether gcc accepts -g
-configure:1256: checking for gcc option to accept ANSI C
-configure:1333: checking how to run the C preprocessor
-configure:1413: checking for ANSI C header files
-configure:1567: checking for gtk-config
-configure:1602: checking for GTK - version >= 1.2.0
-configure:1703: gcc -o conftest -g -O2 -I/usr/X11R6/include -I/usr/lib/glib/include   conftest.c -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm  1>&5
-configure:1812: checking for pcap_open_live in -lpcap
+configure:578: checking for a BSD compatible install
+configure:631: checking whether build environment is sane
+configure:688: checking whether make sets ${MAKE}
+configure:734: checking for working aclocal
+configure:747: checking for working autoconf
+configure:760: checking for working automake
+configure:773: checking for working autoheader
+configure:786: checking for working makeinfo
+configure:874: checking for gnome-config
+configure:911: checking if /usr/bin/gnome-config works
+configure:919: checking for orbit-config
+configure:955: checking for orbit-idl
+configure:989: checking for working ORBit environment
+configure:1025: checking for gnorba libraries
+configure:1129: checking for gcc
+configure:1242: checking whether the C compiler (gcc  ) works
+configure:1258: gcc -o conftest    conftest.c  1>&5
+configure:1284: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:1289: checking whether we are using GNU C
+configure:1317: checking whether gcc accepts -g
+configure:1349: checking for POSIXized ISC
+configure:1372: checking for gcc
+configure:1485: checking whether the C compiler (gcc -g -O2 ) works
+configure:1501: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1527: checking whether the C compiler (gcc -g -O2 ) is a cross-compiler
+configure:1532: checking whether we are using GNU C
+configure:1560: checking whether gcc accepts -g
+configure:1595: checking for gcc option to accept ANSI C
+configure:1672: checking how to run the C preprocessor
+configure:1752: checking for ANSI C header files
+configure:1867: checking what warning flags to pass to the C compiler
+configure:1899: checking what language compliance flags to pass to the C compiler
+configure:1924: checking for pthread_create in -lpthread
+configure:2148: checking for gtk-config
+configure:2183: checking for GTK - version >= 1.2.0
+configure:2284: gcc -o conftest -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations  -I/usr/X11R6/include -I/usr/lib/glib/include   conftest.c -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm  1>&5
+configure:2387: checking for SmcSaveYourselfDone in -lSM
+configure:2435: checking for X11/SM/SMlib.h
+configure:2483: checking for XpmFreeXpmImage in -lXpm
+configure:2534: checking for ranlib
+configure:2562: checking for working const
+configure:2637: checking for inline
+configure:2677: checking for off_t
+configure:2710: checking for size_t
+configure:2745: checking for working alloca.h
+configure:2778: checking for alloca
+configure:2980: checking for unistd.h
+configure:3019: checking for getpagesize
+configure:3072: checking for working mmap
+configure:3251: checking for argz.h
+configure:3251: checking for limits.h
+configure:3251: checking for locale.h
+configure:3251: checking for nl_types.h
+configure:3251: checking for malloc.h
+configure:3251: checking for string.h
+configure:3251: checking for unistd.h
+configure:3251: checking for sys/param.h
+configure:3291: checking for getcwd
+configure:3291: checking for munmap
+configure:3291: checking for putenv
+configure:3291: checking for setenv
+configure:3291: checking for setlocale
+configure:3291: checking for strchr
+configure:3291: checking for strcasecmp
+configure:3291: checking for strdup
+configure:3291: checking for __argz_count
+configure:3291: checking for __argz_stringify
+configure:3291: checking for __argz_next
+configure:3410: checking for LC_MESSAGES
+configure:3443: checking whether NLS is requested
+configure:3463: checking whether included gettext is requested
+configure:3482: checking for libintl.h
+configure:3509: checking for gettext in libc
+configure:3635: checking for msgfmt
+configure:3669: checking for dcgettext
+configure:3724: checking for gmsgfmt
+configure:3760: checking for xgettext
+configure:3800: gcc -o conftest -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations   -I/usr/X11R6/include -I/usr/lib/glib/include  conftest.c  1>&5
+configure:4377: checking for pcap_open_live in -lpcap

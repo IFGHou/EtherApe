@@ -40,7 +40,7 @@ pkgincludedir = $(includedir)/etherape
 
 top_builddir = ..
 
-ACLOCAL = aclocal
+ACLOCAL = aclocal -I macros
 AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
@@ -57,23 +57,65 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+CATALOGS = 
+CATOBJEXT = .gmo
 CC = gcc
+DATADIRNAME = share
+GENCAT = 
+GMOFILES = 
+GMSGFMT = /usr/bin/msgfmt
+GNOMEGNORBA_LIBS = -rdynamic -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNOMEUI_LIBS = -rdynamic -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNOME_APPLETS_LIBS = 
+GNOME_CAPPLET_LIBS = 
+GNOME_CONFIG = /usr/bin/gnome-config
+GNOME_INCLUDEDIR = -I/usr/include -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/lib/glib/include -I/usr/X11R6/include
+GNOME_LIBDIR = -rdynamic -L/usr/lib -L/usr/X11R6/lib
+GNOME_LIBS = -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GNORBA_CFLAGS = -I/usr/include -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/lib/glib/include -I/usr/X11R6/include
+GNORBA_LIBS = -rdynamic -L/usr/lib -L/usr/X11R6/lib -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib -ldl
+GTKXMHTML_LIBS = -rdynamic -lgtkxmhtml -lXpm -ljpeg -lpng -lz -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 GTK_CFLAGS = -I/usr/X11R6/include -I/usr/lib/glib/include
 GTK_CONFIG = /usr/bin/gtk-config
-GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+GTK_LIBS = -lSM -lICE -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+GT_NO = 
+GT_YES = #YES#
+INCLUDE_LOCALE_H = #include <locale.h>
+INSTOBJEXT = .mo
+INTLDEPS = 
+INTLLIBS = 
+INTLOBJS = 
 MAKEINFO = /root/etherape/missing makeinfo
+MKINSTALLDIRS = ./mkinstalldirs
+MSGFMT = /usr/bin/msgfmt
+ORBIT_CFLAGS = -I/usr/lib/glib/include -I/usr/include
+ORBIT_CONFIG = /usr/bin/orbit-config
+ORBIT_IDL = /usr/bin/orbit-idl
+ORBIT_LIBS = -L/usr/lib -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = etherape
+PACKAGE_PIXMAPS_DIR = /usr/share/pixmaps/etherape
+POFILES = 
+POSUB = po
+PTHREAD_LIB = -lpthread
+RANLIB = ranlib
+USE_INCLUDED_LIBINTL = no
+USE_NLS = yes
 VERSION = 0.1
+XPM_LIBS = 
+ZVT_LIBS = -rdynamic -lzvt -lutil -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+cflags_set = yes
+cxxflags_set = @cxxflags_set@
+l = 
 
-INCLUDES =  	-I/usr/X11R6/include -I/usr/lib/glib/include
+INCLUDES =  	-I$(top_srcdir)/intl 	$(GNOME_INCLUDEDIR)
 
 
 bin_PROGRAMS = etherape
 
-etherape_SOURCES =  	main.c 	capture.c capture.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 
+etherape_SOURCES =  	main.c 	capture.c capture.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h
 
 
-etherape_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -81,13 +123,13 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I..
-CPPFLAGS = 
+CPPFLAGS =  -I/usr/X11R6/include -I/usr/lib/glib/include
 LDFLAGS = 
 LIBS = -lpcap 
 etherape_OBJECTS =  main.o capture.o support.o interface.o callbacks.o
 etherape_DEPENDENCIES = 
 etherape_LDFLAGS = 
-CFLAGS = -g -O2 -Wall
+CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@

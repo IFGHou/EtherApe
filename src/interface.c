@@ -3,7 +3,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
@@ -11,101 +11,267 @@
 #include <unistd.h>
 #include <string.h>
 
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
+#include <gnome.h>
 
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 
-GtkWidget *
-create_window_main (void)
+static GnomeUIInfo file1_menu_uiinfo[] =
 {
-  GtkWidget *window_main;
-  GtkWidget *vbox1;
-  GtkWidget *menubar1;
-  guint tmp_key;
-  GtkWidget *file1;
+  GNOMEUIINFO_MENU_NEW_ITEM (N_("_Nuevo archivo"), NULL, on_new_file1_activate, NULL),
+  GNOMEUIINFO_MENU_OPEN_ITEM (on_open1_activate, NULL),
+  GNOMEUIINFO_MENU_SAVE_ITEM (on_save1_activate, NULL),
+  GNOMEUIINFO_MENU_SAVE_AS_ITEM (on_save_as1_activate, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_EXIT_ITEM (on_exit1_activate, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo edit1_menu_uiinfo[] =
+{
+  GNOMEUIINFO_MENU_CUT_ITEM (on_cut1_activate, NULL),
+  GNOMEUIINFO_MENU_COPY_ITEM (on_copy1_activate, NULL),
+  GNOMEUIINFO_MENU_PASTE_ITEM (on_paste1_activate, NULL),
+  GNOMEUIINFO_MENU_CLEAR_ITEM (on_clear1_activate, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_PROPERTIES_ITEM (on_properties1_activate, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo view1_menu_uiinfo[] =
+{
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo settings1_menu_uiinfo[] =
+{
+  GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences1_activate, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo help1_menu_uiinfo[] =
+{
+  GNOMEUIINFO_MENU_ABOUT_ITEM (on_about1_activate, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo menubar1_uiinfo[] =
+{
+  GNOMEUIINFO_MENU_FILE_TREE (file1_menu_uiinfo),
+  GNOMEUIINFO_MENU_EDIT_TREE (edit1_menu_uiinfo),
+  GNOMEUIINFO_MENU_VIEW_TREE (view1_menu_uiinfo),
+  GNOMEUIINFO_MENU_SETTINGS_TREE (settings1_menu_uiinfo),
+  GNOMEUIINFO_MENU_HELP_TREE (help1_menu_uiinfo),
+  GNOMEUIINFO_END
+};
+
+GtkWidget*
+create_app1 (void)
+{
+  GtkWidget *app1;
+  GtkWidget *dock1;
+  GtkWidget *toolbar1;
+  GtkWidget *tmp_toolbar_icon;
+  GtkWidget *button1;
+  GtkWidget *button2;
+  GtkWidget *button3;
   GtkWidget *hpaned1;
   GtkWidget *drawingarea1;
   GtkWidget *hscale1;
-  GtkWidget *statusbar1;
-  GtkAccelGroup *accel_group;
+  GtkWidget *appbar1;
 
-  accel_group = gtk_accel_group_new ();
+  app1 = gnome_app_new ("Etherape", _("Etherape"));
+  gtk_object_set_data (GTK_OBJECT (app1), "app1", app1);
 
-  window_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (window_main), "window_main", window_main);
-  gtk_window_set_title (GTK_WINDOW (window_main), "window");
-  gtk_window_set_position (GTK_WINDOW (window_main), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size (GTK_WINDOW (window_main), 400, 300);
+  dock1 = GNOME_APP (app1)->dock;
+  gtk_widget_ref (dock1);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "dock1", dock1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (dock1);
 
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "vbox1", vbox1,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (window_main), vbox1);
+  gnome_app_create_menus (GNOME_APP (app1), menubar1_uiinfo);
 
-  menubar1 = gtk_menu_bar_new ();
-  gtk_widget_ref (menubar1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "menubar1", menubar1,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (menubar1);
-  gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
+  gtk_widget_ref (menubar1_uiinfo[0].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "file1",
+                            menubar1_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
 
-  file1 = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (file1)->child),
-				   "_File");
-  gtk_widget_add_accelerator (file1, "activate_item", accel_group,
-			      tmp_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (file1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "file1", file1,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (file1);
-  gtk_container_add (GTK_CONTAINER (menubar1), file1);
+  gtk_widget_ref (file1_menu_uiinfo[0].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "new_file1",
+                            file1_menu_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file1_menu_uiinfo[1].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "open1",
+                            file1_menu_uiinfo[1].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file1_menu_uiinfo[2].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "save1",
+                            file1_menu_uiinfo[2].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file1_menu_uiinfo[3].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "save_as1",
+                            file1_menu_uiinfo[3].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file1_menu_uiinfo[4].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "separator1",
+                            file1_menu_uiinfo[4].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file1_menu_uiinfo[5].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "exit1",
+                            file1_menu_uiinfo[5].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (menubar1_uiinfo[1].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "edit1",
+                            menubar1_uiinfo[1].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[0].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "cut1",
+                            edit1_menu_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[1].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "copy1",
+                            edit1_menu_uiinfo[1].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[2].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "paste1",
+                            edit1_menu_uiinfo[2].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[3].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "clear1",
+                            edit1_menu_uiinfo[3].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[4].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "separator2",
+                            edit1_menu_uiinfo[4].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (edit1_menu_uiinfo[5].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "properties1",
+                            edit1_menu_uiinfo[5].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (menubar1_uiinfo[2].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "view1",
+                            menubar1_uiinfo[2].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (menubar1_uiinfo[3].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "settings1",
+                            menubar1_uiinfo[3].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (settings1_menu_uiinfo[0].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "preferences1",
+                            settings1_menu_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (menubar1_uiinfo[4].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "help1",
+                            menubar1_uiinfo[4].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (help1_menu_uiinfo[0].widget);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "about1",
+                            help1_menu_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  toolbar1 = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);
+  gtk_widget_ref (toolbar1);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "toolbar1", toolbar1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (toolbar1);
+  gnome_app_add_toolbar (GNOME_APP (app1), GTK_TOOLBAR (toolbar1), "toolbar1",
+                                GNOME_DOCK_ITEM_BEH_EXCLUSIVE,
+                                GNOME_DOCK_TOP, 1, 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (toolbar1), 1);
+  gtk_toolbar_set_space_size (GTK_TOOLBAR (toolbar1), 16);
+  gtk_toolbar_set_space_style (GTK_TOOLBAR (toolbar1), GTK_TOOLBAR_SPACE_LINE);
+  gtk_toolbar_set_button_relief (GTK_TOOLBAR (toolbar1), GTK_RELIEF_NONE);
+
+  tmp_toolbar_icon = gnome_stock_pixmap_widget (app1, GNOME_STOCK_PIXMAP_NEW);
+  button1 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                _("Nuevo"),
+                                _("Nuevo archivo"), NULL,
+                                tmp_toolbar_icon, NULL, NULL);
+  gtk_widget_ref (button1);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "button1", button1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button1);
+
+  tmp_toolbar_icon = gnome_stock_pixmap_widget (app1, GNOME_STOCK_PIXMAP_OPEN);
+  button2 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                _("Abrir"),
+                                _("Abrir archivo"), NULL,
+                                tmp_toolbar_icon, NULL, NULL);
+  gtk_widget_ref (button2);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "button2", button2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button2);
+
+  tmp_toolbar_icon = gnome_stock_pixmap_widget (app1, GNOME_STOCK_PIXMAP_SAVE);
+  button3 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                _("Guardar"),
+                                _("Guardar archivo"), NULL,
+                                tmp_toolbar_icon, NULL, NULL);
+  gtk_widget_ref (button3);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "button3", button3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button3);
 
   hpaned1 = gtk_hpaned_new ();
   gtk_widget_ref (hpaned1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "hpaned1", hpaned1,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "hpaned1", hpaned1,
+                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hpaned1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hpaned1, TRUE, TRUE, 0);
+  gnome_app_set_contents (GNOME_APP (app1), hpaned1);
   gtk_paned_set_position (GTK_PANED (hpaned1), 300);
 
   drawingarea1 = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "drawingarea1", drawingarea1,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "drawingarea1", drawingarea1,
+                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (drawingarea1);
   gtk_container_add (GTK_CONTAINER (hpaned1), drawingarea1);
 
   hscale1 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
   gtk_widget_ref (hscale1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "hscale1", hscale1,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "hscale1", hscale1,
+                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hscale1);
   gtk_container_add (GTK_CONTAINER (hpaned1), hscale1);
-  gtk_scale_set_draw_value (GTK_SCALE (hscale1), FALSE);
 
-  statusbar1 = gtk_statusbar_new ();
-  gtk_widget_ref (statusbar1);
-  gtk_object_set_data_full (GTK_OBJECT (window_main), "statusbar1", statusbar1,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (statusbar1);
-  gtk_box_pack_start (GTK_BOX (vbox1), statusbar1, FALSE, FALSE, 0);
+  appbar1 = gnome_appbar_new (TRUE, TRUE, GNOME_PREFERENCES_NEVER);
+  gtk_widget_ref (appbar1);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "appbar1", appbar1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (appbar1);
+  gnome_app_set_statusbar (GNOME_APP (app1), appbar1);
 
-  gtk_signal_connect (GTK_OBJECT (file1), "activate",
-		      GTK_SIGNAL_FUNC (on_file1_activate),
-		      NULL);
   gtk_signal_connect (GTK_OBJECT (drawingarea1), "configure_event",
-		      GTK_SIGNAL_FUNC (on_drawingarea1_configure_event),
-		      NULL);
+                      GTK_SIGNAL_FUNC (on_drawingarea1_configure_event),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (drawingarea1), "expose_event",
-		      GTK_SIGNAL_FUNC (on_drawingarea1_expose_event),
-		      NULL);
+                      GTK_SIGNAL_FUNC (on_drawingarea1_expose_event),
+                      NULL);
 
-  gtk_window_add_accel_group (GTK_WINDOW (window_main), accel_group);
-
-  return window_main;
+  return app1;
 }
+
