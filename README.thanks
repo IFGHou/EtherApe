@@ -12,6 +12,16 @@ I owe to, because they allowed to make EtherApe possible:
     distribution
   - probably so many other things I'm forgetting now.
   
+  Thanks to Miguel de Icaza the FSF learnt about the humble hardware that
+  EtherApe was developed on, and they provided me with a great new PC, which
+  unfortunately took too long to be put to use with EtherApe development
+  because of my later internship with Nokia, a faulty CPU and a extremely
+  imcompetent online hardware shop.
+  
+  Nowadays it has finally been put to good use, and it's thanks
+  to them that I can recompile EtherApe so fast that I can provide
+  rpm packages, or that I can stress test EtherApe, for instance.
+  
 * Linus Torvalds and the kernel crew
   - What else could I be running on my old home network?
   - Do I really need to say more?
@@ -66,6 +76,12 @@ I owe to, because they allowed to make EtherApe possible:
   All developers would love to have helpful users like him.
   Bug reporter, interesting suggestions, "real time" tester... 
   Ahh, the wonders of the internet. :-)
+  
+* Jim Howard.
+  Jim is the David Pollard of the 21st century. He has decided that
+  EtherApe must be a crash proof app that he can run 24/7 and it's 
+  thanks to him that this program is getting seriously tested in a rough
+  environment.
 
 * All the helpful people of #gtk+, like mailund.
 
