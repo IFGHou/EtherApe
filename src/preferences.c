@@ -367,12 +367,13 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   gtk_clist_set_text (GTK_CLIST (color_clist), row_number - 1, 1,
 		      protocol_string);
 
-  widget = glade_xml_get_widget (xml, "protodol_gnome_entry");
+  widget = glade_xml_get_widget (xml, "protocol_gnome_entry");
   update_history (GNOME_ENTRY (widget), protocol_string, FALSE);
 
   g_free (protocol_string);
 
 }				/* on_protocol_edit_ok_clicked */
+
 
 void
 on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
@@ -404,8 +405,6 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
     GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row")) -
     1;
 
-  row[0] = "hola";
-  row[1] = g_strdup_printf ("row_number %d", row_number);
 
   colormap = gtk_widget_get_colormap (color_clist);
 
@@ -413,10 +412,23 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   gdk_color.green = (guint16) (colors[1] * 65535.0);
   gdk_color.blue = (guint16) (colors[2] * 65535.0);
 
+  /* Since we are only going to save 24bit precision, we might as well
+   * make sure we don't display any more than that */
+  gdk_color.red = (gdk_color.red >> 8) << 8;
+  gdk_color.green = (gdk_color.green >> 8) << 8;
+  gdk_color.blue = (gdk_color.blue >> 8) << 8;
+
+  g_warning ("%4x:%4x:%4x", gdk_color.red, gdk_color.green, gdk_color.blue);
+
   gdk_color_alloc (colormap, &gdk_color);
 
   style = gtk_style_new ();
   style->base[GTK_STATE_NORMAL] = gdk_color;
+
+  row[0] =
+    g_strdup_printf ("%02x%02x%02x", gdk_color.red >> 8, gdk_color.green >> 8,
+		     gdk_color.blue >> 8);
+  row[1] = g_strdup_printf ("row_number %d", row_number);
 
   /*
    * If an insertion point was defined, then
@@ -440,7 +452,8 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
     }
 
   gtk_widget_hide (colorseldiag);
-}
+}				/* on_colordiag_ok_clicked */
+
 
 void
 on_color_clist_select_row (GtkCList * clist,
