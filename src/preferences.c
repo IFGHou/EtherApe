@@ -19,6 +19,8 @@
 
 #include "preferences.h"
 
+gboolean colors_changed = FALSE;
+
 void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -227,6 +229,11 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 }				/* on_group_unk_check_toggled */
 
 
+/*
+ * TODO
+ * I have to change the whole preferences workings, so that OK, apply and 
+ * cancel have all the proper semantics
+ */
 void
 on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
@@ -246,6 +253,13 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 
   update_history (GNOME_ENTRY (widget), pref.filter, FALSE);
 
+  if (colors_changed)
+    {
+      color_clist_to_pref ();
+      gui_stop_capture ();
+      gui_start_capture ();
+      colors_changed = FALSE;
+    }
 }				/* on_apply_pref_button_clicked */
 
 void
@@ -303,6 +317,8 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
    * before more are deleted
    */
   gtk_object_set_data (GTK_OBJECT (color_clist), "row", GINT_TO_POINTER (0));
+
+  colors_changed = TRUE;
 
 }				/* on_color_remove_button_clicked */
 
@@ -371,6 +387,8 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   update_history (GNOME_ENTRY (widget), protocol_string, FALSE);
 
   g_free (protocol_string);
+
+  colors_changed = TRUE;
 
 }				/* on_protocol_edit_ok_clicked */
 
@@ -451,7 +469,10 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
       gtk_clist_set_cell_style (GTK_CLIST (color_clist), 0, 0, style);
     }
 
+  gtk_style_unref (style);
   gtk_widget_hide (colorseldiag);
+
+  colors_changed = TRUE;
 }				/* on_colordiag_ok_clicked */
 
 
@@ -465,4 +486,88 @@ on_color_clist_select_row (GtkCList * clist,
    * number plus one
    */
   gtk_object_set_data (GTK_OBJECT (clist), "row", GINT_TO_POINTER (row + 1));
+}
+
+void
+load_color_clist (void)
+{
+  gint i;
+  static GtkWidget *color_clist = NULL;
+  gchar *row[2] = { NULL, NULL };
+  GdkColor gdk_color;
+  GdkColormap *colormap = NULL;
+  GtkStyle *style = NULL;
+  gchar **colors_protocols = NULL;
+  gchar *color = NULL, *protocol = NULL;
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+
+  gtk_clist_clear (GTK_CLIST (color_clist));
+
+  colormap = gtk_widget_get_colormap (color_clist);
+
+  for (i = 0; i < pref.n_colors; i++)
+    {
+      colors_protocols = g_strsplit (pref.colors[i], ";", 0);
+
+      color = colors_protocols[0];
+      protocol = colors_protocols[1];
+
+      gdk_color_parse (color, &gdk_color);
+      gdk_color_alloc (colormap, &gdk_color);
+
+      style = gtk_style_new ();
+      style->base[GTK_STATE_NORMAL] = gdk_color;
+
+      row[0] =
+	g_strdup_printf ("%02x%02x%02x", gdk_color.red >> 8,
+			 gdk_color.green >> 8, gdk_color.blue >> 8);
+
+      if (!protocol)
+	protocol = "";
+      row[1] = protocol;
+
+      gtk_clist_append (GTK_CLIST (color_clist), row);
+      gtk_clist_set_cell_style (GTK_CLIST (color_clist), i, 0, style);
+      g_strfreev (colors_protocols);
+      gtk_style_unref (style);
+      g_free (row[0]);
+    }
+
+}
+
+/* Called whenever preferences are applied or OKed. Copied whatever there is
+ * in the color table to the color preferences in memory */
+void
+color_clist_to_pref (void)
+{
+  gint i;
+  static GtkWidget *color_clist = NULL;
+  gchar *color = NULL, *protocol = NULL;
+
+  while (pref.n_colors)
+    {
+      g_free (pref.colors[pref.n_colors - 1]);
+      pref.n_colors--;
+    }
+  g_free (pref.colors);
+  pref.colors = NULL;
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+
+  pref.n_colors = GTK_CLIST (color_clist)->rows;
+  pref.colors = g_malloc (sizeof (gchar *) * pref.n_colors);
+
+  for (i = 0; i < pref.n_colors; i++)
+    {
+      gtk_clist_get_text (GTK_CLIST (color_clist), i, 0, &color);
+      gtk_clist_get_text (GTK_CLIST (color_clist), i, 1, &protocol);
+
+      if (strcmp ("", protocol))
+	pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
+      else
+	pref.colors[i] = g_strdup (color);
+    }
 }

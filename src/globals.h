@@ -298,7 +298,10 @@ struct
 				 * limited */
   gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
 					 * for a node, it disappears from the diagram */
-
+  gint n_colors;		/* Numbers of colors to be used on the diagram */
+  gchar **colors;		/* list of colors to be used on the diagram. Format is
+				 * color[;protocol] [color[;protocol] ...
+				 * where color is represented by sis hex digits (RGB) */
 
 /* Capture settings */
 
@@ -371,6 +374,9 @@ void gui_start_capture (void);
 void gui_pause_capture (void);
 gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
 					 * it can't run if diagram_update is running */
+
+/* From preferences.c */
+void load_color_clist (void);
 
 /* From info_windows.c */
 void display_protocols_window (void);

@@ -29,6 +29,8 @@
 #include "diagram.h"
 #include "preferences.h"
 
+GdkColor black_color;
+
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
 void
@@ -38,7 +40,6 @@ init_diagram ()
   GtkSpinButton *spin;
   GtkStyle *style;
   GtkWidget *canvas;
-  GdkColor color;
 
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
@@ -87,6 +88,8 @@ init_diagram ()
   widget = glade_xml_get_widget (xml, "fileentry");
   widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
   gnome_entry_load_history (GNOME_ENTRY (widget));
+
+  load_color_clist ();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
@@ -141,13 +144,14 @@ init_diagram ()
 
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
-  gdk_color_parse ("black", &color);
-  gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &color, TRUE,
-			    TRUE);
+  gdk_color_parse ("black", &black_color);
+  gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &black_color,
+			    TRUE, TRUE);
   style = gtk_style_new ();
-  style->bg[GTK_STATE_NORMAL] = color;
-  gtk_widget_set_style (canvas, style);
+  style->bg[GTK_STATE_NORMAL] = black_color;
+  style->base[GTK_STATE_NORMAL] = black_color;
 
+  gtk_widget_set_style (canvas, style);
   gtk_style_set_background (canvas->style, canvas->window, GTK_STATE_NORMAL);
 
   /* Initialize the known_protocols table */
@@ -388,7 +392,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
       return;
     }
 
-  g_my_debug ("Not found. Creating item");
+  g_my_debug ("Protocol not found. Creating legend item");
 
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
@@ -424,7 +428,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
 
   color_string = get_prot_color (protocol->name);
-  g_my_debug ("%s in %s", protocol->name, color_string);
+  g_my_debug ("Protocol %s in color %s", protocol->name, color_string);
   gdk_color_parse (color_string, &(protocol->color));
   gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &protocol->color,
 			    TRUE, TRUE);
@@ -488,16 +492,23 @@ delete_gui_protocols (void)
 static gchar *
 get_prot_color (gchar * name)
 {
+#if 0
   gchar *colors[] = { "red", "blue", "yellow", "white", "orange", "green",
     "pink", "cyan", "brown", "purple", "tan"
   };
+#endif
+  gchar **color_protocol = NULL;
+  static gchar *color = NULL;
 
-  gchar *color = NULL;
+  if (color)
+    g_free (color);
 
-  color = colors[prot_color_index];
+  color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
+  color = g_strdup (color_protocol[0]);
+  g_strfreev (color_protocol);
 
   prot_color_index++;
-  if (prot_color_index == 11)
+  if (prot_color_index >= pref.n_colors)
     prot_color_index = 0;
 
   return color;

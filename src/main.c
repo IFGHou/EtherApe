@@ -294,6 +294,9 @@ load_config (char *prefix)
   pref.fontname =
     gnome_config_get_string_with_default
     ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
+  gnome_config_get_vector_with_default
+    ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
+     &(pref.n_colors), &(pref.colors), &u);
 
   g_free (config_file_version);
   gnome_config_pop_prefix ();
