@@ -9,7 +9,7 @@ typedef struct
     guint8 *ether_addr;		/* pointer to the hardware address of the node */
     GString *name;		/* String with a readable name of the node */
     double average;		/* Average bytes in or out in the last x ms */
-    glong accumulated;		/* Accumulated bytes in the last x ms */
+    double accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */
     GList *packets;		/* List of packets sizes in or out and
 				   * its sizes. Used to calculate average
@@ -23,7 +23,7 @@ typedef struct
    guint8 *ether_link;		/* pointer to guint8[12] containing src and
 				 * destination hardware addresses of the link */
    double average;
-   glong accumulated;
+   double accumulated;
    guint n_packets;
    GList *packets;
 }

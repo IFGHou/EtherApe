@@ -145,6 +145,7 @@ create_node (const guint8 * ether_addr)
   node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
+  node->accumulated=0;
   node->name = g_string_new (get_ether_name(ether_addr));
   node->packets = NULL;
 
@@ -169,6 +170,7 @@ create_link (const guint8 *ether_link)
    link->ether_link = g_memdup (ether_link, 12);
    link->average=0;
    link->n_packets=0;
+   link->accumulated=0;
    link->packets=NULL;
    g_tree_insert (links, link->ether_link, link);
    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
@@ -209,15 +211,13 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   result.tv_sec = now.tv_sec - packet_time.tv_sec;
   result.tv_usec = now.tv_usec - packet_time.tv_usec;
    
-  printf ("sec %d, usec %d\n",result.tv_sec,result.tv_usec);
+/*  printf ("sec %d, usec %d\n",result.tv_sec,result.tv_usec); */
 
   /* If this node is older than the averaging time,
    * then it is removed, and the process continues.
    * Else, we are done. */
 
-  if ((now.tv_sec * 1000000 + now.tv_usec -
-       packet_time.tv_sec * 1000000 - packet_time.tv_usec)
-      > averaging_time)
+  if ( (result.tv_sec * 1000000 + result.tv_usec) > averaging_time)
     {
        if (belongs_to == NODE) {
 	  ((node_t *)(packet->parent))->accumulated -=

@@ -30,7 +30,7 @@
 #include "math.h"
 #include "resolv.h"
 
-guint averaging_time = 10000000;	/* Microseconds of time we consider to
+guint averaging_time = 2000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
@@ -44,6 +44,8 @@ typedef struct
     node_t *node;
     GnomeCanvasItem *node_item;
     GnomeCanvasItem *text_item;
+    GnomeCanvasItem *accu_item;
+    gchar *accu_str;
     GnomeCanvasGroup *group_item;
   }
 canvas_node_t;
@@ -64,12 +66,12 @@ GdkFont *fixed_font;
 
 double get_node_size (glong accumulated)
 {
-  return (double) 5 + accumulated / 10 /averaging_time;
+  return (double) 5 + 1000 *accumulated / averaging_time;
 }
 
 double get_link_size (glong accumulated) 
 {
-   return (double) accumulated / averaging_time;
+   return (double) 1000 * accumulated  / averaging_time;
 }
 
 gint 
@@ -287,6 +289,16 @@ check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
 							  "font","-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
 							  "fill_color", "black",
 							  NULL);
+/*      new_canvas_node->accu_str = g_strdup_printf ("%f",node->accumulated);
+      new_canvas_node->accu_item = gnome_canvas_item_new (group,
+							  GNOME_TYPE_CANVAS_TEXT,
+							  "text", new_canvas_node->accu_str,
+							  "x", 0.0,
+							  "y", 10.0,
+							  "anchor", GTK_ANCHOR_CENTER,
+							  "font","-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+							  "fill_color", "black",
+							  NULL);*/
       new_canvas_node->group_item=group;
       
       gnome_canvas_item_raise_to_top (new_canvas_node->text_item);
@@ -365,7 +377,7 @@ main (int argc, char *argv[])
   app1 = create_app1 ();
   gtk_widget_show (app1);
 
-  gtk_timeout_add (1000 /*ms */ ,
+  gtk_timeout_add (500 /*ms */ ,
 		   update_diagram,
 		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-24 08:33+0100\n"
+"POT-Creation-Date: 2000-02-25 02:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:227
+#: src/main.c:239
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/main.c:284
+#: src/main.c:308
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
@@ -76,16 +76,16 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:153
+#: src/capture.c:154
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:175
+#: src/capture.c:177
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:329
+#: src/capture.c:333
 msgid "You need to be root to run this program"
 msgstr ""

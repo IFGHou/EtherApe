@@ -1,17 +1,22 @@
-Overview of changes in Ethereal 0.0.7:
+Overview of changes in Etherape 0.0.8
+* Correctly (I hope) calculates average traffic intensity
+  for nodes and links. The proper constant multiplier
+  should be user defined.
+
+Overview of changes in Etherape 0.0.7:
 * First version showing links among nodes
 * Aborts gracefully if run by non-root.
 * http://etherape.sourceforge.net has a screenshot.
 * Expect proper node size and link width calculation in 0.0.8
 
-Overview of changes in Ethereal 0.0.6:
+Overview of changes in Etherape 0.0.6:
 * Copied proper libpcap autoconfigure detection function from ethereal
 * Added ethernet address resolution functions from ethereal
 
-Overview of changes in Ethereal 0.0.5:
+Overview of changes in Etherape 0.0.5:
 * Now uses gnome_canvas to display the diagram
 
-Overview of changes in Ethereal 0.0.4:
+Overview of changes in Etherape 0.0.4:
 * Node size is now an average of the last ten seconds traffic.
 * Proper distribution file.
 
