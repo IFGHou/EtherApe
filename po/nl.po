@@ -1,15 +1,15 @@
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Vincent van Adrighem &lt;V.vanAdrighem@ITS.TUDelft.nl&gt;, 2001.
+# Vincent van Adrighem &lt;V.vanAdrighem@ITS.TUDelft.nl&gt, 2001.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Etherape\n"
+"Project-Id-Version: Etherape 0.8\n"
 "POT-Creation-Date: 2001-07-31 13:53+0200\n"
-"PO-Revision-Date: 2001-05-07 11:05+0100\n"
-"Last-Translator: Vincent van Adrighem "
-"&lt;V.vanAdrighem@ITS.TUDelft.nl&gt;Language-Team: Dutch "
-"&lt;nl@li.org&gt;MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso8859-15\n"
+"PO-Revision-Date: 2001-07-31 15:17+0200\n"
+"Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"MIME-Version: (null)\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/main.c:39
@@ -123,7 +123,7 @@ msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
 #: src/capture.c:108
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
-msgstr ""
+msgstr "Live apparaat %s geopend voor luisteren. pcap_fd: %d"
 
 #: src/capture.c:116
 #, c-format
@@ -237,7 +237,7 @@ msgstr "Fout bij het stoppen van het luisteren"
 
 #: src/capture.c:455
 msgid "Capture device stopped or file closed"
-msgstr ""
+msgstr "Apparaat gestopt of bestand gesloten"
 
 #: src/capture.c:656
 msgid "Reached default in get_node_id"
@@ -734,8 +734,8 @@ msgstr "lijnbreedte"
 
 #: src/glade-strings:83
 msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
+"Choose how node radius and link width are calculated as a function of average "
+"traffic"
 msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
 
 #: src/glade-strings:84
@@ -767,9 +767,8 @@ msgid "Diagram"
 msgstr "Diagram"
 
 #: src/glade-strings:91
-#, fuzzy
 msgid "Color"
-msgstr "kleur"
+msgstr "Kleur"
 
 #: src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
 msgid "Protocol"
@@ -778,44 +777,39 @@ msgstr "Protocol"
 #: src/glade-strings:93
 msgid ""
 "Add a new color to the list of colors that can be used to represent protocols"
-msgstr ""
+msgstr "Voeg een nieuwe kleur toe aan de kleurenlijst voor protocolweergave"
 
 #: src/glade-strings:94
-#, fuzzy
 msgid "Add color"
-msgstr "kleur"
+msgstr "Kleur toevoegen"
 
 #: src/glade-strings:95
-#, fuzzy
 msgid "Remove color"
-msgstr "kies de knooppuntskleur"
+msgstr "Kleur verwijderen"
 
 #: src/glade-strings:96
-#, fuzzy
 msgid "Edit protocol"
-msgstr "Laat protocollen zien"
+msgstr "Protocollen bewerken"
 
 #: src/glade-strings:97
 msgid "Fade link colors to black when there is no traffic"
-msgstr ""
+msgstr "Laat lijnkleuren vervagen naar zwart wanneer er geen verkeer is"
 
 #: src/glade-strings:98
-#, fuzzy
 msgid "Fade colors"
-msgstr "kleur"
+msgstr "Vervaag kleuren"
 
 #: src/glade-strings:99
 msgid "Whether or not to use assigned colors for unassigned protocolos"
-msgstr ""
+msgstr "Hergebruik kleuren voor nieuwe protocollen"
 
 #: src/glade-strings:100
 msgid "Cycle assigned colors"
-msgstr ""
+msgstr "Hergebruik gebruikte kleuren"
 
 #: src/glade-strings:101
-#, fuzzy
 msgid "Colors"
-msgstr "kleur"
+msgstr "Kleuren"
 
 #: src/glade-strings:102
 msgid "Capture filter"
@@ -971,21 +965,20 @@ msgid "Nodes"
 msgstr "_Knooppunten"
 
 #: src/glade-strings:156
-#, fuzzy
 msgid "Select color"
-msgstr "Selecteer Lettertype"
+msgstr "Selecteer Kleur"
 
 #: src/glade-strings:157
 msgid "ok_button2"
-msgstr ""
+msgstr "ok_button2"
 
 #: src/glade-strings:158
 msgid "cancel_button2"
-msgstr ""
+msgstr "cancel_button2"
 
 #: src/glade-strings:159
 msgid "help_button1"
-msgstr ""
+msgstr "help_button1"
 
 #: src/info_windows.c:323
 msgid "No node_id in on_node_info_delete_event"
