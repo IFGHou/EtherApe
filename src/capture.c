@@ -416,7 +416,7 @@ add_node_packet (const guint8 * packet,
   node->n_packets++;
 
   /* Update names list for this node */
-  get_packet_names (node->protocols, packet, prot, direction);
+  get_packet_names (node->protocols, packet, phdr.len, prot, direction);
 
 }				/* add_node_packet */
 
@@ -473,7 +473,10 @@ create_node (const guint8 * packet, const guint8 * node_id)
    * used in many cases */
   node->ip_address = 0;
   node->numeric_ip = NULL;
-  fill_names (node, node_id, packet);
+
+  /* fill_names (node, node_id, packet); */
+  node->name = g_string_new (print_mem (node_id, node_id_length));
+  node->numeric_name = g_string_new (print_mem (node_id, node_id_length));
 
   node->average = node->average_in = node->average_out = 0;
   node->n_packets = 0;
@@ -736,9 +739,12 @@ update_node (node_t * node)
 {
   struct timeval diff;
   guint8 *node_id;
+  guint i = STACK_SIZE;
 
   if (node->packets)
     update_packet_list (node->packets, NODE);
+
+
   if (node->n_packets == 0)
     {
       diff = substract_times (now, node->last_time);
@@ -746,6 +752,9 @@ update_node (node_t * node)
       if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
 	  && node_timeout_time)
 	{
+
+	  /* TODO remove all names information */
+
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		 _("Removing node: %s. Number of node %d"),
 		 node->name->str, g_tree_nnodes (nodes));
@@ -765,9 +774,15 @@ update_node (node_t * node)
 	}
       else
 	{
+	  g_list_free (node->packets);
 	  node->packets = NULL;
-	  node->accumulated = node->accumulated_in = node->accumulated_out =
-	    0;
+	  while (i + 1)
+	    {
+	      node->protocols[i] = NULL;
+	      i--;
+	    }
+	  node->accumulated = node->accumulated_in
+	    = node->accumulated_out = 0;
 	}
     }
 
@@ -818,6 +833,7 @@ update_link (link_t * link)
 	}
       else
 	{
+	  g_list_free (link->packets);
 	  link->packets = NULL;
 	  link->accumulated = 0;
 	  while (i + 1)
@@ -872,7 +888,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
       if (belongs_to == NODE)
 	{
 	  node->average = 8000000 * node->accumulated / usecs_from_oldest;
-	  fill_names (node, node->node_id, NULL);
+	  /* fill_names (node, node->node_id, NULL); */
 	  node->average_in =
 	    8000000 * node->accumulated_in / usecs_from_oldest;
 	  node->average_out =
@@ -885,7 +901,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 		= get_main_prot (packets, node->protocols, i);
 	      i--;
 	    }
-
+	  update_node_names (node);
 	}
       else
 	{
@@ -902,7 +918,84 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
 
     }
+  else
+    g_message ("No packet!");
 }				/* update_packet_list */
+
+/* Sets the node->name and node->numeric_name to the most used of 
+ * the default name for the current mode */
+static void
+update_node_names (node_t * node)
+{
+  guint i = STACK_SIZE;
+  GList *protocol_item = NULL;
+  protocol_t *protocol = NULL;
+
+  /* TODO Check if it's while i or while i+1. 
+   * Then fix it in other places */
+  while (i + 1)
+    {
+      if (node->protocols[i])
+	{
+	  protocol_item = protocols[i];
+	  for (; protocol_item; protocol_item = protocol_item->next)
+	    {
+	      protocol = (protocol_t *) (protocol_item->data);
+	      protocol->node_names
+		= g_list_sort (protocol->node_names, names_freq_compare);
+	    }
+	}
+      i--;
+    }
+
+  switch (mode)
+    {
+    case ETHERNET:
+      set_node_name (node, "IP,ETHERNET");
+      break;
+    case IP:
+      set_node_name (node, "IP");
+      break;
+    case TCP:
+      set_node_name (node, "IP");
+      break;
+    default:
+      break;
+    }
+}				/* update_node_names */
+
+static void
+set_node_name (node_t * node, gchar * preferences)
+{
+  GList *name_item = NULL, *protocol_item = NULL;
+  name_t *name = NULL;
+  protocol_t *protocol = NULL;
+  gchar **tokens;
+  guint i = 0;
+  guint j = STACK_SIZE;
+  gboolean cont = TRUE;
+
+  tokens = g_strsplit (preferences, ",", 0);
+  for (; tokens[i] && cont; i++)
+    {
+      for (; j && cont; j--)
+	{
+	  protocol_item = g_list_find_custom (node->protocols[j],
+					      tokens[i], protocol_compare);
+	  if (protocol_item)
+	    {
+	      protocol = (protocol_t *) (protocol_item->data);
+	      name_item = protocol->node_names;
+	      name = (name_t *) (name_item->data);
+	      g_string_assign (node->name, name->name->str);
+	      g_string_assign (node->numeric_name, name->numeric_name->str);
+	      cont = FALSE;
+	    }
+	}
+    }
+  g_strfreev (tokens);
+}				/* set_node_name */
+
 
 /* Finds the most commmon protocol of all the packets in a
  * given link (only link, by now) */
@@ -1059,9 +1152,12 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	}
       else
 	{
-	  g_list_free (packets);	/* Last packet removed,
-					 * don't search anymore
-					 */
+	  g_message ("Would have freed in check_packet");
+	  packets->data = NULL;
+	  /* g_list_free (packets) */ ;
+	  /* Last packet removed,
+	   * don't search anymore
+	   */
 	}
     }
 
@@ -1156,6 +1252,25 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
     return 1;
   return 0;
 }				/* prot_freq_compare */
+
+/* Comparison function to sort protocols by their accumulated traffic */
+static gint
+names_freq_compare (gconstpointer a, gconstpointer b)
+{
+  name_t *name_a, *name_b;
+
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
+  name_a = (name_t *) a;
+  name_b = (name_t *) b;
+
+  if (name_a->accumulated > name_b->accumulated)
+    return -1;
+  if (name_a->accumulated < name_b->accumulated)
+    return 1;
+  return 0;
+}				/* names_freq_compare */
 
 
 /* Returns a timeval structure with the time difference between to
@@ -1296,3 +1411,45 @@ ether_to_str (const guint8 * ad)
 {
   return ether_to_str_punct (ad, ':');
 }				/* ether_to_str */
+
+
+gchar *
+print_mem (const guint8 * ad, guint length)
+{
+  static gchar str[3][50];
+  static gchar *cur;
+  char punct = ':';
+  gchar *p;
+  int i;
+  guint32 octet;
+  static const gchar hex_digits[16] = "0123456789abcdef";
+
+  if (cur == &str[0][0])
+    {
+      cur = &str[1][0];
+    }
+  else if (cur == &str[1][0])
+    {
+      cur = &str[2][0];
+    }
+  else
+    {
+      cur = &str[0][0];
+    }
+  p = &cur[18];
+  *--p = '\0';
+  i = length - 1;
+  for (;;)
+    {
+      octet = ad[i];
+      *--p = hex_digits[octet & 0xF];
+      octet >>= 4;
+      *--p = hex_digits[octet & 0xF];
+      if (i == 0)
+	break;
+      if (punct)
+	*--p = punct;
+      i--;
+    }
+  return p;
+}				/* print_mem */
