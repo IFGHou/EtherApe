@@ -269,7 +269,7 @@ update_diagram (GtkWidget * canvas)
 
   status_string = g_string_new (_("Number of nodes: "));
   g_string_sprintfa (status_string, "%d", n_nodes_after);
-   
+
   g_string_sprintfa (status_string,
 		     _(". Refresh Period: %d"), (int) diff_msecs);
   if (is_idle)
@@ -1198,20 +1198,21 @@ popup_to (struct popup_data *pd)
 
 /* Pushes a string into the appbar status area */
 
-void set_appbar_status (gchar * str)
+void
+set_appbar_status (gchar * str)
 {
   static GnomeAppBar *appbar = NULL;
-  static gchar *status_string=NULL;
-  
+  static gchar *status_string = NULL;
+
   if (status_string)
-     g_free (status_string);
-   
+    g_free (status_string);
+
   status_string = g_strdup (str);
-   
+
   if (!appbar)
     appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
 
-   gnome_appbar_pop (appbar);
-   gnome_appbar_push (appbar, status_string);
+  gnome_appbar_pop (appbar);
+  gnome_appbar_push (appbar, status_string);
 
 }				/* set_appbar_status */
