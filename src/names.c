@@ -25,8 +25,7 @@ void
 get_packet_names (GList ** protocols,
 		  const guint8 * packet,
 		  guint16 size,
-		  const gchar * prot_stack,
-		  packet_direction direction)
+		  const gchar * prot_stack, packet_direction direction)
 {
   g_assert (protocols != NULL);
   g_assert (packet != NULL);
@@ -67,9 +66,8 @@ get_eth_name (void)
 
   id_length = 6;
 
-  add_name (ether_to_str (id),
-	    get_ether_name (id));
-   
+  add_name (ether_to_str (id), get_ether_name (id));
+
   level++;
   offset += 14;
 
@@ -91,22 +89,20 @@ get_ip_name (void)
 
   id_length = 4;
 
-   if (numeric)   
-     add_name (ip_to_str(id), 
-	       ip_to_str(id));
-   else  
-     add_name (ip_to_str(id), 
-	       dns_lookup(pntohl(id),TRUE));
-   
+  if (numeric)
+    add_name (ip_to_str (id), ip_to_str (id));
+  else
+    add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE));
+
   /* This is specific for IP, since the resolver may not return a good
    * value inmeditelly, we need to insist */
   /* TODO I don't like the fact that the gdk_input for dns.c is not
    * called in this function, because it means that it can't be used 
    * as a library */
 
-   if (name && ( !numeric 
-		&& !strcmp (name->name->str, name->numeric_name->str)))
-     g_string_assign (name->name, dns_lookup(pntohl(id),TRUE));
+  if (name && (!numeric
+	       && !strcmp (name->name->str, name->numeric_name->str)))
+    g_string_assign (name->name, dns_lookup (pntohl (id), TRUE));
 
   level++;
   offset += 20;
@@ -133,7 +129,7 @@ add_name (gchar * numeric, gchar * resolved)
     name = name_item->data;
   else
     name = NULL;
-   
+
   if (!name)			/* First time name */
     {
       name = g_malloc (sizeof (name_t));
@@ -144,11 +140,11 @@ add_name (gchar * numeric, gchar * resolved)
       else
 	name->name = g_string_new (resolved);
       name->n_packets++;
-      name->accumulated += packet_size; 
+      name->accumulated += packet_size;
       protocol->node_names = g_list_prepend (protocol->node_names, name);
 
     }
-   
+
 }				/* add_name */
 
 /* Comparison function used to compare two node ids */
