@@ -34,7 +34,7 @@ dist-hook:
 	-cp $(srcdir)/etherape/stylesheet-images/*.gif \
 	 $(distdir)/etherape/stylesheet-images
 	-cp $(srcdir)/*.html $(distdir)
-	-cp $(srcdir)/*.png $(distdir)
+#	-cp $(srcdir)/*.png $(distdir)
 
 distclean-generic:
 	-rm -f Makefile

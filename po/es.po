@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-17 12:06+0200\n"
+"POT-Creation-Date: 2001-04-19 16:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -312,7 +312,7 @@ msgstr "No ha sido posible cargar el interfaz (%s)"
 
 # src/main.c:284
 # src/main.c:284
-#: src/main.c:269
+#: src/main.c:264
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -331,7 +331,7 @@ msgstr ""
 # src/main.c:311
 # src/main.c:364
 # src/main.c:369
-#: src/main.c:354
+#: src/main.c:349
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -347,7 +347,7 @@ msgstr "Preferencias guardadas"
 # src/capture.c:58
 # src/capture.c:58
 # src/capture.c:58
-#: src/capture.c:73
+#: src/capture.c:83
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Error buscando dispositivo: %s"
@@ -364,12 +364,12 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:68 src/capture.c:80
 # src/capture.c:70
 # src/capture.c:76
-#: src/capture.c:92
+#: src/capture.c:102
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
-#: src/capture.c:104
+#: src/capture.c:114
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
@@ -386,10 +386,25 @@ msgstr ""
 # src/capture.c:58
 # src/capture.c:80
 # src/capture.c:87
-#: src/capture.c:110
+#: src/capture.c:120
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo: %s"
+
+# src/interface.c:786
+# src/interface.c:786
+# src/interface.c:826
+# src/interface.c:826
+# src/interface.c:876
+# src/interface.c:984
+# src/glade-strings:63
+# src/glade-strings:10 src/glade-strings:20
+# src/capture.c:234
+# src/capture.c:248
+#: src/capture.c:123
+#, fuzzy, c-format
+msgid "%s opened for offline capture"
+msgstr "Parar captura"
 
 # src/capture.c:986
 # src/capture.c:988
@@ -403,7 +418,7 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:128
 # src/capture.c:118
 # src/capture.c:129
-#: src/capture.c:165
+#: src/capture.c:176
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
@@ -419,7 +434,7 @@ msgstr "Tipo de enlace aún no soportado"
 # src/capture.c:133
 # src/capture.c:123
 # src/capture.c:134
-#: src/capture.c:218
+#: src/capture.c:229
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
@@ -435,7 +450,7 @@ msgstr "Modo no disponible para este interfaz"
 # src/capture.c:153
 # src/capture.c:143
 # src/capture.c:154
-#: src/capture.c:237
+#: src/capture.c:248
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
@@ -451,7 +466,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:197
 # src/capture.c:186
 # src/capture.c:198
-#: src/capture.c:273 src/capture.c:299
+#: src/capture.c:274 src/capture.c:300
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -470,7 +485,7 @@ msgstr ""
 # src/capture.c:203
 # src/capture.c:192
 # src/capture.c:204
-#: src/capture.c:279 src/capture.c:305
+#: src/capture.c:280 src/capture.c:306
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -487,12 +502,12 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:208
 # src/capture.c:197
 # src/capture.c:209
-#: src/capture.c:284 src/capture.c:310
+#: src/capture.c:285 src/capture.c:311
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
-#: src/capture.c:321
+#: src/capture.c:322
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
@@ -506,7 +521,7 @@ msgstr ""
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:205
 # src/capture.c:218
-#: src/capture.c:327
+#: src/capture.c:328
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Comenzar captura"
@@ -521,12 +536,12 @@ msgstr "Comenzar captura"
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:212
 # src/capture.c:225
-#: src/capture.c:334
+#: src/capture.c:335
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Comenzar captura"
 
-#: src/capture.c:351
+#: src/capture.c:352
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
@@ -540,7 +555,7 @@ msgstr ""
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:205
 # src/capture.c:218
-#: src/capture.c:355
+#: src/capture.c:356
 #, fuzzy
 msgid "Pausing live capture"
 msgstr "Comenzar captura"
@@ -555,19 +570,19 @@ msgstr "Comenzar captura"
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:212
 # src/capture.c:225
-#: src/capture.c:361
+#: src/capture.c:362
 #, fuzzy
 msgid "Pausing offline capture"
 msgstr "Comenzar captura"
 
 # src/capture.c:239
 # src/capture.c:253
-#: src/capture.c:368
+#: src/capture.c:369
 #, fuzzy
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar parar la captura"
 
-#: src/capture.c:386
+#: src/capture.c:387
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
@@ -581,7 +596,7 @@ msgstr ""
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:228
 # src/capture.c:242
-#: src/capture.c:392
+#: src/capture.c:393
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Parar captura"
@@ -596,15 +611,16 @@ msgstr "Parar captura"
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:234
 # src/capture.c:248
-#: src/capture.c:398
+#: src/capture.c:399
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Parar captura"
 
 # src/capture.c:239
 # src/capture.c:253
-#: src/capture.c:405
-msgid "Error while trying to stop capture"
+#: src/capture.c:407
+#, fuzzy
+msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar parar la captura"
 
 # src/capture.c:713
@@ -620,7 +636,7 @@ msgstr "Error al intentar parar la captura"
 # src/capture.c:387
 # src/capture.c:401
 #. TODO Write proper assertion code here
-#: src/capture.c:571
+#: src/capture.c:575
 msgid "Reached default in get_node_id"
 msgstr ""
 
@@ -636,7 +652,7 @@ msgstr ""
 # src/capture.c:394
 # src/capture.c:430
 # src/capture.c:444
-#: src/capture.c:618
+#: src/capture.c:622
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -652,7 +668,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:514
 # src/capture.c:550
 # src/capture.c:569
-#: src/capture.c:738
+#: src/capture.c:742
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -669,7 +685,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:552
 # src/capture.c:588
 # src/capture.c:607
-#: src/capture.c:776
+#: src/capture.c:780
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -686,7 +702,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:777
 # src/capture.c:813
 # src/capture.c:832
-#: src/capture.c:849
+#: src/capture.c:861
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -703,7 +719,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:846
 # src/capture.c:882
 # src/capture.c:901
-#: src/capture.c:936
+#: src/capture.c:990
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -720,7 +736,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1064
 # src/capture.c:1101
 # src/capture.c:1120
-#: src/capture.c:1180
+#: src/capture.c:1230
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -736,7 +752,7 @@ msgstr ""
 # src/glade-strings:7
 # src/glade-strings:7
 # src/glade-strings:7
-#. print_mem
+#. dump_node_info
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -837,7 +853,7 @@ msgid "_Interfaces"
 msgstr ""
 
 #: src/glade-strings:21
-msgid "_Loopback"
+msgid "dummy-interface"
 msgstr ""
 
 # src/interface.c:786
