@@ -205,7 +205,7 @@ update_diagram (GtkWidget * canvas)
     return TRUE;
 
   if (end_of_file && status != STOP)
-    gui_stop_capture ();
+    gui_pause_capture ();
 
   gettimeofday (&now, NULL);
 
