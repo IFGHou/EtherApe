@@ -1,5 +1,5 @@
 util.o: util.c ../config.h /usr/include/glib.h \
- /usr/include/glibconfig.h /usr/include/limits.h \
+ /usr/lib/glib/include/glibconfig.h /usr/include/limits.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/gnu/stubs.h /usr/include/bits/posix1_lim.h \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
@@ -25,7 +25,7 @@ util.o: util.c ../config.h /usr/include/glib.h \
 util.c :
 ../config.h :
 /usr/include/glib.h :
-/usr/include/glibconfig.h :
+/usr/lib/glib/include/glibconfig.h :
 /usr/include/limits.h :
 /usr/include/features.h :
 /usr/include/sys/cdefs.h :

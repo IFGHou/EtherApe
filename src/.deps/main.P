@@ -1,7 +1,7 @@
 main.o: main.c ../config.h /usr/include/gnome.h gnomesupport.h \
  /usr/include/gtk/gtk.h /usr/include/gdk/gdk.h \
  /usr/include/gdk/gdktypes.h /usr/include/glib.h \
- /usr/include/glibconfig.h /usr/include/limits.h \
+ /usr/lib/glib/include/glibconfig.h /usr/include/limits.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/gnu/stubs.h /usr/include/bits/posix1_lim.h \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
@@ -179,7 +179,7 @@ main.o: main.c ../config.h /usr/include/gnome.h gnomesupport.h \
  /usr/include/libgnomeui/gnome-druid-page-finish.h interface.h \
  support.h capture.h /usr/include/sys/time.h /usr/include/math.h \
  /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h \
- /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h resolv.h
 main.c :
 ../config.h :
 /usr/include/gnome.h :
@@ -188,7 +188,7 @@ gnomesupport.h :
 /usr/include/gdk/gdk.h :
 /usr/include/gdk/gdktypes.h :
 /usr/include/glib.h :
-/usr/include/glibconfig.h :
+/usr/lib/glib/include/glibconfig.h :
 /usr/include/limits.h :
 /usr/include/features.h :
 /usr/include/sys/cdefs.h :
@@ -456,3 +456,4 @@ capture.h :
 /usr/include/bits/mathdef.h :
 /usr/include/bits/mathcalls.h :
 /usr/include/bits/mathinline.h :
+resolv.h :

@@ -353,7 +353,7 @@ main (int argc, char *argv[])
   app1 = create_app1 ();
   gtk_widget_show (app1);
 
-  gtk_timeout_add (200 /*ms */ ,
+  gtk_timeout_add (1000 /*ms */ ,
 		   update_diagram,
 		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
 
