@@ -1,0 +1,89 @@
+.TH etherape 8 "Etherape Manual Page" ""
+.SH NAME
+etherape \- graphical network traffic browser
+.SH SYNOPSIS
+.B etherape
+[
+.B -m
+operating mode ] [
+.B -i
+interface ] [
+.B -f
+filter ] [
+.B -r
+inputfile ] [
+.B -n
+] [
+.B -d
+] [
+.B -F
+] [
+.B -N
+color ] [
+.B -L
+color ] [
+.B -T
+color ]
+
+.SH DESCRIPTION
+.PP
+.B etherape
+is a network traffic browser. It displays network activity
+graphically. It uses GNOME libraries as its user interface, and
+libpcap, a packet capture and filtering library.
+.SH OPTIONS
+.PP
+These options can be supplied to the command:
+.TP
+.BR "-m, --mode " "<ethernet|ip|tcp|udp>"
+set mode of operation
+.TP
+.BR "-i, --interface " "<interface name>"
+set interface to listen to
+.TP
+.BR "-f, --filter " "<capture filter>"
+set capture filter
+.TP
+.BR "-r, --infile " "<file name>"
+set input file
+.TP
+.BR "-n, --numeric"
+don't convert addresses to names
+.TP
+.BR "-d, --diagram-only"
+don't display any node text identification
+.TP
+.BR "-F, --no-fade"
+do not fade old links
+.TP
+.BR "-N, --node-color " "<color>"
+set the node color
+.TP
+.BR "-L, --link-color " "<color>"
+set the link color
+.TP
+.BR "-T, --text-color " "<color>"
+set the text color
+.TP
+.BR "-?, --help"
+show a brief help message
+.SH FILES
+Etherape will use
+.I /etc/ethers
+if there is one. If not, it will
+try to reverse lookup the ip address.
+
+.B IMPORTANT!
+It is particularly important when running etherape
+to have the ethernet address of your router in  /etc/ethers.
+If not, your router will have as name whatever IP address
+it was forwarding traffic from when it was first heard.
+
+.SH SEE ALSO
+.PP
+The etherape webpage is at http://etherape.sourceforge.net/
+
+.SH AUTHOR
+
+Juan Toledo <toledo@users.sourceforge.net>
+

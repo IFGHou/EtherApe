@@ -20,6 +20,8 @@ cvs : NEWS FAQ README.bugs indent
 	test `whoami` = toledo
 	cvs commit
 
+man_MANS = etherape.1
+
 full-cvs : cvs
 	cd ../www && make
 
@@ -44,7 +46,8 @@ EXTRA_DIST = \
 	debian/docs		\
 	debian/menu		\
 	debian/rules		\
-	src/maketcpudp.sh
+	src/maketcpudp.sh	\
+	$(man_MANS)
 
 full-dist :
 	test `whoami` = toledo
