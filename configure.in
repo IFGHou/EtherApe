@@ -40,7 +40,7 @@ GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="es fr nl"
+ALL_LINGUAS="es fr nl tr"
 AM_GNU_GETTEXT
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
