@@ -1,0 +1,1128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Görkem Çetin <gorkem@gelecek.com.tr>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: etherape\n"
+"POT-Creation-Date: 2001-08-12 16:37+0200\n"
+"PO-Revision-Date: 2001-08-12 16:37+0200\n"
+"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Language-Team: Görkem <gorkem@gelecek.com.tr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: src/main.c:39
+msgid "mode of operation"
+msgstr "iþlem kipi"
+
+#: src/main.c:39
+msgid "<ethernet|fddi|ip|tcp>"
+msgstr "<ethernet|fddi|ip|tcp>"
+
+#: src/main.c:41
+msgid "set interface to listen to"
+msgstr "izlenecek arayüzü seç"
+
+#: src/main.c:41
+msgid "<interface name>"
+msgstr "<arayüz adý>"
+
+#: src/main.c:43
+msgid "set capture filter"
+msgstr "yakalama filtresini tanýmla"
+
+#: src/main.c:43
+msgid "<capture filter>"
+msgstr "<yakalama filtresi>"
+
+#: src/main.c:45
+msgid "set input file"
+msgstr "girdi dosyasýný tanýmla"
+
+#: src/main.c:45
+msgid "<file name>"
+msgstr "<dosya adý>"
+
+#: src/main.c:47
+msgid "don't convert addresses to names"
+msgstr ""
+
+#: src/main.c:49
+msgid "don't display any node text identification"
+msgstr ""
+
+#: src/main.c:51
+msgid "do not fade old links"
+msgstr ""
+
+#: src/main.c:53
+msgid "don't move nodes around"
+msgstr ""
+
+#: src/main.c:55
+msgid "limits nodes displayed"
+msgstr ""
+
+#: src/main.c:55
+msgid "<number of nodes>"
+msgstr "<uç sayýsý>"
+
+#: src/main.c:57
+msgid "Don't show warnings"
+msgstr "Uyarýlarý gösterme"
+
+#: src/main.c:59
+msgid "set the node color"
+msgstr "uç rengini tanýmla"
+
+#: src/main.c:59 src/main.c:61 src/main.c:63
+msgid "color"
+msgstr "renk"
+
+#: src/main.c:61
+msgid "set the link color"
+msgstr "baðlantý resmini tanýmla"
+
+#: src/main.c:63
+msgid "set the text color"
+msgstr "metin rengini tanýmla"
+
+#: src/main.c:157
+msgid "Unrecognized mode. Do etherape --help for a list of modes"
+msgstr ""
+
+#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
+#: src/menus.c:372
+#, c-format
+msgid "We could not load the interface! (%s)"
+msgstr ""
+
+#: src/main.c:291
+msgid ""
+"Stack Level is not set to Topmost Recognized Protocol. Please check in the "
+"preferences dialog that this is what you really want"
+msgstr ""
+
+#: src/main.c:395
+msgid "Preferences saved"
+msgstr "Tercihler kaydedildi"
+
+#: src/capture.c:84
+#, c-format
+msgid "Error getting device: %s"
+msgstr "Aygýt açýlamýyor: %s"
+
+#: src/capture.c:103
+#, c-format
+msgid "Error opening %s : %s - perhaps you need to be root?"
+msgstr "%s aygýtý açýlamýyor: %s - Bu iþlemi yapmak için root olmalýsýnýz!"
+
+#: src/capture.c:108
+#, c-format
+msgid "Live device %s opened for capture. pcap_fd: %d"
+msgstr ""
+
+#: src/capture.c:116
+#, c-format
+msgid "Can't open both %s and device %s. Please choose one."
+msgstr ""
+
+#: src/capture.c:122
+#, c-format
+msgid "Error opening %s : %s"
+msgstr "%s açýlamadý: %s"
+
+#: src/capture.c:126
+#, c-format
+msgid "%s opened for offline capture"
+msgstr ""
+
+#: src/capture.c:138
+msgid "Link type is Ethernet"
+msgstr "Baðlantý türü Ethernet"
+
+#  The case for PPP or SLIP, for instance
+#: src/capture.c:146
+msgid "Link type is RAW"
+msgstr "Baðlantý türü RAW"
+
+#  We are assuming LLC async frames only
+#: src/capture.c:155
+msgid "Link type is FDDI"
+msgstr "Baðlantý türü FDDI"
+
+#  As far as I know IEEE802 is Token Ring
+#: src/capture.c:164
+msgid "Link type is Token Ring"
+msgstr "Baðlantý türü Token Ring"
+
+#  Loopback
+#: src/capture.c:172
+msgid "Link type is NULL"
+msgstr "Baðlantý türü NULL"
+
+#  Linux cooked sockets (I believe this
+#  * is used for ISDN on linux)
+#: src/capture.c:183
+msgid "Link type is Linux cooked sockets"
+msgstr ""
+
+#: src/capture.c:193
+msgid "Link type not yet supported"
+msgstr ""
+
+#: src/capture.c:246
+msgid "Mode not available in this device"
+msgstr ""
+
+#: src/capture.c:268
+msgid "Ape mode not yet supported"
+msgstr ""
+
+#: src/capture.c:294 src/capture.c:320
+#, c-format
+msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
+msgstr ""
+
+#: src/capture.c:300 src/capture.c:326
+#, c-format
+msgid "Unable to parse filter string (%s)."
+msgstr ""
+
+#: src/capture.c:305 src/capture.c:331
+#, c-format
+msgid "Can't install filter (%s)."
+msgstr ""
+
+#: src/capture.c:342
+msgid "Status not PAUSE or STOP at start_capture"
+msgstr ""
+
+#: src/capture.c:352
+msgid "Starting live capture"
+msgstr ""
+
+#: src/capture.c:359
+msgid "Starting offline capture"
+msgstr ""
+
+#: src/capture.c:375
+msgid "Status not PLAY at pause_capture"
+msgstr ""
+
+#: src/capture.c:385
+msgid "Pausing live capture"
+msgstr ""
+
+#: src/capture.c:392
+msgid "Pausing offline capture"
+msgstr ""
+
+#: src/capture.c:397
+msgid "Error while trying to pause capture"
+msgstr ""
+
+#: src/capture.c:416
+msgid "Status not PLAY or PAUSE at stop_capture"
+msgstr ""
+
+#: src/capture.c:422
+msgid "Stopping live capture"
+msgstr "Canlý yakalama durduruluyor"
+
+#: src/capture.c:428
+msgid "Stopping offline capture"
+msgstr ""
+
+#: src/capture.c:434
+msgid "Error while removing capture source in stop_capture"
+msgstr ""
+
+#: src/capture.c:470
+msgid "Capture device stopped or file closed"
+msgstr "Yakalama aygýtý durduruldu"
+
+#: src/capture.c:671
+msgid "Reached default in get_node_id"
+msgstr ""
+
+#: src/capture.c:723
+msgid "Unsopported ape mode in get_link_id"
+msgstr ""
+
+#: src/capture.c:856
+#, c-format
+msgid "Creating node: %s. Number of nodes %d"
+msgstr ""
+
+#: src/capture.c:894
+#, c-format
+msgid "Creating link: %s-%s. Number of links %d"
+msgstr ""
+
+#: src/capture.c:1039
+#, c-format
+msgid "Removing node: %s. Number of nodes %d"
+msgstr ""
+
+#: src/capture.c:1244
+#, c-format
+msgid "Removing link. Number of links %d"
+msgstr ""
+
+#: src/capture.c:1562
+msgid "Null packet in check_packet"
+msgstr ""
+
+#: src/menus.c:67
+msgid "No suitables interfaces for capture have been found"
+msgstr ""
+
+#: src/menus.c:73
+msgid "Available interfaces for capture:"
+msgstr ""
+
+#: src/menus.c:205
+#, c-format
+msgid "Capture interface set to %s in GUI"
+msgstr ""
+
+#: src/menus.c:277
+#, c-format
+msgid "Mode set to %s in GUI"
+msgstr ""
+
+#: src/menus.c:450
+msgid "Status not STOP or PAUSE at gui_start_capture"
+msgstr ""
+
+#  Sets the appbar
+#: src/menus.c:544
+msgid "Reading data from "
+msgstr " "
+
+#: src/menus.c:551 src/menus.c:695
+msgid "default interface"
+msgstr "öntanýmlý arayüz"
+
+#: src/menus.c:556
+msgid " in Token Ring mode"
+msgstr " (Token Ring konumunda)"
+
+#: src/menus.c:559
+msgid " in FDDI mode"
+msgstr " (FDDI konumunda)"
+
+#: src/menus.c:562
+msgid " in Ethernet mode"
+msgstr " (Ethernet konumunda)"
+
+#: src/menus.c:565
+msgid " in IP mode"
+msgstr " (IP konumunda)"
+
+#: src/menus.c:568
+msgid " in TCP mode"
+msgstr " (TCP konumunda)"
+
+#: src/menus.c:571
+msgid " in UDP mode"
+msgstr " (UDP konumunda)"
+
+#: src/menus.c:581
+msgid "Diagram started"
+msgstr "Pencere baþlatýldý"
+
+#: src/menus.c:594
+msgid "Status not PLAY at gui_pause_capture"
+msgstr ""
+
+#  Sets the appbar
+#: src/menus.c:623
+msgid "Paused"
+msgstr "Bekletiliyor"
+
+#: src/menus.c:628
+msgid "Diagram paused"
+msgstr "Pencere bekletiliyor"
+
+#: src/menus.c:654
+msgid "Status not PLAY or PAUSE at gui_stop_capture"
+msgstr ""
+
+#  Sets the appbar
+#: src/menus.c:688
+msgid "Ready to capture from "
+msgstr "Arayüzden yakalamaya hazýr: "
+
+#: src/menus.c:700
+msgid "Diagram stopped"
+msgstr "Pencere durduruldu"
+
+#: src/diagram.c:322
+msgid "Number of nodes: "
+msgstr "Uç sayýsý: "
+
+#: src/diagram.c:326
+#, c-format
+msgid ". Refresh Period: %d"
+msgstr ""
+
+#: src/diagram.c:332
+msgid ". IDLE."
+msgstr ""
+
+#: src/diagram.c:334
+msgid ". TIMEOUT."
+msgstr ""
+
+#: src/diagram.c:437
+#, c-format
+msgid "Unable to parse color string %s for new protocol %s"
+msgstr ""
+
+#: src/diagram.c:441
+#, c-format
+msgid "Unable to allocate color for new protocol %s"
+msgstr ""
+
+#: src/diagram.c:610
+#, c-format
+msgid "Creating canvas_node: %s. Number of nodes %d"
+msgstr ""
+
+#: src/diagram.c:695
+msgid "Main node protocol not found in update_canvas_nodes"
+msgstr ""
+
+#: src/diagram.c:720
+msgid "Unknown value or node_size_variable"
+msgstr ""
+
+#: src/diagram.c:1054
+#, c-format
+msgid "Creating canvas_link: %s-%s. Number of links %d"
+msgstr ""
+
+#: src/diagram.c:1120
+msgid "Main link protocol not found in update_canvas_links"
+msgstr ""
+
+#: src/diagram.c:1266
+#, c-format
+msgid "Link main protocol: %s"
+msgstr ""
+
+#: src/diagram.c:1269
+msgid "Link main protocol unknown"
+msgstr ""
+
+#: src/protocols.c:1020
+#, c-format
+msgid "Failed to open %s. No TCP or UDP services will be recognized"
+msgstr ""
+
+#: src/protocols.c:1026
+#, c-format
+msgid "Reading TCP and UDP services from %s"
+msgstr ""
+
+#: src/protocols.c:1071
+#, c-format
+msgid "Unable to  parse line %s"
+msgstr ""
+
+#: src/protocols.c:1095
+#, c-format
+msgid "DDP protocols not supported in %s"
+msgstr ""
+
+#  append_etype_prot
+# 
+#  * Archivo de cadenas traducibles generado por Glade.
+#  * Añada este archivo a su POTFILES.in de su proyecto.
+#  * NO lo compile como parte de su aplicación.
+# 
+#: src/glade-strings:7
+msgid "EtherApe"
+msgstr "EtherApe"
+
+#: src/glade-strings:8
+msgid "_Capture"
+msgstr "_Yakala"
+
+#: src/glade-strings:9
+msgid "_Mode"
+msgstr "_Kaynak"
+
+#: src/glade-strings:10
+msgid "Set Token Ring mode"
+msgstr ""
+
+#: src/glade-strings:11
+msgid "Token _Ring"
+msgstr "Token _Ring"
+
+#: src/glade-strings:12
+msgid "Set FDDI mode"
+msgstr "FDDI konumuna getir"
+
+#: src/glade-strings:13
+msgid "_FDDI"
+msgstr "_FDDI"
+
+#: src/glade-strings:14
+msgid "Set Ethernet mode"
+msgstr "Ethernet konumuna getir"
+
+#: src/glade-strings:15
+msgid "_Ethernet"
+msgstr "_Ethernet"
+
+#: src/glade-strings:16
+msgid "Set IP mode"
+msgstr "IP konumuna getir"
+
+#: src/glade-strings:17
+msgid "_IP"
+msgstr "_IP"
+
+#: src/glade-strings:18
+msgid "Set TCP mode"
+msgstr "TCP konumuna getir"
+
+#: src/glade-strings:19
+msgid "_TCP"
+msgstr "_TCP"
+
+#: src/glade-strings:20
+msgid "Set UDP mode"
+msgstr "UDP konumuna getir"
+
+#: src/glade-strings:21
+msgid "_UDP"
+msgstr "_UDP"
+
+#: src/glade-strings:22
+msgid "_Interfaces"
+msgstr "_Arayüzler"
+
+#: src/glade-strings:23 src/glade-strings:37
+msgid "Start capture"
+msgstr "Yakalamaya baþla"
+
+#: src/glade-strings:24
+msgid "_Start"
+msgstr "_Baþla"
+
+#: src/glade-strings:25 src/glade-strings:39
+msgid "Pause capture"
+msgstr "Yakalamayý beklet"
+
+#: src/glade-strings:26
+msgid "_Pause"
+msgstr "_Beklet"
+
+#: src/glade-strings:27 src/glade-strings:41
+msgid "Stop capture"
+msgstr "Yakalamayý durdur"
+
+#: src/glade-strings:28
+msgid "St_op"
+msgstr "_Durdur"
+
+#: src/glade-strings:29
+msgid "Show or hide the protocols window"
+msgstr "Protokol penceresini göster/gizle"
+
+#: src/glade-strings:30
+msgid "_Protocols"
+msgstr "_Protokol"
+
+#: src/glade-strings:31
+msgid "Show or hide the toolbar"
+msgstr "Araç çubuðu göster/gizle"
+
+#: src/glade-strings:32
+msgid "_Toolbar"
+msgstr "_Araç Çubuðu"
+
+#: src/glade-strings:33
+msgid "Show or hide the legend"
+msgstr ""
+
+#: src/glade-strings:34
+msgid "_Legend"
+msgstr "_Ek çubuk"
+
+#: src/glade-strings:35
+msgid "Show or hide the status bar"
+msgstr ""
+
+#: src/glade-strings:36
+msgid "_Status Bar"
+msgstr "_Durum Çubuðu"
+
+#: src/glade-strings:38
+msgid "Start"
+msgstr "Baþlat"
+
+#: src/glade-strings:40
+msgid "Pause"
+msgstr "Beklet"
+
+#: src/glade-strings:42
+msgid "Stop"
+msgstr "Dur"
+
+#: src/glade-strings:43
+msgid "Preferences (Ctrl-P)"
+msgstr "Tercihler (Ctrl-P)"
+
+#: src/glade-strings:44
+msgid "Pref."
+msgstr "Terc."
+
+#: src/glade-strings:45
+msgid "Display the protocols window"
+msgstr "Protokol penceresini göster"
+
+#: src/glade-strings:46
+msgid "Prot."
+msgstr "Prot."
+
+#: src/glade-strings:47
+msgid "Protocols"
+msgstr "Protokoller"
+
+#: src/glade-strings:48
+msgid "Copyright 2001 Juan Toledo"
+msgstr "Copyright 2001 Juan Toledo"
+
+#: src/glade-strings:49
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+"Grafiksel Að Ýzleyici.\n"
+"Web: http://etherape.sourceforge.net"
+
+#: src/glade-strings:51
+msgid "window1"
+msgstr "window1"
+
+#: src/glade-strings:52 src/glade-strings:171
+msgid "name"
+msgstr "isim"
+
+#: src/glade-strings:53
+msgid "accumulated"
+msgstr "toplam"
+
+#: src/glade-strings:54
+msgid "average"
+msgstr "ortalama"
+
+#: src/glade-strings:55
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr ""
+
+#: src/glade-strings:56
+msgid "Information"
+msgstr "Bilgi"
+
+#: src/glade-strings:57
+msgid "EtherApe: Preferences"
+msgstr "EtherApe: Tercihler"
+
+#: src/glade-strings:58
+msgid "Save"
+msgstr "Kaydet"
+
+#: src/glade-strings:59
+msgid "Font"
+msgstr "Yazýtipi"
+
+#: src/glade-strings:60
+msgid "Choose the font used to display text in the diagram"
+msgstr "Pencerede gösterilecek yazýtipini belirleyin"
+
+#: src/glade-strings:61
+msgid "Protocol Stack Level"
+msgstr "Protokol Seviyesi"
+
+#: src/glade-strings:62
+msgid "Set what level of the protocol stack is displayed in the legend"
+msgstr "Yan çubukta gösterilecek protokolleri belirleyin"
+
+#: src/glade-strings:63
+msgid "Topmost recognized protocol"
+msgstr "En çok bilinen protokoller"
+
+#: src/glade-strings:64
+msgid "Level 2 (Eg: ETH_II)"
+msgstr "2. Seviye (Örnek: ETH_II)"
+
+#: src/glade-strings:65
+msgid "Level 3 (Eg: IP)"
+msgstr "3. Seviye (Örnek: IP)"
+
+#: src/glade-strings:66
+msgid "Level 4 (Eg: TCP)"
+msgstr "4. Seviye (Örnek: TCP)"
+
+#: src/glade-strings:67
+msgid "Level 5 (Eg: HTTP)"
+msgstr "5. Seviye (Örnek: HTTP)"
+
+#: src/glade-strings:68
+msgid "Node size variable"
+msgstr ""
+
+#: src/glade-strings:69
+msgid ""
+"Set the kind of instantenous or accumulated traffic that the node radius "
+"indicates"
+msgstr ""
+
+#: src/glade-strings:70
+msgid "Instant. traffic (In+Out)"
+msgstr "Anlýk trafik (giriþ+çýkýþ)"
+
+#: src/glade-strings:71
+msgid "Instant. traffic (Inbound)"
+msgstr "Anlýk trafik (giriþ)"
+
+#: src/glade-strings:72
+msgid "Instant. traffic (Outbound)"
+msgstr "Anlýk trafik (çýkýþ)"
+
+#: src/glade-strings:73
+msgid "Accum. traffic (In+Out)"
+msgstr "Toplam trafik (giriþ+çýkýþ)"
+
+#: src/glade-strings:74
+msgid "Accum. traffic (Inbound)"
+msgstr "Toplam trafik (giriþ)"
+
+#: src/glade-strings:75
+msgid "Accum. traffic (Outbound)"
+msgstr "Toplam trafik (çýkýþ)"
+
+#: src/glade-strings:76
+msgid "Diagram refresh period (ms)"
+msgstr "Pencere tazeleme aralýðý (ms)"
+
+#: src/glade-strings:77
+msgid "Refresh diagram every this many miliseconds"
+msgstr "Pencere tazeleme aralýðý"
+
+#: src/glade-strings:78
+msgid "Diagram Node Timeout (ms)"
+msgstr "Pencere Uç Zaman Aþýmý (ms)"
+
+#: src/glade-strings:79
+msgid ""
+"Remove this node from the diagram after this much time. 0 means never "
+"timeout."
+msgstr ""
+
+#: src/glade-strings:80
+msgid "Max. Link Width"
+msgstr "Azami Baðlantý Geniþliði"
+
+#: src/glade-strings:81
+msgid "Max. Node Radius"
+msgstr "Azami Uç Çapý"
+
+#: src/glade-strings:82
+msgid "Size Mode"
+msgstr "Büyüklük"
+
+#: src/glade-strings:83
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
+msgstr ""
+
+#: src/glade-strings:84
+msgid "Linear"
+msgstr "Doðrusal"
+
+#: src/glade-strings:85
+msgid "Logarithmic"
+msgstr "Logaritmik"
+
+#: src/glade-strings:86
+msgid "Square Root"
+msgstr "Kök"
+
+#: src/glade-strings:87
+msgid "Toggle whether the node names are displayed on top of the nodes"
+msgstr ""
+
+#: src/glade-strings:88
+msgid "Hide node names"
+msgstr "Uç isimleri gizle"
+
+#: src/glade-strings:89
+msgid "Group unknown ports"
+msgstr "Bilinmeyen portlarý grupla"
+
+#: src/glade-strings:90
+msgid "Diagram"
+msgstr "Pencere"
+
+#: src/glade-strings:91
+msgid "Color"
+msgstr "Renk"
+
+#: src/glade-strings:92 src/glade-strings:108 src/glade-strings:161
+#: src/glade-strings:166
+msgid "Protocol"
+msgstr "Protokol"
+
+#: src/glade-strings:93
+msgid ""
+"Add a new color to the list of colors that can be used to represent protocols"
+msgstr ""
+
+#: src/glade-strings:94
+msgid "Add color"
+msgstr "Renk ekle"
+
+#: src/glade-strings:95
+msgid "Remove color"
+msgstr "Rengi sil"
+
+#: src/glade-strings:96
+msgid "Edit protocol"
+msgstr "Protokolü düzenle"
+
+#: src/glade-strings:97
+msgid "Fade link colors to black when there is no traffic"
+msgstr ""
+
+#: src/glade-strings:98
+msgid "Fade colors"
+msgstr "Renkleri soluklaþtýr"
+
+#: src/glade-strings:99
+msgid "Whether or not to use assigned colors for unassigned protocols"
+msgstr ""
+
+#: src/glade-strings:100
+msgid "Cycle assigned colors"
+msgstr "Tanýmlý renkleri çevir"
+
+#: src/glade-strings:101
+msgid "Colors"
+msgstr "Renkler"
+
+#: src/glade-strings:102
+msgid "Mode"
+msgstr "Kip"
+
+#: src/glade-strings:103
+msgid "Token Ring"
+msgstr "Token Ring"
+
+#: src/glade-strings:104
+msgid "FDDI"
+msgstr "FDDI"
+
+#: src/glade-strings:105
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/glade-strings:106
+msgid "IP"
+msgstr "IP"
+
+#: src/glade-strings:107
+msgid "TCP"
+msgstr "TCP"
+
+#: src/glade-strings:109
+msgid "Solved"
+msgstr ""
+
+#: src/glade-strings:110
+msgid "Add a new protocol to the list of protocols to choose a name from"
+msgstr ""
+
+#: src/glade-strings:111
+msgid "Add protocol"
+msgstr "Protokol ekle"
+
+#: src/glade-strings:112
+msgid "Remove selected protocol"
+msgstr "Seçili protokolü sil"
+
+#: src/glade-strings:113
+msgid "Remove protocol"
+msgstr "Protokolü sil"
+
+#: src/glade-strings:114
+msgid ""
+"Toggle whether the selected protocol name has to be solved in order to use it"
+msgstr ""
+
+#: src/glade-strings:115
+msgid "Toggle solved"
+msgstr ""
+
+#: src/glade-strings:116
+msgid "Move selected protocol up one item"
+msgstr "Seçilen protokolü bir seviye yukarý taþý"
+
+#: src/glade-strings:117
+msgid "Move up"
+msgstr "Yukarý Taþý"
+
+#: src/glade-strings:118
+msgid "Move selected protocol down one item"
+msgstr "Seçilen protokolü bir seviye aþaðý taþý"
+
+#: src/glade-strings:119
+msgid "Move down"
+msgstr "Aþaðý Taþý"
+
+#: src/glade-strings:120
+msgid "Don't try to resolve any name. Always present in numeric form."
+msgstr ""
+
+#: src/glade-strings:121
+msgid "Force numeric"
+msgstr ""
+
+#: src/glade-strings:122
+msgid "Make DNS queries to resolve IP addresses"
+msgstr ""
+
+#: src/glade-strings:123
+msgid "DNS resolution"
+msgstr "DNS çözümlemesi"
+
+#: src/glade-strings:124
+msgid "Names"
+msgstr "Ýsimler"
+
+#: src/glade-strings:125
+msgid "Capture filter"
+msgstr "Yakalama filtresi"
+
+#: src/glade-strings:126
+msgid "Packet information is averaged for this amount of time"
+msgstr ""
+
+#: src/glade-strings:127
+msgid "Averaging Time (ms)"
+msgstr "Ortalama Süre (ms)"
+
+#: src/glade-strings:128
+msgid "Delete this link after this much time. 0 means never timeout."
+msgstr ""
+
+#: src/glade-strings:129
+msgid "Link Timeout (ms)"
+msgstr "Baðlantý Zaman Aþýmý (ms)"
+
+#: src/glade-strings:130
+msgid ""
+"Delete this node from memory after this much time. 0 means never timeout."
+msgstr ""
+
+#: src/glade-strings:131
+msgid "Node Timeout (ms)"
+msgstr "Uç Baðlantý Zaman Aþýmý (ms)"
+
+#: src/glade-strings:132
+msgid "Capture"
+msgstr "Yakala"
+
+#: src/glade-strings:133
+msgid "Select Font"
+msgstr "Yazýtipini Seç"
+
+#: src/glade-strings:134
+msgid "EtherApe: Open Capture File"
+msgstr ""
+
+#: src/glade-strings:135
+msgid "EtherApe: Select capture file"
+msgstr ""
+
+#: src/glade-strings:136
+msgid "EtherApe: Select Capture File"
+msgstr ""
+
+#: src/glade-strings:137
+msgid "Select capture file"
+msgstr ""
+
+#: src/glade-strings:138
+msgid "Optionally, set a capture filter"
+msgstr ""
+
+#: src/glade-strings:139
+msgid "File:"
+msgstr "Dosya:"
+
+#: src/glade-strings:140
+msgid "Filter:"
+msgstr "Filtre:"
+
+#: src/glade-strings:141
+msgid "Name:"
+msgstr "Ýsim:"
+
+#: src/glade-strings:142 src/glade-strings:144
+msgid "This is a test node name"
+msgstr "Bu bir deneme uç ismidir"
+
+#: src/glade-strings:143
+msgid "Numeric Name:"
+msgstr ""
+
+#: src/glade-strings:145
+msgid "Show traffic"
+msgstr "Trafiði göster"
+
+#: src/glade-strings:146
+msgid "Show protocols"
+msgstr "Protokolleri göster"
+
+#: src/glade-strings:147 src/glade-strings:174
+msgid "Instantaneous"
+msgstr "Anlýk"
+
+#: src/glade-strings:148 src/glade-strings:150 src/glade-strings:152
+#: src/glade-strings:154 src/glade-strings:156 src/glade-strings:158
+#: src/glade-strings:175 src/glade-strings:177
+msgid "test label"
+msgstr ""
+
+#: src/glade-strings:149 src/glade-strings:176
+msgid "Accumulated"
+msgstr ""
+
+#: src/glade-strings:151
+msgid "Inst. Inbound"
+msgstr ""
+
+#: src/glade-strings:153
+msgid "Accu. Outbound"
+msgstr "Toplam Çýkan"
+
+#: src/glade-strings:155
+msgid "Accu. Inbound"
+msgstr "Toplam Giren"
+
+#: src/glade-strings:157
+msgid "Inst. Outbound"
+msgstr "Anlýk Çýkan"
+
+#: src/glade-strings:159
+msgid "EtherApe: Protocols"
+msgstr "EtherApe: Protokoller"
+
+#: src/glade-strings:160
+msgid "Columns"
+msgstr "Sütun"
+
+#: src/glade-strings:162 src/glade-strings:167
+msgid "Inst Traffic"
+msgstr "Anlýk Trafik"
+
+#: src/glade-strings:163 src/glade-strings:168
+msgid "Accum Traffic"
+msgstr "Toplam Trafik"
+
+#: src/glade-strings:164 src/glade-strings:169
+msgid "Last Heard"
+msgstr "Son Görülme"
+
+#: src/glade-strings:165 src/glade-strings:170
+msgid "Packets"
+msgstr "Paket"
+
+#: src/glade-strings:172
+msgid "Last Heard: "
+msgstr "Son Görülme Zamaný: "
+
+#: src/glade-strings:173
+msgid "label73"
+msgstr "label73"
+
+#: src/glade-strings:178
+msgid "Nodes"
+msgstr "Uçlar"
+
+#: src/glade-strings:179
+msgid "Select color"
+msgstr "Rengi seç"
+
+#: src/glade-strings:180
+msgid "ok_button2"
+msgstr "ok_düðmesi"
+
+#: src/glade-strings:181
+msgid "cancel_button2"
+msgstr "iptal_düðmesi2"
+
+#: src/glade-strings:182
+msgid "help_button1"
+msgstr "yardým_düðmesi1"
+
+#: src/glade-strings:183
+msgid "EtherApe: assign protocol"
+msgstr "EtherApe: protokol tanýmla"
+
+#: src/glade-strings:184
+msgid "Type protocol name..."
+msgstr "Protokol adýný girin..."
+
+#: src/glade-strings:185
+msgid ""
+"Type the name of the protocol that will be assigned to the selected color"
+msgstr ""
+
+#: src/info_windows.c:323
+msgid "No node_id in on_node_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:330
+msgid "No node_info_window in on_node_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:352
+msgid "No prot_name in on_prot_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:359
+msgid "No prot_info_window in on_prot_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:382
+msgid "No info available"
+msgstr "Bilgi yok"
+
+#  Meaning "n seconds" ago
+#: src/info_windows.c:754
+#, c-format
+msgid "%d\" ago"
+msgstr "%d\" önce"
+
+#: src/info_windows.c:760
+#, c-format
+msgid "%d'%d\" ago"
+msgstr "%d'%d\" ago"
+
+#  Watch out! The first is month, the second day of the month
+#: src/info_windows.c:772
+#, c-format
+msgid "%d/%d %d:%d"
+msgstr "%d/%d %d:%d"
