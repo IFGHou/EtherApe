@@ -17,7 +17,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#if 0
 #include "tcpudp.h"
+#endif
 
 /* ETHERNET */
 
@@ -99,3 +101,20 @@ typedef enum
   IP_PROTO_VRRP = 112		/* Virtual Router Redundancy Protocol */
 }
 iptype_t;
+
+typedef guint16 tcp_type_t;
+typedef guint16 udp_type_t;
+
+typedef struct
+{
+  tcp_type_t number;
+  gchar *name;
+}
+tcp_service_t;
+
+typedef struct
+{
+  udp_type_t number;
+  gchar *name;
+}
+udp_service_t;

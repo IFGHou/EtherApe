@@ -3,11 +3,13 @@
 # $Id$
 
 
+confdir = $(sysconfdir)/etherape
 gladedir   = $(datadir)/etherape/glade
 
 INCLUDES = \
 	-I$(top_srcdir)/intl \
-	-DGLADEDIR=\""$(gladedir)"\"           \
+	-DGLADEDIR=\""$(gladedir)"\" \
+	-DCONFDIR=\""$(confdir)"\" \
 	$(GNOME_INCLUDEDIR)
 
 sbin_PROGRAMS = etherape
@@ -24,7 +26,7 @@ etherape_SOURCES = \
 	capture.c capture.h \
 	names.c names.h \
 	protocols.c protocols.h \
-	prot_types.h tcpudp.h\
+	prot_types.h \
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)

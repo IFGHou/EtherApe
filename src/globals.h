@@ -291,6 +291,9 @@ void destroying_idle (gpointer data);
 #define g_my_info(format, args...)      g_log (G_LOG_DOMAIN, \
 						  G_LOG_LEVEL_INFO, \
 						  format, ##args)
+#define g_my_critical(format, args...)      g_log (G_LOG_DOMAIN, \
+						      G_LOG_LEVEL_CRITICAL, \
+						      format, ##args)
 
 
 #define pntohs(p)  ((guint16)                       \

@@ -20,7 +20,12 @@
 
 #include "prot_types.h"
 
-/* Funcions declarations */
+#define LINESIZE 1024
+
+static GTree *tcp_services = NULL;
+static GTree *udp_services = NULL;
+
+/* Functions declarations */
 
 static void get_eth_type (void);
 static void get_fddi_type (void);
@@ -31,3 +36,4 @@ static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
 static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
+static void load_services (void);

@@ -57,5 +57,4 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.help README.bugs README.thanks
 %{prefix}/sbin/*
 %{prefix}/share/locale/*/*/*
-%{prefix}/share/locale/*/*/*
 %{prefix}/share/etherape/*/*

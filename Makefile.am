@@ -4,7 +4,6 @@
 
 SUBDIRS = intl po macros src
 
-gladedir   = $(datadir)/etherape/glade
 
 indent:
 	cd src && make indent
@@ -28,6 +27,11 @@ man_MANS = etherape.8
 full-cvs : cvs
 	cd ../www && make
 
+confdir = $(sysconfdir)/etherape
+conf_DATA =					\
+	services
+
+gladedir   = $(datadir)/etherape/glade
 glade_DATA = 				\
 	etherape.glade
 
@@ -54,8 +58,8 @@ EXTRA_DIST = \
 	debian/docs		\
 	debian/menu		\
 	debian/rules		\
-	src/maketcpudp.sh	\
 	src/glade-strings	\
+	$(conf_DATA)		\
 	$(glade_DATA)		\
 	$(man_MANS)
 
