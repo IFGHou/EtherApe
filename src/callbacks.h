@@ -91,3 +91,27 @@ void
 void
   on_size_mode_menu_released (GtkButton * button,
 			      gpointer user_data);
+
+void
+on_font_button_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_ok_button1_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_cancel_button1_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_apply_button1_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_cancel_button1_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_apply_button1_clicked               (GtkButton       *button,
+                                        gpointer         user_data);

@@ -660,6 +660,9 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
 
     }
+   
+  /* TODO timedout nodes and links should be freed here, not in
+   * diagram.c, shouldn't they? */
 
   /* TODO Change the parameters to this function.
    * I'd like to be able to access data of the parents

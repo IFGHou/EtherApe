@@ -37,8 +37,12 @@ extern double link_timeout_time;
 extern double node_timeout_time;
 extern guint32 refresh_period;
 extern gint diagram_timeout;
+extern gchar *fontname;
+extern gboolean need_reposition;
 extern GtkWidget *diag_pref;
 extern GtkWidget *app1;
+
+
 void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -353,5 +357,73 @@ void
 on_size_mode_menu_released (GtkButton * button,
 			    gpointer user_data)
 {
-  g_message ("So, here I am");
+  g_message ("MENU RELEASED!");
 }
+
+void
+on_font_button_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   static GtkWidget *fontsel=NULL;
+   if (!fontsel)
+     fontsel = create_fontselectiondialog1 ();
+   gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG(fontsel),
+					    fontname);
+   gtk_widget_show (fontsel);
+}
+
+
+void
+on_ok_button1_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *fontsel;
+   gchar *str;
+   
+   fontsel=lookup_widget (GTK_WIDGET(button),"fontselectiondialog1");
+   str = 
+     gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(fontsel));
+   if (str)
+     {
+	if (fontname) g_free (fontname);
+	fontname = g_strdup (str);
+	g_free (str);
+	need_reposition=TRUE;
+     }
+   
+   gtk_widget_hide (fontsel);
+}
+
+
+void
+on_cancel_button1_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *fontsel;
+   
+   fontsel=lookup_widget (GTK_WIDGET(button),"fontselectiondialog1");
+   gtk_widget_hide (fontsel);
+
+}
+
+
+void
+on_apply_button1_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *fontsel;
+   gchar *str;
+   
+   fontsel=lookup_widget (GTK_WIDGET(button),"fontselectiondialog1");
+   str = 
+     gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(fontsel));
+   if (str)
+     {
+	if (fontname) g_free (fontname);
+	fontname = g_strdup (str);
+	g_free (str);
+	need_reposition=TRUE;
+     }
+}
+
+

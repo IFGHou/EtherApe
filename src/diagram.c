@@ -44,6 +44,7 @@ size_mode_t size_mode = LINEAR;	/* Default mode for node size and
 				 * link width calculation */
 
 gchar *node_color = "brown", *link_color = "tan", *text_color = "yellow";
+gchar *fontname = NULL;
 
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
@@ -175,31 +176,43 @@ popup_to (struct popup_data * pd)
 {
 
   GtkLabel *label;
+  gchar *str;
 
   pd->node_popup = create_node_popup ();
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "name");
 
   if (mode == ETHERNET && pd->canvas_node->node->ip_address)
-    gtk_label_set_text (label,
-			g_strdup_printf ("%s (%s, %s)",
-					 pd->canvas_node->node->name->str,
-				     pd->canvas_node->node->numeric_ip->str,
-				 pd->canvas_node->node->numeric_name->str));
+     {
+	str = g_strdup_printf ("%s (%s, %s)",
+			       pd->canvas_node->node->name->str,
+			       pd->canvas_node->node->numeric_ip->str,
+			       pd->canvas_node->node->numeric_name->str);
+	gtk_label_set_text (label,str);
+	g_free (str);
+     }
+	
   else
-    gtk_label_set_text (label,
-			g_strdup_printf ("%s (%s)",
-					 pd->canvas_node->node->name->str,
-				 pd->canvas_node->node->numeric_name->str));
+     {
+	str = g_strdup_printf ("%s (%s)",
+			       pd->canvas_node->node->name->str,
+			       pd->canvas_node->node->numeric_name->str);
+	gtk_label_set_text (label,str);
+	g_free (str);
+     }
+
 
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
-  gtk_label_set_text (label,
-		      g_strdup_printf ("Acummulated bytes: %g",
-				       pd->canvas_node->node->accumulated));
+  str = g_strdup_printf ("Acummulated bytes: %g",
+			 pd->canvas_node->node->accumulated);
+  gtk_label_set_text (label,str);
+  g_free (str);
+
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "average");
-  gtk_label_set_text (label,
-		      g_strdup_printf ("Average bps: %g",
-				       pd->canvas_node->node->average *
-				       1000000));
+  str =  g_strdup_printf ("Average bps: %g",
+			  pd->canvas_node->node->average *
+			  1000000);
+  gtk_label_set_text (label, str);
+  g_free (str);
 
   gtk_widget_show (GTK_WIDGET (pd->node_popup));
 
@@ -290,6 +303,12 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 			 "x", x,
 			 "y", y,
 			 NULL);
+   
+  /* We update the text font */
+   gnome_canvas_item_set (canvas_node->text_item,
+			  "font", fontname,
+			  NULL);
+
   if (diagram_only)
     {
       gnome_canvas_item_hide (canvas_node->text_item);
@@ -538,7 +557,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       gnome_canvas_item_request_update (canvas_node->text_item);
     }
 
-
   return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
@@ -647,7 +665,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "x", 0.0,
 			       "y", 0.0,
 			       "anchor", GTK_ANCHOR_CENTER,
-		       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+			       "font", fontname,
 			       "fill_color", text_color,
 			       NULL);
       new_canvas_node->group_item = group;
@@ -745,7 +763,11 @@ update_diagram (GtkWidget * canvas)
   guint n_links = 0, n_links_new = 1, n_protocols_new;
   guint n_nodes_before = 0, n_nodes_after = 1;
   static guint n_protocols = 0;
+  gchar *str;
 
+   
+  g_mem_profile ();
+   
   gettimeofday (&now, NULL);
 
   /* We search for new protocols */
@@ -786,12 +808,9 @@ update_diagram (GtkWidget * canvas)
 		       G_IN_ORDER, canvas);
       gnome_appbar_pop (appbar);
 
-      /* TODO: Am I leaking here with each call to g_strdup_printf?
-       * How should I do this if so? */
-      gnome_appbar_push (appbar, g_strconcat (_ ("Number of nodes: "),
-					      g_strdup_printf ("%d",
-							     n_nodes_after),
-					      NULL));
+      str = g_strdup_printf (_ ("Number of nodes: %d"), n_nodes_after);
+      gnome_appbar_push (appbar, str);
+      g_free (str);
 
       need_reposition = 0;
     }
@@ -831,6 +850,8 @@ init_diagram ()
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
+   
+  fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
 
   /* These variables but refresh_period are measured in usecs */
   averaging_time = 3000000.0;

@@ -13,9 +13,12 @@ NEWS: html/NEWS.html
 FAQ: html/FAQ.html
 	lynx --dump html/FAQ.html > FAQ
 
+
 cvs : NEWS FAQ indent
 	test `whoami` = toledo
 	cvs commit
+
+full-cvs : cvs
 	cd ../www && make
 
 purge:
@@ -44,14 +47,14 @@ full-dist :
 	test `echo ${VERSION}` != `cat old.version`
 	jed html/NEWS.html
 	make NEWS
-	make dist
 	make cvs
 	cvs tag `echo rel-${VERSION} | tr . - `
-	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
+	make dist
 	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
 	scp ${PACKAGE}-${VERSION}.tar.gz etherape:ftp
+	make full-cvs
+	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 	echo ${VERSION} > old.version
-
 
 install-data-local:
 	@$(NORMAL_INSTALL)
