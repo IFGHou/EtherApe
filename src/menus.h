@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -24,13 +24,21 @@
 #include <gtk/gtk.h>
 #include "globals.h"
 
+void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
+void on_file_cancel_button_clicked (GtkButton * button, gpointer user_data);
+void on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data);
+void on_file_ok_button_clicked (GtkButton * button, gpointer user_data);
+
 void on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data);
-void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
+
+void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
+void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
+
 void on_toolbar_check_activate (GtkCheckMenuItem * menuitem,
 				gpointer user_data);
 void on_legend_check_activate (GtkCheckMenuItem * menuitem,
 			       gpointer user_data);
 void on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
 				   gpointer user_data);
-void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
-void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
+
+void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
