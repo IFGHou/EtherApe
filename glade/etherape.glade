@@ -2690,30 +2690,90 @@ Square Root
       <shadow_type>GTK_SHADOW_OUT</shadow_type>
 
       <widget>
-	<class>GtkToolbar</class>
-	<name>toolbar1</name>
-	<border_width>1</border_width>
-	<orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-	<type>GTK_TOOLBAR_ICONS</type>
-	<space_size>16</space_size>
-	<space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
-	<relief>GTK_RELIEF_NONE</relief>
-	<tooltips>True</tooltips>
+	<class>GtkMenuBar</class>
+	<name>menubar2</name>
+	<shadow_type>GTK_SHADOW_OUT</shadow_type>
 
 	<widget>
-	  <class>Placeholder</class>
-	</widget>
+	  <class>GtkMenuItem</class>
+	  <name>columns1</name>
+	  <label>Columns</label>
+	  <right_justify>False</right_justify>
 
-	<widget>
-	  <class>Placeholder</class>
-	</widget>
+	  <widget>
+	    <class>GtkMenu</class>
+	    <name>columns1_menu</name>
 
-	<widget>
-	  <class>Placeholder</class>
-	</widget>
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
+	      <name>prot_protocol_check</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_prot_column_view_activate</handler>
+		<data>0</data>
+		<last_modification_time>Sat, 12 May 2001 11:38:53 GMT</last_modification_time>
+	      </signal>
+	      <label>Protocol</label>
+	      <active>True</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
 
-	<widget>
-	  <class>Placeholder</class>
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
+	      <name>prot_inst_traffic_check</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_prot_column_view_activate</handler>
+		<data>1</data>
+		<last_modification_time>Sat, 12 May 2001 11:39:18 GMT</last_modification_time>
+	      </signal>
+	      <label>Inst Traffic</label>
+	      <active>True</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
+	      <name>prot_accum_traffic_check</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_prot_column_view_activate</handler>
+		<data>2</data>
+		<last_modification_time>Sat, 12 May 2001 11:39:22 GMT</last_modification_time>
+	      </signal>
+	      <label>Accum Traffic</label>
+	      <active>True</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
+	      <name>prot_last_heard_check</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_prot_column_view_activate</handler>
+		<data>3</data>
+		<last_modification_time>Sat, 12 May 2001 11:39:25 GMT</last_modification_time>
+	      </signal>
+	      <label>Last Heard</label>
+	      <active>True</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckMenuItem</class>
+	      <name>prot_packets_check</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_prot_column_view_activate</handler>
+		<data>4</data>
+		<last_modification_time>Sat, 12 May 2001 11:39:28 GMT</last_modification_time>
+	      </signal>
+	      <label>Packets</label>
+	      <active>True</active>
+	      <always_show_toggle>True</always_show_toggle>
+	    </widget>
+	  </widget>
 	</widget>
       </widget>
     </widget>

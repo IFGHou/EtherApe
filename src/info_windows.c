@@ -446,6 +446,27 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     gtk_widget_hide (protocols_window);
 }				/* on_protocols_check_activate */
 
+void
+on_prot_column_view_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+{
+  static GtkWidget *prot_clist = NULL;
+  guint column;
+   
+  if (!prot_clist)
+    prot_clist = glade_xml_get_widget (xml, "prot_clist");
+  
+  if (!sscanf ((gchar *) user_data, "%d", &column))
+     {
+	g_warning ("Unable to decode column in on_prot_column_view_activate");
+	return;
+     }
+   
+   gtk_clist_set_column_visibility (GTK_CLIST(prot_clist),
+				    column,
+				    menuitem->active);
+   
+}				/* on_prot_column_view_activate */
+
 /* Displays the protocols window when the legend is double clicked */
 gboolean
 on_prot_table_button_press_event (GtkWidget * widget,
@@ -707,7 +728,7 @@ prot_info_compare (gconstpointer a, gconstpointer b)
   g_assert (a != NULL);
   g_assert (b != NULL);
   return strcmp (((prot_info_window_t *) a)->prot_name, (guint8 *) b);
-}
+}				/* prot_info_compare */
 
 
 static gchar *
