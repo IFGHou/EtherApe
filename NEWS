@@ -1,5 +1,7 @@
-Version 0.0.3
--------------
+Overview of changes in Ethereal 0.0.5:
+* Now uses gnome_canvas to display the diagram
+
+Overview of changes in Etherape 0.0.3:
 * Added gnome support.
 * Substituted hash table for binary tree to store nodes
 * Correctly display hardware addresses.
