@@ -697,8 +697,10 @@ load_services (void)
 	    g_warning (_("Unable to  parse line %s"), line);
 	  else
 	    {
+#if DEBUG
 	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
 			  port_number);
+#endif
 	      if (!g_strcasecmp ("tcp", t2[1]))
 		{
 		  tcp_service = g_malloc (sizeof (tcp_service_t));
