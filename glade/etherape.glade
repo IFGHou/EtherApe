@@ -882,7 +882,7 @@ Web: http://etherape.sourceforge.net</comments>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
+  <auto_shrink>True</auto_shrink>
   <auto_close>False</auto_close>
   <hide_on_close>True</hide_on_close>
 
@@ -982,8 +982,8 @@ Web: http://etherape.sourceforge.net</comments>
       <popup_enable>False</popup_enable>
       <child>
 	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
+	<expand>False</expand>
+	<fill>False</fill>
       </child>
 
       <widget>
@@ -992,240 +992,9 @@ Web: http://etherape.sourceforge.net</comments>
 	<border_width>5</border_width>
 	<rows>5</rows>
 	<columns>2</columns>
-	<homogeneous>True</homogeneous>
-	<row_spacing>5</row_spacing>
-	<column_spacing>5</column_spacing>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox11</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>1</left_attach>
-	    <right_attach>2</right_attach>
-	    <top_attach>0</top_attach>
-	    <bottom_attach>1</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>diagram_only_toggle</name>
-	    <tooltip>Toggle whether text is shown on the diagram</tooltip>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_diagram_only_toggle_toggled</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 15:17:38 GMT</last_modification_time>
-	    </signal>
-	    <label>Click to toggle</label>
-	    <relief>GTK_RELIEF_NORMAL</relief>
-	    <active>False</active>
-	    <child>
-	      <padding>2</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label30</name>
-	    <label>No text</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox5</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
-	    <top_attach>1</top_attach>
-	    <bottom_attach>2</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>node_radius_slider</name>
-	    <can_focus>True</can_focus>
-	    <draw_value>False</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_DISCONTINUOUS</policy>
-	    <value>-2</value>
-	    <lower>-4</lower>
-	    <upper>1</upper>
-	    <step>0.25</step>
-	    <page>1</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <padding>2</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label8</name>
-	    <label>Max. Node Radius</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox6</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
-	    <top_attach>2</top_attach>
-	    <bottom_attach>3</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>link_width_slider</name>
-	    <can_focus>True</can_focus>
-	    <draw_value>False</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_DISCONTINUOUS</policy>
-	    <value>1</value>
-	    <lower>-4</lower>
-	    <upper>1</upper>
-	    <step>0.25</step>
-	    <page>1</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <padding>2</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label9</name>
-	    <label>Max. Link Width</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox9</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>1</left_attach>
-	    <right_attach>2</right_attach>
-	    <top_attach>1</top_attach>
-	    <bottom_attach>2</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkOptionMenu</class>
-	    <name>size_mode_menu</name>
-	    <tooltip>Choose how node radius and link width are calculated as a function of average traffic</tooltip>
-	    <can_focus>True</can_focus>
-	    <items>Linear
-Logarithmic
-Square Root
-</items>
-	    <initial_choice>0</initial_choice>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label26</name>
-	    <label>Size Mode</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
+	<homogeneous>False</homogeneous>
+	<row_spacing>10</row_spacing>
+	<column_spacing>20</column_spacing>
 
 	<widget>
 	  <class>GtkVBox</class>
@@ -1248,6 +1017,23 @@ Square Root
 	  </child>
 
 	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label27</name>
+	    <label>Font</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
 	    <class>GtkButton</class>
 	    <name>font_button</name>
 	    <tooltip>Choose the font used to display text in the diagram</tooltip>
@@ -1265,85 +1051,6 @@ Square Root
 	      <fill>False</fill>
 	    </child>
 	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label27</name>
-	    <label>Font</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox4</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
-	    <top_attach>0</top_attach>
-	    <bottom_attach>1</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
-	    <yexpand>True</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkSpinButton</class>
-	    <name>refresh_spin</name>
-	    <tooltip>Refresh diagram every this many miliseconds</tooltip>
-	    <can_focus>True</can_focus>
-	    <climb_rate>1</climb_rate>
-	    <digits>0</digits>
-	    <numeric>False</numeric>
-	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
-	    <snap>False</snap>
-	    <wrap>False</wrap>
-	    <value>800</value>
-	    <lower>50</lower>
-	    <upper>10000</upper>
-	    <step>10</step>
-	    <page>100</page>
-	    <page_size>100</page_size>
-	    <child>
-	      <padding>2</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label7</name>
-	    <label>Diagram refresh period (ms)</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
 	</widget>
 
 	<widget>
@@ -1354,17 +1061,34 @@ Square Root
 	  <child>
 	    <left_attach>0</left_attach>
 	    <right_attach>1</right_attach>
-	    <top_attach>3</top_attach>
-	    <bottom_attach>4</bottom_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
+	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
 	    <xfill>True</xfill>
 	    <yfill>True</yfill>
 	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label32</name>
+	    <label>Protocol Stack Level</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
 
 	  <widget>
 	    <class>GtkOptionMenu</class>
@@ -1384,23 +1108,6 @@ Level 5 (Eg: HTTP)
 	      <fill>False</fill>
 	    </child>
 	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label32</name>
-	    <label>Protocol Stack Level</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
 	</widget>
 
 	<widget>
@@ -1409,10 +1116,10 @@ Level 5 (Eg: HTTP)
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
-	    <left_attach>1</left_attach>
-	    <right_attach>2</right_attach>
-	    <top_attach>3</top_attach>
-	    <bottom_attach>4</bottom_attach>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
@@ -1424,18 +1131,15 @@ Level 5 (Eg: HTTP)
 	  </child>
 
 	  <widget>
-	    <class>GtkOptionMenu</class>
-	    <name>node_size_optionmenu</name>
-	    <tooltip>Set what level of the protocol stack is displayed in the legend</tooltip>
-	    <can_focus>True</can_focus>
-	    <items>Instantaneous traffic (In+Out)
-Instantaneous traffic (Inbound)
-Instantaneous traffic (Outbound)
-Accumulated traffic (In+Out)
-Accumulated traffic (Inbound)
-Accumulated traffic (Outbound)
-</items>
-	    <initial_choice>2</initial_choice>
+	    <class>GtkLabel</class>
+	    <name>label36</name>
+	    <label>Node size variable</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -1444,15 +1148,80 @@ Accumulated traffic (Outbound)
 	  </widget>
 
 	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>node_size_optionmenu</name>
+	    <tooltip>Set the kind of instantenous or accumulated traffic that the node radius indicates</tooltip>
+	    <can_focus>True</can_focus>
+	    <items>Instant. traffic (In+Out)
+Instant. traffic (Inbound)
+Instant. traffic (Outbound)
+Accum. traffic (In+Out)
+Accum. traffic (Inbound)
+Accum. traffic (Outbound)
+</items>
+	    <initial_choice>2</initial_choice>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox4</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label36</name>
-	    <label>Node size variable</label>
+	    <name>label7</name>
+	    <label>Diagram refresh period (ms)</label>
 	    <justify>GTK_JUSTIFY_LEFT</justify>
 	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
+	    <xalign>0</xalign>
 	    <yalign>0.5</yalign>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
+	    <child>
+	      <padding>2</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>refresh_spin</name>
+	    <tooltip>Refresh diagram every this many miliseconds</tooltip>
+	    <can_focus>True</can_focus>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>800</value>
+	    <lower>50</lower>
+	    <upper>10000</upper>
+	    <step>10</step>
+	    <page>100</page>
+	    <page_size>100</page_size>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -1469,17 +1238,34 @@ Accumulated traffic (Outbound)
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
-	    <top_attach>4</top_attach>
-	    <bottom_attach>5</bottom_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
+	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
 	    <xfill>True</xfill>
 	    <yfill>True</yfill>
 	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label54</name>
+	    <label>Diagram Node Timeout (ms)</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
 
 	  <widget>
 	    <class>GtkSpinButton</class>
@@ -1504,17 +1290,233 @@ Accumulated traffic (Outbound)
 	      <fill>False</fill>
 	    </child>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox6</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label54</name>
-	    <label>Diagram Node Timeout (ms)</label>
+	    <name>label9</name>
+	    <label>Max. Link Width</label>
 	    <justify>GTK_JUSTIFY_LEFT</justify>
 	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
+	    <xalign>0</xalign>
 	    <yalign>0.5</yalign>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
+	    <child>
+	      <padding>2</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkHScale</class>
+	    <name>link_width_slider</name>
+	    <can_focus>True</can_focus>
+	    <draw_value>False</draw_value>
+	    <value_pos>GTK_POS_TOP</value_pos>
+	    <digits>1</digits>
+	    <policy>GTK_UPDATE_DISCONTINUOUS</policy>
+	    <value>1</value>
+	    <lower>-4</lower>
+	    <upper>1</upper>
+	    <step>0.25</step>
+	    <page>1</page>
+	    <page_size>0</page_size>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox5</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label8</name>
+	    <label>Max. Node Radius</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>2</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkHScale</class>
+	    <name>node_radius_slider</name>
+	    <can_focus>True</can_focus>
+	    <draw_value>False</draw_value>
+	    <value_pos>GTK_POS_TOP</value_pos>
+	    <digits>1</digits>
+	    <policy>GTK_UPDATE_DISCONTINUOUS</policy>
+	    <value>-2</value>
+	    <lower>-4</lower>
+	    <upper>1</upper>
+	    <step>0.25</step>
+	    <page>1</page>
+	    <page_size>0</page_size>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox9</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label26</name>
+	    <label>Size Mode</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>size_mode_menu</name>
+	    <tooltip>Choose how node radius and link width are calculated as a function of average traffic</tooltip>
+	    <can_focus>True</can_focus>
+	    <items>Linear
+Logarithmic
+Square Root
+</items>
+	    <initial_choice>0</initial_choice>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox11</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>diagram_only_toggle</name>
+	    <tooltip>Toggle whether the node names are displayed on top of the nodes</tooltip>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>on_diagram_only_toggle_toggled</handler>
+	      <last_modification_time>Sat, 18 Mar 2000 15:17:38 GMT</last_modification_time>
+	    </signal>
+	    <label>Hide node names</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>group_unk_check</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>on_group_unk_check_toggled</handler>
+	      <last_modification_time>Fri, 11 May 2001 16:57:06 GMT</last_modification_time>
+	    </signal>
+	    <label>Group unknown ports</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>

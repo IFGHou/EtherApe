@@ -883,6 +883,7 @@ add_protocol (GList ** protocols, const gchar * stack,
   gchar **tokens = NULL;
   guint i = 0;
   guint8 *src_id = NULL, *dst_id = NULL;
+  gchar *protocol_name;
 
   tokens = g_strsplit (stack, "/", 0);
 
@@ -894,12 +895,20 @@ add_protocol (GList ** protocols, const gchar * stack,
 
   for (; i <= STACK_SIZE; i++)
     {
+      if (group_unk && strstr (tokens[i], "TCP-Port"))
+	protocol_name = "TCP-Unknown";
+      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+	protocol_name = "UDP-Unknown";
+      else
+	protocol_name = tokens[i];
+
       /* If there is yet not such protocol, create it */
       if (!(protocol_item = g_list_find_custom (protocols[i],
-						tokens[i], protocol_compare)))
+						protocol_name,
+						protocol_compare)))
 	{
 	  protocol_info = g_malloc (sizeof (protocol_t));
-	  protocol_info->name = g_strdup (tokens[i]);
+	  protocol_info->name = g_strdup (protocol_name);
 	  protocol_info->accumulated = 0;
 	  protocol_info->aver_accu = 0;
 	  protocol_info->average = 0;
@@ -1510,6 +1519,7 @@ check_packet (GList * packets, GList ** packet_l_e,
   packet_t *packet = NULL;
   packet_direction direction;
   static packet_direction last_lo_direction = INBOUND;
+  gchar *protocol_name = NULL;
 
   packet = (packet_t *) packets->data;
 
@@ -1589,8 +1599,15 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = g_strsplit (packet->prot, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
+	      if (group_unk && strstr (tokens[i], "TCP-Port"))
+		protocol_name = "TCP-Unknown";
+	      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+		protocol_name = "UDP-Unknown";
+	      else
+		protocol_name = tokens[i];
+
 	      protocol_item = g_list_find_custom (node->protocols[i],
-						  tokens[i],
+						  protocol_name,
 						  protocol_compare);
 	      if (!protocol_item)
 		{
@@ -1617,9 +1634,15 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = g_strsplit (packet->prot, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
+	      if (group_unk && strstr (tokens[i], "TCP-Port"))
+		protocol_name = "TCP-Unknown";
+	      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+		protocol_name = "UDP-Unknown";
+	      else
+		protocol_name = tokens[i];
 
 	      protocol_item = g_list_find_custom (link->protocols[i],
-						  tokens[i],
+						  protocol_name,
 						  protocol_compare);
 	      if (!protocol_item)
 		{

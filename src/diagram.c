@@ -69,6 +69,8 @@ init_diagram ()
 
   widget = glade_xml_get_widget (xml, "diagram_only_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), diagram_only);
+  widget = glade_xml_get_widget (xml, "group_unk_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), group_unk);
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);

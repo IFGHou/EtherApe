@@ -209,6 +209,22 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 
 }				/* on_diagram_only_toggle_toggled */
 
+void
+on_group_unk_check_toggled (GtkToggleButton * togglebutton,
+			    gpointer user_data)
+{
+  enum status_t old_status = status;
+
+  if ((status == PLAY) || (status == PAUSE))
+    gui_stop_capture ();
+
+  group_unk = gtk_toggle_button_get_active (togglebutton);
+
+  if (old_status == PLAY)
+    gui_start_capture ();
+
+}				/* on_group_unk_check_toggled */
+
 
 void
 on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)

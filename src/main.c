@@ -221,6 +221,8 @@ load_config (char *prefix)
     gnome_config_get_string_with_default ("General/version=0.5.4", &u);
   diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
+  group_unk =
+    gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
   /* Not yet, since we can't force fading
@@ -331,6 +333,7 @@ save_config (char *prefix)
 {
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
+  gnome_config_set_bool ("Diagram/group_unk", group_unk);
   gnome_config_set_bool ("Diagram/nofade", nofade);
   gnome_config_set_float ("Diagram/node_timeout_time", node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",

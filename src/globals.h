@@ -269,6 +269,7 @@ apemode_t mode;			/* Mode of operation. Can be
 /* Diagram settings */
 
 gboolean diagram_only;		/* Do not use text on the diagram */
+gboolean group_unk;		/* Whether to display as one every unkown port protocol */
 gboolean nofade;		/* Do not fade unused links */
 gboolean stationary;		/* Use alternative algorith for node placing */
 guint32 refresh_period;		/* Time between diagram refreshes */
