@@ -9,6 +9,8 @@ Etherape started as an etherman clone, but now it has some unique
 features. It can run in "interape" mode with -m ip, and in
 "tcp-ape" mode with -m tcp. Expect more modes to come soon.
 
+(Note that -I is gone. Use -m ip)
+
 Etherape will use /etc/ethers if there is one. If not, it will 
 display dotted quad ip addresses. You can even ask for ip
 name resolution with the -r option, but beware of very long

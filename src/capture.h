@@ -8,6 +8,7 @@ GTree *links;
 
 typedef enum
   {
+    DEFAULT = -1,
     ETHERNET = 0,
     IP = 1,
     TCP = 2,

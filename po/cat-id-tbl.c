@@ -74,8 +74,9 @@ Web: http://etherape.sourceforge.net", 34},
   {"Can't use filter:  Couldn't obtain netmask info (%s).", 63},
   {"Unable to parse filter string (%s).", 64},
   {"Can't install filter (%s).", 65},
-  {"Link type not yet supported", 66},
-  {"Ape mode not yet supported", 67},
+  {"Mode not available in this device", 66},
+  {"Link type not yet supported", 67},
+  {"Ape mode not yet supported", 68},
 };
 
-int _msg_tbl_length = 67;
+int _msg_tbl_length = 68;

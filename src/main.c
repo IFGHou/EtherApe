@@ -134,9 +134,6 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
-  if (!numeric)
-    gnome_dns_init (2);		/* Number of servers to spawn. 2 suggested by the API 
-				 * reference */
   app1 = create_app1 ();
   if (mode == IP)
     gtk_window_set_title (GTK_WINDOW (app1), "Interape");

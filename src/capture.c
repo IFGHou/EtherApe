@@ -33,7 +33,7 @@ double node_timeout_time = 10000000;	/* After this time has passed
 					 * node, it disappears */
 guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
-apemode_t mode;			/* Mode of operation. Can be
+apemode_t mode=DEFAULT;			/* Mode of operation. Can be
 				 * ETHERNET, IP, UDP or TCP */
 link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data
@@ -746,11 +746,22 @@ init_capture (void)
   linktype = pcap_datalink (pch);
 
   /* l3_offset is equal to the size of the link layer header */
-
+   
   switch (linktype)
     {
     case L_EN10MB:
+      if (mode==DEFAULT) mode=ETHERNET;
       l3_offset = 14;
+      break;
+     case L_RAW: /* The case for PPP or SLIP, for instance */
+      if (mode==DEFAULT) mode=IP;
+      if (mode==ETHERNET)
+	 {
+	    g_message (_("Mode not available in this device"));
+	    /* TODO manage proper exit codes */
+	    exit (1);
+	 }
+      l3_offset = 0;
       break;
     default:
       g_error (_ ("Link type not yet supported"));
@@ -774,10 +785,6 @@ init_capture (void)
     default:
       g_error (_ ("Ape mode not yet supported"));
     }
-
-  /* Initiate non blocking dns resolver if it might be used */
-  if (((mode == IP) || (mode == TCP) || (mode == UDP)) && !numeric)
-    gnome_dns_init (2);
 
   nodes = g_tree_new (node_id_compare);
   links = g_tree_new (link_id_compare);

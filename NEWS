@@ -1,4 +1,12 @@
 
+  Overview of changes in Etherape 0.2.2 (Tuesday 03-07-2000):
+  
+     * Added ppp and slip devices support.
+     * Broght back IP address display in ethernet mode when no
+       /etc/ethers is available
+     * Fixed another bug with RedHat 6.1. (I really have to find time to
+       talk to this guy)
+       
   Overview of changes in Etherape 0.2.1 (Monday 03-06-2000):
   
      * Added tcp support. Run with etherape -m tcp
