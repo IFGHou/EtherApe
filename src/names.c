@@ -92,7 +92,12 @@ get_ip_name (void)
   if (numeric)
     add_name (ip_to_str (id), ip_to_str (id));
   else
-    add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE));
+    {
+      if (mode == ETHERNET)
+	add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE));
+      else
+	add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE));
+    }
 
   /* This is specific for IP, since the resolver may not return a good
    * value inmeditelly, we need to insist */
@@ -115,7 +120,7 @@ get_ip_name (void)
 
 
 void
-add_name (gchar * numeric, gchar * resolved)
+add_name (gchar * numeric_name, gchar * resolved_name)
 {
   /* Find the protocol entry */
   protocol_item = g_list_find_custom (prot_list[level],
@@ -134,11 +139,11 @@ add_name (gchar * numeric, gchar * resolved)
     {
       name = g_malloc (sizeof (name_t));
       name->node_id = g_memdup (id, id_length);
-      name->numeric_name = g_string_new (numeric);
+      name->numeric_name = g_string_new (numeric_name);
       if (numeric)
-	name->name = g_string_new (numeric);
+	name->name = g_string_new (numeric_name);
       else
-	name->name = g_string_new (resolved);
+	name->name = g_string_new (resolved_name);
       name->n_packets++;
       name->accumulated += packet_size;
       protocol->node_names = g_list_prepend (protocol->node_names, name);
