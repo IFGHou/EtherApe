@@ -431,8 +431,6 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   gdk_color.green = (gdk_color.green >> 8) << 8;
   gdk_color.blue = (gdk_color.blue >> 8) << 8;
 
-  g_warning ("%4x:%4x:%4x", gdk_color.red, gdk_color.green, gdk_color.blue);
-
   gdk_colormap_alloc_color (gdk_colormap_get_system (), &gdk_color, FALSE,
 			    TRUE);
 
@@ -442,7 +440,7 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   row[0] =
     g_strdup_printf ("#%02x%02x%02x", gdk_color.red >> 8,
 		     gdk_color.green >> 8, gdk_color.blue >> 8);
-  row[1] = g_strdup_printf ("row_number %d", row_number);
+  row[1] = "";
 
   /*
    * If an insertion point was defined, then
@@ -467,6 +465,8 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 
   gtk_style_unref (style);
   gtk_widget_hide (colorseldiag);
+
+  g_free (row[0]);
 
   colors_changed = TRUE;
 }				/* on_colordiag_ok_clicked */
