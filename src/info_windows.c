@@ -289,6 +289,16 @@ void
 display_protocols_window (void)
 {
   static GtkWidget *protocols_window = NULL;
+  static GtkWidget *protocols_check = NULL;
+
+  if (!protocols_check)
+    protocols_check = glade_xml_get_widget (xml, "protocols_check");
+
+  if (!(GTK_CHECK_MENU_ITEM (protocols_check)->active))
+    {
+      gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
+      return;
+    }
 
   if (!protocols_window)
     protocols_window = glade_xml_get_widget (xml, "protocols_window");
@@ -301,11 +311,11 @@ display_protocols_window (void)
 void
 on_protocols_toolbar_button_clicked (GtkButton * button, gpointer user_data)
 {
-  GtkWidget *protocols_check = NULL;
+  static GtkWidget *protocols_check = NULL;
+
   if (!protocols_check)
     protocols_check = glade_xml_get_widget (xml, "protocols_check");
 
-  gtk_check_menu_item_toggled (GTK_CHECK_MENU_ITEM (protocols_check));
   gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
 
 }				/* on_protocols_toolbar_button_clicked */
