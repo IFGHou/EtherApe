@@ -151,13 +151,14 @@ get_eth_type (void)
 
   if (ethhdr_type == ETHERNET_802_3)
     {
-      prot = g_string_append (prot, "802.3");
+      prot = g_string_append (prot, "802.3-RAW");
       return;
     }
 
   if (ethhdr_type == ETHERNET_802_2)
     {
-      prot = g_string_append (prot, "802.2");
+      prot = g_string_append (prot, "802.3");
+      get_eth_802_3 (ethhdr_type);
       return;
     }
 
@@ -168,6 +169,25 @@ get_eth_type (void)
   return;
 
 }				/* get_eth_type */
+
+static void
+get_eth_802_3 (ethhdrtype_t ethhdr_type)
+{
+
+  offset = 14;
+
+  switch (ethhdr_type)
+    {
+    case ETHERNET_802_2:
+      prot = g_string_append (prot, "/LLC");
+      get_llc ();
+      break;
+    case ETHERNET_802_3:
+      prot = g_string_append (prot, "/IPX");
+      break;
+    default:
+    }
+}				/* get_eth_802_3 */
 
 static void
 get_fddi_type (void)
@@ -255,6 +275,128 @@ get_eth_II (etype_t etype)
 
   return;
 }				/* get_eth_II */
+
+static void
+get_llc (void)
+{
+#define SAP_SNAP 0xAA
+#define XDLC_I          0x00	/* Information frames */
+#define XDLC_U          0x03	/* Unnumbered frames */
+#define XDLC_UI         0x00	/* Unnumbered Information */
+#define XDLC_IS_INFORMATION(control) \
+     (((control) & 0x1) == XDLC_I || (control) == (XDLC_UI|XDLC_U))
+
+  sap_type_t dsap, ssap;
+  gboolean is_snap;
+  guint16 control;
+
+  dsap = *(guint8 *) (packet + offset);
+  ssap = *(guint8 *) (packet + offset + 1);
+
+  is_snap = (dsap == SAP_SNAP) && (ssap == SAP_SNAP);
+
+  /* SNAP not yet supported */
+  if (is_snap)
+    return;
+
+  /* To get this control value is actually a lot more
+   * complicated than this, see xdlc.c in ethereal,
+   * but I'll try like this, it seems it works for my pourposes at
+   * least most of the time */
+  control = *(guint8 *) (packet + offset + 2);
+
+  if (!XDLC_IS_INFORMATION (control))
+    return;
+
+  offset += 3;
+
+  switch (dsap)
+    {
+    case SAP_NULL:
+      prot = g_string_append (prot, "/LLC-NULL");
+      break;
+    case SAP_LLC_SLMGMT:
+      prot = g_string_append (prot, "/LLC-SLMGMT");
+      break;
+    case SAP_SNA_PATHCTRL:
+      prot = g_string_append (prot, "/PATHCTRL");
+      break;
+    case SAP_IP:
+      prot = g_string_append (prot, "/IP");
+      break;
+    case SAP_SNA1:
+      prot = g_string_append (prot, "/SNA1");
+      break;
+    case SAP_SNA2:
+      prot = g_string_append (prot, "/SNA2");
+      break;
+    case SAP_PROWAY_NM_INIT:
+      prot = g_string_append (prot, "/PROWAY-NM-INIT");
+      break;
+    case SAP_TI:
+      prot = g_string_append (prot, "/TI");
+      break;
+    case SAP_BPDU:
+      prot = g_string_append (prot, "/BPDU");
+      break;
+    case SAP_RS511:
+      prot = g_string_append (prot, "/RS511");
+      break;
+    case SAP_X25:
+      prot = g_string_append (prot, "/X25");
+      break;
+    case SAP_XNS:
+      prot = g_string_append (prot, "/XNS");
+      break;
+    case SAP_NESTAR:
+      prot = g_string_append (prot, "/NESTAR");
+      break;
+    case SAP_PROWAY_ASLM:
+      prot = g_string_append (prot, "/PROWAY-ASLM");
+      break;
+    case SAP_ARP:
+      prot = g_string_append (prot, "/ARP");
+      break;
+    case SAP_SNAP:
+      /* We are not supposed to reach this point */
+      g_warning ("Reached SNAP while checking for DSAP in get_llc");
+      prot = g_string_append (prot, "/LLC-SNAP");
+      break;
+    case SAP_VINES1:
+      prot = g_string_append (prot, "/VINES1");
+      break;
+    case SAP_VINES2:
+      prot = g_string_append (prot, "/VINES2");
+      break;
+    case SAP_NETWARE:
+      prot = g_string_append (prot, "/IPX");
+      break;
+    case SAP_NETBIOS:
+      prot = g_string_append (prot, "/NETBIOS");
+      get_netbios ();
+      break;
+    case SAP_IBMNM:
+      prot = g_string_append (prot, "/IBMNM");
+      break;
+    case SAP_RPL1:
+      prot = g_string_append (prot, "/RPL1");
+      break;
+    case SAP_UB:
+      prot = g_string_append (prot, "/UB");
+      break;
+    case SAP_RPL2:
+      prot = g_string_append (prot, "/RPL2");
+      break;
+    case SAP_OSINL:
+      prot = g_string_append (prot, "/OSINL");
+      break;
+    case SAP_GLOBAL:
+      prot = g_string_append (prot, "/LLC-GLOBAL");
+      break;
+    default:
+    }
+
+}				/* get_llc */
 
 static void
 get_ip (void)
@@ -620,6 +762,27 @@ get_rpc (gboolean is_udp)
     }
   return FALSE;
 }				/* get_rpc */
+
+/* This function is only called from a straight llc packet,
+ * never from an IP packet */
+void
+get_netbios (void)
+{
+  guint16 hdr_len;
+
+  /* Check that there is room for the minimum header */
+  if (offset + 5 > capture_len)
+    return;
+
+  hdr_len = pletohs (packet + offset);
+
+  /* If there is any data at all, it is SMB (or so I understand
+   * from Ethereal's packet-netbios.c */
+
+  if (offset + hdr_len < capture_len)
+    prot = g_string_append (prot, "/SMB");
+
+}				/* get_netbios */
 
 void
 get_netbios_ssn (void)
