@@ -61,8 +61,6 @@ draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t * draw_nodes_da
       angle = 0;
     }
    
-  node->average=100;
-
   x = xmax / 2 + rad_max * cosf (angle) -node->average/2;
   y = ymax / 2 + rad_max * sinf (angle) -node->average/2;
    
@@ -71,10 +69,26 @@ draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t * draw_nodes_da
 		TRUE,
 		x,
 		y,
-		node->average,
-		node->average,
+		node->average/10,
+		node->average/10,
 		0,
 		360000);
+   
+  gdk_draw_text (pixmap,
+		 fixed_font,
+		 drawing_area->style->black_gc,
+		 x, y,
+		 ether_to_str(&node->ether_addr),
+		 17); /*Size of text*/
+		 
+  gdk_draw_text (pixmap,
+		 fixed_font,
+		 drawing_area->style->black_gc,
+		 0, 0,
+		 ether_to_str(&draw_nodes_data->n_nodes),
+		 17); /*Size of text*/
+		 
+  g_print ("Nodes: %d/t", draw_nodes_data->n_nodes);
    
   angle+=2*M_PI/draw_nodes_data->n_nodes;
 

@@ -15,7 +15,7 @@
 /* #undef HAVE_LIBSM */
 /* #undef PACKAGE_LOCALE_DIR */
 #define PACKAGE_DATA_DIR "/usr/local/share/etherape"
-#define PACKAGE_SOURCE_DIR "/usr/local/src/etherape"
+#define PACKAGE_SOURCE_DIR "/root/etherape"
 
 /* Define if you have the pcap library (-lpcap).  */
 #define HAVE_LIBPCAP 1

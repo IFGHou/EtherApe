@@ -8,29 +8,55 @@
 
 char ascii[20];
 
-char *
-ethertoascii (char *ether_addr)
+
+/* Places char punct in the string as the hex-digit separator.
+ *  * If punct is '\0', no punctuation is applied (and thus
+ *  * the resulting string is 5 bytes shorter)
+ *  */
+
+
+gchar *
+  ether_to_str_punct(const guint8 *ad, char punct) {
+       static gchar  str[3][18];
+       static gchar *cur;
+       gchar        *p;
+       int          i;
+       guint32      octet;
+       static const gchar hex_digits[16] = "0123456789abcdef";
+     
+       if (cur == &str[0][0]) {
+	      cur = &str[1][0];
+       } else if (cur == &str[1][0]) {
+	      cur = &str[2][0];
+       } else {
+	      cur = &str[0][0];
+       }
+       p = &cur[18];
+       *--p = '\0';
+       i = 5;
+       for (;;) {
+	      octet = ad[i];
+	      *--p = hex_digits[octet&0xF];
+	      octet >>= 4;
+	      *--p = hex_digits[octet&0xF];
+	      if (i == 0)
+	          break;
+	      if (punct)
+	          *--p = punct;
+	      i--;
+       }
+       return p;
+  }
+
+
+
+/* Wrapper for the most common case of asking
+ *  * for a string using a colon as the hex-digit separator.
+ *  */
+gchar *
+  ether_to_str(const guint8 *ad)
 {
-
-  int i;
-      char a;
-      char b;
-   
-
-  if (!ether_addr)
-    g_error ("Null pointer to ethertoascii\n");
-  for (i = 0; i < 6; i++)
-    {
-      a = b = ether_addr[i];
-      a = a >> 4;
-      b = b & 15;
-      ascii[3 * i] = toascii (a);
-      ascii[3 * i + 1] = toascii (b);
-      ascii[3 * i + 2] = ':';
-    }
-  ascii[18] = '\0';
-   
-  return ascii;
+           return ether_to_str_punct(ad, ':');
 }
 
 
@@ -39,7 +65,6 @@ node_hash (gconstpointer v)
 {
   int hash_val = 0;
   memcpy (&hash_val, v, sizeof (guint));
-  g_print ("Hash %d\tAddress: %s\n", hash_val, ethertoascii ((char *)v));
   return hash_val;
 }
 
@@ -52,13 +77,13 @@ init_data (void)
 }
 
 node_t *
-create_node (gchar ether_addr[6])
+create_node (guint8 ether_addr)
 {
   node_t *node;
   node = g_malloc (sizeof (node_t));
-  memcpy (node->ether_addr, ether_addr, 6);
+  node->ether_addr=ether_addr;
   node->average = 0;
-  g_hash_table_insert (nodes, node->ether_addr, node);
+  g_hash_table_insert (nodes, &node->ether_addr, node);
 
   return node;
 }
@@ -70,48 +95,29 @@ packet_read (pcap_t * pch,
 {
   struct pcap_pkthdr phdr;
   gchar packet[MAXSIZE];
-  gchar src[6], dst[6];
+  guint8 src, dst;
   node_t *node;
-  gint pcap_fd;
-  fd_set set1;
-  guint counter = 1;
-  struct timeval timeout;
 
   char *pcap_packet;
 
-  pcap_fd = pcap_fileno (pch);
 
-  FD_ZERO (&set1);
-  FD_SET (pcap_fd, &set1);
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 1;
 
-#if 0
-  while (select (pcap_fd + 1, &set1, NULL, NULL, &timeout) != 0)
-    {
-#endif
       /* We copy the next available packet */
       memcpy (packet, pcap_packet = (gchar *)pcap_next (pch, &phdr), phdr.caplen);
 
-      memcpy (src, packet, 6);
-      memcpy (dst, (char *) (packet + 6), 6);
+      memcpy (&src, (char *) packet, 6);
+      memcpy (&dst, (char *) (packet + 6), 6);
 
-      node = g_hash_table_lookup (nodes, src);
+      node = g_hash_table_lookup (nodes, &src);
       if (node == NULL)
 	node = create_node (src);
       node->average += phdr.len;
 
-      node = g_hash_table_lookup (nodes, dst);
+      node = g_hash_table_lookup (nodes, &dst);
       if (node == NULL)
 	node = create_node (dst);
       node->average += phdr.len;
 
-      counter++;
-#if 0
-    }
-#endif
-
-  g_print ("Paquetes: %d\tHosts:%d\n", counter, g_hash_table_size (nodes));
 }
 
 
