@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/main.c:143
 msgid "Preferences saved"
-msgstr ""
+msgstr "Préférences enregistrées"
 
 # src/main.c:58
 #: src/main.c:157
@@ -100,7 +100,7 @@ msgstr "Barre d'_outils"
 
 #: src/interface.c:44
 msgid "Show or hide the toolbar"
-msgstr ""
+msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:53
 #: src/interface.c:49
@@ -109,7 +109,7 @@ msgstr "_Légende"
 
 #: src/interface.c:50
 msgid "Show or hide the legend"
-msgstr ""
+msgstr "Affiche ou cache la légende"
 
 # src/interface.c:60
 #: src/interface.c:55
@@ -118,7 +118,7 @@ msgstr "Barre d'_état"
 
 #: src/interface.c:56
 msgid "Show or hide the status bar"
-msgstr ""
+msgstr "Affiche ou cache la barre d'état"
 
 # src/interface.c:107
 #: src/interface.c:98
@@ -132,9 +132,8 @@ msgstr "Nouveau"
 
 # src/interface.c:23
 #: src/interface.c:238
-#, fuzzy
 msgid "New File"
-msgstr "_Nouveau fichier"
+msgstr "Nouveau fichier"
 
 # src/interface.c:258
 #: src/interface.c:249
@@ -143,9 +142,8 @@ msgstr "Ouvrir"
 
 # src/interface.c:23
 #: src/interface.c:250
-#, fuzzy
 msgid "Open File"
-msgstr "_Nouveau fichier"
+msgstr "Ouvrir fichier"
 
 # src/interface.c:270
 #: src/interface.c:261 src/interface.c:948
@@ -154,9 +152,8 @@ msgstr "Enregistrer"
 
 # src/interface.c:23
 #: src/interface.c:262
-#, fuzzy
 msgid "Save File"
-msgstr "_Nouveau fichier"
+msgstr "Enregistrer fichier"
 
 # src/interface.c:278
 #: src/interface.c:269
@@ -205,7 +202,7 @@ msgstr ""
 
 #: src/interface.c:519
 msgid "Etherape: Preferences"
-msgstr ""
+msgstr "Etherape: Préférences"
 
 #: src/interface.c:555
 msgid "Click to toggle"
@@ -217,7 +214,7 @@ msgstr ""
 
 #: src/interface.c:566
 msgid "No text"
-msgstr ""
+msgstr "Pas de texte"
 
 # src/interface.c:596
 #: src/interface.c:596
@@ -261,7 +258,7 @@ msgstr ""
 
 #: src/interface.c:695
 msgid "Font"
-msgstr ""
+msgstr "Police"
 
 #: src/interface.c:722
 msgid "Refresh diagram every this many miliseconds"
@@ -278,23 +275,23 @@ msgstr ""
 
 #: src/interface.c:754
 msgid "2"
-msgstr ""
+msgstr "2"
 
 #: src/interface.c:757
 msgid "3"
-msgstr ""
+msgstr "3"
 
 #: src/interface.c:760
 msgid "4"
-msgstr ""
+msgstr "4"
 
 #: src/interface.c:763
 msgid "5"
-msgstr ""
+msgstr "5"
 
 #: src/interface.c:766
 msgid "6"
-msgstr ""
+msgstr "6"
 
 #: src/interface.c:772
 msgid "Protocol Stack Level"
@@ -302,19 +299,17 @@ msgstr ""
 
 # src/interface.c:510
 #: src/interface.c:780
-#, fuzzy
 msgid "Diagram"
-msgstr "Paramètres du diagramme"
+msgstr "Diagramme"
 
 #: src/interface.c:818
 msgid "Filter what's captured. See the tcpdump man page for details"
-msgstr ""
+msgstr "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
 
 # src/main.c:70
 #: src/interface.c:821
-#, fuzzy
 msgid "Capture filter"
-msgstr "<filtre de capture>"
+msgstr "Filtre de capture"
 
 #: src/interface.c:850
 msgid "Packet information is averaged for this amount of time"
@@ -345,7 +340,7 @@ msgstr "Timeout pour les noeuds (ms)"
 
 #: src/interface.c:929
 msgid "Capture"
-msgstr ""
+msgstr "Capture"
 
 #: src/interface.c:1013
 msgid "Select Font"
@@ -451,15 +446,15 @@ msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
 #: src/capture.c:704
-#, fuzzy, c-format
+#, c-format
 msgid "Removing node: %s. Number of node %d"
-msgstr "Création du noeud: %s. Nombre de noeuds: %d"
+msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
 #: src/capture.c:765
-#, fuzzy, c-format
+#, c-format
 msgid "Removing link. Number of links %d"
-msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
+msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
 #: src/capture.c:882
