@@ -1,5 +1,77 @@
 
+/* These are all functions from ethereal, just as they are there */
+
+/* packet-nbns.c
+ * Routines for NetBIOS-over-TCP packet disassembly (the name dates back
+ * to when it had only NBNS)
+ * Gilbert Ramirez <gram@verdict.uthscsa.edu>
+ * Much stuff added by Guy Harris <guy@netapp.com>
+ *
+ * $Id$
+ *
+ * Ethereal - Network traffic analyzer
+ * By Gerald Combs <gerald@zing.org>
+ * Copyright 1998 Gerald Combs
+ *
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 #include "names_netbios.h"
+typedef struct
+{
+  int number;
+  gchar *name;
+}
+value_string;
+
+static const value_string name_type_vals[] = {
+  {0x00, "Workstation/Redirector"},
+  {0x01, "Browser"},
+  {0x02, "Workstation/Redirector"},
+  /* not sure what 0x02 is, I'm seeing alot of them however */
+  /* i'm seeing them with workstation/redirection host 
+     announcements */
+  {0x03, "Messenger service/Main name"},
+  {0x05, "Forwarded name"},
+  {0x06, "RAS Server service"},
+  {0x1b, "PDC Domain name"},
+  {0x1c, "BDC Domain name"},
+  {0x1d, "Master Browser backup"},
+  {0x1e, "Browser Election Service"},
+  {0x1f, "Net DDE Service"},
+  {0x20, "Server service"},
+  {0x21, "RAS client service"},
+  {0x22, "Exchange Interchange (MSMail Connector)"},
+  {0x23, "Exchange Store"},
+  {0x24, "Exchange Directory"},
+  {0x2b, "Lotus Notes Server service"},
+  {0x30, "Modem sharing server service"},
+  {0x31, "Modem sharing client service"},
+  {0x43, "SMS Clients Remote Control"},
+  {0x44, "SMS Administrators Remote Control Tool"},
+  {0x45, "SMS Clients Remote Chat"},
+  {0x46, "SMS Clients Remote Transfer"},
+  {0x4c, "DEC Pathworks TCP/IP Service on Windows NT"},
+  {0x52, "DEC Pathworks TCP/IP Service on Windows NT"},
+  {0x6a, "Microsoft Exchange IMC"},
+  {0x87, "Microsoft Exchange MTA"},
+  {0xbe, "Network Monitor Agent"},
+  {0xbf, "Network Monitor Analyzer"},
+  {0x00, NULL}
+};
 
 int
 get_dns_name (const gchar * pd, int offset, int dns_data_offset,
@@ -232,24 +304,23 @@ get_nbns_name_type_class (const gchar * pd, int offset, int nbns_data_offset,
 				 name_type_ret);
   offset += name_len;
 
-#if 0
+
 /* I'm leaving this out at least until I pass captured_len to this function */
   if (!BYTES_ARE_IN_FRAME (offset, 2))
     {
       /* We ran past the end of the captured data in the packet. */
       return -1;
     }
-#endif
+
   type = pntohs (&pd[offset]);
   offset += 2;
 
-#if 0
   if (!BYTES_ARE_IN_FRAME (offset, 2))
     {
       /* We ran past the end of the captured data in the packet. */
       return -1;
     }
-#endif
+
   class = pntohs (&pd[offset]);
 
   *type_ret = type;
@@ -258,3 +329,23 @@ get_nbns_name_type_class (const gchar * pd, int offset, int nbns_data_offset,
 
   return name_len + 4;
 }
+
+
+/* My only code here (JTC) */
+
+gchar *
+get_netbios_host_type (int type)
+{
+  guint i = 0;
+
+  while (name_type_vals[i].number || name_type_vals[i].name)
+    {
+      if (name_type_vals[i].number == type)
+	return name_type_vals[i].name;
+      i++;
+    }
+
+  return "Unknown";
+
+
+}				/* get_netbios_host_type */
