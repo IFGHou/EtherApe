@@ -9,4 +9,5 @@
 #undef PACKAGE_SOURCE_DIR
 
 #undef DATAFILE_DIR
+#undef PIXMAPS_DIR
 #undef HAVE_LIBPCAP

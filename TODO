@@ -41,6 +41,9 @@ Issues in the source code
 
   * Only now I realize that I could just use a regular
     GtkTooltips for the canvas tooltips and not create my own.
-    
+
+  * Define GLADEDIR in config.h the same way that PIXMAPS_DIR is, and not
+    just pass it to the compiler
+
 --
 $Id$

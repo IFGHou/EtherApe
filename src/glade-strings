@@ -4,7 +4,7 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Etherape");
+gchar *s = N_("EtherApe");
 gchar *s = N_("Start capture");
 gchar *s = N_("Start");
 gchar *s = N_("Stop capture");
@@ -30,7 +30,8 @@ gchar *s = N_("name");
 gchar *s = N_("accumulated");
 gchar *s = N_("average");
 gchar *s = N_("This message is not here yet. (Don´t tell anybody you saw it ;-) )");
-gchar *s = N_("Etherape: Preferences");
+gchar *s = N_("Information");
+gchar *s = N_("EtherApe: Preferences");
 gchar *s = N_("Save");
 gchar *s = N_("Toggle whether text is shown on the diagram");
 gchar *s = N_("Click to toggle");
@@ -38,22 +39,20 @@ gchar *s = N_("No text");
 gchar *s = N_("Max. Node Radius");
 gchar *s = N_("Max. Link Width");
 gchar *s = N_("Choose how node radius and link width are calculated as a function of average traffic");
-gchar *s = N_("Linear\n"
-              "Logarithmic\n"
-              "Square Root\n"
-              "");
+gchar *s = N_("Linear");
+gchar *s = N_("Logarithmic");
+gchar *s = N_("Square Root");
 gchar *s = N_("Size Mode");
 gchar *s = N_("Choose the font used to display text in the diagram");
 gchar *s = N_("Font");
 gchar *s = N_("Refresh diagram every this many miliseconds");
 gchar *s = N_("Diagram refresh period (ms)");
 gchar *s = N_("Set what level of the protocol stack is displayed in the legend");
-gchar *s = N_("Topmost recognized protocol\n"
-              "Level 2 (Eg: ETH_II)\n"
-              "Level 3 (Eg: IP)\n"
-              "Level 4 (Eg: TCP)\n"
-              "Level 5 (Eg: HTTP)\n"
-              "");
+gchar *s = N_("Topmost recognized protocol");
+gchar *s = N_("Level 2 (Eg: ETH_II)");
+gchar *s = N_("Level 3 (Eg: IP)");
+gchar *s = N_("Level 4 (Eg: TCP)");
+gchar *s = N_("Level 5 (Eg: HTTP)");
 gchar *s = N_("Protocol Stack Level");
 gchar *s = N_("Diagram");
 gchar *s = N_("Capture filter");

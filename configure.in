@@ -76,6 +76,13 @@ DATAFILE_DIR=$sysconfdir
 AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
 AC_SUBST(DATAFILE_DIR)
 
+dnl Set PIXMAPS_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps")
+else
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps")
+fi
+
 # Copied from mtr to support dns.c
 # After some kind of change in libc, it seems it is
 # required to #include <resolv.h> for the test to succeed.
