@@ -38,6 +38,7 @@ EXTRA_DIST = \
 	OVERVIEW		\
 	etherape.glade		\
 	etherape.spec		\
+	etherape.spec.in	\
 	html/NEWS.html		\
 	html/FAQ.html		\
 	html/bug-reporting.html \
