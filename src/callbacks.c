@@ -37,7 +37,7 @@ extern double link_timeout_time;
 extern double node_timeout_time;
 extern guint32 refresh_period;
 extern gint diagram_timeout;
-
+extern GtkWidget *diag_pref;
 void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -143,9 +143,7 @@ on_properties1_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  GtkWidget *messagebox;
-  messagebox = create_messagebox1 ();
-  gtk_widget_show (messagebox);
+  gtk_widget_show (diag_pref);
 
 }
 

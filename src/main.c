@@ -26,7 +26,6 @@
 #include "interface.h"
 #include "support.h"
 #include "diagram.h"
-#include "callbacks.h"
 
 /* TODO Organize global variables in a sensible way */
 gboolean numeric = 0;
@@ -38,6 +37,9 @@ guint32 refresh_period = 800;
 gint diagram_timeout;
 gchar *filter = "";
 
+GtkWidget *app1;		/* Pointer to the main app window */
+GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
+
 extern gchar *node_color, *link_color, *text_color;
 extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
   link_width_multiplier;
@@ -47,8 +49,6 @@ extern apemode_t mode;
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *app1;
-  GtkWidget *hscale;
   gchar *mode_string = NULL;
 
   struct poptOption optionsTable[] =
@@ -139,45 +139,13 @@ main (int argc, char *argv[])
 				 * mtr for reference */
 
   app1 = create_app1 ();
-  if (mode == IP)
-    gtk_window_set_title (GTK_WINDOW (app1), "Interape");
+  diag_pref =  create_diag_pref ();
 
-  /* Sets controls to the values of variables */
-  init_diagram (app1);
-
-  hscale = lookup_widget (app1, "node_radius_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_radius_slider_adjustment_changed), NULL);
-  hscale = lookup_widget (app1, "link_width_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_width_slider_adjustment_changed), NULL);
-  hscale = lookup_widget (app1, "averaging_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_averaging_spin_adjustment_changed), NULL);
-  hscale = lookup_widget (app1, "refresh_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_refresh_spin_adjustment_changed),
-		      lookup_widget (GTK_WIDGET (app1), "canvas1"));
-  hscale = lookup_widget (app1, "node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_to_spin_adjustment_changed), NULL);
-  hscale = lookup_widget (app1, "link_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_to_spin_adjustment_changed), NULL);
+  /* Sets controls to the values of variables and connects signals */
+  init_diagram ();
 
   gtk_widget_show (app1);
+   
 
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when

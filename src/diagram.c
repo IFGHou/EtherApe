@@ -28,6 +28,7 @@
 #include "math.h"
 #include "eth_resolv.h"
 #include "diagram.h"
+#include "callbacks.h"
 
 
 /* Global application parameters */
@@ -68,6 +69,8 @@ extern guint node_id_length;
 extern gboolean nofade;
 extern gboolean diagram_only;
 extern apemode_t mode;
+extern GtkWidget *app1;
+extern GtkWidget *diag_pref;
 
 /* Extern functions declarations */
 
@@ -296,9 +299,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   GtkArg args[2];
   gdouble link_size;
   struct timeval diff;
-  guint32 baseColor;
-  guint looper = 0, r, g, b, av;
-  gdouble age = 0.0;
+  guint32 scaledColor;
+  gdouble scale;
 
   link = canvas_link->link;
 
@@ -309,7 +311,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
     update_packet_list (link->packets, LINK);
 
   diff = substract_times (now, link->last_time);
-  age = diff.tv_sec + diff.tv_usec / 1000000.0;
 
   if (link->n_packets == 0)
     {
@@ -359,9 +360,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   if (link && link->main_prot)
     gdk_color_parse (get_prot_color (link->main_prot), &canvas_link->color);
-  baseColor = ((canvas_link->color.red & 0xFF00) << 16) |
-    ((canvas_link->color.green & 0xFF00) << 8) |
-    (canvas_link->color.blue & 0xFF00) | 0xFF;
 
   args[0].name = "x";
   args[1].name = "y";
@@ -397,19 +395,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
-  while (looper++ < age)
-    {
-      r = (((unsigned char *) &baseColor)[3]);
-      g = (((unsigned char *) &baseColor)[2]);
-      b = (((unsigned char *) &baseColor)[1]);
-      av = (r + g + b * 2) / 5;
-      ((char *) &baseColor)[3] = (char) (0.9 * r + 0.1 * av);
-      ((char *) &baseColor)[2] = (char) (0.9 * g + 0.1 * av);
-      ((char *) &baseColor)[1] = (char) (0.9 * b + 0.1 * av);
-    }
-
-
-
 
   link_size = get_link_size (link->average);
 
@@ -420,11 +405,17 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 			   "width_units", link_size,
 			   NULL);
   else
-    gnome_canvas_item_set (canvas_link->link_item,
-			   "points", points,
-			   "fill_color_rgba", baseColor,
-			   "width_units", link_size,
-			   NULL);
+    {
+      /* scale color down to 10% at link timeout */
+      scale = pow (0.10, (diff.tv_sec * 1000000.0 + diff.tv_usec) / link_timeout_time);
+      scaledColor = (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
+	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
+	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+      gnome_canvas_item_set (canvas_link->link_item,
+			     "points", points,
+			     "fill_color_rgba", scaledColor,
+			     "width_units", link_size, NULL);
+    }
 
   gnome_canvas_points_unref (points);
 
@@ -550,10 +541,10 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       points->coords[0] = points->coords[1] = points->coords[2] =
 	points->coords[3] = 0.0;
 
-      new_canvas_link->link_item = gnome_canvas_item_new (group, 
-							  gnome_canvas_line_get_type (),
+      new_canvas_link->link_item = gnome_canvas_item_new (group,
+					      gnome_canvas_line_get_type (),
 							  "points", points,
-							  "fill_color", link_color,
+						   "fill_color", link_color,
 							  "width_units", 0.0,
 							  NULL);
 
@@ -604,7 +595,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->node = node;
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
-						 gnome_canvas_group_get_type (),
+					     gnome_canvas_group_get_type (),
 							 "x", 100.0,
 							 "y", 100.0,
 							 NULL));
@@ -627,7 +618,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "x", 0.0,
 			       "y", 0.0,
 			       "anchor", GTK_ANCHOR_CENTER,
-			       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+		       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
 			       "fill_color", text_color,
 			       NULL);
       new_canvas_node->group_item = group;
@@ -675,7 +666,9 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_object_getv (GTK_OBJECT (prot_table), 2, args);
   n_rows = args[0].d.int_data;
   n_columns = args[0].d.int_data;
-  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
+  if (n_rows>1)			/* Glade won't let me define a 0 row
+				 * table */
+     gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
 
   /* Then we add the new label widgets */
   label = gtk_label_new (protocol->name);
@@ -688,8 +681,10 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
 
   gtk_widget_show (label);
-  gtk_table_attach_defaults (GTK_TABLE (prot_table), label,
-			     1, 2, n_rows - 1, n_rows);
+  gtk_table_attach (GTK_TABLE (prot_table), label,
+		    1, 2, n_rows - 1, n_rows,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
   color_string = get_prot_color (protocol->name);
   gdk_color_parse (color_string, &prot_color);
@@ -789,7 +784,7 @@ update_diagram (GtkWidget * canvas)
 }				/* update_diagram */
 
 void
-init_diagram (GtkWidget * app1)
+init_diagram ()
 {
   GtkScale *scale;
   GtkSpinButton *spin;
@@ -814,25 +809,59 @@ init_diagram (GtkWidget * app1)
     refresh_period = 3000;
 
   /* Updates controls from values of variables */
-  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));
+  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (diag_pref), "node_radius_slider"));
   gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
 			    log (node_radius_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
 			   "changed");
-  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "link_width_slider"));
+  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (diag_pref), "link_width_slider"));
   gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
 			    log (link_width_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
 			   "changed");
   spin =
-    GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "averaging_spin"));
+    GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "averaging_spin"));
   gtk_spin_button_set_value (spin, averaging_time / 1000);
-  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "refresh_spin"));
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
-  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "node_to_spin"));
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "node_to_spin"));
   gtk_spin_button_set_value (spin, node_timeout_time / 1000);
-  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
+
+   
+  /* Connects signals */
+  scale = lookup_widget (diag_pref, "node_radius_slider");
+  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_node_radius_slider_adjustment_changed), NULL);
+  scale = lookup_widget (diag_pref, "link_width_slider");
+  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_link_width_slider_adjustment_changed), NULL);
+  scale = lookup_widget (diag_pref, "averaging_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_averaging_spin_adjustment_changed), NULL);
+  scale = lookup_widget (diag_pref, "refresh_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_refresh_spin_adjustment_changed),
+		      lookup_widget (GTK_WIDGET (diag_pref), "canvas1"));
+  scale = lookup_widget (diag_pref, "node_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_node_to_spin_adjustment_changed), NULL);
+  scale = lookup_widget (diag_pref, "link_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_link_to_spin_adjustment_changed), NULL);
 
 
   /* Sets canvas background to black */

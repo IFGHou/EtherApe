@@ -16,27 +16,28 @@
 #include "support.h"
 
 /* This is an internally used function to create pixmaps. */
-static GtkWidget *create_dummy_pixmap (GtkWidget * widget,
-				       gboolean gnome_pixmap);
+static GtkWidget* create_dummy_pixmap  (GtkWidget       *widget,
+                                        gboolean         gnome_pixmap);
 
-GtkWidget *
-lookup_widget (GtkWidget * widget, const gchar * widget_name)
+GtkWidget*
+lookup_widget                          (GtkWidget       *widget,
+                                        const gchar     *widget_name)
 {
   GtkWidget *parent, *found_widget;
 
   for (;;)
     {
       if (GTK_IS_MENU (widget))
-	parent = gtk_menu_get_attach_widget (GTK_MENU (widget));
+        parent = gtk_menu_get_attach_widget (GTK_MENU (widget));
       else
-	parent = widget->parent;
+        parent = widget->parent;
       if (parent == NULL)
-	break;
+        break;
       widget = parent;
     }
 
-  found_widget = (GtkWidget *) gtk_object_get_data (GTK_OBJECT (widget),
-						    widget_name);
+  found_widget = (GtkWidget*) gtk_object_get_data (GTK_OBJECT (widget),
+                                                   widget_name);
   if (!found_widget)
     g_warning ("Widget not found: %s", widget_name);
   return found_widget;
@@ -45,16 +46,17 @@ lookup_widget (GtkWidget * widget, const gchar * widget_name)
 /* This is a dummy pixmap we use when a pixmap can't be found. */
 static char *dummy_pixmap_xpm[] = {
 /* columns rows colors chars-per-pixel */
-  "1 1 1 1",
-  "  c None",
+"1 1 1 1",
+"  c None",
 /* pixels */
-  " ",
-  " "
+" ",
+" "
 };
 
 /* This is an internally used function to create pixmaps. */
-static GtkWidget *
-create_dummy_pixmap (GtkWidget * widget, gboolean gnome_pixmap)
+static GtkWidget*
+create_dummy_pixmap                    (GtkWidget       *widget,
+                                        gboolean         gnome_pixmap)
 {
   GdkColormap *colormap;
   GdkPixmap *gdkpixmap;
@@ -68,7 +70,7 @@ create_dummy_pixmap (GtkWidget * widget, gboolean gnome_pixmap)
 
   colormap = gtk_widget_get_colormap (widget);
   gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask,
-						     NULL, dummy_pixmap_xpm);
+                                                     NULL, dummy_pixmap_xpm);
   if (gdkpixmap == NULL)
     g_error ("Couldn't create replacement pixmap.");
   pixmap = gtk_pixmap_new (gdkpixmap, mask);
@@ -78,9 +80,10 @@ create_dummy_pixmap (GtkWidget * widget, gboolean gnome_pixmap)
 }
 
 /* This is an internally used function to create pixmaps. */
-GtkWidget *
-create_pixmap (GtkWidget * widget,
-	       const gchar * filename, gboolean gnome_pixmap)
+GtkWidget*
+create_pixmap                          (GtkWidget       *widget,
+                                        const gchar     *filename,
+                                        gboolean         gnome_pixmap)
 {
   GtkWidget *pixmap;
   GdkColormap *colormap;
@@ -104,7 +107,7 @@ create_pixmap (GtkWidget * widget,
 
   colormap = gtk_widget_get_colormap (widget);
   gdkpixmap = gdk_pixmap_colormap_create_from_xpm (NULL, colormap, &mask,
-						   NULL, pathname);
+                                                   NULL, pathname);
   if (gdkpixmap == NULL)
     {
       g_warning (_("Couldn't create pixmap from file: %s"), pathname);
@@ -120,8 +123,8 @@ create_pixmap (GtkWidget * widget,
 }
 
 /* This is an internally used function to create imlib images. */
-GdkImlibImage *
-create_image (const gchar * filename)
+GdkImlibImage*
+create_image                           (const gchar     *filename)
 {
   GdkImlibImage *image;
   gchar *pathname;
@@ -137,3 +140,4 @@ create_image (const gchar * filename)
   g_free (pathname);
   return image;
 }
+
