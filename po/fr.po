@@ -5,14 +5,14 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: etherape\n"
 "POT-Creation-Date: 2000-03-24 09:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Frederic Peters <fpeters@debian.org>\n"
+"Language-Team: None\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Type: text/plain; charset=8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: src/main.c:143
 msgid "Preferences saved"
@@ -206,11 +206,11 @@ msgstr "Etherape: Préférences"
 
 #: src/interface.c:555
 msgid "Click to toggle"
-msgstr ""
+msgstr "Cliquer pour sélectionner"
 
 #: src/interface.c:563
 msgid "Toggle whether text is shown on the diagram"
-msgstr ""
+msgstr "Défini si le texte est affiché sur le diagramme"
 
 #: src/interface.c:566
 msgid "No text"
@@ -231,6 +231,8 @@ msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
 msgstr ""
+"Défini comment le rayon des noeuds et la largeur des liaisons sont calculés"
+"en fonction du traffic moyen"
 
 # src/interface.c:698
 #: src/interface.c:655
@@ -254,7 +256,7 @@ msgstr "Mode de la taille"
 
 #: src/interface.c:692
 msgid "Choose the font used to display text in the diagram"
-msgstr ""
+msgstr "Défini la police utilisée pour afficher le texte dans le diagramme"
 
 #: src/interface.c:695
 msgid "Font"
@@ -262,7 +264,7 @@ msgstr "Police"
 
 #: src/interface.c:722
 msgid "Refresh diagram every this many miliseconds"
-msgstr ""
+msgstr "Nombre de millisecondes entre les rafraîchissement du diagramme"
 
 # src/interface.c:570
 #: src/interface.c:725
@@ -271,7 +273,7 @@ msgstr "Période de rafraichissement (ms)"
 
 #: src/interface.c:751
 msgid "Set what level of the protocol stack is displayed in the legend"
-msgstr ""
+msgstr "Défini le niveau du protocole affiché dans la légende"
 
 #: src/interface.c:754
 msgid "2"
@@ -295,7 +297,7 @@ msgstr "6"
 
 #: src/interface.c:772
 msgid "Protocol Stack Level"
-msgstr ""
+msgstr "Niveau du protocole"
 
 # src/interface.c:510
 #: src/interface.c:780
@@ -304,7 +306,8 @@ msgstr "Diagramme"
 
 #: src/interface.c:818
 msgid "Filter what's captured. See the tcpdump man page for details"
-msgstr "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
+msgstr ""
+"Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
 
 # src/main.c:70
 #: src/interface.c:821
@@ -314,6 +317,8 @@ msgstr "Filtre de capture"
 #: src/interface.c:850
 msgid "Packet information is averaged for this amount of time"
 msgstr ""
+"La moyenne sur les informations des paquets est effectuée pour "
+"cette quantité de temps"
 
 # src/interface.c:545
 #: src/interface.c:855
@@ -331,7 +336,7 @@ msgstr "Timeout pour les liaisons (ms)"
 
 #: src/interface.c:916
 msgid "Delete this node after this much time. 0 means never timeout."
-msgstr ""
+msgstr "Supprime ce noeud après cette quantité de temps. 0 signifie jamais."
 
 # src/interface.c:648
 #: src/interface.c:921
@@ -344,7 +349,7 @@ msgstr "Capture"
 
 #: src/interface.c:1013
 msgid "Select Font"
-msgstr ""
+msgstr "Choisir la police"
 
 # src/callbacks.c:195 src/callbacks.c:206
 #: src/callbacks.c:197 src/callbacks.c:208
