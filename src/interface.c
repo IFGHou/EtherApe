@@ -358,6 +358,7 @@ create_about2 (void)
 {
   const gchar *authors[] = {
     "Juan Toledo <toledo@users.sourceforge.net>",
+    "Bill Barth <bbarth@users.sourceforge.net>",
     "Fabrice Bellet <Fabrice.Bellet@creatis.insa-lyon.fr>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "Simon Kirby <sim@neato.org>",
