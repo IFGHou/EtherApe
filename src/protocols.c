@@ -220,58 +220,10 @@ get_ieee802_type (void)
 static void
 get_eth_II (etype_t etype)
 {
-  switch (etype)
-    {
-    case ETHERTYPE_IP:
-      prot = g_string_append (prot, "/IP");
-      get_ip ();
-      break;
-    case ETHERTYPE_ARP:
-      prot = g_string_append (prot, "/ARP");
-      break;
-    case ETHERTYPE_IPv6:
-      prot = g_string_append (prot, "/IPv6");
-      break;
-    case ETHERTYPE_X25L3:
-      prot = g_string_append (prot, "/X25L3");
-      break;
-    case ETHERTYPE_REVARP:
-      prot = g_string_append (prot, "/REVARP");
-      break;
-    case ETHERTYPE_ATALK:
-      prot = g_string_append (prot, "/ATALK");
-      break;
-    case ETHERTYPE_AARP:
-      prot = g_string_append (prot, "/AARP");
-      break;
-    case ETHERTYPE_IPX:
-      prot = g_string_append (prot, "/IPX");
-      break;
-    case ETHERTYPE_VINES:
-      prot = g_string_append (prot, "/VINES");
-      break;
-    case ETHERTYPE_TRAIN:
-      prot = g_string_append (prot, "/TRAIN");
-      break;
-    case ETHERTYPE_LOOP:
-      prot = g_string_append (prot, "/LOOP");
-      break;
-    case ETHERTYPE_PPPOED:
-      prot = g_string_append (prot, "/PPPOED");
-      break;
-    case ETHERTYPE_PPPOES:
-      prot = g_string_append (prot, "/PPPOES");
-      break;
-    case ETHERTYPE_VLAN:
-      prot = g_string_append (prot, "/VLAN");
-      break;
-    case ETHERTYPE_SNMP:
-      prot = g_string_append (prot, "/SNMP");
-      break;
-    case ETHERTYPE_UNK:
-    default:
-      prot = g_string_append (prot, "/ETH_UNKNOWN");
-    }
+  append_etype_prot (etype);
+
+  if (etype == ETHERTYPE_IP)
+    get_ip ();
 
   return;
 }				/* get_eth_II */
@@ -370,6 +322,7 @@ get_llc (void)
       break;
     case SAP_NETWARE:
       prot = g_string_append (prot, "/IPX");
+      get_ipx ();
       break;
     case SAP_NETBIOS:
       prot = g_string_append (prot, "/NETBIOS");
@@ -393,7 +346,6 @@ get_llc (void)
     case SAP_GLOBAL:
       prot = g_string_append (prot, "/LLC-GLOBAL");
       break;
-    default:
     }
 
 }				/* get_llc */
@@ -519,6 +471,11 @@ get_ip (void)
 
   return;
 }
+
+static void
+get_ipx ()
+{
+}				/* get_ipx */
 
 static void
 get_tcp (void)
@@ -1043,3 +1000,105 @@ choose_port (guint16 a, guint16 b)
   return ret;
 
 }				/* choose_port */
+
+static void
+append_etype_prot (etype_t etype)
+{
+  switch (etype)
+    {
+    case ETHERTYPE_IP:
+      prot = g_string_append (prot, "/IP");
+      break;
+    case ETHERTYPE_ARP:
+      prot = g_string_append (prot, "/ARP");
+      break;
+    case ETHERTYPE_IPv6:
+      prot = g_string_append (prot, "/IPv6");
+      break;
+    case ETHERTYPE_X25L3:
+      prot = g_string_append (prot, "/X25L3");
+      break;
+    case ETHERTYPE_REVARP:
+      prot = g_string_append (prot, "/REVARP");
+      break;
+    case ETHERTYPE_ATALK:
+      prot = g_string_append (prot, "/ATALK");
+      break;
+    case ETHERTYPE_AARP:
+      prot = g_string_append (prot, "/AARP");
+      break;
+    case ETHERTYPE_IPX:
+      prot = g_string_append (prot, "/IPX");
+      break;
+    case ETHERTYPE_VINES:
+      prot = g_string_append (prot, "/VINES");
+      break;
+    case ETHERTYPE_TRAIN:
+      prot = g_string_append (prot, "/TRAIN");
+      break;
+    case ETHERTYPE_LOOP:
+      prot = g_string_append (prot, "/LOOP");
+      break;
+    case ETHERTYPE_PPPOED:
+      prot = g_string_append (prot, "/PPPOED");
+      break;
+    case ETHERTYPE_PPPOES:
+      prot = g_string_append (prot, "/PPPOES");
+      break;
+    case ETHERTYPE_VLAN:
+      prot = g_string_append (prot, "/VLAN");
+      break;
+    case ETHERTYPE_SNMP:
+      prot = g_string_append (prot, "/SNMP");
+      break;
+    case ETHERTYPE_DNA_DL:
+      prot = g_string_append (prot, "/DNA-DL");
+      break;
+    case ETHERTYPE_DNA_RC:
+      prot = g_string_append (prot, "/DNA-RC");
+      break;
+    case ETHERTYPE_DNA_RT:
+      prot = g_string_append (prot, "/DNA-RT");
+      break;
+    case ETHERTYPE_DEC:
+      prot = g_string_append (prot, "/DEC");
+      break;
+    case ETHERTYPE_DEC_DIAG:
+      prot = g_string_append (prot, "/DEC-DIAG");
+      break;
+    case ETHERTYPE_DEC_CUST:
+      prot = g_string_append (prot, "/DEC-CUST");
+      break;
+    case ETHERTYPE_DEC_SCA:
+      prot = g_string_append (prot, "/DEC-SCA");
+      break;
+    case ETHERTYPE_DEC_LB:
+      prot = g_string_append (prot, "/DEC-LB");
+      break;
+    case ETHERTYPE_MPLS:
+      prot = g_string_append (prot, "/MPLS");
+      break;
+    case ETHERTYPE_MPLS_MULTI:
+      prot = g_string_append (prot, "/MPLS-MULTI");
+      break;
+    case ETHERTYPE_LAT:
+      prot = g_string_append (prot, "/LAT");
+      break;
+    case ETHERTYPE_PPP:
+      prot = g_string_append (prot, "/PPP");
+      break;
+    case ETHERTYPE_WCP:
+      prot = g_string_append (prot, "/WCP");
+      break;
+    case ETHERTYPE_3C_NBP_DGRAM:
+      prot = g_string_append (prot, "/3C-NBP-DGRAM");
+      break;
+    case ETHERTYPE_ETHBRIDGE:
+      prot = g_string_append (prot, "/ETHBRIDGE");
+      break;
+    case ETHERTYPE_UNK:
+      prot = g_string_append (prot, "/ETH_UNKNOWN");
+    }
+
+  return;
+}				/* append_etype_prot */

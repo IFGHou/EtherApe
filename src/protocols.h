@@ -67,6 +67,7 @@ static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
 
 static void get_llc (void);
 static void get_ip (void);
+static void get_ipx (void);
 static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
 static void get_udp (void);
@@ -80,3 +81,4 @@ static void get_ftp (void);
 static gboolean get_rpc (gboolean is_udp);
 static void load_services (void);
 static guint16 choose_port (guint16 a, guint16 b);
+static void append_etype_prot (etype_t etype);
