@@ -42,7 +42,12 @@ get_packet_prot (const guint8 * p)
     case L_EN10MB:
       get_eth_type ();
       break;
+    case L_FDDI:
+      /* prot = g_string_new ("LLC"); */
+      get_fddi_type ();
+      break;
     case L_PPP:
+      /* TODO Call the ip routines from here */
       prot = g_string_new ("PPP/IP");
       break;
     case L_SLIP:
@@ -134,10 +139,21 @@ get_eth_type (void)
 }				/* get_eth_type */
 
 static void
+get_fddi_type (void)
+{
+  prot = g_string_new ("LLC");
+  /* Ok, this is only temporary while I truly dissect LLC 
+   * and fddi */
+  if ((packet[19] == 0x08) && (packet[20] == 0x00))
+    {
+      prot = g_string_append (prot, "/IP");
+      get_ip ();
+    }
+
+}				/* get_fdd_type */
+static void
 get_eth_II (etype_t etype)
 {
-  /* TODO We are just considering EthernetII here
-   * I guess I'll have to do the Right Thing some day. :-) */
   switch (etype)
     {
     case ETHERTYPE_IP:

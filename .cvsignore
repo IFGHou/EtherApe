@@ -17,3 +17,5 @@ build-stamp
 stamp-h
 stamp-h.in
 *.tar.gz
+NEWS
+FAQ

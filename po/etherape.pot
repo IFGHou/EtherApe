@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-04 14:55+0200\n"
+"POT-Creation-Date: 2000-04-04 15:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -331,71 +331,71 @@ msgstr ""
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:108
+#: src/capture.c:108 src/capture.c:119
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:122
+#: src/capture.c:126
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:138
+#: src/capture.c:145
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:180
+#: src/capture.c:187
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:186
+#: src/capture.c:193
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:191
+#: src/capture.c:198
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:316
+#: src/capture.c:329
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:355
+#: src/capture.c:372
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:439
+#: src/capture.c:456
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:460
+#: src/capture.c:477
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:498
+#: src/capture.c:515
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:646
+#: src/capture.c:670
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:715
+#: src/capture.c:739
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:777
+#: src/capture.c:801
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:898
+#: src/capture.c:922
 msgid "Null packet in check_packet"
 msgstr ""

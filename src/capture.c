@@ -111,13 +111,17 @@ init_capture (void)
 	}
       l3_offset = 0;
       break;
-#if 0
     case L_FDDI:		/* We are assuming LLC async frames only */
       if (mode == DEFAULT)
-	mode = ETHERNET;
-      l2_offset = 1;
-      l3_offset =
-#endif
+	mode = FDDI;
+      if (mode == ETHERNET)
+	{
+	  g_message (_("Mode not available in this device"));
+	  /* TODO manage proper exit codes */
+	  exit (1);
+	}
+      l3_offset = 21;
+      break;
     default:
       g_error (_("Link type not yet supported"));
     }
@@ -126,6 +130,9 @@ init_capture (void)
   switch (mode)
     {
     case ETHERNET:
+      node_id_length = 6;
+      break;
+    case FDDI:
       node_id_length = 6;
       break;
     case IP:
@@ -160,7 +167,8 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint set_filter (gchar * filter, gchar * device)
+gint
+set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -195,7 +203,8 @@ gint set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint get_offline_packet (void)
+guint
+get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
@@ -288,6 +297,12 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
       else
 	node_id = g_memdup (packet, node_id_length);
       break;
+    case FDDI:
+      if (node_type == SRC)
+	node_id = g_memdup (packet + 7, node_id_length);
+      else
+	node_id = g_memdup (packet + 1, node_id_length);
+      break;
     case IP:
       if (node_type == SRC)
 	node_id = g_memdup (packet + l3_offset + 12, node_id_length);
@@ -336,7 +351,11 @@ get_link_id (const guint8 * packet)
       link_id = g_malloc (2 * node_id_length);
       g_memmove (link_id, packet + 6, node_id_length);
       g_memmove (link_id + 6, packet, node_id_length);
-/*      link_id = g_memdup (packet, 2 * node_id_length); */
+      break;
+    case FDDI:
+      link_id = g_malloc (2 * node_id_length);
+      g_memmove (link_id, packet + 7, node_id_length);
+      g_memmove (link_id + 6, packet + 1, node_id_length);
       break;
     case IP:
       link_id = g_memdup (packet + l3_offset + 12, 2 * node_id_length);
@@ -563,6 +582,13 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	  else
 	    node->name = g_string_new (get_ether_name (node_id));
 	}
+      break;
+
+    case FDDI:
+      if (!node->numeric_name)
+	node->numeric_name = g_string_new (ether_to_str (node_id));
+      if (!node->name)
+	node->name = g_string_new (ether_to_str (node_id));
       break;
 
     case IP:
@@ -1005,7 +1031,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1034,7 +1061,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1061,7 +1089,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

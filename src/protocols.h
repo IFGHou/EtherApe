@@ -105,6 +105,7 @@ iptype_t;
 /* Funcions declarations */
 
 static void get_eth_type (void);
+static void get_fddi_type (void);
 static void get_eth_II (etype_t etype);
 
 static void get_ip (void);
