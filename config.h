@@ -133,5 +133,5 @@
 #define PACKAGE "etherape"
 
 /* Version number of package */
-#define VERSION "0.1"
+#define VERSION "0.0.4"
 
