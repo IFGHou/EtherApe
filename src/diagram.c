@@ -199,7 +199,7 @@ update_diagram (GtkWidget * canvas)
 
   if (end_of_file && status != STOP)
     {
-      g_my_info (_("End of file and status != STOP. Pausing."));
+      g_my_debug ("End of file and status != STOP. Pausing.");
       gui_pause_capture ();
     }
 
