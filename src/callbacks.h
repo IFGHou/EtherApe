@@ -109,7 +109,9 @@ void
 void
   on_size_mode_menu_selected (GtkMenuShell * menu_shell,
 			      gpointer data);
-
+void
+  on_stack_level_menu_selected (GtkMenuShell * menu_shell,
+				gpointer data);
 void
   on_save_pref_button_clicked (GtkButton * button,
 			       gpointer user_data);

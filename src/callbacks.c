@@ -30,26 +30,8 @@
 #include "math.h"
 
 #include "globals.h"
-#if 0
-/* Global variables */
 
-extern GTree *canvas_nodes;	/* Defined in diagram.c */
-extern double averaging_time;
-extern double node_radius_multiplier;
-extern double link_width_multiplier;
-extern double link_timeout_time;
-extern double node_timeout_time;
-extern guint32 refresh_period;
-extern gint diagram_timeout;
-extern gchar *fontname;
-extern gboolean need_reposition;
-extern gboolean diagram_only;
-extern size_mode_t size_mode;
-extern GtkWidget *diag_pref;
-extern GtkWidget *app1;
-#endif
 /* Extern functions */
-
 extern void save_config (gchar * prefix);
 
 void
@@ -448,6 +430,17 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell,
   /* Beware! Size mode is an enumeration. The menu options
    * must much the enumaration values */
   size_mode = g_list_index (menu_shell->children, active_item);
+
+}
+
+void
+on_stack_level_menu_selected (GtkMenuShell * menu_shell,
+			      gpointer data)
+{
+  GtkWidget *active_item;
+
+  active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
+  stack_level = g_list_index (menu_shell->children, active_item);
 
 }
 

@@ -1124,7 +1124,7 @@ Square Root
 
 	  <widget>
 	    <class>GtkOptionMenu</class>
-	    <name>p_level_menu</name>
+	    <name>stack_level_menu</name>
 	    <tooltip>Set what level of the protocol stack is displayed in the legend</tooltip>
 	    <can_focus>True</can_focus>
 	    <items>2

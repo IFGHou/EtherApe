@@ -45,8 +45,20 @@ struct popup_data
 gchar *
 get_prot_color (gchar * name)
 {
+  gchar *colors[] =
+  {"red", "blue", "yellow", "white", "orange", "green",
+   "white", "cyan", "orange", "brown", "purple"};
+  static gint i = -1;
+
+  i++;
+
+  if (i <= 10)
+    return colors[i];
+
+  return "tan";
+#if 0
   /* TODO This is all hardwired now. This should read preferences
-   * and whatnot */
+     * and whatnot */
 
   if (!strcmp (name, "IP"))
     return "red";
@@ -73,6 +85,7 @@ get_prot_color (gchar * name)
 
   /* UNKNOWN */
   return "tan";
+#endif
 }				/* get_prot_color */
 
 gdouble
@@ -128,7 +141,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
     case GDK_ENTER_NOTIFY:
       str = g_strdup_printf (_ ("Link main protocol: %s"),
-			     canvas_link->link->main_prot[1]);
+			     canvas_link->link->main_prot[stack_level]);
       gnome_appbar_push (appbar, str);
       g_free (str);
       break;
@@ -326,6 +339,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   link_t *link;
   GnomeCanvasPoints *points;
   canvas_node_t *canvas_node;
+  GList *protocol_item;
+  protocol_t *protocol = NULL;
   GtkArg args[2];
   gdouble link_size;
   struct timeval diff;
@@ -351,71 +366,18 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 				 * the traversion (Does that word exist? :-) */
     }
 
-#if 0
-  if (link->packets)
-    update_packet_list (link->packets, LINK);
-
-  diff = substract_times (now, link->last_time);
-
-  if (link->n_packets == 0)
-    {
-
-      if (((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
-	  && link_timeout_time)
-	{
-
-	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-
-	  g_tree_remove (canvas_links, link_id);
-
-#if 0				/* TODO make proper debugging output */
-	  if (interape)
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _
-	       ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		   ip_to_str (link_id), ip_to_str (link_id + 4),
-		   g_tree_nnodes (canvas_links));
-	  else
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _
-	       ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		   get_ether_name (link_id + 6), get_ether_name (link_id),
-		   g_tree_nnodes (canvas_links));
-#endif
-
-
-	  /* TODO I have to create a free_link function in capture.c */
-	  link_id = link->link_id;	/* Since we are freeing the link
-					 * we must free its members as well 
-					 * but if we free the id then we will
-					 * not be able to find the link again 
-					 * to free it, thus the intermediate variable */
-#if 0				/* TODO Fix this once and for all */
-	  if (link->main_prot)
-	    g_free (link->main_prot);
-#endif
-	  g_free (link);
-	  g_tree_remove (links, link_id);
-	  g_free (link_id);
-
-	  return TRUE;		/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
-	}
-      else
-	link->packets = NULL;
-
-      link->accumulated = 0;
-    }
-#endif
 
   /* TODO do we really have to check for link in this two? */
   if (link)
     diff = substract_times (now, link->last_time);
 
-  if (link && link->main_prot[1])
-    gdk_color_parse (get_prot_color (link->main_prot[1]), &canvas_link->color);
-
+  if (link && link->main_prot[stack_level])
+    {
+      protocol_item = g_list_find_custom (protocols[stack_level],
+					  link->main_prot[stack_level],
+					  protocol_compare);
+      protocol = protocol_item->data;
+    }
   args[0].name = "x";
   args[1].name = "y";
 
@@ -454,18 +416,24 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   link_size = get_link_size (link->average);
 
   if (nofade)
-    gnome_canvas_item_set (canvas_link->link_item,
-			   "points", points,
-			   "fill_color", get_prot_color (link->main_prot[1]),
-			   "width_units", link_size,
-			   NULL);
+    {
+      guint32 color;
+      color = (((int) (protocol->color.red) & 0xFF00) << 16) |
+	(((int) (protocol->color.green) & 0xFF00) << 8) |
+	((int) (protocol->color.blue) & 0xFF00) | 0xFF;
+      gnome_canvas_item_set (canvas_link->link_item,
+			     "points", points,
+			     "fill_color_rgba", color,
+			     "width_units", link_size,
+			     NULL);
+    }
   else
     {
       /* scale color down to 10% at link timeout */
       scale = pow (0.10, (diff.tv_sec * 1000000.0 + diff.tv_usec) / link_timeout_time);
-      scaledColor = (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
-	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
-	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+      scaledColor = (((int) (scale * protocol->color.red) & 0xFF00) << 16) |
+	(((int) (scale * protocol->color.green) & 0xFF00) << 8) |
+	((int) (scale * protocol->color.blue) & 0xFF00) | 0xFF;
       gnome_canvas_item_set (canvas_link->link_item,
 			     "points", points,
 			     "fill_color_rgba", scaledColor,
@@ -484,7 +452,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  struct timeval diff;
   GtkArg args[1];
 
   node = canvas_node->node;
@@ -720,7 +687,6 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   GtkWidget *prot_table;
   GtkWidget *label;
   GtkArg args[2];
-  GdkColor prot_color;
   GtkStyle *style;
   gchar *color_string;
   guint n_rows, n_columns;
@@ -731,8 +697,14 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
   /* First, we check whether the diagram already knows about this protocol,
    * checking whether it is shown on the legend. */
+  /*  g_message ("Looking for %s", protocol->name); */
   if (lookup_widget (GTK_WIDGET (canvas), protocol->name))
-    return;
+    {
+      /* g_message ("Found"); */
+      return;
+    }
+
+  /* g_message ("Not found. Creating item"); */
 
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
@@ -745,7 +717,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
    * cleaning this up :-) */
   if (!first)
     {
-      gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
+      gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1);
       n_rows++;
     }
   first = FALSE;
@@ -767,12 +739,13 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
   color_string = get_prot_color (protocol->name);
-  gdk_color_parse (color_string, &prot_color);
-  gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &prot_color,
+  g_message ("%s in %s", protocol->name, color_string);
+  gdk_color_parse (color_string, &(protocol->color));
+  gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &protocol->color,
 			    TRUE, TRUE);
 
   style = gtk_style_new ();
-  style->fg[GTK_STATE_NORMAL] = prot_color;
+  style->fg[GTK_STATE_NORMAL] = protocol->color;
   gtk_widget_set_style (label, style);
 
 }
@@ -786,9 +759,10 @@ guint
 update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
-  guint n_links = 0, n_links_new = 1, n_protocols_new;
+  guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE];
   guint n_nodes_before = 0, n_nodes_after = 1;
-  static guint n_protocols = 0;
+  static guint n_protocols[STACK_SIZE] =
+  {0};
   gchar *str;
 
 
@@ -797,10 +771,11 @@ update_diagram (GtkWidget * canvas)
   gettimeofday (&now, NULL);
 
   /* We search for new protocols */
-  if (n_protocols != (n_protocols_new = g_list_length (protocols[0])))
+  if (n_protocols[stack_level]
+  != (n_protocols_new[stack_level] = g_list_length (protocols[stack_level])))
     {
-      g_list_foreach (protocols[1], (GFunc) check_new_protocol, canvas);
-      n_protocols = n_protocols_new;
+      g_list_foreach (protocols[stack_level], (GFunc) check_new_protocol, canvas);
+      n_protocols[stack_level] = n_protocols_new[stack_level];
     }
 
 /* Now we update the status bar with the number of present nodes 
@@ -900,7 +875,14 @@ init_diagram ()
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
   widget = lookup_widget (GTK_WIDGET (diag_pref), "diagram_only_toggle");
-  gtk_toggle_button_set_active (widget, diagram_only);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), diagram_only);
+
+  widget = lookup_widget (diag_pref, "size_mode_menu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);
+  widget = lookup_widget (diag_pref, "stack_level_menu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
+  /* TODO Write code to set the options menu to the positions 
+   * indicated by the variables */
 
   /* Connects signals */
   widget = lookup_widget (diag_pref, "node_radius_slider");
@@ -938,13 +920,16 @@ init_diagram ()
   gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		 "deactivate", GTK_SIGNAL_FUNC (on_size_mode_menu_selected),
 		      NULL);
+  widget = lookup_widget (diag_pref, "stack_level_menu");
+  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
+	       "deactivate", GTK_SIGNAL_FUNC (on_stack_level_menu_selected),
+		      NULL);
 
 
 
   /* Sets canvas background to black */
   canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
   gdk_color_parse ("black", &color);
-
   gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &color, TRUE,
 			    TRUE);
   style = gtk_style_new ();

@@ -490,8 +490,8 @@ create_diag_pref (void)
   GtkWidget *refresh_spin;
   GtkWidget *label7;
   GtkWidget *vbox13;
-  GtkWidget *p_level_menu;
-  GtkWidget *p_level_menu_menu;
+  GtkWidget *stack_level_menu;
+  GtkWidget *stack_level_menu_menu;
   GtkWidget *label32;
   GtkWidget *label28;
   GtkWidget *table3;
@@ -719,30 +719,30 @@ create_diag_pref (void)
 		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
-  p_level_menu = gtk_option_menu_new ();
-  gtk_widget_ref (p_level_menu);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "p_level_menu", p_level_menu,
+  stack_level_menu = gtk_option_menu_new ();
+  gtk_widget_ref (stack_level_menu);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "stack_level_menu", stack_level_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (p_level_menu);
-  gtk_box_pack_start (GTK_BOX (vbox13), p_level_menu, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, p_level_menu, _ ("Set what level of the protocol stack is displayed in the legend"), NULL);
-  p_level_menu_menu = gtk_menu_new ();
+  gtk_widget_show (stack_level_menu);
+  gtk_box_pack_start (GTK_BOX (vbox13), stack_level_menu, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, stack_level_menu, _ ("Set what level of the protocol stack is displayed in the legend"), NULL);
+  stack_level_menu_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_ ("2"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (stack_level_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_ ("3"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (stack_level_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_ ("4"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (stack_level_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_ ("5"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (stack_level_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_ ("All"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (p_level_menu), p_level_menu_menu);
+  gtk_menu_append (GTK_MENU (stack_level_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (stack_level_menu), stack_level_menu_menu);
 
   label32 = gtk_label_new (_ ("Protocol Stack Level"));
   gtk_widget_ref (label32);

@@ -114,7 +114,7 @@ typedef struct
     gchar *name;		/* Name of the protocol */
     gdouble accumulated;	/* Accumulated traffic in bytes for this protocol */
     guint n_packets;		/* Number of packets containing this protocol */
-    guint32 color;		/* The color associated with this protocol. It's here
+    GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
   }
@@ -197,6 +197,8 @@ gchar *node_color, *link_color, *text_color;	/* Default colors
 						 * TODO do we need link_color anymore? */
 gchar *fontname;		/* Font to be used for text display */
 gboolean need_reposition;	/* Force a diagram relayout */
+guint stack_level;		/* Which level of the protocol stack 
+				 * we will concentrate on */
 
 /* Capture settings */
 

@@ -103,6 +103,8 @@ load_config (char *prefix)
 
   size_mode =
     gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  stack_level =
+    gnome_config_get_int_with_default ("Diagram/stack_level=1", &u);
   fontname =
     gnome_config_get_string_with_default ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
 
@@ -130,6 +132,7 @@ save_config (char *prefix)
 #endif
   gnome_config_set_int ("Diagram/refresh_period", refresh_period);
   gnome_config_set_int ("Diagram/size_mode", size_mode);
+  gnome_config_set_int ("Diagram/stack_level", stack_level);
   gnome_config_set_string ("Diagram/fontname", fontname);
 
   gnome_config_sync ();
