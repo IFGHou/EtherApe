@@ -33,14 +33,17 @@ get_packet_prot (const guint8 * p)
 {
   gchar **tokens = NULL;
   gchar *top_prot = NULL;
-  gchar *str;
+  gchar *str = NULL;
 
   guint i = 0;
 
   g_assert (p != NULL);
 
   if (prot)
-    g_string_free (prot, TRUE);
+    {
+      g_string_free (prot, TRUE);
+      prot = NULL;
+    }
   prot = g_string_new ("");
 
   packet = p;
@@ -55,7 +58,11 @@ get_packet_prot (const guint8 * p)
       get_fddi_type ();
       break;
     case L_RAW:		/* Both for PPP and SLIP */
-      prot = g_string_new ("RAW/IP");
+      prot = g_string_append (prot, "RAW/IP");
+      get_ip ();
+      break;
+    case L_NULL:
+      prot = g_string_append (prot, "NULL/IP");
       get_ip ();
       break;
     default:
@@ -74,6 +81,7 @@ get_packet_prot (const guint8 * p)
       while ((tokens[i] != NULL) && i <= STACK_SIZE)
 	i++;
       g_strfreev (tokens);
+      tokens = NULL;
     }
   for (; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
@@ -86,7 +94,9 @@ get_packet_prot (const guint8 * p)
   str = g_strdup_printf ("%s/", top_prot);
   prot = g_string_prepend (prot, str);
   g_free (str);
+  str = NULL;
   g_strfreev (tokens);
+  tokens = NULL;
 
   /* g_message ("Protocol stack is %s", prot->str); */
   return prot->str;
@@ -365,6 +375,7 @@ get_tcp (void)
   str = g_strdup_printf ("/%s", service->name);
   prot = g_string_append (prot, str);
   g_free (str);
+  str = NULL;
   return;
 }				/* get_tcp */
 
@@ -392,6 +403,7 @@ get_udp (void)
   str = g_strdup_printf ("/%s", service->name);
   prot = g_string_append (prot, str);
   g_free (str);
+  str = NULL;
   return;
 }				/* get_udp */
 
@@ -527,11 +539,14 @@ load_services (void)
 	    }
 
 	  g_strfreev (t2);
+	  t2 = NULL;
 	  g_strfreev (t1);
+	  t1 = NULL;
 
 	}
     }
 
   g_free (line);
+  line = NULL;
   fclose (services);
 }				/* load_services */
