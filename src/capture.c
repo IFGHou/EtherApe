@@ -420,6 +420,7 @@ stop_capture (void)
 
   /* Free the list of new_nodes */
   g_list_free (new_nodes);
+  new_nodes = NULL;
 
   if (filter)
     {
@@ -521,10 +522,10 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   link_id = get_link_id (packet);
   /* And now we update link traffic information for this packet */
   add_link_packet (packet, phdr, link_id, prot);
-
 #ifndef LEAK
   return;
 #endif
+
 
 }				/* packet_read */
 
@@ -854,7 +855,9 @@ add_protocol (GList ** protocols, const gchar * stack,
 }				/* add_protocol */
 
 
-/* Calls update_node for every node */
+/* Calls update_node for every node. This is actually a function that
+ shouldn't be called often, because it might take a very long time 
+ to complete */
 void
 update_nodes (void)
 {
@@ -889,11 +892,11 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 
       diff = substract_times (now, node->last_time);
 
-#if 1
+#if 0
       /* Delete node if we stop the capture */
       if (status == STOP)
 #endif
-#if 0
+#if 1
 	/* Remove node if node is too old or if capture is stopped */
 	if ((IS_OLDER (diff, node_timeout_time) && node_timeout_time)
 	    || (status == STOP))
@@ -908,6 +911,11 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
+
+	    /* First thing we do is delete the node for the list of new_nodes,
+	     * if it's there */
+	    new_nodes = g_list_remove (new_nodes, node);
+
 	    g_string_free (node->name, TRUE);
 	    node->name = NULL;
 	    g_string_free (node->numeric_name, TRUE);
@@ -998,7 +1006,9 @@ ape_get_new_node (void)
   old_item = new_nodes;
 
   /* We make sure now that the node hasn't been deleted since */
-  while (!g_tree_lookup (nodes, node->node_id))
+  /* TODO Sometimes when I get here I have a node, but a null
+   * node->node_id. What gives? */
+  while (node && node->node_id && !g_tree_lookup (nodes, node->node_id))
     {
       g_my_debug
 	("Already deleted node in list of new nodes, in ape_get_new_node");
@@ -1006,9 +1016,16 @@ ape_get_new_node (void)
       /* Remove this node from the list of new nodes */
       new_nodes = g_list_remove_link (new_nodes, new_nodes);
       g_list_free_1 (old_item);
-      node = new_nodes->data;
+      if (new_nodes)
+	node = new_nodes->data;
+      else
+	node = NULL;
       old_item = new_nodes;
     }
+
+  if (!new_nodes)
+    return NULL;
+
   /* Remove this node from the list of new nodes */
   new_nodes = g_list_remove_link (new_nodes, new_nodes);
   g_list_free_1 (old_item);
@@ -1032,8 +1049,11 @@ update_link (link_t * link)
   if (link->n_packets == 0)
     {
 
-      if (status == STOP)
+
 #if 0
+      if (status == STOP)
+#endif
+#if 1
 	/* Remove link if it is too old or if capture is stopped */
 	if ((IS_OLDER (diff, link_timeout_time) && link_timeout_time)
 	    || (status == STOP))
@@ -1427,10 +1447,6 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  item = packets->next;
 	  g_list_remove_link (packets, item);
 	  g_list_free_1 (item);
-#if 0
-	  return (packets);	/* Old packet removed,
-				 * keep on searching */
-#endif
 	  *packet_l_e = packets;
 	  return (TRUE);	/* Old packet removed,
 				 * keep on searching */
@@ -1438,10 +1454,6 @@ check_packet (GList * packets, GList ** packet_l_e,
       else
 	{
 	  packets->data = NULL;
-#if 0
-	  /* TODO Why am I so sure that I don't need to free the list? */
-	  /* g_list_free (packets); */
-#endif
 	  *packet_l_e = NULL;
 	  g_list_free (packets);
 	  /* Last packet removed,
