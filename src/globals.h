@@ -299,6 +299,8 @@ void get_packet_names (GList ** protocols,
 /* From diagram.c */
 guint update_diagram (GtkWidget * canvas);
 void init_diagram ();
+void destroying_timeout (gpointer data);
+void destroying_idle (gpointer data);
 
 /* Macros */
 
