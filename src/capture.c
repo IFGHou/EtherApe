@@ -2,13 +2,12 @@
 
 #include <pcap.h>
 #include <gnome.h>
+#include <ctype.h>
 
 #include "capture.h"
 #include "resolv.h"
 
-#include <ctype.h>
 
-#include <gnome.h>
 
 extern guint averaging_time;
 enum packet_belongs
