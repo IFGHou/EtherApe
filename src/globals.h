@@ -97,7 +97,7 @@ typedef struct
 {
   guint8 *node_id;
   GString *name;
-  GString *numric_name;
+  GString *numeric_name;
 }
 name_t;
 
@@ -285,6 +285,11 @@ gchar *ether_to_str_punct (const guint8 * ad, char punct);
 
 /* From protocols.c */
 gchar *get_packet_prot (const guint8 * packet);
+
+/* From names.c */
+void get_packet_names (GList ** protocols,
+		       const guint8 * packet,
+		       const gchar * prot_stack, packet_direction direction);
 
 /* From diagram.c */
 guint update_diagram (GtkWidget * canvas);

@@ -388,7 +388,6 @@ add_node_packet (const guint8 * packet,
 {
   node_t *node;
   packet_t *packet_info;
-
   node = g_tree_lookup (nodes, node_id);
   if (node == NULL)
     node = create_node (packet, node_id);
@@ -416,7 +415,11 @@ add_node_packet (const guint8 * packet,
   node->last_time = now;
   node->n_packets++;
 
+  /* Update names list for this node */
+  get_packet_names (node->protocols, packet, prot, direction);
+
 }				/* add_node_packet */
+
 
 /* Save as above plus we update protocol aggregate information */
 static void
@@ -721,6 +724,7 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	  protocol_info->accumulated = phdr.len;
 	  protocol_info->n_packets = 1;
+	  protocol_info->node_names = NULL;
 	}
 
     }
@@ -1128,6 +1132,9 @@ link_id_compare (gconstpointer a, gconstpointer b)
 gint
 protocol_compare (gconstpointer a, gconstpointer b)
 {
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }
 
