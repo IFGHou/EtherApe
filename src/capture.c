@@ -255,7 +255,12 @@ init_capture (void)
   pcap_t *pch;
 
   char ebuf[100];
-  (pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf);
+  if (!((pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf)))
+     {
+	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
+	       _("You need to be root to run this program"));
+     }
+   
   pcap_fd = pcap_fileno (pch);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
   gdk_input_add (pcap_fd,
