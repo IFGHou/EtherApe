@@ -23,24 +23,10 @@
 
 #include <gnome.h>
 
+#include "globals.h"
+#include "diagram.h"
 #include "interface.h"
 #include "support.h"
-#include "diagram.h"
-
-#include "globals.h"
-
-#if 0
-/* TODO Organize global variables in a sensible way */
-gboolean numeric = 0;
-gboolean dns = 1;
-gboolean diagram_only = 0;
-gboolean nofade = 0;
-gchar *interface;
-guint32 refresh_period = 800;
-gint diagram_timeout;
-gchar *filter = "";
-
-#endif
 
 static void
 session_die (GnomeClient * client, gpointer client_data)

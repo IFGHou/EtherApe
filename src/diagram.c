@@ -27,64 +27,18 @@
 #include "support.h"
 #include "math.h"
 #include "eth_resolv.h"
+
+#include "globals.h"
 #include "diagram.h"
 #include "callbacks.h"
 
-#include "globals.h"
-#if 0
-/* Global application parameters */
 
-double node_radius_multiplier = 0.0005;		/* used to calculate the radius of the
-						 * displayed nodes. So that the user can
-						 * select with certain precision this
-						 * value, the GUI uses the log10 of the
-						 * multiplier*/
-double link_width_multiplier = 0.0005;	/* Same explanation as above */
-
-size_mode_t size_mode = LINEAR;	/* Default mode for node size and
-				 * link width calculation */
-
-gchar *node_color = "brown", *link_color = "tan", *text_color = "yellow";
-gchar *fontname = NULL;
-
-
-GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
-				 * separate data from presentation: that is, we need to
-				 * keep a list of CanvasItems, but we do not want to keep
-				 * that info on the nodes tree itself */
-GTree *canvas_links;		/* See above */
-
-gboolean need_reposition;	/* It is set when a canvas_node has been added 
-				 * or deleted */
-#endif
 struct popup_data
   {
     GtkWidget *node_popup;
     canvas_node_t *canvas_node;
   };
 
-/* Extern global variables */
-
-#if 0
-extern gdouble averaging_time;
-extern gdouble link_timeout_time;
-extern gdouble node_timeout_time;
-extern struct timeval now;
-extern guint32 refresh_period;
-extern guint node_id_length;
-extern gboolean nofade;
-extern gboolean diagram_only;
-extern apemode_t mode;
-extern GtkWidget *app1;
-extern GtkWidget *diag_pref;
-
-extern GnomeUIInfo view1_menu_uiinfo[];
-#endif
-
-/* Extern functions declarations */
-
-extern gint node_id_compare (gconstpointer a, gconstpointer b);
-extern gint link_id_compare (gconstpointer a, gconstpointer b);
 
 /* Local functions definitions */
 

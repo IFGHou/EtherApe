@@ -1,40 +1,23 @@
-#include "capture.h"
+/* Etherape
+ * Copyright (C) 2000 Juan Toledo
+ * $Id$
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
-#if 0
-typedef enum
-  {
-    /* Beware! The value given by the option widget is dependant on
-     * the order set in glade! */
-    LINEAR = 0,
-    LOG = 1,
-    SQRT = 2
-  }
-size_mode_t;
-#endif
-
-/* Diagram structures */
-
-typedef struct
-  {
-    guint8 *canvas_node_id;
-    node_t *node;
-    GnomeCanvasItem *node_item;
-    GnomeCanvasItem *text_item;
-    GnomeCanvasItem *accu_item;
-    gchar *accu_str;
-    GnomeCanvasGroup *group_item;
-  }
-canvas_node_t;
-
-typedef struct
-  {
-    guint8 *canvas_link_id;
-    link_t *link;
-    GnomeCanvasItem *link_item;
-    GdkColor color;
-  }
-canvas_link_t;
-
+#include "globals.h"
 
 /* Function definitions */
 

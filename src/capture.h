@@ -1,40 +1,31 @@
+/* Etherape
+ * Copyright (C) 2000 Juan Toledo
+ * $Id$
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <pcap.h>
+#include "globals.h"
+
 #define MAXSIZE 60
 #define PCAP_TIMEOUT 250
-#include <sys/time.h>
-#include <pcap.h>
-
-/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
- * byte array, returns the value of the two or four bytes at the pointer.
- */
-#define pntohs(p)  ((guint16)                       \
-		       ((guint16)*((guint8 *)p+0)<<8|  \
-			   (guint16)*((guint8 *)p+1)<<0))
-
-#define pntohl(p)  ((guint32)*((guint8 *)p+0)<<24|  \
-		       (guint32)*((guint8 *)p+1)<<16|  \
-		       (guint32)*((guint8 *)p+2)<<8|   \
-		       (guint32)*((guint8 *)p+3)<<0)
-
-GTree *nodes;			/* Has all the nodes heard on the network */
-GTree *links;			/* Has all links heard on the net */
-GList *protocols;		/* Has all protocols heard on the net */
-
 
 /* 
- * Enumerations 
+ * LOCAL ENUMERATIONS
  */
-
-/* Modes of operation */
-typedef enum
-  {
-    DEFAULT = -1,
-    ETHERNET = 0,
-    IP = 1,
-    TCP = 2,
-    UDP = 3
-  }
-apemode_t;
-
 
 /* Since gdb does understand enums and not defines, and as 
  * way to make an easier transition to a non-pcap etherape,
@@ -59,90 +50,37 @@ typedef enum
   }
 link_type_t;
 
-
-/* Flag to indicate whether a packet belongs to a node or a link */
-enum packet_belongs
-  {
-    NODE = 0, LINK = 1
-  };
-
 /* Used on some functions to indicate how to operate on the node info
  * depending on what side of the comm the node was at */
-enum create_node_type
+typedef enum
   {
     SRC = 0,
     DST = 1
-  };
-
-
-/* 
- * Structures 
- */
-
-/* Node information */
-typedef struct
-  {
-    guint8 *node_id;		/* pointer to the node identification
-				 * could be an ether or ip address*/
-    GString *name;		/* String with a readable default name of the node */
-    GString *numeric_name;	/* String with a numeric representation of the id */
-    guint32 ip_address;		/* Needed by the resolver */
-    GString *numeric_ip;	/* Ugly hack for ethernet mode */
-    gdouble average;		/* Average bytes in or out in the last x ms */
-    gdouble accumulated;	/* Accumulated bytes in the last x ms */
-    guint n_packets;		/* Number of total packets received */
-    struct timeval last_time;	/* Timestamp of the last packet to be added */
-    GList *packets;		/* List of packets sizes in or out and
-				 * its sizes. Used to calculate average
-				 * traffic */
   }
-node_t;
+create_node_type_t;
 
-/* Link information */
-typedef struct
-  {
-    guint8 *link_id;		/* pointer to guint8 containing src and
-				 * destination nodes_id's of the link */
-    double average;
-    double accumulated;
-    guint n_packets;
-    gchar *main_prot;		/* Most common protocol for the link */
-    struct timeval last_time;	/* Timestamp of the last packet added */
-    GList *packets;		/* List of packets heard on this link */
-    GList *protocols;		/* List of protocols heard on this link */
-  }
-link_t;
 
-/* Information about each packet heard on the network */
-typedef struct
-  {
-    guint size;			/* Size in bytes of the packet */
-    struct timeval timestamp;	/* Time at which the packet was heard */
-    gchar *prot;		/* Protocol type the packet was carrying */
-    gpointer parent;		/* Pointer to the link or node owner of the 
-				 * packet */
-  }
-packet_t;
-
-/* Information about each protocol heard on a link */
-typedef struct
-  {
-    gchar *name;		/* Name of the protocol */
-    gdouble accumulated;	/* Accumulated traffic in bytes for this protocol */
-    guint n_packets;		/* Number of packets containing this protocol */
-    guint32 color;		/* The color associated with this protocol. It's here
-				 * so that I can use the same structure and lookup functions
-				 * in capture.c and diagram.c */
-  }
-protocol_t;
-
-/* 
- * Exported functions 
- */
-
-void init_capture (void);
-gchar *ip_to_str (const guint8 * ad);
-gchar *ether_to_str_punct (const guint8 * ad, char punct);
-gchar *ether_to_str (const guint8 * ad);
-void update_packet_list (GList * packets, enum packet_belongs belongs_to);
-struct timeval substract_times (struct timeval a, struct timeval b);
+/* Local funtions declarations */
+static void packet_read (pcap_t * pch, gint source,
+			 GdkInputCondition condition);
+static guint8 *get_node_id (const guint8 * packet,
+			    create_node_type_t node_type);
+static guint8 *get_link_id (const guint8 * packet);
+static node_t *create_node (const guint8 * packet,
+			    const guint8 * node_id);
+static link_t *create_link (const guint8 * packet,
+			    const guint8 * link_id);
+static void fill_names (node_t * node, const guint8 * node_id,
+			const guint8 * packet);
+static void dns_ready (gpointer data, gint fd,
+		       GdkInputCondition cond);
+static void update_node (const guint8 * packet,
+			 struct pcap_pkthdr phdr,
+			 const guint8 * node_id);
+static void update_link (const guint8 * packet,
+			 struct pcap_pkthdr phdr,
+			 const guint8 * link_id);
+static gchar *get_main_prot (GList * packets, link_t * link);
+static GList *check_packet (GList * packets,
+			    enum packet_belongs belongs_to);
+static gint prot_freq_compare (gconstpointer a, gconstpointer b);

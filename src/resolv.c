@@ -73,9 +73,11 @@
 #endif /* JTC */
 
 #include <glib.h>		/* JTC */
+#include "globals.h"		/* JTC In order to use ip_to_str and
+				   * ether_to_str */
+/* TODO Maybe I should move those two functions here? */
 #include "eth_resolv.h"		/* JTC name space conflict */
 #include "util.h"
-#include "capture.h"		/* JTC */
 
 #define MAXMANUFLEN	9	/* max vendor name length with ending '\0' */
 #define HASHETHSIZE	1024

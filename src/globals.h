@@ -17,24 +17,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-gboolean numeric;
-gboolean dns;
-gboolean diagram_only;
-gboolean nofade;
-gchar *interface;
-guint32 refresh_period;
-gint diagram_timeout;
-gchar *filter;
+#ifndef ETHERAPE_GLOBALS_H
+#define ETHERAPE_GLOBALS_H
 
-GtkWidget *app1;		/* Pointer to the main app window */
-GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
+#include <gnome.h>
+#include <sys/time.h>
 
-double node_radius_multiplier;	/* used to calculate the radius of the
-				   * displayed nodes. So that the user can
-				   * select with certain precision this
-				   * value, the GUI uses the log10 of the
-				   * multiplier */
-double link_width_multiplier;	/* Same explanation as above */
+/* Enumerations */
 
 typedef enum
   {
@@ -46,38 +35,195 @@ typedef enum
   }
 size_mode_t;
 
+typedef enum
+  {
+    DEFAULT = -1,
+    ETHERNET = 0,
+    IP = 1,
+    TCP = 2,
+    UDP = 3
+  }
+apemode_t;
 
-size_mode_t size_mode;		/* Default mode for node size and
-				   * link width calculation */
+/* Flag to indicate whether a packet belongs to a node or a link */
+/* TODO This has to go, it should be a packet property */
+enum packet_belongs
+  {
+    NODE = 0, LINK = 1
+  };
 
-gchar *node_color, *link_color, *text_color;
-gchar *fontname;
+/* Structures definitions */
 
+/* Capture structures */
+
+typedef struct
+  {
+    guint8 *node_id;		/* pointer to the node identification
+				 * could be an ether or ip address*/
+    GString *name;		/* String with a readable default name of the node */
+    GString *numeric_name;	/* String with a numeric representation of the id */
+    guint32 ip_address;		/* Needed by the resolver */
+    GString *numeric_ip;	/* Ugly hack for ethernet mode */
+    gdouble average;		/* Average bytes in or out in the last x ms */
+    gdouble accumulated;	/* Accumulated bytes in the last x ms */
+    guint n_packets;		/* Number of total packets received */
+    struct timeval last_time;	/* Timestamp of the last packet to be added */
+    GList *packets;		/* List of packets sizes in or out and
+				 * its sizes. Used to calculate average
+				 * traffic */
+  }
+node_t;
+
+/* Link information */
+typedef struct
+  {
+    guint8 *link_id;		/* pointer to guint8 containing src and
+				 * destination nodes_id's of the link */
+    double average;
+    double accumulated;
+    guint n_packets;
+    gchar *main_prot;		/* Most common protocol for the link */
+    struct timeval last_time;	/* Timestamp of the last packet added */
+    GList *packets;		/* List of packets heard on this link */
+    GList *protocols;		/* List of protocols heard on this link */
+  }
+link_t;
+
+/* Information about each packet heard on the network */
+typedef struct
+  {
+    guint size;			/* Size in bytes of the packet */
+    struct timeval timestamp;	/* Time at which the packet was heard */
+    gchar *prot;		/* Protocol type the packet was carrying */
+    gpointer parent;		/* Pointer to the link or node owner of the 
+				 * packet */
+  }
+packet_t;
+
+/* Information about each protocol heard on a link */
+typedef struct
+  {
+    gchar *name;		/* Name of the protocol */
+    gdouble accumulated;	/* Accumulated traffic in bytes for this protocol */
+    guint n_packets;		/* Number of packets containing this protocol */
+    guint32 color;		/* The color associated with this protocol. It's here
+				 * so that I can use the same structure and lookup functions
+				 * in capture.c and diagram.c */
+  }
+protocol_t;
+
+/* Diagram structures */
+
+typedef struct
+  {
+    guint8 *canvas_node_id;
+    node_t *node;
+    GnomeCanvasItem *node_item;
+    GnomeCanvasItem *text_item;
+    GnomeCanvasItem *accu_item;
+    gchar *accu_str;
+    GnomeCanvasGroup *group_item;
+  }
+canvas_node_t;
+
+typedef struct
+  {
+    guint8 *canvas_link_id;
+    link_t *link;
+    GnomeCanvasItem *link_item;
+    GdkColor color;
+  }
+canvas_link_t;
+
+
+/* Variables */
+
+GtkWidget *app1;		/* Pointer to the main app window */
+GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
+struct timeval now;		/* Set both at each packet capture and 
+				 * in each redraw of the diagram */
+GTree *nodes;			/* Has all the nodes heard on the network */
+GTree *links;			/* Has all links heard on the net */
+GList *protocols;		/* Has all protocols heard on the net */
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
 GTree *canvas_links;		/* See above */
-
-gboolean need_reposition;	/* It is set when a canvas_node has been added 
-				 * or deleted */
-
-double averaging_time;		/* Microseconds of time we consider to
-				   * calculate traffic averages */
-double link_timeout_time;	/* After this time
-				   * has passed with no traffic in a 
-				   * link, it disappears */
-double node_timeout_time;	/* After this time has passed 
-				   * with no traffic in/out a 
-				   * node, it disappears */
-struct timeval now;
-
-/* Global variables */
 guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
-apemode_t mode;			/* Mode of operation. Can be
-				   * ETHERNET, IP, UDP or TCP */
-link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
+
+/* Genereral settings */
+
+gboolean numeric;		/* Whether dns lookups are performed */
+gboolean dns;			/* Negation of the above. Is used by dns.c */
+gint diagram_timeout;		/* Descriptor of the diagram timeout function
+				 * (Used to change the refresh_period in the callback */
+apemode_t mode;			/* Mode of operation. Can be
+				 * ETHERNET, IP, UDP or TCP */
+
+/* Diagram settings */
+
+gboolean diagram_only;		/* Do not use text on the diagram */
+gboolean nofade;		/* Do not fade unused links */
+guint32 refresh_period;		/* Time between diagram refreshes */
+double node_radius_multiplier;	/* used to calculate the radius of the
+				 * displayed nodes. So that the user can
+				 * select with certain precision this
+				 * value, the GUI uses the log10 of the
+				 * multiplier */
+double link_width_multiplier;	/* Same explanation as above */
+size_mode_t size_mode;		/* Default mode for node size and
+				 * link width calculation */
+gchar *node_color, *link_color, *text_color;	/* Default colors 
+						 * TODO do we need link_color anymore? */
+gchar *fontname;		/* Font to be used for text display */
+gboolean need_reposition;	/* Force a diagram relayout */
+
+/* Capture settings */
+
+double averaging_time;		/* Microseconds of time we consider to
+				 * calculate traffic averages */
+double link_timeout_time;	/* After this time
+				 * has passed with no traffic in a 
+				 * link, it disappears */
+double node_timeout_time;	/* After this time has passed 
+				 * with no traffic in/out a 
+				 * node, it disappears */
+gchar *interface;		/* Network interface to listen to */
+gchar *filter;			/* Pcap filter to be used */
+
+
+/* Global functions declarations */
+
+/* From capture.c */
+void init_capture (void);
+void update_packet_list (GList * packets, enum packet_belongs belongs_to);
+struct timeval substract_times (struct timeval a, struct timeval b);
+gint node_id_compare (gconstpointer a, gconstpointer b);
+gint link_id_compare (gconstpointer a, gconstpointer b);
+gint protocol_compare (gconstpointer a, gconstpointer b);
+gchar *ip_to_str (const guint8 * ad);
+gchar *ether_to_str (const guint8 * ad);
+gchar *ether_to_str_punct (const guint8 * ad, char punct);
+
+
+
+/* Macros */
+
+/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
+ * byte array, returns the value of the two or four bytes at the pointer.
+ */
+#define pntohs(p)  ((guint16)                       \
+		       ((guint16)*((guint8 *)p+0)<<8|  \
+			   (guint16)*((guint8 *)p+1)<<0))
+
+#define pntohl(p)  ((guint32)*((guint8 *)p+0)<<24|  \
+		       (guint32)*((guint8 *)p+1)<<16|  \
+		       (guint32)*((guint8 *)p+2)<<8|   \
+		       (guint32)*((guint8 *)p+3)<<0)
+
+#endif

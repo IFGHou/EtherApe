@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-18 21:05+0100\n"
+"POT-Creation-Date: 2000-03-19 21:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,63 +14,63 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:152
+#: src/main.c:138
 msgid "Preferences saved"
 msgstr ""
 
-#: src/main.c:166
+#: src/main.c:152
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:169
+#: src/main.c:155
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:172
+#: src/main.c:158
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:172
+#: src/main.c:158
 msgid "<ethernet|ip|tcp|udp>"
 msgstr ""
 
-#: src/main.c:175
+#: src/main.c:161
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:175
+#: src/main.c:161
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:178
+#: src/main.c:164
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:178
+#: src/main.c:164
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:181
+#: src/main.c:167
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:184
+#: src/main.c:170
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:184 src/main.c:187 src/main.c:190
+#: src/main.c:170 src/main.c:173 src/main.c:176
 msgid "color"
 msgstr ""
 
-#: src/main.c:187
+#: src/main.c:173
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:190
+#: src/main.c:176
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:258
+#: src/main.c:244
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
@@ -243,71 +243,71 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#. TODO Write proper assertion code here
-#: src/capture.c:377
-msgid "Reached default in fill_names"
-msgstr ""
-
-#: src/capture.c:390
-msgid "n/a"
-msgstr ""
-
-#: src/capture.c:411
-#, c-format
-msgid "Creating node: %s. Number of nodes %d"
-msgstr ""
-
-#: src/capture.c:440 src/capture.c:445
-#, c-format
-msgid "Creating link: %s-%s. Number of links %d"
-msgstr ""
-
-#: src/capture.c:501
-msgid "Null packet in check_packet"
-msgstr ""
-
-#. TODO Write proper assertion code here
-#: src/capture.c:718
-msgid "Reached default in get_node_id"
-msgstr ""
-
-#: src/capture.c:754
-msgid "Unsopported ape mode in get_link_id"
-msgstr ""
-
-#: src/capture.c:927
+#: src/capture.c:61
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:936
+#: src/capture.c:70
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:947
+#: src/capture.c:81
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:953
+#: src/capture.c:87
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:959
+#: src/capture.c:93
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:984
+#: src/capture.c:118
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:991
+#: src/capture.c:125
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:1010
+#: src/capture.c:144
 msgid "Ape mode not yet supported"
+msgstr ""
+
+#. TODO Write proper assertion code here
+#: src/capture.c:243
+msgid "Reached default in get_node_id"
+msgstr ""
+
+#: src/capture.c:279
+msgid "Unsopported ape mode in get_link_id"
+msgstr ""
+
+#: src/capture.c:293
+msgid "n/a"
+msgstr ""
+
+#: src/capture.c:314
+#, c-format
+msgid "Creating node: %s. Number of nodes %d"
+msgstr ""
+
+#: src/capture.c:343 src/capture.c:348
+#, c-format
+msgid "Creating link: %s-%s. Number of links %d"
+msgstr ""
+
+#. TODO Write proper assertion code here
+#: src/capture.c:497
+msgid "Reached default in fill_names"
+msgstr ""
+
+#: src/capture.c:698
+msgid "Null packet in check_packet"
 msgstr ""

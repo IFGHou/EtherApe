@@ -2,6 +2,9 @@
  * Copyright (C) 2000 Juan Toledo
  * $Id$
  *
+ * This file is mostly a rehash of algorithms found in
+ * packet-*. of ethereal
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,8 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <glib.h>
-#include "capture.h"
+#include "globals.h"
 #include "etypes.h"
 
 extern apemode_t mode;
