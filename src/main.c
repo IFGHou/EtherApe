@@ -188,9 +188,6 @@ main (int argc, char *argv[])
 
   init_menus ();
 
-
-
-
   gui_start_capture ();
 
 

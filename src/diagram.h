@@ -42,12 +42,21 @@ typedef struct
 }
 canvas_link_t;
 
-GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+typedef struct
+{
+  guint8 *node_id;
+  GtkWidget *window;
+}
+node_info_window_t;
+
+GTree *canvas_nodes = NULL;	/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
-GTree *canvas_links;		/* See above */
-GList *legend_protocols;
+GTree *canvas_links = NULL;	/* See above */
+GList *legend_protocols = NULL;
+
+GList *node_info_windows = NULL;
 
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
@@ -82,6 +91,8 @@ static gint check_new_link (guint8 * ether_link,
 static gint update_canvas_links (guint8 * ether_link,
 				 canvas_link_t * canvas_link,
 				 GtkWidget * canvas);
+static void update_node_info_windows (void);
+static void update_node_info_window (node_info_window_t * node_info_window);
 static gchar *get_prot_color (gchar * name);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
@@ -90,3 +101,5 @@ static gint link_item_event (GnomeCanvasItem * item,
 static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
 static guint popup_to (struct popup_data *pd);
+static gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
+static gint node_info_compare (gconstpointer a, gconstpointer b);
