@@ -44,8 +44,7 @@ struct popup_data
 
 
 
-guint
-popup_to (struct popup_data *pd)
+guint popup_to (struct popup_data *pd)
 {
 
   GtkLabel *label;
@@ -229,7 +228,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   GList *protocol_item;
   protocol_t *protocol = NULL;
   GtkArg args[2];
-  gdouble link_size;
+  gdouble link_size, versorx, versory, modulus;
   struct timeval diff;
   guint32 scaledColor;
   gdouble scale;
@@ -268,15 +267,15 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   args[0].name = "x";
   args[1].name = "y";
 
-  points = gnome_canvas_points_new (2);
+  points = gnome_canvas_points_new (3);
 
   /* If either source or destination has disappeared, we hide the link
    * until it can be show again */
   /* TODO: This is a dirty hack. Redo this again later by properly 
    * deleting the link */
 
-  /* We get coords from source node */
-  canvas_node = g_tree_lookup (canvas_nodes, link_id);
+  /* We get coords for the destination node */
+  canvas_node = g_tree_lookup (canvas_nodes, link_id + node_id_length);
   if (!canvas_node)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
@@ -286,21 +285,24 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   points->coords[0] = args[0].d.double_data;
   points->coords[1] = args[1].d.double_data;
 
-  /* And then for the destination node */
-  canvas_node = g_tree_lookup (canvas_nodes, link_id + node_id_length);
+  /* We get coords from source node */
+  canvas_node = g_tree_lookup (canvas_nodes, link_id);
   if (!canvas_node)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
       return FALSE;
     }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
-  points->coords[2] = args[0].d.double_data;
-  points->coords[3] = args[1].d.double_data;
 
-  /* If we got this far, the link can be shown. Make sure it is */
-  gnome_canvas_item_show (canvas_link->link_item);
+  versorx = -(points->coords[1] - args[1].d.double_data);
+  versory = points->coords[0] - args[0].d.double_data;
+  modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
+  link_size = get_link_size (link->average) / 2;
 
-  link_size = get_link_size (link->average);
+  points->coords[2] = args[0].d.double_data + (versorx / modulus) * link_size;
+  points->coords[3] = args[1].d.double_data + (versory / modulus) * link_size;
+  points->coords[4] = args[0].d.double_data - (versorx / modulus) * link_size;
+  points->coords[5] = args[1].d.double_data - (versory / modulus) * link_size;
 
   /* TODO What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
@@ -313,10 +315,15 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (canvas_link->color.green) & 0xFF00) << 8) |
 	((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
+#if 0
       gnome_canvas_item_set (canvas_link->link_item,
 			     "points", points,
 			     "fill_color_rgba", color,
 			     "width_units", link_size, NULL);
+#endif
+      gnome_canvas_item_set (canvas_link->link_item,
+			     "points", points,
+			     "fill_color_rgba", color, NULL);
     }
   else
     {
@@ -328,10 +335,19 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
 	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+#if 0
       gnome_canvas_item_set (canvas_link->link_item, "points", points,
 			     "fill_color_rgba", scaledColor, "width_units",
 			     link_size, NULL);
+#endif
+      gnome_canvas_item_set (canvas_link->link_item,
+			     "points", points,
+			     "fill_color_rgba", scaledColor, NULL);
     }
+
+  /* If we got this far, the link can be shown. Make sure it is */
+  gnome_canvas_item_show (canvas_link->link_item);
+
 
   gnome_canvas_points_unref (points);
 
@@ -393,12 +409,12 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint
-check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
   GnomeCanvasPoints *points;
+  guint i = 0;
 
   GtkArg args[2];
   args[0].name = "x";
@@ -416,19 +432,15 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       new_canvas_link->link = link;
 
       /* We set the lines position using groups positions */
-      points = gnome_canvas_points_new (2);
+      points = gnome_canvas_points_new (3);
 
-      points->coords[0] = points->coords[1] = points->coords[2] =
-	points->coords[3] = 0.0;
+      for (; i <= 5; i++)
+	points->coords[i] = 0.0;
 
-      new_canvas_link->link_item = gnome_canvas_item_new (group,
-							  gnome_canvas_line_get_type
-							  (), "points",
-							  points,
-							  "fill_color",
-							  link_color,
-							  "width_units", 0.0,
-							  NULL);
+      new_canvas_link->link_item
+	= gnome_canvas_item_new (group,
+				 gnome_canvas_polygon_get_type (),
+				 "points", points, "fill_color", "tan", NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_link->link_item));
 
 
@@ -454,8 +466,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint
-check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -595,8 +606,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint
-update_diagram (GtkWidget * canvas)
+guint update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];

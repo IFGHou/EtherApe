@@ -65,7 +65,7 @@ get_packet_prot (const guint8 * p)
 	i++;
       g_strfreev (tokens);
     }
-  for (i; i <= STACK_SIZE; i++)
+  for (; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
 
   /* g_message ("Protocol stack is %s", prot->str); */
@@ -308,7 +308,7 @@ get_tcp (void)
     {
       guint i = 0;
       tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
-      for (i; i <= TCP_SERVICES + 1; i++)
+      for (; i <= TCP_SERVICES + 1; i++)
 	g_tree_insert (tcp_services,
 		       &(tcp_services_table[i].number),
 		       &(tcp_services_table[i]));
@@ -343,7 +343,7 @@ get_udp (void)
     {
       guint i = 0;
       udp_services = g_tree_new ((GCompareFunc) udp_compare);
-      for (i; i <= UDP_SERVICES + 1; i++)
+      for (; i <= UDP_SERVICES + 1; i++)
 	g_tree_insert (udp_services,
 		       &(udp_services_table[i].number),
 		       &(udp_services_table[i]));
