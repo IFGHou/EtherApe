@@ -118,3 +118,7 @@ gchar *s = N_("Accu. Inbound");
 gchar *s = N_("test label");
 gchar *s = N_("Inst. Outbound");
 gchar *s = N_("test label");
+gchar *s = N_("EtherApe: Protocols");
+gchar *s = N_("Protocol");
+gchar *s = N_("Inst Traffic");
+gchar *s = N_("Accum Traffic");

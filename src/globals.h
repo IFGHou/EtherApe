@@ -201,6 +201,36 @@ typedef struct
 }
 protocol_t;
 
+/* Diagram structures */
+
+typedef struct
+{
+  guint8 *canvas_node_id;
+  node_t *node;
+  GnomeCanvasItem *node_item;
+  GnomeCanvasItem *text_item;
+  GnomeCanvasGroup *group_item;
+  GdkColor color;
+  gboolean is_new;
+  gboolean shown;		/* True if it is to be displayed. */
+}
+canvas_node_t;
+
+typedef struct
+{
+  guint8 *canvas_link_id;
+  link_t *link;
+  GnomeCanvasItem *link_item;
+  GdkColor color;
+}
+canvas_link_t;
+
+GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+				 * separate data from presentation: that is, we need to
+				 * keep a list of CanvasItems, but we do not want to keep
+				 * that info on the nodes tree itself */
+GTree *canvas_links;		/* See above */
+
 /* Variables */
 
 GladeXML *xml;
@@ -258,6 +288,8 @@ gint node_limit;		/* Max number of nodes to show. If <0 it's not
 				 * limited */
 gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
 				 * for a node, it disappears from the diagram */
+GList *legend_protocols;
+
 
 /* Capture settings */
 
@@ -310,6 +342,7 @@ void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
 void set_appbar_status (gchar * str);
 void delete_gui_protocols (void);
+gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
 
 /* From menus.c */
 void init_menus (void);
@@ -320,6 +353,11 @@ void gui_start_capture (void);
 void gui_pause_capture (void);
 void gui_stop_capture (void);
 
+/* From info_windows.c */
+guint update_info_windows (void);
+void update_protocols_window (void);
+void update_node_info_windows (void);
+void create_node_info_window (canvas_node_t * canvas_node);
 
 /* Macros */
 

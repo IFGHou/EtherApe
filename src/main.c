@@ -186,6 +186,9 @@ main (int argc, char *argv[])
 					widget,
 					(GDestroyNotify) destroying_timeout);
 
+  /* This other timeout makes sure that the info windows are updated */
+  g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
+
   init_menus ();
 
   gui_start_capture ();
