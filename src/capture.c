@@ -1413,8 +1413,8 @@ update_node_names (node_t * node)
     case ETHERNET:
       set_node_name (node,
 		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;"
-		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;"
-		     "ETH_II,n;802.2,n;802.3,n");
+		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;"
+		     "IPX-SAP,n;ARP,n;" "ETH_II,n;802.2,n;802.3,n");
       break;
     case FDDI:
       set_node_name (node,
