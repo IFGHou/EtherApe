@@ -35,8 +35,8 @@ libpcap, a packet capture and filtering library.
 .PP
 These options can be supplied to the command:
 .TP
-.BR "-m, --mode " "<ethernet|ip|tcp|udp>"
-set mode of operation
+.BR "-m, --mode " "<ethernet|fddi|ip|tcp>"
+set mode of operation (default is lowest level for current device)
 .TP
 .BR "-i, --interface " "<interface name>"
 set interface to listen to
@@ -74,7 +74,7 @@ if there is one. If not, it will
 try to reverse lookup the ip address.
 
 .B IMPORTANT!
-It is particularly important when running etherape
+It is particularly important when running in ethernet mode
 to have the ethernet address of your router in  /etc/ethers.
 If not, your router will have as name whatever IP address
 it was forwarding traffic from when it was first heard.
