@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-04-09 12:19+0200\n"
+"POT-Creation-Date: 2000-04-10 12:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -72,32 +72,36 @@ msgstr "ne pas afficher d'identification pour les noeuds"
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
-# src/main.c:76
 #: src/main.c:57
+msgid "don't move nodes around"
+msgstr ""
+
+# src/main.c:76
+#: src/main.c:59
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:57 src/main.c:59 src/main.c:61
+#: src/main.c:59 src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:79
-#: src/main.c:59
+#: src/main.c:61
 msgid "set the link color"
 msgstr "définir la couleur des liaisons"
 
 # src/main.c:82
-#: src/main.c:61
+#: src/main.c:63
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
 # src/main.c:118
-#: src/main.c:127
+#: src/main.c:129
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:267
+#: src/main.c:271
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
@@ -475,7 +479,7 @@ msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1034
+#: src/capture.c:1045
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 

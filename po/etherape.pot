@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-09 17:59+0200\n"
+"POT-Creation-Date: 2000-04-10 12:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,26 +59,30 @@ msgid "do not fade old links"
 msgstr ""
 
 #: src/main.c:57
-msgid "set the node color"
-msgstr ""
-
-#: src/main.c:57 src/main.c:59 src/main.c:61
-msgid "color"
+msgid "don't move nodes around"
 msgstr ""
 
 #: src/main.c:59
-msgid "set the link color"
+msgid "set the node color"
+msgstr ""
+
+#: src/main.c:59 src/main.c:61 src/main.c:63
+msgid "color"
 msgstr ""
 
 #: src/main.c:61
+msgid "set the link color"
+msgstr ""
+
+#: src/main.c:63
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:127
+#: src/main.c:129
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/main.c:267
+#: src/main.c:271
 msgid "Preferences saved"
 msgstr ""
 
@@ -396,6 +400,6 @@ msgstr ""
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1049
+#: src/capture.c:1045
 msgid "Null packet in check_packet"
 msgstr ""
