@@ -722,14 +722,26 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 
   if (protocol)
-    canvas_node->color = protocol->color;
+    {
+      canvas_node->color = protocol->color;
 
-  gnome_canvas_item_set (canvas_node->node_item,
-			 "x1", -node_size / 2,
-			 "x2", node_size / 2,
-			 "y1", -node_size / 2,
-			 "y2", node_size / 2,
-			 "fill_color_gdk", &(canvas_node->color), NULL);
+      gnome_canvas_item_set (canvas_node->node_item,
+			     "x1", -node_size / 2,
+			     "x2", node_size / 2,
+			     "y1", -node_size / 2,
+			     "y2", node_size / 2,
+			     "fill_color_gdk", &(canvas_node->color), NULL);
+    }
+  else
+    {
+      guint32 black = 0x000000ff;
+      gnome_canvas_item_set (canvas_node->node_item,
+			     "x1", -node_size / 2,
+			     "x2", node_size / 2,
+			     "y1", -node_size / 2,
+			     "y2", node_size / 2,
+			     "fill_color_rgba", black, NULL);
+    }
 
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
@@ -1114,8 +1126,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       else
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
-  else
-    g_warning (_("Null link->main_prot in update_canvas_links"));
 
   args[0].name = "x";
   args[1].name = "y";
@@ -1162,32 +1172,45 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   /* TODO What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
   if (protocol)
-    canvas_link->color = protocol->color;
-
-  if (pref.nofade)
     {
-      guint32 color;
-      color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
-	(((int) (canvas_link->color.green) & 0xFF00) << 8) |
-	((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
-      gnome_canvas_item_set (canvas_link->link_item,
-			     "points", points,
-			     "fill_color_rgba", color, NULL);
+      canvas_link->color = protocol->color;
+
+      if (pref.nofade)
+	{
+	  guint32 color;
+	  color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
+	    (((int) (canvas_link->color.green) & 0xFF00) << 8) |
+	    ((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
+	  gnome_canvas_item_set (canvas_link->link_item,
+				 "points", points,
+				 "fill_color_rgba", color, NULL);
+	}
+      else
+	{
+	  /* scale color down to 10% at link timeout */
+	  scale =
+	    pow (0.10,
+		 (diff.tv_sec * 1000.0 +
+		  diff.tv_usec / 1000) / pref.link_timeout_time);
+	  scaledColor =
+	    (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
+	    (((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
+	    ((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+	  gnome_canvas_item_set (canvas_link->link_item, "points", points,
+				 "fill_color_rgba", scaledColor, NULL);
+	}
     }
+
   else
     {
-      /* scale color down to 10% at link timeout */
-      scale =
-	pow (0.10,
-	     (diff.tv_sec * 1000.0 +
-	      diff.tv_usec / 1000) / pref.link_timeout_time);
-      scaledColor =
-	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
-	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
-	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+      guint32 black = 0x000000ff;
       gnome_canvas_item_set (canvas_link->link_item, "points", points,
-			     "fill_color_rgba", scaledColor, NULL);
+			     "fill_color_rgba", black, NULL);
     }
+
+
+
+
 
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
