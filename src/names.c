@@ -318,19 +318,13 @@ get_nbss_name (void)
 
   mesg_type = *(guint8 *) (p + offset);
   length = pntohs ((p + offset + 2));
+  
+  offset += 4; 
 
   if (mesg_type == SESSION_REQUEST)
     {
-#if 0
-      if (dir == INBOUND)
-	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
-      else
-	ethereal_nbns_name (p, offset + 4 + NETBIOS_NAME_LEN * 2 + 2,
-			    offset + 4 + NETBIOS_NAME_LEN * 2 + 2, name,
-			    &name_type);
-#endif
       name_len =
-	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
+	ethereal_nbns_name (p, offset, offset, name, &name_type);
       if (dir == OUTBOUND)
 	ethereal_nbns_name (p, offset + name_len, offset + name_len, name,
 			    &name_type);
