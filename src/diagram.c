@@ -60,6 +60,8 @@ init_diagram ()
   gtk_spin_button_set_value (spin, averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
+  gtk_spin_button_set_value (spin, gui_node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
   gtk_spin_button_set_value (spin, node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
@@ -109,6 +111,11 @@ init_diagram ()
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_node_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "gui_node_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_gui_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
@@ -212,6 +219,10 @@ update_diagram (GtkWidget * canvas)
     }
 
   /* Deletes all nodes and updates traffic values */
+  /* TODO To reduce CPU usage, I could just as well update each specific
+   * node in update_canvas_nodes and create a new timeout function that would
+   * make sure that old nodes get deleted by calling update_nodes, but
+   * not as often as with diagram_refresh_period */
   update_nodes ();
 
   /* Check if there are any new nodes */
@@ -433,6 +444,9 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
 
+  if (!node || !node->node_id)
+    return FALSE;
+
   if (display_node (node) && !g_tree_lookup (canvas_nodes, node_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
@@ -537,7 +551,10 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       protocol_item = g_list_find_custom (protocols[stack_level],
 					  node->main_prot[stack_level],
 					  protocol_compare);
-      protocol = protocol_item->data;
+      if (protocol_item)
+	protocol = protocol_item->data;
+      else
+	g_warning (_("Main node protocol not found in update_canvas_nodes"));
     }
 
   switch (node_size_variable)
@@ -600,18 +617,23 @@ static gboolean
 display_node (node_t * node)
 {
   struct timeval diff;
+  gdouble timeout;
 
   if (!node)
     return FALSE;
 
   diff = substract_times (now, node->last_time);
 
+  /* There are problems if a canvas_node is deleted if it still
+   * has packets, so we have to check that as well */
+
   /* Remove canvas_node if node is too old */
-  if (IS_OLDER (diff, node_timeout_time) && node_timeout_time)
+  if (IS_OLDER (diff, gui_node_timeout_time) && gui_node_timeout_time
+      && !node->n_packets)
     return FALSE;
 
 #if 1
-  if ((node_timeout_time == 1) && !node->n_packets)
+  if ((gui_node_timeout_time == 1) && !node->n_packets)
     g_my_critical ("Impossible situation in display node");
 #endif
 
@@ -935,7 +957,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       protocol_item = g_list_find_custom (protocols[stack_level],
 					  link->main_prot[stack_level],
 					  protocol_compare);
-      protocol = protocol_item->data;
+      if (protocol_item)
+	protocol = protocol_item->data;
+      else
+	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
   args[0].name = "x";
   args[1].name = "y";
