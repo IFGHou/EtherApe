@@ -23,6 +23,7 @@
 
 #include "globals.h"
 #include "info_windows.h"
+#include <math.h>
 
 guint
 update_info_windows (void)
