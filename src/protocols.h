@@ -18,6 +18,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include "tcpudp.h"
+
 /* ETHERNET */
 
 #ifndef __ETYPES_H__
@@ -105,3 +108,5 @@ static void get_eth_type (void);
 static void get_eth_II (etype_t etype);
 
 static void get_ip (void);
+static void get_tcp (void);
+static gint tcp_compare (gconstpointer a, gconstpointer b);

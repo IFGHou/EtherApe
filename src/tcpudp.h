@@ -18,7 +18,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#define TCP_SERVICES     185
+#define TCP_SERVICES     186
 typedef enum
 {
   TCP_TCPMUX = 1,		/* TCP PORT SERVICE MULTIPLEXER */
@@ -134,6 +134,7 @@ typedef enum
   TCP_MYSQL = 3306,		/* MYSQL */
   TCP_RFE = 5002,		/* RADIO FREE ETHERNET */
   TCP_CFENGINE = 5308,		/* CFENGINE */
+  TCP_XWINDOWS = 6000,
   TCP_AFS3_FILESERVER = 7000,	/* FILE SERVER ITSELF */
   TCP_AFS3_CALLBACK = 7001,	/* CALLBACKS TO CACHE MANAGERS */
   TCP_AFS3_PRSERVER = 7002,	/* USERS & GROUPS DATABASE */
@@ -355,9 +356,9 @@ typedef struct
   tcp_type_t number;
   gchar *name;
 }
-service_t;
+tcp_service_t;
 
-service_t tcp_services_table[TCP_SERVICES + 1] = {
+tcp_service_t tcp_services_table[TCP_SERVICES + 1] = {
   {TCP_TCPMUX, "TCPMUX"},
   {TCP_ECHO, "ECHO"},
   {TCP_DISCARD, "DISCARD"},
@@ -471,6 +472,7 @@ service_t tcp_services_table[TCP_SERVICES + 1] = {
   {TCP_MYSQL, "MYSQL"},
   {TCP_RFE, "RFE"},
   {TCP_CFENGINE, "CFENGINE"},
+  {TCP_XWINDOWS, "XWINDOWS"},
   {TCP_AFS3_FILESERVER, "AFS3_FILESERVER"},
   {TCP_AFS3_CALLBACK, "AFS3_CALLBACK"},
   {TCP_AFS3_PRSERVER, "AFS3_PRSERVER"},
@@ -546,7 +548,14 @@ service_t tcp_services_table[TCP_SERVICES + 1] = {
   {TCP_DUMMY, "DUMMY"}
 };
 
-service_t udp_services_table[UDP_SERVICES + 1] = {
+typedef struct
+{
+  udp_type_t number;
+  gchar *name;
+}
+udp_service_t;
+
+udp_service_t udp_services_table[UDP_SERVICES + 1] = {
   {UDP_ECHO, "ECHO"},
   {UDP_DISCARD, "DISCARD"},
   {UDP_DAYTIME, "DAYTIME"},

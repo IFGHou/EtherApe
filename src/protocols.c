@@ -21,11 +21,7 @@
  */
 
 #include "globals.h"
-#if 0
-#include "etypes.h"
-#endif
 #include "protocols.h"
-#include "tcpudp.h"
 
 static GString *prot;
 static const guint8 *packet;
@@ -210,6 +206,7 @@ get_ip (void)
       break;
     case IP_PROTO_TCP:
       prot = g_string_append (prot, "/TCP");
+      get_tcp ();
       break;
     case IP_PROTO_UDP:
       prot = g_string_append (prot, "/UDP");
@@ -298,41 +295,75 @@ get_ip (void)
   return;
 }
 
-#if 0
-static const value_string proto_vals[] = { {IP_PROTO_ICMP, "ICMP"},
-{IP_PROTO_IGMP, "IGMP"},
-{IP_PROTO_EIGRP, "IGRP/EIGRP"},
-{IP_PROTO_TCP, "TCP"},
-{IP_PROTO_UDP, "UDP"},
-{IP_PROTO_OSPF, "OSPF"},
-{IP_PROTO_RSVP, "RSVP"},
-{IP_PROTO_AH, "AH"},
-{IP_PROTO_GRE, "GRE"},
-{IP_PROTO_ESP, "ESP"},
-{IP_PROTO_IPV6, "IPv6"},
-{IP_PROTO_PIM, "PIM"},
-{IP_PROTO_VINES, "VINES"},
-{0, NULL}
-};
-typedef struct _e_ip
+static void
+get_tcp (void)
 {
-  guint8 ip_v_hl;		/* combines ip_v and ip_hl */
-  guint8 ip_tos;
-  guint16 ip_len;
-  guint16 ip_id;
-  guint16 ip_off;
-  guint8 ip_ttl;
-  guint8 ip_p;
-  guint16 ip_sum;
-  guint32 ip_src;
-  guint32 ip_dst;
-}
-e_ip;
+  static GTree *tcp_services = NULL;
+  tcp_service_t *service;
+  tcp_type_t src_port, dst_port;
+  gchar *str;
 
-/* Avoids alignment problems on many architectures. */
-memcpy (&iph, &pd[offset], sizeof (e_ip));
-iph.ip_len = ntohs (iph.ip_len);
-iph.ip_id = ntohs (iph.ip_id);
-iph.ip_off = ntohs (iph.ip_off);
-iph.ip_sum = ntohs (iph.ip_sum);
+  if (!tcp_services)
+    {
+      guint i = 0;
+      tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
+      for (i; i <= TCP_SERVICES + 1; i++)
+	g_tree_insert (tcp_services,
+		       &(tcp_services_table[i].number),
+		       &(tcp_services_table[i]));
+    }
+
+  src_port = pntohs (packet + l3_offset + 20);
+  dst_port = pntohs (packet + l3_offset + 22);
+
+  if (!(service = g_tree_lookup (tcp_services, &src_port)))
+    service = g_tree_lookup (tcp_services, &dst_port);
+
+  if (!service)
+    {
+      prot = g_string_append (prot, "/TCP_UNKNOWN");
+      return;
+    }
+  str = g_strdup_printf ("/%s", service->name);
+  prot = g_string_append (prot, str);
+  g_free (str);
+  return;
+}
+
+#if 0
+typedef struct _e_tcphdr
+{
+  guint16 th_sport;
+  guint16 th_dport;
+  guint32 th_seq;
+  guint32 th_ack;
+  guint8 th_off_x2;		/* combines th_off and th_x2 */
+  guint8 th_flags;
+#define TH_FIN  0x01
+#define TH_SYN  0x02
+#define TH_RST  0x04
+#define TH_PUSH 0x08
+#define TH_ACK  0x10
+#define TH_URG  0x20
+  guint16 th_win;
+  guint16 th_sum;
+  guint16 th_urp;
+}
+e_tcphdr;
 #endif
+
+/* Comparison function to sort tcp/udp services port number */
+static gint
+tcp_compare (gconstpointer a, gconstpointer b)
+{
+  tcp_type_t port_a, port_b;
+
+  port_a = *(tcp_type_t *) a;
+  port_b = *(tcp_type_t *) b;
+
+  if (port_a > port_b)
+    return 1;
+  if (port_a < port_b)
+    return -1;
+  return 0;
+}				/* tcp_compare */

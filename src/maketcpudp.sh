@@ -1,5 +1,23 @@
 #!/bin/sh
 
+# Etherape
+# Copyright (C) 2000 Juan Toledo
+# \$Id$
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 export O_FILE=tcpudp.h
 
 cat > $O_FILE <<-EOF
@@ -87,9 +105,9 @@ cat >> $O_FILE <<-EOF
 	{
 	  tcp_type_t number;
 	  gchar *name;
-	} service_t;
+	} tcp_service_t;
 	
-	service_t tcp_services_table [TCP_SERVICES+1] = {
+	tcp_service_t tcp_services_table [TCP_SERVICES+1] = {
 EOF
 
 cat /tmp/tcp.h | \
@@ -100,8 +118,14 @@ echo "{TCP_DUMMY, \"DUMMY\"} };" >> $O_FILE
 
 
 cat >> $O_FILE <<-EOF
+
+	typedef struct
+	{
+	  udp_type_t number;
+	  gchar *name;
+	} udp_service_t;
 	
-	service_t udp_services_table [UDP_SERVICES+1] = {
+	udp_service_t udp_services_table [UDP_SERVICES+1] = {
 EOF
 
 cat /tmp/udp.h | \
