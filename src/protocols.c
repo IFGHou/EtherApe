@@ -437,18 +437,24 @@ load_services (void)
   tcp_service_t *tcp_service;
   udp_service_t *udp_service;
   guint i;
+  char filename[PATH_MAX];
 
   tcp_type_t port_number;	/* udp and tcp are the same */
 
-  if (!(services = fopen (CONFDIR "/services", "r")))
+  strcpy(filename, CONFDIR "/services");
+  if (!(services = fopen (filename, "r")))
     {
-      g_my_critical (_
+      strcpy(filename, "/etc/services");
+      if (!(services = fopen (filename, "r")))
+        {
+          g_my_critical (_
 		     ("Failed to open %s. No TCP or UDP services will be recognized"),
-CONFDIR "/services");
+filename);
       return;
+	}
     }
 
-  g_my_info (_("Reading TCP and UDP services from %s"), CONFDIR "/services");
+  g_my_info (_("Reading TCP and UDP services from %s"), filename);
 
   tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
   udp_services = g_tree_new ((GCompareFunc) udp_compare);
