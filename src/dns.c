@@ -1,9 +1,4 @@
 /*
-   Non-blocking DNS portion --
-   Copyright (C) 1998 by Simon Kirby <sim@neato.org>
-   Released under GPL, as above.
- */
-/*
    Etherape
    Copyright (C) 2000 Juan Toledo
 
@@ -21,11 +16,20 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+/*
+    Non-blocking DNS portion --
+    Copyright (C) 1998 by Simon Kirby <sim@neato.org>
+    Released under GPL, as above.
+
+    Original code copied from mtr (www.bitwizard.nl/mtr)
+    Copyright (C) 1997,1998  Matt Kimball
+*/
 
 #include <config.h>
 #include <sys/types.h>
 #include <time.h>
 #include <sys/time.h>
+#include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <sys/socket.h>
@@ -1312,7 +1316,7 @@ parserespacket (byte * s, int l)
 		    ("Resolver error: Specified rdata length exceeds packet size.");
 		  return;
 		}
-	      if (datatype == qdatatype)
+	      if (datatype == qdatatype || datatype == T_CNAME)
 		{
 		  if (debug)
 		    {
@@ -1356,6 +1360,7 @@ parserespacket (byte * s, int l)
 			  }
 			break;
 		      case T_PTR:
+		      case T_CNAME:
 			*namestring = '\0';
 			r = dn_expand (s, s + l, c, namestring, MAXDNAME);
 			if (r == -1)
@@ -1376,6 +1381,11 @@ parserespacket (byte * s, int l)
 			    restell ("Resolver error: Domain name too long.");
 			    failrp (rp);
 			    return;
+			  }
+			if (datatype == T_CNAME)
+			  {
+			    strcpy (stackstring, namestring);
+			    break;
 			  }
 			if (!rp->hostname)
 			  {
