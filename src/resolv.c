@@ -1449,7 +1449,7 @@ get_manuf_name (u_char * addr)
  * a host name, to a numeric IP address.  Return TRUE if we succeed and
  * set "*addrp" to that numeric IP address; return FALSE if we fail.
  * Used more in the dfilter parser rather than in packet dissectors */
-gboolean 
+gboolean
 get_host_ipaddr (const char *host, guint32 * addrp)
 {
   struct in_addr ipaddr;
@@ -1487,7 +1487,7 @@ get_host_ipaddr (const char *host, guint32 * addrp)
  * Return TRUE if we succeed and set "*addrp" to that numeric IP address;
  * return FALSE if we fail.
  */
-gboolean 
+gboolean
 get_host_ipaddr6 (const char *host, struct e_in6_addr * addrp)
 {
   struct hostent *hp;
