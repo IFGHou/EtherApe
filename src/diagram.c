@@ -1153,10 +1153,13 @@ popup_to (struct popup_data *pd)
 
   /* This function may be called even before the node has a name
    * If that happens, return */
-  if (!(pd->canvas_node->node->name))
+  if (!(pd->canvas_node) || !(pd->canvas_node->node)
+      || !(pd->canvas_node->node->name)
+      || !(pd->canvas_node->node->numeric_name))
     return FALSE;
 
-  if (mode == ETHERNET && pd->canvas_node->node->ip_address)
+  if (mode == ETHERNET && pd->canvas_node->node->ip_address
+      && pd->canvas_node->node->numeric_ip)
     {
       str = g_strdup_printf ("%s (%s, %s)",
 			     pd->canvas_node->node->name->str,
