@@ -512,18 +512,16 @@ msgid "St_op"
 msgstr "St_op"
 
 #: src/glade-strings:29
-#, fuzzy
 msgid "Show or hide the protocols window"
-msgstr "Verbergen / weergeven werkbalk"
+msgstr "Protocolvenster verbergen / weergeven"
 
 #: src/glade-strings:30
-#, fuzzy
 msgid "_Protocols"
 msgstr "Protocollen"
 
 #: src/glade-strings:31
 msgid "Show or hide the toolbar"
-msgstr "Verbergen / weergeven werkbalk"
+msgstr "Werkbalk verbergen / weergeven"
 
 #: src/glade-strings:32
 msgid "_Toolbar"
@@ -570,9 +568,8 @@ msgid "Display the protocols window"
 msgstr ""
 
 #: src/glade-strings:46
-#, fuzzy
 msgid "Prot."
-msgstr "Protocol"
+msgstr "Prot."
 
 #: src/glade-strings:47
 msgid "Protocols"
@@ -587,7 +584,8 @@ msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
-"Een grafisch netwerkanalyse programma\n"
+"Een netwerkanalyseprogramma die de informatie\n"
+"intuïtief en overzichtelijk grafisch weergeeft.\n"
 "Web: http://etherape.sourceforge.net"
 
 #: src/glade-strings:51
