@@ -1080,7 +1080,7 @@ update_node_names (node_t * node)
       set_node_name (node, "LLC,SOLVED;IP,n");
       break;
     case IP:
-      set_node_name (node, "IP,n");
+      set_node_name (node, "NBSS,SOLVED;IP,n");
       break;
     case TCP:
       set_node_name (node, "TCP,n");
