@@ -177,7 +177,7 @@ init_capture (void)
 	error = TRUE;
       l3_offset = 4;
       break;
-#ifdef L_LINUX_SLL
+#ifdef DLT_LINUX_SLL
     case L_LINUX_SLL:		/* Linux cooked sockets (I believe this
 				 * is used for ISDN on linux) */
       g_my_info (_("Link type is Linux cooked sockets"));
@@ -1021,8 +1021,8 @@ update_node_packets (guint8 * node_id, node_t * node, gpointer pointer)
 
   if (node->packets)
     update_packet_list (node->packets, (gpointer) node, NODE);
-   
-   return FALSE;
+
+  return FALSE;
 }				/* update_node_packets */
 
 

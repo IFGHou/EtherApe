@@ -71,7 +71,7 @@ get_packet_prot (const guint8 * p, guint len)
       prot = g_string_append (prot, "NULL/IP");
       get_ip ();
       break;
-#ifdef L_LINUX_SLL
+#ifdef DLT_LINUX_SLL
     case L_LINUX_SLL:
       prot = g_string_append (prot, "LINUX-SLL");
       get_linux_sll_type ();
@@ -192,6 +192,7 @@ get_eth_802_3 (ethhdrtype_t ethhdr_type)
       get_ipx ();
       break;
     default:
+      break;
     }
 }				/* get_eth_802_3 */
 
