@@ -1,0 +1,19 @@
+In order to compile from CVS you will need additional development tools.
+Using previous or later versions may or may not work.
+
+autoconf, version 2.53
+automake, version 1.4
+gettext, version 0.11.5
+
+To compile, first run 
+
+./autogen.sh
+
+and ignore messages regarding aclocal and gettext.h. Then you may build the package using
+
+make
+
+Good luck! ;-)
+
+Juan.
+
