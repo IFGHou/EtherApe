@@ -108,6 +108,7 @@ get_llc_name (void)
 static void
 get_eth_name (void)
 {
+  gchar *numeric = NULL, *solved = NULL;
 
   if (dir == INBOUND)
     id = p + offset;
@@ -116,7 +117,14 @@ get_eth_name (void)
 
   id_length = 6;
 
-  add_name (ether_to_str (id), get_ether_name (id));
+  numeric = ether_to_str (id);
+  solved = get_ether_name (id);
+
+  /* get_ether_name will return an ethernet address with
+   * the first three numbers substituted with the manufacter
+   * if it cannot find an /etc/ethers entry */
+
+  add_name (numeric, solved);
 
   level++;
   offset += 14;
@@ -190,6 +198,9 @@ get_tcp_name (void)
       g_memmove (id_buffer + 4, &port, 2);
     }
 
+  /* TODO I should substitute these for a g_snprintf
+   * and save myself so many allocations */
+
   numeric_name = g_string_new (ip_to_str (id_buffer));
   numeric_name = g_string_append_c (numeric_name, ':');
   str = g_strdup_printf ("%d", *(guint16 *) (id_buffer + 4));
@@ -237,7 +248,7 @@ get_nbss_name (void)
   guint i = 0;
   guint8 mesg_type;
   guint16 length;
-  gchar *resolved_name, *numeric_name;
+  gchar *numeric_name = NULL;
   gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
   int name_type;		/* TODO I hate to use an int here, while I have been
 				   * using glib data types all the time. But I just don't
@@ -251,24 +262,23 @@ get_nbss_name (void)
 
   if (mesg_type == SESSION_REQUEST)
     {
-      if (dir == OUTBOUND)
+      if (dir == INBOUND)
 	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
       else
 	ethereal_nbns_name (p, offset + 4 + NETBIOS_NAME_LEN * 2 + 2,
 			    offset + 4 + NETBIOS_NAME_LEN * 2 + 2, name,
 			    &name_type);
 
-      /* We just want the name */
+      /* We just want the name, not the space padding behind it */
 
-      for (; i <= 15 && name[i] != ' '; i++);
+      for (; i <= NETBIOS_NAME_LEN && name[i] != ' '; i++);
       name[i] = '\0';
 
-      resolved_name = g_strdup (name);
-      numeric_name = g_strdup_printf ("%s <%d> (%s)", name, name_type,
-				      get_netbios_host_type (name_type));
+      numeric_name =
+	g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
+			 get_netbios_host_type (name_type));
 
-      add_name (numeric_name, resolved_name);
-      g_free (resolved_name);
+      add_name (numeric_name, name);
       g_free (numeric_name);
 
     }
