@@ -434,21 +434,30 @@ gtp3c		2123/tcp
 gtp3c		2123/udp
 gtp3u		2152/tcp
 gtp3u		2152/udp
+kali		2213/tcp
+kali		2213/udp
 cops		3288/tcp
 gtp		3386/tcp
 gtp		3386/udp
 icq		4000/udp
 aim		4099/tcp # aim IM transmit
+napster-data	4444/tcp # p2p napster transfer
 yahoo-mes	5000/tcp # yahoo messenger in
 yahoo-mes	5001/tcp # yahoo messenger out
 yhoo		5050/tcp
 sip		5060/tcp
 sip		5060/udp
 aim		5190/tcp # aim IM receive
+napster-data	5555/tcp # p2p napster transfer
 gnutella	6346/tcp 
-napster		6699/tcp
+napster-data	6688/tcp # p2p napster transfer
+napster-data	6699/tcp # p2p napster transfer
+napster-data	6700/tcp # p2p napster transfer
 rx-afs-backups	7021/udp
 real		7070/tcp # real audio-video
+napster		7777/tcp # tipical napster server port
+irdmi		8000/tcp 
+napster		8888/tcp # tipical napster server port
 wsp		9000/udp
 wtp_wsp		9001/udp
 wtls_wsp	9002/udp
