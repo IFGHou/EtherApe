@@ -220,7 +220,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 
 /* Fills in the strings that characterize the node */
 void
-fill_names (node_t * node, const guint8 * node_id)
+fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 {
   switch (mode)
     {
@@ -229,7 +229,30 @@ fill_names (node_t * node, const guint8 * node_id)
       if (numeric)
 	node->name = g_string_new (ether_to_str (node_id));
       else
-	 node->name = g_string_new (get_ether_name (node_id));
+	{
+	  /* Code to display the IP address if host is not found
+	   * in /etc/ethers. It is ugly, but that's because 
+	   * this is not right in the first place. */
+	  /* We look for the ip side only if it is an IP packet and 
+	   * the host is not found in /etc/ethers */
+	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
+	      (packet[12] == 0x08) && (packet[13] == 0x00))
+	    {
+	      const guint8 *ip_address;
+	      /* We do not know whether this was a source or destination
+	       * node, so we have to check it out */
+	      if (!node_id_compare (node_id, packet + 6))
+		ip_address = packet + 26; /* SRC packet */
+	      else
+		ip_address = packet + 30;
+	      if (dns)
+		node->name = g_string_new (get_hostname (*(guint32 *) ip_address));
+	      else
+		node->name = g_string_new (ip_to_str (ip_address));
+	    }
+	  else
+	    node->name = g_string_new (get_ether_name (node_id));
+	}
       break;
     case IP:
       node->numeric_name = g_string_new (ip_to_str (node_id));
@@ -250,17 +273,17 @@ fill_names (node_t * node, const guint8 * node_id)
 					    g_strdup_printf ("%d",
 					       *(guint16 *) (node_id + 4)));
       if (dns)
-	 node->name = g_string_new (get_hostname (*(guint32 *) node_id));
-       else
-	 node->name = g_string_new (ip_to_str (node_id));
+	node->name = g_string_new (get_hostname (*(guint32 *) node_id));
+      else
+	node->name = g_string_new (ip_to_str (node_id));
       node->name = g_string_append_c (node->name, ':');
       if (numeric)
-	 node->name = g_string_append (node->name,
-				       g_strdup_printf ("%d",
-							*(guint16 *) (node_id + 4)));
-       else 
-	 node->name = g_string_append (node->name,
-				       get_tcp_port (*(guint16 *)(node_id +4)));
+	node->name = g_string_append (node->name,
+				      g_strdup_printf ("%d",
+					       *(guint16 *) (node_id + 4)));
+      else
+	node->name = g_string_append (node->name,
+				 get_tcp_port (*(guint16 *) (node_id + 4)));
 
 
       break;
@@ -286,7 +309,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
 
   node->node_id = g_memdup (node_id, node_id_length);
 
-  fill_names (node, node_id);
+  fill_names (node, node_id, packet);
 
   node->average = 0;
   node->n_packets = 0;
@@ -390,11 +413,11 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   packet = (packet_t *) packets->data;
 
   if (!packet)
-     {
-	g_warning (_("Null packet in check_packet"));
-	return NULL;
-     }
-		   
+    {
+      g_warning (_ ("Null packet in check_packet"));
+      return NULL;
+    }
+
   result = substract_times (now, packet->timestamp);
 
   /* If this packet is older than the averaging time,
@@ -517,14 +540,14 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
       node_id = g_malloc (node_id_length);
       if (node_type == SRC)
 	{
-       guint16 port;       
+	  guint16 port;
 	  g_memmove (node_id, packet + l3_offset + 12, 4);
 	  port = ntohs (*(guint16 *) (packet + l3_offset + 20));
 	  g_memmove (node_id + 4, &port, 2);
 	}
       else
 	{
-       guint16 port;       
+	  guint16 port;
 	  g_memmove (node_id, packet + l3_offset + 16, 4);
 	  port = ntohs (*(guint16 *) (packet + l3_offset + 22));
 	  g_memmove (node_id + 4, &port, 2);
@@ -542,8 +565,8 @@ guint8 *
 get_link_id (const guint8 * packet)
 {
   static guint8 *link_id = NULL;
-   guint16 port;
-   
+  guint16 port;
+
   if (link_id)
     g_free (link_id);
 
@@ -559,10 +582,10 @@ get_link_id (const guint8 * packet)
 
       link_id = g_malloc (2 * node_id_length);
       g_memmove (link_id, packet + l3_offset + 12, 4);
-       port = ntohs (*(guint16 *) (packet + l3_offset + 20));       
+      port = ntohs (*(guint16 *) (packet + l3_offset + 20));
       g_memmove (link_id + 4, &port, 2);
       g_memmove (link_id + 6, packet + l3_offset + 16, 4);
-       port = ntohs (*(guint16 *) (packet + l3_offset + 22));
+      port = ntohs (*(guint16 *) (packet + l3_offset + 22));
       g_memmove (link_id + 10, &port, 2);
       break;
     default:
@@ -584,12 +607,17 @@ packet_read (pcap_t * pch,
   node_t *node;
   packet_t *packet_info;
   link_t *link;
+  /* I have to love how RedHat messes with libraries.
+   * I'm forced to use my own timestamp since the phdr is
+   * different in RedHat6.1 >:-( */
+  struct timeval now;
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
   if (!pcap_packet)
     return;
 
+  gettimeofday (&now, NULL);
 
   src_id = get_node_id (pcap_packet, SRC);
 
@@ -601,11 +629,11 @@ packet_read (pcap_t * pch,
    * to account for */
   packet_info = g_malloc (sizeof (packet_t));
   packet_info->size = phdr.len;
-  packet_info->timestamp = phdr.ts;
+  packet_info->timestamp = now;
   packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
-  node->last_time = phdr.ts;
+  node->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (node->packets, NODE);
   node->n_packets++;
@@ -622,11 +650,11 @@ packet_read (pcap_t * pch,
    * to account for */
   packet_info = g_malloc (sizeof (packet_t));
   packet_info->size = phdr.len;
-  packet_info->timestamp = phdr.ts;
+  packet_info->timestamp = now;
   packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
-  node->last_time = phdr.ts;
+  node->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (node->packets, NODE);
   node->n_packets++;
@@ -643,11 +671,11 @@ packet_read (pcap_t * pch,
 
   packet_info = g_malloc (sizeof (link_t));
   packet_info->size = phdr.len;
-  packet_info->timestamp = phdr.ts;
+  packet_info->timestamp = now;
   packet_info->parent = link;
   link->packets = g_list_prepend (link->packets, packet_info);
   link->accumulated += phdr.len;
-  link->last_time = phdr.ts;
+  link->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (link->packets, LINK);
   link->n_packets++;

@@ -258,7 +258,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 	}
       else
 	link->packets = NULL;
-      link->accumulated = 0;
+
+       link->accumulated = 0;
     }
 
 
