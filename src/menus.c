@@ -92,8 +92,8 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
   widget = glade_xml_get_widget (xml, "open_file_dialog");
   gtk_widget_hide (widget);
 
-  if (status!=STOP)
-     gui_stop_capture ();
+  if (status != STOP)
+    gui_stop_capture ();
   gui_start_capture ();
 
 }				/* on_file_ok_button_clicked */
@@ -253,7 +253,7 @@ gui_start_capture (void)
   if (!start_capture ())
     return;
 
-   
+
   widget = glade_xml_get_widget (xml, "stop_button");
   gtk_widget_set_sensitive (widget, TRUE);
   widget = glade_xml_get_widget (xml, "stop_menuitem");
@@ -280,7 +280,7 @@ gui_pause_capture (void)
       g_warning (_("Status not PLAY at gui_pause_capture"));
       return;
     }
-   
+
   if (!pause_capture ())
     return;
 
@@ -296,7 +296,7 @@ gui_pause_capture (void)
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
-   
+
   g_my_info (_("Diagram paused"));
 
 }				/* gui_pause_capture */

@@ -15,10 +15,14 @@ User visible features:
 Issues in the source code
 -------------------------
  
-  * I've come to the conclusion that names should be acquired
-    at packet analyzing stage (probably an option), so that
-    we keep a single per packet offset that is incremented
-    as each protocol is analyzed.
+  * Generalize a way to return error messages from capture.c
+  
+  * Stablish criteria for the meaning of a function's gboolean 
+    return value. Does it mean it was correct or there was an
+    error? There are examples of opposite cases.
+  
+  * Why am I using a global "interface" and a second "device"
+    in capture.c? Check that I can just use interface.
 
   * Use a GArray instead of a fixed array for the protocols
     stack.

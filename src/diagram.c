@@ -185,15 +185,15 @@ update_diagram (GtkWidget * canvas)
   guint32 diff_msecs;
 
 
-  if (status==PAUSE)
-     return TRUE;
-   
-  if (end_of_file && status!=STOP)
+  if (status == PAUSE)
+    return TRUE;
+
+  if (end_of_file && status != STOP)
     gui_stop_capture ();
 
   gettimeofday (&now, NULL);
 
-  
+
   /* We search for new protocols */
   if (n_protocols[stack_level]
       != (n_protocols_new[stack_level] =
