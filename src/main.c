@@ -183,7 +183,7 @@ main (int argc, char *argv[])
 
    /* TODO Do we really need to XML objects? */
    /* load the main window (which is named app1) */
-   xml_app1 = glade_xml_new("etherape.glade", "app1");
+   xml_app1 = glade_xml_new("etherape.glade", NULL);
    /* in case we can't load the interface, bail */
    if(!xml_app1) {
       g_error(_("We could not load the interface!"));
