@@ -20,7 +20,7 @@
 #include <pcap.h>
 #include "globals.h"
 
-#define MAXSIZE 60
+#define MAXSIZE 500
 #define PCAP_TIMEOUT 250
 
 /* 
