@@ -126,10 +126,10 @@ on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data)
 {
   gchar *str;
   str = gtk_editable_get_chars (editable, 0, -1);
-  if (input_file)
-    g_free (input_file);
+  if (pref.input_file)
+    g_free (pref.input_file);
 
-  input_file = g_strdup (str);
+  pref.input_file = g_strdup (str);
   g_free (str);
 
 }				/* on_file_combo_entry_changed */
@@ -144,10 +144,10 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
     if (!gui_stop_capture ())
       return;
 
-  if (interface)
+  if (pref.interface)
     {
-      g_free (interface);
-      interface = NULL;
+      g_free (pref.interface);
+      pref.interface = NULL;
     }
 
   widget = glade_xml_get_widget (xml, "file_combo_entry");
@@ -157,16 +157,16 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
   gtk_widget_hide (widget);
 
 
-  if (input_file)
-    g_free (input_file);
-  input_file = g_strdup (str);
+  if (pref.input_file)
+    g_free (pref.input_file);
+  pref.input_file = g_strdup (str);
   if (str)
     g_free (str);
 
   widget = glade_xml_get_widget (xml, "fileentry");
   update_history (GNOME_ENTRY
 		  (gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget))),
-		  input_file, TRUE);
+		  pref.input_file, TRUE);
 
   gui_start_capture ();
 
@@ -180,7 +180,7 @@ on_interface_radio_activate (gchar * gui_device)
 {
   g_assert (gui_device != NULL);
 
-  if (interface && !strcmp (gui_device, interface))
+  if (pref.interface && !strcmp (gui_device, pref.interface))
     return;
 
   if (in_start_capture)
@@ -192,13 +192,13 @@ on_interface_radio_activate (gchar * gui_device)
     if (!gui_stop_capture ())
       return;
 
-  if (input_file)
-    g_free (input_file);
-  input_file = NULL;
+  if (pref.input_file)
+    g_free (pref.input_file);
+  pref.input_file = NULL;
 
-  if (interface)
-    g_free (interface);
-  interface = g_strdup (gui_device);
+  if (pref.interface)
+    g_free (pref.interface);
+  pref.interface = g_strdup (gui_device);
 
   gui_start_capture ();
 
@@ -238,7 +238,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
       exit (1);
     }
 
-  if (new_mode == mode)
+  if (new_mode == pref.mode)
     return;
 
   /* I don't know why, but this menu item is called twice, instead
@@ -273,7 +273,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
   if (status != STOP)
     if (!gui_stop_capture ())
       return;
-  mode = new_mode;
+  pref.mode = new_mode;
   g_my_info (_("Mode set to %s in GUI"), (gchar *) user_data);
   gui_start_capture ();
 
@@ -512,7 +512,7 @@ gui_start_capture (void)
 
   /* Set active mode in GUI */
 
-  switch (mode)
+  switch (pref.mode)
     {
     case IEEE802:
       widget = glade_xml_get_widget (xml, "ieee802_radio");
@@ -543,14 +543,14 @@ gui_start_capture (void)
 
   status_string = g_string_new (_("Reading data from "));
 
-  if (input_file)
-    g_string_append (status_string, input_file);
-  else if (interface)
-    g_string_append (status_string, interface);
+  if (pref.input_file)
+    g_string_append (status_string, pref.input_file);
+  else if (pref.interface)
+    g_string_append (status_string, pref.interface);
   else
     g_string_append (status_string, _("default interface"));
 
-  switch (mode)
+  switch (pref.mode)
     {
     case IEEE802:
       g_string_append (status_string, _(" in Token Ring mode"));
@@ -687,10 +687,10 @@ gui_stop_capture (void)
 
   status_string = g_string_new (_("Ready to capture from "));
 
-  if (input_file)
-    g_string_append (status_string, input_file);
-  else if (interface)
-    g_string_append (status_string, interface);
+  if (pref.input_file)
+    g_string_append (status_string, pref.input_file);
+  else if (pref.interface)
+    g_string_append (status_string, pref.interface);
   else
     g_string_append (status_string, _("default interface"));
 
@@ -733,7 +733,7 @@ set_active_interface ()
     {
       widget = (GtkWidget *) (menu_items->data);
 
-      if (input_file)
+      if (pref.input_file)
 	{
 	  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
 	  return;
@@ -741,7 +741,7 @@ set_active_interface ()
 
       label = GTK_LABEL (GTK_BIN (widget)->child)->label;
 
-      if (!strcmp (label, interface))
+      if (!strcmp (label, pref.interface))
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
 
       menu_items = menu_items->next;

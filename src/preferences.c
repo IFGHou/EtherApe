@@ -27,8 +27,9 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
   entry = GTK_EDITABLE (glade_xml_get_widget (xml, "filter_entry"));
   gtk_editable_delete_text (entry, 0, -1);
-  if (filter)
-    gtk_editable_insert_text (entry, filter, strlen (filter), &position);
+  if (pref.filter)
+    gtk_editable_insert_text (entry, pref.filter, strlen (pref.filter),
+			      &position);
   else
     gtk_editable_insert_text (entry, "", 0, &position);
   gtk_widget_show (diag_pref);
@@ -39,10 +40,10 @@ void
 on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
 {
 
-  node_radius_multiplier = exp ((double) adj->value * log (10));
+  pref.node_radius_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _("Adjustment value: %g. Radius multiplier %g"),
-	 adj->value, node_radius_multiplier);
+	 adj->value, pref.node_radius_multiplier);
 
 }
 
@@ -50,23 +51,23 @@ void
 on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 {
 
-  link_width_multiplier = exp ((double) adj->value * log (10));
+  pref.link_width_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _("Adjustment value: %g. Radius multiplier %g"),
-	 adj->value, link_width_multiplier);
+	 adj->value, pref.link_width_multiplier);
 
 }
 
 void
 on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  averaging_time = adj->value;	/* Control and value in ms */
+  pref.averaging_time = adj->value;	/* Control and value in ms */
 }
 
 void
 on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 {
-  refresh_period = adj->value;
+  pref.refresh_period = adj->value;
   /* When removing the source (which could either be an idle or a timeout
    * function, I'm also forcing the callback for the corresponding 
    * destroying function, which in turn will install a timeout or idle
@@ -78,19 +79,19 @@ on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 void
 on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  node_timeout_time = adj->value;	/* Control and value in ms */
+  pref.node_timeout_time = adj->value;	/* Control and value in ms */
 }				/* on_node_to_spin_adjustment_changed */
 
 void
 on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  gui_node_timeout_time = adj->value;	/* Control and value in ms */
+  pref.gui_node_timeout_time = adj->value;	/* Control and value in ms */
 }				/* on_gui_node_to_spin_adjustment_changed */
 
 void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  link_timeout_time = adj->value;	/* Control and value in ms */
+  pref.link_timeout_time = adj->value;	/* Control and value in ms */
 }
 
 void
@@ -100,7 +101,7 @@ on_font_button_clicked (GtkButton * button, gpointer user_data)
   if (!fontsel)
     fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
   gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					   (fontsel), fontname);
+					   (fontsel), pref.fontname);
   gtk_widget_show (fontsel);
 }
 
@@ -116,9 +117,9 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 					     (fontsel));
   if (str)
     {
-      if (fontname)
-	g_free (fontname);
-      fontname = g_strdup (str);
+      if (pref.fontname)
+	g_free (pref.fontname);
+      pref.fontname = g_strdup (str);
       g_free (str);
       need_reposition = TRUE;
     }
@@ -148,9 +149,9 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 					     (fontsel));
   if (str)
     {
-      if (fontname)
-	g_free (fontname);
-      fontname = g_strdup (str);
+      if (pref.fontname)
+	g_free (pref.fontname);
+      pref.fontname = g_strdup (str);
       g_free (str);
       need_reposition = TRUE;
     }
@@ -164,7 +165,7 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
   active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
   /* Beware! Size mode is an enumeration. The menu options
    * must much the enumaration values */
-  size_mode = g_list_index (menu_shell->children, active_item);
+  pref.size_mode = g_list_index (menu_shell->children, active_item);
 
 }				/* on_size_mode_menu_selected */
 
@@ -176,7 +177,7 @@ on_node_size_optionmenu_selected (GtkMenuShell * menu_shell, gpointer data)
   active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
   /* Beware! Size mode is an enumeration. The menu options
    * must much the enumaration values */
-  node_size_variable = g_list_index (menu_shell->children, active_item);
+  pref.node_size_variable = g_list_index (menu_shell->children, active_item);
 
 }				/* on_node_size_optionmenu_selected */
 
@@ -186,7 +187,7 @@ on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
   GtkWidget *active_item;
 
   active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
-  stack_level = g_list_index (menu_shell->children, active_item);
+  pref.stack_level = g_list_index (menu_shell->children, active_item);
 
   delete_gui_protocols ();
 
@@ -204,7 +205,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
 
-  diagram_only = gtk_toggle_button_get_active (togglebutton);
+  pref.diagram_only = gtk_toggle_button_get_active (togglebutton);
   need_reposition = TRUE;
 
 }				/* on_diagram_only_toggle_toggled */
@@ -218,7 +219,7 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
   if ((status == PLAY) || (status == PAUSE))
     gui_stop_capture ();
 
-  group_unk = gtk_toggle_button_get_active (togglebutton);
+  pref.group_unk = gtk_toggle_button_get_active (togglebutton);
 
   if (old_status == PLAY)
     gui_start_capture ();
@@ -243,7 +244,7 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
 
-  update_history (GNOME_ENTRY (widget), filter, FALSE);
+  update_history (GNOME_ENTRY (widget), pref.filter, FALSE);
 
 }				/* on_apply_pref_button_clicked */
 
@@ -262,13 +263,13 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
   /* TODO should make sure that for each mode the filter is set up
    * correctly */
   str = gtk_editable_get_chars (editable, 0, -1);
-  if (filter)
-    g_free (filter);
-  filter = g_strdup (str);
+  if (pref.filter)
+    g_free (pref.filter);
+  pref.filter = g_strdup (str);
   g_free (str);
   /* TODO We should look at the error code from set_filter and pop
    * up a window accordingly */
-  set_filter (filter, NULL);
+  set_filter (pref.filter, NULL);
 }				/* on_filter_entry_changed */
 
 void

@@ -43,23 +43,23 @@ main (int argc, char *argv[])
      N_("set capture filter"), N_("<capture filter>")},
     {"infile", 'r', POPT_ARG_STRING, &cl_input_file, 0,
      N_("set input file"), N_("<file name>")},
-    {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
+    {"numeric", 'n', POPT_ARG_NONE, &(pref.numeric), 0,
      N_("don't convert addresses to names"), NULL},
-    {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
+    {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
-    {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
+    {"no-fade", 'F', POPT_ARG_NONE, &(pref.nofade), 0,
      N_("do not fade old links"), NULL},
-    {"stationary", 's', POPT_ARG_NONE, &stationary, 0,
+    {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,
      N_("don't move nodes around"), NULL},
-    {"node_limit", 'l', POPT_ARG_INT, &node_limit, 0,
+    {"node_limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
      N_("Don't show warnings"), NULL},
-    {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
+    {"node-color", 'N', POPT_ARG_STRING, &(pref.node_color), 0,
      N_("set the node color"), N_("color")},
-    {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
+    {"link-color", 'L', POPT_ARG_STRING, &(pref.link_color), 0,
      N_("set the link color"), N_("color")},
-    {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
+    {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
      N_("set the text color"), N_("color")},
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
@@ -87,18 +87,22 @@ main (int argc, char *argv[])
    * Third, whatever given in the command line */
 
   /* Absolute defaults */
-  numeric = 0;
-  mode = IP;
+  pref.numeric = 0;
+  pref.mode = IP;
   dns = 1;
-  filter = NULL;
+  pref.filter = NULL;
   status = STOP;
-  refresh_period = 800;		/* ms */
-  node_color = g_strdup ("brown");
-  link_color = g_strdup ("tan");	/* TODO I think link_color is
+  pref.refresh_period = 800;	/* ms */
+
+  /* TODO Besides the fact that this probably makes little sense nowadays
+   * (at least for node and link color) it probably leads to a segfault
+   * See how it is done for filter, for instance */
+  pref.node_color = g_strdup ("brown");
+  pref.link_color = g_strdup ("tan");	/* TODO I think link_color is
 					 * actually never used anymore,
 					 * is it? */
-  text_color = g_strdup ("yellow");
-  node_limit = -1;
+  pref.text_color = g_strdup ("yellow");
+  pref.node_limit = -1;
 
 
   set_debug_level ();
@@ -112,42 +116,42 @@ main (int argc, char *argv[])
 
   if (cl_filter)
     {
-      if (filter)
-	g_free (filter);
-      filter = g_strdup (cl_filter);
+      if (pref.filter)
+	g_free (pref.filter);
+      pref.filter = g_strdup (cl_filter);
     }
 
   if (cl_interface)
     {
-      if (interface)
-	g_free (interface);
-      interface = g_strdup (cl_interface);
+      if (pref.interface)
+	g_free (pref.interface);
+      pref.interface = g_strdup (cl_interface);
     }
 
   if (cl_input_file)
     {
-      if (input_file)
-	g_free (input_file);
-      input_file = g_strdup (cl_input_file);
+      if (pref.input_file)
+	g_free (pref.input_file);
+      pref.input_file = g_strdup (cl_input_file);
     }
 
 
   /* dns is used in dns.c as opposite of numeric */
-  dns = !numeric;
+  dns = !pref.numeric;
 
   /* Find mode of operation */
   if (mode_string)
     {
       if (strstr (mode_string, "ethernet"))
-	mode = ETHERNET;
+	pref.mode = ETHERNET;
       else if (strstr (mode_string, "fddi"))
-	mode = FDDI;
+	pref.mode = FDDI;
       else if (strstr (mode_string, "ip"))
-	mode = IP;
+	pref.mode = IP;
       else if (strstr (mode_string, "tcp"))
-	mode = TCP;
+	pref.mode = TCP;
       else if (strstr (mode_string, "udp"))
-	mode = UDP;
+	pref.mode = UDP;
       else
 	g_warning (_
 		   ("Unrecognized mode. Do etherape --help for a list of modes"));
@@ -204,7 +208,7 @@ main (int argc, char *argv[])
 
   widget = glade_xml_get_widget (xml, "canvas1");
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
-					refresh_period,
+					pref.refresh_period,
 					(GtkFunction) update_diagram,
 					widget,
 					(GDestroyNotify) destroying_timeout);
@@ -235,59 +239,59 @@ load_config (char *prefix)
 
   config_file_version =
     gnome_config_get_string_with_default ("General/version=0.5.4", &u);
-  diagram_only =
+  pref.diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
-  group_unk =
+  pref.group_unk =
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
-  stationary
+  pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
   /* Not yet, since we can't force fading
      nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
    */
-  node_timeout_time =
+  pref.node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=3600000.0", &u);
-  gui_node_timeout_time =
+  pref.gui_node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/gui_node_timeout_time=60000.0", &u);
-  if (nofade)
-    link_timeout_time =
+  if (pref.nofade)
+    pref.link_timeout_time =
       gnome_config_get_float_with_default
       ("Diagram/link_timeout_time=5000.0", &u);
   else
-    link_timeout_time =
+    pref.link_timeout_time =
       gnome_config_get_float_with_default
       ("Diagram/link_timeout_time=20000.0", &u);
-  averaging_time =
+  pref.averaging_time =
     gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
-  node_radius_multiplier =
+  pref.node_radius_multiplier =
     gnome_config_get_float_with_default
     ("Diagram/node_radius_multiplier=0.0005", &u);
   if (u)
-    node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
-  link_width_multiplier =
+    pref.node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
+  pref.link_width_multiplier =
     gnome_config_get_float_with_default
     ("Diagram/link_width_multiplier=0.0005", &u);
   if (u)
-    link_width_multiplier = 0.0005;
-  mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
-  if (mode == IP || mode == TCP)
-    refresh_period =
+    pref.link_width_multiplier = 0.0005;
+  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  if (pref.mode == IP || pref.mode == TCP)
+    pref.refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
   else
-    refresh_period =
+    pref.refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
 
-  size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
-  node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
-  stack_level =
+  pref.size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  pref.node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
+  pref.stack_level =
     gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
-  if ((stack_level != 0)
+  if ((pref.stack_level != 0)
       && (version_compare (config_file_version, "0.5.4") < 0))
     g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
 		 "Please check in the preferences dialog that this is what "
 		 "you really want"));
-  fontname =
+  pref.fontname =
     gnome_config_get_string_with_default
     ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
 
@@ -348,26 +352,29 @@ void
 save_config (char *prefix)
 {
   gnome_config_push_prefix (prefix);
-  gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
-  gnome_config_set_bool ("Diagram/group_unk", group_unk);
-  gnome_config_set_bool ("Diagram/nofade", nofade);
-  gnome_config_set_float ("Diagram/node_timeout_time", node_timeout_time);
+  gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
+  gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
+  gnome_config_set_bool ("Diagram/nofade", pref.nofade);
+  gnome_config_set_float ("Diagram/node_timeout_time",
+			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",
-			  gui_node_timeout_time);
-  gnome_config_set_float ("Diagram/link_timeout_time", link_timeout_time);
-  gnome_config_set_float ("Diagram/averaging_time", averaging_time);
+			  pref.gui_node_timeout_time);
+  gnome_config_set_float ("Diagram/link_timeout_time",
+			  pref.link_timeout_time);
+  gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
   gnome_config_set_float ("Diagram/node_radius_multiplier",
-			  node_radius_multiplier);
+			  pref.node_radius_multiplier);
   gnome_config_set_float ("Diagram/link_width_multiplier",
-			  link_width_multiplier);
+			  pref.link_width_multiplier);
 #if 0				/* TODO should we save this? */
-  gnome_config_set_int ("General/mode", mode);
+  gnome_config_set_int ("General/mode", pref.mode);
 #endif
-  gnome_config_set_int ("Diagram/refresh_period", refresh_period);
-  gnome_config_set_int ("Diagram/size_mode", size_mode);
-  gnome_config_set_int ("Diagram/node_size_variable", node_size_variable);
-  gnome_config_set_int ("Diagram/stack_level", stack_level);
-  gnome_config_set_string ("Diagram/fontname", fontname);
+  gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
+  gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
+  gnome_config_set_int ("Diagram/node_size_variable",
+			pref.node_size_variable);
+  gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
+  gnome_config_set_string ("Diagram/fontname", pref.fontname);
   gnome_config_set_string ("General/version", VERSION);
 
   gnome_config_sync ();

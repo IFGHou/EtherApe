@@ -58,7 +58,7 @@ init_capture (void)
 	  protocols[i] = NULL;
 	  i--;
 	}
-      if (!numeric)
+      if (!pref.numeric)
 	{
 	  dns_open ();
 	  dns_fd = dns_waitfd ();
@@ -75,8 +75,8 @@ init_capture (void)
       n_packets = n_mem_packets = 0;
     }
 
-  device = interface;
-  if (!device && !input_file)
+  device = pref.interface;
+  if (!device && !pref.input_file)
     {
       device = g_strdup (pcap_lookupdev (ebuf));
       if (device == NULL)
@@ -88,12 +88,12 @@ init_capture (void)
        * need the local variable device. But I need to reset 
        * interface since I need to know whether we are in
        * online or offline mode later on */
-      interface = device;
+      pref.interface = device;
     }
 
 
   end_of_file = FALSE;
-  if (!input_file)
+  if (!pref.input_file)
     {
       if (!
 	  ((pcap_t *) pch =
@@ -114,15 +114,16 @@ init_capture (void)
 	{
 	  sprintf (errorbuf,
 		   _("Can't open both %s and device %s. Please choose one."),
-		   input_file, device);
+		   pref.input_file, device);
 	  return errorbuf;
 	}
-      if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
+      if (!((pcap_t *) pch = pcap_open_offline (pref.input_file, ebuf)))
 	{
-	  sprintf (errorbuf, _("Error opening %s : %s"), input_file, ebuf);
+	  sprintf (errorbuf, _("Error opening %s : %s"), pref.input_file,
+		   ebuf);
 	  return errorbuf;
 	}
-      g_my_info (_("%s opened for offline capture"), input_file);
+      g_my_info (_("%s opened for offline capture"), pref.input_file);
 
     }
 
@@ -135,42 +136,44 @@ init_capture (void)
     {
     case L_EN10MB:
       g_my_info (_("Link type is Ethernet"));
-      if (mode == DEFAULT)
-	mode = IP;
-      if (mode == FDDI)
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if (pref.mode == FDDI)
 	error = TRUE;
       l3_offset = 14;
       break;
     case L_RAW:		/* The case for PPP or SLIP, for instance */
       g_my_info (_("Link type is RAW"));
-      if (mode == DEFAULT)
-	mode = IP;
-      if ((mode == ETHERNET) || (mode == FDDI) || (mode == IEEE802))
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
+	  || (pref.mode == IEEE802))
 	error = TRUE;
       l3_offset = 0;
       break;
     case L_FDDI:		/* We are assuming LLC async frames only */
       g_my_info (_("Link type is FDDI"));
-      if (mode == DEFAULT)
-	mode = IP;
-      if ((mode == ETHERNET) || (mode == IEEE802))
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if ((pref.mode == ETHERNET) || (pref.mode == IEEE802))
 	error = TRUE;
       l3_offset = 21;
       break;
     case L_IEEE802:
       /* As far as I know IEEE802 is Token Ring */
       g_my_info (_("Link type is Token Ring"));
-      if (mode == DEFAULT)
-	mode = IP;
-      if ((mode == ETHERNET) || (mode == FDDI))
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if ((pref.mode == ETHERNET) || (pref.mode == FDDI))
 	error = TRUE;
       l3_offset = 22;
       break;
     case L_NULL:		/* Loopback */
       g_my_info (_("Link type is NULL"));
-      if (mode == DEFAULT)
-	mode = IP;
-      if ((mode == ETHERNET) || (mode == FDDI) || (mode == IEEE802))
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
+	  || (pref.mode == IEEE802))
 	error = TRUE;
       l3_offset = 4;
       break;
@@ -180,32 +183,32 @@ init_capture (void)
     }
 
   /* TODO Shouldn't we free memory somwhere because of the strconcat? */
-  switch (mode)
+  switch (pref.mode)
     {
     case IP:
-      if (filter)
-	str = g_strconcat ("ip and ", filter, NULL);
+      if (pref.filter)
+	str = g_strconcat ("ip and ", pref.filter, NULL);
       else
 	{
-	  g_free (filter);
+	  g_free (pref.filter);
 	  str = g_strdup ("ip");
 	}
       break;
     case TCP:
-      if (filter)
-	str = g_strconcat ("tcp and ", filter, NULL);
+      if (pref.filter)
+	str = g_strconcat ("tcp and ", pref.filter, NULL);
       else
 	{
-	  g_free (filter);
+	  g_free (pref.filter);
 	  str = g_strdup ("tcp");
 	}
       break;
     case UDP:
-      if (filter)
-	str = g_strconcat ("udp and ", filter, NULL);
+      if (pref.filter)
+	str = g_strconcat ("udp and ", pref.filter, NULL);
       else
 	{
-	  g_free (filter);
+	  g_free (pref.filter);
 	  str = g_strdup ("udp");
 	}
       break;
@@ -214,16 +217,16 @@ init_capture (void)
     case IPX:
     case FDDI:
     case IEEE802:
-      if (filter)
-	str = g_strdup (filter);
+      if (pref.filter)
+	str = g_strdup (pref.filter);
       break;
     }
-  g_free (filter);
-  filter = str;
+  g_free (pref.filter);
+  pref.filter = str;
   str = NULL;
 
-  if (filter)
-    set_filter (filter, device);
+  if (pref.filter)
+    set_filter (pref.filter, device);
 
 
   if (error)
@@ -232,7 +235,7 @@ init_capture (void)
       return errorbuf;
     }
 
-  switch (mode)
+  switch (pref.mode)
     {
     case ETHERNET:
       node_id_length = 6;
@@ -261,7 +264,7 @@ init_capture (void)
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
 gint
-set_filter (gchar * filter, gchar * device)
+set_filter (gchar * filter_string, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -280,7 +283,7 @@ set_filter (gchar * filter, gchar * device)
 		 ebuf);
       ok = 0;
     }
-  if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
+  if (ok && (pcap_compile (pch, &fp, filter_string, 1, netmask) < 0))
     {
       g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
       ok = 0;
@@ -306,7 +309,7 @@ set_filter (gchar * filter, gchar * device)
 		 ebuf);
       ok = 0;
     }
-  if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
+  if (ok && (pcap_compile (pch, &fp, filter_string, 1, netmask) < 0))
     {
       g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
       ok = 0;
@@ -316,7 +319,7 @@ set_filter (gchar * filter, gchar * device)
       g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
     }
 #endif
-}
+}				/* set_filter */
 
 gboolean
 start_capture (void)
@@ -332,14 +335,14 @@ start_capture (void)
    * See pause_capture for an explanation of why we don't always
    * add the source
    */
-  if (interface && (status == STOP))
+  if (pref.interface && (status == STOP))
     {
       g_my_debug (_("Starting live capture"));
       capture_source = gdk_input_add (pcap_fd,
 				      GDK_INPUT_READ,
 				      (GdkInputFunction) packet_read, NULL);
     }
-  else if (!interface)
+  else if (!pref.interface)
     {
       g_my_debug (_("Starting offline capture"));
       capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
@@ -359,7 +362,7 @@ pause_capture (void)
   if (status != PLAY)
     g_warning (_("Status not PLAY at pause_capture"));
 
-  if (interface)
+  if (pref.interface)
     {
       /* Why would we want to miss packets while pausing to 
        * better analyze a moment in time? If we wanted
@@ -402,7 +405,7 @@ stop_capture (void)
       return FALSE;
     }
 
-  if (interface)
+  if (pref.interface)
     {
       g_my_debug (_("Stopping live capture"));
       gdk_input_remove (capture_source);	/* gdk_input_remove does not
@@ -436,14 +439,14 @@ stop_capture (void)
   g_list_free (new_nodes);
   new_nodes = NULL;
 
-  if (filter)
+  if (pref.filter)
     {
-      g_free (filter);
-      filter = NULL;
+      g_free (pref.filter);
+      pref.filter = NULL;
     }
 
   /* Clean the buffer */
-  if (!interface)
+  if (!pref.interface)
     get_offline_packet ();
 
   /* Close the capture */
@@ -609,7 +612,7 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
       node_id = NULL;
     }
 
-  switch (mode)
+  switch (pref.mode)
     {
     case ETHERNET:
       if (node_type == SRC)
@@ -674,7 +677,7 @@ get_link_id (const guint8 * packet)
     }
 
 
-  switch (mode)
+  switch (pref.mode)
     {
     case ETHERNET:
       link_id = g_malloc (2 * node_id_length);
@@ -914,9 +917,9 @@ add_protocol (GList ** protocols, const gchar * stack,
 
   for (; i <= STACK_SIZE; i++)
     {
-      if (group_unk && strstr (tokens[i], "TCP-Port"))
+      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
 	protocol_name = "TCP-Unknown";
-      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
 	protocol_name = "UDP-Unknown";
       else
 	protocol_name = tokens[i];
@@ -1015,8 +1018,8 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 #endif
 #if 1
 	/* Remove node if node is too old or if capture is stopped */
-	if ((IS_OLDER (diff, node_timeout_time) && node_timeout_time)
-	    || (status == STOP))
+	if ((IS_OLDER (diff, pref.node_timeout_time)
+	     && pref.node_timeout_time) || (status == STOP))
 #endif
 	  {
 
@@ -1209,8 +1212,8 @@ update_link (guint8 * link_id, link_t * link, gpointer pointer)
 #endif
 #if 1
 	/* Remove link if it is too old or if capture is stopped */
-	if ((IS_OLDER (diff, link_timeout_time) && link_timeout_time)
-	    || (status == STOP))
+	if ((IS_OLDER (diff, pref.link_timeout_time)
+	     && pref.link_timeout_time) || (status == STOP))
 #endif
 	  {
 	    for (; i + 1; i--)
@@ -1421,7 +1424,7 @@ update_node_names (node_t * node)
       i--;
     }
 
-  switch (mode)
+  switch (pref.mode)
     {
     case ETHERNET:
       set_node_name (node,
@@ -1557,16 +1560,16 @@ check_packet (GList * packets, GList ** packet_l_e,
    * averaging time, we use that instead */
 
   if ((belongs_to == NODE) || (belongs_to == PROTOCOL))
-    if (node_timeout_time)
-      time_comparison = (node_timeout_time > averaging_time) ?
-	averaging_time : node_timeout_time;
+    if (pref.node_timeout_time)
+      time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
+	pref.averaging_time : pref.node_timeout_time;
     else
-      time_comparison = averaging_time;
-  else if (link_timeout_time)
-    time_comparison = (link_timeout_time > averaging_time) ?
-      averaging_time : link_timeout_time;
+      time_comparison = pref.averaging_time;
+  else if (pref.link_timeout_time)
+    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.link_timeout_time;
   else
-    time_comparison = averaging_time;
+    time_comparison = pref.averaging_time;
 
   node = (node_t *) parent;
   link = (link_t *) parent;
@@ -1618,9 +1621,9 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = g_strsplit (packet->prot, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
-	      if (group_unk && strstr (tokens[i], "TCP-Port"))
+	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
 		protocol_name = "TCP-Unknown";
-	      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+	      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
 		protocol_name = "UDP-Unknown";
 	      else
 		protocol_name = tokens[i];
@@ -1653,9 +1656,9 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = g_strsplit (packet->prot, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
-	      if (group_unk && strstr (tokens[i], "TCP-Port"))
+	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
 		protocol_name = "TCP-Unknown";
-	      else if (group_unk && strstr (tokens[i], "UDP-Port"))
+	      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
 		protocol_name = "UDP-Unknown";
 	      else
 		protocol_name = tokens[i];

@@ -137,8 +137,8 @@ update_protocols_window (void)
 
       if (!
 	  (item =
-	   g_list_find_custom (protocols[stack_level], info_protocol->name,
-			       protocol_compare)))
+	   g_list_find_custom (protocols[pref.stack_level],
+			       info_protocol->name, protocol_compare)))
 	{
 	  g_my_critical
 	    ("Global protocol not found in update_protocols_window");
@@ -185,7 +185,7 @@ update_protocols_window (void)
   while (item)
     {
       protocol = item->data;
-      capture_item = g_list_find_custom (protocols[stack_level],
+      capture_item = g_list_find_custom (protocols[pref.stack_level],
 					 protocol->name, protocol_compare);
       protocol = capture_item->data;
       row[0] = protocol->name;
@@ -281,7 +281,7 @@ update_node_info_windows (void)
   , diff;
   diff = substract_times (now, last_time);
   /* Update info windows at most twice a second */
-  if (refresh_period < 500)
+  if (pref.refresh_period < 500)
     if (!(IS_OLDER (diff, 500)))
       return;
   list_item = node_info_windows;

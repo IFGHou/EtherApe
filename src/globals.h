@@ -257,59 +257,66 @@ guint l3_offset;		/* Offset to the level 3 protocol data
 enum status_t status;		/* Keeps capture status (playing, stopped, paused) */
 gboolean end_of_file;		/* Marks that the end of the offline file
 				 * has been reached */
+gboolean need_reposition;	/* Force a diagram relayout */
+gint diagram_timeout;		/* Descriptor of the diagram timeout function
+				 * (Used to change the refresh_period in the callback */
+GList *legend_protocols;
+
+struct
+{
 
 /* Genereral settings */
 
-gchar *input_file;		/* Capture file to read from */
-gboolean numeric;		/* Whether dns lookups are performed */
-gboolean dns;			/* Negation of the above. Is used by dns.c */
-gint diagram_timeout;		/* Descriptor of the diagram timeout function
-				 * (Used to change the refresh_period in the callback */
-apemode_t mode;			/* Mode of operation. Can be
+  gchar *input_file;		/* Capture file to read from */
+  gboolean numeric;		/* Whether dns lookups are performed */
+  apemode_t mode;		/* Mode of operation. Can be
 				 * ETHERNET, IP, UDP or TCP */
 
 /* Diagram settings */
 
-gboolean diagram_only;		/* Do not use text on the diagram */
-gboolean group_unk;		/* Whether to display as one every unkown port protocol */
-gboolean nofade;		/* Do not fade unused links */
-gboolean stationary;		/* Use alternative algorith for node placing */
-guint32 refresh_period;		/* Time between diagram refreshes */
-gdouble node_radius_multiplier;	/* used to calculate the radius of the
-				 * displayed nodes. So that the user can
-				 * select with certain precision this
-				 * value, the GUI uses the log10 of the
-				 * multiplier */
-gdouble link_width_multiplier;	/* Same explanation as above */
-size_mode_t size_mode;		/* Default mode for node size and
+  gboolean diagram_only;	/* Do not use text on the diagram */
+  gboolean group_unk;		/* Whether to display as one every unkown port protocol */
+  gboolean nofade;		/* Do not fade unused links */
+  gboolean stationary;		/* Use alternative algorith for node placing */
+  guint32 refresh_period;	/* Time between diagram refreshes */
+  gdouble node_radius_multiplier;	/* used to calculate the radius of the
+					 * displayed nodes. So that the user can
+					 * select with certain precision this
+					 * value, the GUI uses the log10 of the
+					 * multiplier */
+  gdouble link_width_multiplier;	/* Same explanation as above */
+  size_mode_t size_mode;	/* Default mode for node size and
 				 * link width calculation */
-node_size_variable_t node_size_variable;	/* Default variable that sets the node
+  node_size_variable_t node_size_variable;	/* Default variable that sets the node
 						 * size */
-gchar *node_color, *link_color, *text_color;	/* Default colors 
+  gchar *node_color, *link_color, *text_color;	/* Default colors 
 						 * TODO do we need link_color anymore? */
-gchar *fontname;		/* Font to be used for text display */
-gboolean need_reposition;	/* Force a diagram relayout */
-guint stack_level;		/* Which level of the protocol stack 
+  gchar *fontname;		/* Font to be used for text display */
+  guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
-gint node_limit;		/* Max number of nodes to show. If <0 it's not
+  gint node_limit;		/* Max number of nodes to show. If <0 it's not
 				 * limited */
-gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
-				 * for a node, it disappears from the diagram */
-GList *legend_protocols;
+  gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
+					 * for a node, it disappears from the diagram */
 
 
 /* Capture settings */
 
-gdouble averaging_time;		/* Microseconds of time we consider to
+  gdouble averaging_time;	/* Microseconds of time we consider to
 				 * calculate traffic averages */
-gdouble link_timeout_time;	/* After this time
+  gdouble link_timeout_time;	/* After this time
 				 * has passed with no traffic in a 
 				 * link, it disappears */
-gdouble node_timeout_time;	/* After this time has passed 
+  gdouble node_timeout_time;	/* After this time has passed 
 				 * with no traffic in/out a
 				 * node, it is deleted from memory */
-gchar *interface;		/* Network interface to listen to */
-gchar *filter;			/* Pcap filter to be used */
+  gchar *interface;		/* Network interface to listen to */
+  gchar *filter;		/* Pcap filter to be used */
+
+}
+pref;
+
+gboolean dns;			/* Negation of numeric. Is used by dns.c */
 
 
 /* Global functions declarations */

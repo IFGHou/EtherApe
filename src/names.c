@@ -259,7 +259,7 @@ get_arp_name (void)
 
   id = p + offset + 8 + hardware_len;
 
-  if (mode == ETHERNET)
+  if (pref.mode == ETHERNET)
     add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE), TRUE);
   else
     add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE), TRUE);
@@ -280,11 +280,11 @@ get_ip_name (void)
 
   id_length = 4;
 
-  if (numeric)
+  if (pref.numeric)
     add_name (ip_to_str (id), ip_to_str (id), FALSE);
   else
     {
-      if (mode == ETHERNET)
+      if (pref.mode == ETHERNET)
 	add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE), TRUE);
       else
 	add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE), TRUE);
@@ -584,20 +584,20 @@ add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved)
 
   if (!name->name)
     {
-      if (numeric)
+      if (pref.numeric)
 	name->name = g_string_new (numeric_name);
       else
 	name->name = g_string_new (resolved_name);
     }
   else
     {
-      if (numeric)
+      if (pref.numeric)
 	g_string_assign (name->name, numeric_name);
       else
 	g_string_assign (name->name, resolved_name);
     }
 
-  if (numeric)
+  if (pref.numeric)
     name->solved = FALSE;
   else
     name->solved = solved;

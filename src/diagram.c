@@ -48,36 +48,38 @@ init_diagram ()
   /* Updates controls from values of variables */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
-			    log (node_radius_multiplier) / log (10));
+			    log (pref.node_radius_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
   widget = glade_xml_get_widget (xml, "link_width_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
-			    log (link_width_multiplier) / log (10));
+			    log (pref.link_width_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
-  gtk_spin_button_set_value (spin, averaging_time);
+  gtk_spin_button_set_value (spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
-  gtk_spin_button_set_value (spin, refresh_period);
+  gtk_spin_button_set_value (spin, pref.refresh_period);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
-  gtk_spin_button_set_value (spin, gui_node_timeout_time);
+  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
-  gtk_spin_button_set_value (spin, node_timeout_time);
+  gtk_spin_button_set_value (spin, pref.node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
-  gtk_spin_button_set_value (spin, link_timeout_time);
+  gtk_spin_button_set_value (spin, pref.link_timeout_time);
 
   widget = glade_xml_get_widget (xml, "diagram_only_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), diagram_only);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
+				pref.diagram_only);
   widget = glade_xml_get_widget (xml, "group_unk_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), group_unk);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
   widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), node_size_variable);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget),
+			       pref.node_size_variable);
   widget = glade_xml_get_widget (xml, "stack_level_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
   gnome_entry_load_history (GNOME_ENTRY (widget));
   widget = glade_xml_get_widget (xml, "file_filter_entry");
@@ -171,7 +173,7 @@ destroying_idle (gpointer data)
 {
 /*   g_message ("An idle function has been destroyed"); */
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
-					refresh_period,
+					pref.refresh_period,
 					(GtkFunction) update_diagram,
 					data,
 					(GDestroyNotify) destroying_timeout);
@@ -224,9 +226,9 @@ update_diagram (GtkWidget * canvas)
 
 
   /* We search for new protocols */
-  while (known_protocols[stack_level] !=
-	 g_list_length (protocols[stack_level]))
-    g_list_foreach (protocols[stack_level], (GFunc) check_new_protocol,
+  while (known_protocols[pref.stack_level] !=
+	 g_list_length (protocols[pref.stack_level]))
+    g_list_foreach (protocols[pref.stack_level], (GFunc) check_new_protocol,
 		    canvas);
 
   /* Deletes all nodes and updates traffic values */
@@ -335,7 +337,7 @@ update_diagram (GtkWidget * canvas)
 
   if (!is_idle)
     {
-      if (diff_msecs > refresh_period * 1.2)
+      if (diff_msecs > pref.refresh_period * 1.2)
 	{
 /* 	  g_message ("Timeout about to be removed"); */
 	  return FALSE;		/* Removes the timeout */
@@ -343,7 +345,7 @@ update_diagram (GtkWidget * canvas)
     }
   else
     {
-      if (diff_msecs < refresh_period)
+      if (diff_msecs < pref.refresh_period)
 	{
 /*	  g_message ("Idle about to be removed"); */
 	  return FALSE;		/* removes the idle */
@@ -438,7 +440,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   legend_protocol->color = protocol->color;
   legend_protocols = g_list_prepend (legend_protocols, legend_protocol);
 
-  known_protocols[stack_level]++;
+  known_protocols[pref.stack_level]++;
 
 }				/* check_new_protocol */
 
@@ -536,7 +538,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 				 "y1", 0.0,
 				 "y2", 0.0,
 				 "fill_color",
-				 node_color,
+				 pref.node_color,
 				 "outline_color",
 				 "black", "width_pixels", 0, NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
@@ -546,8 +548,8 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "x", 0.0,
 			       "y", 0.0,
 			       "anchor", GTK_ANCHOR_CENTER,
-			       "font", fontname,
-			       "fill_color", text_color, NULL);
+			       "font", pref.fontname,
+			       "fill_color", pref.text_color, NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_node->text_item));
       new_canvas_node->group_item = group;
 
@@ -628,10 +630,10 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 				 * the traversion (Does that word exist? :-) */
     }
 
-  if (node->main_prot[stack_level])
+  if (node->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (protocols[stack_level],
-					  node->main_prot[stack_level],
+      protocol_item = g_list_find_custom (protocols[pref.stack_level],
+					  node->main_prot[pref.stack_level],
 					  protocol_compare);
       if (protocol_item)
 	protocol = protocol_item->data;
@@ -639,7 +641,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 	g_warning (_("Main node protocol not found in update_canvas_nodes"));
     }
 
-  switch (node_size_variable)
+  switch (pref.node_size_variable)
     {
     case INST_TOTAL:
       node_size = get_node_size (node->average);
@@ -724,12 +726,12 @@ display_node (node_t * node)
    * has packets, so we have to check that as well */
 
   /* Remove canvas_node if node is too old */
-  if (IS_OLDER (diff, gui_node_timeout_time) && gui_node_timeout_time
-      && !node->n_packets)
+  if (IS_OLDER (diff, pref.gui_node_timeout_time)
+      && pref.gui_node_timeout_time && !node->n_packets)
     return FALSE;
 
 #if 1
-  if ((gui_node_timeout_time == 1) && !node->n_packets)
+  if ((pref.gui_node_timeout_time == 1) && !node->n_packets)
     g_my_critical ("Impossible situation in display node");
 #endif
 
@@ -747,13 +749,13 @@ limit_nodes (void)
   displayed_nodes = 0;		/* We'll increment for each node we don't
 				 * limit */
 
-  if (node_limit < 0)
+  if (pref.node_limit < 0)
     {
       displayed_nodes = g_tree_nnodes (canvas_nodes);
       return;
     }
 
-  limit = node_limit;
+  limit = pref.node_limit;
 
   ordered_nodes = g_tree_new (traffic_compare);
 
@@ -862,7 +864,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 
   /* TODO I've done all the stationary changes in a hurry
    * I should review it an tidy up all this stuff */
-  if (stationary)
+  if (pref.stationary)
     {
       if (canvas_node->is_new)
 	{
@@ -907,7 +909,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 	}
     }
 
-  if (!stationary || canvas_node->is_new)
+  if (!pref.stationary || canvas_node->is_new)
     {
       /* g_message ("%g %g", x, y); */
       gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
@@ -916,9 +918,9 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
     }
 
   /* We update the text font */
-  gnome_canvas_item_set (canvas_node->text_item, "font", fontname, NULL);
+  gnome_canvas_item_set (canvas_node->text_item, "font", pref.fontname, NULL);
 
-  if (diagram_only)
+  if (pref.diagram_only)
     {
       gnome_canvas_item_hide (canvas_node->text_item);
     }
@@ -1053,10 +1055,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   if (link)
     diff = substract_times (now, link->last_time);
 
-  if (link && link->main_prot[stack_level])
+  if (link && link->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (protocols[stack_level],
-					  link->main_prot[stack_level],
+      protocol_item = g_list_find_custom (protocols[pref.stack_level],
+					  link->main_prot[pref.stack_level],
 					  protocol_compare);
       if (protocol_item)
 	protocol = protocol_item->data;
@@ -1110,7 +1112,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   if (protocol)
     canvas_link->color = protocol->color;
 
-  if (nofade)
+  if (pref.nofade)
     {
       guint32 color;
       color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
@@ -1126,7 +1128,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       scale =
 	pow (0.10,
 	     (diff.tv_sec * 1000.0 +
-	      diff.tv_usec / 1000) / link_timeout_time);
+	      diff.tv_usec / 1000) / pref.link_timeout_time);
       scaledColor =
 	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
@@ -1151,7 +1153,7 @@ static gdouble
 get_node_size (gdouble average)
 {
   gdouble result = 0.0;
-  switch (size_mode)
+  switch (pref.size_mode)
     {
     case LINEAR:
       result = average + 1;
@@ -1163,7 +1165,7 @@ get_node_size (gdouble average)
       result = sqrt (average + 1);
       break;
     }
-  return (double) (5 + node_radius_multiplier * result);
+  return (double) (5 + pref.node_radius_multiplier * result);
 }
 
 /* Returs the width in pixels given average traffic and size mode */
@@ -1171,7 +1173,7 @@ static gdouble
 get_link_size (gdouble average)
 {
   gdouble result = 0.0;
-  switch (size_mode)
+  switch (pref.size_mode)
     {
     case LINEAR:
       result = average + 1;
@@ -1183,7 +1185,7 @@ get_link_size (gdouble average)
       result = sqrt (average + 1);
       break;
     }
-  return (double) (1 + link_width_multiplier * result);
+  return (double) (1 + pref.link_width_multiplier * result);
 }				/* get_link_size */
 
 
@@ -1205,10 +1207,10 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
     case GDK_ENTER_NOTIFY:
       if (canvas_link && canvas_link->link
-	  && canvas_link->link->main_prot[stack_level])
+	  && canvas_link->link->main_prot[pref.stack_level])
 	str =
 	  g_strdup_printf (_("Link main protocol: %s"),
-			   canvas_link->link->main_prot[stack_level]);
+			   canvas_link->link->main_prot[pref.stack_level]);
       else
 	str = g_strdup_printf (_("Link main protocol unknown"));
       gnome_appbar_push (appbar, str);
