@@ -593,23 +593,23 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr,
   packet_info->size = phdr.len;
   packet_info->timestamp = now;
   packet_info->parent = link;
-  packet_info->prot = get_packet_prot (packet);
+  packet_info->prot = g_string_new (get_packet_prot (packet));
   link->packets = g_list_prepend (link->packets, packet_info);
 
   /* Have we heard this protocol at all? */
   if (!(protocol_item = g_list_find_custom (protocols,
-					    packet_info->prot,
+					    packet_info->prot->str,
 					    protocol_compare)))
     {
       protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot);
+      protocol_info->name = g_strdup (packet_info->prot->str);
       protocols = g_list_prepend (protocols, protocol_info);
     }
 
 
   /* Have we already heard this protocol on this link? */
   if ((protocol_item = g_list_find_custom (link->protocols,
-					   packet_info->prot,
+					   packet_info->prot->str,
 					   protocol_compare)))
     {
       protocol_info = protocol_item->data;
@@ -621,7 +621,7 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr,
     /* First time protocol. Will have to be created */
     {
       protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot);
+      protocol_info->name = g_strdup (packet_info->prot->str);
       /*g_message (protocol_info->name); */
       protocol_info->accumulated = phdr.len;
       protocol_info->n_packets = 1;
@@ -779,7 +779,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	    link->average = 0;
 	  /* We remove protocol aggregate information */
 	  protocol_item = g_list_find_custom (link->protocols,
-					      packet->prot,
+					      packet->prot->str,
 					      protocol_compare);
 	  protocol_info = protocol_item->data;
 	  protocol_info->accumulated -= packet->size;
@@ -793,7 +793,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	}
 
       if (((packet_t *) (packets->data))->prot)
-	g_free (((packet_t *) (packets->data))->prot);
+	g_string_free (((packet_t *) (packets->data))->prot, TRUE);
       g_free (packets->data);
 
       if (packets->prev)

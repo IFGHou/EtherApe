@@ -368,11 +368,14 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 #endif
 
 
+	  /* TODO I have to create a free_link function in capture.c */
 	  link_id = link->link_id;	/* Since we are freeing the link
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
+	  if (link->main_prot)
+	    g_free (link->main_prot);
 	  g_free (link);
 	  g_tree_remove (links, link_id);
 	  g_free (link_id);
@@ -494,11 +497,17 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 #endif
 
 
+	  /* TODO I have to create a free_node and a free_link function
+	   * in capture.c */
 	  node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
+	  g_string_free (node->name, TRUE);
+	  g_string_free (node->numeric_name, TRUE);
+	  if (node->numeric_ip)
+	    g_string_free (node->numeric_ip, TRUE);
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);

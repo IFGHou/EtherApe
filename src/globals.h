@@ -94,7 +94,7 @@ typedef struct
   {
     guint size;			/* Size in bytes of the packet */
     struct timeval timestamp;	/* Time at which the packet was heard */
-    gchar *prot;		/* Protocol type the packet was carrying */
+    GString *prot;		/* Protocol type the packet was carrying */
     gpointer parent;		/* Pointer to the link or node owner of the 
 				 * packet */
   }
