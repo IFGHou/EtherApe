@@ -1078,21 +1078,19 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   guint32 scaledColor;
   gdouble scale;
 
-  link = canvas_link->link;
-
-#if 0
-  /* First we check whether the link has timed out */
-  link = update_link (link);
-#endif
+/* We used to run update_link here, but that was a major performance penalty, and now it is done in update_diagram */
   link = g_tree_lookup (links, link_id);
 
   if (!link)
     {
-      /* TODO VERY IMPORTANT *
-       * Make the same destroying procedure as in the canvas_nodes
-       * Else we are prone to have memory corruption */
-      gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-      gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
+      /* Right now I'm not very sure in which cases there could be a canvas_link but not a link_item, but
+       * I had a not in update_canvas_nodes that if the test is not done it can lead to corruption */
+      if (canvas_link->link_item)
+	{
+	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+	  gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
+	  canvas_link->link_item = NULL;
+	}
 
       g_tree_remove (canvas_links, link_id);
       g_my_debug ("Removing canvas link. Number of links %d",
@@ -1104,12 +1102,9 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 				 * the traversion (Does that word exist? :-) */
     }
 
+  diff = substract_times (now, link->last_time);
 
-  /* TODO do we really have to check for link in this two? */
-  if (link)
-    diff = substract_times (now, link->last_time);
-
-  if (link && link->main_prot[pref.stack_level])
+  if (link->main_prot[pref.stack_level])
     {
       protocol_item = g_list_find_custom (protocols[pref.stack_level],
 					  link->main_prot[pref.stack_level],
@@ -1119,6 +1114,9 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       else
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
+  else
+    g_warning (_("Null link->main_prot in update_canvas_links"));
+
   args[0].name = "x";
   args[1].name = "y";
 
