@@ -901,9 +901,8 @@ msgid "label73"
 msgstr ""
 
 #: src/glade-strings:138
-#, fuzzy
 msgid "Nodes"
-msgstr "_Modus"
+msgstr "_Knooppunten"
 
 #: src/info_windows.c:322
 msgid "No node_id in on_node_info_delete_event"
@@ -914,14 +913,12 @@ msgid "No node_info_window in on_node_info_delete_event"
 msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
 
 #: src/info_windows.c:351
-#, fuzzy
 msgid "No prot_name in on_prot_info_delete_event"
-msgstr "Geen node_id bij de functie on_node_info_delete_event"
+msgstr "Geen prot_name bij de functie on_prot_info_delete_event"
 
 #: src/info_windows.c:358
-#, fuzzy
 msgid "No prot_info_window in on_prot_info_delete_event"
-msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
+msgstr "Geen prot_info_window bij de functie on_prot_info_delete_event"
 
 #: src/info_windows.c:381
 msgid "No info available"
@@ -931,18 +928,18 @@ msgstr "Geen informatie becshikbaar"
 #: src/info_windows.c:733
 #, c-format
 msgid "%d\" ago"
-msgstr ""
+msgstr "%d\" geleden"
 
 #: src/info_windows.c:739
 #, c-format
 msgid "%d'%d\" ago"
-msgstr ""
+msgstr "%d'%d\" geleden"
 
 #. Watch out! The first is month, the second day of the month
 #: src/info_windows.c:751
 #, c-format
 msgid "%d/%d %d:%d"
-msgstr ""
+msgstr "%d/%d %d:%d"
 
 #~ msgid "&lt;capture filter&gt;"
 #~ msgstr "&lt;filter&gt;"
