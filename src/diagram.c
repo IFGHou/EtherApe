@@ -73,6 +73,10 @@ init_diagram ()
 				pref.diagram_only);
   widget = glade_xml_get_widget (xml, "group_unk_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
+  widget = glade_xml_get_widget (xml, "fade_toggle");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
+  widget = glade_xml_get_widget (xml, "cycle_toggle");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
@@ -490,30 +494,57 @@ delete_gui_protocols (void)
 
 }				/* delete_gui_protocols */
 
-/* For a given protocol, returns the color string that should be used
- * Right now it's just assigning colors from a list until it runs
- * out, but this behavious will change */
+/* 
+ * For a given protocol, returns the color string that should be used
+ */
 static gchar *
 get_prot_color (gchar * name)
 {
-#if 0
-  gchar *colors[] = { "red", "blue", "yellow", "white", "orange", "green",
-    "pink", "cyan", "brown", "purple", "tan"
-  };
-#endif
   gchar **color_protocol = NULL;
   static gchar *color = NULL;
+  static gchar *protocol = NULL;
+  gint i = 0;
 
-  if (color)
-    g_free (color);
 
-  color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
-  color = g_strdup (color_protocol[0]);
-  g_strfreev (color_protocol);
+  /* Default is to assign the next color in cycle as long
+   * as cycling assigned protocols is set.
+   * If it's not, then search for a not assigned color. */
 
-  prot_color_index++;
-  if (prot_color_index >= pref.n_colors)
-    prot_color_index = 0;
+  do
+    {
+      if (color)
+	g_free (color);
+      if (protocol)
+	g_free (protocol);
+      color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
+      color = g_strdup (color_protocol[0]);
+      protocol = g_strdup (color_protocol[1]);
+      g_strfreev (color_protocol);
+      prot_color_index++;
+      if (prot_color_index >= pref.n_colors)
+	prot_color_index = 0;
+      i++;
+    }
+  while ((!pref.cycle) && protocol && strcmp (protocol, "")
+	 && (i < pref.n_colors));
+
+  /* But if we find that a particular protocol has a particular color
+   * assigned, we override the default */
+
+  for (i = 0; i < pref.n_colors; i++)
+    {
+      color_protocol = g_strsplit (pref.colors[i], ";", 0);
+      if (color_protocol[1] && !strcmp (name, color_protocol[1]))
+	{
+	  g_free (color);
+	  color = g_strdup (color_protocol[0]);
+	  if (!prot_color_index)
+	    prot_color_index = pref.n_colors - 1;
+	  else
+	    prot_color_index--;
+	}
+      g_strfreev (color_protocol);
+    }
 
   return color;
 

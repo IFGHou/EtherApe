@@ -564,4 +564,21 @@ color_clist_to_pref (void)
       else
 	pref.colors[i] = g_strdup (color);
     }
-}
+}				/* color_clist_to_pref */
+
+void
+on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+
+  pref.nofade = !gtk_toggle_button_get_active (togglebutton);
+
+}				/* on_fade_toggle_toggled */
+
+void
+on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+
+  pref.cycle = gtk_toggle_button_get_active (togglebutton);
+  colors_changed = TRUE;
+
+}				/* on_cycle_toggle_toggled */

@@ -245,9 +245,9 @@ load_config (char *prefix)
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  /* Not yet, since we can't force fading
-     nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
-   */
+  pref.nofade =
+    gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
   pref.node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=3600000.0", &u);
@@ -358,6 +358,7 @@ save_config (char *prefix)
   gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
   gnome_config_set_bool ("Diagram/nofade", pref.nofade);
+  gnome_config_set_bool ("Diagram/cycle", pref.cycle);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",
@@ -378,6 +379,14 @@ save_config (char *prefix)
 			pref.node_size_variable);
   gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
   gnome_config_set_string ("Diagram/fontname", pref.fontname);
+
+  /* 
+   * TODO
+   * The definition of the third argument is "const gchar* const argv[]"
+   * If anybody knows how to cast my "gchar **" into that, please englighten me.
+   */
+  gnome_config_set_vector ("Diagram/colors", pref.n_colors, pref.colors);
+
   gnome_config_set_string ("General/version", VERSION);
 
   gnome_config_sync ();
