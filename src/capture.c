@@ -419,6 +419,9 @@ stop_capture (void)
   update_nodes ();
   update_links ();
 
+  /* Free conversations */
+  delete_conversations ();
+
   /* Free the list of new_nodes */
   g_list_free (new_nodes);
   new_nodes = NULL;
