@@ -132,7 +132,7 @@ etherape_OBJECTS =  main.o capture.o resolv.o util.o support.o \
 interface.o callbacks.o
 etherape_DEPENDENCIES = 
 etherape_LDFLAGS = 
-CFLAGS = -g -O2 -Wall -Wunused 
+CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
