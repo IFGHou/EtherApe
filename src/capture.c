@@ -1459,7 +1459,7 @@ set_node_name (node_t * node, gchar * preferences)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
 	      name_item = protocol->node_names;
-	      if (name_item)
+	      if (!strcmp(protocol->name, tokens[0]) && name_item)
 		{
 		  name = (name_t *) (name_item->data);
 		  /* If we require this protocol to be solved and it's not,
