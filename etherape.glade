@@ -27,6 +27,11 @@
 <widget>
   <class>GnomeApp</class>
   <name>app1</name>
+  <signal>
+    <name>destroy_event</name>
+    <handler>on_app1_destroy_event</handler>
+    <last_modification_time>Sun, 20 Feb 2000 10:58:25 GMT</last_modification_time>
+  </signal>
   <title>Etherape</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
