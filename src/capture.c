@@ -100,6 +100,7 @@ init_capture (void)
   switch (linktype)
     {
     case L_EN10MB:
+      g_my_debug ("Link type is Ethernet");
       if (mode == DEFAULT)
 	mode = ETHERNET;
       if (mode == FDDI)
@@ -107,6 +108,7 @@ init_capture (void)
       l3_offset = 14;
       break;
     case L_RAW:		/* The case for PPP or SLIP, for instance */
+      g_my_debug ("Link type is RAW");
       if (mode == DEFAULT)
 	mode = IP;
       if ((mode == ETHERNET) || (mode == FDDI))
@@ -114,6 +116,7 @@ init_capture (void)
       l3_offset = 0;
       break;
     case L_FDDI:		/* We are assuming LLC async frames only */
+      g_my_debug ("Link type is FDDI");
       if (mode == DEFAULT)
 	mode = FDDI;
       if (mode == ETHERNET)
