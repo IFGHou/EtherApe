@@ -1,12 +1,12 @@
 # Translation of etherape messages
 # Copyright (C) 2000 Frederic Peters
 # Frederic Peters <fpeters@debian.org>, 2000
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-04-26 18:37+0200\n"
+"POT-Creation-Date: 2001-05-02 20:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -113,7 +113,7 @@ msgstr "définir la couleur du texte"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:155
+#: src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
@@ -266,46 +266,209 @@ msgstr ""
 
 # src/capture.c:713
 #. TODO Write proper assertion code here
-#: src/capture.c:581
+#: src/capture.c:584
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:628
+#: src/capture.c:631
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:758
+#: src/capture.c:762
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:796
+#: src/capture.c:800
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:409
-#: src/capture.c:895
+#: src/capture.c:899
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:1018
+#: src/capture.c:1043
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1249
+#: src/capture.c:1281
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
+#: src/menus.c:67
+msgid "No suitables interfaces for capture have been found"
+msgstr ""
+
+#: src/menus.c:73
+msgid "Available interfaces for capture:"
+msgstr ""
+
+# src/main.c:67
+#: src/menus.c:211
+#, fuzzy, c-format
+msgid "Capture interface set to %s in GUI"
+msgstr "définir l'interface sur laquelle écouter"
+
+#: src/menus.c:262
+#, c-format
+msgid "Mode set to %s in GUI"
+msgstr ""
+
+#: src/menus.c:429
+msgid "Status not STOP or PAUSE at gui_start_capture"
+msgstr ""
+
+#. Sets the appbar
+#: src/menus.c:523
+msgid "Reading data from "
+msgstr ""
+
+#: src/menus.c:530 src/menus.c:648
+msgid "default interface"
+msgstr ""
+
+#: src/menus.c:535
+msgid " in FDDI mode"
+msgstr ""
+
 # src/interface.c:107
-#. dump_node_info
+#: src/menus.c:538
+#, fuzzy
+msgid " in Ethernet mode"
+msgstr "Etherape"
+
+# src/interface.c:709
+#: src/menus.c:541
+#, fuzzy
+msgid " in IP mode"
+msgstr "Mode de la taille"
+
+# src/interface.c:709
+#: src/menus.c:544
+#, fuzzy
+msgid " in TCP mode"
+msgstr "Mode de la taille"
+
+# src/interface.c:709
+#: src/menus.c:547
+#, fuzzy
+msgid " in UDP mode"
+msgstr "Mode de la taille"
+
+# src/interface.c:510
+#: src/menus.c:557
+#, fuzzy
+msgid "Diagram started"
+msgstr "Diagramme"
+
+#: src/menus.c:570
+msgid "Status not PLAY at gui_pause_capture"
+msgstr ""
+
+#. Sets the appbar
+#: src/menus.c:593
+msgid "Paused"
+msgstr ""
+
+# src/interface.c:510
+#: src/menus.c:598
+#, fuzzy
+msgid "Diagram paused"
+msgstr "Diagramme"
+
+#: src/menus.c:612
+msgid "Status not PLAY or PAUSE at gui_stop_capture"
+msgstr ""
+
+# src/main.c:70
+#. Sets the appbar
+#: src/menus.c:641
+#, fuzzy
+msgid "Ready to capture from "
+msgstr "définir le filtre de capture"
+
+# src/interface.c:510
+#: src/menus.c:653
+#, fuzzy
+msgid "Diagram stopped"
+msgstr "Diagramme"
+
+#: src/diagram.c:288
+msgid "Number of nodes: "
+msgstr ""
+
+#: src/diagram.c:292
+#, c-format
+msgid ". Refresh Period: %d"
+msgstr ""
+
+#: src/diagram.c:294
+msgid ". IDLE."
+msgstr ""
+
+#: src/diagram.c:296
+msgid ". TIMEOUT."
+msgstr ""
+
+# src/capture.c:409
+#: src/diagram.c:481
+#, fuzzy, c-format
+msgid "Creating canvas_node: %s. Number of nodes %d"
+msgstr "Création du noeud: %s. Nombre de noeuds: %d"
+
+# src/capture.c:409
+#: src/diagram.c:526
+#, fuzzy, c-format
+msgid "Removing canvas_node. Number of node %d"
+msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
+
+#: src/diagram.c:566
+msgid "Unknown value or node_size_variable"
+msgstr ""
+
+# src/capture.c:438 src/capture.c:443
+#: src/diagram.c:881
+#, fuzzy, c-format
+msgid "Creating canvas_link: %s-%s. Number of links %d"
+msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
+
+# src/capture.c:438 src/capture.c:443
+#: src/diagram.c:921
+#, fuzzy, c-format
+msgid "Removing canvas link. Number of links %d"
+msgstr "Suppression de la liaison. Nombre de liaisons: %d"
+
+#: src/diagram.c:1118
+msgid "No node_id in on_node_info_delete_event"
+msgstr ""
+
+#: src/diagram.c:1125
+msgid "No node_info_window in on_node_info_delete_event"
+msgstr ""
+
+#: src/diagram.c:1150
+msgid "No info available"
+msgstr ""
+
+#: src/diagram.c:1217
+#, c-format
+msgid "Link main protocol: %s"
+msgstr ""
+
+#: src/diagram.c:1220
+msgid "Link main protocol unknown"
+msgstr ""
+
+# src/interface.c:107
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -501,8 +664,7 @@ msgstr ""
 # src/interface.c:436
 #: src/glade-strings:51
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
-msgstr ""
-"Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
+msgstr "Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
 
 #: src/glade-strings:52
 msgid "Information"
@@ -544,9 +706,7 @@ msgstr "Largeur de liaison maximale"
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
-msgstr ""
-"Défini comment le rayon des noeuds et la largeur des liaisons sont "
-"calculésen fonction du traffic moyen"
+msgstr "Défini comment le rayon des noeuds et la largeur des liaisons sont calculésen fonction du traffic moyen"
 
 # src/interface.c:698
 #: src/glade-strings:61
@@ -653,9 +813,7 @@ msgstr "Filtre de capture"
 
 #: src/glade-strings:86
 msgid "Packet information is averaged for this amount of time"
-msgstr ""
-"La moyenne sur les informations des paquets est effectuée pour cette "
-"quantité de temps"
+msgstr "La moyenne sur les informations des paquets est effectuée pour cette quantité de temps"
 
 # src/interface.c:545
 #: src/glade-strings:87
@@ -824,8 +982,7 @@ msgstr ""
 #~ msgstr "6"
 
 #~ msgid "Filter what's captured. See the tcpdump man page for details"
-#~ msgstr ""
-#~ "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
+#~ msgstr "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
 
 # src/support.c:98 src/support.c:136
 #~ msgid "Couldn't find pixmap file: %s"
