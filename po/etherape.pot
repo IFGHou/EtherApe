@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-09 12:05+0200\n"
+"POT-Creation-Date: 2000-04-09 17:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -396,6 +396,6 @@ msgstr ""
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1036
+#: src/capture.c:1049
 msgid "Null packet in check_packet"
 msgstr ""
