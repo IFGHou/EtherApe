@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-05-04 15:51+0200\n"
+"POT-Creation-Date: 2001-04-03 20:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,103 +109,103 @@ msgstr ""
 msgid "Preferences saved"
 msgstr ""
 
-#: src/capture.c:58
+#: src/capture.c:74
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:76
+#: src/capture.c:94
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:86
+#: src/capture.c:106
 #, c-format
 msgid "Error opening %s : %s"
 msgstr ""
 
-#: src/capture.c:127
+#: src/capture.c:149
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:132
+#: src/capture.c:156
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:152
+#: src/capture.c:176
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:196
+#: src/capture.c:223
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:202
+#: src/capture.c:229
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:207
+#: src/capture.c:234
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:216
+#: src/capture.c:243
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:223
+#: src/capture.c:250
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:240
+#: src/capture.c:267
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:246
+#: src/capture.c:273
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:251
+#: src/capture.c:278
 msgid "Error while trying to stop capture"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:399
+#: src/capture.c:426
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:442
+#: src/capture.c:469
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:562
+#: src/capture.c:594
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:600
+#: src/capture.c:632
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:755
+#: src/capture.c:787
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:825
+#: src/capture.c:857
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:894
+#: src/capture.c:926
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1113
+#: src/capture.c:1145
 msgid "Null packet in check_packet"
 msgstr ""
 

@@ -1,4 +1,4 @@
-# Translation of etherape messages
+# Translation of EtherApe messages
 # Copyright (C) 2000 Juan Toledo
 # Juan Toledo <toledo@users.sourceforge.net>, 2000
 #
@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-05-04 15:51+0200\n"
+"POT-Creation-Date: 2000-08-18 20:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -355,7 +355,7 @@ msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 # src/capture.c:58
 # src/capture.c:58
 # src/capture.c:80
-#: src/capture.c:86
+#: src/capture.c:87
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo: %s"
@@ -371,7 +371,7 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:121
 # src/capture.c:128
 # src/capture.c:118
-#: src/capture.c:127
+#: src/capture.c:129
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
@@ -386,7 +386,7 @@ msgstr "Tipo de enlace aún no soportado"
 # src/capture.c:126
 # src/capture.c:133
 # src/capture.c:123
-#: src/capture.c:132
+#: src/capture.c:134
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
@@ -401,7 +401,7 @@ msgstr "Modo no disponible para este interfaz"
 # src/capture.c:146
 # src/capture.c:153
 # src/capture.c:143
-#: src/capture.c:152
+#: src/capture.c:154
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
@@ -416,7 +416,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:189
 # src/capture.c:197
 # src/capture.c:186
-#: src/capture.c:196
+#: src/capture.c:198
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -434,7 +434,7 @@ msgstr ""
 # src/capture.c:195
 # src/capture.c:203
 # src/capture.c:192
-#: src/capture.c:202
+#: src/capture.c:204
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -450,7 +450,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:200
 # src/capture.c:208
 # src/capture.c:197
-#: src/capture.c:207
+#: src/capture.c:209
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
@@ -464,7 +464,7 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/glade-strings:63
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:205
-#: src/capture.c:216
+#: src/capture.c:218
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Comenzar captura"
@@ -478,7 +478,7 @@ msgstr "Comenzar captura"
 # src/glade-strings:63
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:212
-#: src/capture.c:223
+#: src/capture.c:225
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Comenzar captura"
@@ -492,7 +492,7 @@ msgstr "Comenzar captura"
 # src/glade-strings:63
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:228
-#: src/capture.c:240
+#: src/capture.c:242
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Parar captura"
@@ -506,13 +506,13 @@ msgstr "Parar captura"
 # src/glade-strings:63
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:234
-#: src/capture.c:246
+#: src/capture.c:248
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Parar captura"
 
 # src/capture.c:239
-#: src/capture.c:251
+#: src/capture.c:253
 msgid "Error while trying to stop capture"
 msgstr "Error al intentar parar la captura"
 
@@ -528,7 +528,7 @@ msgstr "Error al intentar parar la captura"
 # src/capture.c:351
 # src/capture.c:387
 #. TODO Write proper assertion code here
-#: src/capture.c:399
+#: src/capture.c:401
 msgid "Reached default in get_node_id"
 msgstr ""
 
@@ -543,7 +543,7 @@ msgstr ""
 # src/capture.c:374
 # src/capture.c:394
 # src/capture.c:430
-#: src/capture.c:442
+#: src/capture.c:444
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -558,7 +558,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:497
 # src/capture.c:514
 # src/capture.c:550
-#: src/capture.c:562
+#: src/capture.c:569
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -574,7 +574,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:535
 # src/capture.c:552
 # src/capture.c:588
-#: src/capture.c:600
+#: src/capture.c:607
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -591,7 +591,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:707
 # src/capture.c:743
 #. TODO Write proper assertion code here
-#: src/capture.c:755
+#: src/capture.c:762
 msgid "Reached default in fill_names"
 msgstr ""
 
@@ -606,7 +606,7 @@ msgstr ""
 # src/capture.c:760
 # src/capture.c:777
 # src/capture.c:813
-#: src/capture.c:825
+#: src/capture.c:832
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -622,7 +622,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:828
 # src/capture.c:846
 # src/capture.c:882
-#: src/capture.c:894
+#: src/capture.c:901
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -638,7 +638,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1046
 # src/capture.c:1064
 # src/capture.c:1101
-#: src/capture.c:1113
+#: src/capture.c:1120
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -660,8 +660,8 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: src/glade-strings:7
-msgid "Etherape"
-msgstr "Etherape"
+msgid "EtherApe"
+msgstr "EtherApe"
 
 # src/interface.c:786
 # src/interface.c:786

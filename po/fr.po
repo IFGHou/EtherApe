@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-05-04 15:51+0200\n"
+"POT-Creation-Date: 2000-08-18 20:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -141,112 +141,112 @@ msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Erreur à l'ouverture de %s : %s (vous devriez peut-être être root?)"
 
 # src/capture.c:922
-#: src/capture.c:86
+#: src/capture.c:87
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Erreur au périphérique: %s"
 
 # src/capture.c:986
-#: src/capture.c:127
+#: src/capture.c:129
 msgid "Link type not yet supported"
 msgstr "Type de liaison pas encore supporté"
 
 # src/capture.c:979
-#: src/capture.c:132
+#: src/capture.c:134
 msgid "Mode not available in this device"
 msgstr "Mode non disponible pour ce périphérique."
 
 # src/capture.c:1005
-#: src/capture.c:152
+#: src/capture.c:154
 msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
 
 # src/capture.c:942
-#: src/capture.c:196
+#: src/capture.c:198
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "Impossible d'utiliser le filtre: impossible d'obtenir l'info de netmask (%s)."
 
 # src/capture.c:948
-#: src/capture.c:202
+#: src/capture.c:204
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Impossible d'analyser le filtre (%s)."
 
 # src/capture.c:954
-#: src/capture.c:207
+#: src/capture.c:209
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Impossible d'installer le filtre (%s)."
 
-#: src/capture.c:216
+#: src/capture.c:218
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Capture"
 
-#: src/capture.c:223
+#: src/capture.c:225
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Capture"
 
-#: src/capture.c:240
+#: src/capture.c:242
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Capture"
 
-#: src/capture.c:246
+#: src/capture.c:248
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Capture"
 
-#: src/capture.c:251
+#: src/capture.c:253
 msgid "Error while trying to stop capture"
 msgstr ""
 
 # src/capture.c:713
 #. TODO Write proper assertion code here
-#: src/capture.c:399
+#: src/capture.c:401
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:442
+#: src/capture.c:444
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:562
+#: src/capture.c:569
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:600
+#: src/capture.c:607
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:375
 #. TODO Write proper assertion code here
-#: src/capture.c:755
+#: src/capture.c:762
 msgid "Reached default in fill_names"
 msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
-#: src/capture.c:825
+#: src/capture.c:832
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:894
+#: src/capture.c:901
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1113
+#: src/capture.c:1120
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 

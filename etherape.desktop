@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=EtherApe
+Name[es]=EtherApe
+Comment=Graphical Network Monitor
+Comment[es]=Monitor Gráfico de Red
+Exec=etherape
+Terminal=0
+Type=Application
+Icon=etherape.png

@@ -21,7 +21,7 @@ How to report a bug
        and run as ./etherape
     2. Things to include:
           + Operating system and distribution
-          + Etherape version (etherape --version, or check the about box)
+          + EtherApe version (etherape --version, or check the about box)
           + pcap version (and package version as well)
           + gtk and gnome libs version (package version as well)
           + If possible, a backtrace (See below)
