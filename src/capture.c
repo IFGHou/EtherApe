@@ -75,6 +75,7 @@ init_capture (void)
 	{
 	  g_error (_("Error opening %s : %s - perhaps you need to be root?"),
 		   device, ebuf);
+	  exit(1);
 	}
       pcap_fd = pcap_fileno (pch);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
@@ -84,6 +85,7 @@ init_capture (void)
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
 	  g_error (_("Error opening %s : %s"), input_file, ebuf);
+	  exit(1);
 	}
 
     }
