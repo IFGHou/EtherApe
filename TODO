@@ -20,9 +20,6 @@ Issues in the source code
 
   * change all those ugly while (i+1) in capture.c
 
-  * update_packet_list should be given a pointer to the parent
-    node or link
-  
   * Find out a way to customize the gnome message that pops up
     if a SIGSEGV crashes us.
     
@@ -37,5 +34,8 @@ Issues in the source code
     and not put them one underneath the other. Funny no one has
     noticed. :-)
 
+  * Only now I realize that I could just use a regular
+    GtkTooltips for the canvas tooltips and not create my own.
+    
 --
 $Id$

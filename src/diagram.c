@@ -880,6 +880,8 @@ init_diagram ()
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);
   widget = lookup_widget (diag_pref, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
+  widget = lookup_widget (diag_pref, "filter_gnome_entry");
+  gnome_entry_load_history (GNOME_ENTRY(widget));
   /* TODO Write code to set the options menu to the positions 
    * indicated by the variables */
 

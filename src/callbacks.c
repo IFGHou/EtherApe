@@ -147,7 +147,7 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   gtk_editable_delete_text (entry, 0, -1);
   gtk_editable_insert_text (entry, filter, strlen (filter), &position);
   gtk_widget_show (diag_pref);
-
+  gdk_window_raise (diag_pref->window);
 }
 
 
@@ -471,6 +471,14 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   GtkWidget *widget;
   widget = lookup_widget (GTK_WIDGET (button), "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
+  widget = lookup_widget (GTK_WIDGET (diag_pref),
+				      "filter_gnome_entry");
+  /* TODO should only be done if the filter is not already
+   * in the history */
+   gnome_entry_prepend_history     (GNOME_ENTRY(widget),
+				    TRUE,
+				    filter);
+   gnome_entry_save_history (GNOME_ENTRY(widget));
 
 }
 
@@ -495,5 +503,7 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
     g_free (filter);
   filter = g_strdup (str);
   g_free (str);
+  /* TODO We should look at the error code from set_filter and pop
+   * up a window accordingly */
   set_filter (filter, NULL);
 }
