@@ -5,7 +5,7 @@
 %define prefix   /usr
 
 Summary: Graphical network viewer modeled after etherman.
-Name: EtherApe
+Name: etherape
 Version: %ver
 Release: %rel
 Copyright: GPL
@@ -20,7 +20,7 @@ Requires: gnome-libs >= 1.0.0
 Requires: libglade >= 0.11
 
 %description
-EtherApe is a graphical network monitor for Unix modeled after
+Etherape is a graphical network monitor for Unix modeled after
 etherman. Featuring ether, ip and tcp modes, it displays network
 activity graphically. Hosts and links change in size with traffic. 
 Color coded protocols display. It supports ethernet, ppp and slip 
@@ -56,5 +56,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.help README.bugs README.thanks
 %{prefix}/sbin/*
+%{prefix}/share/locale/*/*/*
 %{prefix}/share/locale/*/*/*
 %{prefix}/share/etherape/*/*
