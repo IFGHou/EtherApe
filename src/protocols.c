@@ -439,6 +439,9 @@ udp_compare (gconstpointer a, gconstpointer b)
   return 0;
 }				/* udp_compare */
 
+
+/* TODO this is probably this single piece of code I am most ashamed of.
+ * I should learn how to use flex or yacc and do this The Right Way (TM)*/
 static void
 load_services (void)
 {
@@ -498,11 +501,6 @@ load_services (void)
 	  if (error || !t2[0])
 	    error = TRUE;
 
-#if 0
-	  for (i = 0; !error && t2[0][i]; i++)
-	    if (!isdigit (t2[0][i]))
-	      error = TRUE;
-#endif
 	  /* TODO The h here is not portable */
 	  if (!sscanf (t2[0], "%hd", &port_number) || (port_number < 1))
 	    error = TRUE;
@@ -511,7 +509,8 @@ load_services (void)
 	    error = TRUE;
 
 	  if (error
-	      || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1])))
+	      || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1])
+		  && g_strcasecmp ("ddp", t2[1])))
 	    error = TRUE;
 
 	  if (error)
@@ -528,7 +527,7 @@ load_services (void)
 		  g_tree_insert (tcp_services,
 				 &(tcp_service->number), tcp_service);
 		}
-	      else
+	      else if (!g_strcasecmp ("udp", t2[1]))
 		{
 		  udp_service = g_malloc (sizeof (udp_service_t));
 		  udp_service->number = port_number;
@@ -536,6 +535,9 @@ load_services (void)
 		  g_tree_insert (udp_services,
 				 &(udp_service->number), udp_service);
 		}
+	      else
+		g_my_info ("DDP protocols not supported in %s", line);
+
 	    }
 
 	  g_strfreev (t2);
