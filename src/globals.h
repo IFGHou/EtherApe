@@ -34,6 +34,8 @@
 /* Since gdb does understand enums and not defines, and as 
  * way to make an easier transition to a non-pcap etherape,
  * I define my own enum for link type codes */
+/* See /usr/include/net/bpf.h for a longer description of
+ * some of the options */
 typedef enum
 {
   L_NULL = DLT_NULL,		/* no link-layer encapsulation */
@@ -50,7 +52,25 @@ typedef enum
   L_ATM_RFC1483 = DLT_ATM_RFC1483,	/* LLC/SNAP encapsulated atm */
   L_RAW = DLT_RAW,		/* raw IP */
   L_SLIP_BSDOS = DLT_SLIP_BSDOS,	/* BSD/OS Serial Line IP */
-  L_PPP_BSDOS = DLT_PPP_BSDOS	/* BSD/OS Point-to-point Protocol */
+  L_PPP_BSDOS = DLT_PPP_BSDOS,	/* BSD/OS Point-to-point Protocol */
+#ifdef DLT_ATM_CLIP
+  L_ATM_CLIP = DLT_ATM_CLIP,	/* Linux Classical-IP over ATM */
+#endif
+#ifdef DLT_PPP_SERIAL
+  L_PPP_SERIAL = DLT_PPP_SERIAL,	/* PPP over serial with HDLC encapsulation */
+#endif
+#ifdef DLT_C_HDLC
+  L_C_HDLC = DLT_C_HDLC,	/* Cisco HDLC */
+#endif
+#ifdef DLT_IEEE802_11
+  L_IEEE802_11 = DLT_IEEE802_11,	/* IEEE 802.11 wireless */
+#endif
+#ifdef DLT_LOOP
+  L_LOOP = DLT_LOOP,		/* OpenBSD loopback */
+#endif
+#ifdef DLT_LINUX_SLL
+  L_LINUX_SLL = DLT_LINUX_SLL	/* Linux cooked sockets */
+#endif
 }
 link_type_t;
 
