@@ -44,7 +44,8 @@ struct popup_data
 
 
 
-guint popup_to (struct popup_data *pd)
+guint
+popup_to (struct popup_data *pd)
 {
 
   GtkLabel *label;
@@ -315,12 +316,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (canvas_link->color.green) & 0xFF00) << 8) |
 	((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
-#if 0
-      gnome_canvas_item_set (canvas_link->link_item,
-			     "points", points,
-			     "fill_color_rgba", color,
-			     "width_units", link_size, NULL);
-#endif
       gnome_canvas_item_set (canvas_link->link_item,
 			     "points", points,
 			     "fill_color_rgba", color, NULL);
@@ -335,11 +330,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
 	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
-#if 0
-      gnome_canvas_item_set (canvas_link->link_item, "points", points,
-			     "fill_color_rgba", scaledColor, "width_units",
-			     link_size, NULL);
-#endif
       gnome_canvas_item_set (canvas_link->link_item,
 			     "points", points,
 			     "fill_color_rgba", scaledColor, NULL);
@@ -409,7 +399,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint
+check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -466,7 +457,8 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint
+check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -598,7 +590,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   style = gtk_style_new ();
   style->fg[GTK_STATE_NORMAL] = protocol->color;
   gtk_widget_set_style (label, style);
-
+  gtk_style_unref (style);
 }
 
 /* Refreshes the diagram. Called each refresh_period ms
@@ -606,9 +598,11 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
+  static GString *status_string;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
   guint n_nodes_before = 0, n_nodes_after = 1;
   static guint n_protocols[STACK_SIZE + 1] = { 0 };
@@ -616,9 +610,9 @@ guint update_diagram (GtkWidget * canvas)
   static gboolean is_idle = FALSE;
   gchar *str;
 
-  gettimeofday (&now, NULL);
+  g_mem_profile ();
 
-  /* We make sure that we don't go higher than the highest protocol */
+  gettimeofday (&now, NULL);
 
   /* We search for new protocols */
   if (n_protocols[stack_level]

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-03-29 15:11+0200\n"
+"POT-Creation-Date: 2000-03-29 19:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -158,7 +158,7 @@ msgid "Open File"
 msgstr "Ouvrir fichier"
 
 # src/interface.c:270
-#: src/interface.c:264 src/interface.c:1001
+#: src/interface.c:264 src/interface.c:1002
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -173,12 +173,12 @@ msgid "Protocols"
 msgstr "Protocoles"
 
 # src/interface.c:348
-#: src/interface.c:371
+#: src/interface.c:372
 msgid "Copyright 2000 Juan Toledo"
 msgstr "Copyright 2000 Juan Toledo"
 
 # src/interface.c:350
-#: src/interface.c:374
+#: src/interface.c:375
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
@@ -187,58 +187,58 @@ msgstr ""
 "Web: http://etherape.sourceforge.net"
 
 # src/interface.c:371
-#: src/interface.c:395 src/interface.c:1115
+#: src/interface.c:396 src/interface.c:1116
 msgid "window1"
 msgstr ""
 
 # src/interface.c:391
-#: src/interface.c:415
+#: src/interface.c:416
 msgid "name"
 msgstr ""
 
 # src/interface.c:400
-#: src/interface.c:424
+#: src/interface.c:425
 msgid "accumulated"
 msgstr ""
 
 # src/interface.c:409
-#: src/interface.c:433
+#: src/interface.c:434
 msgid "average"
 msgstr ""
 
 # src/interface.c:436
-#: src/interface.c:461
+#: src/interface.c:462
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 "Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
 
-#: src/interface.c:553
+#: src/interface.c:554
 msgid "Etherape: Preferences"
 msgstr "Etherape: Préférences"
 
-#: src/interface.c:589
+#: src/interface.c:590
 msgid "Click to toggle"
 msgstr "Cliquer pour sélectionner"
 
-#: src/interface.c:597
+#: src/interface.c:598
 msgid "Toggle whether text is shown on the diagram"
 msgstr "Défini si le texte est affiché sur le diagramme"
 
-#: src/interface.c:600
+#: src/interface.c:601
 msgid "No text"
 msgstr "Pas de texte"
 
 # src/interface.c:596
-#: src/interface.c:630
+#: src/interface.c:631
 msgid "Max. Node Radius"
 msgstr "Rayon de noeud maximal"
 
 # src/interface.c:622
-#: src/interface.c:660
+#: src/interface.c:661
 msgid "Max. Link Width"
 msgstr "Largeur de liaison maximale"
 
-#: src/interface.c:686
+#: src/interface.c:687
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
@@ -247,118 +247,118 @@ msgstr ""
 "calculésen fonction du traffic moyen"
 
 # src/interface.c:698
-#: src/interface.c:689
+#: src/interface.c:690
 msgid "Linear"
 msgstr "Linéaire"
 
 # src/interface.c:701
-#: src/interface.c:692
+#: src/interface.c:693
 msgid "Logarithmic"
 msgstr "Lograrithmique"
 
 # src/interface.c:704
-#: src/interface.c:695
+#: src/interface.c:696
 msgid "Square Root"
 msgstr "Racine carrée"
 
 # src/interface.c:709
-#: src/interface.c:701
+#: src/interface.c:702
 msgid "Size Mode"
 msgstr "Mode de la taille"
 
-#: src/interface.c:726
+#: src/interface.c:727
 msgid "Choose the font used to display text in the diagram"
 msgstr "Défini la police utilisée pour afficher le texte dans le diagramme"
 
-#: src/interface.c:729
+#: src/interface.c:730
 msgid "Font"
 msgstr "Police"
 
-#: src/interface.c:756
+#: src/interface.c:757
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Nombre de millisecondes entre les rafraîchissement du diagramme"
 
 # src/interface.c:570
-#: src/interface.c:759
+#: src/interface.c:760
 msgid "Diagram refresh period (ms)"
 msgstr "Période de rafraichissement (ms)"
 
-#: src/interface.c:785
+#: src/interface.c:786
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Défini le niveau du protocole affiché dans la légende"
 
-#: src/interface.c:788
+#: src/interface.c:789
 msgid "2"
 msgstr "2"
 
-#: src/interface.c:791
+#: src/interface.c:792
 msgid "3"
 msgstr "3"
 
-#: src/interface.c:794
+#: src/interface.c:795
 msgid "4"
 msgstr "4"
 
-#: src/interface.c:797
+#: src/interface.c:798
 msgid "5"
 msgstr "5"
 
-#: src/interface.c:800
+#: src/interface.c:801
 msgid "6"
 msgstr "6"
 
-#: src/interface.c:806
+#: src/interface.c:807
 msgid "Protocol Stack Level"
 msgstr "Niveau du protocole"
 
 # src/interface.c:510
-#: src/interface.c:830
+#: src/interface.c:831
 msgid "Diagram"
 msgstr "Diagramme"
 
 # src/main.c:70
-#: src/interface.c:874
+#: src/interface.c:875
 msgid "Capture filter"
 msgstr "Filtre de capture"
 
-#: src/interface.c:903
+#: src/interface.c:904
 msgid "Packet information is averaged for this amount of time"
 msgstr ""
 "La moyenne sur les informations des paquets est effectuée pour cette "
 "quantité de temps"
 
 # src/interface.c:545
-#: src/interface.c:908
+#: src/interface.c:909
 msgid "Averaging Time (ms)"
 msgstr "Temps moyen (ms)"
 
-#: src/interface.c:936
+#: src/interface.c:937
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr ""
 
 # src/interface.c:674
-#: src/interface.c:941
+#: src/interface.c:942
 msgid "Link Timeout (ms)"
 msgstr "Timeout pour les liaisons (ms)"
 
-#: src/interface.c:969
+#: src/interface.c:970
 msgid "Delete this node after this much time. 0 means never timeout."
 msgstr "Supprime ce noeud après cette quantité de temps. 0 signifie jamais."
 
 # src/interface.c:648
-#: src/interface.c:974
+#: src/interface.c:975
 msgid "Node Timeout (ms)"
 msgstr "Timeout pour les noeuds (ms)"
 
-#: src/interface.c:982
+#: src/interface.c:983
 msgid "Capture"
 msgstr "Capture"
 
-#: src/interface.c:1066
+#: src/interface.c:1067
 msgid "Select Font"
 msgstr "Choisir la police"
 
-#: src/interface.c:1126
+#: src/interface.c:1127
 msgid "Filter what's captured. See the tcpdump man page for details"
 msgstr ""
 "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
@@ -468,13 +468,13 @@ msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:766
+#: src/capture.c:767
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:883
+#: src/capture.c:888
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
