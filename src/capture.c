@@ -532,11 +532,11 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   packet_info->src_id = g_memdup (get_node_id (packet, SRC), node_id_length);
   packet_info->dst_id = g_memdup (get_node_id (packet, DST), node_id_length);
 
-  add_protocol (protocols, prot, phdr);
+  add_protocol (protocols, prot, phdr, packet_info->src_id, packet_info->dst_id);
 
+  /* Add this packet information to the src and dst nodes. If they
+   * don't exist, create them */
   add_node_packet (packet, packet_info, packet_info->src_id, OUTBOUND);
-
-  /* Now we do the same with the destination node */
   add_node_packet (packet, packet_info, packet_info->dst_id, INBOUND);
 
   link_id = get_link_id (packet);
@@ -684,7 +684,7 @@ add_node_packet (const guint8 * packet,
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (node->protocols, packet_info->prot, phdr);
+  add_protocol (node->protocols, packet_info->prot, phdr, NULL, NULL);
 
   /* We update node info */
   node->accumulated += packet_info->size;
@@ -732,7 +732,7 @@ add_link_packet (const guint8 * packet, const packet_t * packet_info,
 
   /* We update the link's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (link->protocols, packet_info->prot, phdr);
+  add_protocol (link->protocols, packet_info->prot, phdr, NULL, NULL);
 
   /* We update link info */
   link->accumulated += packet_info->size;
@@ -838,7 +838,8 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
  * protocols and specific node and link list */
 void
 add_protocol (GList ** protocols, const gchar * stack,
-	      struct pcap_pkthdr phdr)
+	      struct pcap_pkthdr phdr, const guint8 *src_id,
+	      const guint8 *dst_id)
 {
   GList *protocol_item = NULL;
   protocol_t *protocol_info = NULL;
@@ -853,6 +854,7 @@ add_protocol (GList ** protocols, const gchar * stack,
 	{
 	  protocol_info = protocol_item->data;
 	  protocol_info->accumulated += phdr.len;
+	  protocol_info->aver_accu += phdr.len;
 	  protocol_info->n_packets++;
 	}
       else
@@ -860,11 +862,26 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocol_info = g_malloc (sizeof (protocol_t));
 	  protocol_info->name = g_strdup (tokens[i]);
 	  protocol_info->accumulated = phdr.len;
+	  protocol_info->aver_accu = phdr.len;
+	  protocol_info->average = 0;
 	  protocol_info->n_packets = 1;
 	  protocol_info->node_names = NULL;
+	  protocol_info->node_ids = NULL;
 	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	}
-
+       
+       /* For the global protocols list, take note of nodes that are using
+	* this protocol */
+       if (src_id)
+	 {
+	    if (!g_list_find (protocol_info->node_ids, src_id))
+	      protocol_info->node_ids=g_list_prepend (protocol_info->node_ids, src_id);
+	 }
+       if (dst_id)
+	 {
+	    if (!g_list_find (protocol_info->node_ids, src_id))
+	      protocol_info->node_ids=g_list_prepend (protocol_info->node_ids, src_id);
+	 }
     }
   g_strfreev (tokens);
   tokens = NULL;
@@ -989,6 +1006,10 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 
 	    g_free (node);
 	    g_tree_remove (nodes, node_id);
+	     
+	    /* Remove all mentions to this node in the globals protocols list */
+	    forget_node_from_protocols (node_id);
+	    
 	    g_free (node_id);
 	    node = NULL;
 	    return TRUE;	/* I've checked it's not safe to traverse 
@@ -1006,6 +1027,27 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 
   return FALSE;
 }				/* update_node */
+
+/* Remove all mentions to this node in the globals protocols list */
+static void
+forget_node_from_protocols (guint8 *node_id)
+{
+   GList *protocol_item = NULL;
+   protocol_t *protocol = NULL;
+   guint i = 0;
+
+   for (; i <= STACK_SIZE; i++)
+     {
+	protocol_item = protocols[i];
+	while (protocol_item)
+	    {
+	       protocol = protocol_item->data;
+	       protocol->node_ids = g_list_remove (protocol->node_ids, node_id);
+	       protocol_item = protocol_item->next;
+	    }
+     }
+   
+}				/* forget_node_from_protocols */
 
 /* Returns a node from the list of new nodes or NULL if there are no more 
  * new nodes */

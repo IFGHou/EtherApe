@@ -187,13 +187,17 @@ packet_t;
 typedef struct
 {
   gchar *name;			/* Name of the protocol */
+  gdouble average;		/* Average bytes in or out in the last x ms */
+  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
   guint n_packets;		/* Number of packets containing this protocol */
   GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
-  GList *node_names;		/* Has a list of all node names used with this 
-				 * protocol */
+  GList *node_names;		/* Has a list of all node names used with this
+				 * protocol (used in node protocols) */
+  GList *node_ids;		/* Has a list of all the nodes that have used this
+				 * protocol (used in the global protocols list) */
 }
 protocol_t;
 
