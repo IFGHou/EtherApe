@@ -555,6 +555,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
     case ACCU_OUTBOUND:
       node_size = get_node_size (node->accumulated_out);
       break;
+    default:
+      node_size = get_node_size (node->average_out);
+      g_warning (_("Unknown value or node_size_variable"));
     }
 
 
