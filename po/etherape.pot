@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-22 10:48+0200\n"
+"POT-Creation-Date: 2001-07-06 12:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,18 +95,18 @@ msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
 #: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
-#: src/menus.c:379
+#: src/menus.c:371
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:271
+#: src/main.c:287
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:360
+#: src/main.c:376
 msgid "Preferences saved"
 msgstr ""
 
@@ -120,145 +120,154 @@ msgstr ""
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:115
+#: src/capture.c:108
+#, c-format
+msgid "Live device %s opened for capture. pcap_fd: %d"
+msgstr ""
+
+#: src/capture.c:116
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 
-#: src/capture.c:121
+#: src/capture.c:122
 #, c-format
 msgid "Error opening %s : %s"
 msgstr ""
 
-#: src/capture.c:124
+#: src/capture.c:125
 #, c-format
 msgid "%s opened for offline capture"
 msgstr ""
 
-#: src/capture.c:136
+#: src/capture.c:137
 msgid "Link type is Ethernet"
 msgstr ""
 
 #. The case for PPP or SLIP, for instance
-#: src/capture.c:144
+#: src/capture.c:145
 msgid "Link type is RAW"
 msgstr ""
 
 #. We are assuming LLC async frames only
-#: src/capture.c:152
+#: src/capture.c:153
 msgid "Link type is FDDI"
 msgstr ""
 
 #. As far as I know IEEE802 is Token Ring
-#: src/capture.c:161
+#: src/capture.c:162
 msgid "Link type is Token Ring"
 msgstr ""
 
 #. Loopback
-#: src/capture.c:169
+#: src/capture.c:170
 msgid "Link type is NULL"
 msgstr ""
 
-#: src/capture.c:177
+#: src/capture.c:178
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:230
+#: src/capture.c:231
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:252
+#: src/capture.c:253
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:278 src/capture.c:304
+#: src/capture.c:279 src/capture.c:305
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:284 src/capture.c:310
+#: src/capture.c:285 src/capture.c:311
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:289 src/capture.c:315
+#: src/capture.c:290 src/capture.c:316
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:326
+#: src/capture.c:327
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:336
+#: src/capture.c:337
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:343
+#: src/capture.c:344
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:359
+#: src/capture.c:360
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:369
+#: src/capture.c:370
 msgid "Pausing live capture"
 msgstr ""
 
-#: src/capture.c:376
+#: src/capture.c:377
 msgid "Pausing offline capture"
 msgstr ""
 
-#: src/capture.c:381
+#: src/capture.c:382
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:400
+#: src/capture.c:401
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:406
+#: src/capture.c:407
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:412
+#: src/capture.c:413
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:418
+#: src/capture.c:419
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#: src/capture.c:643
+#: src/capture.c:455
+msgid "Capture device stopped or file closed"
+msgstr ""
+
+#: src/capture.c:656
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:695
+#: src/capture.c:708
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:828
+#: src/capture.c:841
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:866
+#: src/capture.c:879
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1011
+#: src/capture.c:1024
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:1216
+#: src/capture.c:1229
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1534
+#: src/capture.c:1547
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -270,80 +279,80 @@ msgstr ""
 msgid "Available interfaces for capture:"
 msgstr ""
 
-#: src/menus.c:213
+#: src/menus.c:205
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:285
+#: src/menus.c:277
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:457
+#: src/menus.c:449
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:551
+#: src/menus.c:543
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:558 src/menus.c:702
+#: src/menus.c:550 src/menus.c:694
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:563
+#: src/menus.c:555
 msgid " in Token Ring mode"
 msgstr ""
 
-#: src/menus.c:566
+#: src/menus.c:558
 msgid " in FDDI mode"
 msgstr ""
 
-#: src/menus.c:569
+#: src/menus.c:561
 msgid " in Ethernet mode"
 msgstr ""
 
-#: src/menus.c:572
+#: src/menus.c:564
 msgid " in IP mode"
 msgstr ""
 
-#: src/menus.c:575
+#: src/menus.c:567
 msgid " in TCP mode"
 msgstr ""
 
-#: src/menus.c:578
+#: src/menus.c:570
 msgid " in UDP mode"
 msgstr ""
 
-#: src/menus.c:588
+#: src/menus.c:580
 msgid "Diagram started"
 msgstr ""
 
-#: src/menus.c:601
+#: src/menus.c:593
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:630
+#: src/menus.c:622
 msgid "Paused"
 msgstr ""
 
-#: src/menus.c:635
+#: src/menus.c:627
 msgid "Diagram paused"
 msgstr ""
 
-#: src/menus.c:661
+#: src/menus.c:653
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:695
+#: src/menus.c:687
 msgid "Ready to capture from "
 msgstr ""
 
-#: src/menus.c:707
+#: src/menus.c:699
 msgid "Diagram stopped"
 msgstr ""
 

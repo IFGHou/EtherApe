@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-22 10:48+0200\n"
+"POT-Creation-Date: 2001-07-06 12:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,7 +158,7 @@ msgstr ""
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
 #: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
-#: src/menus.c:379
+#: src/menus.c:371
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -166,7 +166,7 @@ msgstr "No ha sido posible cargar el interfaz (%s)"
 # src/main.c:256
 # src/main.c:256
 # src/main.c:259
-#: src/main.c:271
+#: src/main.c:287
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -178,7 +178,7 @@ msgstr ""
 # src/main.c:342
 # src/main.c:342
 # src/main.c:347
-#: src/main.c:360
+#: src/main.c:376
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -198,10 +198,15 @@ msgstr "Error buscando dispositivo: %s"
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
+#: src/capture.c:108
+#, c-format
+msgid "Live device %s opened for capture. pcap_fd: %d"
+msgstr "Dispositivo de captura \"en vivo\" %s abierto. pcap_fd: %d"
+
 # src/capture.c:113
 # src/capture.c:113
 # src/capture.c:113
-#: src/capture.c:115
+#: src/capture.c:116
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
@@ -210,7 +215,7 @@ msgstr ""
 # src/capture.c:119
 # src/capture.c:119
 # src/capture.c:119
-#: src/capture.c:121
+#: src/capture.c:122
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
@@ -218,7 +223,7 @@ msgstr "Error buscando dispositivo %s : %s"
 # src/capture.c:122
 # src/capture.c:122
 # src/capture.c:122
-#: src/capture.c:124
+#: src/capture.c:125
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
@@ -227,7 +232,7 @@ msgstr "%s abierto para captura offline"
 # src/capture.c:134
 # src/capture.c:134
 # src/capture.c:134
-#: src/capture.c:136
+#: src/capture.c:137
 msgid "Link type is Ethernet"
 msgstr "Tipo de enlace es Ethernet"
 
@@ -236,7 +241,7 @@ msgstr "Tipo de enlace es Ethernet"
 # src/capture.c:142
 # src/capture.c:142
 #. The case for PPP or SLIP, for instance
-#: src/capture.c:144
+#: src/capture.c:145
 msgid "Link type is RAW"
 msgstr "Tipo de enlace es RAW"
 
@@ -245,7 +250,7 @@ msgstr "Tipo de enlace es RAW"
 # src/capture.c:150
 # src/capture.c:150
 #. We are assuming LLC async frames only
-#: src/capture.c:152
+#: src/capture.c:153
 msgid "Link type is FDDI"
 msgstr "Tipo de enlace es FDDI"
 
@@ -254,7 +259,7 @@ msgstr "Tipo de enlace es FDDI"
 # src/capture.c:159
 # src/capture.c:159
 #. As far as I know IEEE802 is Token Ring
-#: src/capture.c:161
+#: src/capture.c:162
 msgid "Link type is Token Ring"
 msgstr "Tipo de enlace es Token Ring"
 
@@ -263,35 +268,35 @@ msgstr "Tipo de enlace es Token Ring"
 # src/capture.c:167
 # src/capture.c:167
 #. Loopback
-#: src/capture.c:169
+#: src/capture.c:170
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
 # src/capture.c:175
 # src/capture.c:175
 # src/capture.c:175
-#: src/capture.c:177
+#: src/capture.c:178
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:228
 # src/capture.c:228
 # src/capture.c:228
-#: src/capture.c:230
+#: src/capture.c:231
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
 # src/capture.c:250
 # src/capture.c:250
 # src/capture.c:250
-#: src/capture.c:252
+#: src/capture.c:253
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
 # src/capture.c:276 src/capture.c:302
 # src/capture.c:276 src/capture.c:302
 # src/capture.c:276 src/capture.c:302
-#: src/capture.c:278 src/capture.c:304
+#: src/capture.c:279 src/capture.c:305
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -301,7 +306,7 @@ msgstr ""
 # src/capture.c:282 src/capture.c:308
 # src/capture.c:282 src/capture.c:308
 # src/capture.c:282 src/capture.c:308
-#: src/capture.c:284 src/capture.c:310
+#: src/capture.c:285 src/capture.c:311
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -309,7 +314,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:287 src/capture.c:313
 # src/capture.c:287 src/capture.c:313
 # src/capture.c:287 src/capture.c:313
-#: src/capture.c:289 src/capture.c:315
+#: src/capture.c:290 src/capture.c:316
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
@@ -317,91 +322,95 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/capture.c:324
 # src/capture.c:324
 # src/capture.c:324
-#: src/capture.c:326
+#: src/capture.c:327
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
 # src/capture.c:330
 # src/capture.c:330
 # src/capture.c:330
-#: src/capture.c:336
+#: src/capture.c:337
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:337
 # src/capture.c:337
 # src/capture.c:337
-#: src/capture.c:343
+#: src/capture.c:344
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:354
 # src/capture.c:354
 # src/capture.c:354
-#: src/capture.c:359
+#: src/capture.c:360
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
 # src/capture.c:358
 # src/capture.c:358
 # src/capture.c:358
-#: src/capture.c:369
+#: src/capture.c:370
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
 # src/capture.c:364
 # src/capture.c:364
 # src/capture.c:364
-#: src/capture.c:376
+#: src/capture.c:377
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:371
 # src/capture.c:371
 # src/capture.c:371
-#: src/capture.c:381
+#: src/capture.c:382
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:389
 # src/capture.c:389
 # src/capture.c:389
-#: src/capture.c:400
+#: src/capture.c:401
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
 # src/capture.c:395
 # src/capture.c:395
 # src/capture.c:395
-#: src/capture.c:406
+#: src/capture.c:407
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:401
 # src/capture.c:401
 # src/capture.c:401
-#: src/capture.c:412
+#: src/capture.c:413
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:409
 # src/capture.c:409
 # src/capture.c:409
-#: src/capture.c:418
+#: src/capture.c:419
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
+
+#: src/capture.c:455
+msgid "Capture device stopped or file closed"
+msgstr "Dispositivo de captura parado of archivo cerrado"
 
 # src/capture.c:584
 # src/capture.c:584
 # src/capture.c:585
-#: src/capture.c:643
+#: src/capture.c:656
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:631
 # src/capture.c:631
 # src/capture.c:632
-#: src/capture.c:695
+#: src/capture.c:708
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -422,7 +431,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:762
 # src/capture.c:762
 # src/capture.c:768
-#: src/capture.c:828
+#: src/capture.c:841
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -444,7 +453,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:800
 # src/capture.c:800
 # src/capture.c:806
-#: src/capture.c:866
+#: src/capture.c:879
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -466,7 +475,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:899
 # src/capture.c:899
 # src/capture.c:907
-#: src/capture.c:1011
+#: src/capture.c:1024
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -488,7 +497,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:1043
 # src/capture.c:1043
 # src/capture.c:1080
-#: src/capture.c:1216
+#: src/capture.c:1229
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -510,7 +519,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1281
 # src/capture.c:1281
 # src/capture.c:1318
-#: src/capture.c:1534
+#: src/capture.c:1547
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
@@ -545,7 +554,7 @@ msgstr "Dispositivos de captura disponibles:"
 # src/menus.c:211
 # src/menus.c:211
 # src/menus.c:211
-#: src/menus.c:213
+#: src/menus.c:205
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Interfaz de captura fijado a %s en el GUI"
@@ -553,7 +562,7 @@ msgstr "Interfaz de captura fijado a %s en el GUI"
 # src/menus.c:262
 # src/menus.c:262
 # src/menus.c:262
-#: src/menus.c:285
+#: src/menus.c:277
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modo fijado en %s en el GUI"
@@ -563,7 +572,7 @@ msgstr "Modo fijado en %s en el GUI"
 # src/menus.c:429
 # src/menus.c:429
 # src/menus.c:429
-#: src/menus.c:457
+#: src/menus.c:449
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
@@ -571,14 +580,14 @@ msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 # src/menus.c:523
 # src/menus.c:523
 #. Sets the appbar
-#: src/menus.c:551
+#: src/menus.c:543
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
-#: src/menus.c:558 src/menus.c:702
+#: src/menus.c:550 src/menus.c:694
 msgid "default interface"
 msgstr "interfaz por defecto"
 
@@ -587,7 +596,7 @@ msgstr "interfaz por defecto"
 # src/glade-strings:10
 # src/glade-strings:10
 # src/glade-strings:10
-#: src/menus.c:563
+#: src/menus.c:555
 msgid " in Token Ring mode"
 msgstr " en modo Token Ring"
 
@@ -596,7 +605,7 @@ msgstr " en modo Token Ring"
 # src/menus.c:535
 # src/menus.c:535
 # src/menus.c:535
-#: src/menus.c:566
+#: src/menus.c:558
 msgid " in FDDI mode"
 msgstr " en modo FDDI"
 
@@ -605,7 +614,7 @@ msgstr " en modo FDDI"
 # src/menus.c:538
 # src/menus.c:538
 # src/menus.c:538
-#: src/menus.c:569
+#: src/menus.c:561
 msgid " in Ethernet mode"
 msgstr " en modo Ethernet"
 
@@ -626,7 +635,7 @@ msgstr " en modo Ethernet"
 # src/menus.c:541
 # src/menus.c:541
 # src/menus.c:541
-#: src/menus.c:572
+#: src/menus.c:564
 msgid " in IP mode"
 msgstr " en modo IP"
 
@@ -635,7 +644,7 @@ msgstr " en modo IP"
 # src/menus.c:544
 # src/menus.c:544
 # src/menus.c:544
-#: src/menus.c:575
+#: src/menus.c:567
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
@@ -644,7 +653,7 @@ msgstr " en modo TCP"
 # src/menus.c:547
 # src/menus.c:547
 # src/menus.c:547
-#: src/menus.c:578
+#: src/menus.c:570
 msgid " in UDP mode"
 msgstr " en modo UDP"
 
@@ -665,7 +674,7 @@ msgstr " en modo UDP"
 # src/menus.c:557
 # src/menus.c:557
 # src/menus.c:557
-#: src/menus.c:588
+#: src/menus.c:580
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
@@ -674,7 +683,7 @@ msgstr "Diagrama iniciado"
 # src/menus.c:570
 # src/menus.c:570
 # src/menus.c:570
-#: src/menus.c:601
+#: src/menus.c:593
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
@@ -684,7 +693,7 @@ msgstr "Status no es PLAY en gui_pause_capture"
 # src/menus.c:593
 # src/menus.c:593
 #. Sets the appbar
-#: src/menus.c:630
+#: src/menus.c:622
 msgid "Paused"
 msgstr "Pausado"
 
@@ -705,7 +714,7 @@ msgstr "Pausado"
 # src/menus.c:598
 # src/menus.c:598
 # src/menus.c:598
-#: src/menus.c:635
+#: src/menus.c:627
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
@@ -714,7 +723,7 @@ msgstr "Diagrama pausado"
 # src/menus.c:612
 # src/menus.c:612
 # src/menus.c:612
-#: src/menus.c:661
+#: src/menus.c:653
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 
@@ -736,7 +745,7 @@ msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 # src/menus.c:641
 # src/menus.c:641
 #. Sets the appbar
-#: src/menus.c:695
+#: src/menus.c:687
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
 
@@ -757,7 +766,7 @@ msgstr "Listo para capturar de "
 # src/menus.c:653
 # src/menus.c:653
 # src/menus.c:653
-#: src/menus.c:707
+#: src/menus.c:699
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
