@@ -35,7 +35,7 @@ void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 }
 
@@ -44,7 +44,7 @@ void
 on_new_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 }
 
@@ -53,7 +53,7 @@ void
 on_open1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 }
 
@@ -62,7 +62,7 @@ void
 on_save1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 }
 
@@ -71,7 +71,7 @@ void
 on_save_as1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 }
 
@@ -87,7 +87,7 @@ void
 on_cut1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 
 }
@@ -97,7 +97,7 @@ void
 on_copy1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 
 }
@@ -107,7 +107,7 @@ void
 on_paste1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 
 }
@@ -117,7 +117,7 @@ void
 on_clear1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 
 }
@@ -127,7 +127,7 @@ void
 on_properties1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *messagebox;
-  messagebox = glade_xml_get_widget(xml_app1, "messagebox1");
+  messagebox = glade_xml_get_widget(xml, "messagebox1");
   gtk_widget_show (messagebox);
 
 }
@@ -139,7 +139,7 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkEditable *entry;
   gint position = 0;
 
-  entry = GTK_EDITABLE (glade_xml_get_widget(xml_diag_pref,
+  entry = GTK_EDITABLE (glade_xml_get_widget(xml,
 				       "filter_entry"));
   gtk_editable_delete_text (entry, 0, -1);
   gtk_editable_insert_text (entry, filter, strlen (filter), &position);
@@ -152,9 +152,11 @@ void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
-  about = glade_xml_get_widget(xml_app1, "about2");
+  GladeXML *xml_about;
+  xml_about = glade_xml_new (ETHERAPE_GLADE_FILE, "about2");
+  about = glade_xml_get_widget(xml_about, "about2");
   gtk_widget_show (about);
-
+  gtk_object_unref(GTK_OBJECT(xml_about));
 }
 
 
@@ -179,7 +181,7 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.width / 2,
 				  widget->allocation.height / 2);
   need_reposition = TRUE;
-  canvas = glade_xml_get_widget(xml_app1, "canvas1");
+  canvas = glade_xml_get_widget(xml, "canvas1");
   update_diagram (canvas);
 }
 
@@ -263,7 +265,7 @@ on_toolbar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   guint num_band_return, band_position_return, offset_return;
   GnomeDockPlacement placement_return;
 
-  dock = GNOME_DOCK (glade_xml_get_widget(xml_app1, "dock1"));
+  dock = GNOME_DOCK (glade_xml_get_widget(xml, "dock1"));
   if (active)
     {
       dock_item = gnome_dock_get_item_by_name (dock,
@@ -298,7 +300,7 @@ on_legend_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   guint num_band_return, band_position_return, offset_return;
   GnomeDockPlacement placement_return;
 
-  dock = GNOME_DOCK (glade_xml_get_widget(xml_app1, "dock1"));
+  dock = GNOME_DOCK (glade_xml_get_widget(xml, "dock1"));
   if (active)
     {
       dock_item = gnome_dock_get_item_by_name (dock,
@@ -331,7 +333,7 @@ on_status_bar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   static gboolean active = TRUE;
   GtkWidget *widget;
-  widget = glade_xml_get_widget(xml_app1, "appbar1");
+  widget = glade_xml_get_widget(xml, "appbar1");
   if (active)
     {
       gtk_widget_hide (widget);
@@ -352,7 +354,7 @@ on_font_button_clicked (GtkButton * button, gpointer user_data)
 {
   static GtkWidget *fontsel = NULL;
   if (!fontsel)
-    fontsel = glade_xml_get_widget(xml_app1, "fontselectiondialog1");
+    fontsel = glade_xml_get_widget(xml, "fontselectiondialog1");
   gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
 					   (fontsel), fontname);
   gtk_widget_show (fontsel);
@@ -364,9 +366,7 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
-  /* TODO fix libglade */
-#if 0
-  fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
+  fontsel = glade_xml_get_widget(xml, "fontselectiondialog1");
   str =
     gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
 					     (fontsel));
@@ -380,7 +380,6 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
     }
 
   gtk_widget_hide (fontsel);
-#endif   
 }
 
 
@@ -388,11 +387,8 @@ void
 on_cancel_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
-  /* TODO fix libglade */
-#if 0
-  fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
+  fontsel = glade_xml_get_widget(xml, "fontselectiondialog1");
   gtk_widget_hide (fontsel);
-#endif
 }
 
 
@@ -401,10 +397,8 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
-  /* TODO fix libglade */
-#if 0
 
-  fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
+  fontsel = glade_xml_get_widget(xml, "fontselectiondialog1");
   str =
     gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
 					     (fontsel));
@@ -416,7 +410,6 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
       g_free (str);
       need_reposition = TRUE;
     }
-#endif
 }
 
 void
@@ -462,13 +455,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 void
 on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-#if 0   
-  GtkWidget *dialog;
-#endif   
   on_apply_pref_button_clicked (button, NULL);
-#if 0   
-  dialog = lookup_widget (GTK_WIDGET (button), "diag_pref");
-#endif
   gtk_widget_hide (diag_pref);
 
 }
@@ -477,9 +464,9 @@ void
 on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *widget;
-  widget = glade_xml_get_widget(xml_diag_pref, "filter_entry");
+  widget = glade_xml_get_widget(xml, "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = glade_xml_get_widget(xml_diag_pref, "filter_gnome_entry");
+  widget = glade_xml_get_widget(xml, "filter_gnome_entry");
   /* TODO should only be done if the filter is not already
    * in the history */
   gnome_entry_prepend_history (GNOME_ENTRY (widget), TRUE, filter);
@@ -490,10 +477,6 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-#if 0   
-  GtkWidget *dialog;
-  dialog = glade_xml_get_widget(xml_diag_pref, "diag_pref");
-#endif   
   gtk_widget_hide (diag_pref);
 
 }

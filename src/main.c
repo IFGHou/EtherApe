@@ -21,12 +21,8 @@
 #include <config.h>
 #endif
 
-#include <gnome.h>
-
 #include "globals.h"
 #include "main.h"
-
-
 
 int
 main (int argc, char *argv[])
@@ -183,22 +179,15 @@ main (int argc, char *argv[])
 
    /* TODO Do we really need to XML objects? */
    /* load the main window (which is named app1) */
-   xml_app1 = glade_xml_new("etherape.glade", NULL);
+   xml = glade_xml_new(ETHERAPE_GLADE_FILE, NULL);
    /* in case we can't load the interface, bail */
-   if(!xml_app1) {
+   if(!xml) {
       g_error(_("We could not load the interface!"));
       return 1;
    }
-   xml_diag_pref = glade_xml_new("etherape.glade", "diag_pref");
-   /* in case we can't load the interface, bail */
-   if(!xml_diag_pref) {
-      g_error(_("We could not load the interface!"));
-      return 1;
-   }
-   
+
    /* autoconnect any signals */
-   glade_xml_signal_autoconnect(xml_app1);
-   glade_xml_signal_autoconnect(xml_diag_pref);
+   glade_xml_signal_autoconnect(xml);
    
    
 #if 0   
@@ -209,8 +198,8 @@ main (int argc, char *argv[])
 
    /* setup our global app pointer to point to the main GnomeApp,
     *         which is named 'app1' */
-   app1 = glade_xml_get_widget(xml_app1, "app1");
-   diag_pref = glade_xml_get_widget(xml_diag_pref, "diag_pref");
+   app1 = glade_xml_get_widget(xml, "app1");
+   diag_pref = glade_xml_get_widget(xml, "diag_pref");
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
@@ -231,7 +220,7 @@ main (int argc, char *argv[])
 #if 0  
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
 #endif   
-  widget = glade_xml_get_widget(xml_app1, "canvas1");
+  widget = glade_xml_get_widget(xml, "canvas1");
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					refresh_period,
 					(GtkFunction) update_diagram,
