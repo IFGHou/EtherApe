@@ -202,7 +202,7 @@ update_diagram (GtkWidget * canvas)
   guint32 diff_msecs;
   node_t *new_node = NULL;
   static gboolean already_updating = FALSE;
-   
+
   if (status == PAUSE)
     return FALSE;
 
@@ -222,7 +222,7 @@ update_diagram (GtkWidget * canvas)
       g_my_debug ("update_diagram called while already updating");
       return FALSE;
     }
-   
+
   already_updating = TRUE;
 
 
