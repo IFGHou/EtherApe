@@ -105,7 +105,8 @@ init_capture (void)
 	  return errorbuf;
 	}
       pcap_fd = pcap_fileno (pch);
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
+      g_my_info (_("Live device %s opened for capture. pcap_fd: %d"), device,
+		 pcap_fd);
     }
   else
     {
@@ -451,9 +452,21 @@ stop_capture (void)
 	      ps.ps_recv, ps.ps_drop, n_packets);
   n_packets = 0;
   pcap_close (pch);
+  g_my_info (_("Capture device stopped or file closed"));
 
   return TRUE;
 }				/* stop_capture */
+
+/*
+ * Makes sure we don't leave any open device behind, or else we
+ * might leave it in promiscous mode
+ */
+void
+cleanup_capture (void)
+{
+  if (status != STOP)
+    stop_capture ();
+}
 
 
 /* This is a timeout function used when reading from capture files 

@@ -173,14 +173,6 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
 }				/* on_file_ok_button_clicked */
 
 
-void
-on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-  gtk_exit (0);
-}				/* on_exit1_activate */
-
-
-
 /* Capture menu */
 
 void

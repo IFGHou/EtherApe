@@ -5,9 +5,6 @@
 #include <gtk/gtk.h>
 #include "globals.h"
 
-gboolean
-on_app1_delete_event (GtkWidget * widget,
-		      GdkEvent * event, gpointer user_data);
 void
 on_canvas1_size_allocate (GtkWidget * widget,
 			  GtkAllocation * allocation, gpointer user_data);

@@ -17,7 +17,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <signal.h>
+
 static GLogLevelFlags debug_mask;
+static void (*oldhandler) (int);
+
 static gboolean quiet = FALSE;
 
 static void load_config (gchar * prefix);

@@ -314,11 +314,15 @@ gchar *filter;			/* Pcap filter to be used */
 
 /* Global functions declarations */
 
+/* From main.c */
+void cleanup (int signum);
+
 /* From capture.c */
 gchar *init_capture (void);
 gboolean start_capture (void);
 gboolean pause_capture (void);
 gboolean stop_capture (void);
+void cleanup_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 void update_nodes (void);
 void update_links (void);

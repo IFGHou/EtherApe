@@ -22,15 +22,6 @@
 /* Extern functions */
 extern void save_config (gchar * prefix);
 
-gboolean
-on_app1_delete_event (GtkWidget * widget,
-		      GdkEvent * event, gpointer user_data)
-{
-  gtk_exit (0);
-  return FALSE;
-}
-
-
 void
 on_canvas1_size_allocate (GtkWidget * widget,
 			  GtkAllocation * allocation, gpointer user_data)

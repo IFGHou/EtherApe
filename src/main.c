@@ -181,6 +181,22 @@ main (int argc, char *argv[])
 		      GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (app1);
 
+
+  /* 
+   * Signal handling
+   * Catch SIGINT and SIGTERM and, if we get either of them, clean up
+   * and exit.
+   * XXX - deal with signal semantics on various platforms.  Or just
+   * use "sigaction()" and be done with it?
+   */
+  signal (SIGTERM, cleanup);
+  signal (SIGINT, cleanup);
+#if !defined(WIN32)
+  if ((oldhandler = signal (SIGHUP, cleanup)) != SIG_DFL)	/* Play nice with nohup */
+    signal (SIGHUP, oldhandler);
+#endif
+
+
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
@@ -431,3 +447,16 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 
   return TRUE;
 }				/* save_session */
+
+
+/*
+ * Quit the program.
+ * Makes sure that the capture device is closed, or else we might
+ * be leaving it in promiscuous mode
+ */
+void
+cleanup (int signum)
+{
+  cleanup_capture ();
+  gtk_exit (0);
+}
