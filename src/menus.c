@@ -40,6 +40,9 @@ on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 }
 #endif
 
+
+/* FILE MENU */
+
 void
 on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -105,6 +108,88 @@ on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data)
   gtk_exit (0);
 }				/* on_exit1_activate */
 
+
+
+/* Capture menu */
+
+
+void
+on_mode_radio_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+   apemode_t new_mode=DEFAULT;
+   
+   g_my_debug ("Initial mode in on_mode_radio_activate %s", (gchar *) user_data);
+
+   if (!strcmp("FDDI", user_data))
+     new_mode=FDDI;
+   else if (!strcmp("Ethernet", user_data))
+     new_mode=ETHERNET;
+   else if (!strcmp("IP", user_data))
+     new_mode=IP;
+   else if (!strcmp("TCP", user_data))
+     new_mode=TCP;
+   else if (!strcmp("UDP", user_data))
+     new_mode=UDP;
+   
+   if (new_mode==mode)
+     return;
+   
+   /* I don't know why, but this menu item is called twice, instead
+    * of once. This forces me to make sure we are not trying to set
+    * anything impossible */
+
+   switch (linktype)
+     {
+      case L_NULL:
+      case L_RAW:
+	if ((new_mode==ETHERNET)||(new_mode==FDDI))
+	  return;
+	break;
+      case L_EN10MB:
+	if (new_mode==FDDI)
+	  return;
+	break;
+      case L_FDDI:
+	if (new_mode==ETHERNET)
+	  return;
+	break;
+      default:
+     }
+   gui_stop_capture();
+   mode=new_mode;
+   g_my_info ("Mode set to %s in GUI", (gchar *) user_data);
+   gui_start_capture();
+
+}				/* on_mode_radio_activate */
+
+void
+on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  gui_start_capture ();
+
+}				/* on_start_menuitem_activate */
+
+void
+on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  gui_pause_capture ();
+
+}				/* on_pause_menuitem_activate */
+
+void
+on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  gui_stop_capture ();
+
+}				/* on_stop_menuitem_activate */
+
+
+
+/* View menu */
+
+
+
 void
 on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
@@ -152,6 +237,11 @@ on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 }				/* on_status_bar_check_activate */
 
 
+
+/* Help menu */
+
+
+
 void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -169,26 +259,11 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
   gtk_object_unref (GTK_OBJECT (xml_about));
 }				/* on_about1_activate */
 
-void
-on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-  gui_start_capture ();
 
-}				/* on_start_menuitem_activate */
 
-void
-on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-  gui_pause_capture ();
+/* Helper functions */
 
-}				/* on_pause_menuitem_activate */
 
-void
-on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-  gui_stop_capture ();
-
-}				/* on_stop_menuitem_activate */
 
 /* Saves the history of a gnome_entry making sure there are no duplicates */
 void
@@ -254,6 +329,7 @@ gui_start_capture (void)
     return;
 
 
+  /* Enable and disable control buttons*/
   widget = glade_xml_get_widget (xml, "stop_button");
   gtk_widget_set_sensitive (widget, TRUE);
   widget = glade_xml_get_widget (xml, "stop_menuitem");
@@ -266,6 +342,59 @@ gui_start_capture (void)
   gtk_widget_set_sensitive (widget, TRUE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, TRUE);
+   
+  /* Enable and disable mode buttons */
+
+  switch (linktype)
+     {
+      case L_NULL:
+      case L_RAW:
+	widget = glade_xml_get_widget (xml, "fddi_radio");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "ethernet_radio");
+	gtk_widget_set_sensitive (widget, FALSE);
+	break;
+      case L_FDDI:
+	widget = glade_xml_get_widget (xml, "fddi_radio");
+	gtk_widget_set_sensitive (widget, TRUE);
+	widget = glade_xml_get_widget (xml, "ethernet_radio");
+	gtk_widget_set_sensitive (widget, FALSE);
+	break;
+      case L_EN10MB:
+	widget = glade_xml_get_widget (xml, "fddi_radio");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "ethernet_radio");
+	gtk_widget_set_sensitive (widget, TRUE);
+	break;
+      default:
+     }
+   
+   /* Set active mode in GUI */
+   
+   switch (mode)
+     {
+      case FDDI:
+	widget = glade_xml_get_widget (xml, "fddi_radio");
+	gtk_menu_item_activate (GTK_MENU_ITEM(widget));
+	break;
+      case ETHERNET:
+	widget = glade_xml_get_widget (xml, "ethernet_radio");
+	gtk_menu_item_activate (GTK_MENU_ITEM(widget));
+	break;
+      case IP:
+	widget = glade_xml_get_widget (xml, "ip_radio");
+	gtk_menu_item_activate (GTK_MENU_ITEM(widget));
+	break;
+      case TCP:
+	widget = glade_xml_get_widget (xml, "tcp_radio");
+	gtk_menu_item_activate (GTK_MENU_ITEM(widget));
+	break;
+      case UDP:
+	widget = glade_xml_get_widget (xml, "udp_radio");
+	gtk_menu_item_activate (GTK_MENU_ITEM(widget));
+	break;
+      default:
+     }
 
   g_my_info (_("Diagram started"));
 }				/* gui_start_capture */
@@ -335,9 +464,7 @@ gui_stop_capture (void)
    * and link_update, thus deleting all nodes and links since
    * status=STOP. Then the diagram is redrawn */
   widget = glade_xml_get_widget (xml, "canvas1");
-  g_my_info ("Antes del update diagram");
   update_diagram (widget);
-  g_my_info ("Después del update diagram");
 
   g_my_info (_("Diagram stopped"));
 }				/* gui_stop_capture */

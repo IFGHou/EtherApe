@@ -6,6 +6,17 @@
 
 gchar *s = N_("EtherApe");
 gchar *s = N_("_Capture");
+gchar *s = N_("_Mode");
+gchar *s = N_("Set FDDI mode");
+gchar *s = N_("_FDDI");
+gchar *s = N_("Set Ethernet mode");
+gchar *s = N_("_Ethernet");
+gchar *s = N_("Set IP mode");
+gchar *s = N_("_IP");
+gchar *s = N_("Set TCP mode");
+gchar *s = N_("_TCP");
+gchar *s = N_("Set UDP mode");
+gchar *s = N_("_UDP");
 gchar *s = N_("_Interfaces");
 gchar *s = N_("_Loopback");
 gchar *s = N_("Start capture");

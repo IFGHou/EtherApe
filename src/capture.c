@@ -121,31 +121,40 @@ init_capture (void)
   switch (linktype)
     {
     case L_EN10MB:
-      g_my_debug ("Link type is Ethernet");
+      g_my_info ("Link type is Ethernet");
       if (mode == DEFAULT)
-	mode = IP;
+	 {
+	    mode = IP;
+	    g_my_info ("Setting IP mode");
+	 }
       if (mode == FDDI)
 	error = TRUE;
       l3_offset = 14;
       break;
     case L_RAW:		/* The case for PPP or SLIP, for instance */
-      g_my_debug ("Link type is RAW");
+      g_my_info ("Link type is RAW");
       if (mode == DEFAULT)
-	mode = IP;
+	 {
+	    mode = IP;
+	    g_my_info ("Setting IP mode");
+	 }
       if ((mode == ETHERNET) || (mode == FDDI))
 	error = TRUE;
       l3_offset = 0;
       break;
     case L_FDDI:		/* We are assuming LLC async frames only */
-      g_my_debug ("Link type is FDDI");
+      g_my_info ("Link type is FDDI");
       if (mode == DEFAULT)
-	mode = FDDI;
+	 {
+	    mode = FDDI;
+	    g_my_info ("Setting FDDI mode");
+	 }
       if (mode == ETHERNET)
 	error = TRUE;
       l3_offset = 21;
       break;
     case L_NULL:		/* Loopback */
-      g_my_debug ("Link type is NULL");
+      g_my_info ("Link type is NULL");
       if (mode == DEFAULT)
 	mode = IP;
       if ((mode == ETHERNET) || (mode == FDDI))
@@ -654,8 +663,6 @@ add_node_packet (const guint8 * packet,
   /* Update names list for this node */
   get_packet_names (node->protocols, packet, phdr.len, prot, direction);
 
-  update_node (node);
-
 }				/* add_node_packet */
 
 
@@ -688,8 +695,6 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   link->accumulated += phdr.len;
   link->last_time = now;
   link->n_packets++;
-
-  update_link (link);
 
 }				/* add_link_packet */
 

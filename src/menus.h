@@ -31,6 +31,8 @@ void on_file_ok_button_clicked (GtkButton * button, gpointer user_data);
 
 void on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data);
 
+void on_mode_radio_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 
