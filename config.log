@@ -1,0 +1,31 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:562: checking for a BSD compatible install
+configure:615: checking whether build environment is sane
+configure:672: checking whether make sets ${MAKE}
+configure:718: checking for working aclocal
+configure:731: checking for working autoconf
+configure:744: checking for working automake
+configure:757: checking for working autoheader
+configure:770: checking for working makeinfo
+configure:790: checking for gcc
+configure:903: checking whether the C compiler (gcc  ) works
+configure:919: gcc -o conftest    conftest.c  1>&5
+configure:945: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:950: checking whether we are using GNU C
+configure:978: checking whether gcc accepts -g
+configure:1010: checking for POSIXized ISC
+configure:1033: checking for gcc
+configure:1146: checking whether the C compiler (gcc -g -O2 ) works
+configure:1162: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1188: checking whether the C compiler (gcc -g -O2 ) is a cross-compiler
+configure:1193: checking whether we are using GNU C
+configure:1221: checking whether gcc accepts -g
+configure:1256: checking for gcc option to accept ANSI C
+configure:1333: checking how to run the C preprocessor
+configure:1413: checking for ANSI C header files
+configure:1567: checking for gtk-config
+configure:1602: checking for GTK - version >= 1.2.0
+configure:1703: gcc -o conftest -g -O2 -I/usr/X11R6/include -I/usr/lib/glib/include   conftest.c -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm  1>&5
+configure:1812: checking for pcap_open_live in -lpcap
