@@ -64,6 +64,37 @@ typedef enum
 etype_t;
 #endif
 
+typedef enum
+{
+  SAP_NULL = 0x00,
+  SAP_LLC_SLMGMT = 0x02,
+  SAP_SNA_PATHCTRL = 0x04,
+  SAP_IP = 0x06,
+  SAP_SNA1 = 0x08,
+  SAP_SNA2 = 0x0C,
+  SAP_PROWAY_NM_INIT = 0x0E,
+  SAP_TI = 0x18,
+  SAP_BPDU = 0x42,
+  SAP_RS511 = 0x4E,
+  SAP_X25 = 0x7E,
+  SAP_XNS = 0x80,
+  SAP_NESTAR = 0x86,
+  SAP_PROWAY_ASLM = 0x8E,
+  SAP_SNAP = 0xAA,
+  SAP_ARP = 0x98,
+  SAP_VINES1 = 0xBA,
+  SAP_VINES2 = 0xBC,
+  SAP_NETWARE = 0xE0,
+  SAP_NETBIOS = 0xF0,
+  SAP_IBMNM = 0xF4,
+  SAP_RPL1 = 0xF8,
+  SAP_UB = 0xFA,
+  SAP_RPL2 = 0xFC,
+  SAP_OSINL = 0xFE,
+  SAP_GLOBAL = 0xFF
+}
+sap_type_t;
+
 /* IP */
 
 typedef enum
