@@ -111,7 +111,7 @@ l = @l@
 
 SUBDIRS = intl po macros src
 
-EXTRA_DIST =  	README.thanks 			README.help			NEWS.html			debian/README.debian		debian/changelog		debian/control			debian/copyright		debian/dirs			debian/docs			debian/menu			debian/rules		
+EXTRA_DIST =  	README.thanks 			README.help			NEWS.html			etherape.glade			debian/README.debian		debian/changelog		debian/control			debian/copyright		debian/dirs			debian/docs			debian/menu			debian/rules		
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

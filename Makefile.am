@@ -14,6 +14,7 @@ EXTRA_DIST = \
 	README.thanks 		\
 	README.help		\
 	NEWS.html		\
+	etherape.glade		\
 	debian/README.debian	\
 	debian/changelog	\
 	debian/control		\

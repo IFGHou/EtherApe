@@ -42,14 +42,9 @@ You may uninstall later by running
 Porting:
 --------
 Etherape has been compiled in at least:
-* Linux: Debian 2.2, Slackware 7.0, RedHat 6.1 (see note below)
+* Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1
 * NetBSD 1.4T (i386)
 * Sparc Solaris 7 with gcc 2.95.2
-
-There has been many reports saying that RedHat 6.1 won't show
-any traffic. It turns out RedHat patched their version of the 
-library and software using it has had to work around it (!?),
-as ethereal did.
 
 I still haven't figured how they ethereal developers managed,
 but a user suggests compiling your own version of libpcap to 
@@ -69,6 +64,7 @@ Further information:
 
 See the etherape web page at
 http://etherape.sourceforge.net/
+
 	   
 Subscribe to the etherape mailing list. To subscribe, point your 
 browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
@@ -91,3 +87,12 @@ of preference:
 Even though I'd ask you to post your bug report or feature 
 request on the bug tracking system, it would be nice if you could
 drop a note on the mailing list as well to say that you did so.
+
+If you already are a sourceforge user, please take the time to 
+tell me what would be your favourite next feature filling the 
+anonymous survey at 
+http://sourceforge.net/survey/survey.php?group_id=2712&survey_id=10248
+
+If not, you could always answer the same questions on the
+mailing list.
+
