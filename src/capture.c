@@ -46,6 +46,7 @@ init_capture (void)
   guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
+  gboolean error = FALSE;
 
 
   device = interface;
@@ -98,34 +99,34 @@ init_capture (void)
     case L_EN10MB:
       if (mode == DEFAULT)
 	mode = ETHERNET;
+      if (mode == FDDI)
+	error = TRUE;
       l3_offset = 14;
       break;
     case L_RAW:		/* The case for PPP or SLIP, for instance */
       if (mode == DEFAULT)
 	mode = IP;
-      if (mode == ETHERNET)
-	{
-	  g_message (_("Mode not available in this device"));
-	  /* TODO manage proper exit codes */
-	  exit (1);
-	}
+      if ((mode == ETHERNET) || (mode == FDDI))
+	error = TRUE;
       l3_offset = 0;
       break;
     case L_FDDI:		/* We are assuming LLC async frames only */
       if (mode == DEFAULT)
 	mode = FDDI;
       if (mode == ETHERNET)
-	{
-	  g_message (_("Mode not available in this device"));
-	  /* TODO manage proper exit codes */
-	  exit (1);
-	}
+	error = TRUE;
       l3_offset = 21;
       break;
     default:
       g_error (_("Link type not yet supported"));
     }
 
+  if (error)
+    {
+      g_message (_("Mode not available in this device"));
+      /* TODO manage proper exit codes */
+      exit (1);
+    }
 
   switch (mode)
     {
@@ -167,8 +168,7 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint
-set_filter (gchar * filter, gchar * device)
+gint set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -203,8 +203,7 @@ set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint
-get_offline_packet (void)
+guint get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
@@ -1031,8 +1030,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1061,8 +1059,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1089,8 +1086,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }
