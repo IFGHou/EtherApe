@@ -52,6 +52,7 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.bugs		\
 	FAQ			\
 	OVERVIEW		\
+	ChangeLog		\
 	etherape.spec		\
 	etherape.spec.in	\
 	html/NEWS.html		\
@@ -79,6 +80,7 @@ full-dist :
 	jed html/NEWS.html
 	make NEWS
 	make cvs
+	cvs2cl --accum
 	cvs tag `echo rel-${VERSION} | tr . - `
 	make dist
 	cp -f ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
