@@ -123,10 +123,10 @@ init_capture (void)
     case L_EN10MB:
       g_my_info ("Link type is Ethernet");
       if (mode == DEFAULT)
-	 {
-	    mode = IP;
-	    g_my_info ("Setting IP mode");
-	 }
+	{
+	  mode = IP;
+	  g_my_info ("Setting IP mode");
+	}
       if (mode == FDDI)
 	error = TRUE;
       l3_offset = 14;
@@ -134,10 +134,10 @@ init_capture (void)
     case L_RAW:		/* The case for PPP or SLIP, for instance */
       g_my_info ("Link type is RAW");
       if (mode == DEFAULT)
-	 {
-	    mode = IP;
-	    g_my_info ("Setting IP mode");
-	 }
+	{
+	  mode = IP;
+	  g_my_info ("Setting IP mode");
+	}
       if ((mode == ETHERNET) || (mode == FDDI))
 	error = TRUE;
       l3_offset = 0;
@@ -145,10 +145,10 @@ init_capture (void)
     case L_FDDI:		/* We are assuming LLC async frames only */
       g_my_info ("Link type is FDDI");
       if (mode == DEFAULT)
-	 {
-	    mode = FDDI;
-	    g_my_info ("Setting FDDI mode");
-	 }
+	{
+	  mode = FDDI;
+	  g_my_info ("Setting FDDI mode");
+	}
       if (mode == ETHERNET)
 	error = TRUE;
       l3_offset = 21;
