@@ -153,7 +153,7 @@ init_capture (void)
 
   nodes = g_tree_new (node_id_compare);
   links = g_tree_new (link_id_compare);
-  while (i)
+  while (i + 1)
     {
       protocols[i] = NULL;
       i--;
@@ -219,15 +219,15 @@ packet_read (pcap_t * pch, gint source, GdkInputCondition condition)
   gettimeofday (&now, NULL);
 
   src_id = get_node_id (pcap_packet, SRC);
-  update_node (pcap_packet, phdr, src_id);
+  add_node_packet (pcap_packet, phdr, src_id);
 
   /* Now we do the same with the destination node */
   dst_id = get_node_id (pcap_packet, DST);
-  update_node (pcap_packet, phdr, dst_id);
+  add_node_packet (pcap_packet, phdr, dst_id);
 
   link_id = get_link_id (pcap_packet);
   /* And now we update link traffic information for this packet */
-  update_link (pcap_packet, phdr, link_id);
+  add_link_packet (pcap_packet, phdr, link_id);
 
 }				/* packet_read */
 
@@ -321,8 +321,8 @@ get_link_id (const guint8 * packet)
  * network. If the node the packet refers to is unknown, we
  * create it. */
 static void
-update_node (const guint8 * packet, struct pcap_pkthdr phdr,
-	     const guint8 * node_id)
+add_node_packet (const guint8 * packet, struct pcap_pkthdr phdr,
+		 const guint8 * node_id)
 {
   node_t *node;
   packet_t *packet_info;
@@ -351,12 +351,12 @@ update_node (const guint8 * packet, struct pcap_pkthdr phdr,
    * before presentation */
   node->n_packets++;
 
-}				/* update_node */
+}				/* add_node_packet */
 
 /* Save as above plus we update protocol aggregate information */
 static void
-update_link (const guint8 * packet, struct pcap_pkthdr phdr,
-	     const guint8 * link_id)
+add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
+		 const guint8 * link_id)
 {
   link_t *link;
   packet_t *packet_info;
@@ -418,7 +418,7 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr,
   /* update_packet_list is now called in diagram.c */
   link->n_packets++;
 
-}				/* update_link */
+}				/* add_link_packet */
 
 /* Allocates a new node structure, and adds it to the
  * global nodes binary tree */
@@ -463,6 +463,7 @@ create_link (const guint8 * packet, const guint8 * link_id)
 {
   link_t *link;
   guint i = STACK_SIZE;
+  node_t *node;
 
   link = g_malloc (sizeof (link_t));
 
@@ -471,27 +472,24 @@ create_link (const guint8 * packet, const guint8 * link_id)
   link->n_packets = 0;
   link->accumulated = 0;
   link->packets = NULL;
-  while (i)
+  link->src_name = NULL;
+  link->dst_name = NULL;
+  while (i + 1)
     {
       link->protocols[i] = NULL;
       link->main_prot[i] = NULL;
       i--;
     }
   g_tree_insert (links, link->link_id, link);
+  node = g_tree_lookup (nodes, link_id);
+  link->src_name = g_strdup (node->name->str);
+  node = g_tree_lookup (nodes, (link_id + node_id_length));
+  link->dst_name = g_strdup (node->name->str);
 
-/* TODO make proper debugging output */
-#if 0
-  if (interape)
-    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _ ("Creating link: %s-%s. Number of links %d"),
-	   ip_to_str (packet + 26), ip_to_str (packet + 30),
-	   g_tree_nnodes (links));
-  else
-    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _ ("Creating link: %s-%s. Number of links %d"),
-	   get_ether_name (packet + 6), get_ether_name (packet),
-	   g_tree_nnodes (links));
-#endif
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	 _ ("Creating link: %s-%s. Number of links %d"),
+	 link->src_name, link->dst_name,
+	 g_tree_nnodes (links));
 
   return link;
 }				/* create_link */
@@ -692,8 +690,107 @@ add_protocol (GList ** protocols, gchar * stack, struct pcap_pkthdr phdr,
 	g_error (_ ("Higher than 10 items protocols stacks are not supported"));
     }
   g_strfreev (tokens);
-}
+}				/* add_protocol */
 
+node_t *
+update_node (node_t * node)
+{
+  struct timeval diff;
+  guint8 *node_id;
+
+  if (node->packets)
+    update_packet_list (node->packets, NODE);
+  if (node->n_packets == 0)
+    {
+      diff = substract_times (now, node->last_time);
+
+      if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
+	  && node_timeout_time)
+	{
+	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		 _ ("Removing node: %s. Number of node %d"),
+		 node->name->str, g_tree_nnodes (nodes));
+	  node_id = node->node_id;	/* Since we are freeing the node
+					 * we must free its members as well 
+					 * but if we free the id then we will
+					 * not be able to find the link again 
+					 * to free it, thus the intermediate variable */
+	  g_string_free (node->name, TRUE);
+	  g_string_free (node->numeric_name, TRUE);
+	  if (node->numeric_ip)
+	    g_string_free (node->numeric_ip, TRUE);
+	  g_free (node);
+	  g_tree_remove (nodes, node_id);
+	  g_free (node_id);
+	  node = NULL;
+	}
+      else
+	{
+	  node->packets = NULL;
+	  node->accumulated = 0;	/* TODO: do we really need this here anymore? */
+	}
+    }
+
+  return node;
+}				/* update_node */
+
+
+link_t *
+update_link (link_t * link)
+{
+  struct timeval diff;
+  guint8 *link_id;
+  guint i = STACK_SIZE;
+
+  if (link->packets)
+    update_packet_list (link->packets, LINK);
+
+  diff = substract_times (now, link->last_time);
+
+  if (link->n_packets == 0)
+    {
+
+      if (((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
+	  && link_timeout_time)
+	{
+	  link_id = link->link_id;	/* Since we are freeing the link
+					 * we must free its members as well 
+					 * but if we free the id then we will
+					 * not be able to find the link again 
+					 * to free it, thus the intermediate variable */
+	  while (i + 1)
+	    {
+	      if (link->main_prot[i])
+		g_free (link->main_prot[i]);
+	      i--;
+	    }
+	  g_free (link->src_name);
+	  g_free (link->dst_name);
+	  g_free (link);
+	  g_tree_remove (links, link_id);
+	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		 _ ("Removing link. Number of links %d"),
+		 g_tree_nnodes (canvas_links));
+
+	  g_free (link_id);
+	  link = NULL;
+
+	}
+      else
+	{
+	  link->packets = NULL;
+	  link->accumulated = 0;
+	  while (i + 1)
+	    {
+	      link->protocols[i] = NULL;
+	      i--;
+	    }
+	}
+    }
+
+  return link;
+
+}				/* update_link */
 
 /* This function is called to discard packets from the list 
  * of packets beloging to a node or a link, and to calculate
@@ -720,6 +817,8 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
   packet_l_e = g_list_last (packets);
   packet = (packet_t *) packet_l_e->data;
 
+
+  /* TODO Move all this below to update_node and update_link */
   /* If there still is relevant packets, then calculate average
    * traffic and update names*/
   if (packet)
@@ -739,7 +838,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	{
 	  link->average = 8000000 * link->accumulated / usecs_from_oldest;
 	  /* We look for the most used protocol for this link */
-	  while (i)
+	  while (i + 1)
 	    {
 	      if (link->main_prot[i])
 		g_free (link->main_prot[i]);
@@ -749,14 +848,6 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
 
     }
-
-  /* TODO timedout nodes and links should be freed here, not in
-   * diagram.c, shouldn't they? */
-
-  /* TODO Change the parameters to this function.
-   * I'd like to be able to access data of the parents
-   * when the packet list is empty */
-
 }				/* update_packet_list */
 
 /* Finds the most commmon protocol of all the packets in a

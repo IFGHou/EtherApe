@@ -5,8 +5,6 @@ User visible features:
   
   * Make protocol colors user-selectable.
   
-  * Autosaving of preferences..
-  
   * Ability to set per node preferences. Like setting an hour long
     averaging time only for the router.
     
@@ -16,14 +14,12 @@ User visible features:
 
 Issues in the source code
 -------------------------
+ 
+  * change all those ugly while (i+1) in capture.c
 
   * update_packet_list should be given a pointer to the parent
     node or link
   
-  * Clean up the mess with globals and functions definitions
-    ¿Could somebody point me to a document that says what
-    is the proper style of where things should be defined?
-
   * Find out a way to customize the gnome message that pops up
     if a SIGSEGV crashes us.
     

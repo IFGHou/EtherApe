@@ -336,7 +336,22 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
 
   /* First we check whether the link has timed out */
+  link = update_link (link);
 
+  if (!link)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+      g_tree_remove (canvas_links, link_id);
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _ ("Removing canvas link. Number of links %d"),
+	     g_tree_nnodes (canvas_links));
+      g_free (link_id);
+      return TRUE;		/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
+    }
+
+#if 0
   if (link->packets)
     update_packet_list (link->packets, LINK);
 
@@ -392,6 +407,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
       link->accumulated = 0;
     }
+#endif
+
+  /* TODO do we really have to check for link in this two? */
+  if (link)
+    diff = substract_times (now, link->last_time);
 
   if (link && link->main_prot[1])
     gdk_color_parse (get_prot_color (link->main_prot[1]), &canvas_link->color);
@@ -470,7 +490,24 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   node = canvas_node->node;
 
   /* First we check whether the link has timed out */
+  node = update_node (node);
 
+  /* If the node has timed out, we delete the canvas_node */
+  if (!node)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+      g_tree_remove (canvas_nodes, node_id);
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _ ("Removing canvas_node. Number of node %d"),
+	     g_tree_nnodes (canvas_nodes));
+      g_free (node_id);
+      need_reposition = 1;
+      return TRUE;		/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
+    }
+
+#if 0
   if (node->packets)
     update_packet_list (node->packets, NODE);
 
@@ -527,7 +564,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 	  node->accumulated = 0;	/* TODO: do we really need this here anymore? */
 	}
     }
-
+#endif
 
   node_size = get_node_size (node->average);
 
@@ -572,7 +609,8 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
-      new_canvas_link->canvas_link_id = link_id;
+      new_canvas_link->canvas_link_id = g_memdup (link_id,
+						  2 * node_id_length);
       new_canvas_link->link = link;
 
       /* We set the lines position using groups positions */
@@ -589,7 +627,9 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 							  NULL);
 
 
-      g_tree_insert (canvas_links, link_id, new_canvas_link);
+      g_tree_insert (canvas_links,
+		     new_canvas_link->canvas_link_id,
+		     new_canvas_link);
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
@@ -598,19 +638,10 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 			  (GtkSignalFunc) link_item_event, new_canvas_link);
 
 
-/* TODO properly give link creating message */
-#if 0
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _ ("Creating canvas_link: %s-%s. Number of links %d"),
-	     (node_t
-	      *) (g_tree_lookup (nodes,
-			       new_canvas_link->canvas_link_id))->name->str,
-	     (node_t
-	      *) (g_tree_lookup (nodes,
-				 (new_canvas_link->canvas_link_id) +
-				 node_id_length))->name->str,
+	     link->src_name, link->dst_name,
 	     g_tree_nnodes (canvas_links));
-#endif
 
     }
 
@@ -631,7 +662,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
-      new_canvas_node->canvas_node_id = node_id;
+      new_canvas_node->canvas_node_id = g_memdup (node_id, node_id_length);
       new_canvas_node->node = node;
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
@@ -668,7 +699,9 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       gtk_signal_connect (GTK_OBJECT (new_canvas_node->group_item), "event",
 			  (GtkSignalFunc) node_item_event, new_canvas_node);
 
-      g_tree_insert (canvas_nodes, node_id, new_canvas_node);
+      g_tree_insert (canvas_nodes,
+		     new_canvas_node->canvas_node_id,
+		     new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _ ("Creating canvas_node: %s. Number of nodes %d"),
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));

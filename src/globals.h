@@ -89,7 +89,9 @@ typedef struct
     struct timeval last_time;	/* Timestamp of the last packet added */
     GList *packets;		/* List of packets heard on this link */
     GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
-					   * all protocols heard at that level */
+					 * all protocols heard at that level */
+    gchar *src_name;
+    gchar *dst_name;
     /* TODO Ask around whether 10 is too bad
      * a hard limit */
   }
@@ -215,6 +217,8 @@ gchar *filter;			/* Pcap filter to be used */
 /* From capture.c */
 void init_capture (void);
 gint set_filter (gchar * filter, gchar * device);
+node_t *update_node (node_t * node);
+link_t *update_link (link_t *);
 void update_packet_list (GList * packets, enum packet_belongs belongs_to);
 struct timeval substract_times (struct timeval a, struct timeval b);
 gint node_id_compare (gconstpointer a, gconstpointer b);
