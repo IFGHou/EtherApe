@@ -31,7 +31,7 @@ main (int argc, char *argv[])
   gchar *mode_string = NULL;
   GtkWidget *widget;
   GnomeClient *client;
-  gchar *cl_filter = NULL, *cl_interface = NULL;
+  gchar *cl_filter = NULL, *cl_interface = NULL, *cl_input_file = NULL;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
@@ -41,7 +41,7 @@ main (int argc, char *argv[])
      N_("set interface to listen to"), N_("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &cl_filter, 0,
      N_("set capture filter"), N_("<capture filter>")},
-    {"infile", 'r', POPT_ARG_STRING, &input_file, 0,
+    {"infile", 'r', POPT_ARG_STRING, &cl_input_file, 0,
      N_("set input file"), N_("<file name>")},
     {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
      N_("don't convert addresses to names"), NULL},
@@ -122,6 +122,13 @@ main (int argc, char *argv[])
       if (interface)
 	g_free (interface);
       interface = g_strdup (cl_interface);
+    }
+
+  if (cl_input_file)
+    {
+      if (input_file)
+	g_free (input_file);
+      input_file = g_strdup (cl_input_file);
     }
 
 
