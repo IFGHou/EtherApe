@@ -109,14 +109,12 @@ get_prot_color (gchar * name)
   return "tan";
 }				/* get_prot_color */
 
-gdouble
-get_node_size (gdouble average)
+gdouble get_node_size (gdouble average)
 {
   return (double) 5 + node_radius_multiplier * average;
 }
 
-gdouble
-get_link_size (gdouble average)
+gdouble get_link_size (gdouble average)
 {
   return (double) 1 + link_width_multiplier * average;
 }
@@ -138,8 +136,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
   return FALSE;
 }
 
-guint
-popup_to (struct popup_data * pd)
+guint popup_to (struct popup_data * pd)
 {
 
   GtkLabel *label;
@@ -151,16 +148,16 @@ popup_to (struct popup_data * pd)
     gtk_label_set_text (label,
 			g_strdup_printf ("%s (%s, %s)",
 					 pd->canvas_node->node->name->str,
-					 pd->canvas_node->node->
-					 numeric_ip->str,
-					 pd->canvas_node->node->
-					 numeric_name->str));
+					 pd->canvas_node->node->numeric_ip->
+					 str,
+					 pd->canvas_node->node->numeric_name->
+					 str));
   else
     gtk_label_set_text (label,
 			g_strdup_printf ("%s (%s)",
 					 pd->canvas_node->node->name->str,
-					 pd->canvas_node->node->
-					 numeric_name->str));
+					 pd->canvas_node->node->numeric_name->
+					 str));
 
   label =
     (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
@@ -173,8 +170,7 @@ popup_to (struct popup_data * pd)
 				       pd->canvas_node->node->average *
 				       1000000));
 
-//   gtk_widget_show (GTK_WIDGET (pd->node_popup));
-  gtk_widget_popup (GTK_WIDGET (pd->node_popup), 10, 20);
+  gtk_widget_show (GTK_WIDGET (pd->node_popup));
 
   return FALSE;			/* Only called once */
 
@@ -358,7 +354,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       link->accumulated = 0;
     }
 
-  if (link)
+  if (link && link->main_prot)
     gdk_color_parse (get_prot_color (link->main_prot), &canvas_link->color);
   baseColor = ((canvas_link->color.red & 0xFF00) << 16) |
     ((canvas_link->color.green & 0xFF00) << 8) |
@@ -519,8 +515,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint
-check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -587,8 +582,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint
-check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -706,8 +700,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint
-update_diagram (GtkWidget * canvas)
+guint update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new;
@@ -800,6 +793,7 @@ init_diagram (GtkWidget * app1)
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
 
+  /* These variables but refresh_period are measured in usecs */
   averaging_time = 3000000.0;
   node_timeout_time = 60000000.0;
 
@@ -808,55 +802,34 @@ init_diagram (GtkWidget * app1)
   else
     link_timeout_time = 20000000.0;
 
+  if (mode == IP || mode == TCP)
+    refresh_period = 3000;
 
   /* Updates controls from values of variables */
-
-
-
-
-
   scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));
-
-
   gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
 			    log (node_radius_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
 			   "changed");
-
   scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "link_width_slider"));
-
-
   gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
 			    log (link_width_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
 			   "changed");
-
-
-
-
-
-
   spin =
     GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "averaging_spin"));
   gtk_spin_button_set_value (spin, averaging_time / 1000);
-
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
-
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "node_to_spin"));
   gtk_spin_button_set_value (spin, node_timeout_time / 1000);
-
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
-  /* Sets canvas background to black */
 
+  /* Sets canvas background to black */
   canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
   gdk_color_parse ("black", &color);
-
-
-
-
 
   gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &color, TRUE,
 			    TRUE);

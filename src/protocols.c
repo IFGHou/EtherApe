@@ -27,7 +27,7 @@ gchar *
 get_eth_type (const guint8 * packet)
 {
   etype_t etype;
-  ethhdrtype_t ethhdr_type;
+  ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
   gchar *prot;
 
   etype = pntohs (&packet[12]);
@@ -57,9 +57,11 @@ get_eth_type (const guint8 * packet)
        *        01-00-0C-00-00 for ISL frames. */
       if (packet[0] == 0x01 && packet[1] == 0x00 && packet[2] == 0x0C
 	  && packet[3] == 0x00 && packet[4] == 0x00)
-	/* TODO Analyze ISL frames */
-	prot = g_strdup ("ISL");
-      return prot;
+	{
+	  /* TODO Analyze ISL frames */
+	  prot = g_strdup ("ISL");
+	  return prot;
+	}
     }
 
   if (ethhdr_type == ETHERNET_802_3)

@@ -167,7 +167,8 @@ ether_to_str (const guint8 * ad)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -196,7 +197,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -223,7 +225,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }
@@ -584,7 +587,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 }				/* check_packet */
 
 /* Comparison function to sort protocols by their accumulated traffic */
-gint prot_freq_compare (gconstpointer a, gconstpointer b)
+gint
+prot_freq_compare (gconstpointer a, gconstpointer b)
 {
   protocol_t *prot_a, *prot_b;
 
@@ -936,7 +940,7 @@ init_capture (void)
 	{
 	  g_warning (_
 		     ("Can't use filter:  Couldn't obtain netmask info (%s)."),
-ebuf);
+		     ebuf);
 	  ok = 0;
 	}
       if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
