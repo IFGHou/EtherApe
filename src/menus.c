@@ -40,6 +40,66 @@ on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 }
 #endif
 
+void
+init_menus (void)
+{
+  GtkWidget *widget = NULL, *item = NULL;
+  gint err;
+  gchar err_str[300];
+  GList *interfaces;
+  GSList *group = NULL;
+  GString *info_string = NULL;
+
+  /* It seems libglade is not acknowledging the "Use gnome help" option in the 
+   * glade file and so it is not automatically adding the help items in the help
+   * menu. Thus I must add it manually here */
+
+  widget = glade_xml_get_widget (xml, "help1_menu");
+  gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
+		       gtk_accel_group_get_default (), TRUE, 1);
+
+  interface_list = get_interface_list (&err, err_str);
+
+  interfaces = interface_list;
+
+  if (!interfaces)
+    {
+      g_my_info (_("No suitables interfaces for capture have been found"));
+      return;
+    }
+
+  widget = glade_xml_get_widget (xml, "interfaces_menu");
+
+  info_string = g_string_new (_("Available interfaces for capture:"));
+
+  /* Set up a hidden dummy interface to set when there is no active
+   * interface */
+  item = gtk_radio_menu_item_new_with_label (group, "apedummy");
+  group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+  gtk_menu_append (GTK_MENU (widget), item);
+
+  /* Set up the real interfaces menu entries */
+  while (interfaces)
+    {
+      item =
+	gtk_radio_menu_item_new_with_label (group,
+					    (gchar *) (interfaces->data));
+      group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+      gtk_menu_append (GTK_MENU (widget), item);
+      gtk_widget_show (item);
+      gtk_signal_connect_object (GTK_OBJECT (item), "activate",
+				 GTK_SIGNAL_FUNC
+				 (on_interface_radio_activate),
+				 (gpointer) g_strdup (interfaces->data));
+      g_string_append (info_string, " ");
+      g_string_append (info_string, (gchar *) (interfaces->data));
+      interfaces = interfaces->next;
+    }
+
+
+  g_my_info (info_string->str);
+
+}				/* init_menus */
 
 /* FILE MENU */
 
@@ -68,11 +128,6 @@ on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data)
   str = gtk_editable_get_chars (editable, 0, -1);
   if (input_file)
     g_free (input_file);
-  if (interface)
-    {
-      g_free (interface);
-      interface = NULL;
-    }
 
   input_file = g_strdup (str);
   g_free (str);
@@ -83,20 +138,35 @@ void
 on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *widget;
+  gchar *str = NULL;
+
+  if (status != STOP)
+    gui_stop_capture ();
+
+  if (interface)
+    {
+      g_free (interface);
+      interface = NULL;
+    }
 
   widget = glade_xml_get_widget (xml, "file_combo_entry");
-  on_file_combo_entry_changed (GTK_EDITABLE (widget), NULL);
+  str = gtk_editable_get_chars (GTK_EDITABLE (widget), 0, -1);
+
+  widget = glade_xml_get_widget (xml, "open_file_dialog");
+  gtk_widget_hide (widget);
+
+
+  if (input_file)
+    g_free (input_file);
+  input_file = g_strdup (str);
+  if (str)
+    g_free (str);
 
   widget = glade_xml_get_widget (xml, "fileentry");
   update_history (GNOME_ENTRY
 		  (gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget))),
 		  input_file, TRUE);
 
-  widget = glade_xml_get_widget (xml, "open_file_dialog");
-  gtk_widget_hide (widget);
-
-  if (status != STOP)
-    gui_stop_capture ();
   gui_start_capture ();
 
 }				/* on_file_ok_button_clicked */
@@ -112,6 +182,34 @@ on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 /* Capture menu */
 
+void
+on_interface_radio_activate (gchar * gui_device)
+{
+  g_assert (gui_device != NULL);
+
+  if (interface && !strcmp (gui_device, interface))
+    return;
+
+  if (in_start_capture)
+    return;			/* Disregard when called because
+				 * of interface look change from
+				 * start_capture */
+
+  if (status != STOP)
+    gui_stop_capture ();
+
+  if (input_file)
+    g_free (input_file);
+  input_file = NULL;
+
+  if (interface)
+    g_free (interface);
+  interface = g_strdup (gui_device);
+
+  gui_start_capture ();
+
+  g_my_info (_("Capture interface set to %s in GUI"), gui_device);
+}				/* on_interface_radio_activate */
 
 void
 on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -158,7 +256,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     }
   gui_stop_capture ();
   mode = new_mode;
-  g_my_info ("Mode set to %s in GUI", (gchar *) user_data);
+  g_my_info (_("Mode set to %s in GUI"), (gchar *) user_data);
   gui_start_capture ();
 
 }				/* on_mode_radio_activate */
@@ -329,6 +427,7 @@ gui_start_capture (void)
   if (!start_capture ())
     return;
 
+  in_start_capture = TRUE;
 
   /* Enable and disable control buttons */
   widget = glade_xml_get_widget (xml, "stop_button");
@@ -376,26 +475,25 @@ gui_start_capture (void)
     {
     case FDDI:
       widget = glade_xml_get_widget (xml, "fddi_radio");
-      gtk_menu_item_activate (GTK_MENU_ITEM (widget));
       break;
     case ETHERNET:
       widget = glade_xml_get_widget (xml, "ethernet_radio");
-      gtk_menu_item_activate (GTK_MENU_ITEM (widget));
       break;
     case IP:
       widget = glade_xml_get_widget (xml, "ip_radio");
-      gtk_menu_item_activate (GTK_MENU_ITEM (widget));
       break;
     case TCP:
       widget = glade_xml_get_widget (xml, "tcp_radio");
-      gtk_menu_item_activate (GTK_MENU_ITEM (widget));
       break;
     case UDP:
       widget = glade_xml_get_widget (xml, "udp_radio");
-      gtk_menu_item_activate (GTK_MENU_ITEM (widget));
       break;
     default:
     }
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
+
+  /* Set the interface in GUI */
+  set_active_interface ();
 
   /* Sets the appbar */
 
@@ -430,6 +528,8 @@ gui_start_capture (void)
 
   set_appbar_status (status_string->str);
   g_string_free (status_string, TRUE);
+
+  in_start_capture = FALSE;
 
   g_my_info (_("Diagram started"));
 }				/* gui_start_capture */
@@ -544,3 +644,62 @@ fatal_error_dialog (const gchar * message)
   gtk_widget_show (error_messagebox);
 
 }				/* fatal_error_dialog */
+
+void
+set_active_interface ()
+{
+  GtkWidget *widget;
+  GList *menu_items = NULL;
+  gchar *label;
+
+
+  widget = glade_xml_get_widget (xml, "interfaces_menu");
+
+  menu_items = GTK_MENU_SHELL (widget)->children;
+
+  while (menu_items)
+    {
+      widget = (GtkWidget *) (menu_items->data);
+
+      if (input_file)
+	{
+	  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
+	  return;
+	}
+
+      label = GTK_LABEL (GTK_BIN (widget)->child)->label;
+
+      if (!strcmp (label, interface))
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
+
+      menu_items = menu_items->next;
+    }
+
+#if 0
+  GList *entry_items = NULL;
+  gboolean is_new = TRUE, normal_case = TRUE;
+
+  /* The combo fills up even if there are duplicate values. I think
+   * this is a bug in gnome and might be fixed in the future, but
+   * right now I'll just make sure the history is fine and reload that*/
+
+  /* TODO There really should be a better way of getting all values from
+   * the drop down list than this casting mess :-( */
+
+  /* The file entry introduces a copy of the file name at the end of the
+   * list if the browse button has been used. There goes another hack to
+   * work around it */
+  entry_items = GTK_LIST (GTK_COMBO (gentry)->list)->children;
+  while (entry_items)
+    {
+      gchar *history_value;
+      history_value = GTK_LABEL (GTK_BIN (entry_items->data)->child)->label;
+      if (!strcmp (history_value, str) && !is_fileentry
+	  && (entry_items->next != NULL))
+	is_new = FALSE;
+      normal_case = !(is_fileentry && !(entry_items->next));
+      entry_items = g_list_next (entry_items);
+    }
+#endif
+
+}				/* set_active_interface */

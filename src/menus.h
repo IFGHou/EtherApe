@@ -23,6 +23,16 @@
 
 #include <gtk/gtk.h>
 #include "globals.h"
+#include "util.h"
+
+GList *interface_list = NULL;	/* A list of all usable interface */
+
+static GnomeUIInfo help_submenu[] = {
+  GNOMEUIINFO_HELP ("etherape"),
+  GNOMEUIINFO_END
+};
+
+static gboolean in_start_capture;
 
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_file_cancel_button_clicked (GtkButton * button, gpointer user_data);
@@ -31,6 +41,7 @@ void on_file_ok_button_clicked (GtkButton * button, gpointer user_data);
 
 void on_exit1_activate (GtkMenuItem * menuitem, gpointer user_data);
 
+void on_interface_radio_activate (gchar * gui_device);
 void on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
@@ -43,3 +54,4 @@ void on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
 				   gpointer user_data);
 
 void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
+static void set_active_interface (void);
