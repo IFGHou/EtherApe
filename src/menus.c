@@ -452,6 +452,8 @@ gui_start_capture (void)
     {
     case L_NULL:
     case L_RAW:
+      widget = glade_xml_get_widget (xml, "ieee802_radio");
+      gtk_widget_set_sensitive (widget, FALSE);
       widget = glade_xml_get_widget (xml, "fddi_radio");
       gtk_widget_set_sensitive (widget, FALSE);
       widget = glade_xml_get_widget (xml, "ethernet_radio");
@@ -462,11 +464,23 @@ gui_start_capture (void)
       gtk_widget_set_sensitive (widget, TRUE);
       widget = glade_xml_get_widget (xml, "ethernet_radio");
       gtk_widget_set_sensitive (widget, FALSE);
+      widget = glade_xml_get_widget (xml, "ieee802_radio");
+      gtk_widget_set_sensitive (widget, FALSE);
       break;
     case L_EN10MB:
       widget = glade_xml_get_widget (xml, "fddi_radio");
       gtk_widget_set_sensitive (widget, FALSE);
       widget = glade_xml_get_widget (xml, "ethernet_radio");
+      gtk_widget_set_sensitive (widget, TRUE);
+      widget = glade_xml_get_widget (xml, "ieee802_radio");
+      gtk_widget_set_sensitive (widget, FALSE);
+      break;
+    case L_IEEE802:
+      widget = glade_xml_get_widget (xml, "fddi_radio");
+      gtk_widget_set_sensitive (widget, FALSE);
+      widget = glade_xml_get_widget (xml, "ethernet_radio");
+      gtk_widget_set_sensitive (widget, FALSE);
+      widget = glade_xml_get_widget (xml, "ieee802_radio");
       gtk_widget_set_sensitive (widget, TRUE);
       break;
     default:
@@ -476,6 +490,9 @@ gui_start_capture (void)
 
   switch (mode)
     {
+    case IEEE802:
+      widget = glade_xml_get_widget (xml, "ieee802_radio");
+      break;
     case FDDI:
       widget = glade_xml_get_widget (xml, "fddi_radio");
       break;

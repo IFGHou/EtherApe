@@ -88,22 +88,6 @@ get_null_name (void)
 
 }				/* get_null_name */
 
-/* LLC is the only supported FDDI link layer type */
-/* TODO I actually don't know anything about how to
- * resolve LLC link layer addresses, so I'll just
- * pass it up so that we can get higher level ones */
-static void
-get_llc_name (void)
-{
-
-  level++;
-  offset += 21;
-
-  next_func = g_tree_lookup (prot_functions, tokens[level]);
-  if (next_func)
-    next_func->function ();
-
-}				/* get_llc_name */
 
 static void
 get_eth_name (void)
@@ -146,6 +130,101 @@ get_eth_name (void)
 
 }				/* get_eth_name */
 
+static void
+get_ieee802_name (void)
+{
+  gchar *numeric = NULL, *solved = NULL;
+  gboolean found_in_ethers = FALSE;
+
+  if (dir == INBOUND)
+    id = p + offset + 2;
+  else
+    id = p + offset + 8;
+
+  id_length = 6;
+
+  numeric = ether_to_str (id);
+  solved = get_ether_name (id);
+
+  /* get_ether_name will return an ethernet address with
+   * the first three numbers substituted with the manufacter
+   * if it cannot find an /etc/ethers entry. If it is so,
+   * then the last 8 characters (for example ab:cd:ef) will
+   * be the same, and we will note that the name hasn't
+   * been solved */
+
+  if (numeric && solved)
+    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
+			      solved + strlen (solved) - 8);
+
+  if (found_in_ethers)
+    add_name (numeric, solved, TRUE);
+  else
+    add_name (numeric, solved, FALSE);
+
+  level++;
+  offset += 14;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_ieee802_name */
+
+static void
+get_fddi_name (void)
+{
+  gchar *numeric = NULL, *solved = NULL;
+  gboolean found_in_ethers = FALSE;
+
+  if (dir == INBOUND)
+    id = p + offset + 1;
+  else
+    id = p + offset + 7;
+
+  id_length = 6;
+
+  numeric = ether_to_str (id);
+  solved = get_ether_name (id);
+
+  /* get_ether_name will return an ethernet address with
+   * the first three numbers substituted with the manufacter
+   * if it cannot find an /etc/ethers entry. If it is so,
+   * then the last 8 characters (for example ab:cd:ef) will
+   * be the same, and we will note that the name hasn't
+   * been solved */
+
+  if (numeric && solved)
+    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
+			      solved + strlen (solved) - 8);
+
+  if (found_in_ethers)
+    add_name (numeric, solved, TRUE);
+  else
+    add_name (numeric, solved, FALSE);
+
+  level++;
+  offset += 13;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_fddi_name */
+
+/* LLC is the only supported FDDI link layer type */
+static void
+get_llc_name (void)
+{
+
+  level++;
+  offset += 8;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_llc_name */
 
 static void
 get_arp_name (void)

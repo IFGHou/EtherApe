@@ -131,43 +131,43 @@ init_capture (void)
   switch (linktype)
     {
     case L_EN10MB:
-      g_my_info ("Link type is Ethernet");
+      g_my_info (_("Link type is Ethernet"));
       if (mode == DEFAULT)
-	{
-	  mode = IP;
-	  g_my_info ("Setting IP mode");
-	}
+	mode = IP;
       if (mode == FDDI)
 	error = TRUE;
       l3_offset = 14;
       break;
     case L_RAW:		/* The case for PPP or SLIP, for instance */
-      g_my_info ("Link type is RAW");
+      g_my_info (_("Link type is RAW"));
       if (mode == DEFAULT)
-	{
-	  mode = IP;
-	  g_my_info ("Setting IP mode");
-	}
-      if ((mode == ETHERNET) || (mode == FDDI))
+	mode = IP;
+      if ((mode == ETHERNET) || (mode == FDDI) || (mode == IEEE802))
 	error = TRUE;
       l3_offset = 0;
       break;
     case L_FDDI:		/* We are assuming LLC async frames only */
-      g_my_info ("Link type is FDDI");
+      g_my_info (_("Link type is FDDI"));
       if (mode == DEFAULT)
-	{
-	  mode = FDDI;
-	  g_my_info ("Setting FDDI mode");
-	}
-      if (mode == ETHERNET)
+	mode = IP;
+      if ((mode == ETHERNET) || (mode == IEEE802))
 	error = TRUE;
       l3_offset = 21;
       break;
-    case L_NULL:		/* Loopback */
-      g_my_info ("Link type is NULL");
+    case L_IEEE802:
+      /* As far as I know IEEE802 is Token Ring */
+      g_my_info (_("Link type is Token Ring"));
       if (mode == DEFAULT)
 	mode = IP;
       if ((mode == ETHERNET) || (mode == FDDI))
+	error = TRUE;
+      l3_offset = 22;
+      break;
+    case L_NULL:		/* Loopback */
+      g_my_info (_("Link type is NULL"));
+      if (mode == DEFAULT)
+	mode = IP;
+      if ((mode == ETHERNET) || (mode == FDDI) || (mode == IEEE802))
 	error = TRUE;
       l3_offset = 4;
       break;
@@ -210,6 +210,7 @@ init_capture (void)
     case ETHERNET:
     case IPX:
     case FDDI:
+    case IEEE802:
       if (filter)
 	str = g_strdup (filter);
       break;
@@ -234,6 +235,9 @@ init_capture (void)
       node_id_length = 6;
       break;
     case FDDI:
+      node_id_length = 6;
+      break;
+    case IEEE802:
       node_id_length = 6;
       break;
     case IP:

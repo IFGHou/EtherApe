@@ -47,6 +47,8 @@ static prot_function_t *next_func = NULL;
 static void get_eth_name (void);
 static void get_raw_name (void);
 static void get_null_name (void);
+static void get_fddi_name (void);
+static void get_ieee802_name (void);
 static void get_llc_name (void);
 static void get_arp_name (void);
 static void get_ip_name (void);
@@ -57,7 +59,7 @@ static void get_nbdgm_name (void);
 static void add_name (gchar * numeric, gchar * resolved, gboolean solved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 12
+#define KNOWN_PROTS 14
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
@@ -66,6 +68,8 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ISL", get_eth_name},
   {"RAW", get_raw_name},
   {"NULL", get_null_name},
+  {"FDDI", get_fddi_name},
+  {"Token Ring", get_ieee802_name},
   {"LLC", get_llc_name},
   {"ARP", get_arp_name},
   {"IP", get_ip_name},

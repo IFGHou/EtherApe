@@ -55,6 +55,7 @@ static guint offset = 0;
 
 static void get_eth_type (void);
 static void get_fddi_type (void);
+static void get_ieee802_type (void);
 static void get_eth_II (etype_t etype);
 
 static void get_ip (void);

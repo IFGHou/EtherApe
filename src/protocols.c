@@ -56,8 +56,12 @@ get_packet_prot (const guint8 * p, guint len)
       get_eth_type ();
       break;
     case L_FDDI:
-      /* prot = g_string_new ("LLC"); */
+      prot = g_string_new ("FDDI");
       get_fddi_type ();
+      break;
+    case L_IEEE802:
+      prot = g_string_append (prot, "Token Ring");
+      get_ieee802_type ();
       break;
     case L_RAW:		/* Both for PPP and SLIP */
       prot = g_string_append (prot, "RAW/IP");
@@ -168,7 +172,7 @@ get_eth_type (void)
 static void
 get_fddi_type (void)
 {
-  prot = g_string_append (prot, "LLC");
+  prot = g_string_append (prot, "/LLC");
   /* Ok, this is only temporary while I truly dissect LLC 
    * and fddi */
   if ((packet[19] == 0x08) && (packet[20] == 0x00))
@@ -177,7 +181,22 @@ get_fddi_type (void)
       get_ip ();
     }
 
-}				/* get_fdd_type */
+}				/* get_fddi_type */
+
+static void
+get_ieee802_type (void)
+{
+  /* As with FDDI, we only support LLC by now */
+  prot = g_string_append (prot, "/LLC");
+
+  if ((packet[20] == 0x08) && (packet[21] == 0x00))
+    {
+      prot = g_string_append (prot, "/IP");
+      get_ip ();
+    }
+
+}
+
 static void
 get_eth_II (etype_t etype)
 {
