@@ -23,6 +23,7 @@
 #include <gnome.h>
 #include <sys/time.h>
 #include <pcap.h>
+#include <glade/glade.h>
 
 #define STACK_SIZE 4		/* How many protocol levels to keep
 				 * track of (+1) */
@@ -200,6 +201,8 @@ canvas_link_t;
 
 /* Variables */
 
+GladeXML *xml_app1;
+GladeXML *xml_diag_pref;
 GtkWidget *app1;		/* Pointer to the main app window */
 GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
 struct timeval now;		/* Set both at each packet capture and 

@@ -25,8 +25,6 @@
 
 #include "globals.h"
 #include "main.h"
-#include "interface.h"
-#include "support.h"
 
 
 
@@ -77,7 +75,8 @@ main (int argc, char *argv[])
   /* We initiate the application and read command line options */
   gnome_init_with_popt_table ("Etherape", VERSION, argc, argv, optionsTable,
 			      0, NULL);
-
+   
+   
   /* We obtain application parameters 
    * First, absolute defaults
    * Second, values saved in the config file
@@ -179,13 +178,39 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
+   /* initialize glade for gnome */
+   glade_gnome_init();
+
+   /* TODO Do we really need to XML objects? */
+   /* load the main window (which is named app1) */
+   xml_app1 = glade_xml_new("etherape.glade", "app1");
+   /* in case we can't load the interface, bail */
+   if(!xml_app1) {
+      g_error(_("We could not load the interface!"));
+      return 1;
+   }
+   xml_diag_pref = glade_xml_new("etherape.glade", "diag_pref");
+   /* in case we can't load the interface, bail */
+   if(!xml_diag_pref) {
+      g_error(_("We could not load the interface!"));
+      return 1;
+   }
+   
+#if 0   
   /* We create main windows */
   app1 = create_app1 ();
   diag_pref = create_diag_pref ();
+#endif
+
+   /* setup our global app pointer to point to the main GnomeApp,
+    *         which is named 'app1' */
+   app1 = glade_xml_get_widget(xml_app1, "app1");
+   diag_pref = glade_xml_get_widget(xml_diag_pref, "diag_pref");
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
 
+   
   /* Session handling */
   client = gnome_master_client ();
   gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
@@ -198,11 +223,10 @@ main (int argc, char *argv[])
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
+#if 0  
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
-#if 0
-  diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
-				     (GtkFunction) update_diagram, widget);
-#endif
+#endif   
+  widget = glade_xml_get_widget(xml_app1, "canvas1");
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					refresh_period,
 					(GtkFunction) update_diagram,

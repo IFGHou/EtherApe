@@ -23,8 +23,6 @@
 
 #include <gnome.h>
 
-#include "interface.h"
-#include "support.h"
 #include "math.h"
 
 #include "globals.h"
@@ -48,83 +46,82 @@ init_diagram ()
 
 
   /* Updates controls from values of variables */
-  widget = lookup_widget (GTK_WIDGET (diag_pref), "node_radius_slider");
+  widget = glade_xml_get_widget(xml_diag_pref, "node_radius_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (node_radius_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
-  widget = lookup_widget (GTK_WIDGET (diag_pref), "link_width_slider");
+  widget = glade_xml_get_widget(xml_diag_pref, "link_width_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (link_width_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
   spin =
-    GTK_SPIN_BUTTON (lookup_widget
-		     (GTK_WIDGET (diag_pref), "averaging_spin"));
+    GTK_SPIN_BUTTON (glade_xml_get_widget(xml_diag_pref, "averaging_spin"));
   gtk_spin_button_set_value (spin, averaging_time / 1000);
   spin =
-    GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "refresh_spin"));
+    GTK_SPIN_BUTTON (glade_xml_get_widget(xml_diag_pref, "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
   spin =
-    GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "node_to_spin"));
+    GTK_SPIN_BUTTON (glade_xml_get_widget(xml_diag_pref, "node_to_spin"));
   gtk_spin_button_set_value (spin, node_timeout_time / 1000);
   spin =
-    GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "link_to_spin"));
+    GTK_SPIN_BUTTON (glade_xml_get_widget(xml_diag_pref, "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
-  widget = lookup_widget (GTK_WIDGET (diag_pref), "diagram_only_toggle");
+  widget = glade_xml_get_widget(xml_diag_pref, "diagram_only_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), diagram_only);
 
-  widget = lookup_widget (diag_pref, "size_mode_menu");
+  widget = glade_xml_get_widget(xml_diag_pref, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);
-  widget = lookup_widget (diag_pref, "stack_level_menu");
+  widget = glade_xml_get_widget(xml_diag_pref, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
-  widget = lookup_widget (diag_pref, "filter_gnome_entry");
+  widget = glade_xml_get_widget(xml_diag_pref, "filter_gnome_entry");
   gnome_entry_load_history (GNOME_ENTRY (widget));
 
   /* Connects signals */
-  widget = lookup_widget (diag_pref, "node_radius_slider");
+  widget = glade_xml_get_widget(xml_diag_pref, "node_radius_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_node_radius_slider_adjustment_changed), NULL);
-  widget = lookup_widget (diag_pref, "link_width_slider");
+  widget = glade_xml_get_widget(xml_diag_pref, "link_width_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_link_width_slider_adjustment_changed), NULL);
-  widget = lookup_widget (diag_pref, "averaging_spin");
+  widget = glade_xml_get_widget(xml_diag_pref, "averaging_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_averaging_spin_adjustment_changed), NULL);
-  widget = lookup_widget (diag_pref, "refresh_spin");
+  widget = glade_xml_get_widget(xml_diag_pref, "refresh_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_refresh_spin_adjustment_changed),
-		      lookup_widget (GTK_WIDGET (app1), "canvas1"));
-  widget = lookup_widget (diag_pref, "node_to_spin");
+		      glade_xml_get_widget(xml_app1, "canvas1"));
+  widget = glade_xml_get_widget(xml_diag_pref, "node_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_node_to_spin_adjustment_changed), NULL);
-  widget = lookup_widget (diag_pref, "link_to_spin");
+  widget = glade_xml_get_widget(xml_diag_pref, "link_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_link_to_spin_adjustment_changed), NULL);
-  widget = lookup_widget (diag_pref, "size_mode_menu");
+  widget = glade_xml_get_widget(xml_diag_pref, "size_mode_menu");
   gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		      "deactivate",
 		      GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
-  widget = lookup_widget (diag_pref, "stack_level_menu");
+  widget = glade_xml_get_widget(xml_diag_pref, "stack_level_menu");
   gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		      "deactivate",
 		      GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
 
   /* Sets canvas background to black */
-  canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
+  canvas = glade_xml_get_widget(xml_app1, "canvas1");
   gdk_color_parse ("black", &color);
   gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &color, TRUE,
 			    TRUE);
@@ -138,10 +135,10 @@ init_diagram ()
    * TODO Remove when glade is fixed */
 
 #if 0
-  widget = lookup_widget (GTK_WIDGET (app1), "appbar1");
+  widget = glade_xml_get_widget(xml_app1, "appbar1");
   gnome_app_install_appbar_menu_hints (widget, &(view1_menu_uiinfo[0]));
 
-  widget = lookup_widget (GTK_WIDGET (app1), "toolbar_check");
+  widget = glade_xml_get_widget(xml_app1, "toolbar_check");
   gtk_menu_item_select (widget);
 #endif
 }				/* init_diagram */
@@ -218,7 +215,7 @@ update_diagram (GtkWidget * canvas)
   /* Reposition canvas_nodes and update status bar if a node has been
    * added or deleted */
   if (!appbar)
-    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (canvas), "appbar1"));
+    appbar = GNOME_APPBAR (glade_xml_get_widget(xml_app1, "appbar1"));
 
   status_string = g_string_new (_("Number of nodes: "));
   g_string_sprintfa (status_string, "%d", n_nodes_after);
@@ -318,7 +315,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   /* First, we check whether the diagram already knows about this protocol,
    * checking whether it is shown on the legend. */
   /*  g_message ("Looking for %s", protocol->name); */
-  if ((label = lookup_widget (GTK_WIDGET (canvas), protocol->name)))
+  if ((label = glade_xml_get_widget(xml_app1, protocol->name)))
     {
       /* g_message ("Found"); */
       protocol->color = label->style->fg[GTK_STATE_NORMAL];
@@ -329,7 +326,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
-  prot_table = lookup_widget (GTK_WIDGET (canvas), "prot_table");
+  prot_table = glade_xml_get_widget(xml_app1, "prot_table");
   gtk_object_getv (GTK_OBJECT (prot_table), 2, args);
   n_rows = args[0].d.int_data;
   n_columns = args[0].d.int_data;
@@ -917,7 +914,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
   gchar *str;
 
   if (!appbar)
-    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
+    appbar = GNOME_APPBAR (glade_xml_get_widget(xml_app1, "appbar1"));
 
   switch (event->type)
     {
@@ -953,7 +950,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
   gchar *str;
 
   if (!appbar)
-    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
+    appbar = GNOME_APPBAR (glade_xml_get_widget(xml_app1, "appbar1"));
 
   /* This is not used yet, but it will be. */
   item_x = event->button.x;
@@ -999,7 +996,9 @@ popup_to (struct popup_data *pd)
 
   GtkLabel *label;
   gchar *str;
-
+   
+  /* TODO Fix this! */
+#if 0
   pd->node_popup = create_node_popup ();
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "name");
 
@@ -1042,7 +1041,7 @@ popup_to (struct popup_data *pd)
   g_free (str);
 
   gtk_widget_show (GTK_WIDGET (pd->node_popup));
-
+#endif
   return FALSE;			/* Only called once */
 
 }				/* popup_to */

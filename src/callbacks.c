@@ -24,8 +24,6 @@
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
-#include "interface.h"
-#include "support.h"
 #include "math.h"
 
 #include "globals.h"
@@ -141,7 +139,7 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkEditable *entry;
   gint position = 0;
 
-  entry = GTK_EDITABLE (lookup_widget (GTK_WIDGET (diag_pref),
+  entry = GTK_EDITABLE (glade_xml_get_widget(xml_diag_pref,
 				       "filter_entry"));
   gtk_editable_delete_text (entry, 0, -1);
   gtk_editable_insert_text (entry, filter, strlen (filter), &position);
@@ -181,7 +179,7 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.width / 2,
 				  widget->allocation.height / 2);
   need_reposition = TRUE;
-  canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
+  canvas = glade_xml_get_widget(xml_app1, "canvas1");
   update_diagram (canvas);
 }
 
@@ -265,7 +263,7 @@ on_toolbar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   guint num_band_return, band_position_return, offset_return;
   GnomeDockPlacement placement_return;
 
-  dock = GNOME_DOCK (lookup_widget (GTK_WIDGET (app1), "dock1"));
+  dock = GNOME_DOCK (glade_xml_get_widget(xml_app1, "dock1"));
   if (active)
     {
       dock_item = gnome_dock_get_item_by_name (dock,
@@ -300,7 +298,7 @@ on_legend_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   guint num_band_return, band_position_return, offset_return;
   GnomeDockPlacement placement_return;
 
-  dock = GNOME_DOCK (lookup_widget (GTK_WIDGET (app1), "dock1"));
+  dock = GNOME_DOCK (glade_xml_get_widget(xml_app1, "dock1"));
   if (active)
     {
       dock_item = gnome_dock_get_item_by_name (dock,
@@ -333,7 +331,7 @@ on_status_bar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   static gboolean active = TRUE;
   GtkWidget *widget;
-  widget = lookup_widget (app1, "appbar1");
+  widget = glade_xml_get_widget(xml_app1, "appbar1");
   if (active)
     {
       gtk_widget_hide (widget);
@@ -366,7 +364,8 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
-
+  /* TODO fix libglade */
+#if 0
   fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
   str =
     gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
@@ -381,6 +380,7 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
     }
 
   gtk_widget_hide (fontsel);
+#endif   
 }
 
 
@@ -388,10 +388,11 @@ void
 on_cancel_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
-
+  /* TODO fix libglade */
+#if 0
   fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
   gtk_widget_hide (fontsel);
-
+#endif
 }
 
 
@@ -400,6 +401,8 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
+  /* TODO fix libglade */
+#if 0
 
   fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
   str =
@@ -413,6 +416,7 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
       g_free (str);
       need_reposition = TRUE;
     }
+#endif
 }
 
 void
@@ -471,7 +475,7 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   GtkWidget *widget;
   widget = lookup_widget (GTK_WIDGET (button), "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = lookup_widget (GTK_WIDGET (diag_pref), "filter_gnome_entry");
+  widget = glade_xml_get_widget(xml_diag_pref, "filter_gnome_entry");
   /* TODO should only be done if the filter is not already
    * in the history */
   gnome_entry_prepend_history (GNOME_ENTRY (widget), TRUE, filter);

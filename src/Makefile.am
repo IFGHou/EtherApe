@@ -10,10 +10,8 @@ sbin_PROGRAMS = etherape
 
 etherape_SOURCES = \
 	resolv.c eth_resolv.h \
-	dns.c dns.h \
 	util.c util.h \
-	support.c support.h \
-	interface.c interface.h \
+	dns.c dns.h \
 	callbacks.c callbacks.h \
 	main.c main.h globals.h\
 	diagram.c diagram.h \
