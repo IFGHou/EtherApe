@@ -121,9 +121,12 @@ typedef struct
   gdouble average;		/* Average bytes in or out in the last x ms */
   gdouble average_in;		/* Average bytes in in the last x ms */
   gdouble average_out;		/* Average bytes out in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes in the last x ms */
-  gdouble accumulated_in;	/* Accumulated incoming bytes in the last x ms */
-  gdouble accumulated_out;	/* Accumulated outcoming bytes in the last x ms */
+  gdouble accumulated;		/* Accumulated bytes */
+  gdouble accumulated_in;	/* Accumulated incoming bytes */
+  gdouble accumulated_out;	/* Accumulated outcoming bytes */
+  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
+  gdouble aver_accu_in;		/* Accumulated incoming bytes in the last x ms */
+  gdouble aver_accu_out;	/* Accumulated outcoming bytes in the last x ms */
   gdouble n_packets;		/* Number of total packets received */
   struct timeval last_time;	/* Timestamp of the last packet to be added */
   GList *packets;		/* List of packets sizes in or out and

@@ -65,6 +65,7 @@ static gint check_new_node (guint8 * ether_addr,
 static gint update_canvas_nodes (guint8 * ether_addr,
 				 canvas_node_t * canvas_node,
 				 GtkWidget * canvas);
+static gboolean is_to_be_displayed (node_t * node);
 static void limit_nodes (void);
 static gint add_ordered_node (guint8 * node_id,
 			      canvas_node_t * canvas_node,

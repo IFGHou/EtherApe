@@ -661,6 +661,11 @@ add_node_packet (const guint8 * packet,
     node->accumulated_in += phdr.len;
   else
     node->accumulated_out += phdr.len;
+  node->aver_accu += phdr.len;
+  if (direction == INBOUND)
+    node->aver_accu_in += phdr.len;
+  else
+    node->aver_accu_out += phdr.len;
   node->last_time = now;
   node->n_packets++;
 
@@ -731,6 +736,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node->average = node->average_in = node->average_out = 0;
   node->n_packets = 0;
   node->accumulated = node->accumulated_in = node->accumulated_out = 0;
+  node->aver_accu = node->aver_accu_in = node->aver_accu_out = 0;
 
   node->packets = NULL;
   while (i + 1)
@@ -850,98 +856,100 @@ update_node (node_t * node)
 
       diff = substract_times (now, node->last_time);
 
-      /* Remove node if node is too old or if capture is stopped */
-      if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
-	   && node_timeout_time) || (status == STOP))
-	{
+      /* Delete node if we stop the capture */
+      if (status == STOP)
+#if 0
+	/* Remove node if node is too old or if capture is stopped */
+	if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
+	     && node_timeout_time) || (status == STOP))
+#endif
+	  {
 
-	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _("Removing node: %s. Number of nodes %d"),
-		 node->name->str, g_tree_nnodes (nodes) - 1);
-	  node_id = node->node_id;	/* Since we are freeing the node
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		   _("Removing node: %s. Number of nodes %d"),
+		   node->name->str, g_tree_nnodes (nodes) - 1);
+	    node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	  g_string_free (node->name, TRUE);
-	  node->name = NULL;
-	  g_string_free (node->numeric_name, TRUE);
-	  node->numeric_name = NULL;
-	  if (node->numeric_ip)
-	    {
-	      g_string_free (node->numeric_ip, TRUE);
-	      node->numeric_ip = NULL;
-	    }
-	  for (; i + 1; i--)
-	    if (node->main_prot[i])
+	    g_string_free (node->name, TRUE);
+	    node->name = NULL;
+	    g_string_free (node->numeric_name, TRUE);
+	    node->numeric_name = NULL;
+	    if (node->numeric_ip)
 	      {
-		g_free (node->main_prot[i]);
-		node->main_prot[i] = NULL;
+		g_string_free (node->numeric_ip, TRUE);
+		node->numeric_ip = NULL;
 	      }
-#if 1
-	  i = 0;
-	  while (i <= STACK_SIZE)
-	    {
-
-	      while (node->protocols[i])
+	    for (; i + 1; i--)
+	      if (node->main_prot[i])
 		{
-		  protocol_item = node->protocols[i];
-		  protocol_info = protocol_item->data;
-
-		  if (!protocol_info->accumulated)
-		    {
-		      GList *name_item = NULL;
-		      name_t *name;
-		      g_free (protocol_info->name);
-		      protocol_info->name = NULL;
-
-		      while (protocol_info->node_names)
-			{
-			  name_item = protocol_info->node_names;
-			  name = name_item->data;
-			  g_free (name->node_id);
-			  g_string_free (name->name, TRUE);
-			  g_string_free (name->numeric_name, TRUE);
-			  protocol_info->node_names =
-			    g_list_remove_link (protocol_info->node_names,
-						name_item);
-			  g_free (name);
-			  g_list_free (name_item);
-			}
-
-		      node->protocols[i] =
-			g_list_remove_link (node->protocols[i],
-					    protocol_item);
-		      g_free (protocol_info);
-		      g_list_free (protocol_item);
-		    }
+		  g_free (node->main_prot[i]);
+		  node->main_prot[i] = NULL;
 		}
-	      i++;
-	    }
+#if 1
+	    i = 0;
+	    while (i <= STACK_SIZE)
+	      {
+
+		while (node->protocols[i])
+		  {
+		    protocol_item = node->protocols[i];
+		    protocol_info = protocol_item->data;
+
+		    if (!protocol_info->accumulated)
+		      {
+			GList *name_item = NULL;
+			name_t *name;
+			g_free (protocol_info->name);
+			protocol_info->name = NULL;
+
+			while (protocol_info->node_names)
+			  {
+			    name_item = protocol_info->node_names;
+			    name = name_item->data;
+			    g_free (name->node_id);
+			    g_string_free (name->name, TRUE);
+			    g_string_free (name->numeric_name, TRUE);
+			    protocol_info->node_names =
+			      g_list_remove_link (protocol_info->node_names,
+						  name_item);
+			    g_free (name);
+			    g_list_free (name_item);
+			  }
+
+			node->protocols[i] =
+			  g_list_remove_link (node->protocols[i],
+					      protocol_item);
+			g_free (protocol_info);
+			g_list_free (protocol_item);
+		      }
+		  }
+		i++;
+	      }
 #endif
 
 
-	  g_free (node);
-	  g_tree_remove (nodes, node_id);
-	  g_free (node_id);
-	  node = NULL;
-	}
-      else
-	{
-	  /* The packet list structure has already been freed in
-	   * check_packets */
-	  node->packets = NULL;
+	    g_free (node);
+	    g_tree_remove (nodes, node_id);
+	    g_free (node_id);
+	    node = NULL;
+	  }
+	else
+	  {
+	    /* The packet list structure has already been freed in
+	     * check_packets */
+	    node->packets = NULL;
 #if 0
-	  while (i + 1)
-	    {
-	      node->protocols[i] = NULL;
-	      i--;
-	    }
+	    while (i + 1)
+	      {
+		node->protocols[i] = NULL;
+		i--;
+	      }
 #endif
-	  node->accumulated = node->accumulated_in
-	    = node->accumulated_out = 0.0;
-	  node->average = node->average_in = node->average_out = 0.0;
-	}
+	    node->average = node->average_in = node->average_out = 0.0;
+	  }
     }
 
   return node;
@@ -963,47 +971,50 @@ update_link (link_t * link)
   if (link->n_packets == 0)
     {
 
-      /* Remove link if it is too old or if capture is stopped */
-      if ((((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
-	   && link_timeout_time) || (status == STOP))
-	{
-	  link_id = link->link_id;	/* Since we are freeing the link
+      if (status == STOP)
+#if 0
+	/* Remove link if it is too old or if capture is stopped */
+	if ((((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
+	     && link_timeout_time) || (status == STOP))
+#endif
+	  {
+	    link_id = link->link_id;	/* Since we are freeing the link
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	  for (; i + 1; i--)
-	    if (link->main_prot[i])
+	    for (; i + 1; i--)
+	      if (link->main_prot[i])
+		{
+		  g_free (link->main_prot[i]);
+		  link->main_prot[i] = NULL;
+		}
+	    g_free (link->src_name);
+	    link->src_name = NULL;
+	    g_free (link->dst_name);
+	    link->dst_name = NULL;
+	    g_free (link);
+	    g_tree_remove (links, link_id);
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		   _("Removing link. Number of links %d"),
+		   g_tree_nnodes (links));
+
+	    g_free (link_id);
+	    link = NULL;
+
+	  }
+	else
+	  {
+	    /* The packet list structure has already been freed in
+	     * check_packets */
+	    link->packets = NULL;
+	    link->accumulated = 0;
+	    while (i + 1)
 	      {
-		g_free (link->main_prot[i]);
-		link->main_prot[i] = NULL;
+		link->protocols[i] = NULL;
+		i--;
 	      }
-	  g_free (link->src_name);
-	  link->src_name = NULL;
-	  g_free (link->dst_name);
-	  link->dst_name = NULL;
-	  g_free (link);
-	  g_tree_remove (links, link_id);
-	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _("Removing link. Number of links %d"),
-		 g_tree_nnodes (links));
-
-	  g_free (link_id);
-	  link = NULL;
-
-	}
-      else
-	{
-	  /* The packet list structure has already been freed in
-	   * check_packets */
-	  link->packets = NULL;
-	  link->accumulated = 0;
-	  while (i + 1)
-	    {
-	      link->protocols[i] = NULL;
-	      i--;
-	    }
-	}
+	  }
     }
 
   return link;
@@ -1047,11 +1058,10 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
       /* average in bps, so we multiply by 8 and 1000000 */
       if (belongs_to == NODE)
 	{
-	  node->average = 8000000 * node->accumulated / usecs_from_oldest;
-	  node->average_in =
-	    8000000 * node->accumulated_in / usecs_from_oldest;
+	  node->average = 8000000 * node->aver_accu / usecs_from_oldest;
+	  node->average_in = 8000000 * node->aver_accu_in / usecs_from_oldest;
 	  node->average_out =
-	    8000000 * node->accumulated_out / usecs_from_oldest;
+	    8000000 * node->aver_accu_out / usecs_from_oldest;
 	  while (i + 1)
 	    {
 	      if (node->main_prot[i])
@@ -1253,18 +1263,18 @@ check_packet (GList * packets, GList ** packet_l_e,
       if (belongs_to == NODE)
 	{
 	  /* Substract this packet's length to the accumulated */
-	  node->accumulated -= packet->size;
+	  node->aver_accu -= packet->size;
 	  if (packet->direction == INBOUND)
-	    node->accumulated_in -= packet->size;
+	    node->aver_accu_in -= packet->size;
 	  else
-	    node->accumulated_out -= packet->size;
+	    node->aver_accu_out -= packet->size;
 	  /* Decrease the number of packets */
 	  node->n_packets--;
 	  /* If it was the last packet in the queue, set
 	     * average to 0. It has to be done here because
 	     * otherwise average calculation in update_packet list 
 	     * requires some packets to exist */
-	  if (!node->accumulated)
+	  if (!node->aver_accu)
 	    node->average = 0;
 
 	  /* We remove protocol aggregate information */

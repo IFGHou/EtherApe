@@ -413,7 +413,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
 
-  if (!g_tree_lookup (canvas_nodes, node_id))
+  if (is_to_be_displayed (node) && !g_tree_lookup (canvas_nodes, node_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
@@ -486,12 +486,16 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   node = canvas_node->node;
 
   /* First we check whether the link has timed out */
-#if 1
   node = update_node (node);
-#endif
 
+#if 0
   /* If the node has timed out, we delete the canvas_node */
   if (!node)
+    {
+    }
+#endif
+  /* Remove node if node is too old or if capture is stopped */
+  if (!is_to_be_displayed (node))
     {
       gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
       gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
@@ -549,6 +553,24 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
+
+static gboolean
+is_to_be_displayed (node_t * node)
+{
+  struct timeval diff;
+
+  if (!node)
+    return FALSE;
+
+  diff = substract_times (now, node->last_time);
+
+  /* Remove node if node is too old or if capture is stopped */
+  if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
+      && node_timeout_time)
+    return FALSE;
+
+  return TRUE;
+}				/* is_to_be_displayed */
 
 
 /* Sorts canvas nodes with the criterium set in preferences and sets
