@@ -1,7 +1,12 @@
 Original Author
 -------- ------
-Juan Toledo	<toledo@bart.us.es>
+Juan Toledo	<toledo@users.sourceforge.net>
 
-Code "stolen" from
----- -------- ----
+resolv.c "stolen" from
+-------- -------- ----
 Laurent Deniel	<deniel@worldnet.fr>
+
+User supplied patches
+---- -------- -------
+Jasper Wallace	<jasper@pointless.net> (pcap device autodetection)
+Ted Wright	(non-overlapping display mode)

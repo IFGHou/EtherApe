@@ -5,13 +5,9 @@ Etherape is a network traffic browser. It displays network activity
 graphically. It uses GNOME libraries as it's user interface, and 
 libpcap, a packet capture and filtering library.
 
-It is actually two programs in one: Etherape and Interape.
-Etherape is used for monitoring ethernet traffic. Interape shows
-end to end IP traffic.
-
-If you run "make install" you'll get both programs. Otherwise,
-to get interape run etherape with the -I option. If you have name
-resolution properly configured, use the -r option as well.
+Etherape started as an etherman clone, but now it has some unique
+features. It can run in "interape" mode with -m ip, and in
+"tcp-ape" mode with -m tcp. Expect more modes to come soon.
 
 Etherape will use /etc/ethers if there is one. If not, it will 
 display dotted quad ip addresses. You can even ask for ip
@@ -56,7 +52,6 @@ Etherape should probably compile and run in other Unix-like OS. If
 you manage to compile it in a configuration other than the ones
 listed, please post it to the mailing list
 <etherape-users@lists.sourceforge.net> No need to subscribe.
-
 
 
 Further information:

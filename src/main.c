@@ -48,7 +48,7 @@ main (int argc, char *argv[])
 {
   GtkWidget *app1;
   GtkWidget *hscale;
-  gchar *mode_string;
+  gchar *mode_string=NULL;
 
   struct poptOption optionsTable[] =
   {

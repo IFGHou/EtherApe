@@ -9,7 +9,7 @@ I owe to, because they allowed to make etherape possible:
   - autoconf and automake
   - gettext
   - probably so many other things I forget to think about.
-  - stablishing agreed upon standards for software development and
+  - establishing agreed upon standards for software development and
     distribution
   
 * Linus Torvalds and the kernel crew
@@ -30,7 +30,7 @@ I owe to, because they allowed to make etherape possible:
 
 * Damon Chaplin, and other glade developers.
   - Making as easy as snapping your fingers to use all of
-    the avobe.
+    the above.
 
 * Ethereal authors: Gerald Combs, Laurent Deniel, and the rest
   - The source of "inspiration" (read blatant copy & paste) 
@@ -69,7 +69,7 @@ I owe to, because they allowed to make etherape possible:
     it work! 
     
 * Last, but not least, my girlfriend, Mónica, for putting up with 
-a many to many relationship between us and my computers. :-)
+  a many to many relationship between us and my computers. :-)
   
 
 
@@ -84,10 +84,10 @@ it's useful, has been ported to at least one operating system
 different than it was built on and has improved
 thanks to user patches.
 
-And guess what. Version 0.1.2 has been developped in 7 days on 
-an old 486 with 48Mb of memory, at the confort of my home, using
+And guess what. Version 0.1.2 has been developed in 7 days on 
+an old 486 with 48Mb of memory, at the comfort of my home, using
 just a 28.8kbps link connected to my 8Mb 486 router, mail server,
-www proxy, all running linux (anybody has an old 36pin bank to 
+WWW proxy, all running Linux (anybody has an old 36pin bank to 
 spare? :-)). And everything I needed I simply downloaded. 
 I really didn't think it would be this easy.
 

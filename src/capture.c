@@ -220,7 +220,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 
 /* Fills in the strings that characterize the node */
 void
-fill_names (node_t * node, guint8 * node_id)
+fill_names (node_t * node, const guint8 * node_id)
 {
   switch (mode)
     {
@@ -229,7 +229,7 @@ fill_names (node_t * node, guint8 * node_id)
       if (numeric)
 	node->name = g_string_new (ether_to_str (node_id));
       else
-	node->name = g_string_new (get_ether_name (node_id));
+	 node->name = g_string_new (get_ether_name (node_id));
       break;
     case IP:
       node->numeric_name = g_string_new (ip_to_str (node_id));
@@ -278,8 +278,6 @@ node_t *
 create_node (const guint8 * packet, const guint8 * node_id)
 {
   node_t *node;
-  const guint8 *ether_addr;
-  guint32 ip_addr;
   gchar *na;
 
   na = g_strdup (_ ("n/a"));
