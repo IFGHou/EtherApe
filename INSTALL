@@ -1,7 +1,10 @@
 Basic Installation
 ==================
 
-   These are generic installation instructions.
+   These are mostly generic installation instructions.
+   
+   For instructions on how to produce a binary debian package from
+   the tarball, go to the bottom of the file.
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -180,3 +183,31 @@ operates.
      script, and exit.
 
 `configure' also accepts some other, not widely useful, options.
+
+
+Debian Package
+==============
+
+ If you want to build a debian package from the sources, you'll
+ need the dpkg-dev package. I use the fakeroot package as well.
+ 
+ Just get into the etherape-x.x.x directory and type
+ 
+ $ dpkg-buildpackage -rfakeroot
+ 
+ When it's done, you will have your .deb file in the parent
+ directory.
+ 
+ Be advised that I'm not any debian guru. This is just what it 
+ works for me when I do unofficial debian package releases. :-)
+ 
+ 
+I hope you enjoy Etherape. 
+
+Regards,
+Juan.
+
+--
+$Id$
+ 
+ 

@@ -26,7 +26,11 @@ You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
 If you are not running on a high-color or better display, you
-will probably want to use the --no-fade option.
+might want to use the --no-fade option.
+
+Note: Etherape is being _actively_ developed: I tend to release
+daily. If you liked the program, I suggest you take a look at
+the webpage and look for the latest version.
 
 
 Installation:
@@ -41,6 +45,9 @@ By default, binaries will be copied to /usr/local/sbin
 You may uninstall later by running
 
 	# make uninstall
+
+You will also find information on how to build a debian package
+in the INSTALL file.
 
 
 Porting:

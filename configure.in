@@ -63,8 +63,8 @@ AC_CHECK_FUNC(res_init, ,
    AC_CHECK_LIB(resolv, res_init, , AC_MSG_ERROR(No resolver library found))))
 
 AC_CHECK_FUNC(res_mkquery, , 
-  AC_CHECK_LIB(bind, res_init, , 
-   AC_CHECK_LIB(resolv, res_init, , AC_MSG_ERROR(No resolver library found))))
+  AC_CHECK_LIB(bind, res_mkquery, , 
+   AC_CHECK_LIB(resolv, res_mkquery, , AC_MSG_ERROR(No resolver library found))))
 
 
 dnl Checks for header files.
