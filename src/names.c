@@ -331,7 +331,7 @@ get_nbss_name (void)
 
       /* We just want the name, not the space padding behind it */
 
-      for (; i <= NETBIOS_NAME_LEN && name[i] != ' '; i++);
+      for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++);
       name[i] = '\0';
 
       /* Many packages will be straight TCP packages directed to the proper
@@ -396,7 +396,7 @@ get_nbdgm_name (void)
 
   /* We just want the name, not the space padding behind it */
 
-  for (; i <= NETBIOS_NAME_LEN && name[i] != ' '; i++);
+  for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++);
   name[i] = '\0';
 
   /* The reasing here might not make sense as in the TCP case, but it

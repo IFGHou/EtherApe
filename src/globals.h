@@ -267,6 +267,7 @@ gint protocol_compare (gconstpointer a, gconstpointer b);
 gchar *ip_to_str (const guint8 * ad);
 gchar *ether_to_str (const guint8 * ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
+void dump_node_info (node_t * node);
 
 /* From protocols.c */
 gchar *get_packet_prot (const guint8 * packet, guint len);

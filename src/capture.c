@@ -850,12 +850,6 @@ update_node (node_t * node)
       if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
 	   && node_timeout_time) || (status == STOP))
 	{
-	  if (!strcmp
-	      (node->name->str,
-	       "cliente-213227049071.cm128.senpb.supercable.es")
-	      || !strcmp (node->name->str, "213.227.49.71")
-	      || !strcmp (node->name->str, "ETHER"))
-	    dump_node_info (node);
 
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		 _("Removing node: %s. Number of nodes %d"),
@@ -1160,16 +1154,8 @@ set_node_name (node_t * node, gchar * preferences)
 		    {
 		      if (node->name)
 			if (strcmp (node->name->str, name->name->str))
-			  {
-			    g_my_debug ("Switching node name from %s to %s",
-					node->name->str, name->name->str);
-			    if (!strcmp
-				(node->name->str,
-				 "cliente-213227049071.cm128.senpb.supercable.es")
-				|| !strcmp (node->name->str, "213.227.49.71")
-				|| !strcmp (node->name->str, "ETHER"))
-			      dump_node_info (node);
-			  }
+			  g_my_debug ("Switching node name from %s to %s",
+				      node->name->str, name->name->str);
 
 		      g_string_assign (node->name, name->name->str);
 		      g_string_assign (node->numeric_name,
@@ -1705,7 +1691,7 @@ print_mem (const guint8 * ad, guint length)
 }				/* print_mem */
 
 
-static void
+void
 dump_node_info (node_t * node)
 {
 

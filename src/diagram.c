@@ -1117,6 +1117,10 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 	}
       gnome_appbar_pop (appbar);
       break;
+    case GDK_2BUTTON_PRESS:
+      if (canvas_node && canvas_node->node)
+	dump_node_info (canvas_node->node);
+      break;
     default:
       break;
     }
