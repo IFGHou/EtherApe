@@ -4,6 +4,7 @@
 
 #include <gnome.h>
 
+#include "interface.h"
 #include "support.h"
 #include "math.h"
 #include "resolv.h"
@@ -41,22 +42,62 @@ extern gboolean diagram_only;
 
 /* Local functions definitions */
 
-double
-get_node_size (glong accumulated)
+gdouble
+get_node_size (gdouble average)
 {
-  return (double) 5 + node_radius_multiplier * accumulated / averaging_time;
+  return (double) 5 + node_radius_multiplier * average;
 }
 
-double
-get_link_size (glong accumulated)
+gdouble
+get_link_size (gdouble average)
 {
-  return (double) 1000 *accumulated / averaging_time;
+  return (double) 1000 * average;
 }
 
 static gint
-node_item_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t *canvas_node)
 {
-  printf ("Evento. \n");
+
+  double item_x, item_y;
+  static GtkWidget *node_popup;
+  GtkLabel *label;
+
+
+  item_x = event->button.x;
+  item_y = event->button.y;
+  gnome_canvas_item_w2i (item->parent, &item_x, &item_y);
+
+  switch (event->type)
+    {
+
+    case GDK_BUTTON_PRESS:
+      node_popup = create_node_popup ();
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"name");
+      gtk_label_set_text (label, canvas_node->node->name->str);
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ip_str");
+      gtk_label_set_text (label, canvas_node->node->ip_str->str);
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ip_numeric_str");
+      gtk_label_set_text (label, canvas_node->node->ip_numeric_str->str);
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ether_str");
+      gtk_label_set_text (label, canvas_node->node->ether_str->str);
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ether_numeric_str");
+      gtk_label_set_text (label, canvas_node->node->ether_numeric_str->str);
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"accumulated");
+      gtk_label_set_text (label,
+			  g_strdup_printf ("%g",canvas_node->node->accumulated));
+      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"average");
+      gtk_label_set_text (label,
+			  g_strdup_printf ("%g", canvas_node->node->average*1000000));
+      gtk_widget_show (GTK_WIDGET (node_popup));
+      break;
+    case GDK_BUTTON_RELEASE:
+      gtk_widget_destroy (GTK_WIDGET (node_popup));
+    default:
+      break;
+    }
+
+  return FALSE;
+
 }
 
 gint
@@ -123,6 +164,7 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   GnomeCanvasPoints *points;
   canvas_node_t *canvas_node;
   GtkArg args[2];
+  gdouble link_size;
 
   link = canvas_link->link;
 
@@ -176,13 +218,14 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   points->coords[2] = args[0].d.double_data;
   points->coords[3] = args[1].d.double_data;
 
-  link->average = get_link_size (link->accumulated);
+  link->average = link->accumulated/averaging_time; 
+  link_size = get_link_size (link->average);
 
   gnome_canvas_item_set (canvas_link->link_item,
 			 "points", points,
 			 "fill_color", "tan",
 			 "outline_color", "black",
-			 "width_units", link->average,
+			 "width_units", link_size,
 			 NULL);
 
   gnome_canvas_points_unref (points);
@@ -195,16 +238,18 @@ gint
 update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget * canvas)
 {
   node_t *node;
+  gdouble node_size;
   node = canvas_node->node;
 
-  node->average = get_node_size (node->accumulated);
+  node->average = node->accumulated/averaging_time;
+  node_size = get_node_size (node->average);
 
 
   gnome_canvas_item_set (canvas_node->node_item,
-			 "x1", -node->average / 2,
-			 "x2", node->average / 2,
-			 "y1", -node->average / 2,
-			 "y2", node->average / 2,
+			 "x1", -node_size / 2,
+			 "x2", node_size / 2,
+			 "y1", -node_size / 2,
+			 "y2", node_size / 2,
 			 NULL);
 
   return FALSE;
@@ -218,6 +263,7 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
   canvas_node_t *canvas_node;
   GnomeCanvasGroup *group;
   GnomeCanvasPoints *points;
+  gdouble link_size;
 
   GtkArg args[2];
   args[0].name = "x";
@@ -251,17 +297,18 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
 		       args);
       points->coords[2] = args[0].d.double_data;
       points->coords[3] = args[1].d.double_data;
+       
+      link->average=link->accumulated/averaging_time,
+      link_size = get_link_size (link->average);
 
-      link->average = get_link_size (link->accumulated);
-       
       new_canvas_link->link_item = gnome_canvas_item_new (group,
-							  gnome_canvas_polygon_get_type (),
+					   gnome_canvas_polygon_get_type (),
 							  "points", points,
-							  "fill_color", "green",
-							  "outline_color", "green",
-							  "width_units", link->average,
+						      "fill_color", "green",
+						   "outline_color", "green",
+					       "width_units", link_size,
 							  NULL);
-       
+
 
       g_tree_insert (canvas_links, ether_link, new_canvas_link);
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
@@ -286,6 +333,7 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
+  gdouble node_size;
 
 
   if (!g_tree_lookup (canvas_nodes, ether_addr))
@@ -295,7 +343,8 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->ether_addr = ether_addr;
       new_canvas_node->node = node;
-      node->average = get_node_size (node->accumulated);
+      node->average=node->accumulated/averaging_time;
+      node_size = get_node_size (node->average);
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 					     gnome_canvas_group_get_type (),
@@ -306,28 +355,28 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
       new_canvas_node->node_item = gnome_canvas_item_new (group,
 						  GNOME_TYPE_CANVAS_ELLIPSE,
 							  "x1", 0.0,
-							"x2", node->average,
+							"x2", node_size,
 							  "y1", 0.0,
-							"y2", node->average,
+							"y2", node_size,
 					      "fill_color_rgba", 0xFF0000FF,
 						   "outline_color", "black",
 							  "width_pixels", 0,
 							  NULL);
-      new_canvas_node->text_item = gnome_canvas_item_new (group,
-						     GNOME_TYPE_CANVAS_TEXT,
-						    "text", node->name->str,
-							  "x", 0.0,
-							  "y", 0.0,
-						"anchor", GTK_ANCHOR_CENTER,
-		       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
-						      "fill_color", "black",
-							  NULL);
+      new_canvas_node->text_item = gnome_canvas_item_new (group
+						     ,GNOME_TYPE_CANVAS_TEXT
+						    ,"text", node->name->str
+							  ,"x", 0.0
+							  ,"y", 0.0
+						,"anchor", GTK_ANCHOR_CENTER
+		       ,"font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*"
+						      ,"fill_color", "black"
+							  ,NULL);
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM (new_canvas_node->text_item));
-      gtk_signal_connect (GTK_OBJECT (new_canvas_node->node_item), "event",
+      gtk_signal_connect (GTK_OBJECT (new_canvas_node->group_item), "event",
 			  (GtkSignalFunc) node_item_event,
-			  NULL);
+			  new_canvas_node);
 
       g_tree_insert (canvas_nodes, ether_addr, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
@@ -390,11 +439,11 @@ update_diagram (GtkWidget * canvas)
 		       canvas);
       n_links_new = g_tree_nnodes (links);
     }
-   while (n_links != n_links_new);
-   
-   return TRUE; /* Keep on calling this function */
+  while (n_links != n_links_new);
 
-} /* update_diagram */
+  return TRUE;			/* Keep on calling this function */
+
+}				/* update_diagram */
 
 void
 init_diagram (void)

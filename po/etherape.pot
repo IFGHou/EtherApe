@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-27 13:10+0100\n"
+"POT-Creation-Date: 2000-02-27 18:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,23 +100,67 @@ msgid ""
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:458
+#: src/interface.c:470
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:471
-msgid "node_name"
+#: src/interface.c:490
+msgid "Name"
 msgstr ""
 
-#: src/interface.c:483
-msgid "ether_address"
+#: src/interface.c:500
+msgid "IP Name"
 msgstr ""
 
-#: src/interface.c:495
-msgid "ip_address"
+#: src/interface.c:510
+msgid "IP Address"
 msgstr ""
 
-#: src/callbacks.c:156
+#: src/interface.c:520
+msgid "Ether Name"
+msgstr ""
+
+#: src/interface.c:530
+msgid "Ether Address"
+msgstr ""
+
+#: src/interface.c:540
+msgid "Accum. bytes"
+msgstr ""
+
+#: src/interface.c:550
+msgid "Average bps"
+msgstr ""
+
+#: src/interface.c:560
+msgid "average"
+msgstr ""
+
+#: src/interface.c:569
+msgid "accumulated"
+msgstr ""
+
+#: src/interface.c:578
+msgid "ether address"
+msgstr ""
+
+#: src/interface.c:587
+msgid "ether name"
+msgstr ""
+
+#: src/interface.c:596
+msgid "ip address"
+msgstr ""
+
+#: src/interface.c:605
+msgid "ip host name"
+msgstr ""
+
+#: src/interface.c:614
+msgid "name"
+msgstr ""
+
+#: src/callbacks.c:160
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
@@ -131,22 +175,26 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:241
+#: src/capture.c:198
+msgid "n/a"
+msgstr ""
+
+#: src/capture.c:272
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:264
+#: src/capture.c:295
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:452
+#: src/capture.c:484
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:460
+#: src/capture.c:492
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""

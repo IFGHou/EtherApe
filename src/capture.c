@@ -192,14 +192,40 @@ create_node (const guint8 * packet, enum create_node_type node_type)
 {
   node_t *node;
   const guint8 *ether_addr;
+  guint32 ip_addr;
+  gchar *na;
 
-  if (node_type == SRC)
-    ether_addr = packet + 6;
+  na=g_strdup (_("n/a"));
+
+  if (node_type == SRC) 
+     {
+	ether_addr = packet + 6;
+	ip_addr = *(guint32 *) (packet + 26);
+     }
   else
-    ether_addr = packet;
+     {
+	ether_addr = packet;
+	ip_addr = *(guint32 *) (packet + 30);
+     }
+    
 
   node = g_malloc (sizeof (node_t));
   node->ether_addr = g_memdup (ether_addr, 6);
+  node->ether_numeric_str = g_string_new (ether_to_str(ether_addr));
+  if  ( (packet[12] == 0x08) && (packet[13] == 0x00) )
+     {
+	node->ip_addr = ip_addr;
+	node->ip_numeric_str = g_string_new (ip_to_str((guint8 *)(&ip_addr)));
+	if (dns) node->ip_str = g_string_new (get_hostname (ip_addr));
+	else node->ip_str = g_string_new (ip_to_str ((guint8 *) (&ip_addr)));
+     }
+   else 
+     {
+	node->ip_addr = 0;
+	node->ip_numeric_str = g_string_new (na);
+	node->ip_str = g_string_new (na);
+     }
+
   node->average = 0;
   node->n_packets = 0;
   node->accumulated = 0;
@@ -210,28 +236,32 @@ create_node (const guint8 * packet, enum create_node_type node_type)
        * the IP name of the host. Note this is inherently wrong and I feel
        * uneasy about leaving it by default, but let's make users happy by now.
        * We also make sure that it is an IP packet */
+       
+      node->ether_str = g_string_new (get_ether_name(ether_addr));
 
       if ((!strcmp (get_ether_name (ether_addr), ether_to_str (ether_addr)))
 	  && (packet[12] == 0x08) && (packet[13] == 0x00)
 	  && strcmp (get_ether_name (ether_addr), "ff:ff:ff:ff:ff:ff"))
 	{
-	  guint address;
 
-	  if (node_type == SRC)
-	    address = *(guint32 *) (packet + 26);
-	  else
-	    address = *(guint32 *) (packet + 30);
 	  if (dns)
-	    node->name = g_string_new (get_hostname (address));
-	  else
-	    node->name = g_string_new (ip_to_str ((guint8 *) (&address)));
+	     {
+		node->name = g_string_new (get_hostname (ip_addr));
+	     }
+	   else
+	     {
+		node->name = g_string_new (ip_to_str ((guint8 *) (&ip_addr)));
+	     }
 
 	}
       else
-	node->name = g_string_new (get_ether_name (ether_addr));
+	 {
+	    node->name = g_string_new (get_ether_name (ether_addr));
+	 }
     }
   else
     {
+      node->ether_str = g_string_new (na);
       node->name = g_string_new (ether_to_str (ether_addr));
     }
 
@@ -468,7 +498,7 @@ init_capture (void)
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
   gdk_input_add (pcap_fd,
 		 GDK_INPUT_READ,
-		 packet_read,
+		 (GdkInputFunction) packet_read,
 		 pch);
 
   nodes = g_tree_new (ether_compare);

@@ -26,8 +26,8 @@ canvas_link_t;
 
 /* Function definitions */ 
 
-double get_node_size (glong accumulated);
-double get_link_size (glong accumulated);
+gdouble get_node_size (gdouble average);
+gdouble get_link_size (gdouble average);
 gint reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget * canvas);
 gint update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget * canvas);
 gint update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget * canvas);

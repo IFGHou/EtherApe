@@ -86,7 +86,7 @@ main (int argc, char *argv[])
    * the display */
   /* TODO: Make this time configurable and back up if CPU can't handle it */
   gtk_timeout_add (800 /* ms */ ,
-		   update_diagram,
+		   (GtkFunction) update_diagram,
 		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
 
   gtk_main ();

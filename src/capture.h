@@ -17,8 +17,14 @@ enum create_node_type
 
 typedef struct
   {
+    
     guint8 *ether_addr;		/* pointer to the hardware address of the node */
-    GString *name;		/* String with a readable name of the node */
+    GString *ether_numeric_str;	/* Readable hardware address xx:xx:xx:xx:xx:xx */
+    GString *ether_str;
+    guint32 ip_addr;
+    GString *ip_numeric_str;
+    GString *ip_str;
+    GString *name;		/* String with a readable default name of the node */
     double average;		/* Average bytes in or out in the last x ms */
     double accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */

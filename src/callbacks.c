@@ -143,8 +143,11 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.width / 2,
 				  widget->allocation.height / 2);
 
-  g_tree_traverse (canvas_nodes, reposition_canvas_nodes, G_IN_ORDER, GNOME_CANVAS (widget));
-
+  /* We have to make sure we put all nodes on it's place now */
+  g_tree_traverse (canvas_nodes,
+		   (GTraverseFunc) reposition_canvas_nodes,
+		   G_IN_ORDER,
+		   GNOME_CANVAS (widget));
 
 }
 

@@ -1,6 +1,9 @@
 Overview of changes in Etherape 0.1.5
+* More for readability: Click on a node and a pop-up window
+  appears with all node data.
 * You can change the interface to listen to in the command line.
 * Fixed a bug in the dotted quad ip number display
+* Compiles without warnings
 * Updated README
 
 Overview of changes in Etherape 0.1.4
