@@ -1718,12 +1718,18 @@ dump_node_info (node_t * node)
 	      g_my_info ("\tProtocol %s", protocol->name);
 	      if ((name_item = protocol->node_names))
 		{
+		  GString *names = NULL;
 		  while (name_item)
 		    {
+		      if (!names)
+			names = g_string_new ("");
 		      name = name_item->data;
-		      g_my_info ("\tName %s", name->name->str);
+		      names = g_string_append (names, name->name->str);
+		      names = g_string_append (names, " ");
 		      name_item = name_item->next;
 		    }
+		  g_my_info ("\t\tName: %s", names->str);
+		  g_string_free (names, TRUE);
 		}
 	      protocol_item = protocol_item->next;
 	    }
