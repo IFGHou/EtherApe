@@ -739,7 +739,7 @@ add_node_packet (const guint8 * packet,
 		    packet_info->prot, direction);
 
 
-  
+
   /* update_node (node->node_id, node, NULL); */
 
 }				/* add_node_packet */

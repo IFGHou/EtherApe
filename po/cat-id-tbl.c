@@ -220,6 +220,19 @@ Delete this node from memory after this much time. 0 means never timeout.", 178}
   {"Protocol", 202},
   {"Inst Traffic", 203},
   {"Accum Traffic", 204},
+  {"Last Heard", 205},
+  {"Packets", 206},
+  {"Last Heard: ", 207},
+  {"label73", 208},
+  {"Nodes", 209},
+  {"No node_id in on_node_info_delete_event", 210},
+  {"No node_info_window in on_node_info_delete_event", 211},
+  {"No prot_name in on_prot_info_delete_event", 212},
+  {"No prot_info_window in on_prot_info_delete_event", 213},
+  {"No info available", 214},
+  {"%d\" ago", 215},
+  {"%d'%d\" ago", 216},
+  {"%d/%d %d:%d", 217},
 };
 
-int _msg_tbl_length = 204;
+int _msg_tbl_length = 217;

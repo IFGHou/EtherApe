@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-05-09 21:15+0200\n"
+"POT-Creation-Date: 2001-05-11 12:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -113,7 +113,8 @@ msgstr "définir la couleur du texte"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:162 src/menus.c:34 src/menus.c:367
+#: src/info_windows.c:220 src/info_windows.c:521 src/main.c:162 src/menus.c:34
+#: src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
@@ -246,60 +247,60 @@ msgstr "Capture"
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:391
+#: src/capture.c:392
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:397
+#: src/capture.c:398
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Capture"
 
-#: src/capture.c:403
+#: src/capture.c:404
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Capture"
 
-#: src/capture.c:411
+#: src/capture.c:412
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
 # src/capture.c:713
-#: src/capture.c:632
+#: src/capture.c:637
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:684
+#: src/capture.c:689
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:813
+#: src/capture.c:822
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:851
+#: src/capture.c:860
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:409
-#: src/capture.c:971
+#: src/capture.c:996
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:1176
+#: src/capture.c:1201
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1449
+#: src/capture.c:1518
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
@@ -407,53 +408,53 @@ msgstr "définir le filtre de capture"
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:296
+#: src/diagram.c:313
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:300
+#: src/diagram.c:317
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:302
+#: src/diagram.c:323
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:304
+#: src/diagram.c:325
 msgid ". TIMEOUT."
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:539
+#: src/diagram.c:562
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:610
+#: src/diagram.c:639
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:635
+#: src/diagram.c:664
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
 # src/capture.c:438 src/capture.c:443
-#: src/diagram.c:969
+#: src/diagram.c:998
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
-#: src/diagram.c:1032
+#: src/diagram.c:1064
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1178
+#: src/diagram.c:1210
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1181
+#: src/diagram.c:1213
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -679,7 +680,7 @@ msgid "window1"
 msgstr ""
 
 # src/interface.c:391
-#: src/glade-strings:52
+#: src/glade-strings:52 src/glade-strings:131
 msgid "name"
 msgstr ""
 
@@ -957,16 +958,17 @@ msgstr ""
 msgid "Show protocols"
 msgstr "Protocoles"
 
-#: src/glade-strings:113
+#: src/glade-strings:113 src/glade-strings:134
 msgid "Instantaneous"
 msgstr ""
 
 #: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
 #: src/glade-strings:120 src/glade-strings:122 src/glade-strings:124
+#: src/glade-strings:135 src/glade-strings:137
 msgid "test label"
 msgstr ""
 
-#: src/glade-strings:115
+#: src/glade-strings:115 src/glade-strings:136
 msgid "Accumulated"
 msgstr ""
 
@@ -1003,6 +1005,63 @@ msgstr ""
 
 #: src/glade-strings:128
 msgid "Accum Traffic"
+msgstr ""
+
+#: src/glade-strings:129
+msgid "Last Heard"
+msgstr ""
+
+#: src/glade-strings:130
+msgid "Packets"
+msgstr ""
+
+#: src/glade-strings:132
+msgid "Last Heard: "
+msgstr ""
+
+#: src/glade-strings:133
+msgid "label73"
+msgstr ""
+
+#: src/glade-strings:138
+msgid "Nodes"
+msgstr ""
+
+#: src/info_windows.c:322
+msgid "No node_id in on_node_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:329
+msgid "No node_info_window in on_node_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:351
+msgid "No prot_name in on_prot_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:358
+msgid "No prot_info_window in on_prot_info_delete_event"
+msgstr ""
+
+#: src/info_windows.c:381
+msgid "No info available"
+msgstr ""
+
+#. Meaning "n seconds" ago
+#: src/info_windows.c:733
+#, c-format
+msgid "%d\" ago"
+msgstr ""
+
+#: src/info_windows.c:739
+#, c-format
+msgid "%d'%d\" ago"
+msgstr ""
+
+#. Watch out! The first is month, the second day of the month
+#: src/info_windows.c:751
+#, c-format
+msgid "%d/%d %d:%d"
 msgstr ""
 
 # src/capture.c:409
