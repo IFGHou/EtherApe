@@ -1,0 +1,62 @@
+
+ Etherape Code Overview
+ ======================
+ Current as of 0.4.2
+
+--------------------------------------------------------------------
+
+Here I'll try to explain the workings of etherape, both for new
+contributors to have a clearer view of the program and for self
+future reference.
+
+0. Index of files
+-----------------
+
+src/main.c
+	Parses command line options. Calls initialization
+	functions of capture and diagram. Loads and saves
+	configuration. Handles gnome session management.
+	
+src/capture.c
+	Reads packets from the network and keeps track of
+	information gathered.
+
+src/protocols.c
+	Functions used to find the protocol stack of a given
+	packet.
+
+src/dns.c
+	Asynchronously reverse lookup of ip addresses.
+	
+src/resolv.c
+	Several helper functions, mostly to look up the ethernet
+	address in /etc/ethers
+
+src/diagram.c
+	Updates the diagram, which is a gnome_canvas widget.
+	Takes care of appbar information and node pop-ups.
+
+src/callbacks.c
+	Handles GUI interaction. Buttons clicked, adjustments
+	changed, etc.
+	
+src/interface.c
+	GUI creation. Automatically created by glade from
+	etherape.glade.
+	
+src/util.c and src/support.c
+	helper functions provided by glade.
+
+
+1. Basic Architecture
+---------------------
+
+   Etherape is running on a gtk_look started in main(). There are
+two callbacks functions active that execute code. One is a
+timeout set each refresh_period to update the diagram on the
+screen, update_diagram, and the other is a gdk_input called each
+time there is a new packet available in the network, packet_read.
+
+   I try to clearly separate code and data structures of data
+gathering and presentation. Data gathering is performed in
+capture.c and 
