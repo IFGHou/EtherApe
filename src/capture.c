@@ -28,18 +28,19 @@
 #include "eth_resolv.h"
 
 /* this has not its place here but... */
-void fatal_error_dialog(gchar *message)
+void
+fatal_error_dialog (gchar * message)
 {
-	GtkWidget *dlg;
-	/*char *argv[] = { "gaby", NULL };
-	
-	gnome_init(_("Gaby"), VERSION, 1, argv);*/
-	
-	dlg = gnome_error_dialog (message);
-	gtk_signal_connect(GTK_OBJECT(dlg), "clicked", gtk_main_quit, NULL);
-	gtk_widget_show(dlg);
-	gtk_main();
-	exit(1);
+  GtkWidget *dlg;
+  /*char *argv[] = { "gaby", NULL };
+
+     gnome_init(_("Gaby"), VERSION, 1, argv); */
+
+  dlg = gnome_error_dialog (message);
+  gtk_signal_connect (GTK_OBJECT (dlg), "clicked", gtk_main_quit, NULL);
+  gtk_widget_show (dlg);
+  gtk_main ();
+  exit (1);
 }
 
 
@@ -70,8 +71,8 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  sprintf(errorbuf, _("Error getting device: %s"), ebuf);
-	  fatal_error_dialog(errorbuf);
+	  sprintf (errorbuf, _("Error getting device: %s"), ebuf);
+	  fatal_error_dialog (errorbuf);
 	  return FALSE;
 	}
       /* TODO I should probably tidy this up, I probably don't
@@ -89,9 +90,10 @@ init_capture (void)
 	  ((pcap_t *) pch =
 	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
 	{
-	  sprintf(errorbuf, _("Error opening %s : %s - perhaps you need to be root?"),
+	  sprintf (errorbuf,
+		   _("Error opening %s : %s - perhaps you need to be root?"),
 		   device, ebuf);
-	  fatal_error_dialog(errorbuf);
+	  fatal_error_dialog (errorbuf);
 	  return FALSE;
 	}
       pcap_fd = pcap_fileno (pch);
@@ -101,8 +103,8 @@ init_capture (void)
     {
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
-	  sprintf(errorbuf, _("Error opening %s : %s"), input_file, ebuf);
-	  fatal_error_dialog(errorbuf);
+	  sprintf (errorbuf, _("Error opening %s : %s"), input_file, ebuf);
+	  fatal_error_dialog (errorbuf);
 	  return FALSE;
 	}
 
@@ -144,15 +146,15 @@ init_capture (void)
       l3_offset = 21;
       break;
     default:
-      sprintf(errorbuf, _("Link type not yet supported"));
-      fatal_error_dialog(errorbuf);
+      sprintf (errorbuf, _("Link type not yet supported"));
+      fatal_error_dialog (errorbuf);
       return FALSE;
     }
 
   if (error)
     {
-      sprintf(errorbuf, _("Mode not available in this device"));
-      fatal_error_dialog(errorbuf);
+      sprintf (errorbuf, _("Mode not available in this device"));
+      fatal_error_dialog (errorbuf);
       return FALSE;
     }
 
@@ -171,8 +173,8 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      sprintf(errorbuf, _("Ape mode not yet supported"));
-      fatal_error_dialog(errorbuf);
+      sprintf (errorbuf, _("Ape mode not yet supported"));
+      fatal_error_dialog (errorbuf);
       return FALSE;
     }
 
@@ -497,6 +499,7 @@ add_node_packet (const guint8 * packet,
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
+
   add_protocol (node->protocols, packet_info->prot->str, phdr);
 
   /* We update node info */
@@ -510,6 +513,8 @@ add_node_packet (const guint8 * packet,
 
   /* Update names list for this node */
   get_packet_names (node->protocols, packet, phdr.len, prot, direction);
+
+  update_node (node);
 
 }				/* add_node_packet */
 
@@ -543,6 +548,8 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   link->accumulated += phdr.len;
   link->last_time = now;
   link->n_packets++;
+
+  update_link (link);
 
 }				/* add_link_packet */
 
@@ -815,10 +822,10 @@ add_protocol (GList ** protocols, const gchar * stack,
 	{
 	  protocol_info = g_malloc (sizeof (protocol_t));
 	  protocol_info->name = g_strdup (tokens[i]);
-	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	  protocol_info->accumulated = phdr.len;
 	  protocol_info->n_packets = 1;
 	  protocol_info->node_names = NULL;
+	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	}
 
     }
