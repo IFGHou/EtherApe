@@ -51,7 +51,7 @@ static void get_llc_name (void);
 static void get_ip_name (void);
 static void get_tcp_name (void);
 static void get_nbss_name (void);
-static void add_name (gchar * numeric, gchar * resolved);
+static void add_name (gchar * numeric, gchar * resolved, gboolean solved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
 #define KNOWN_PROTS 9

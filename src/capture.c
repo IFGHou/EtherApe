@@ -1148,8 +1148,7 @@ set_node_name (node_t * node, gchar * preferences)
 		  name = (name_t *) (name_item->data);
 		  /* If we require this protocol to be solved and it's not,
 		   * the we have to go on */
-		  if (strcmp (tokens[1], "SOLVED")
-		      || strcmp (name->name->str, name->numeric_name->str))
+		  if (strcmp (tokens[1], "SOLVED") || name->solved)
 		    {
 		      g_string_assign (node->name, name->name->str);
 		      g_string_assign (node->numeric_name,

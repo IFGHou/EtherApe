@@ -104,6 +104,7 @@ typedef struct
   guint8 *node_id;
   GString *name;
   GString *numeric_name;
+  gboolean solved;
   gdouble accumulated;
   gdouble n_packets;
 }

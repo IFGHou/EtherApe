@@ -109,6 +109,7 @@ static void
 get_eth_name (void)
 {
   gchar *numeric = NULL, *solved = NULL;
+  gboolean found_in_ethers;
 
   if (dir == INBOUND)
     id = p + offset;
@@ -122,9 +123,18 @@ get_eth_name (void)
 
   /* get_ether_name will return an ethernet address with
    * the first three numbers substituted with the manufacter
-   * if it cannot find an /etc/ethers entry */
+   * if it cannot find an /etc/ethers entry. If it is so,
+   * then the last 8 characters (for example ab:cd:ef) will
+   * be the same, and we will note that the name hasn't
+   * been solved */
 
-  add_name (numeric, solved);
+  found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
+			    solved + strlen (solved) - 8);
+
+  if (found_in_ethers)
+    add_name (numeric, solved, TRUE);
+  else
+    add_name (numeric, solved, FALSE);
 
   level++;
   offset += 14;
@@ -148,13 +158,13 @@ get_ip_name (void)
   id_length = 4;
 
   if (numeric)
-    add_name (ip_to_str (id), ip_to_str (id));
+    add_name (ip_to_str (id), ip_to_str (id), FALSE);
   else
     {
       if (mode == ETHERNET)
-	add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE));
+	add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE), TRUE);
       else
-	add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE));
+	add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE), TRUE);
     }
 
   /* TODO I don't like the fact that the gdk_input for dns.c is not
@@ -215,7 +225,7 @@ get_tcp_name (void)
 						 (id_buffer + 4)));
 
   id = id_buffer;
-  add_name (numeric_name->str, resolved_name->str);
+  add_name (numeric_name->str, resolved_name->str, TRUE);
 
   g_free (id_buffer);
   id_buffer = NULL;
@@ -278,7 +288,7 @@ get_nbss_name (void)
 	g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
 			 get_netbios_host_type (name_type));
 
-      add_name (numeric_name, name);
+      add_name (numeric_name, name, TRUE);
       g_free (numeric_name);
 
     }
@@ -295,7 +305,7 @@ get_nbss_name (void)
 
 
 static void
-add_name (gchar * numeric_name, gchar * resolved_name)
+add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved)
 {
   GList *protocol_item = NULL;
   protocol_t *protocol = NULL;
@@ -345,6 +355,11 @@ add_name (gchar * numeric_name, gchar * resolved_name)
       else
 	g_string_assign (name->name, resolved_name);
     }
+
+  if (numeric)
+    name->solved = FALSE;
+  else
+    name->solved = solved;
 
   name->n_packets++;
   name->accumulated += packet_size;
