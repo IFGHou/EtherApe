@@ -47,6 +47,9 @@ gint pcap_fd;			/* The file descriptor used by libpcap */
 gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
 static gint dns_fd = 0;		/* The file descriptor used by dns.c */
+static GList *new_nodes = NULL;	/* List that contains every new node not yet
+				 * acknowledged by the main app with 
+				 * ape_get_new_node */
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);

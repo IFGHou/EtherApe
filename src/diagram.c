@@ -189,6 +189,7 @@ update_diagram (GtkWidget * canvas)
   static guint n_protocols[STACK_SIZE + 1] = { 0 };
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
+  node_t *new_node = NULL;
 
 
   if (status == PAUSE)
@@ -214,7 +215,13 @@ update_diagram (GtkWidget * canvas)
   update_nodes ();
 
   /* Check if there are any new nodes */
+#if 0
   g_tree_traverse (nodes, (GTraverseFunc) check_new_node, G_IN_ORDER, canvas);
+#endif
+  while ((new_node = ape_get_new_node ()))
+    check_new_node (new_node->node_id, new_node, canvas);
+
+
 
   /* Update nodes look and delete outdated canvas_nodes */
   do
@@ -260,6 +267,7 @@ update_diagram (GtkWidget * canvas)
     }
   while (n_links != n_links_new);
 
+  /* If there are any info windows displayed, update its contents */
   update_node_info_windows ();
 
   /* With this we make sure that we don't overload the
@@ -514,9 +522,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
 
       g_tree_remove (canvas_nodes, node_id);
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Removing canvas_node. Number of node %d"),
-	     g_tree_nnodes (canvas_nodes));
+      g_my_debug ("Removing canvas_node. Number of nodes %d",
+		  g_tree_nnodes (canvas_nodes));
       g_free (node_id);
       g_free (canvas_node);
       need_reposition = TRUE;
@@ -909,9 +916,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
 
       g_tree_remove (canvas_links, link_id);
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Removing canvas link. Number of links %d"),
-	     g_tree_nnodes (canvas_links));
+      g_my_debug ("Removing canvas link. Number of links %d",
+		  g_tree_nnodes (canvas_links));
       g_free (link_id);
       g_free (canvas_link);
       return TRUE;		/* I've checked it's not safe to traverse 

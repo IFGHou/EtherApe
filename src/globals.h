@@ -275,6 +275,7 @@ gboolean pause_capture (void);
 gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 void update_nodes (void);
+node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
 link_t *update_link (link_t *);
 void update_packet_list (GList * packets, enum packet_belongs belongs_to);
 struct timeval substract_times (struct timeval a, struct timeval b);

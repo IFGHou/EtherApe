@@ -418,6 +418,9 @@ stop_capture (void)
    * in the GUI to do it (by calling update_node and update_link) */
   status = STOP;
 
+  /* Free the list of new_nodes */
+  g_list_free (new_nodes);
+
   if (filter)
     {
       g_free (filter);
@@ -675,6 +678,12 @@ add_node_packet (const guint8 * packet,
   node->last_time = now;
   node->n_packets++;
 
+  /* If this is the first packet we've heard from the node in a while, 
+   * we add it to the list of new nodes so that the main app know this 
+   * node is active again */
+  if (node->n_packets == 1)
+    new_nodes = g_list_prepend (new_nodes, node);
+
   /* Update names list for this node */
   get_packet_names (node->protocols, packet, phdr.len, prot, direction);
 
@@ -752,8 +761,8 @@ create_node (const guint8 * packet, const guint8 * node_id)
       i--;
     }
 
+  g_tree_insert (nodes, node->node_id, node);	/* Add it to the main tree of nodes */
 
-  g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _("Creating node: %s. Number of nodes %d"),
 	 node->name->str, g_tree_nnodes (nodes));
@@ -974,6 +983,39 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
   return FALSE;
 }				/* update_node */
 
+/* Returns a node from the list of new nodes or NULL if there are no more 
+ * new nodes */
+node_t *
+ape_get_new_node (void)
+{
+  node_t *node = NULL;
+  GList *old_item = NULL;
+
+  if (!new_nodes)
+    return NULL;
+
+  node = new_nodes->data;
+  old_item = new_nodes;
+
+  /* We make sure now that the node hasn't been deleted since */
+  while (!g_tree_lookup (nodes, node->node_id))
+    {
+      g_my_debug
+	("Already deleted node in list of new nodes, in ape_get_new_node");
+
+      /* Remove this node from the list of new nodes */
+      new_nodes = g_list_remove_link (new_nodes, new_nodes);
+      g_list_free_1 (old_item);
+      node = new_nodes->data;
+      old_item = new_nodes;
+    }
+  /* Remove this node from the list of new nodes */
+  new_nodes = g_list_remove_link (new_nodes, new_nodes);
+  g_list_free_1 (old_item);
+
+  return node;
+}				/* ape_get_new_node */
+
 
 link_t *
 update_link (link_t * link)
@@ -1138,10 +1180,17 @@ update_node_names (node_t * node)
     {
     case ETHERNET:
       set_node_name (node,
-		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
+		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;"
+		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;"
+		     "ETH_II,n;802.2,n;802.3,n");
       break;
     case FDDI:
-      set_node_name (node, "LLC,SOLVED;IP,n;ARP,n");
+      set_node_name (node,
+		     "FDDI,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
+      break;
+    case IEEE802:
+      set_node_name (node,
+		     "IEEE802,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
       break;
     case IP:
       set_node_name (node, "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n");
