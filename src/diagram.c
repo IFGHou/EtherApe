@@ -74,6 +74,11 @@ init_diagram ()
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
   gnome_entry_load_history (GNOME_ENTRY (widget));
+  widget = glade_xml_get_widget (xml, "file_filter_entry");
+  gnome_entry_load_history (GNOME_ENTRY (widget));
+  widget = glade_xml_get_widget (xml, "fileentry");
+  widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
+  gnome_entry_load_history (GNOME_ENTRY (widget));
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
@@ -179,8 +184,16 @@ update_diagram (GtkWidget * canvas)
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
 
+
+  if (status==PAUSE)
+     return TRUE;
+   
+  if (end_of_file && status!=STOP)
+    gui_stop_capture ();
+
   gettimeofday (&now, NULL);
 
+  
   /* We search for new protocols */
   if (n_protocols[stack_level]
       != (n_protocols_new[stack_level] =
