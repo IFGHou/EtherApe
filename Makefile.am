@@ -43,7 +43,8 @@ EXTRA_DIST = \
 	debian/dirs		\
 	debian/docs		\
 	debian/menu		\
-	debian/rules		
+	debian/rules		\
+	src/maketcpudp.sh
 
 full-dist :
 	test `whoami` = toledo
