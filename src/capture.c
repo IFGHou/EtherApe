@@ -389,6 +389,12 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   packet_t *packet;
   packet = (packet_t *) packets->data;
 
+  if (!packet)
+     {
+	g_warning (_("Null packet in check_packet"));
+	return NULL;
+     }
+		   
   result = substract_times (now, packet->timestamp);
 
   /* If this packet is older than the averaging time,
