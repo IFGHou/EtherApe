@@ -202,7 +202,7 @@ update_diagram (GtkWidget * canvas)
 
 
   if (status == PAUSE)
-    return TRUE;
+    return FALSE;
 
   if (end_of_file && status != STOP)
     gui_pause_capture ();
