@@ -26,7 +26,8 @@
 #include "dns.h"
 #include "protocols.h"
 
-
+#include "globals.h"
+#if 0
 /* Exported global variables */
 double averaging_time = 10000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
@@ -52,6 +53,8 @@ guint l3_offset;		/* Offset to the level 3 protocol data
 extern gboolean numeric;
 extern gchar *interface;
 extern gchar *filter;
+
+#endif
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */

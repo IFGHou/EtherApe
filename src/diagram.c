@@ -30,7 +30,8 @@
 #include "diagram.h"
 #include "callbacks.h"
 
-
+#include "globals.h"
+#if 0
 /* Global application parameters */
 
 double node_radius_multiplier = 0.0005;		/* used to calculate the radius of the
@@ -55,7 +56,7 @@ GTree *canvas_links;		/* See above */
 
 gboolean need_reposition;	/* It is set when a canvas_node has been added 
 				 * or deleted */
-
+#endif
 struct popup_data
   {
     GtkWidget *node_popup;
@@ -64,6 +65,7 @@ struct popup_data
 
 /* Extern global variables */
 
+#if 0
 extern gdouble averaging_time;
 extern gdouble link_timeout_time;
 extern gdouble node_timeout_time;
@@ -77,7 +79,7 @@ extern GtkWidget *app1;
 extern GtkWidget *diag_pref;
 
 extern GnomeUIInfo view1_menu_uiinfo[];
-
+#endif
 
 /* Extern functions declarations */
 
@@ -876,19 +878,6 @@ init_diagram ()
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
 
-  fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
-
-  /* These variables but refresh_period are measured in usecs */
-  averaging_time = 3000000.0;
-  node_timeout_time = 60000000.0;
-
-  if (nofade)
-    link_timeout_time = 5000000.0;
-  else
-    link_timeout_time = 20000000.0;
-
-  if (mode == IP || mode == TCP)
-    refresh_period = 3000;
 
   /* Updates controls from values of variables */
   widget = lookup_widget (GTK_WIDGET (diag_pref), "node_radius_slider");
@@ -911,6 +900,8 @@ init_diagram ()
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
+  widget = lookup_widget (GTK_WIDGET (diag_pref), "diagram_only_toggle");
+  gtk_toggle_button_set_active (widget, diagram_only);
 
   /* Connects signals */
   widget = lookup_widget (diag_pref, "node_radius_slider");

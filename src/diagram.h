@@ -1,5 +1,6 @@
 #include "capture.h"
 
+#if 0
 typedef enum
   {
     /* Beware! The value given by the option widget is dependant on
@@ -9,7 +10,7 @@ typedef enum
     SQRT = 2
   }
 size_mode_t;
-
+#endif
 
 /* Diagram structures */
 

@@ -29,6 +29,8 @@
 #include "diagram.h"
 #include "math.h"
 
+#include "globals.h"
+#if 0
 /* Global variables */
 
 extern GTree *canvas_nodes;	/* Defined in diagram.c */
@@ -41,10 +43,11 @@ extern guint32 refresh_period;
 extern gint diagram_timeout;
 extern gchar *fontname;
 extern gboolean need_reposition;
+extern gboolean diagram_only;
 extern size_mode_t size_mode;
 extern GtkWidget *diag_pref;
 extern GtkWidget *app1;
-
+#endif
 /* Extern functions */
 
 extern void save_config (gchar * prefix);
@@ -453,6 +456,9 @@ void
 on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
+
+  diagram_only = gtk_toggle_button_get_active (togglebutton);
+  need_reposition = TRUE;
 
 }
 

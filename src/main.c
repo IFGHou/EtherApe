@@ -27,6 +27,9 @@
 #include "support.h"
 #include "diagram.h"
 
+#include "globals.h"
+
+#if 0
 /* TODO Organize global variables in a sensible way */
 gboolean numeric = 0;
 gboolean dns = 1;
@@ -37,15 +40,7 @@ guint32 refresh_period = 800;
 gint diagram_timeout;
 gchar *filter = "";
 
-GtkWidget *app1;		/* Pointer to the main app window */
-GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
-
-extern gchar *node_color, *link_color, *text_color;
-extern gdouble node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
-  link_width_multiplier;
-extern apemode_t mode;
-extern size_mode_t size_mode;
-extern gchar *fontname;
+#endif
 
 static void
 session_die (GnomeClient * client, gpointer client_data)
@@ -87,16 +82,43 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 void
 load_config (char *prefix)
 {
+  gboolean u;
+
   gnome_config_push_prefix (prefix);
-  diagram_only = gnome_config_get_bool ("General/diagram_only");
-  node_timeout_time = gnome_config_get_float ("Diagram/node_timeout_time");
-  link_timeout_time = gnome_config_get_float ("Diagram/link_timeout_time");
-  averaging_time = gnome_config_get_float ("Diagram/averaging_time");
-  node_radius_multiplier = gnome_config_get_float ("Diagram/node_radius_multiplier");
-  link_width_multiplier = gnome_config_get_float ("Diagram/link_width_multiplier");
-  refresh_period = gnome_config_get_int ("Diagram/refresh_period");
-  size_mode = gnome_config_get_int ("Diagram/size_mode");
-  fontname = gnome_config_get_string ("Diagram/fontname");
+  diagram_only =
+    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
+  nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+  node_timeout_time =
+    gnome_config_get_float_with_default ("Diagram/node_timeout_time=60000000.0", &u);
+  if (nofade)
+    link_timeout_time =
+      gnome_config_get_float_with_default ("Diagram/link_timeout_time=5000000.0", &u);
+  else
+    link_timeout_time =
+      gnome_config_get_float_with_default ("Diagram/link_timeout_time=20000000.0", &u);
+  averaging_time =
+    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0", &u);
+  node_radius_multiplier =
+    gnome_config_get_float_with_default ("Diagram/node_radius_multiplier=0.0005", &u);
+  if (u)
+    node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
+  link_width_multiplier =
+    gnome_config_get_float_with_default ("Diagram/link_width_multiplier=0.0005", &u);
+  if (u)
+    link_width_multiplier = 0.0005;
+  mode =
+    gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  if (mode == IP || mode == TCP)
+    refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
+  else
+    refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
+
+  size_mode =
+    gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  fontname =
+    gnome_config_get_string_with_default ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
 
   gnome_config_pop_prefix ();
 }				/* load_config */
@@ -106,6 +128,7 @@ save_config (char *prefix)
 {
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
+  gnome_config_set_bool ("Diagram/nofade", nofade);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  node_timeout_time);
   gnome_config_set_float ("Diagram/link_timeout_time",
@@ -116,12 +139,12 @@ save_config (char *prefix)
 			  node_radius_multiplier);
   gnome_config_set_float ("Diagram/link_width_multiplier",
 			  link_width_multiplier);
-  gnome_config_set_int ("Diagram/refresh_period",
-			refresh_period);
-  gnome_config_set_int ("Diagram/size_mode",
-			size_mode);
-  gnome_config_set_string ("Diagram/fontname",
-			   fontname);
+#if 0				/* TODO should we save this? */
+  gnome_config_set_int ("General/mode", mode);
+#endif
+  gnome_config_set_int ("Diagram/refresh_period", refresh_period);
+  gnome_config_set_int ("Diagram/size_mode", size_mode);
+  gnome_config_set_string ("Diagram/fontname", fontname);
 
   gnome_config_sync ();
   gnome_config_pop_prefix ();
@@ -135,6 +158,7 @@ main (int argc, char *argv[])
   gchar *mode_string = NULL;
   GtkWidget *widget;
   GnomeClient *client;
+  poptContext poptcon;
 
   struct poptOption optionsTable[] =
   {
@@ -176,9 +200,40 @@ main (int argc, char *argv[])
 #endif
 
 
+  /* We initiate the application and read command line options */
   gnome_init_with_popt_table ("Etherape", VERSION, argc, argv, optionsTable,
 			      0, NULL);
+
+  /* We obtain application parameters 
+   * First, absolute defaults
+   * Second, values saved in the config file
+   * Third, whatever given in the command line */
+
+  /* Absolute defaults */
+  numeric = 0;
+  mode = ETHERNET;
+  dns = 1;
+  filter = g_strdup ("");
+  refresh_period = 800;		/* ms */
+  node_color = g_strdup ("brown");
+  link_color = g_strdup ("tan");	/* TODO I think link_color is
+					 * actually never used anymore,
+					 * is it? */
+  text_color = g_strdup ("yellow");
+
+  /* Config file */
   load_config ("/Etherape/");
+
+  /* Command line */
+  poptcon = poptGetContext ("Etherape", argc,
+			    argv,
+			    optionsTable,
+			    0);
+  while (poptGetNextOpt (poptcon) > 0);
+
+  if (!fontname)
+    fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
+
 
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
