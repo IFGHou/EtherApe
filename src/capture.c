@@ -1471,11 +1471,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  else if (!memcmp (packet->src_id, node->node_id, node_id_length))
 	    direction = OUTBOUND;
 	  else
-	    {
-	      g_my_critical
-		("Packet does not belong to node in check_packet!");
-	      exit (1);
-	    }
+	    g_my_critical ("Packet does not belong to node in check_packet!");
 
 	  /* Substract this packet's length to the accumulated */
 	  node->aver_accu -= packet->size;
