@@ -64,22 +64,22 @@ static link_t *create_link (const guint8 * packet, const guint8 * link_id);
 static gint update_node (guint8 * node_id, node_t * node, gpointer pointer);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void add_node_packet (const guint8 * packet,
-			     struct pcap_pkthdr phdr,
+			     const packet_t * packet_info,
 			     const guint8 * node_id,
-			     const gchar * prot, packet_direction direction);
+			     packet_direction direction);
 static void add_link_packet (const guint8 * packet,
-			     struct pcap_pkthdr phdr,
-			     const guint8 * link_id, const gchar * prot);
+			     const packet_t * packet_info,
+			     const guint8 * link_id);
 void add_protocol (GList ** protocols, const gchar * stack,
 		   struct pcap_pkthdr phdr);
 static void update_node_names (node_t * node);
 static void set_node_name (node_t * node, gchar * preferences);
 static gchar *get_main_prot (GList * packets,
 			     GList ** protocols, guint level);
-#if 0
-static GList *check_packet (GList * packets, enum packet_belongs belongs_to);
-#endif
+static void update_packet_list (GList * packets, guint8 * parent,
+				enum packet_belongs belongs_to);
 static gboolean check_packet (GList * packets, GList ** packet_l_e,
+			      guint8 * parent,
 			      enum packet_belongs belongs_to);
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static gint names_freq_compare (gconstpointer a, gconstpointer b);

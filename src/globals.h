@@ -174,11 +174,12 @@ typedef struct
 {
   guint size;			/* Size in bytes of the packet */
   struct timeval timestamp;	/* Time at which the packet was heard */
-  GString *prot;		/* Protocol type the packet was carrying */
-  gpointer parent;		/* Pointer to the link or node owner of the 
-				 * packet */
-  packet_direction direction;	/* For node packets, indicates whether 
-				 * this packet was inbound or outbound */
+  gchar *prot;			/* Packet protocol tree */
+  guint ref_count;		/* How many structures are referencing this 
+				 * packet. When the count reaches zero the packet
+				 * is deleted */
+  guint8 *src_id;		/* Source and destination ids for the packet */
+  guint8 *dst_id;		/* Useful to identify direction in node_packets */
 }
 packet_t;
 
@@ -279,7 +280,6 @@ gint set_filter (gchar * filter, gchar * device);
 void update_nodes (void);
 node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
 link_t *update_link (link_t *);
-void update_packet_list (GList * packets, enum packet_belongs belongs_to);
 struct timeval substract_times (struct timeval a, struct timeval b);
 gint node_id_compare (gconstpointer a, gconstpointer b);
 gint link_id_compare (gconstpointer a, gconstpointer b);
