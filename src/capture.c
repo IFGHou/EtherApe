@@ -412,11 +412,12 @@ stop_capture (void)
 	}
     }
 
-  /* Next time update_node and update_link are called,
-     all node and link information will be deleted */
-  /* TODO Perhaps we should make sure we delete all that data here instead of relying
-   * in the GUI to do it (by calling update_node and update_link) */
   status = STOP;
+
+  /* With status in STOP, all protocols, nodes and links will be deleted */
+  update_protocols ();
+  update_nodes ();
+  update_links ();
 
   /* Free the list of new_nodes */
   g_list_free (new_nodes);
@@ -532,7 +533,8 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   packet_info->src_id = g_memdup (get_node_id (packet, SRC), node_id_length);
   packet_info->dst_id = g_memdup (get_node_id (packet, DST), node_id_length);
 
-  add_protocol (protocols, prot, phdr, packet_info->src_id, packet_info->dst_id);
+  add_protocol (protocols, prot, phdr, packet_info->src_id,
+		packet_info->dst_id);
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
@@ -739,7 +741,7 @@ add_link_packet (const guint8 * packet, const packet_t * packet_info,
   link->last_time = now;
   link->n_packets++;
 
-  update_link (link);
+  update_link (link->link_id, link, NULL);
 
 }				/* add_link_packet */
 
@@ -838,8 +840,8 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
  * protocols and specific node and link list */
 void
 add_protocol (GList ** protocols, const gchar * stack,
-	      struct pcap_pkthdr phdr, const guint8 *src_id,
-	      const guint8 *dst_id)
+	      struct pcap_pkthdr phdr, const guint8 * src_id,
+	      const guint8 * dst_id)
 {
   GList *protocol_item = NULL;
   protocol_t *protocol_info = NULL;
@@ -869,19 +871,21 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocol_info->node_ids = NULL;
 	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	}
-       
-       /* For the global protocols list, take note of nodes that are using
-	* this protocol */
-       if (src_id)
-	 {
-	    if (!g_list_find (protocol_info->node_ids, src_id))
-	      protocol_info->node_ids=g_list_prepend (protocol_info->node_ids, src_id);
-	 }
-       if (dst_id)
-	 {
-	    if (!g_list_find (protocol_info->node_ids, src_id))
-	      protocol_info->node_ids=g_list_prepend (protocol_info->node_ids, src_id);
-	 }
+
+      /* For the global protocols list, take note of nodes that are using
+       * this protocol */
+      if (src_id)
+	{
+	  if (!g_list_find (protocol_info->node_ids, src_id))
+	    protocol_info->node_ids =
+	      g_list_prepend (protocol_info->node_ids, src_id);
+	}
+      if (dst_id)
+	{
+	  if (!g_list_find (protocol_info->node_ids, src_id))
+	    protocol_info->node_ids =
+	      g_list_prepend (protocol_info->node_ids, src_id);
+	}
     }
   g_strfreev (tokens);
   tokens = NULL;
@@ -911,7 +915,6 @@ static gint
 update_node (guint8 * node_id, node_t * node, gpointer pointer)
 {
   struct timeval diff;
-  guint8 *node_id = NULL;
   GList *protocol_item = NULL;
   protocol_t *protocol_info = NULL;
   guint i = STACK_SIZE;
@@ -939,11 +942,6 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		   _("Removing node: %s. Number of nodes %d"),
 		   node->name->str, g_tree_nnodes (nodes) - 1);
-	    node_id = node->node_id;	/* Since we are freeing the node
-					 * we must free its members as well 
-					 * but if we free the id then we will
-					 * not be able to find the link again 
-					 * to free it, thus the intermediate variable */
 
 	    /* First thing we do is delete the node for the list of new_nodes,
 	     * if it's there */
@@ -1006,10 +1004,10 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 
 	    g_free (node);
 	    g_tree_remove (nodes, node_id);
-	     
+
 	    /* Remove all mentions to this node in the globals protocols list */
 	    forget_node_from_protocols (node_id);
-	    
+
 	    g_free (node_id);
 	    node = NULL;
 	    return TRUE;	/* I've checked it's not safe to traverse 
@@ -1030,23 +1028,23 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 
 /* Remove all mentions to this node in the globals protocols list */
 static void
-forget_node_from_protocols (guint8 *node_id)
+forget_node_from_protocols (guint8 * node_id)
 {
-   GList *protocol_item = NULL;
-   protocol_t *protocol = NULL;
-   guint i = 0;
+  GList *protocol_item = NULL;
+  protocol_t *protocol = NULL;
+  guint i = 0;
 
-   for (; i <= STACK_SIZE; i++)
-     {
-	protocol_item = protocols[i];
-	while (protocol_item)
-	    {
-	       protocol = protocol_item->data;
-	       protocol->node_ids = g_list_remove (protocol->node_ids, node_id);
-	       protocol_item = protocol_item->next;
-	    }
-     }
-   
+  for (; i <= STACK_SIZE; i++)
+    {
+      protocol_item = protocols[i];
+      while (protocol_item)
+	{
+	  protocol = protocol_item->data;
+	  protocol->node_ids = g_list_remove (protocol->node_ids, node_id);
+	  protocol_item = protocol_item->next;
+	}
+    }
+
 }				/* forget_node_from_protocols */
 
 /* Returns a node from the list of new nodes or NULL if there are no more 
@@ -1092,11 +1090,28 @@ ape_get_new_node (void)
 }				/* ape_get_new_node */
 
 
-link_t *
-update_link (link_t * link)
+/* Calls update_link for every link. This is actually a function that
+ shouldn't be called often, because it might take a very long time 
+ to complete */
+void
+update_links (void)
+{
+  guint n_links_before, n_links_after;
+
+  do
+    {
+      n_links_before = g_tree_nnodes (links);
+      g_tree_traverse (links, (GTraverseFunc) update_link, G_IN_ORDER, NULL);
+      n_links_after = g_tree_nnodes (links);
+    }
+  while (n_links_before != n_links_after);
+
+}				/* update_links */
+
+static gint
+update_link (guint8 * link_id, link_t * link, gpointer pointer)
 {
   struct timeval diff;
-  guint8 *link_id;
   guint i = STACK_SIZE;
 
   if (link->packets)
@@ -1117,11 +1132,6 @@ update_link (link_t * link)
 	    || (status == STOP))
 #endif
 	  {
-	    link_id = link->link_id;	/* Since we are freeing the link
-					 * we must free its members as well 
-					 * but if we free the id then we will
-					 * not be able to find the link again 
-					 * to free it, thus the intermediate variable */
 	    for (; i + 1; i--)
 	      if (link->main_prot[i])
 		{
@@ -1141,6 +1151,9 @@ update_link (link_t * link)
 	    g_free (link_id);
 	    link = NULL;
 
+	    return TRUE;	/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
 	  }
 	else
 	  {
@@ -1156,9 +1169,38 @@ update_link (link_t * link)
 	  }
     }
 
-  return link;
+  return FALSE;
 
 }				/* update_link */
+
+/* Update the values for the instantaneous traffic values 
+ * Delete the protocols if that's the case */
+void
+update_protocols (void)
+{
+  GList *item = NULL;
+  protocol_t *protocol = NULL;
+  guint i = 0;
+
+  if (status == STOP)
+    {
+      for (; i <= STACK_SIZE; i++)
+	{
+	  item = protocols[i];
+	  while (item)
+	    {
+	      protocol = item->data;
+	      g_list_free (protocol->node_ids);
+	      if (protocol->name)
+		g_free (protocol->name);
+	      g_free (protocol);
+	      item = item->next;
+	    }
+	  g_list_free (protocols[i]);
+	  protocols[i] = NULL;
+	}
+    }
+}				/* update_protocols */
 
 /* This function is called to discard packets from the list 
  * of packets beloging to a node or a link, and to calculate

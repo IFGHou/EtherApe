@@ -282,8 +282,9 @@ gboolean pause_capture (void);
 gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 void update_nodes (void);
+void update_links (void);
+void update_protocols (void);
 node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
-link_t *update_link (link_t *);
 struct timeval substract_times (struct timeval a, struct timeval b);
 gint node_id_compare (gconstpointer a, gconstpointer b);
 gint link_id_compare (gconstpointer a, gconstpointer b);
@@ -308,6 +309,7 @@ void init_diagram (void);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
 void set_appbar_status (gchar * str);
+void delete_gui_protocols (void);
 
 /* From menus.c */
 void init_menus (void);
