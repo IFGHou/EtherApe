@@ -64,8 +64,9 @@ static void add_node_packet (const guint8 * packet,
 static void add_link_packet (const guint8 * packet,
 			     struct pcap_pkthdr phdr,
 			     const guint8 * link_id, const gchar * prot);
-void add_protocol (GList ** protocols, gchar * stack,
-		   struct pcap_pkthdr phdr, gboolean is_link);
-static gchar *get_main_prot (GList * packets, link_t * link, guint level);
+void add_protocol (GList ** protocols, const gchar * stack,
+		   struct pcap_pkthdr phdr);
+static gchar *get_main_prot (GList * packets,
+			     GList ** protocols, guint level);
 static GList *check_packet (GList * packets, enum packet_belongs belongs_to);
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
