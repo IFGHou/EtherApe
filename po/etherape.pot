@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-25 13:45+0100\n"
+"POT-Creation-Date: 2000-02-25 18:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,64 +18,93 @@ msgstr ""
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:85
+#: src/interface.c:100
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:209
+#: src/interface.c:224
 msgid "Nuevo"
 msgstr ""
 
-#: src/interface.c:210
+#: src/interface.c:225
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:221
+#: src/interface.c:236
 msgid "Abrir"
 msgstr ""
 
-#: src/interface.c:222
+#: src/interface.c:237
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:233
+#: src/interface.c:248
 msgid "Guardar"
 msgstr ""
 
-#: src/interface.c:234
+#: src/interface.c:249
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:306
+#: src/interface.c:291
+msgid "Diagram settings"
+msgstr ""
+
+#: src/interface.c:321
+msgid "Averaging Time"
+msgstr ""
+
+#: src/interface.c:344
+msgid "Diagram refresh period"
+msgstr ""
+
+#: src/interface.c:368
+msgid "Max. Node Radius"
+msgstr ""
+
+#: src/interface.c:391
+msgid "Max Link Radius"
+msgstr ""
+
+#: src/interface.c:399
+msgid "Place Holder for The Color Coded Protocols display"
+msgstr ""
+
+#: src/interface.c:436
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:308
+#: src/interface.c:438
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/support.c:98 src/support.c:136
+#: src/callbacks.c:174
+#, c-format
+msgid "Adjustment value: %g. Radius multiplier %g"
+msgstr ""
+
+#: src/support.c:97 src/support.c:135
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:114
+#: src/support.c:113
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:158
+#: src/capture.c:157
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:181
+#: src/capture.c:180
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:340
+#: src/capture.c:339
 msgid "You need to be root to run this program"
 msgstr ""

@@ -1,3 +1,11 @@
+Overview of changes in Etherape 0.1.1
+* First look at GUI side of things
+* Now you can dinamically reset the node radius using a slider
+* First users reports! Thanks R., Don!
+* Firts improvements due to user feedback:
+  - Solved configuration problem for some people
+  - Improved web page and README: reference to /etc/ethers
+
 Overview of changes in Etherape 0.1.0
 * Diagram resizes with window
 * Basic functionality is all there now, and calls for a minor

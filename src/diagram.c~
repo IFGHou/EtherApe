@@ -4,12 +4,19 @@
 
 #include <gnome.h>
 
-#include "interface.h"
 #include "support.h"
 #include "math.h"
 #include "resolv.h"
 #include "diagram.h"
 
+/* Global application parameters */
+
+double node_radius_multiplier_control=3;/* The multiplier is a positive number */
+double node_radius_multiplier=1000;     /* used to calculate the radius of the
+					 * displayed nodes. So that the user can
+					 * select with certain precision this
+					 * value, the GUI uses the log of the
+					 * multiplier in multiplier_control */
 
 guint averaging_time = 2000000;	/* Microseconds of time we consider to
 				   * calculate traffic averages */
@@ -20,16 +27,23 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 GTree *canvas_links;		/* See above */
 
 
+
+/* Extern functions declarations */
+
 extern gint ether_compare (gconstpointer a, gconstpointer b);
 extern gint link_compare (gconstpointer a, gconstpointer b);
 
-double 
+
+
+/* Local functions definitions */
+
+double
 get_node_size (glong accumulated)
 {
   return (double) 5 + 1000 * accumulated / averaging_time;
 }
 
-double 
+double
 get_link_size (glong accumulated)
 {
   return (double) 1000 *accumulated / averaging_time;
@@ -50,10 +64,10 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 				  &xmax,
 				  &ymax);
 /*  gnome_canvas_window_to_world (canvas, xmin, ymin, &xmin, &ymin);
-  gnome_canvas_window_to_world (canvas, xmax, ymax, &xmax, &ymax);*/
-   
+   gnome_canvas_window_to_world (canvas, xmax, ymax, &xmax, &ymax); */
+
 /*   gnome_canvas_c2w (canvas, xmin, ymin, &xmin, &ymin);
-   gnome_canvas_c2w (canvas, xmax, ymax, &xmax, &ymax);*/
+   gnome_canvas_c2w (canvas, xmax, ymax, &xmax, &ymax); */
 
   if (!n_nodes)
     {
@@ -298,7 +312,7 @@ update_diagram (GtkWidget * canvas)
 {
   static GnomeCanvasItem *circle = NULL;
   GnomeCanvasGroup *group;
-  static guint n_nodes=0, n_nodes_new;
+  static guint n_nodes = 0, n_nodes_new;
 
   /* Check if there are any new nodes */
   g_tree_traverse (nodes, check_new_node, G_IN_ORDER, canvas);
@@ -307,10 +321,11 @@ update_diagram (GtkWidget * canvas)
    * TODO: This should be conditional. Look for a way to know
    * whether the canvas needs updating, that is, a new node has been added
    */
-  if (n_nodes!=(n_nodes_new=g_tree_nnodes(nodes))) {
-     g_tree_traverse (canvas_nodes, reposition_canvas_nodes, G_IN_ORDER, canvas);
-     n_nodes=n_nodes_new;
-  }
+  if (n_nodes != (n_nodes_new = g_tree_nnodes (nodes)))
+    {
+      g_tree_traverse (canvas_nodes, reposition_canvas_nodes, G_IN_ORDER, canvas);
+      n_nodes = n_nodes_new;
+    }
 
   /* Update nodes aspect */
   g_tree_traverse (canvas_nodes, update_canvas_nodes, G_IN_ORDER, canvas);
@@ -342,6 +357,6 @@ update_diagram (GtkWidget * canvas)
 void
 init_diagram (void)
 {
-   canvas_nodes = g_tree_new (ether_compare);
-   canvas_links = g_tree_new (link_compare);
+  canvas_nodes = g_tree_new (ether_compare);
+  canvas_links = g_tree_new (link_compare);
 }

@@ -4,12 +4,19 @@
 
 #include <gnome.h>
 
-#include "interface.h"
 #include "support.h"
 #include "math.h"
 #include "resolv.h"
 #include "diagram.h"
 
+/* Global application parameters */
+
+double node_radius_multiplier_control=3;/* The multiplier is a positive number */
+double node_radius_multiplier=1000;     /* used to calculate the radius of the
+					 * displayed nodes. So that the user can
+					 * select with certain precision this
+					 * value, the GUI uses the log of the
+					 * multiplier in multiplier_control */
 
 guint averaging_time = 2000000;	/* Microseconds of time we consider to
 				   * calculate traffic averages */
@@ -20,13 +27,20 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 GTree *canvas_links;		/* See above */
 
 
+
+/* Extern functions declarations */
+
 extern gint ether_compare (gconstpointer a, gconstpointer b);
 extern gint link_compare (gconstpointer a, gconstpointer b);
+
+
+
+/* Local functions definitions */
 
 double
 get_node_size (glong accumulated)
 {
-  return (double) 5 + 1000 * accumulated / averaging_time;
+  return (double) 5 + node_radius_multiplier * accumulated / averaging_time;
 }
 
 double

@@ -107,3 +107,5 @@ void
   on_canvas1_size_allocate (GtkWidget * widget,
 			    GtkAllocation * allocation,
 			    gpointer user_data);
+
+void on_hscale6_adjustment_changed (GtkAdjustment *adj);

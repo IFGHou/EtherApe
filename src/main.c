@@ -27,11 +27,13 @@
 #include "interface.h"
 #include "support.h"
 #include "diagram.h"
+#include "callbacks.h"
 
 int
 main (int argc, char *argv[])
 {
   GtkWidget *app1;
+  GtkWidget *hscale;
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -43,8 +45,12 @@ main (int argc, char *argv[])
 
   gnome_init ("etherape", VERSION, argc, argv);
 
-  app1 = create_app1 ();
-  gtk_widget_show (app1);
+   app1 = create_app1 ();
+   hscale = lookup_widget (app1, "hscale6");
+   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
+		       "value_changed", GTK_SIGNAL_FUNC (on_hscale6_adjustment_changed),
+		       NULL);
+   gtk_widget_show (app1);
 
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when

@@ -7,9 +7,6 @@ libpcap, a packet capture and filtering library.
 
 It should compile on a linux machine with the proper developping
 environment, and maybe even on other Unix operating systems.
-I have yet to receive a single failed compilation report on any
-machine, but that may probably be because I have not yet received
-any kind of compilation success report. :-) (Hint!)
 
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
@@ -19,6 +16,28 @@ functionality as this (other than the real etherman, that is) to no
 avail. If you happen to know any such program, please let me now.
 Am I by chance wasting my time?
 
+If you want to see node names instead of hardware addresses, 
+use the /etc/ethers file. From the ethers man page:
+
+	/etc/ethers  contains  48 bit Ethernet addresses and their
+	corresponding IP numbers, one line for each IP number:
+	
+	Ethernet-address  IP-number
+	
+	The two items are separated by any number of
+	SPACE  and/or
+	TAB char acters.   A # at the beginning of a line starts a
+	comment which extends to the end of the line.  The  Ether­
+	net-address  is  written as x:x:x:x:x:x, where x is a hex­
+	adecimal number between 0 and ff which
+	represents one byte
+	of  the  address,  which  is  in  network byte order (big-
+	endian).  The IP-number may be a  hostname  which  can  be
+	resolved by DNS or a dot separated number.
+	
+	EXAMPLES
+	08:00:20:00:61:CA  pal
+			    
 
 Installation:
 -------------

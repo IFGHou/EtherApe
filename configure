@@ -713,7 +713,7 @@ fi
 
 PACKAGE=etherape
 
-VERSION=0.1.0
+VERSION=0.1.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -4518,11 +4518,15 @@ fi
 
 # Create DATAFILE_DIR #define for config.h
 DATAFILE_DIR=$sysconfdir
-DATAFILE_DIR=(
-    test "x$prefix" = xNONE && prefix=$ac_default_prefix
-    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
-    eval echo "$DATAFILE_DIR"
-    )
+# The following statement was in ethereal
+# but it breaks in some machines and I still don't know
+# what is for... JTC :-)
+#DATAFILE_DIR=(
+#    test "x$prefix" = xNONE && prefix=$ac_default_prefix
+#    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
+#    eval echo "$DATAFILE_DIR"
+#    )
+
 cat >> confdefs.h <<EOF
 #define DATAFILE_DIR "$DATAFILE_DIR"
 EOF

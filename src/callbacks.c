@@ -8,9 +8,11 @@
 #include "interface.h"
 #include "support.h"
 #include "diagram.h"
+#include "math.h"
 
-extern GTree *canvas_nodes;	/* Defined in diagram.c */
-
+extern GTree *canvas_nodes;		/* Defined in diagram.c */
+extern double node_radius_multiplier;
+extern double node_radius_multiplier_control;
 
 void
 on_file1_activate (GtkMenuItem * menuitem,
@@ -163,3 +165,15 @@ on_scrolledwindow1_size_allocate (GtkWidget * widget,
 
 
 }
+
+void on_hscale6_adjustment_changed (GtkAdjustment *adj) 
+{
+   node_radius_multiplier_control=adj->value;
+   node_radius_multiplier=exp ((double)adj->value * log (10));
+   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	 _ ("Adjustment value: %g. Radius multiplier %g"),
+	 adj->value,
+	 node_radius_multiplier);
+
+}
+				    

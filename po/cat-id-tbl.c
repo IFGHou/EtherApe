@@ -16,15 +16,22 @@ const struct _msg_ent _msg_tbl[] = {
   {"Abrir archivo", 7},
   {"Guardar", 8},
   {"Guardar archivo", 9},
-  {"Copyright 2000 Juan Toledo", 10},
+  {"Diagram settings", 10},
+  {"Averaging Time", 11},
+  {"Diagram refresh period", 12},
+  {"Max. Node Radius", 13},
+  {"Max Link Radius", 14},
+  {"Place Holder for The Color Coded Protocols display", 15},
+  {"Copyright 2000 Juan Toledo", 16},
   {"\
 A Graphical Network Browser.\n\
-Web: http://etherape.sourceforge.net", 11},
-  {"Couldn't find pixmap file: %s", 12},
-  {"Couldn't create pixmap from file: %s", 13},
-  {"Creating node: %s. Number of nodes %d", 14},
-  {"Creating link: %s-%s. Number of links %d", 15},
-  {"You need to be root to run this program", 16},
+Web: http://etherape.sourceforge.net", 17},
+  {"Adjustment value: %g. Radius multiplier %g", 18},
+  {"Couldn't find pixmap file: %s", 19},
+  {"Couldn't create pixmap from file: %s", 20},
+  {"Creating node: %s. Number of nodes %d", 21},
+  {"Creating link: %s-%s. Number of links %d", 22},
+  {"You need to be root to run this program", 23},
 };
 
-int _msg_tbl_length = 16;
+int _msg_tbl_length = 23;

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(etherape, 0.1.0)
+AM_INIT_AUTOMAKE(etherape, 0.1.1)
 AM_CONFIG_HEADER(config.h)
 
 dnl Pick up the Gnome macros.
@@ -36,11 +36,15 @@ AC_ETHEREAL_PCAP_CHECK
 
 # Create DATAFILE_DIR #define for config.h
 DATAFILE_DIR=$sysconfdir
-DATAFILE_DIR=(
-    test "x$prefix" = xNONE && prefix=$ac_default_prefix
-    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
-    eval echo "$DATAFILE_DIR"
-    )
+# The following statement was in ethereal
+# but it breaks in some machines and I still don't know
+# what is for... JTC :-)
+#DATAFILE_DIR=(
+#    test "x$prefix" = xNONE && prefix=$ac_default_prefix
+#    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
+#    eval echo "$DATAFILE_DIR"
+#    )
+
 AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
 AC_SUBST(DATAFILE_DIR)
 	    
