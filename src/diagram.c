@@ -199,7 +199,22 @@ update_diagram (GtkWidget * canvas)
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
   node_t *new_node = NULL;
+  static gboolean already_updating = FALSE;
 
+
+  /* It could happen that during an intensive calculation, in order
+   * to update the GUI and make the application responsive gtk_main_iteration
+   * is called. But that could also trigger this very function's timeout.
+   * If we let it run twice many problems could come up. Thus,
+   * we are preventing it with the already_updating variable */
+
+  if (already_updating)
+    {
+      g_my_debug ("update_diagram called while already updating");
+      return FALSE;
+    }
+  else
+    already_updating = TRUE;
 
   if (status == PAUSE)
     return FALSE;
@@ -310,6 +325,8 @@ update_diagram (GtkWidget * canvas)
   g_message ("Total Packets %g, packets in memory: %g", n_packets,
 	     n_mem_packets);
 #endif
+
+  already_updating = FALSE;
 
   if (!is_idle)
     {
@@ -576,17 +593,23 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   if (!node || !display_node (node))
     {
       if (canvas_node->group_item)
-	gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+	{
+	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+	  gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
+	  canvas_node->group_item = NULL;
+	}
       if (canvas_node->node_item)
-	gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
+	{
+	  gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
+	  gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
+	  canvas_node->node_item = NULL;
+	}
       if (canvas_node->text_item)
-	gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-      if (canvas_node->group_item)
-	gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
-      if (canvas_node->node_item)
-	gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
-      if (canvas_node->text_item)
-	gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+	{
+	  gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
+	  gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+	  canvas_node->text_item = NULL;
+	}
 
       g_tree_remove (canvas_nodes, node_id);
       g_my_debug ("Removing canvas_node. Number of nodes %d",
@@ -1003,6 +1026,9 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   if (!link)
     {
+      /* TODO VERY IMPORTANT *
+       * Make the same destroying procedure as in the canvas_nodes
+       * Else we are prone to have memory corruption */
       gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
       gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
 
