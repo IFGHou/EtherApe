@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-27 10:24+0100\n"
+"POT-Creation-Date: 2000-02-27 13:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,16 +14,24 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:44
+#: src/main.c:46
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:47
+#: src/main.c:49
 msgid "use IP name resolving. Caution! Long timeouts!"
 msgstr ""
 
-#: src/main.c:50
+#: src/main.c:52
 msgid "don't display any node text identification"
+msgstr ""
+
+#: src/main.c:55
+msgid "set interface to listen to"
+msgstr ""
+
+#: src/main.c:55
+msgid "interface name"
 msgstr ""
 
 #: src/interface.c:22
@@ -92,7 +100,23 @@ msgid ""
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/callbacks.c:174
+#: src/interface.c:458
+msgid "window1"
+msgstr ""
+
+#: src/interface.c:471
+msgid "node_name"
+msgstr ""
+
+#: src/interface.c:483
+msgid "ether_address"
+msgstr ""
+
+#: src/interface.c:495
+msgid "ip_address"
+msgstr ""
+
+#: src/callbacks.c:156
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
@@ -107,22 +131,22 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:240
+#: src/capture.c:241
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:263
+#: src/capture.c:264
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:449
+#: src/capture.c:452
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:457
+#: src/capture.c:460
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""

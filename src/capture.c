@@ -1,5 +1,6 @@
 
 
+
 #include <pcap.h>
 #include <gnome.h>
 #include <ctype.h>
@@ -13,6 +14,7 @@ extern double averaging_time;
 extern double link_timeout_time;
 extern gboolean numeric;
 extern gboolean dns;
+extern gchar *interface;
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */
@@ -222,7 +224,7 @@ create_node (const guint8 * packet, enum create_node_type node_type)
 	  if (dns)
 	    node->name = g_string_new (get_hostname (address));
 	  else
-	    node->name = g_string_new (ip_to_str (&address));
+	    node->name = g_string_new (ip_to_str ((guint8 *) (&address)));
 
 	}
       else
@@ -442,14 +444,17 @@ init_capture (void)
   gchar *device;
   gchar ebuf[300];
 
-  device = pcap_lookupdev (ebuf);
-  if (device == NULL)
+  device = interface;
+  if (!device)
     {
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	     _ ("Error getting device: %s"), ebuf);
-      exit (1);
+      device = pcap_lookupdev (ebuf);
+      if (device == NULL)
+	{
+	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
+		 _ ("Error getting device: %s"), ebuf);
+	  exit (1);
+	}
     }
-
 
   if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
     {

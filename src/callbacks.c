@@ -10,7 +10,7 @@
 #include "diagram.h"
 #include "math.h"
 
-extern GTree *canvas_nodes;		/* Defined in diagram.c */
+extern GTree *canvas_nodes;	/* Defined in diagram.c */
 extern double node_radius_multiplier;
 extern double node_radius_multiplier_control;
 
@@ -114,9 +114,9 @@ void
 on_about1_activate (GtkMenuItem * menuitem,
 		    gpointer user_data)
 {
-  GtkWidget *about2;
-  about2 = create_about2 ();
-  gtk_widget_show (about2);
+  GtkWidget *about;
+  about = create_about2 ();
+  gtk_widget_show (about);
 
 }
 
@@ -129,7 +129,6 @@ on_app1_delete_event (GtkWidget * widget,
   gtk_exit (0);
   return FALSE;
 }
-
 
 
 void
@@ -149,31 +148,14 @@ on_canvas1_size_allocate (GtkWidget * widget,
 
 }
 
-
-void
-on_scrolledwindow1_size_allocate (GtkWidget * widget,
-				  GtkAllocation * allocation,
-				  gpointer user_data)
+void 
+on_hscale6_adjustment_changed (GtkAdjustment * adj)
 {
-  GtkWidget *canvas;
-  canvas = lookup_widget (GTK_WIDGET (widget), "canvas1");
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),
-				  -canvas->allocation.width / 2,
-				  -canvas->allocation.height / 2,
-				  canvas->allocation.width / 2,
-				  canvas->allocation.height / 2);
-
-
-}
-
-void on_hscale6_adjustment_changed (GtkAdjustment *adj) 
-{
-   node_radius_multiplier_control=adj->value;
-   node_radius_multiplier=exp ((double)adj->value * log (10));
-   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+  node_radius_multiplier_control = adj->value;
+  node_radius_multiplier = exp ((double) adj->value * log (10));
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _ ("Adjustment value: %g. Radius multiplier %g"),
 	 adj->value,
 	 node_radius_multiplier);
 
 }
-				    

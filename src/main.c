@@ -29,28 +29,33 @@
 #include "diagram.h"
 #include "callbacks.h"
 
-gboolean numeric=0;
-gboolean dns=0;
-gboolean diagram_only=0;
+gboolean numeric = 0;
+gboolean dns = 0;
+gboolean diagram_only = 0;
+gchar *interface = NULL;
 
 int
 main (int argc, char *argv[])
 {
   GtkWidget *app1;
   GtkWidget *hscale;
-   
-   struct poptOption optionsTable[] = {
-       { "numeric", 'n', POPT_ARG_NONE, &numeric, 0,
-	    _("don't convert addresses to names"), NULL
-       },
-       {  "with-dns-resolving", 'r', POPT_ARG_NONE, &dns, 0,
-	    _("use IP name resolving. Caution! Long timeouts!"), NULL
-       },
-      {   "diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
-	   _("don't display any node text identification"), NULL
-      },
-       POPT_AUTOHELP
-       { NULL, 0, 0, NULL, 0 }
+
+  struct poptOption optionsTable[] =
+  {
+    {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
+     _ ("don't convert addresses to names"), NULL
+    },
+    {"with-dns-resolving", 'r', POPT_ARG_NONE, &dns, 0,
+     _ ("use IP name resolving. Caution! Long timeouts!"), NULL
+    },
+    {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
+     _ ("don't display any node text identification"), NULL
+    },
+    {"interface", 'i', POPT_ARG_STRING, &interface, 0,
+     _ ("set interface to listen to"), _ ("interface name")
+    },
+    POPT_AUTOHELP
+    {NULL, 0, 0, NULL, 0}
   };
 
 #ifdef ENABLE_NLS
@@ -58,12 +63,14 @@ main (int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 
-  init_capture ();
-  init_diagram ();
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
-   
-  printf ("numeric is %d\n", numeric);
+  init_capture ();		/* TODO low priority: I'd like to be able to open the 
+				 * socket without having initialized gnome, so that 
+				 * eventually I'd safely set the effective id to match the
+				 * user id and make a safer suid exec. See the source of
+				 * mtr for reference */
+  init_diagram ();
 
   app1 = create_app1 ();
   hscale = lookup_widget (app1, "hscale6");

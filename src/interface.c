@@ -428,7 +428,7 @@ create_about2 (void)
     "Juan Toledo <toledo@users.sourceforge.net>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "    -> Routines for network object lookup",
-    "Jasper Wallace",
+    "Jasper Wallace <jasper@pointless.net>",
     NULL
   };
   GtkWidget *about2;
@@ -442,5 +442,66 @@ create_about2 (void)
   gtk_window_set_modal (GTK_WINDOW (about2), TRUE);
 
   return about2;
+}
+
+GtkWidget*
+create_node_popup (void)
+{
+  GtkWidget *node_popup;
+  GtkWidget *table1;
+  GtkWidget *node_name;
+  GtkWidget *ether_address;
+  GtkWidget *ip_address;
+
+  node_popup = gtk_window_new (GTK_WINDOW_POPUP);
+  gtk_object_set_data (GTK_OBJECT (node_popup), "node_popup", node_popup);
+  gtk_window_set_title (GTK_WINDOW (node_popup), _("window1"));
+  gtk_window_set_position (GTK_WINDOW (node_popup), GTK_WIN_POS_MOUSE);
+  gtk_window_set_policy (GTK_WINDOW (node_popup), FALSE, FALSE, TRUE);
+
+  table1 = gtk_table_new (3, 2, TRUE);
+  gtk_widget_ref (table1);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "table1", table1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table1);
+  gtk_container_add (GTK_CONTAINER (node_popup), table1);
+
+  node_name = gtk_label_new ("");
+  gtk_label_parse_uline (GTK_LABEL (node_name),
+                         _("node_name"));
+  gtk_widget_ref (node_name);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "node_name", node_name,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (node_name);
+  gtk_table_attach (GTK_TABLE (table1), node_name, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (node_name), GTK_JUSTIFY_LEFT);
+
+  ether_address = gtk_label_new ("");
+  gtk_label_parse_uline (GTK_LABEL (ether_address),
+                         _("ether_address"));
+  gtk_widget_ref (ether_address);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ether_address", ether_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ether_address);
+  gtk_table_attach (GTK_TABLE (table1), ether_address, 0, 1, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (ether_address), GTK_JUSTIFY_LEFT);
+
+  ip_address = gtk_label_new ("");
+  gtk_label_parse_uline (GTK_LABEL (ip_address),
+                         _("ip_address"));
+  gtk_widget_ref (ip_address);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ip_address", ip_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ip_address);
+  gtk_table_attach (GTK_TABLE (table1), ip_address, 0, 1, 2, 3,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (ip_address), GTK_JUSTIFY_LEFT);
+
+  return node_popup;
 }
 

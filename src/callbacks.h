@@ -5,16 +5,6 @@ void
   on_file1_activate (GtkMenuItem * menuitem,
 		     gpointer user_data);
 
-gboolean
-on_drawingarea1_configure_event (GtkWidget * widget,
-				 GdkEventConfigure * event,
-				 gpointer user_data);
-
-gboolean
-on_drawingarea1_expose_event (GtkWidget * widget,
-			      GdkEventExpose * event,
-			      gpointer user_data);
-
 void
   on_new_file1_activate (GtkMenuItem * menuitem,
 			 gpointer user_data);
@@ -64,16 +54,6 @@ void
 		      gpointer user_data);
 
 gboolean
-on_drawingarea1_configure_event (GtkWidget * widget,
-				 GdkEventConfigure * event,
-				 gpointer user_data);
-
-gboolean
-on_drawingarea1_expose_event (GtkWidget * widget,
-			      GdkEventExpose * event,
-			      gpointer user_data);
-
-gboolean
 on_app1_destroy_event (GtkWidget * widget,
 		       GdkEvent * event,
 		       gpointer user_data);
@@ -82,26 +62,6 @@ gboolean
 on_app1_delete_event (GtkWidget * widget,
 		      GdkEvent * event,
 		      gpointer user_data);
-
-gboolean
-on_canvas1_configure_event (GtkWidget * widget,
-			    GdkEventConfigure * event,
-			    gpointer user_data);
-
-gboolean
-on_scrolledwindow1_configure_event (GtkWidget * widget,
-				    GdkEventConfigure * event,
-				    gpointer user_data);
-
-void
-  on_canvas1_size_allocate (GtkWidget * widget,
-			    GtkAllocation * allocation,
-			    gpointer user_data);
-
-void
-  on_scrolledwindow1_size_allocate (GtkWidget * widget,
-				    GtkAllocation * allocation,
-				    gpointer user_data);
 
 void
   on_canvas1_size_allocate (GtkWidget * widget,

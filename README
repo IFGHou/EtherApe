@@ -5,24 +5,24 @@ Etherape is a network traffic browser. It displays network activity
 graphically. It uses GNOME libraries as it's user interface, and 
 libpcap, a packet capture and filtering library.
 
-It should compile on a linux machine with the proper developping
-environment, and maybe even on other Unix operating systems.
-There's been a report of successful compilation on NetBSD,
-but right now you have to change the name of the capturing
-device, hardcoded in capture.c.
-
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
-I've tried my best to find any other program that provides similar
-functionality as this (other than the real etherman, that is) to no
-avail. If you happen to know any such program, please let me now.
-Am I by chance wasting my time?
-
-It will use /etc/ethers if there is one. If not, it will 
-display dotted quad ip address. You can even ask for ip
+Etherape will use /etc/ethers if there is one. If not, it will 
+display dotted quad ip addresses. You can even ask for ip
 name resolution with the -r option, but beware of very long
 DNS timeout times.
+
+Etherape has been compiled in at least:
+* Linux: Debian 2.2, RedHat 6.1, Slackware 7.0
+* NetBSD 1.4T (i386)
+
+It should probably compile and run in other unix-like OS. If
+you manage to compile it in a configuration other than the ones
+listed, please post it to the mailing list
+<etherape-users@lists.sourceforge.net> No need to subscribe.
+
+
 
 Installation:
 -------------
@@ -34,3 +34,27 @@ Please read the INSTALL file for installation instructions.  Brief summary:
 Executable is etherape, in the src directory
 
 
+
+Further information:
+--------------------
+
+See the etherape web page at
+http://etherape.sourceforge.net/
+	   
+Subscribe to the etherape mailing list. To subscribe, point your 
+browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
+To post a message, mail to 'etherape-users@lists.sourceforge.net'
+
+To receive a message whenever a new version of Etherape is 
+available, go to http://sourceforge.net/project/?group_id=2712 and
+click on the "Monitor this module link".
+
+Bug reports and feature requests should be sent in order 
+of preference:
+* The bug tracking system, http://sourceforge.net/bugs/?group_id=2712
+* The mailing list, etherape-users@lists.sourceforge.net
+* The author himself.
+
+Even though I'd ask you to post your bug report or feature 
+request on the bug tracking system, it would be nice if you could
+drop a note on the mailing list as well to say that you did so.
