@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-04 20:38+0200\n"
+"POT-Creation-Date: 2001-05-06 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,7 +157,7 @@ msgstr ""
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
-#: src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
+#: src/diagram.c:1379 src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -393,15 +393,14 @@ msgstr "Error al intentar quitar capture source en stop_capture"
 # src/capture.c:584
 # src/capture.c:584
 # src/capture.c:585
-#. TODO Write proper assertion code here
-#: src/capture.c:585
+#: src/capture.c:612
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:631
 # src/capture.c:631
 # src/capture.c:632
-#: src/capture.c:632
+#: src/capture.c:664
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -422,7 +421,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:762
 # src/capture.c:762
 # src/capture.c:768
-#: src/capture.c:768
+#: src/capture.c:786
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -444,7 +443,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:800
 # src/capture.c:800
 # src/capture.c:806
-#: src/capture.c:806
+#: src/capture.c:824
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -466,7 +465,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:899
 # src/capture.c:899
 # src/capture.c:907
-#: src/capture.c:907
+#: src/capture.c:943
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -488,7 +487,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:1043
 # src/capture.c:1043
 # src/capture.c:1080
-#: src/capture.c:1080
+#: src/capture.c:1148
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -510,7 +509,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1281
 # src/capture.c:1281
 # src/capture.c:1318
-#: src/capture.c:1318
+#: src/capture.c:1421
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
@@ -553,7 +552,7 @@ msgstr "Interfaz de captura fijado a %s en el GUI"
 # src/menus.c:262
 # src/menus.c:262
 # src/menus.c:262
-#: src/menus.c:262
+#: src/menus.c:274
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modo fijado en %s en el GUI"
@@ -563,7 +562,7 @@ msgstr "Modo fijado en %s en el GUI"
 # src/menus.c:429
 # src/menus.c:429
 # src/menus.c:429
-#: src/menus.c:429
+#: src/menus.c:441
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
@@ -571,23 +570,32 @@ msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 # src/menus.c:523
 # src/menus.c:523
 #. Sets the appbar
-#: src/menus.c:523
+#: src/menus.c:535
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
-#: src/menus.c:530 src/menus.c:648
+#: src/menus.c:542 src/menus.c:665
 msgid "default interface"
 msgstr "interfaz por defecto"
+
+# src/glade-strings:16
+# src/glade-strings:10
+# src/glade-strings:10
+# src/glade-strings:10
+# src/glade-strings:10
+#: src/menus.c:547
+msgid " in Token Ring mode"
+msgstr " en modo Token Ring"
 
 # src/glade-strings:10
 # src/glade-strings:12
 # src/menus.c:535
 # src/menus.c:535
 # src/menus.c:535
-#: src/menus.c:535
+#: src/menus.c:550
 msgid " in FDDI mode"
 msgstr " en modo FDDI"
 
@@ -596,7 +604,7 @@ msgstr " en modo FDDI"
 # src/menus.c:538
 # src/menus.c:538
 # src/menus.c:538
-#: src/menus.c:538
+#: src/menus.c:553
 msgid " in Ethernet mode"
 msgstr " en modo Ethernet"
 
@@ -617,7 +625,7 @@ msgstr " en modo Ethernet"
 # src/menus.c:541
 # src/menus.c:541
 # src/menus.c:541
-#: src/menus.c:541
+#: src/menus.c:556
 msgid " in IP mode"
 msgstr " en modo IP"
 
@@ -626,7 +634,7 @@ msgstr " en modo IP"
 # src/menus.c:544
 # src/menus.c:544
 # src/menus.c:544
-#: src/menus.c:544
+#: src/menus.c:559
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
@@ -635,7 +643,7 @@ msgstr " en modo TCP"
 # src/menus.c:547
 # src/menus.c:547
 # src/menus.c:547
-#: src/menus.c:547
+#: src/menus.c:562
 msgid " in UDP mode"
 msgstr " en modo UDP"
 
@@ -656,7 +664,7 @@ msgstr " en modo UDP"
 # src/menus.c:557
 # src/menus.c:557
 # src/menus.c:557
-#: src/menus.c:557
+#: src/menus.c:572
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
@@ -665,7 +673,7 @@ msgstr "Diagrama iniciado"
 # src/menus.c:570
 # src/menus.c:570
 # src/menus.c:570
-#: src/menus.c:570
+#: src/menus.c:585
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
@@ -675,7 +683,7 @@ msgstr "Status no es PLAY en gui_pause_capture"
 # src/menus.c:593
 # src/menus.c:593
 #. Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:608
 msgid "Paused"
 msgstr "Pausado"
 
@@ -696,7 +704,7 @@ msgstr "Pausado"
 # src/menus.c:598
 # src/menus.c:598
 # src/menus.c:598
-#: src/menus.c:598
+#: src/menus.c:613
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
@@ -705,7 +713,7 @@ msgstr "Diagrama pausado"
 # src/menus.c:612
 # src/menus.c:612
 # src/menus.c:612
-#: src/menus.c:612
+#: src/menus.c:627
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 
@@ -727,7 +735,7 @@ msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 # src/menus.c:641
 # src/menus.c:641
 #. Sets the appbar
-#: src/menus.c:641
+#: src/menus.c:658
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
 
@@ -748,7 +756,7 @@ msgstr "Listo para capturar de "
 # src/menus.c:653
 # src/menus.c:653
 # src/menus.c:653
-#: src/menus.c:653
+#: src/menus.c:670
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
@@ -760,14 +768,14 @@ msgstr "Diagrama parado"
 # src/diagram.c:288
 # src/diagram.c:288
 # src/diagram.c:299
-#: src/diagram.c:299
+#: src/diagram.c:311
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
 # src/diagram.c:292
 # src/diagram.c:292
 # src/diagram.c:303
-#: src/diagram.c:303
+#: src/diagram.c:315
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
@@ -775,14 +783,14 @@ msgstr ". Periodo de refresco: %d"
 # src/diagram.c:294
 # src/diagram.c:294
 # src/diagram.c:305
-#: src/diagram.c:305
+#: src/diagram.c:317
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
 # src/diagram.c:296
 # src/diagram.c:296
 # src/diagram.c:307
-#: src/diagram.c:307
+#: src/diagram.c:319
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
@@ -803,20 +811,20 @@ msgstr ". TIMEOUT."
 # src/diagram.c:481
 # src/diagram.c:481
 # src/diagram.c:495
-#: src/diagram.c:495
+#: src/diagram.c:549
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:557
-#: src/diagram.c:557
+#: src/diagram.c:611
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
 # src/diagram.c:566
 # src/diagram.c:566
 # src/diagram.c:582
-#: src/diagram.c:582
+#: src/diagram.c:636
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
@@ -837,27 +845,27 @@ msgstr "Valor desconocido en node_size_variable"
 # src/diagram.c:881
 # src/diagram.c:881
 # src/diagram.c:902
-#: src/diagram.c:902
+#: src/diagram.c:956
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:963
-#: src/diagram.c:963
+#: src/diagram.c:1019
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
 # src/diagram.c:1118
 # src/diagram.c:1118
 # src/diagram.c:1141
-#: src/diagram.c:1141
+#: src/diagram.c:1197
 msgid "No node_id in on_node_info_delete_event"
 msgstr "No node_id en on_node_info_delete_event"
 
 # src/diagram.c:1125
 # src/diagram.c:1125
 # src/diagram.c:1148
-#: src/diagram.c:1148
+#: src/diagram.c:1204
 msgid "No node_info_window in on_node_info_delete_event"
 msgstr "No node_info_window en on_node_info_delete_event"
 
@@ -865,14 +873,14 @@ msgstr "No node_info_window en on_node_info_delete_event"
 # src/diagram.c:1150
 # src/diagram.c:1150
 # src/diagram.c:1173
-#: src/diagram.c:1173
+#: src/diagram.c:1229
 msgid "No info available"
 msgstr "No hay información disponible"
 
 # src/diagram.c:1217
 # src/diagram.c:1217
 # src/diagram.c:1240
-#: src/diagram.c:1240
+#: src/diagram.c:1296
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
@@ -880,7 +888,7 @@ msgstr "Protocolo principal del enlace: %s"
 # src/diagram.c:1220
 # src/diagram.c:1220
 # src/diagram.c:1243
-#: src/diagram.c:1243
+#: src/diagram.c:1299
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -909,7 +917,7 @@ msgstr "Imposible analizar la línea %s"
 
 # src/protocols.c:719
 # src/protocols.c:719
-#: src/protocols.c:719
+#: src/protocols.c:721
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
@@ -976,7 +984,7 @@ msgstr "_Modo"
 # src/glade-strings:10
 #: src/glade-strings:10
 msgid "Set Token Ring mode"
-msgstr "Activar modo Toke Ring"
+msgstr "Activar modo Token Ring"
 
 # src/glade-strings:11
 # src/glade-strings:11

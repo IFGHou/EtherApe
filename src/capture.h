@@ -62,6 +62,7 @@ static guint8 *get_link_id (const guint8 * packet);
 static node_t *create_node (const guint8 * packet, const guint8 * node_id);
 static link_t *create_link (const guint8 * packet, const guint8 * link_id);
 static gint update_node (guint8 * node_id, node_t * node, gpointer pointer);
+static gint update_link (guint8 * link_id, link_t * link, gpointer pointer);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void add_node_packet (const guint8 * packet,
 			     const packet_t * packet_info,
@@ -72,7 +73,7 @@ static void add_link_packet (const guint8 * packet,
 			     const guint8 * link_id);
 void add_protocol (GList ** protocols, const gchar * stack,
 		   struct pcap_pkthdr phdr,
-		   const guint8 *src_id, const guint8 *dst_id);
+		   const guint8 * src_id, const guint8 * dst_id);
 static void update_node_names (node_t * node);
 static void set_node_name (node_t * node, gchar * preferences);
 static gchar *get_main_prot (GList * packets,
@@ -82,7 +83,7 @@ static void update_packet_list (GList * packets, guint8 * parent,
 static gboolean check_packet (GList * packets, GList ** packet_l_e,
 			      guint8 * parent,
 			      enum packet_belongs belongs_to);
-static void forget_node_from_protocols (guint8 *node_id);
+static void forget_node_from_protocols (guint8 * node_id);
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static gint names_freq_compare (gconstpointer a, gconstpointer b);
 gchar *print_mem (const guint8 * ad, guint length);

@@ -6,13 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-04 20:38+0200\n"
+"POT-Creation-Date: 2001-05-06 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: ENCODING\n"
 
 #: src/main.c:39
 msgid "mode of operation"
@@ -94,7 +94,7 @@ msgstr ""
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
+#: src/diagram.c:1379 src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
@@ -229,36 +229,35 @@ msgstr ""
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#. TODO Write proper assertion code here
-#: src/capture.c:585
+#: src/capture.c:612
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:632
+#: src/capture.c:664
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:768
+#: src/capture.c:786
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:806
+#: src/capture.c:824
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:907
+#: src/capture.c:943
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:1080
+#: src/capture.c:1148
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1318
+#: src/capture.c:1421
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -275,131 +274,135 @@ msgstr ""
 msgid "Capture interface set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:262
+#: src/menus.c:274
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:429
+#: src/menus.c:441
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:523
+#: src/menus.c:535
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:530 src/menus.c:648
+#: src/menus.c:542 src/menus.c:665
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:535
+#: src/menus.c:547
+msgid " in Token Ring mode"
+msgstr ""
+
+#: src/menus.c:550
 msgid " in FDDI mode"
 msgstr ""
 
-#: src/menus.c:538
+#: src/menus.c:553
 msgid " in Ethernet mode"
 msgstr ""
 
-#: src/menus.c:541
+#: src/menus.c:556
 msgid " in IP mode"
 msgstr ""
 
-#: src/menus.c:544
+#: src/menus.c:559
 msgid " in TCP mode"
 msgstr ""
 
-#: src/menus.c:547
+#: src/menus.c:562
 msgid " in UDP mode"
 msgstr ""
 
-#: src/menus.c:557
+#: src/menus.c:572
 msgid "Diagram started"
 msgstr ""
 
-#: src/menus.c:570
+#: src/menus.c:585
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:608
 msgid "Paused"
 msgstr ""
 
-#: src/menus.c:598
+#: src/menus.c:613
 msgid "Diagram paused"
 msgstr ""
 
-#: src/menus.c:612
+#: src/menus.c:627
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:641
+#: src/menus.c:658
 msgid "Ready to capture from "
 msgstr ""
 
-#: src/menus.c:653
+#: src/menus.c:670
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:299
+#: src/diagram.c:311
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:303
+#: src/diagram.c:315
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:305
+#: src/diagram.c:317
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:307
+#: src/diagram.c:319
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:495
+#: src/diagram.c:549
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:557
+#: src/diagram.c:611
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:582
+#: src/diagram.c:636
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:902
+#: src/diagram.c:956
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:963
+#: src/diagram.c:1019
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1141
+#: src/diagram.c:1197
 msgid "No node_id in on_node_info_delete_event"
 msgstr ""
 
-#: src/diagram.c:1148
+#: src/diagram.c:1204
 msgid "No node_info_window in on_node_info_delete_event"
 msgstr ""
 
-#: src/diagram.c:1173
+#: src/diagram.c:1229
 msgid "No info available"
 msgstr ""
 
-#: src/diagram.c:1240
+#: src/diagram.c:1296
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1243
+#: src/diagram.c:1299
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -418,7 +421,7 @@ msgstr ""
 msgid "Unable to  parse line %s"
 msgstr ""
 
-#: src/protocols.c:719
+#: src/protocols.c:721
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr ""

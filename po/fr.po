@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-05-04 20:38+0200\n"
+"POT-Creation-Date: 2001-05-06 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -113,7 +113,7 @@ msgstr "définir la couleur du texte"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
+#: src/diagram.c:1379 src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
@@ -265,42 +265,41 @@ msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
 # src/capture.c:713
-#. TODO Write proper assertion code here
-#: src/capture.c:585
+#: src/capture.c:612
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:632
+#: src/capture.c:664
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:768
+#: src/capture.c:786
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:806
+#: src/capture.c:824
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:409
-#: src/capture.c:907
+#: src/capture.c:943
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:1080
+#: src/capture.c:1148
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1318
+#: src/capture.c:1421
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
@@ -318,149 +317,155 @@ msgstr ""
 msgid "Capture interface set to %s in GUI"
 msgstr "définir l'interface sur laquelle écouter"
 
-#: src/menus.c:262
+#: src/menus.c:274
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:429
+#: src/menus.c:441
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:523
+#: src/menus.c:535
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:530 src/menus.c:648
+#: src/menus.c:542 src/menus.c:665
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:535
+# src/interface.c:709
+#: src/menus.c:547
+#, fuzzy
+msgid " in Token Ring mode"
+msgstr "Mode de la taille"
+
+#: src/menus.c:550
 msgid " in FDDI mode"
 msgstr ""
 
 # src/interface.c:107
-#: src/menus.c:538
+#: src/menus.c:553
 #, fuzzy
 msgid " in Ethernet mode"
 msgstr "Etherape"
 
 # src/interface.c:709
-#: src/menus.c:541
+#: src/menus.c:556
 #, fuzzy
 msgid " in IP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:544
+#: src/menus.c:559
 #, fuzzy
 msgid " in TCP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:547
+#: src/menus.c:562
 #, fuzzy
 msgid " in UDP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:510
-#: src/menus.c:557
+#: src/menus.c:572
 #, fuzzy
 msgid "Diagram started"
 msgstr "Diagramme"
 
-#: src/menus.c:570
+#: src/menus.c:585
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:608
 msgid "Paused"
 msgstr ""
 
 # src/interface.c:510
-#: src/menus.c:598
+#: src/menus.c:613
 #, fuzzy
 msgid "Diagram paused"
 msgstr "Diagramme"
 
-#: src/menus.c:612
+#: src/menus.c:627
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 # src/main.c:70
 #. Sets the appbar
-#: src/menus.c:641
+#: src/menus.c:658
 #, fuzzy
 msgid "Ready to capture from "
 msgstr "définir le filtre de capture"
 
 # src/interface.c:510
-#: src/menus.c:653
+#: src/menus.c:670
 #, fuzzy
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:299
+#: src/diagram.c:311
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:303
+#: src/diagram.c:315
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:305
+#: src/diagram.c:317
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:307
+#: src/diagram.c:319
 msgid ". TIMEOUT."
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:495
+#: src/diagram.c:549
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:557
+#: src/diagram.c:611
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:582
+#: src/diagram.c:636
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
 # src/capture.c:438 src/capture.c:443
-#: src/diagram.c:902
+#: src/diagram.c:956
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
-#: src/diagram.c:963
+#: src/diagram.c:1019
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1141
+#: src/diagram.c:1197
 msgid "No node_id in on_node_info_delete_event"
 msgstr ""
 
-#: src/diagram.c:1148
+#: src/diagram.c:1204
 msgid "No node_info_window in on_node_info_delete_event"
 msgstr ""
 
-#: src/diagram.c:1173
+#: src/diagram.c:1229
 msgid "No info available"
 msgstr ""
 
-#: src/diagram.c:1240
+#: src/diagram.c:1296
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1243
+#: src/diagram.c:1299
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -480,7 +485,7 @@ msgstr ""
 msgid "Unable to  parse line %s"
 msgstr "Impossible d'analyser le filtre (%s)."
 
-#: src/protocols.c:719
+#: src/protocols.c:721
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr ""
