@@ -22,7 +22,7 @@ cvs : NEWS FAQ README.bugs indent
 	cvs commit
 	touch src/.indent
 
-man_MANS = etherape.8
+man_MANS = etherape.1
 
 full-cvs : cvs
 	cd ../www && make
