@@ -19,6 +19,7 @@ README.bugs: html/bug-reporting.html
 cvs : NEWS FAQ README.bugs indent
 	test `whoami` = toledo
 	cvs commit
+	touch src/.indent
 
 man_MANS = etherape.8
 
@@ -34,6 +35,7 @@ EXTRA_DIST = \
 	README.help		\
 	README.bugs		\
 	FAQ			\
+	OVERVIEW		\
 	etherape.glade		\
 	etherape.spec		\
 	html/NEWS.html		\

@@ -12,6 +12,9 @@ future reference.
 0. Index of files
 -----------------
 
+src/globals.h
+	Declaration of all main data structures.
+	
 src/main.c
 	Parses command line options. Calls initialization
 	functions of capture and diagram. Loads and saves
@@ -59,4 +62,37 @@ time there is a new packet available in the network, packet_read.
 
    I try to clearly separate code and data structures of data
 gathering and presentation. Data gathering is performed in
-capture.c and 
+capture.c and presentation in diagram.c. capture.c is completely
+independent from presentation, except for the fact that nodes
+and links are updated (deletion of irrelevant packet, nodes and
+links; recalculation of traffic averages, main protocol, etc)
+only if externally called. node_update and link_update are called
+from canvas_node_update and canvas_link_update.
+
+   I also try to keep separate the functions in protocols.c, so
+that more protocol recognition can be added easily without
+further knowledge of the rest of the program. It is used as a
+library with a single api: get_packet_prot. Given a pointer to a
+packet, it returs a slash tokenized string with the protocol
+stack, e.g.: "/ETH_II/IP/TCP/SSH/UNKNOWN/UNKNOWN"
+
+   Each time update_diagram is called, it checks to see how
+nodes, links and protocols have changed, and the diagram is
+updated accordingly.
+
+2. Data Structures
+------------------
+
+   See globals.h for the declaration of all data structures. I'll
+give a short explanation here of the main ones.
+
+   capture.c keeps track of nodes and links using balanced binary
+trees. Each item of the tree is identified with a key which is
+different for each mode. Each time a packet arrives, get_node_id
+is called and it returns whatever constitutes the key. Thus,
+creating new modes is as easy as just setting the global
+node_id_legth and returning the address. Then you'd only have to
+add naming code in fill_names. Look for 'mode' in capture.c
+
+
+   

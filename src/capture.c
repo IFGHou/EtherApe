@@ -168,8 +168,7 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint
-set_filter (gchar * filter, gchar * device)
+gint set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -204,8 +203,7 @@ set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint
-get_offline_packet (void)
+guint get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
@@ -244,6 +242,7 @@ static void
 packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 {
   guint8 *src_id, *dst_id, *link_id;
+  gchar *prot;
 
   /* I have to love how RedHat messes with libraries.
    * I'm forced to use my own timestamp since the phdr is
@@ -265,17 +264,18 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   if (!packet)
     return;
 
+  prot = get_packet_prot (packet);
 
   src_id = get_node_id (packet, SRC);
-  add_node_packet (packet, phdr, src_id, OUTBOUND);
+  add_node_packet (packet, phdr, src_id, prot, OUTBOUND);
 
   /* Now we do the same with the destination node */
   dst_id = get_node_id (packet, DST);
-  add_node_packet (packet, phdr, dst_id, INBOUND);
+  add_node_packet (packet, phdr, dst_id, prot, INBOUND);
 
   link_id = get_link_id (packet);
   /* And now we update link traffic information for this packet */
-  add_link_packet (packet, phdr, link_id);
+  add_link_packet (packet, phdr, link_id, prot);
 
 }				/* packet_read */
 
@@ -384,7 +384,8 @@ get_link_id (const guint8 * packet)
 static void
 add_node_packet (const guint8 * packet,
 		 struct pcap_pkthdr phdr,
-		 const guint8 * node_id, packet_direction direction)
+		 const guint8 * node_id,
+		 const gchar * prot, packet_direction direction)
 {
   node_t *node;
   packet_t *packet_info;
@@ -418,7 +419,7 @@ add_node_packet (const guint8 * packet,
 /* Save as above plus we update protocol aggregate information */
 static void
 add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
-		 const guint8 * link_id)
+		 const guint8 * link_id, const gchar * prot)
 {
   link_t *link;
   packet_t *packet_info;
@@ -433,7 +434,7 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   packet_info->size = phdr.len;
   packet_info->timestamp = now;
   packet_info->parent = link;
-  packet_info->prot = g_string_new (get_packet_prot (packet));
+  packet_info->prot = g_string_new (prot);
   link->packets = g_list_prepend (link->packets, packet_info);
 
   /* We update both the global protocols stack and this particular
@@ -455,6 +456,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
 {
   node_t *node;
   gchar *na;
+  guint i = STACK_SIZE;
 
   na = g_strdup (_("n/a"));
 
@@ -474,6 +476,13 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node->accumulated = node->accumulated_in = node->accumulated_out = 0;
 
   node->packets = NULL;
+  while (i + 1)
+    {
+      node->protocols[i] = NULL;
+      node->main_prot[i] = NULL;
+      i--;
+    }
+
 
   g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
@@ -1032,8 +1041,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1062,8 +1070,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1090,8 +1097,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

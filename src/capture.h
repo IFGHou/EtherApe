@@ -60,9 +60,10 @@ static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void add_node_packet (const guint8 * packet,
 			     struct pcap_pkthdr phdr,
 			     const guint8 * node_id,
-			     packet_direction direction);
+			     const gchar * prot, packet_direction direction);
 static void add_link_packet (const guint8 * packet,
-			     struct pcap_pkthdr phdr, const guint8 * link_id);
+			     struct pcap_pkthdr phdr,
+			     const guint8 * link_id, const gchar * prot);
 void add_protocol (GList ** protocols, gchar * stack,
 		   struct pcap_pkthdr phdr, gboolean is_link);
 static gchar *get_main_prot (GList * packets, link_t * link, guint level);

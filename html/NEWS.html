@@ -1,274 +1,585 @@
-<HTML>
-<title>Changelog for Etherape</title>
-<LINK REL=STYLESHEET TYPE="text/css" HREF="etherape.css">
-<BODY>
-<h1>Changelog for Etherape</h1>
-<div id=date>$Date$</div>
-<h3>Overview of changes in Etherape 0.4.2 (Tuesday 04-04-2000):</h3><ul>
-<li>Initial FDDI support.
-<li>Uploaded working RPM (for version 0.4.1).
-</ul>
-<h3>Overview of changes in Etherape 0.4.1 (Monday 04-03-2000):</h3><ul>
-<li>Hiding legend works again (for me, at least).
-<li>Link directions were reversed in ethernet mode.
-<li>New webpage (mostly copied from ethereal's :-) )
-<li>First try at RPM distribution. Please report whether it works.
-</ul>
-<h3>Overview of changes in Etherape 0.4.0 (Wednesday 03-29-2000):</h3><ul>
-<li>Node size is dependent on outbound traffic
-<li>You can distinguish both directions of a link.
-</ul>
-<h3>Overview of changes in Etherape 0.3.9 (Wednesday 03-29-2000):</h3><ul>
-<li>You may safely turn down refresh period to minimum. If CPU can't
-handle it, it will just do a best effort.
-<li>Patch from Fabrice Bellet. Should fix more RedHat problems.
-Please report if it solves yours.
-<li>Some more segfault fixing.
-</ul>
-<h3>Overview of changes in Etherape 0.3.8 (Wednesday 03-29-2000):</h3><ul>
-<li>Filter entry has history.
-<li>Prefs window is raised when called.
-<li>I think I fixed almost all memory leaks.
-<li>Some more segfaults fixed.
-</ul>
-<h3>Overview of changes in Etherape 0.3.7 (Friday 03-24-2000):</h3><ul>
-<li>You can now "playback" tcpdump output files.
-<li>The legend now has a scrollbar if there are more protocols than
-it can hold.
-</ul>
-<h3>Overview of changes in Etherape 0.3.6 (Friday 03-24-2000):</h3><ul>
-<li>Recognizes level 5 UDP protocols.
-<li>Default stack level is now 5
-<li>Can anybody please send me the most complete /etc/services in Earth?
-Mine in debian is quite complete, but it's missing things like ICQ.
-</ul>
-<h3>Overview of changes in Etherape 0.3.5 (Thursday 03-23-2000):</h3><ul>
-<li>Sorry. I forgot to include the new files in the distribution. :-(
-</ul>
-<h3>Overview of changes in Etherape 0.3.4 (Thursday 03-23-2000):</h3><ul>
-<li>Recognizes level 5 TCP protocols (Set stack level to 5)
-UDP protocols should be done tomorrow morning.
-(Can somebody explain me why 6000 is not a recognized protocol
-in standard /etc/services?)
-<li>Fixed a compilation problem for people with libbind.a installed.
-</ul>
-<h3>Overview of changes in Etherape 0.3.3 (Thursday 03-23-2000):</h3><ul>
-<li>Fixes a serious and stupid segfault.
-<li>Recognizes level 4 IP protocols (set stack level to 4)
-</ul>
-<h3>Overview of changes in Etherape 0.3.2 (Wednesday 03-22-2000):</h3><ul>
-<li>You may choose what level of the protocol stack to look at. Now I
-should be able to add more protocol decoding easyly.
-<li>I think I have squashed the growing legend bug. Please report.
-<li>Diagram tries to use most of the window.
-<li>Got away with some other memory leaks, though I probably just
-introduced some others.
-</ul>
-<h3>Overview of changes in Etherape 0.3.1 (Monday 03-20-2000):</h3><ul>
-<li>Capture filter may be set in the preferences dialog in runtime
-<li>Warning! The above is just candy to have you all test some
-major code restructuring. Please report any problems.
-</ul>
-<h3>Overview of changes in Etherape 0.3.0 (Saturday 03-18-2000):</h3><ul>
-<li>Preferences can be saved
-<li>The status bar shows the main protocol when over a link,
-    and the node name when over a node.
-<li>Etherape turns 1 month old! Thanks everybody for using
-    this software. :-)
-</ul>
-<h3>Overview of changes in Etherape 0.2.11 (Friday 03-17-2000):</h3><ul>
-<li>Fixed a segfault in linuxppc
-<li>Fixed a minor bug in the protocols legend
-<li>Translations to French and Spanish
-</ul>
-<h3>Overview of changes in Etherape 0.2.10 (Thursday 03-16-2000):</h3><ul>
-<li>Fixed several memory leaks (it's still leaking, though :-( )
-<li>Added font picker to the diagram settings
-<li>Size mode menu is now working.
-<li>Should compile again in Solaris
-</ul>
-<h3>Overview of changes in Etherape 0.2.9 (Thursday 03-16-2000):</h3><ul>
-<li>Fix for bug introduced in 0.2.8. Resetting the refresh rate
-eventually broght a SIGSEGV. 
-</ul>
-<h3>Overview of changes in Etherape 0.2.8 (Wednesday 03-15-2000):</h3><ul>
-<li>GUI enhancements suggested by mdf to save screen real state.
-<ul>
-  <li>Diagram settings is a dialog under the preferences menu
-  <li>Legend becomes a dockable item
-  <li>Toolbar, legend and appbar may be hidden using the view menu.
-</ul>
-<li>GUI for two more sizing algorithms: log and sqrt. I'm afraid
-I still don't know how to get the menu item from an option_menu,
-though. Patch, anyone? :-)
-</ul>
-<h3>Overview of changes in Etherape 0.2.7 (Monday 03-13-2000):</h3><ul>
-<li>Node info is now a popup.
-<li>Popup window shows Name, IP address and MAC address again.
-<li>Name is only FQDN in ip and tcp modes (more readable)
-<li>Now links age the moment they are not used.
-<li>Added 802.2 and 802.3 to ethernet protocols.
-<li>Fix for sigsegv when small link timeouts.
-</ul>
-<h3>Overview of changes in Etherape 0.2.6 (Saturday 03-11-2000):</h3><ul>
-<li>Ethernet protocols are recognized and presented in different colors.
-<li>Links not in use are slowly faded out (patch by Ted Wright). Use 
---no-fade to avoid it.
-<li>Finally found a way to set the diagram background to black.
-</ul>
-<h3>Overview of changes in Etherape 0.2.5 (Friday 03-10-2000):</h3><ul>
-<li>Initial support for color coded protocols display
-<li>Click on a link and a get a debug message with the most common
-ethernet protocol
-<li>Released to test for bugs some major changes in the code. Go for 0.2.4
-if you want some guarantee of a more stable version.
-</ul>
-<h3>Overview of changes in Etherape 0.2.4 (Thursday 03-09-2000):</h3><ul>
-<li>Major bug fix.
-<li>Added README.bugs with procedures for bug reporting.
-</ul>
-<h3>Overview of changes in Etherape 0.2.3 (Wednesday 03-08-2000):</h3><ul>
-<li>Non blocking reverse lookups. I brought dns.c in from mtr to
-provide this functionality. This code is from Simon Kirby.
-<li>Removed now unnecessary -r option.
-</ul>
-<h3>Overview of changes in Etherape 0.2.2 (Tuesday 03-07-2000):</h3><ul>
-<li>Added ppp and slip devices support.
-<li>Brought back IP address display in ethernet mode when no /etc/ethers
-is available
-<li>Fixed another bug with RedHat 6.1. (I really have to find time to
-talk to this guy)
-</ul>
-<h3>Overview of changes in Etherape 0.2.1 (Monday 03-06-2000):</h3><ul>
-<li>Added tcp mode. Run with etherape -m tcp
-<li>Added fix from Ted Wright to provide a more readable display
-in crowded diagrams. Run with -o. Very useful for tcp.
-<li>Cleaned up sources so that adding other modes should be trivial.
-Please have a look at the source.
-</ul>
-<h3>Overview of changes in Etherape 0.2.0 (Friday 03-03-2000):</h3><ul>
-<li>RedHat 6.1 fix. Works around "featureful" redhat 6.1 libpcap.
-<li>Fixed node-in-the-center bug.
-<li>Timeout=0 means never timeout.
-</ul>
-<h3>Overview of changes in Etherape 0.1.9 (Thursday 03-02-2000):</h3><ul>
-<li>Finally I'm properly calculating average traffic. (yeah, right :-)
-<li>Node and link timeout work as expected as well.
-<li>Should now compile cleanly in Solaris.
-<li>Interape is a hardlinked to etherape. Runs as interape when called
-with that name.
-<li>Minor changes to the naming algorithm.
-</ul>
-<h3>Overview of changes in Etherape 0.1.8 (Wednesday 03-01-2000):</h3><ul>
-<li>First version of interape. Run as etherape -I. I guess I'll
-have to change the name to netape now. :-)
-<li>Added node and link timeouts controls.
-</ul>
-<h3>Overview of changes in Etherape 0.1.7 (Tuesday 02-29-2000):</h3><ul>
-<li>Pcap filtering added. Now you can use tcpdump style filtering 
-(enclosed in quotes) with the -f option.
-<li>Added libm to autoconf.in for systems with a separate math lib.
-<li>First try at Debian packaging.
-</ul>
-<h3>Overview of changes in Etherape 0.1.6 (Monday 02-28-2000):</h3><ul>
-<li>Refresh period spin, averaging time spin, and link width sliders
-    now work. Time to get better than Quake frame rates! :-)
-<li>Node, link and text colours can be set from the command line.
-<li>The rest of the GUI is active, so that it can answer itself
-    people's favourite question. :-) (Well, Control-Q does actually work!)
-<li>Automated release process so that I can keep bombarding
-    you with releases.
-</ul>
-<h3>Overview of changes in Etherape 0.1.5 (Sunday 02-27-2000):</h3><ul>
-<li> More for readability: Click on a node and a pop-up window
-  appears with all node data.
-<li> You can change the network interface to listen to in the 
-  command line.
-<li> Fixed a bug in the dotted quad ip number display
-<li> Compiles without warnings
-<li> Updated README
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
 
-</ul><h3>Overview of changes in Etherape 0.1.4 (Sunday 02-27-2000):</h3><ul>
-<li> Now parses command line arguments:
-  <br>etherape options
-  <br>-n, --numeric               don't convert addresses to names
-  <br>-r, --with-dns-resolving    use IP name resolving. Caution! Long timeouts!
-  <br>-d, --diagram-only          don't display any node text identification
-<li> The resolver is turned off by default since it can potentially
-  freeze your display for too long
-<li> digram-only makes for a clearer display. It's intended to be
-  practical whenever I have per-node pop-up windows ready.
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org">
 
-</ul><h3>Overview of changes in Etherape 0.1.3 (Saturday 02-26-2000):</h3><ul>
-<li> Links with no traffic disappear with time. Makes diagram
-  more readable.
-<li> IP host name displayed if no ether name available
-<li> Oops! Was confusing ether dst and src addresses. Solved.
-<li> Web page now has a much more interesting screenshot thanks 
-  to Nico Lumma 
-<li> Buttons are in English now.
-<li>(This file I had to get out from download because it
-had the dangerous DNS behaviour by default. You see? That's
-what happens when you are rushed by deadlines! :-) )
+    <title>Changelog for Etherape</title>
+    <link rel="STYLESHEET" type="text/css" href="etherape.css">
+  </head>
 
-</ul><h3>Overview of changes in Etherape 0.1.2 (Saturday 02-26-2000):</h3><ul>
-<li> James Wallace provided code to automatically
-  detect proper network interface. It now compiles in NetBSD.
-<li> IP number displayed if no /etc/ethers is available.
-  IP host name will be there in the Saturday Night edition. :-)
+  <body>
+    <h1>Changelog for Etherape</h1>
 
-</ul><h3>Overview of changes in Etherape 0.1.1 (Friday 02-25-2000):</h3><ul>
-<li> First look at GUI side of things
-<li> Now you can dynamically reset the node radius using a slider
-<li> First users reports! Thanks R., Don!
-<li> First improvements due to user feedback:
-   <ul>
-   <li>Solved configuration problem for some people
-   <li>Improved web page and README: reference to /etc/ethers
-   </ul>
+    <div id="date">
+      $Date$
+    </div>
 
-</ul><h3>Overview of changes in Etherape 0.1.0 (Friday 02-25-2000):</h3><ul>
-<li> Diagram resizes with window
-<li> Basic functionality is all there now, and calls for a minor
-  version upgrade. :-)
-  
-</ul><h3>Overview of changes in Etherape 0.0.8 (Thursday 02-24-2000):</h3><ul>
-<li> Correctly (I hope) calculates average traffic intensity
-  for nodes and links. The proper constant multiplier
-  should be user defined.
+    <h3>Overview of changes in Etherape 0.4.2 (Tuesday
+    04-04-2000):</h3>
 
-</ul><h3>Overview of changes in Etherape 0.0.7 (Thursday 02-24-2000):</h3><ul>
-<li> First version showing links among nodes
-<li> Aborts gracefully if run by non-root.
-<li> http://etherape.sourceforge.net has a screenshot.
-<li> Expect proper node size and link width calculation in 0.0.8
+    <ul>
+      <li>Initial FDDI support.</li>
 
-</ul><h3>Overview of changes in Etherape 0.0.6 (Wednesday 02-23-2000):</h3><ul>
-<li> Copied proper libpcap autoconfigure detection function from ethereal
-<li> Added Ethernet address resolution functions from ethereal
+      <li>Uploaded working RPM (for version 0.4.1).</li>
+    </ul>
 
-</ul><h3>Overview of changes in Etherape 0.0.5 (Wednesday 02-23-2000):</h3><ul>
-<li> Now uses gnome_canvas to display the diagram
+    <h3>Overview of changes in Etherape 0.4.1 (Monday
+    04-03-2000):</h3>
 
-</ul><h3>Overview of changes in Etherape 0.0.4 (Monday 02-21-2000):</h3><ul>
-<li> Node size is now an average of the last ten seconds traffic.
-<li> Proper distribution file.
+    <ul>
+      <li>Hiding legend works again (for me, at least).</li>
 
-</ul><h3>Overview of changes in Etherape 0.0.3 (Sunday 02-20-2000):</h3><ul>
-<li> Added gnome support.
-<li> Substituted hash table for binary tree to store nodes
-<li> Correctly display hardware addresses.
+      <li>Link directions were reversed in ethernet mode.</li>
 
-</ul><h3>Overview of changes in Etherape 0.0.2 (Saturday 02-19-2000):</h3><ul>
-<li> Displays circles representing nodes and text which will
-  identify it eventually.
-  
-</ul><h3>Overview of Etherape 0.0.1 (Friday 02-18-2000):</h3><ul>
-<li> Initial version. Don't even expect it to run.
-</ul>
-<hr>
-<p><i>$Id$</i>
-<p><A href="http://sourceforge.net"> 
-<IMG src="http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1"
-width="88" height="31" border="0"></A> 
-</BODY></HTML>
+      <li>New webpage (mostly copied from ethereal's :-) )</li>
+
+      <li>First try at RPM distribution. Please report whether it
+      works.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.4.0 (Wednesday
+    03-29-2000):</h3>
+
+    <ul>
+      <li>Node size is dependent on outbound traffic</li>
+
+      <li>You can distinguish both directions of a link.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.9 (Wednesday
+    03-29-2000):</h3>
+
+    <ul>
+      <li>You may safely turn down refresh period to minimum. If
+      CPU can't handle it, it will just do a best effort.</li>
+
+      <li>Patch from Fabrice Bellet. Should fix more RedHat
+      problems. Please report if it solves yours.</li>
+
+      <li>Some more segfault fixing.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.8 (Wednesday
+    03-29-2000):</h3>
+
+    <ul>
+      <li>Filter entry has history.</li>
+
+      <li>Prefs window is raised when called.</li>
+
+      <li>I think I fixed almost all memory leaks.</li>
+
+      <li>Some more segfaults fixed.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.7 (Friday
+    03-24-2000):</h3>
+
+    <ul>
+      <li>You can now "playback" tcpdump output files.</li>
+
+      <li>The legend now has a scrollbar if there are more
+      protocols than it can hold.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.6 (Friday
+    03-24-2000):</h3>
+
+    <ul>
+      <li>Recognizes level 5 UDP protocols.</li>
+
+      <li>Default stack level is now 5</li>
+
+      <li>Can anybody please send me the most complete
+      /etc/services in Earth? Mine in debian is quite complete, but
+      it's missing things like ICQ.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.5 (Thursday
+    03-23-2000):</h3>
+
+    <ul>
+      <li>Sorry. I forgot to include the new files in the
+      distribution. :-(</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.4 (Thursday
+    03-23-2000):</h3>
+
+    <ul>
+      <li>Recognizes level 5 TCP protocols (Set stack level to 5)
+      UDP protocols should be done tomorrow morning. (Can somebody
+      explain me why 6000 is not a recognized protocol in standard
+      /etc/services?)</li>
+
+      <li>Fixed a compilation problem for people with libbind.a
+      installed.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.3 (Thursday
+    03-23-2000):</h3>
+
+    <ul>
+      <li>Fixes a serious and stupid segfault.</li>
+
+      <li>Recognizes level 4 IP protocols (set stack level to
+      4)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.2 (Wednesday
+    03-22-2000):</h3>
+
+    <ul>
+      <li>You may choose what level of the protocol stack to look
+      at. Now I should be able to add more protocol decoding
+      easyly.</li>
+
+      <li>I think I have squashed the growing legend bug. Please
+      report.</li>
+
+      <li>Diagram tries to use most of the window.</li>
+
+      <li>Got away with some other memory leaks, though I probably
+      just introduced some others.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.1 (Monday
+    03-20-2000):</h3>
+
+    <ul>
+      <li>Capture filter may be set in the preferences dialog in
+      runtime</li>
+
+      <li>Warning! The above is just candy to have you all test
+      some major code restructuring. Please report any
+      problems.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.3.0 (Saturday
+    03-18-2000):</h3>
+
+    <ul>
+      <li>Preferences can be saved</li>
+
+      <li>The status bar shows the main protocol when over a link,
+      and the node name when over a node.</li>
+
+      <li>Etherape turns 1 month old! Thanks everybody for using
+      this software. :-)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.11 (Friday
+    03-17-2000):</h3>
+
+    <ul>
+      <li>Fixed a segfault in linuxppc</li>
+
+      <li>Fixed a minor bug in the protocols legend</li>
+
+      <li>Translations to French and Spanish</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.10 (Thursday
+    03-16-2000):</h3>
+
+    <ul>
+      <li>Fixed several memory leaks (it's still leaking, though
+      :-( )</li>
+
+      <li>Added font picker to the diagram settings</li>
+
+      <li>Size mode menu is now working.</li>
+
+      <li>Should compile again in Solaris</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.9 (Thursday
+    03-16-2000):</h3>
+
+    <ul>
+      <li>Fix for bug introduced in 0.2.8. Resetting the refresh
+      rate eventually broght a SIGSEGV.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.8 (Wednesday
+    03-15-2000):</h3>
+
+    <ul>
+      <li>
+        GUI enhancements suggested by mdf to save screen real
+        state. 
+
+        <ul>
+          <li>Diagram settings is a dialog under the preferences
+          menu</li>
+
+          <li>Legend becomes a dockable item</li>
+
+          <li>Toolbar, legend and appbar may be hidden using the
+          view menu.</li>
+        </ul>
+      </li>
+
+      <li>GUI for two more sizing algorithms: log and sqrt. I'm
+      afraid I still don't know how to get the menu item from an
+      option_menu, though. Patch, anyone? :-)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.7 (Monday
+    03-13-2000):</h3>
+
+    <ul>
+      <li>Node info is now a popup.</li>
+
+      <li>Popup window shows Name, IP address and MAC address
+      again.</li>
+
+      <li>Name is only FQDN in ip and tcp modes (more
+      readable)</li>
+
+      <li>Now links age the moment they are not used.</li>
+
+      <li>Added 802.2 and 802.3 to ethernet protocols.</li>
+
+      <li>Fix for sigsegv when small link timeouts.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.6 (Saturday
+    03-11-2000):</h3>
+
+    <ul>
+      <li>Ethernet protocols are recognized and presented in
+      different colors.</li>
+
+      <li>Links not in use are slowly faded out (patch by Ted
+      Wright). Use --no-fade to avoid it.</li>
+
+      <li>Finally found a way to set the diagram background to
+      black.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.5 (Friday
+    03-10-2000):</h3>
+
+    <ul>
+      <li>Initial support for color coded protocols display</li>
+
+      <li>Click on a link and a get a debug message with the most
+      common ethernet protocol</li>
+
+      <li>Released to test for bugs some major changes in the code.
+      Go for 0.2.4 if you want some guarantee of a more stable
+      version.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.4 (Thursday
+    03-09-2000):</h3>
+
+    <ul>
+      <li>Major bug fix.</li>
+
+      <li>Added README.bugs with procedures for bug reporting.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.3 (Wednesday
+    03-08-2000):</h3>
+
+    <ul>
+      <li>Non blocking reverse lookups. I brought dns.c in from mtr
+      to provide this functionality. This code is from Simon
+      Kirby.</li>
+
+      <li>Removed now unnecessary -r option.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.2 (Tuesday
+    03-07-2000):</h3>
+
+    <ul>
+      <li>Added ppp and slip devices support.</li>
+
+      <li>Brought back IP address display in ethernet mode when no
+      /etc/ethers is available</li>
+
+      <li>Fixed another bug with RedHat 6.1. (I really have to find
+      time to talk to this guy)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.1 (Monday
+    03-06-2000):</h3>
+
+    <ul>
+      <li>Added tcp mode. Run with etherape -m tcp</li>
+
+      <li>Added fix from Ted Wright to provide a more readable
+      display in crowded diagrams. Run with -o. Very useful for
+      tcp.</li>
+
+      <li>Cleaned up sources so that adding other modes should be
+      trivial. Please have a look at the source.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.2.0 (Friday
+    03-03-2000):</h3>
+
+    <ul>
+      <li>RedHat 6.1 fix. Works around "featureful" redhat 6.1
+      libpcap.</li>
+
+      <li>Fixed node-in-the-center bug.</li>
+
+      <li>Timeout=0 means never timeout.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.9 (Thursday
+    03-02-2000):</h3>
+
+    <ul>
+      <li>Finally I'm properly calculating average traffic. (yeah,
+      right :-)</li>
+
+      <li>Node and link timeout work as expected as well.</li>
+
+      <li>Should now compile cleanly in Solaris.</li>
+
+      <li>Interape is a hardlinked to etherape. Runs as interape
+      when called with that name.</li>
+
+      <li>Minor changes to the naming algorithm.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.8 (Wednesday
+    03-01-2000):</h3>
+
+    <ul>
+      <li>First version of interape. Run as etherape -I. I guess
+      I'll have to change the name to netape now. :-)</li>
+
+      <li>Added node and link timeouts controls.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.7 (Tuesday
+    02-29-2000):</h3>
+
+    <ul>
+      <li>Pcap filtering added. Now you can use tcpdump style
+      filtering (enclosed in quotes) with the -f option.</li>
+
+      <li>Added libm to autoconf.in for systems with a separate
+      math lib.</li>
+
+      <li>First try at Debian packaging.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.6 (Monday
+    02-28-2000):</h3>
+
+    <ul>
+      <li>Refresh period spin, averaging time spin, and link width
+      sliders now work. Time to get better than Quake frame rates!
+      :-)</li>
+
+      <li>Node, link and text colours can be set from the command
+      line.</li>
+
+      <li>The rest of the GUI is active, so that it can answer
+      itself people's favourite question. :-) (Well, Control-Q does
+      actually work!)</li>
+
+      <li>Automated release process so that I can keep bombarding
+      you with releases.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.5 (Sunday
+    02-27-2000):</h3>
+
+    <ul>
+      <li>More for readability: Click on a node and a pop-up window
+      appears with all node data.</li>
+
+      <li>You can change the network interface to listen to in the
+      command line.</li>
+
+      <li>Fixed a bug in the dotted quad ip number display</li>
+
+      <li>Compiles without warnings</li>
+
+      <li>Updated README</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.4 (Sunday
+    02-27-2000):</h3>
+
+    <ul>
+      <li>Now parses command line arguments:<br>
+       etherape options<br>
+       -n, --numeric don't convert addresses to names<br>
+       -r, --with-dns-resolving use IP name resolving. Caution!
+      Long timeouts!<br>
+       -d, --diagram-only don't display any node text
+      identification</li>
+
+      <li>The resolver is turned off by default since it can
+      potentially freeze your display for too long</li>
+
+      <li>digram-only makes for a clearer display. It's intended to
+      be practical whenever I have per-node pop-up windows
+      ready.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.3 (Saturday
+    02-26-2000):</h3>
+
+    <ul>
+      <li>Links with no traffic disappear with time. Makes diagram
+      more readable.</li>
+
+      <li>IP host name displayed if no ether name available</li>
+
+      <li>Oops! Was confusing ether dst and src addresses.
+      Solved.</li>
+
+      <li>Web page now has a much more interesting screenshot
+      thanks to Nico Lumma</li>
+
+      <li>Buttons are in English now.</li>
+
+      <li>(This file I had to get out from download because it had
+      the dangerous DNS behaviour by default. You see? That's what
+      happens when you are rushed by deadlines! :-) )</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.2 (Saturday
+    02-26-2000):</h3>
+
+    <ul>
+      <li>James Wallace provided code to automatically detect
+      proper network interface. It now compiles in NetBSD.</li>
+
+      <li>IP number displayed if no /etc/ethers is available. IP
+      host name will be there in the Saturday Night edition.
+      :-)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.1 (Friday
+    02-25-2000):</h3>
+
+    <ul>
+      <li>First look at GUI side of things</li>
+
+      <li>Now you can dynamically reset the node radius using a
+      slider</li>
+
+      <li>First users reports! Thanks R., Don!</li>
+
+      <li>
+        First improvements due to user feedback: 
+
+        <ul>
+          <li>Solved configuration problem for some people</li>
+
+          <li>Improved web page and README: reference to
+          /etc/ethers</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.1.0 (Friday
+    02-25-2000):</h3>
+
+    <ul>
+      <li>Diagram resizes with window</li>
+
+      <li>Basic functionality is all there now, and calls for a
+      minor version upgrade. :-)</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.8 (Thursday
+    02-24-2000):</h3>
+
+    <ul>
+      <li>Correctly (I hope) calculates average traffic intensity
+      for nodes and links. The proper constant multiplier should be
+      user defined.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.7 (Thursday
+    02-24-2000):</h3>
+
+    <ul>
+      <li>First version showing links among nodes</li>
+
+      <li>Aborts gracefully if run by non-root.</li>
+
+      <li>http://etherape.sourceforge.net has a screenshot.</li>
+
+      <li>Expect proper node size and link width calculation in
+      0.0.8</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.6 (Wednesday
+    02-23-2000):</h3>
+
+    <ul>
+      <li>Copied proper libpcap autoconfigure detection function
+      from ethereal</li>
+
+      <li>Added Ethernet address resolution functions from
+      ethereal</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.5 (Wednesday
+    02-23-2000):</h3>
+
+    <ul>
+      <li>Now uses gnome_canvas to display the diagram</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.4 (Monday
+    02-21-2000):</h3>
+
+    <ul>
+      <li>Node size is now an average of the last ten seconds
+      traffic.</li>
+
+      <li>Proper distribution file.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.3 (Sunday
+    02-20-2000):</h3>
+
+    <ul>
+      <li>Added gnome support.</li>
+
+      <li>Substituted hash table for binary tree to store
+      nodes</li>
+
+      <li>Correctly display hardware addresses.</li>
+    </ul>
+
+    <h3>Overview of changes in Etherape 0.0.2 (Saturday
+    02-19-2000):</h3>
+
+    <ul>
+      <li>Displays circles representing nodes and text which will
+      identify it eventually.</li>
+    </ul>
+
+    <h3>Overview of Etherape 0.0.1 (Friday 02-18-2000):</h3>
+
+    <ul>
+      <li>Initial version. Don't even expect it to run.</li>
+    </ul>
+    <hr>
+
+    <p><i>$Id: NEWS.html,v 1.30 2000/04/04 14:01:20 toledo Exp
+    $</i></p>
+
+    <p><a href="http://sourceforge.net"> <img alt="sourceforge"
+    src=
+    "http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1"
+    width="88" height="31" border="0"></a></p>
+  </body>
+</html>
+

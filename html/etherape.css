@@ -4,6 +4,11 @@ body
     font-family: sans-serif;
   }
 
+table
+  {
+    margin-left: auto;
+    margin-right: auto
+  }
 
 /* I don't understand why font-family is not inherited from body */
 td

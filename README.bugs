@@ -43,7 +43,6 @@ How to provide a backtrace
    when it crashed.
    
    It is actually simple, you just need to type three instructions.
-
 # gdb etherape
 (gdb) run [options your were using]
 (gdb) backtrace
@@ -51,7 +50,6 @@ How to provide a backtrace
    Here's an example of what it would look like. When you write your
    report, you only need to send me from the "Program received signal
    SIGSEGV" bit onwards.
-
 argos:~/etherape/src# gdb ./etherape
 GNU gdb 19990928
 Copyright 1998 Free Software Foundation, Inc.
@@ -96,7 +94,7 @@ canvas_node=0x80e2ab0, canvas=0x80d0cb0) at diagram.c:333
    
    $Id$
    
-   [4][sflogo.php?group_id=2712&amp;type=1] 
+   [4]sourceforge 
 
 References
 

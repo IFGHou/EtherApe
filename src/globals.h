@@ -95,6 +95,14 @@ packet_direction;
 
 typedef struct
 {
+  guint8 *node_id;
+  GString *name;
+  GString *numric_name;
+}
+name_t;
+
+typedef struct
+{
   guint8 *node_id;		/* pointer to the node identification
 				 * could be an ether or ip address*/
   GString *name;		/* String with a readable default name of the node */
@@ -112,6 +120,10 @@ typedef struct
   GList *packets;		/* List of packets sizes in or out and
 				 * its sizes. Used to calculate average
 				 * traffic */
+  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the node */
+  GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of
+					 * all protocols heard at that level */
+
 }
 node_t;
 
@@ -155,6 +167,8 @@ typedef struct
   GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
+  GList *node_names;		/* Has a list of all node names used with this 
+				 * protocol */
 }
 protocol_t;
 
