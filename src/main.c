@@ -128,11 +128,6 @@ main (int argc, char *argv[])
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
 
-  /* If called as interape, act as interape */
-  if (strstr (argv[0], "interape"))
-    mode = IP;
-
-
   /* Find mode of operation */
   if (mode_string)
     {

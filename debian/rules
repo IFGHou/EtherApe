@@ -53,9 +53,6 @@ binary-arch: build install
 	dh_installmenu
 	dh_installmanpages
 
-	dh_link usr/share/man/man8/etherape.8.gz \
-		usr/share/man/man8/interape.8.gz
-	
 	dh_installchangelogs -k NEWS
 	dh_link
 	dh_strip

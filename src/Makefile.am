@@ -12,7 +12,7 @@ INCLUDES = \
 	-DCONFDIR=\""$(confdir)"\" \
 	$(GNOME_INCLUDEDIR)
 
-sbin_PROGRAMS = etherape
+bin_PROGRAMS = etherape
 
 etherape_SOURCES = \
 	resolv.c eth_resolv.h \
@@ -31,12 +31,6 @@ etherape_SOURCES = \
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
-
-install-exec-local:
-	ln -f $(sbindir)/etherape $(sbindir)/interape
-
-uninstall-local:
-	rm -f $(sbindir)/interape
 
 .indent: $(etherape_SOURCES)
 	indent $? 

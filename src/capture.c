@@ -177,7 +177,6 @@ init_capture (void)
       return errorbuf;
     }
 
-  /* Only ip traffic makes sense when used as interape */
   /* TODO Shouldn't we free memory somwhere because of the strconcat? */
   switch (mode)
     {

@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{confdir} install
 
-strip $RPM_BUILD_ROOT%{prefix}/sbin/* ||:
+strip $RPM_BUILD_ROOT%{prefix}/bin/* ||:
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,7 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.help README.bugs README.thanks
 %config %{confdir}/etherape/*
-%{prefix}/sbin/*
+%{prefix}/bin/*
 %{prefix}/share/locale/*/*/*
 %{prefix}/share/etherape/*/*
 %{prefix}/share/gnome/*/*/*
