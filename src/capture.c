@@ -833,8 +833,8 @@ update_node (node_t * node)
 {
   struct timeval diff;
   guint8 *node_id = NULL;
-  GList *protocol_item=NULL;
-  protocol_t *protocol_info=NULL;
+  GList *protocol_item = NULL;
+  protocol_t *protocol_info = NULL;
   guint i = STACK_SIZE;
 
   if (node->packets)
@@ -874,48 +874,49 @@ update_node (node_t * node)
 		g_free (node->main_prot[i]);
 		node->main_prot[i] = NULL;
 	      }
-#if 1	   
-	   i=0;
-	   while (i <= STACK_SIZE)
-	     {
-		
-		while (node->protocols[i])
-		  {
-		     protocol_item = node->protocols[i];
-		     protocol_info = protocol_item->data;
-		     
-		     if (!protocol_info->accumulated)
-		       {
-			  GList *name_item = NULL;
-			  name_t *name;
-			  g_free (protocol_info->name);
-			  protocol_info->name = NULL;
-			  
-			  while (protocol_info->node_names)
-			    {
-			       name_item = protocol_info->node_names;
-			       name = name_item->data;
-			       g_free (name->node_id);
-			       g_string_free (name->name, TRUE);
-			       g_string_free (name->numeric_name, TRUE);
-			       protocol_info->node_names =
-				 g_list_remove_link (protocol_info->node_names,
-						     name_item);
-			       g_free (name);
-			       g_list_free (name_item);
-			    }
-			  
-			  node->protocols[i] =
-			    g_list_remove_link (node->protocols[i], protocol_item);
-			  g_free (protocol_info);
-			  g_list_free (protocol_item);
-		       }
-		  }
-		i++;
-	     }
-#endif	   
-	   
-	   
+#if 1
+	  i = 0;
+	  while (i <= STACK_SIZE)
+	    {
+
+	      while (node->protocols[i])
+		{
+		  protocol_item = node->protocols[i];
+		  protocol_info = protocol_item->data;
+
+		  if (!protocol_info->accumulated)
+		    {
+		      GList *name_item = NULL;
+		      name_t *name;
+		      g_free (protocol_info->name);
+		      protocol_info->name = NULL;
+
+		      while (protocol_info->node_names)
+			{
+			  name_item = protocol_info->node_names;
+			  name = name_item->data;
+			  g_free (name->node_id);
+			  g_string_free (name->name, TRUE);
+			  g_string_free (name->numeric_name, TRUE);
+			  protocol_info->node_names =
+			    g_list_remove_link (protocol_info->node_names,
+						name_item);
+			  g_free (name);
+			  g_list_free (name_item);
+			}
+
+		      node->protocols[i] =
+			g_list_remove_link (node->protocols[i],
+					    protocol_item);
+		      g_free (protocol_info);
+		      g_list_free (protocol_item);
+		    }
+		}
+	      i++;
+	    }
+#endif
+
+
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
@@ -1024,10 +1025,10 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
   /* Going from oldest to newer, delete all irrelevant packets */
   while (check_packet (packet_l_e, &packet_l_e, belongs_to));
 
-   /* TODO Move all this below to update_node and update_link */
-   /* If there still is relevant packets, then calculate average
-    * traffic and update names*/
-   
+  /* TODO Move all this below to update_node and update_link */
+  /* If there still is relevant packets, then calculate average
+   * traffic and update names*/
+
   if (packet_l_e)
     {
       packet_l_e = g_list_last (packets);
@@ -1266,7 +1267,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 						  protocol_compare);
 	      protocol_info = protocol_item->data;
 	      protocol_info->accumulated -= packet->size;
-#if 0	       
+#if 0
 	      if (!protocol_info->accumulated)
 		{
 		  GList *name_item = NULL;
@@ -1293,7 +1294,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 		  g_free (protocol_info);
 		  g_list_free (protocol_item);
 		}
-#endif	       
+#endif
 	      i++;
 	    }
 	  g_strfreev (tokens);
