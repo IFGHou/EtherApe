@@ -221,7 +221,9 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) user_data);
 
-  if (!strcmp ("FDDI", user_data))
+  if (!strcmp ("IEEE802", user_data))
+    new_mode = IEEE802;
+  else if (!strcmp ("FDDI", user_data))
     new_mode = FDDI;
   else if (!strcmp ("Ethernet", user_data))
     new_mode = ETHERNET;
@@ -231,6 +233,11 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     new_mode = TCP;
   else if (!strcmp ("UDP", user_data))
     new_mode = UDP;
+  else
+    {
+      g_my_critical ("Unsopported mode in on_mode_radio_activate");
+      exit (1);
+    }
 
   if (new_mode == mode)
     return;
@@ -243,15 +250,20 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     {
     case L_NULL:
     case L_RAW:
-      if ((new_mode == ETHERNET) || (new_mode == FDDI))
+      if ((new_mode == ETHERNET) || (new_mode == FDDI)
+	  || (new_mode == IEEE802))
 	return;
       break;
     case L_EN10MB:
-      if (new_mode == FDDI)
+      if ((new_mode == FDDI) || (new_mode == IEEE802))
 	return;
       break;
     case L_FDDI:
-      if (new_mode == ETHERNET)
+      if (new_mode == ETHERNET || (new_mode == IEEE802))
+	return;
+      break;
+    case L_IEEE802:
+      if (new_mode == ETHERNET || (new_mode == FDDI))
 	return;
       break;
     default:
@@ -531,6 +543,9 @@ gui_start_capture (void)
 
   switch (mode)
     {
+    case IEEE802:
+      g_string_append (status_string, _(" in Token Ring mode"));
+      break;
     case FDDI:
       g_string_append (status_string, _(" in FDDI mode"));
       break;

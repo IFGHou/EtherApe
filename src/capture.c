@@ -428,6 +428,10 @@ stop_capture (void)
       filter = NULL;
     }
 
+  /* Clean the buffer */
+  if (!interface)
+    get_offline_packet ();
+  /* Close the capture */
   pcap_close (pch);
 
   return TRUE;
@@ -443,6 +447,12 @@ get_offline_packet (void)
   static guint8 *packet = NULL;
   static struct timeval last_time = { 0, 0 }, this_time, diff;
 
+  if (status == STOP)
+    {
+      packet = NULL;
+      last_time.tv_usec = last_time.tv_sec = 0;
+      return FALSE;
+    }
 
   if (packet)
     packet_read (packet, 0, GDK_INPUT_READ);
@@ -489,7 +499,7 @@ cap_t_o_destroy (gpointer data)
 static void
 packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 {
-  guint8 *src_id = NULL, *dst_id = NULL, *link_id = NULL;
+  guint8 *link_id = NULL;
   packet_t *packet_info = NULL;
   gchar *prot = NULL;
 
@@ -512,9 +522,6 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 
   /* Get a string with the protocol tree */
   prot = get_packet_prot (packet, phdr.len);
-  /* Get ids for src and dst */
-  src_id = get_node_id (packet, SRC);
-  dst_id = get_node_id (packet, DST);
 
   /* We create a packet structure to hold data */
   packet_info = g_malloc (sizeof (packet_t));
@@ -570,6 +577,12 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
       else
 	node_id = g_memdup (packet + 1, node_id_length);
       break;
+    case IEEE802:
+      if (node_type == SRC)
+	node_id = g_memdup (packet + 8, node_id_length);
+      else
+	node_id = g_memdup (packet + 2, node_id_length);
+      break;
     case IP:
       if (node_type == SRC)
 	node_id = g_memdup (packet + l3_offset + 12, node_id_length);
@@ -594,7 +607,6 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
 	}
       break;
     default:
-      /* TODO Write proper assertion code here */
       g_error (_("Reached default in get_node_id"));
     }
 
@@ -627,6 +639,11 @@ get_link_id (const guint8 * packet)
       link_id = g_malloc (2 * node_id_length);
       g_memmove (link_id, packet + 7, node_id_length);
       g_memmove (link_id + 6, packet + 1, node_id_length);
+      break;
+    case IEEE802:
+      link_id = g_malloc (2 * node_id_length);
+      g_memmove (link_id, packet + 8, node_id_length);
+      g_memmove (link_id + 6, packet + 2, node_id_length);
       break;
     case IP:
       link_id = g_memdup (packet + l3_offset + 12, 2 * node_id_length);
