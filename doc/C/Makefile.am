@@ -23,7 +23,6 @@ etherape_help_DATA = ${HTML_FILES} topic.dat
 # where the runtime help system can find it.
 #
 ${HTML_FILES} : $(SGML_FILES)
-        if [ ! -x `which db2html` ] exit
 	if [ ! -d etherape ] ; then cd $(srcdir) && db2html etherape.sgml ; fi
 	-cd $(srcdir) && cp etherape/$@ .
 	if [ -d etherape.junk ] ; then cd $(srcdir) && rm -rf etherape.junk ; fi
