@@ -358,7 +358,7 @@ typedef struct
 }
 tcp_service_t;
 
-tcp_service_t tcp_services_table[TCP_SERVICES + 1] = {
+static tcp_service_t tcp_services_table[TCP_SERVICES + 1] = {
   {TCP_TCPMUX, "TCPMUX"},
   {TCP_ECHO, "ECHO"},
   {TCP_DISCARD, "DISCARD"},
@@ -555,7 +555,7 @@ typedef struct
 }
 udp_service_t;
 
-udp_service_t udp_services_table[UDP_SERVICES + 1] = {
+static udp_service_t udp_services_table[UDP_SERVICES + 1] = {
   {UDP_ECHO, "ECHO"},
   {UDP_DISCARD, "DISCARD"},
   {UDP_DAYTIME, "DAYTIME"},
