@@ -802,7 +802,7 @@ msgstr ". OCIOSO."
 # src/diagram.c:307
 #: src/diagram.c:321
 msgid ". TIMEOUT."
-msgstr ". TIMEOUT."
+msgstr ". EXPIRACIÓN."
 
 # src/capture.c:409
 # src/capture.c:408
@@ -1893,7 +1893,7 @@ msgstr "Refrescar el diagrama cada estos milisegundos"
 # src/glade-strings:85
 #: src/glade-strings:78
 msgid "Diagram Node Timeout (ms)"
-msgstr "Timeout de nodo de diagrama (ms)"
+msgstr "Expiración de nodo de diagrama (ms)"
 
 # src/interface.c:664
 # src/interface.c:664
@@ -1914,7 +1914,7 @@ msgid ""
 "timeout."
 msgstr ""
 "Borrar este nodo del diagrama después de pasado este tiempo. 0 significa no "
-"borrar nunca"
+"expirar nunca"
 
 # src/interface.c:622
 # src/interface.c:624
@@ -2137,7 +2137,7 @@ msgstr "Tiempo de medida (ms)"
 #: src/glade-strings:94
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr ""
-"Borrar este enlace después de pasado este tiempo. 0 significa no borrar nunca"
+"Borrar este enlace después de pasado este tiempo. 0 significa no expirar nunca"
 
 # src/interface.c:674
 # src/interface.c:676
@@ -2158,7 +2158,7 @@ msgstr ""
 # src/glade-strings:91
 #: src/glade-strings:95
 msgid "Link Timeout (ms)"
-msgstr "Timeout de enlaces (ms)"
+msgstr "Expiración de enlaces (ms)"
 
 # src/interface.c:664
 # src/interface.c:664
@@ -2178,7 +2178,7 @@ msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
 "Borrar este nodo de la memoria después de pasado este tiempo. 0 significa no "
-"borrar nunca"
+"expirar nunca"
 
 # src/interface.c:648
 # src/interface.c:650
@@ -2199,7 +2199,7 @@ msgstr ""
 # src/glade-strings:93
 #: src/glade-strings:97
 msgid "Node Timeout (ms)"
-msgstr "Timeout de nodo (ms)"
+msgstr "Expiración de nodo de captura (ms)"
 
 # src/interface.c:786
 # src/interface.c:786
