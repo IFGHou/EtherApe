@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-07-06 12:20+0200\n"
+"POT-Creation-Date: 2001-07-31 13:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,7 +95,7 @@ msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
 #: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
-#: src/menus.c:371
+#: src/menus.c:372
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
@@ -289,118 +289,118 @@ msgstr ""
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:449
+#: src/menus.c:450
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:543
+#: src/menus.c:544
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:550 src/menus.c:694
+#: src/menus.c:551 src/menus.c:695
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:555
+#: src/menus.c:556
 msgid " in Token Ring mode"
 msgstr ""
 
-#: src/menus.c:558
+#: src/menus.c:559
 msgid " in FDDI mode"
 msgstr ""
 
-#: src/menus.c:561
+#: src/menus.c:562
 msgid " in Ethernet mode"
 msgstr ""
 
-#: src/menus.c:564
+#: src/menus.c:565
 msgid " in IP mode"
 msgstr ""
 
-#: src/menus.c:567
+#: src/menus.c:568
 msgid " in TCP mode"
 msgstr ""
 
-#: src/menus.c:570
+#: src/menus.c:571
 msgid " in UDP mode"
 msgstr ""
 
-#: src/menus.c:580
+#: src/menus.c:581
 msgid "Diagram started"
 msgstr ""
 
-#: src/menus.c:593
+#: src/menus.c:594
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:622
+#: src/menus.c:623
 msgid "Paused"
 msgstr ""
 
-#: src/menus.c:627
+#: src/menus.c:628
 msgid "Diagram paused"
 msgstr ""
 
-#: src/menus.c:653
+#: src/menus.c:654
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:687
+#: src/menus.c:688
 msgid "Ready to capture from "
 msgstr ""
 
-#: src/menus.c:699
+#: src/menus.c:700
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:309
+#: src/diagram.c:312
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:313
+#: src/diagram.c:316
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:319
+#: src/diagram.c:322
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:321
+#: src/diagram.c:324
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:559
+#: src/diagram.c:562
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:636
+#: src/diagram.c:639
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:661
+#: src/diagram.c:664
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:995
+#: src/diagram.c:998
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1061
+#: src/diagram.c:1064
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1207
+#: src/diagram.c:1210
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1210
+#: src/diagram.c:1213
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -596,7 +596,7 @@ msgstr ""
 msgid "window1"
 msgstr ""
 
-#: src/glade-strings:52 src/glade-strings:137
+#: src/glade-strings:52 src/glade-strings:148
 msgid "name"
 msgstr ""
 
@@ -759,158 +759,215 @@ msgid "Diagram"
 msgstr ""
 
 #: src/glade-strings:91
-msgid "Capture filter"
+msgid "Color"
 msgstr ""
 
-#: src/glade-strings:92
-msgid "Packet information is averaged for this amount of time"
+#: src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
+msgid "Protocol"
 msgstr ""
 
 #: src/glade-strings:93
-msgid "Averaging Time (ms)"
+msgid ""
+"Add a new color to the list of colors that can be used to represent protocols"
 msgstr ""
 
 #: src/glade-strings:94
-msgid "Delete this link after this much time. 0 means never timeout."
+msgid "Add color"
 msgstr ""
 
 #: src/glade-strings:95
-msgid "Link Timeout (ms)"
+msgid "Remove color"
 msgstr ""
 
 #: src/glade-strings:96
+msgid "Edit protocol"
+msgstr ""
+
+#: src/glade-strings:97
+msgid "Fade link colors to black when there is no traffic"
+msgstr ""
+
+#: src/glade-strings:98
+msgid "Fade colors"
+msgstr ""
+
+#: src/glade-strings:99
+msgid "Whether or not to use assigned colors for unassigned protocolos"
+msgstr ""
+
+#: src/glade-strings:100
+msgid "Cycle assigned colors"
+msgstr ""
+
+#: src/glade-strings:101
+msgid "Colors"
+msgstr ""
+
+#: src/glade-strings:102
+msgid "Capture filter"
+msgstr ""
+
+#: src/glade-strings:103
+msgid "Packet information is averaged for this amount of time"
+msgstr ""
+
+#: src/glade-strings:104
+msgid "Averaging Time (ms)"
+msgstr ""
+
+#: src/glade-strings:105
+msgid "Delete this link after this much time. 0 means never timeout."
+msgstr ""
+
+#: src/glade-strings:106
+msgid "Link Timeout (ms)"
+msgstr ""
+
+#: src/glade-strings:107
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
 
-#: src/glade-strings:97
+#: src/glade-strings:108
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/glade-strings:98
+#: src/glade-strings:109
 msgid "Capture"
 msgstr ""
 
-#: src/glade-strings:99
+#: src/glade-strings:110
 msgid "Select Font"
 msgstr ""
 
-#: src/glade-strings:100
+#: src/glade-strings:111
 msgid "EtherApe: Open Capture File"
 msgstr ""
 
-#: src/glade-strings:101
+#: src/glade-strings:112
 msgid "EtherApe: Select capture file"
 msgstr ""
 
-#: src/glade-strings:102
+#: src/glade-strings:113
 msgid "EtherApe: Select Capture File"
 msgstr ""
 
-#: src/glade-strings:103
+#: src/glade-strings:114
 msgid "Select capture file"
 msgstr ""
 
-#: src/glade-strings:104
+#: src/glade-strings:115
 msgid "Optionally, set a capture filter"
 msgstr ""
 
-#: src/glade-strings:105
+#: src/glade-strings:116
 msgid "File:"
 msgstr ""
 
-#: src/glade-strings:106
+#: src/glade-strings:117
 msgid "Filter:"
 msgstr ""
 
-#: src/glade-strings:107
+#: src/glade-strings:118
 msgid "Name:"
 msgstr ""
 
-#: src/glade-strings:108 src/glade-strings:110
+#: src/glade-strings:119 src/glade-strings:121
 msgid "This is a test node name"
 msgstr ""
 
-#: src/glade-strings:109
+#: src/glade-strings:120
 msgid "Numeric Name:"
 msgstr ""
 
-#: src/glade-strings:111
+#: src/glade-strings:122
 msgid "Show traffic"
 msgstr ""
 
-#: src/glade-strings:112
+#: src/glade-strings:123
 msgid "Show protocols"
 msgstr ""
 
-#: src/glade-strings:113 src/glade-strings:140
+#: src/glade-strings:124 src/glade-strings:151
 msgid "Instantaneous"
 msgstr ""
 
-#: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
-#: src/glade-strings:120 src/glade-strings:122 src/glade-strings:124
-#: src/glade-strings:141 src/glade-strings:143
+#: src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
+#: src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
+#: src/glade-strings:152 src/glade-strings:154
 msgid "test label"
 msgstr ""
 
-#: src/glade-strings:115 src/glade-strings:142
+#: src/glade-strings:126 src/glade-strings:153
 msgid "Accumulated"
 msgstr ""
 
-#: src/glade-strings:117
+#: src/glade-strings:128
 msgid "Inst. Inbound"
 msgstr ""
 
-#: src/glade-strings:119
+#: src/glade-strings:130
 msgid "Accu. Outbound"
 msgstr ""
 
-#: src/glade-strings:121
+#: src/glade-strings:132
 msgid "Accu. Inbound"
 msgstr ""
 
-#: src/glade-strings:123
+#: src/glade-strings:134
 msgid "Inst. Outbound"
 msgstr ""
 
-#: src/glade-strings:125
+#: src/glade-strings:136
 msgid "EtherApe: Protocols"
 msgstr ""
 
-#: src/glade-strings:126
+#: src/glade-strings:137
 msgid "Columns"
 msgstr ""
 
-#: src/glade-strings:127 src/glade-strings:132
-msgid "Protocol"
-msgstr ""
-
-#: src/glade-strings:128 src/glade-strings:133
+#: src/glade-strings:139 src/glade-strings:144
 msgid "Inst Traffic"
 msgstr ""
 
-#: src/glade-strings:129 src/glade-strings:134
+#: src/glade-strings:140 src/glade-strings:145
 msgid "Accum Traffic"
 msgstr ""
 
-#: src/glade-strings:130 src/glade-strings:135
+#: src/glade-strings:141 src/glade-strings:146
 msgid "Last Heard"
 msgstr ""
 
-#: src/glade-strings:131 src/glade-strings:136
+#: src/glade-strings:142 src/glade-strings:147
 msgid "Packets"
 msgstr ""
 
-#: src/glade-strings:138
+#: src/glade-strings:149
 msgid "Last Heard: "
 msgstr ""
 
-#: src/glade-strings:139
+#: src/glade-strings:150
 msgid "label73"
 msgstr ""
 
-#: src/glade-strings:144
+#: src/glade-strings:155
 msgid "Nodes"
+msgstr ""
+
+#: src/glade-strings:156
+msgid "Select color"
+msgstr ""
+
+#: src/glade-strings:157
+msgid "ok_button2"
+msgstr ""
+
+#: src/glade-strings:158
+msgid "cancel_button2"
+msgstr ""
+
+#: src/glade-strings:159
+msgid "help_button1"
 msgstr ""
 
 #: src/info_windows.c:323
