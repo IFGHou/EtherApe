@@ -45,7 +45,7 @@ get_packet_names (GList ** protocols,
   dir = direction;
   prot_list = protocols;
   offset = 0;
-  level = 1;	       /* Level 0 is for the topmost. Not valid */
+  level = 1;			/* Level 0 is for the topmost. Not valid */
   tokens = g_strsplit (prot_stack, "/", 0);
 
   next_func = g_tree_lookup (prot_functions, tokens[level]);

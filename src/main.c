@@ -234,7 +234,7 @@ load_config (char *prefix)
   gchar *config_file_version;
 
   gnome_config_push_prefix (prefix);
-   
+
   config_file_version =
     gnome_config_get_string_with_default ("General/version=0.5.4", &u);
   diagram_only =
@@ -279,11 +279,11 @@ load_config (char *prefix)
   size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
   stack_level =
     gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
-  if ( (stack_level!=0) 
-      && (version_compare (config_file_version, "0.5.4") < 0) )
-     g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
-		  "Please check in the preferences dialog that this is what "
-		  "you really want"));
+  if ((stack_level != 0)
+      && (version_compare (config_file_version, "0.5.4") < 0))
+    g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
+		 "Please check in the preferences dialog that this is what "
+		 "you really want"));
   fontname =
     gnome_config_get_string_with_default
     ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
@@ -293,43 +293,48 @@ load_config (char *prefix)
 }				/* load_config */
 
 static gint
-version_compare (const gchar *a, const gchar *b)
+version_compare (const gchar * a, const gchar * b)
 {
-   guint a_mj, a_mi, a_pl, b_mj, b_mi, b_pl;
+  guint a_mj, a_mi, a_pl, b_mj, b_mi, b_pl;
 
-   g_assert (a!=NULL);
-   g_assert (b!=NULL);
+  g_assert (a != NULL);
+  g_assert (b != NULL);
 
-   /* TODO What should we return if there was a problem? */
-   g_return_val_if_fail ( (get_version_levels (a, &a_mj, &a_mi, &a_pl)
-			   && get_version_levels (b, &b_mj, &b_mi, &b_pl)),
-			 0);
-   if (a_mj<b_mj) return -1;
-   else if (a_mj>b_mj) return 1;
-   else if (a_mi<b_mi) return -1;
-   else if (a_mi>b_mi) return 1;
-   else if (a_pl<b_pl) return -1;
-   else if (a_pl>b_pl) return 1;
-   else return 0;
+  /* TODO What should we return if there was a problem? */
+  g_return_val_if_fail ((get_version_levels (a, &a_mj, &a_mi, &a_pl)
+			 && get_version_levels (b, &b_mj, &b_mi, &b_pl)), 0);
+  if (a_mj < b_mj)
+    return -1;
+  else if (a_mj > b_mj)
+    return 1;
+  else if (a_mi < b_mi)
+    return -1;
+  else if (a_mi > b_mi)
+    return 1;
+  else if (a_pl < b_pl)
+    return -1;
+  else if (a_pl > b_pl)
+    return 1;
+  else
+    return 0;
 }
 
 static gboolean
-get_version_levels (const gchar *version_string,
-		    guint *major, guint *minor, guint *patch)
+get_version_levels (const gchar * version_string,
+		    guint * major, guint * minor, guint * patch)
 {
-   gchar **tokens;
-   
-   g_assert (version_string!=NULL);
-   
-   tokens = g_strsplit (version_string, ".", 0);
-   g_return_val_if_fail ((tokens
-			  && tokens[0] && tokens[1] && tokens[2]
-			  && sscanf(tokens[0], "%d", major)
-			  && sscanf(tokens[1], "%d", minor)
-			  && sscanf(tokens[2], "%d", patch) ),
-			 FALSE);
-   g_strfreev (tokens);
-   return TRUE;
+  gchar **tokens;
+
+  g_assert (version_string != NULL);
+
+  tokens = g_strsplit (version_string, ".", 0);
+  g_return_val_if_fail ((tokens
+			 && tokens[0] && tokens[1] && tokens[2]
+			 && sscanf (tokens[0], "%d", major)
+			 && sscanf (tokens[1], "%d", minor)
+			 && sscanf (tokens[2], "%d", patch)), FALSE);
+  g_strfreev (tokens);
+  return TRUE;
 }
 
 

@@ -32,9 +32,9 @@ gchar *
 get_packet_prot (const guint8 * p)
 {
   gchar **tokens = NULL;
-  gchar *top_prot=NULL;
+  gchar *top_prot = NULL;
   gchar *str;
-   
+
   guint i = 0;
 
   g_assert (p != NULL);
@@ -77,16 +77,16 @@ get_packet_prot (const guint8 * p)
     }
   for (; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
-   
-   tokens = g_strsplit (prot->str, "/", 0);
-   for (i=0; strcmp (tokens[i], "UNKNOWN"); i++)
-     top_prot=tokens[i];
 
-   g_assert (top_prot!=NULL);
-   str=g_strdup_printf ("%s/", top_prot);
-   prot = g_string_prepend (prot, str);
-   g_free (str);
-   g_strfreev (tokens);
+  tokens = g_strsplit (prot->str, "/", 0);
+  for (i = 0; strcmp (tokens[i], "UNKNOWN"); i++)
+    top_prot = tokens[i];
+
+  g_assert (top_prot != NULL);
+  str = g_strdup_printf ("%s/", top_prot);
+  prot = g_string_prepend (prot, str);
+  g_free (str);
+  g_strfreev (tokens);
 
   /* g_message ("Protocol stack is %s", prot->str); */
   return prot->str;
@@ -349,7 +349,7 @@ get_tcp (void)
   gchar *str;
 
   if (!tcp_services)
-      load_services ();
+    load_services ();
 
   src_port = pntohs (packet + l3_offset + 20);
   dst_port = pntohs (packet + l3_offset + 22);
@@ -376,7 +376,7 @@ get_udp (void)
   gchar *str;
 
   if (!udp_services)
-     load_services();
+    load_services ();
 
   src_port = pntohs (packet + l3_offset + 20);
   dst_port = pntohs (packet + l3_offset + 22);
@@ -430,96 +430,102 @@ udp_compare (gconstpointer a, gconstpointer b)
 static void
 load_services (void)
 {
-   FILE *services=NULL;
-   gchar *line;
-   gchar **t1=NULL, **t2=NULL;
-   gchar *str;
-   tcp_service_t *tcp_service;
-   udp_service_t *udp_service;
-   guint i;
-   
-   tcp_type_t port_number;	/* udp and tcp are the same */
+  FILE *services = NULL;
+  gchar *line;
+  gchar **t1 = NULL, **t2 = NULL;
+  gchar *str;
+  tcp_service_t *tcp_service;
+  udp_service_t *udp_service;
+  guint i;
 
-   if (!(services=fopen (CONFDIR "/services", "r")))
-     {
-	g_my_critical (_("Failed to open %s. No TCP or UDP services will be recognized"),
-		       CONFDIR "/services");
-	return;
-     }
-   
-   g_my_info (_("Reading TCP and UDP services from %s"),
-	       CONFDIR "/services");
+  tcp_type_t port_number;	/* udp and tcp are the same */
 
-   tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
-   udp_services = g_tree_new ((GCompareFunc) udp_compare);
-   
-   line = g_malloc (LINESIZE);
-   
-   while (fgets (line, LINESIZE, services))
-     {
-	if (line[0]!='#' && line[0]!=' ' && line[0]!='\n'
-	    && line[0]!='\t')
-	  {
-	     gboolean error=FALSE;
-	     
-	     if (!g_strdelimit (line, " \t\n", ' ')) error=TRUE;
+  if (!(services = fopen (CONFDIR "/services", "r")))
+    {
+      g_my_critical (_
+		     ("Failed to open %s. No TCP or UDP services will be recognized"),
+CONFDIR "/services");
+      return;
+    }
 
-	     if (error || !(t1 = g_strsplit (line, " ", 0))) error=TRUE;
-	     if (!error && t1[0]) g_strup (t1[0]);
-	     
-	     for (i=1; t1[i] && !strcmp ("", t1[i]); i++);
+  g_my_info (_("Reading TCP and UDP services from %s"), CONFDIR "/services");
 
-	     
-	     if (!error && (str=t1[i]))
-	       if (!(t2=g_strsplit (str, "/", 0)))
-		 error=TRUE;
-	     
-	     if (error || !t2[0]) error=TRUE;
+  tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
+  udp_services = g_tree_new ((GCompareFunc) udp_compare);
 
-#if 0	     
-	     for (i=0; !error && t2[0][i]; i++)
-		 if (!isdigit(t2[0][i])) error=TRUE;
+  line = g_malloc (LINESIZE);
+
+  while (fgets (line, LINESIZE, services))
+    {
+      if (line[0] != '#' && line[0] != ' ' && line[0] != '\n'
+	  && line[0] != '\t')
+	{
+	  gboolean error = FALSE;
+
+	  if (!g_strdelimit (line, " \t\n", ' '))
+	    error = TRUE;
+
+	  if (error || !(t1 = g_strsplit (line, " ", 0)))
+	    error = TRUE;
+	  if (!error && t1[0])
+	    g_strup (t1[0]);
+
+	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++);
+
+
+	  if (!error && (str = t1[i]))
+	    if (!(t2 = g_strsplit (str, "/", 0)))
+	      error = TRUE;
+
+	  if (error || !t2[0])
+	    error = TRUE;
+
+#if 0
+	  for (i = 0; !error && t2[0][i]; i++)
+	    if (!isdigit (t2[0][i]))
+	      error = TRUE;
 #endif
-	     /* TODO The h here is not portable */
-	     if (!sscanf(t2[0],"%hd",&port_number) || (port_number < 1))
-	       error = TRUE;
+	  /* TODO The h here is not portable */
+	  if (!sscanf (t2[0], "%hd", &port_number) || (port_number < 1))
+	    error = TRUE;
 
-	     if (error || !t2[1]) error=TRUE;
-	     
-	     if (error 
-		 || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1]) ) ) error=TRUE;
-	     
-	     if (error)
-	       g_warning ("Unable to  parse line %s", line);
-	     else
-	       {
-		  g_my_debug ("Loading service %s %s %d", t2[1], t1[0], port_number);
-		  if (!g_strcasecmp ("tcp", t2[1]))
-		    {
-		       tcp_service = g_malloc (sizeof(tcp_service_t));
-		       tcp_service->number = port_number;
-		       tcp_service->name = g_strdup (t1[0]);
-		       g_tree_insert (tcp_services,
-				      &(tcp_service->number),
-				      tcp_service);
-		    }
-		  else
-		    {
-		       udp_service = g_malloc (sizeof(udp_service_t));
-		       udp_service->number = port_number;
-		       udp_service->name = g_strdup (t1[0]);
-		       g_tree_insert (udp_services,
-				      &(udp_service->number),
-				      udp_service);
-		    }
-	       }
-	     
-	     g_strfreev (t2);
-	     g_strfreev (t1);
-	     
-	  }
-     }
-   
-   g_free (line);
-   fclose (services);
+	  if (error || !t2[1])
+	    error = TRUE;
+
+	  if (error
+	      || (g_strcasecmp ("udp", t2[1])
+		  && g_strcasecmp ("tcp", t2[1]))) error = TRUE;
+
+	  if (error)
+	    g_warning ("Unable to  parse line %s", line);
+	  else
+	    {
+	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
+			  port_number);
+	      if (!g_strcasecmp ("tcp", t2[1]))
+		{
+		  tcp_service = g_malloc (sizeof (tcp_service_t));
+		  tcp_service->number = port_number;
+		  tcp_service->name = g_strdup (t1[0]);
+		  g_tree_insert (tcp_services,
+				 &(tcp_service->number), tcp_service);
+		}
+	      else
+		{
+		  udp_service = g_malloc (sizeof (udp_service_t));
+		  udp_service->number = port_number;
+		  udp_service->name = g_strdup (t1[0]);
+		  g_tree_insert (udp_services,
+				 &(udp_service->number), udp_service);
+		}
+	    }
+
+	  g_strfreev (t2);
+	  g_strfreev (t1);
+
+	}
+    }
+
+  g_free (line);
+  fclose (services);
 }				/* load_services */

@@ -20,10 +20,11 @@
 static GLogLevelFlags debug_mask;
 static gboolean quiet = FALSE;
 
-static void load_config (gchar *prefix);
-static gboolean get_version_levels (const gchar *version_string,
-				guint *major, guint *minor, guint *patch);
-static gint version_compare (const gchar *a, const gchar *b);
+static void load_config (gchar * prefix);
+static gboolean get_version_levels (const gchar * version_string,
+				    guint * major, guint * minor,
+				    guint * patch);
+static gint version_compare (const gchar * a, const gchar * b);
 static void set_debug_level (void);
 
 static void session_die (GnomeClient * client, gpointer client_data);

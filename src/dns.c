@@ -451,7 +451,8 @@ strlongip (ip_t ip)
   return inet_ntoa (a);
 }
 
-ip_t longipstr (char *s)
+ip_t
+longipstr (char *s)
 {
   return inet_addr (s);
 }
@@ -525,17 +526,20 @@ allocresolve ()
   return rp;
 }
 
-dword getidbash (word id)
+dword
+getidbash (word id)
 {
   return (dword) BashModulo (id);
 }
 
-dword getipbash (ip_t ip)
+dword
+getipbash (ip_t ip)
 {
   return (dword) BashModulo (ip);
 }
 
-dword gethostbash (char *host)
+dword
+gethostbash (char *host)
 {
   dword bashvalue = 0;
   for (; *host; host++)
