@@ -738,7 +738,9 @@ add_node_packet (const guint8 * packet,
   get_packet_names (node->protocols, packet, packet_info->size,
 		    packet_info->prot, direction);
 
-  update_node (node->node_id, node, NULL);
+
+  
+  /* update_node (node->node_id, node, NULL); */
 
 }				/* add_node_packet */
 
@@ -768,7 +770,7 @@ add_link_packet (const guint8 * packet, packet_t * packet_info,
   link->last_time = now;
   link->n_packets++;
 
-  update_link (link->link_id, link, NULL);
+  /* update_link (link->link_id, link, NULL); */
 
 }				/* add_link_packet */
 
