@@ -11,7 +11,8 @@
 
 extern double averaging_time;
 extern double link_timeout_time;
-
+extern gboolean numeric;
+extern gboolean dns;
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */
@@ -201,25 +202,36 @@ create_node (const guint8 * packet, enum create_node_type node_type)
   node->n_packets = 0;
   node->accumulated = 0;
 
-  /* If there is no proper definition in /etc/ethers, we try to get
-   * the IP name of the host. Note this is inherently wrong and I feel
-   * uneasy about leaving it by default, but let's make users happy by now.
-   * We also make sure that it is an IP packet */
-
-  if ((!strcmp (get_ether_name (ether_addr), ether_to_str (ether_addr)))
-      && (packet[12] == 0x08) && (packet[13] == 0x00)
-      && strcmp (get_ether_name(ether_addr),"ff:ff:ff:ff:ff:ff"))
+  if (!numeric)
     {
-      guint address;
+      /* If there is no proper definition in /etc/ethers, we try to get
+       * the IP name of the host. Note this is inherently wrong and I feel
+       * uneasy about leaving it by default, but let's make users happy by now.
+       * We also make sure that it is an IP packet */
 
-      if (node_type == SRC)
-	address = *(guint32 *) (packet + 26);
+      if ((!strcmp (get_ether_name (ether_addr), ether_to_str (ether_addr)))
+	  && (packet[12] == 0x08) && (packet[13] == 0x00)
+	  && strcmp (get_ether_name (ether_addr), "ff:ff:ff:ff:ff:ff"))
+	{
+	  guint address;
+
+	  if (node_type == SRC)
+	    address = *(guint32 *) (packet + 26);
+	  else
+	    address = *(guint32 *) (packet + 30);
+	  if (dns)
+	    node->name = g_string_new (get_hostname (address));
+	  else
+	    node->name = g_string_new (ip_to_str (&address));
+
+	}
       else
-	address = *(guint32 *) (packet + 30);
-      node->name = g_string_new (get_hostname (address));
+	node->name = g_string_new (get_ether_name (ether_addr));
     }
   else
-    node->name = g_string_new (get_ether_name (ether_addr));
+    {
+      node->name = g_string_new (ether_to_str (ether_addr));
+    }
 
   node->packets = NULL;
 
@@ -262,7 +274,7 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   struct timeval packet_time;
   struct timeval result;
   double time_comparison;
-   
+
   packet_t *packet;
   packet = (packet_t *) packets->data;
 
@@ -292,10 +304,12 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
    * Else, we are done. 
    * For links, if the timeout time is smaller than the
    * averaging time, we use that instead */
-   
-  if (belongs_to == NODE) time_comparison=averaging_time;
-  else time_comparison = (link_timeout_time>averaging_time) ?
-     averaging_time : link_timeout_time;
+
+  if (belongs_to == NODE)
+    time_comparison = averaging_time;
+  else
+    time_comparison = (link_timeout_time > averaging_time) ?
+      averaging_time : link_timeout_time;
 
   if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
     {
@@ -313,22 +327,24 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 	}
 
       g_free (packets->data);
-       
-      if (packets->prev) {
-	 packets = packets->prev;
-	 g_list_remove (packets, packets->next->data);
-         return (packets);			/* Old packet removed,
-						 * keep on searching */
-      }  
-      else {
-	 g_list_free (packets);			/* Last packet removed,
-						 * don't search anymore 
-						 */
-      }
+
+      if (packets->prev)
+	{
+	  packets = packets->prev;
+	  g_list_remove (packets, packets->next->data);
+	  return (packets);	/* Old packet removed,
+				 * keep on searching */
+	}
+      else
+	{
+	  g_list_free (packets);	/* Last packet removed,
+					 * don't search anymore 
+					 */
+	}
     }
 
-  return NULL;					/* Last packet searched
-						 * End search */
+  return NULL;			/* Last packet searched
+				 * End search */
 }				/* check_packet */
 
 void
@@ -358,7 +374,7 @@ packet_read (pcap_t * pch,
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
-  src = pcap_packet +6;
+  src = pcap_packet + 6;
   dst = pcap_packet;
 
   node = g_tree_lookup (nodes, src);

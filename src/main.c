@@ -29,11 +29,29 @@
 #include "diagram.h"
 #include "callbacks.h"
 
+gboolean numeric=0;
+gboolean dns=0;
+gboolean diagram_only=0;
+
 int
 main (int argc, char *argv[])
 {
   GtkWidget *app1;
   GtkWidget *hscale;
+   
+   struct poptOption optionsTable[] = {
+       { "numeric", 'n', POPT_ARG_NONE, &numeric, 0,
+	    _("don't convert addresses to names"), NULL
+       },
+       {  "with-dns-resolving", 'r', POPT_ARG_NONE, &dns, 0,
+	    _("use IP name resolving. Caution! Long timeouts!"), NULL
+       },
+      {   "diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
+	   _("don't display any node text identification"), NULL
+      },
+       POPT_AUTOHELP
+       { NULL, 0, 0, NULL, 0 }
+  };
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -43,7 +61,9 @@ main (int argc, char *argv[])
   init_capture ();
   init_diagram ();
 
-  gnome_init ("etherape", VERSION, argc, argv);
+  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
+   
+  printf ("numeric is %d\n", numeric);
 
   app1 = create_app1 ();
   hscale = lookup_widget (app1, "hscale6");

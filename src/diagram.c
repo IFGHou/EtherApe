@@ -36,7 +36,7 @@ GTree *canvas_links;		/* See above */
 
 extern gint ether_compare (gconstpointer a, gconstpointer b);
 extern gint link_compare (gconstpointer a, gconstpointer b);
-
+extern gboolean diagram_only;
 
 
 /* Local functions definitions */
@@ -67,12 +67,6 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 				  &ymin,
 				  &xmax,
 				  &ymax);
-/*  gnome_canvas_window_to_world (canvas, xmin, ymin, &xmin, &ymin);
-   gnome_canvas_window_to_world (canvas, xmax, ymax, &xmax, &ymax); */
-
-/*   gnome_canvas_c2w (canvas, xmin, ymin, &xmin, &ymin);
-   gnome_canvas_c2w (canvas, xmax, ymax, &xmax, &ymax); */
-
   if (!n_nodes)
     {
       n_nodes = node_i = g_tree_nnodes (canvas_nodes);
@@ -91,7 +85,13 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 			 "x", x,
 			 "y", y,
 			 NULL);
-  gnome_canvas_item_request_update (canvas_node->text_item);
+  if (diagram_only) {
+     gnome_canvas_item_hide (canvas_node->text_item);
+  }
+  else {
+     gnome_canvas_item_show (canvas_node->text_item);
+     gnome_canvas_item_request_update (canvas_node->text_item);
+  }
 
   node_i--;
 
@@ -288,42 +288,32 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
       new_canvas_node->ether_addr = ether_addr;
       new_canvas_node->node = node;
       node->average = get_node_size (node->accumulated);
-
-      group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
-					     gnome_canvas_group_get_type (),
+       
+       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
+							 gnome_canvas_group_get_type (),
 							 "x", 0.0,
 							 "y", 0.0,
 							 NULL));
 
-      new_canvas_node->node_item = gnome_canvas_item_new (group,
-						  GNOME_TYPE_CANVAS_ELLIPSE,
+       new_canvas_node->node_item = gnome_canvas_item_new (group,
+							  GNOME_TYPE_CANVAS_ELLIPSE,
 							  "x1", 0.0,
-							"x2", node->average,
+							  "x2", node->average,
 							  "y1", 0.0,
-							"y2", node->average,
-					      "fill_color_rgba", 0xFF0000FF,
-						   "outline_color", "black",
+							  "y2", node->average,
+							  "fill_color_rgba", 0xFF0000FF,
+							  "outline_color", "black",
 							  "width_pixels", 0,
 							  NULL);
-      new_canvas_node->text_item = gnome_canvas_item_new (group,
-						     GNOME_TYPE_CANVAS_TEXT,
-						    "text", node->name->str,
+       new_canvas_node->text_item = gnome_canvas_item_new (group,
+							  GNOME_TYPE_CANVAS_TEXT,
+							  "text", node->name->str,
 							  "x", 0.0,
 							  "y", 0.0,
-						"anchor", GTK_ANCHOR_CENTER,
-		       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
-						      "fill_color", "black",
+							  "anchor", GTK_ANCHOR_CENTER,
+							  "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+							  "fill_color", "black",
 							  NULL);
-/*      new_canvas_node->accu_str = g_strdup_printf ("%f",node->accumulated);
-   new_canvas_node->accu_item = gnome_canvas_item_new (group,
-   GNOME_TYPE_CANVAS_TEXT,
-   "text", new_canvas_node->accu_str,
-   "x", 0.0,
-   "y", 10.0,
-   "anchor", GTK_ANCHOR_CENTER,
-   "font","-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
-   "fill_color", "black",
-   NULL); */
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (new_canvas_node->text_item);

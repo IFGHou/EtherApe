@@ -1,3 +1,14 @@
+Overview of changes in Etherape 0.1.4
+* Now parses command line arguments:
+  etherape options
+  -n, --numeric               don't convert addresses to names
+  -r, --with-dns-resolving    use IP name resolving. Caution! Long timeouts!
+  -d, --diagram-only          don't display any node text identification
+* The resolver is turned off by default since it can potentially
+  freeze your display for too long
+* digram-only makes for a clearer display. It's intended to be
+  practical whenenver I have per-node pop-up windows ready.
+
 Overview of changes in Etherape 0.1.3
 * Links with no traffic disappear with time. Makes diagram
   more readable.

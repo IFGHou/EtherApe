@@ -19,28 +19,10 @@ functionality as this (other than the real etherman, that is) to no
 avail. If you happen to know any such program, please let me now.
 Am I by chance wasting my time?
 
-If you want to see node names instead of hardware addresses, 
-use the /etc/ethers file. From the ethers man page:
-
-	/etc/ethers  contains  48 bit Ethernet addresses and their
-	corresponding IP numbers, one line for each IP number:
-	
-	Ethernet-address  IP-number
-	
-	The two items are separated by any number of
-	SPACE  and/or
-	TAB char acters.   A # at the beginning of a line starts a
-	comment which extends to the end of the line.  The  Ether­
-	net-address  is  written as x:x:x:x:x:x, where x is a hex­
-	adecimal number between 0 and ff which
-	represents one byte
-	of  the  address,  which  is  in  network byte order (big-
-	endian).  The IP-number may be a  hostname  which  can  be
-	resolved by DNS or a dot separated number.
-	
-	EXAMPLES
-	08:00:20:00:61:CA  pal
-			    
+It will use /etc/ethers if there is one. If not, it will 
+display dotted quad ip address. You can even ask for ip
+name resolution with the -r option, but beware of very long
+DNS timeout times.
 
 Installation:
 -------------
