@@ -88,6 +88,23 @@ get_null_name (void)
 
 }				/* get_null_name */
 
+/* LLC is the only supported FDDI link layer type */
+/* TODO I actually don't know anything about how to
+ * resolve LLC link layer addresses, so I'll just
+ * pass it up so that we can get higher level ones */
+static void
+get_llc_name (void)
+{
+
+  level++;
+  offset += 21;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_llc_name */
+
 static void
 get_eth_name (void)
 {
@@ -222,10 +239,7 @@ add_name (gchar * numeric_name, gchar * resolved_name)
   /* Have we heard this address before? */
   name_item = g_list_find_custom (name_item, id, id_compare);
   if (name_item)
-    {
-      name = name_item->data;
-      g_my_debug ("Known address in add_name");
-    }
+    name = name_item->data;
   else
     name = NULL;
 
