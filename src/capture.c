@@ -365,11 +365,11 @@ pause_capture (void)
        * to do this it should be optional at least.
        * In order for this to work, start_capture should only
        * add the source if the pause was for an offline capture */
-#if 0 
+#if 0
       g_my_debug (_("Pausing live capture"));
       gdk_input_remove (capture_source);	/* gdk_input_remove does not
 						 * return an error code */
-#endif       
+#endif
     }
   else
     {
