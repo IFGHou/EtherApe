@@ -221,6 +221,19 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 
 }				/* on_group_unk_check_toggled */
 
+void
+on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+  enum status_t old_status = status;
+
+  if ((status == PLAY) || (status == PAUSE))
+    gui_stop_capture ();
+
+  pref.antialias = gtk_toggle_button_get_active (togglebutton);
+
+  if (old_status == PLAY)
+    gui_start_capture ();
+}				/* on_group_unk_check_toggled */
 
 /*
  * TODO

@@ -145,6 +145,8 @@ init_diagram ()
 
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
+//r.g.  gc = GNOME_CANVAS(canvas);  
+
   gdk_color_parse ("black", &black_color);
   gdk_colormap_alloc_color (gdk_colormap_get_system (), &black_color,
 			    TRUE, TRUE);

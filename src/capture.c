@@ -340,6 +340,7 @@ set_filter (gchar * filter_string, gchar * device)
 gboolean
 start_capture (void)
 {
+  GnomeCanvas *gc;
 
   if ((status != PAUSE) && (status != STOP))
     {
@@ -367,6 +368,11 @@ start_capture (void)
 					   NULL,
 					   (GDestroyNotify) cap_t_o_destroy);
     }
+
+  /* set the antialiasing */
+  gc = GNOME_CANVAS (glade_xml_get_widget (xml, "canvas1"));
+  if (gc)
+    gc->aa = pref.antialias;
 
   status = PLAY;
   return TRUE;

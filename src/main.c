@@ -158,6 +158,7 @@ main (int argc, char *argv[])
   /* Glade */
 
   glade_gnome_init ();
+
   xml = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL, NULL);
   if (!xml)
     {
@@ -166,7 +167,6 @@ main (int argc, char *argv[])
       return 1;
     }
   glade_xml_signal_autoconnect (xml);
-
 
   app1 = glade_xml_get_widget (xml, "app1");
   diag_pref = glade_xml_get_widget (xml, "diag_pref");
@@ -249,6 +249,8 @@ load_config (char *prefix)
   pref.nofade =
     gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
+  pref.antialias =
+    gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
   pref.node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=3600000.0", &u);
@@ -360,6 +362,7 @@ save_config (char *prefix)
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
   gnome_config_set_bool ("Diagram/nofade", pref.nofade);
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
+  gnome_config_set_bool ("Diagram/antialias", pref.antialias);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",

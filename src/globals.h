@@ -301,6 +301,7 @@ struct
   gboolean diagram_only;	/* Do not use text on the diagram */
   gboolean group_unk;		/* Whether to display as one every unkown port protocol */
   gboolean nofade;		/* Do not fade unused links */
+  gboolean antialias;		/* activate node antialiasing */
   gboolean cycle;		/* Weather to reuse colors that are assigned to certain
 				 * protocols */
   gboolean stationary;		/* Use alternative algorith for node placing */

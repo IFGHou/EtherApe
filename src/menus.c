@@ -6,7 +6,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -214,6 +214,7 @@ void
 on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   apemode_t new_mode = DEFAULT;
+  const gchar *menuname = NULL;
 
 
   if (in_start_capture)
@@ -221,23 +222,22 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 				 * of interface look change from
 				 * start_capture */
 
-
-  g_assert (user_data != NULL);
-
+  menuname = gtk_widget_get_name (GTK_WIDGET (menuitem));
+  g_assert (menuname);
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
-	      (gchar *) user_data);
+	      (gchar *) menuname);
 
-  if (!strcmp ("IEEE802", user_data))
+  if (!strcmp ("ieee802_radio", menuname))
     new_mode = IEEE802;
-  else if (!strcmp ("FDDI", user_data))
+  else if (!strcmp ("fddi_radio", menuname))
     new_mode = FDDI;
-  else if (!strcmp ("Ethernet", user_data))
+  else if (!strcmp ("ethernet_radio", menuname))
     new_mode = ETHERNET;
-  else if (!strcmp ("IP", user_data))
+  else if (!strcmp ("ip_radio", menuname))
     new_mode = IP;
-  else if (!strcmp ("TCP", user_data))
+  else if (!strcmp ("tcp_radio", menuname))
     new_mode = TCP;
-  else if (!strcmp ("UDP", user_data))
+  else if (!strcmp ("udp_radio", menuname))
     new_mode = UDP;
   else
     {
@@ -280,7 +280,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     if (!gui_stop_capture ())
       return;
   pref.mode = new_mode;
-  g_my_info (_("Mode set to %s in GUI"), (gchar *) user_data);
+  g_my_info (_("Mode set to %s in GUI"), (gchar *) menuitem);
   gui_start_capture ();
 
 }				/* on_mode_radio_activate */
@@ -317,52 +317,36 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  /* R.G. - FIXME - convert to bonobo docking
-     GnomeDock *dock;
-     GtkWidget *widget;
+  GtkWidget *widget;
 
-     dock = GNOME_DOCK (glade_xml_get_widget (xml, "dock1"));
-     widget = glade_xml_get_widget (xml, "dock_toolbar");
-     if (menuitem->active)
-     gtk_widget_show (widget);
-     else
-     gtk_widget_hide (widget);
-
-     gtk_widget_queue_resize (GTK_WIDGET (dock));
-   */
+  widget = glade_xml_get_widget (xml, "dock_toolbar");
+  if (menuitem->active)
+    gtk_widget_show (widget);
+  else
+    gtk_widget_hide (widget);
 }				/* on_toolbar_check_activate */
 
 void
 on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-/* R.G. - FIXME - convert to bonobo docking	
-  GnomeDock *dock;
   GtkWidget *widget;
 
-  dock = GNOME_DOCK (glade_xml_get_widget (xml, "dock1"));
   widget = glade_xml_get_widget (xml, "dock_legend");
   if (menuitem->active)
     gtk_widget_show (widget);
   else
     gtk_widget_hide (widget);
-
- gtk_widget_queue_resize (GTK_WIDGET (dock));
-*/
 }				/* on_legend_check_activate */
 
 void
 on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-/* R.G. - FIXME - convert to bonobo docking
   GtkWidget *widget;
   widget = glade_xml_get_widget (xml, "appbar1");
   if (menuitem->active)
     gtk_widget_show (widget);
   else
     gtk_widget_hide (widget);
-
- gtk_widget_queue_resize (GTK_WIDGET (appl));
-*/
 }				/* on_status_bar_check_activate */
 
 
@@ -386,7 +370,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
       return;
     }
   about = glade_xml_get_widget (xml_about, "about2");
-  gtk_object_destroy (GTK_OBJECT (xml_about));
+  g_object_unref (xml_about);
 
   gtk_widget_show (about);
 

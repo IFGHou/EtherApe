@@ -66,14 +66,42 @@ create_prot_info_window (protocol_t * protocol)
   GladeXML *xml_info_window;
   GtkWidget *widget;
   GList *list_item;
-  GtkTreeView *gv;
-  GtkListStore *gs;
 
   /* If there is already a window, we don't need to create it again */
   if (!(list_item =
 	g_list_find_custom (prot_info_windows,
 			    protocol->name, prot_info_compare)))
     {
+/* r.g.       
+      if (!glade_xml_construct(xml, GLADEDIR "/" ETHERAPE_GLADE_FILE, "prot_info", NULL))
+	{
+	  g_error (_("We could not load the interface! (%s)"),
+		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
+	  return;
+	}
+      glade_xml_signal_autoconnect (xml);
+      window = glade_xml_get_widget (xml, "prot_info");
+      gtk_widget_show (window);
+      widget = glade_xml_get_widget (xml, "prot_info_name_label");
+      gtk_object_set_data (GTK_OBJECT (window), "name_label", widget);
+      widget =
+	glade_xml_get_widget (xml, "prot_info_last_heard_label");
+      gtk_object_set_data (GTK_OBJECT (window), "last_heard_label", widget);
+      widget = glade_xml_get_widget (xml, "prot_info_average");
+      gtk_object_set_data (GTK_OBJECT (window), "average", widget);
+      widget =
+	glade_xml_get_widget (xml, "prot_info_accumulated");
+      gtk_object_set_data (GTK_OBJECT (window), "accumulated", widget);
+//r.g.      gtk_object_destroy (GTK_OBJECT (xml));
+
+      prot_info_window = g_malloc (sizeof (prot_info_window_t));
+      prot_info_window->prot_name = g_strdup (protocol->name);
+      gtk_object_set_data (GTK_OBJECT (window), "prot_name",
+			   prot_info_window->prot_name);
+      prot_info_window->window = window;
+      prot_info_windows =
+	g_list_prepend (prot_info_windows, prot_info_window);
+*/
       xml_info_window =
 	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "prot_info", NULL);
       if (!xml_info_window)
@@ -95,7 +123,7 @@ create_prot_info_window (protocol_t * protocol)
       widget =
 	glade_xml_get_widget (xml_info_window, "prot_info_accumulated");
       gtk_object_set_data (GTK_OBJECT (window), "accumulated", widget);
-      gtk_object_destroy (GTK_OBJECT (xml_info_window));
+      g_object_unref (xml_info_window);
 
       prot_info_window = g_malloc (sizeof (prot_info_window_t));
       prot_info_window->prot_name = g_strdup (protocol->name);
@@ -104,6 +132,7 @@ create_prot_info_window (protocol_t * protocol)
       prot_info_window->window = window;
       prot_info_windows =
 	g_list_prepend (prot_info_windows, prot_info_window);
+
     }
   else
     prot_info_window = (prot_info_window_t *) list_item->data;
@@ -355,10 +384,6 @@ create_protocols_list ()
   gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 4,
 				   prot_window_compare, gs, NULL);
 
-  /* set params */
-//  gtk_tree_view_set_reorderable (gv, TRUE);
-//  gtk_tree_view_set_headers_clickable (gv, TRUE);
-
   /* re-adds the current protocols */
   item = info_protocols;
   while (item)
@@ -512,23 +537,53 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     gtk_widget_hide (protocols_window);
 }				/* on_protocols_check_activate */
 
-void
-on_prot_column_view_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+/* common function to activate the proto columns */
+static void
+activate_protocols_info_column (GtkMenuItem * gm, guint column)
 {
-  guint column;
-  GtkWidget *prot_clist = glade_xml_get_widget (xml, "prot_clist");
+  GtkTreeViewColumn *gc;
+  GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
+  if (!gv)
+    return;			/* no window, no handling */
 
-  return;			/* R.G. FIXME! use the new GtkTreeView */
-  if (!sscanf ((gchar *) user_data, "%d", &column))
-    {
-      g_warning ("Unable to decode column in on_prot_column_view_activate");
-      return;
-    }
-
-  gtk_clist_set_column_visibility (GTK_CLIST (prot_clist),
-				   column, menuitem->active);
-
+  gc = gtk_tree_view_get_column (gv, column);
+  if (!gc)
+    return;
+  gtk_tree_view_column_set_visible (gc,
+				    gtk_check_menu_item_get_active
+				    (GTK_CHECK_MENU_ITEM (gm)));
 }				/* on_prot_column_view_activate */
+
+void
+on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 0);
+}
+
+void
+on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 1);
+}
+
+void
+on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 2);
+}
+
+void
+on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 3);
+}
+
+void
+on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 4);
+}
+
 
 static gchar *
 timeval_to_str (struct timeval last_heard)
@@ -597,7 +652,7 @@ on_prot_table_button_press_event (GtkWidget * widget,
 
 /* opens a protocol detail window when the user clicks a proto row */
 gboolean
-on_prot_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
+on_prot_list_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
 {
   protocol_t *protocol = NULL;
   GtkListStore *gs;
@@ -622,17 +677,6 @@ on_prot_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
   gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &protocol, -1);
   create_prot_info_window (protocol);
 
-/* R.G.   
-  if (!event)
-    return;
-
-  switch (event->type)
-    {
-    case GDK_2BUTTON_PRESS:
-      protocol = gtk_clist_get_row_data (clist, row);
-      create_prot_info_window (protocol);
-    }
-*/
   return TRUE;
 }				/* on_prot_clist_select_row */
 
@@ -716,7 +760,7 @@ create_node_info_window (canvas_node_t * canvas_node)
       widget =
 	glade_xml_get_widget (xml_info_window, "node_info_accumulated_out");
       gtk_object_set_data (GTK_OBJECT (window), "accumulated_out", widget);
-      gtk_object_destroy (GTK_OBJECT (xml_info_window));
+      g_object_unref (xml_info_window);
       node_info_window = g_malloc (sizeof (node_info_window_t));
       node_info_window->node_id =
 	g_memdup (canvas_node->canvas_node_id, node_id_length);

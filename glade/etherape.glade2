@@ -576,7 +576,7 @@
   <child internal-child="appbar">
     <widget class="GnomeAppBar" id="appbar1">
       <property name="visible">True</property>
-      <property name="has_progress">True</property>
+      <property name="has_progress">False</property>
       <property name="has_status">True</property>
     </widget>
     <packing>
@@ -1476,6 +1476,45 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 		  <property name="right_attach">2</property>
 		  <property name="top_attach">3</property>
 		  <property name="bottom_attach">4</property>
+		  <property name="x_options">fill</property>
+		  <property name="y_options">fill</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkVBox" id="vbox36">
+		  <property name="visible">True</property>
+		  <property name="homogeneous">False</property>
+		  <property name="spacing">0</property>
+
+		  <child>
+		    <placeholder/>
+		  </child>
+
+		  <child>
+		    <widget class="GtkCheckButton" id="aa_check">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">Node _Anti Aliasing</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="active">True</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		      <signal name="toggled" handler="on_aa_check_toggled" last_modification_time="Mon, 24 Feb 2003 23:57:41 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="left_attach">1</property>
+		  <property name="right_attach">2</property>
+		  <property name="top_attach">4</property>
+		  <property name="bottom_attach">5</property>
 		  <property name="x_options">fill</property>
 		  <property name="y_options">fill</property>
 		</packing>
@@ -3194,7 +3233,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 			  <property name="label" translatable="yes">Protocol</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
-			  <signal name="activate" handler="on_prot_column_view_activate"/>
+			  <signal name="activate" handler="on_protocol_column_activate" last_modification_time="Sun, 23 Feb 2003 08:44:41 GMT"/>
 			</widget>
 		      </child>
 
@@ -3204,7 +3243,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 			  <property name="label" translatable="yes">Inst Traffic</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
-			  <signal name="activate" handler="on_prot_column_view_activate"/>
+			  <signal name="activate" handler="on_instant_column_activate" last_modification_time="Sun, 23 Feb 2003 08:46:40 GMT"/>
 			</widget>
 		      </child>
 
@@ -3214,7 +3253,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 			  <property name="label" translatable="yes">Accum Traffic</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
-			  <signal name="activate" handler="on_prot_column_view_activate"/>
+			  <signal name="activate" handler="on_accumulated_column_activate" last_modification_time="Sun, 23 Feb 2003 08:46:55 GMT"/>
 			</widget>
 		      </child>
 
@@ -3224,7 +3263,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 			  <property name="label" translatable="yes">Last Heard</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
-			  <signal name="activate" handler="on_prot_column_view_activate"/>
+			  <signal name="activate" handler="on_heard_column_activate" last_modification_time="Sun, 23 Feb 2003 08:48:03 GMT"/>
 			</widget>
 		      </child>
 
@@ -3234,7 +3273,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 			  <property name="label" translatable="yes">Packets</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
-			  <signal name="activate" handler="on_prot_column_view_activate"/>
+			  <signal name="activate" handler="on_packets_column_activate" last_modification_time="Sun, 23 Feb 2003 08:48:43 GMT"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -3269,7 +3308,8 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 	      <property name="rules_hint">False</property>
 	      <property name="reorderable">False</property>
 	      <property name="enable_search">False</property>
-	      <signal name="select_cursor_row" handler="on_prot_clist_select_row" last_modification_time="Fri, 21 Feb 2003 19:59:18 GMT"/>
+	      <signal name="select_cursor_row" handler="on_prot_list_select_row" last_modification_time="Sun, 23 Feb 2003 09:05:51 GMT"/>
+	      <signal name="row_activated" handler="on_prot_list_select_row" last_modification_time="Sun, 23 Feb 2003 09:05:47 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
