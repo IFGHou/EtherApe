@@ -9,16 +9,16 @@ INCLUDES = \
 sbin_PROGRAMS = etherape
 
 etherape_SOURCES = \
-	main.c globals.h\
-	diagram.c diagram.h \
-	capture.c capture.h \
-	protocols.c protocols.h etypes.h \
 	resolv.c eth_resolv.h \
 	dns.c dns.h \
 	util.c util.h \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
+	main.c globals.h\
+	diagram.c diagram.h \
+	capture.c capture.h \
+	protocols.c protocols.h \
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)

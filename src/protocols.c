@@ -21,13 +21,16 @@
  */
 
 #include "globals.h"
+#if 0
 #include "etypes.h"
+#endif
 #include "protocols.h"
 
 static GString *prot;
+static const guint8 *packet;
 
 gchar *
-get_packet_prot (const guint8 * packet)
+get_packet_prot (const guint8 * p)
 {
   gchar **tokens = NULL;
   guint i = 0;
@@ -35,10 +38,12 @@ get_packet_prot (const guint8 * packet)
     g_string_free (prot, TRUE);
   prot = NULL;
 
+  packet = p;
+
   switch (linktype)
     {
     case L_EN10MB:
-      get_eth_type (packet);
+      get_eth_type ();
       break;
     case L_PPP:
       prot = g_string_new ("PPP/IP");
@@ -63,7 +68,7 @@ get_packet_prot (const guint8 * packet)
 	i++;
       g_strfreev (tokens);
     }
-  for (i = STACK_SIZE - i; i <= STACK_SIZE; i++)
+  for (i; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
 
   /* g_message ("Protocol stack is %s", prot->str); */
@@ -72,7 +77,7 @@ get_packet_prot (const guint8 * packet)
 
 
 static void
-get_eth_type (const guint8 * packet)
+get_eth_type (void)
 {
   etype_t etype;
   ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
@@ -126,13 +131,13 @@ get_eth_type (const guint8 * packet)
   /* Else, it's ETHERNET_II */
 
   prot = g_string_new ("ETH_II");
-  get_eth_II (packet, etype);
+  get_eth_II (etype);
   return;
 
 }				/* get_eth_type */
 
 static void
-get_eth_II (const guint8 * packet, etype_t etype)
+get_eth_II (etype_t etype)
 {
   /* TODO We are just considering EthernetII here
    * I guess I'll have to do the Right Thing some day. :-) */
@@ -140,6 +145,7 @@ get_eth_II (const guint8 * packet, etype_t etype)
     {
     case ETHERTYPE_IP:
       prot = g_string_append (prot, "/IP");
+      get_ip ();
       break;
     case ETHERTYPE_ARP:
       prot = g_string_append (prot, "/ARP");
@@ -190,3 +196,142 @@ get_eth_II (const guint8 * packet, etype_t etype)
 
   return;
 }				/* get_eth_II */
+
+static void
+get_ip (void)
+{
+  iptype_t ip_type;
+  ip_type = packet[l3_offset + 9];
+  switch (ip_type)
+    {
+    case IP_PROTO_ICMP:
+      prot = g_string_append (prot, "/ICMP");
+      break;
+    case IP_PROTO_TCP:
+      prot = g_string_append (prot, "/TCP");
+      break;
+    case IP_PROTO_UDP:
+      prot = g_string_append (prot, "/UDP");
+      break;
+    case IP_PROTO_IGMP:
+      prot = g_string_append (prot, "/IGMP");
+      break;
+    case IP_PROTO_GGP:
+      prot = g_string_append (prot, "/GGP");
+      break;
+    case IP_PROTO_IPIP:
+      prot = g_string_append (prot, "/IPIP");
+      break;
+#if 0				/* TODO How come IPIP and IPV4 share the same number? */
+    case IP_PROTO_IPV4:
+      prot = g_string_append (prot, "/IPV4");
+      break;
+#endif
+    case IP_PROTO_EGP:
+      prot = g_string_append (prot, "/EGP");
+      break;
+    case IP_PROTO_PUP:
+      prot = g_string_append (prot, "/PUP");
+      break;
+    case IP_PROTO_IDP:
+      prot = g_string_append (prot, "/IDP");
+      break;
+    case IP_PROTO_TP:
+      prot = g_string_append (prot, "/TP");
+      break;
+    case IP_PROTO_IPV6:
+      prot = g_string_append (prot, "/IPV6");
+      break;
+    case IP_PROTO_ROUTING:
+      prot = g_string_append (prot, "/ROUTING");
+      break;
+    case IP_PROTO_FRAGMENT:
+      prot = g_string_append (prot, "/FRAGMENT");
+      break;
+    case IP_PROTO_RSVP:
+      prot = g_string_append (prot, "/RSVP");
+      break;
+    case IP_PROTO_GRE:
+      prot = g_string_append (prot, "/GRE");
+      break;
+    case IP_PROTO_ESP:
+      prot = g_string_append (prot, "/ESP");
+      break;
+    case IP_PROTO_AH:
+      prot = g_string_append (prot, "/AH");
+      break;
+    case IP_PROTO_ICMPV6:
+      prot = g_string_append (prot, "/ICPMPV6");
+      break;
+    case IP_PROTO_NONE:
+      prot = g_string_append (prot, "/NONE");
+      break;
+    case IP_PROTO_DSTOPTS:
+      prot = g_string_append (prot, "/DSTOPTS");
+      break;
+    case IP_PROTO_VINES:
+      prot = g_string_append (prot, "/VINES");
+      break;
+    case IP_PROTO_EIGRP:
+      prot = g_string_append (prot, "/EIGRP");
+      break;
+    case IP_PROTO_OSPF:
+      prot = g_string_append (prot, "/OSPF");
+      break;
+    case IP_PROTO_ENCAP:
+      prot = g_string_append (prot, "/ENCAP");
+      break;
+    case IP_PROTO_PIM:
+      prot = g_string_append (prot, "/PIM");
+      break;
+    case IP_PROTO_IPCOMP:
+      prot = g_string_append (prot, "/IPCOMP");
+      break;
+    case IP_PROTO_VRRP:
+      prot = g_string_append (prot, "/VRRP");
+      break;
+    default:
+      prot = g_string_append (prot, "/IP_UNKNOWN");
+    }
+
+  return;
+}
+
+#if 0
+static const value_string proto_vals[] = { {IP_PROTO_ICMP, "ICMP"},
+{IP_PROTO_IGMP, "IGMP"},
+{IP_PROTO_EIGRP, "IGRP/EIGRP"},
+{IP_PROTO_TCP, "TCP"},
+{IP_PROTO_UDP, "UDP"},
+{IP_PROTO_OSPF, "OSPF"},
+{IP_PROTO_RSVP, "RSVP"},
+{IP_PROTO_AH, "AH"},
+{IP_PROTO_GRE, "GRE"},
+{IP_PROTO_ESP, "ESP"},
+{IP_PROTO_IPV6, "IPv6"},
+{IP_PROTO_PIM, "PIM"},
+{IP_PROTO_VINES, "VINES"},
+{0, NULL}
+};
+typedef struct _e_ip
+{
+  guint8 ip_v_hl;		/* combines ip_v and ip_hl */
+  guint8 ip_tos;
+  guint16 ip_len;
+  guint16 ip_id;
+  guint16 ip_off;
+  guint8 ip_ttl;
+  guint8 ip_p;
+  guint16 ip_sum;
+  guint32 ip_src;
+  guint32 ip_dst;
+}
+e_ip;
+
+/* Avoids alignment problems on many architectures. */
+memcpy (&iph, &pd[offset], sizeof (e_ip));
+iph.ip_len = ntohs (iph.ip_len);
+iph.ip_id = ntohs (iph.ip_id);
+iph.ip_off = ntohs (iph.ip_off);
+iph.ip_sum = ntohs (iph.ip_sum);
+#endif

@@ -3,6 +3,11 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.3 (Thursday 03-23-2000):
+  
+     * Fixes a serious and stupid segfault.
+     * Recognizes level 4 IP protocols (set stack level to 4)
+       
   Overview of changes in Etherape 0.3.2 (Wednesday 03-22-2000):
   
      * You may choose what level of the protocol stack to look at. Now I
