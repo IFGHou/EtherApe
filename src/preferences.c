@@ -582,3 +582,47 @@ on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
   colors_changed = TRUE;
 
 }				/* on_cycle_toggle_toggled */
+
+
+/*
+ * Names dialog related functions
+ */
+
+
+void
+on_name_clist_select_row (GtkCList * clist,
+			  gint row,
+			  gint column, GdkEvent * event, gpointer user_data)
+{
+}				/* on_name_clist_select_row */
+
+void
+on_dns_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+}				/* on_dns_toggle_toggled */
+
+void
+on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+}				/* on_numeric_toggle_toggled */
+
+
+void
+on_protocol_add_button_clicked (GtkButton * button, gpointer user_data)
+{
+}				/* on_protocol_add_button_clicked */
+
+void
+on_protocol_remove_button_clicked (GtkButton * button, gpointer user_data)
+{
+}				/* on_protocol_remove_button_clicked */
+
+void
+on_protocol_move_up_clicked (GtkButton * button, gpointer user_data)
+{
+}				/* on_protocol_move_up_clicked */
+
+void
+on_protocol_move_down_clicked (GtkButton * button, gpointer user_data)
+{
+}				/* on_protocol_move_down_clicked */
