@@ -6,7 +6,8 @@ INCLUDES = \
 bin_PROGRAMS = etherape
 
 etherape_SOURCES = \
-	main.c capture.c \
+	main.c \
+	capture.c capture.h \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h 

@@ -71,7 +71,10 @@ main.o: main.c ../config.h /usr/include/gtk/gtk.h \
  /usr/include/time.h /usr/include/endian.h /usr/include/bits/endian.h \
  /usr/include/sys/select.h /usr/include/bits/select.h \
  /usr/include/bits/sigset.h /usr/include/sys/sysmacros.h \
- /usr/include/alloca.h interface.h support.h
+ /usr/include/alloca.h /usr/include/math.h \
+ /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h \
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h \
+ interface.h support.h capture.h
 main.c :
 ../config.h :
 /usr/include/gtk/gtk.h :
@@ -214,5 +217,11 @@ main.c :
 /usr/include/bits/sigset.h :
 /usr/include/sys/sysmacros.h :
 /usr/include/alloca.h :
+/usr/include/math.h :
+/usr/include/bits/huge_val.h :
+/usr/include/bits/mathdef.h :
+/usr/include/bits/mathcalls.h :
+/usr/include/bits/mathinline.h :
 interface.h :
 support.h :
+capture.h :

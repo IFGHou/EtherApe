@@ -61,7 +61,7 @@ CC = gcc
 GTK_CFLAGS = -I/usr/X11R6/include -I/usr/lib/glib/include
 GTK_CONFIG = /usr/bin/gtk-config
 GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-MAKEINFO = /usr/local/src/etherape/missing makeinfo
+MAKEINFO = /root/etherape/missing makeinfo
 PACKAGE = etherape
 VERSION = 0.1
 
@@ -70,7 +70,7 @@ INCLUDES =  	-I/usr/X11R6/include -I/usr/lib/glib/include
 
 bin_PROGRAMS = etherape
 
-etherape_SOURCES =  	main.c capture.c 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 
+etherape_SOURCES =  	main.c 	capture.c capture.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 
 
 
 etherape_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm

@@ -2,27 +2,65 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#define MAXSIZE 60
+#include "capture.h"
 
-GHashTable *nodes;
-GHashTable *links;
+#include <ctype.h>
 
-typedef struct _node
-  {
-    gchar ether_addr[6];
-    gchar *name;
-    glong average;		/* Bytes in or out in the last x ms */
-    GList *packets;		/* List of packets sizes in or out and
-				   * its sizes. Used to calculate average
-				   * traffic */
-  }
-node_t;
+char ascii[20];
+
+char *
+ethertoascii (char *ether_addr)
+{
+
+  int i;
+      char a;
+      char b;
+   
+
+  if (!ether_addr)
+    g_error ("Null pointer to ethertoascii\n");
+  for (i = 0; i < 6; i++)
+    {
+      a = b = ether_addr[i];
+      a = a >> 4;
+      b = b & 15;
+      ascii[3 * i] = toascii (a);
+      ascii[3 * i + 1] = toascii (b);
+      ascii[3 * i + 2] = ':';
+    }
+  ascii[18] = '\0';
+   
+  return ascii;
+}
+
+
+guint
+node_hash (gconstpointer v)
+{
+  int hash_val = 0;
+  memcpy (&hash_val, v, sizeof (guint));
+  g_print ("Hash %d\tAddress: %s\n", hash_val, ethertoascii ((char *)v));
+  return hash_val;
+}
+
 
 void
 init_data (void)
 {
-  nodes = g_hash_table_new (NULL,NULL);
-  links = g_hash_table_new (NULL,NULL);
+  nodes = g_hash_table_new (node_hash, g_int_equal);
+  links = g_hash_table_new (NULL, NULL);
+}
+
+node_t *
+create_node (gchar ether_addr[6])
+{
+  node_t *node;
+  node = g_malloc (sizeof (node_t));
+  memcpy (node->ether_addr, ether_addr, 6);
+  node->average = 0;
+  g_hash_table_insert (nodes, node->ether_addr, node);
+
+  return node;
 }
 
 void
@@ -32,20 +70,48 @@ packet_read (pcap_t * pch,
 {
   struct pcap_pkthdr phdr;
   gchar packet[MAXSIZE];
-  gchar src[6],dst[6];
+  gchar src[6], dst[6];
+  node_t *node;
+  gint pcap_fd;
+  fd_set set1;
+  guint counter = 1;
+  struct timeval timeout;
 
-  /* We copy the next available packet */
-  memcpy (packet, pcap_next (pch, &phdr), phdr.caplen);
+  char *pcap_packet;
+
+  pcap_fd = pcap_fileno (pch);
+
+  FD_ZERO (&set1);
+  FD_SET (pcap_fd, &set1);
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 1;
 
 #if 0
-  printf ("Ether source: %x:%x:%x:%x:%x:%x\n",
-	  (int) packet[0], (int) packet[1], (int) packet[2],
-	  (int) packet[3], (int) packet[4], (int) packet[5]);
+  while (select (pcap_fd + 1, &set1, NULL, NULL, &timeout) != 0)
+    {
+#endif
+      /* We copy the next available packet */
+      memcpy (packet, pcap_packet = (gchar *)pcap_next (pch, &phdr), phdr.caplen);
+
+      memcpy (src, packet, 6);
+      memcpy (dst, (char *) (packet + 6), 6);
+
+      node = g_hash_table_lookup (nodes, src);
+      if (node == NULL)
+	node = create_node (src);
+      node->average += phdr.len;
+
+      node = g_hash_table_lookup (nodes, dst);
+      if (node == NULL)
+	node = create_node (dst);
+      node->average += phdr.len;
+
+      counter++;
+#if 0
+    }
 #endif
 
-  memcpy (src,packet,6);
-  memcpy (dst,packet[6],6);
-
+  g_print ("Paquetes: %d\tHosts:%d\n", counter, g_hash_table_size (nodes));
 }
 
 
@@ -66,5 +132,7 @@ init_capture (void)
 			 packet_read,
 			 pch);
   printf ("gdk_input_add error: %d\n", error);
+
+  init_data ();
 
 }

@@ -73,7 +73,8 @@ capture.o: capture.c /usr/include/pcap.h /usr/include/sys/types.h \
  /usr/include/gtk/gtktooltips.h /usr/include/gtk/gtktree.h \
  /usr/include/gtk/gtktreeitem.h /usr/include/gtk/gtkvbbox.h \
  /usr/include/gtk/gtkvpaned.h /usr/include/gtk/gtkvruler.h \
- /usr/include/gtk/gtkvscale.h /usr/include/gtk/gtkvseparator.h
+ /usr/include/gtk/gtkvscale.h /usr/include/gtk/gtkvseparator.h \
+ capture.h /usr/include/ctype.h
 capture.c :
 /usr/include/pcap.h :
 /usr/include/sys/types.h :
@@ -222,3 +223,5 @@ capture.c :
 /usr/include/gtk/gtkvruler.h :
 /usr/include/gtk/gtkvscale.h :
 /usr/include/gtk/gtkvseparator.h :
+capture.h :
+/usr/include/ctype.h :
