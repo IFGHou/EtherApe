@@ -183,11 +183,13 @@ GList *
 check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_to)
 {
 
-  struct timeval packet_time, result;
+  struct timeval packet_time;
+  struct timeval result;
   packet_t *packet;
   packet = (packet_t *) packets->data;
    
-  packet_time = packet->timestamp;
+  packet_time.tv_sec = packet->timestamp.tv_sec;
+  packet_time.tv_usec= packet->timestamp.tv_usec;
   
 
   /* Perform the carry for the later subtraction by updating Y. */
@@ -206,6 +208,8 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 
   result.tv_sec = now.tv_sec - packet_time.tv_sec;
   result.tv_usec = now.tv_usec - packet_time.tv_usec;
+   
+  printf ("sec %d, usec %d\n",result.tv_sec,result.tv_usec);
 
   /* If this node is older than the averaging time,
    * then it is removed, and the process continues.
