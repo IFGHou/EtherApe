@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+# $Id$
+
 SUBDIRS = intl po macros src
 
 NEWS: html/NEWS.html

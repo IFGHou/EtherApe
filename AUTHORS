@@ -14,3 +14,6 @@ User supplied patches
 ---- -------- -------
 Jasper Wallace	<jasper@pointless.net> (pcap device autodetection)
 Ted Wright	<ted.wright@grc.nasa.gov> (non-overlapping display mode)
+
+--
+$Id$
