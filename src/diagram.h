@@ -102,3 +102,5 @@ static gint node_item_event (GnomeCanvasItem * item,
 static guint popup_to (struct popup_data *pd);
 static gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
 static gint node_info_compare (gconstpointer a, gconstpointer b);
+
+void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);

@@ -1094,6 +1094,36 @@ update_node_info_windows (void)
   return;
 }				/* update_node_info_windows */
 
+/* It's called when a node info window is closed by the user 
+ * It has to free memory and delete the window from the list
+ * of windows */
+void
+on_node_info_delete_event (GtkWidget * node_info, gpointer user_data)
+{
+  GList *item = NULL;
+  guint8 *node_id = NULL;
+  node_info_window_t *node_info_window = NULL;
+
+  node_id = gtk_object_get_data (GTK_OBJECT (node_info), "node_id");
+  if (!node_id)
+    {
+      g_my_critical (_("No node_id in on_node_info_delete_event"));
+      return;
+    }
+
+  if (!(item =
+	g_list_find_custom (node_info_windows, node_id, node_info_compare)))
+    {
+      g_my_critical (_("No node_info_window in on_node_info_delete_event"));
+      return;
+    }
+
+  node_info_window = item->data;
+  g_free (node_info_window->node_id);
+  gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
+  node_info_windows = g_list_remove_link (node_info_windows, item);
+}				/* on_node_info_delete_event */
+
 void
 update_node_info_window (node_info_window_t * node_info_window)
 {
@@ -1263,6 +1293,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 		       GLADEDIR "/" ETHERAPE_GLADE_FILE);
 	      return FALSE;
 	    }
+	  glade_xml_signal_autoconnect (xml_info_window);
 	  window = glade_xml_get_widget (xml_info_window, "node_info");
 	  gtk_widget_show (window);
 
@@ -1301,6 +1332,8 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 	  node_info_window = g_malloc (sizeof (node_info_window_t));
 	  node_info_window->node_id =
 	    g_memdup (canvas_node->canvas_node_id, node_id_length);
+	  gtk_object_set_data (GTK_OBJECT (window), "node_id",
+			       node_info_window->node_id);
 	  node_info_window->window = window;
 	  node_info_windows =
 	    g_list_prepend (node_info_windows, node_info_window);
