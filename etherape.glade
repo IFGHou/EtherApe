@@ -231,6 +231,7 @@
 	    <widget>
 	      <class>GtkCheckMenuItem</class>
 	      <name>toolbar_check</name>
+	      <tooltip>Show or hide the toolbar</tooltip>
 	      <signal>
 		<name>activate</name>
 		<handler>on_toolbar_check_activate</handler>
@@ -244,6 +245,7 @@
 	    <widget>
 	      <class>GtkCheckMenuItem</class>
 	      <name>legend_check</name>
+	      <tooltip>Show or hide the legend</tooltip>
 	      <signal>
 		<name>activate</name>
 		<handler>on_legend_check_activate</handler>
@@ -257,6 +259,7 @@
 	    <widget>
 	      <class>GtkCheckMenuItem</class>
 	      <name>status_bar_check</name>
+	      <tooltip>Show or hide the status bar</tooltip>
 	      <signal>
 		<name>activate</name>
 		<handler>on_status_bar_check_activate</handler>
@@ -350,7 +353,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button1</name>
-	  <tooltip>Nuevo archivo</tooltip>
+	  <tooltip>New File</tooltip>
 	  <label>New</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_NEW</stock_pixmap>
 	</widget>
@@ -359,7 +362,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button2</name>
-	  <tooltip>Abrir archivo</tooltip>
+	  <tooltip>Open File</tooltip>
 	  <label>Open</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_OPEN</stock_pixmap>
 	</widget>
@@ -368,7 +371,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button3</name>
-	  <tooltip>Guardar archivo</tooltip>
+	  <tooltip>Save File</tooltip>
 	  <label>Save</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_SAVE</stock_pixmap>
 	</widget>
@@ -1191,7 +1194,7 @@ Square Root
   <class>GtkFontSelectionDialog</class>
   <name>fontselectiondialog1</name>
   <border_width>4</border_width>
-  <title>Seleccione Fuente</title>
+  <title>Select Font</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>

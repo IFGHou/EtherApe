@@ -76,6 +76,9 @@ extern apemode_t mode;
 extern GtkWidget *app1;
 extern GtkWidget *diag_pref;
 
+extern GnomeUIInfo view1_menu_uiinfo[];
+
+
 /* Extern functions declarations */
 
 extern gint node_id_compare (gconstpointer a, gconstpointer b);
@@ -158,11 +161,23 @@ static gint
 link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 		 canvas_link_t * canvas_link)
 {
+  static GnomeAppBar *appbar;
+  gchar *str;
+
+  if (!appbar)
+    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
+
   switch (event->type)
     {
 
-    case GDK_BUTTON_PRESS:
-      g_message (_ ("Most common prot is %s"), canvas_link->link->main_prot);
+    case GDK_ENTER_NOTIFY:
+      str = g_strdup_printf (_ ("Link main protocol: %s"),
+			     canvas_link->link->main_prot);
+      gnome_appbar_push (appbar, str);
+      g_free (str);
+      break;
+    case GDK_LEAVE_NOTIFY:
+      gnome_appbar_pop (appbar);
       break;
     default:
       break;
@@ -228,6 +243,11 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
   static struct popup_data pd =
   {NULL, NULL};
   static gint popup = 0;
+  static GnomeAppBar *appbar;
+  gchar *str;
+
+  if (!appbar)
+    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
 
   /* This is not used yet, but it will be. */
   item_x = event->button.x;
@@ -240,6 +260,11 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
     case GDK_ENTER_NOTIFY:
       pd.canvas_node = canvas_node;
       popup = gtk_timeout_add (1000, (GtkFunction) popup_to, &pd);
+      str = g_strdup_printf ("%s (%s)",
+			     canvas_node->node->name->str,
+			     canvas_node->node->numeric_name->str);
+      gnome_appbar_push (appbar, str);
+      g_free (str);
       break;
     case GDK_LEAVE_NOTIFY:
       if (popup)
@@ -249,6 +274,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 	  pd.canvas_node = NULL;
 	  pd.node_popup = NULL;
 	}
+      gnome_appbar_pop (appbar);
       break;
     default:
       break;
@@ -936,4 +962,15 @@ init_diagram ()
   gtk_widget_set_style (canvas, style);
 
   gtk_style_set_background (canvas->style, canvas->window, GTK_STATE_NORMAL);
+
+  /* Since glade doesn't do it, we'll have to do it manually 
+   * TODO Remove when glade is fixed */
+
+#if 0
+  widget = lookup_widget (GTK_WIDGET (app1), "appbar1");
+  gnome_app_install_appbar_menu_hints (widget, &(view1_menu_uiinfo[0]));
+
+  widget = lookup_widget (GTK_WIDGET (app1), "toolbar_check");
+  gtk_menu_item_select (widget);
+#endif
 }

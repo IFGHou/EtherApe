@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-17 21:56+0100\n"
+"POT-Creation-Date: 2000-03-18 10:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,72 +85,75 @@ msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
 # src/interface.c:23
-#: src/interface.c:23
+#: src/interface.c:22
 msgid "._New File"
 msgstr "_Nouveau fichier"
 
 # src/interface.c:46
-#: src/interface.c:46
+#: src/interface.c:45
 msgid "_Toolbar"
 msgstr "Barre d'_outils"
 
 # src/interface.c:53
-#: src/interface.c:53
+#: src/interface.c:52
 msgid "_Legend"
 msgstr "_Légende"
 
 # src/interface.c:60
-#: src/interface.c:60
+#: src/interface.c:59
 msgid "_Status Bar"
 msgstr "Barre d'_état"
 
 # src/interface.c:107
-#: src/interface.c:107
+#: src/interface.c:106
 msgid "Etherape"
 msgstr "Etherape"
 
 # src/interface.c:246
-#: src/interface.c:246
+#: src/interface.c:245
 msgid "New"
 msgstr "Nouveau"
 
-# src/interface.c:247
-#: src/interface.c:247
-msgid "Nuevo archivo"
-msgstr "Nouvelle archive"
+# src/interface.c:23
+#: src/interface.c:246
+#, fuzzy
+msgid "New File"
+msgstr "_Nouveau fichier"
 
 # src/interface.c:258
-#: src/interface.c:258
+#: src/interface.c:257
 msgid "Open"
 msgstr "Ouvrir"
 
-# src/interface.c:259
-#: src/interface.c:259
-msgid "Abrir archivo"
-msgstr "Ouvrir une archive"
+# src/interface.c:23
+#: src/interface.c:258
+#, fuzzy
+msgid "Open File"
+msgstr "_Nouveau fichier"
 
 # src/interface.c:270
-#: src/interface.c:270
+#: src/interface.c:269
 msgid "Save"
 msgstr "Enregistrer"
 
-# src/interface.c:271
-#: src/interface.c:271
-msgid "Guardar archivo"
-msgstr "Enregistrer l'archive"
+# src/interface.c:23
+#: src/interface.c:270
+#, fuzzy
+msgid "Save File"
+msgstr "_Nouveau fichier"
 
 # src/interface.c:278
-#: src/interface.c:278
+#: src/interface.c:277
 msgid "Protocols"
 msgstr "Protocoles"
 
 # src/interface.c:348
-#: src/interface.c:349
+#: src/interface.c:347
 msgid "Copyright 2000 Juan Toledo"
 msgstr "Copyright 2000 Juan Toledo"
 
 # src/interface.c:350
-#: src/interface.c:351
+#: src/interface.c:349
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
@@ -159,96 +162,96 @@ msgstr ""
 "Web: http://etherape.sourceforge.net"
 
 # src/interface.c:371
-#: src/interface.c:372
+#: src/interface.c:370
 msgid "window1"
 msgstr ""
 
 # src/interface.c:391
-#: src/interface.c:392
+#: src/interface.c:390
 msgid "name"
 msgstr ""
 
 # src/interface.c:400
-#: src/interface.c:401
+#: src/interface.c:399
 msgid "accumulated"
 msgstr ""
 
 # src/interface.c:409
-#: src/interface.c:410
+#: src/interface.c:408
 msgid "average"
 msgstr ""
 
 # src/interface.c:436
-#: src/interface.c:437
+#: src/interface.c:435
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 "Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
 
 # src/interface.c:510
-#: src/interface.c:514
+#: src/interface.c:512
 msgid "Diagram settings"
 msgstr "Paramètres du diagramme"
 
 # src/interface.c:545
-#: src/interface.c:549
+#: src/interface.c:547
 msgid "Averaging Time (ms)"
 msgstr "Temps moyen (ms)"
 
 # src/interface.c:570
-#: src/interface.c:574
+#: src/interface.c:572
 msgid "Diagram refresh period (ms)"
 msgstr "Période de rafraichissement (ms)"
 
 # src/interface.c:596
-#: src/interface.c:600
+#: src/interface.c:598
 msgid "Max. Node Radius"
 msgstr "Rayon de noeud maximal"
 
 # src/interface.c:622
-#: src/interface.c:626
+#: src/interface.c:624
 msgid "Max. Link Width"
 msgstr "Largeur de liaison maximale"
 
 # src/interface.c:648
-#: src/interface.c:652
+#: src/interface.c:650
 msgid "Node Timeout (ms)"
 msgstr "Timeout pour les noeuds (ms)"
 
 # src/interface.c:674
-#: src/interface.c:678
+#: src/interface.c:676
 msgid "Link Timeout (ms)"
 msgstr "Timeout pour les liaisons (ms)"
 
 # src/interface.c:698
-#: src/interface.c:702
+#: src/interface.c:700
 msgid "Linear"
 msgstr "Linéaire"
 
 # src/interface.c:701
-#: src/interface.c:705
+#: src/interface.c:703
 msgid "Logarithmic"
 msgstr "Lograrithmique"
 
 # src/interface.c:704
-#: src/interface.c:708
+#: src/interface.c:706
 msgid "Square Root"
 msgstr "Racine carrée"
 
 # src/interface.c:709
-#: src/interface.c:713
+#: src/interface.c:711
 msgid "Size Mode"
 msgstr "Mode de la taille"
 
-#: src/interface.c:730
+#: src/interface.c:728
 msgid "Click to set"
 msgstr ""
 
-#: src/interface.c:737
+#: src/interface.c:735
 msgid "Font"
 msgstr ""
 
-#: src/interface.c:774
-msgid "Seleccione Fuente"
+#: src/interface.c:772
+msgid "Select Font"
 msgstr ""
 
 # src/callbacks.c:195 src/callbacks.c:206
@@ -258,13 +261,13 @@ msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."
 
 # src/support.c:98 src/support.c:136
-#: src/support.c:98 src/support.c:136
+#: src/support.c:97 src/support.c:135
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "Impossible de trouver le fichier pixmap: %s"
 
 # src/support.c:114
-#: src/support.c:114
+#: src/support.c:113
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr "Impossible de créer un pixmap à partir du fichier: %s"
@@ -353,3 +356,15 @@ msgstr "Type de liaison pas encore supporté"
 #: src/capture.c:1007
 msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
+
+# src/interface.c:247
+#~ msgid "Nuevo archivo"
+#~ msgstr "Nouvelle archive"
+
+# src/interface.c:259
+#~ msgid "Abrir archivo"
+#~ msgstr "Ouvrir une archive"
+
+# src/interface.c:271
+#~ msgid "Guardar archivo"
+#~ msgstr "Enregistrer l'archive"
