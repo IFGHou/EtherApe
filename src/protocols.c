@@ -71,10 +71,12 @@ get_packet_prot (const guint8 * p, guint len)
       prot = g_string_append (prot, "NULL/IP");
       get_ip ();
       break;
+#ifdef L_LINUX_SLL
     case L_LINUX_SLL:
       prot = g_string_append (prot, "LINUX-SLL");
       get_linux_sll_type ();
       break;
+#endif
     default:
       break;
     }
