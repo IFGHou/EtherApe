@@ -88,6 +88,27 @@ get_null_name (void)
 
 }				/* get_null_name */
 
+/* linux-sll is used for ISDN on linux, I believe. 
+ * Only one of the MAC addresses involved is shown each time,
+ * so by now I will simply not try to decode MAC addresses */
+/* TODO Do something useful with the address that shows */
+static void
+get_linux_sll_name (void)
+{
+
+  level++;
+  /* TODO
+   * I'm assuming that the header is always size 16. I don't know
+   * weather that's always the case... (I'm making that assumption
+   * since ethereal is not decoding a couple of bytes, which then
+   * seem to be just padding */
+  offset += 16;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_linux_sll_name */
 
 static void
 get_eth_name (void)

@@ -177,6 +177,16 @@ init_capture (void)
 	error = TRUE;
       l3_offset = 4;
       break;
+    case L_LINUX_SLL:		/* Linux cooked sockets (I believe this
+				 * is used for ISDN on linux) */
+      g_my_info (_("Link type is Linux cooked sockets"));
+      if (pref.mode == DEFAULT)
+	pref.mode = IP;
+      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
+	  || (pref.mode == IEEE802))
+	error = TRUE;
+      l3_offset = 16;
+      break;
     default:
       sprintf (errorbuf, _("Link type not yet supported"));
       return errorbuf;

@@ -64,6 +64,7 @@ static void get_fddi_type (void);
 static void get_ieee802_type (void);
 static void get_eth_II (etype_t etype);
 static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
+static void get_linux_sll_type (void);
 
 static void get_llc (void);
 static void get_ip (void);

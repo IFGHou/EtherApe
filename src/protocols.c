@@ -71,6 +71,10 @@ get_packet_prot (const guint8 * p, guint len)
       prot = g_string_append (prot, "NULL/IP");
       get_ip ();
       break;
+    case L_LINUX_SLL:
+      prot = g_string_append (prot, "LINUX-SLL");
+      get_linux_sll_type ();
+      break;
     default:
       break;
     }
@@ -229,6 +233,25 @@ get_eth_II (etype_t etype)
 
   return;
 }				/* get_eth_II */
+
+/* Gets the protocol type out of the linux-sll header.
+ * I have no real idea of what can be there, but since IP
+ * is 0x800 I guess it follows ethernet specifications */
+static void
+get_linux_sll_type (void)
+{
+  etype_t etype;
+
+  etype = pntohs (&packet[14]);
+  append_etype_prot (etype);
+
+  if (etype == ETHERTYPE_IP)
+    get_ip ();
+  if (etype == ETHERTYPE_IPX)
+    get_ipx ();
+
+  return;
+}				/* get_linux_sll_type */
 
 static void
 get_llc (void)
