@@ -420,7 +420,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
 
-  if (is_to_be_displayed (node) && !g_tree_lookup (canvas_nodes, node_id))
+  if (display_node (node) && !g_tree_lookup (canvas_nodes, node_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
@@ -502,7 +502,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
     }
 #endif
   /* Remove node if node is too old or if capture is stopped */
-  if (!is_to_be_displayed (node))
+  if (!display_node (node))
     {
       gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
       gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
@@ -588,8 +588,11 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
+
+/* Returns whether the node in question should be displayed in the
+ * diagram or not */
 static gboolean
-is_to_be_displayed (node_t * node)
+display_node (node_t * node)
 {
   struct timeval diff;
 
@@ -603,8 +606,13 @@ is_to_be_displayed (node_t * node)
       && node_timeout_time)
     return FALSE;
 
+#if 1
+  if ((node_timeout_time == 1000) && !node->n_packets)
+    g_critical ("Impossible situation in display node");
+#endif
+
   return TRUE;
-}				/* is_to_be_displayed */
+}				/* display_node */
 
 
 /* Sorts canvas nodes with the criterium set in preferences and sets
