@@ -418,7 +418,7 @@
 		<update_policy>GTK_UPDATE_IF_VALID</update_policy>
 		<snap>False</snap>
 		<wrap>False</wrap>
-		<value>2000</value>
+		<value>10000</value>
 		<lower>1</lower>
 		<upper>3.6e+07</upper>
 		<step>100</step>
@@ -625,9 +625,9 @@
 		<value>10000</value>
 		<lower>0</lower>
 		<upper>3.6e+07</upper>
-		<step>500</step>
-		<page>5000</page>
-		<page_size>50000</page_size>
+		<step>100</step>
+		<page>1000</page>
+		<page_size>10000</page_size>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -677,9 +677,9 @@
 		<value>2000</value>
 		<lower>0</lower>
 		<upper>3.6e+07</upper>
-		<step>500</step>
-		<page>5000</page>
-		<page_size>50000</page_size>
+		<step>100</step>
+		<page>1000</page>
+		<page_size>10000</page_size>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>

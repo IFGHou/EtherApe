@@ -374,17 +374,16 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
    * averaging time, we use that instead */
 
   if (belongs_to == NODE)
-    if (node_timeout_time) 
-       time_comparison = (node_timeout_time > averaging_time) ?
-     averaging_time : link_timeout_time;
-   else
-    time_comparison = averaging_time;
+    if (node_timeout_time)
+      time_comparison = (node_timeout_time > averaging_time) ?
+	averaging_time : node_timeout_time;
+    else
+      time_comparison = averaging_time;
+  else if (link_timeout_time)
+    time_comparison = (link_timeout_time > averaging_time) ?
+      averaging_time : link_timeout_time;
   else
-    if (link_timeout_time) 
-       time_comparison = (link_timeout_time > averaging_time) ?
-     averaging_time : link_timeout_time;
-   else
-     time_comparison = averaging_time;
+    time_comparison = averaging_time;
 
 
   if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)

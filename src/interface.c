@@ -319,7 +319,7 @@ create_app1 (void)
   gtk_widget_show (vbox3);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 2);
 
-  averaging_spin_adj = gtk_adjustment_new (2000, 1, 3.6e+07, 100, 1000, 10000);
+  averaging_spin_adj = gtk_adjustment_new (10000, 1, 3.6e+07, 100, 1000, 10000);
   averaging_spin = gtk_spin_button_new (GTK_ADJUSTMENT (averaging_spin_adj), 1, 0);
   gtk_widget_ref (averaging_spin);
   gtk_object_set_data_full (GTK_OBJECT (app1), "averaging_spin", averaging_spin,
@@ -414,7 +414,7 @@ create_app1 (void)
   gtk_widget_show (vbox7);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox7, TRUE, TRUE, 0);
 
-  node_to_spin_adj = gtk_adjustment_new (10000, 0, 3.6e+07, 500, 5000, 50000);
+  node_to_spin_adj = gtk_adjustment_new (10000, 0, 3.6e+07, 100, 1000, 10000);
   node_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (node_to_spin_adj), 1, 0);
   gtk_widget_ref (node_to_spin);
   gtk_object_set_data_full (GTK_OBJECT (app1), "node_to_spin", node_to_spin,
@@ -438,7 +438,7 @@ create_app1 (void)
   gtk_widget_show (vbox8);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox8, TRUE, TRUE, 0);
 
-  link_to_spin_adj = gtk_adjustment_new (2000, 0, 3.6e+07, 500, 5000, 50000);
+  link_to_spin_adj = gtk_adjustment_new (2000, 0, 3.6e+07, 100, 1000, 10000);
   link_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (link_to_spin_adj), 1, 0);
   gtk_widget_ref (link_to_spin);
   gtk_object_set_data_full (GTK_OBJECT (app1), "link_to_spin", link_to_spin,

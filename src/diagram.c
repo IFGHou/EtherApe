@@ -21,7 +21,7 @@ double node_radius_multiplier = 1000;	/* used to calculate the radius of the
 double link_width_multiplier_control = 3;	/* Same explanation as above */
 double link_width_multiplier = 1000;
 
-double averaging_time = 2000000;	/* Microseconds of time we consider to
+double averaging_time = 10000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
 double link_timeout_time = 2000000;	/* After this time
 					 * has passed with no traffic in a 
@@ -148,6 +148,8 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
     {
       gnome_canvas_item_show (canvas_node->text_item);
       gnome_canvas_item_request_update (canvas_node->text_item);
+      gnome_canvas_item_request_update (canvas_node->node_item);
+
     }
 
   node_i--;
@@ -180,57 +182,67 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* First we check whether the link has timed out */
 
-  if (link->packets) update_packet_list (link->packets, LINK);
- 	
-   if (link->n_packets == 0)
-     {
-	if (link_timeout_time)
-	  {
-	     
-	     gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-	     
-	     g_tree_remove (canvas_links, link_id);
-	     
-	     if (interape)
-	       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		      _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		      ip_to_str (link_id),
-		      ip_to_str (link_id + 4),
-		      g_tree_nnodes (canvas_links));
-	     else
-	       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		      _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		      get_ether_name (link_id + 6),
-		      get_ether_name (link_id),
-		      g_tree_nnodes (canvas_links));
-	     
-	     
-	    link_id = link->link_id;	/* Since we are freeing the link
+  if (link->packets)
+    update_packet_list (link->packets, LINK);
+
+  if (link->n_packets == 0)
+    {
+      if (link_timeout_time)
+	{
+
+	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+
+	  g_tree_remove (canvas_links, link_id);
+
+	  if (interape)
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		   ip_to_str (link_id),
+		   ip_to_str (link_id + 4),
+		   g_tree_nnodes (canvas_links));
+	  else
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		   get_ether_name (link_id + 6),
+		   get_ether_name (link_id),
+		   g_tree_nnodes (canvas_links));
+
+
+	  link_id = link->link_id;	/* Since we are freeing the link
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	     g_free (link);
-	     g_tree_remove (links, link_id);
-	     g_free (link_id);
-	     
-	     return TRUE;		/* I've checked it's not safe to traverse 
-					 * while deleting, so we return TRUE to stop
-					 * the traversion (Does that word exist? :-) */
-	  }
-	else
-	  link->packets=NULL;
-	  link->accumulated=0;
-     }
-   
+	  g_free (link);
+	  g_tree_remove (links, link_id);
+	  g_free (link_id);
+
+	  return TRUE;		/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
+	}
+      else
+	link->packets = NULL;
+      link->accumulated = 0;
+    }
+
 
   args[0].name = "x";
   args[1].name = "y";
 
   points = gnome_canvas_points_new (2);
+   
+  /* If either source or destination has disappeared, we hide the link
+   * until it can be show again */
+  /* TODO: This is a dirty hack. Redo this again later by properly 
+   * deleting the link */
 
   /* We get coords from source node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id);
+  if (!canvas_node) {
+     gnome_canvas_item_hide (canvas_link->link_item);
+     return FALSE;
+  }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
@@ -242,13 +254,20 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
     canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
   else
     canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
-
+  if (!canvas_node)
+     {
+	gnome_canvas_item_hide (canvas_link->link_item);
+	return FALSE;
+     }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
   points->coords[2] = args[0].d.double_data;
   points->coords[3] = args[1].d.double_data;
 
+  /* If we got this far, the link can be shown. Make sure it is */
+  gnome_canvas_item_show (canvas_link->link_item);
+   
   /* Average is measured in bps, thus 8* */
   link->average = 8 * link->accumulated / averaging_time;
   link_size = get_link_size (link->average);
@@ -266,11 +285,56 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 }				/* update_canvas_links */
 
 gint
-update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget * canvas)
+update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * canvas)
 {
   node_t *node;
   gdouble node_size;
   node = canvas_node->node;
+
+  /* First we check whether the link has timed out */
+
+  if (node->packets)
+    update_packet_list (node->packets, NODE);
+
+  if (node->n_packets == 0)
+    {
+      if (node_timeout_time)
+	{
+
+	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+
+	  g_tree_remove (canvas_nodes, node_id);
+
+	  if (interape)
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		 _ ("Removing node and canvas_node: %s. Number of node %d"),
+		   ip_to_str (node_id),
+		   g_tree_nnodes (canvas_nodes));
+	  else
+	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		_ ("Removing node and canvas_node: %s. Number of nodes %d"),
+		   get_ether_name (node_id),
+		   g_tree_nnodes (canvas_nodes));
+
+
+	  node_id = node->node_id;	/* Since we are freeing the node
+					 * we must free its members as well 
+					 * but if we free the id then we will
+					 * not be able to find the link again 
+					 * to free it, thus the intermediate variable */
+	  g_free (node);
+	  g_tree_remove (nodes, node_id);
+	  g_free (node_id);
+	   
+	  return TRUE;		/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
+	}
+      else
+	node->packets = NULL;
+        node->accumulated = 0;
+    }
+
 
   /* Average is measured in bps, thus 8* */
   node->average = 8 * node->accumulated / averaging_time;
@@ -448,10 +512,15 @@ update_diagram (GtkWidget * canvas)
 		   G_IN_ORDER,
 		   canvas);
 
-  /* Reposition canvas_nodes 
-   * TODO: This should be conditional. Look for a way to know
-   * whether the canvas needs updating, that is, a new node has been added
-   */
+
+  /* Update nodes aspect */
+  g_tree_traverse (canvas_nodes,
+		   (GTraverseFunc) update_canvas_nodes,
+		   G_IN_ORDER,
+		   canvas);
+
+  /* Reposition canvas_nodes */
+  
   if (n_nodes != (n_nodes_new = g_tree_nnodes (nodes)))
     {
       g_tree_traverse (canvas_nodes,
@@ -461,11 +530,6 @@ update_diagram (GtkWidget * canvas)
       n_nodes = n_nodes_new;
     }
 
-  /* Update nodes aspect */
-  g_tree_traverse (canvas_nodes,
-		   (GTraverseFunc) update_canvas_nodes,
-		   G_IN_ORDER,
-		   canvas);
 
   /* Check if there are any new links */
   g_tree_traverse (links,
@@ -474,8 +538,8 @@ update_diagram (GtkWidget * canvas)
 		   canvas);
 
   /* Update links aspect 
-   * We also delete timedout links, and when we do that we stop
-   * traversing, so we need to go on until we have finished updating */
+     * We also delete timedout links, and when we do that we stop
+     * traversing, so we need to go on until we have finished updating */
 
   do
     {
@@ -487,6 +551,9 @@ update_diagram (GtkWidget * canvas)
       n_links_new = g_tree_nnodes (links);
     }
   while (n_links != n_links_new);
+
+
+
 
   return TRUE;			/* Keep on calling this function */
 

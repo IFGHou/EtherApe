@@ -1,5 +1,11 @@
 
-  Overview of changes in CVS Etherape 0.1.7 (Tuesday 02-28-2000):
+  Overview of changes Etherape 0.1.8 (Wednesday 03-01-2000):
+  
+     * First version of interape. Run as etherape -I. I guess I'll to
+       change the name to netape now. :-)
+     * Added node and link timeouts controls.
+       
+  Overview of changes Etherape 0.1.7 (Tuesday 02-29-2000):
   
      * Pcap filtering added. Now you can use tcpdump style filtering
        (enclosed in quotes) with the -f option.

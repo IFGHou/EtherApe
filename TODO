@@ -1,7 +1,10 @@
-Update controls with variable data at init time.
+* Averaging should be done dividing not always by the averaging 
+  time. If only so many seconds of date has been gathered,
+  divide by that
 
-Add incoming and outcoming traffic into a single canvas_link,
-and not put them one underneath the other. Funny no one has
-noticed. :-)
+* Update controls with variable data at init time.
 
-Make math.h be set by autoheader.
+* Add incoming and outcoming traffic into a single canvas_link,
+  and not put them one underneath the other. Funny no one has
+  noticed. :-)
+
