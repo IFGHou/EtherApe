@@ -27,7 +27,6 @@
 #include "dns.h"
 #include "eth_resolv.h"
 
-
 /* 
  * FUNCTION DEFINITIONS
  */
@@ -409,7 +408,7 @@ stop_capture (void)
 	}
     }
 
-  /* Next time update_nodes and update_links are called,
+  /* Next time update_node and update_link are called,
      all node and link information will be deleted */
   /* TODO Perhaps we should make sure we delete all that data here instead of relying
    * in the GUI to do it (by calling update_node and update_link) */
@@ -488,6 +487,7 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   /* Redhat's phdr.ts is not a timeval, so I can't
    * just copy the structures */
 
+
   /* Get next packet only if in live mode */
   if (source)
     {
@@ -515,6 +515,9 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   /* And now we update link traffic information for this packet */
   add_link_packet (packet, phdr, link_id, prot);
 
+#ifndef LEAK
+  return;
+#endif
 
 }				/* packet_read */
 
@@ -651,8 +654,8 @@ add_node_packet (const guint8 * packet,
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
-
   add_protocol (node->protocols, packet_info->prot->str, phdr);
+
 
   /* We update node info */
   node->accumulated += phdr.len;
@@ -671,7 +674,7 @@ add_node_packet (const guint8 * packet,
   /* Update names list for this node */
   get_packet_names (node->protocols, packet, phdr.len, prot, direction);
 
-  update_node (node);
+  update_node (node->node_id, node, NULL);
 
 }				/* add_node_packet */
 
@@ -837,8 +840,26 @@ add_protocol (GList ** protocols, const gchar * stack,
   tokens = NULL;
 }				/* add_protocol */
 
-node_t *
-update_node (node_t * node)
+
+/* Calls update_node for every node */
+void
+update_nodes (void)
+{
+  guint n_nodes_before, n_nodes_after;
+
+  do
+    {
+      n_nodes_before = g_tree_nnodes (nodes);
+      g_tree_traverse (nodes, (GTraverseFunc) update_node, G_IN_ORDER, NULL);
+      n_nodes_after = g_tree_nnodes (nodes);
+    }
+  while (n_nodes_before != n_nodes_after);
+
+}				/* update_nodes */
+
+/* Deletes all data from a node, and possibly the node itself */
+static gint
+update_node (guint8 * node_id, node_t * node, gpointer pointer)
 {
   struct timeval diff;
   guint8 *node_id = NULL;
@@ -855,8 +876,10 @@ update_node (node_t * node)
 
       diff = substract_times (now, node->last_time);
 
+#if 1
       /* Delete node if we stop the capture */
       if (status == STOP)
+#endif
 #if 0
 	/* Remove node if node is too old or if capture is stopped */
 	if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
@@ -887,7 +910,6 @@ update_node (node_t * node)
 		  g_free (node->main_prot[i]);
 		  node->main_prot[i] = NULL;
 		}
-#if 1
 	    i = 0;
 	    while (i <= STACK_SIZE)
 	      {
@@ -927,31 +949,25 @@ update_node (node_t * node)
 		  }
 		i++;
 	      }
-#endif
-
 
 	    g_free (node);
 	    g_tree_remove (nodes, node_id);
 	    g_free (node_id);
 	    node = NULL;
+	    return TRUE;	/* I've checked it's not safe to traverse 
+				 * while deleting, so we return TRUE to stop
+				 * the traversion (Does that word exist? :-) */
 	  }
 	else
 	  {
 	    /* The packet list structure has already been freed in
 	     * check_packets */
 	    node->packets = NULL;
-#if 0
-	    while (i + 1)
-	      {
-		node->protocols[i] = NULL;
-		i--;
-	      }
-#endif
 	    node->average = node->average_in = node->average_out = 0.0;
 	  }
     }
 
-  return node;
+  return FALSE;
 }				/* update_node */
 
 
@@ -1280,40 +1296,11 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = g_strsplit (packet->prot->str, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
-
 	      protocol_item = g_list_find_custom (node->protocols[i],
 						  tokens[i],
 						  protocol_compare);
 	      protocol_info = protocol_item->data;
 	      protocol_info->accumulated -= packet->size;
-#if 0
-	      if (!protocol_info->accumulated)
-		{
-		  GList *name_item = NULL;
-		  name_t *name;
-		  g_free (protocol_info->name);
-		  protocol_info->name = NULL;
-
-		  while (protocol_info->node_names)
-		    {
-		      name_item = protocol_info->node_names;
-		      name = name_item->data;
-		      g_free (name->node_id);
-		      g_string_free (name->name, TRUE);
-		      g_string_free (name->numeric_name, TRUE);
-		      protocol_info->node_names =
-			g_list_remove_link (protocol_info->node_names,
-					    name_item);
-		      g_free (name);
-		      g_list_free (name_item);
-		    }
-
-		  node->protocols[i] =
-		    g_list_remove_link (node->protocols[i], protocol_item);
-		  g_free (protocol_info);
-		  g_list_free (protocol_item);
-		}
-#endif
 	      i++;
 	    }
 	  g_strfreev (tokens);

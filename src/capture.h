@@ -58,6 +58,7 @@ static guint8 *get_node_id (const guint8 * packet,
 static guint8 *get_link_id (const guint8 * packet);
 static node_t *create_node (const guint8 * packet, const guint8 * node_id);
 static link_t *create_link (const guint8 * packet, const guint8 * link_id);
+static gint update_node (guint8 * node_id, node_t * node, gpointer pointer);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void add_node_packet (const guint8 * packet,
 			     struct pcap_pkthdr phdr,

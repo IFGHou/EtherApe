@@ -210,6 +210,8 @@ update_diagram (GtkWidget * canvas)
       n_protocols[stack_level] = n_protocols_new[stack_level];
     }
 
+  /* Deletes all nodes and updates traffic values */
+  update_nodes ();
 
   /* Check if there are any new nodes */
   g_tree_traverse (nodes, (GTraverseFunc) check_new_node, G_IN_ORDER, canvas);
@@ -477,9 +479,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 }				/* check_new_node */
 
 
-/* - calls update_nodes, so that the related nodes updates its average
- *   traffic and old nodes are deleted
- * - updates node name if it has changed */
+/* - updates sizes, names, etc */
 static gint
 update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 		     GtkWidget * canvas)
@@ -490,19 +490,18 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   GList *protocol_item;
   protocol_t *protocol = NULL;
 
+  /* We don't need this anymore since now update_nodes is called in update_diagram */
+#if 0
   node = canvas_node->node;
 
   /* First we check whether the link has timed out */
   node = update_node (node);
-
-#if 0
-  /* If the node has timed out, we delete the canvas_node */
-  if (!node)
-    {
-    }
+#endif
+#if 1
+  node = g_tree_lookup (nodes, node_id);
 #endif
   /* Remove node if node is too old or if capture is stopped */
-  if (!display_node (node))
+  if (!node || !display_node (node))
     {
       gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
       gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
@@ -531,10 +530,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       protocol = protocol_item->data;
     }
 
-#if 0
-  /* TODO Make GUI to select among _in, _out and total. */
-  node_size = get_node_size (node->average_out);
-#endif
   switch (node_size_variable)
     {
     case INST_TOTAL:
