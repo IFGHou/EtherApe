@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-07-31 13:53+0200\n"
+"POT-Creation-Date: 2001-08-02 15:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,23 +90,23 @@ msgstr ""
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:153
+#: src/main.c:157
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
+#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 #: src/menus.c:372
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:287
+#: src/main.c:291
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:376
+#: src/main.c:383
 msgid "Preferences saved"
 msgstr ""
 
@@ -135,139 +135,139 @@ msgstr ""
 msgid "Error opening %s : %s"
 msgstr ""
 
-#: src/capture.c:125
+#: src/capture.c:126
 #, c-format
 msgid "%s opened for offline capture"
 msgstr ""
 
-#: src/capture.c:137
+#: src/capture.c:138
 msgid "Link type is Ethernet"
 msgstr ""
 
 #. The case for PPP or SLIP, for instance
-#: src/capture.c:145
+#: src/capture.c:146
 msgid "Link type is RAW"
 msgstr ""
 
 #. We are assuming LLC async frames only
-#: src/capture.c:153
+#: src/capture.c:155
 msgid "Link type is FDDI"
 msgstr ""
 
 #. As far as I know IEEE802 is Token Ring
-#: src/capture.c:162
+#: src/capture.c:164
 msgid "Link type is Token Ring"
 msgstr ""
 
 #. Loopback
-#: src/capture.c:170
+#: src/capture.c:172
 msgid "Link type is NULL"
 msgstr ""
 
-#: src/capture.c:178
+#: src/capture.c:181
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:231
+#: src/capture.c:234
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:253
+#: src/capture.c:256
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:279 src/capture.c:305
+#: src/capture.c:282 src/capture.c:308
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:285 src/capture.c:311
+#: src/capture.c:288 src/capture.c:314
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:290 src/capture.c:316
+#: src/capture.c:293 src/capture.c:319
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:327
+#: src/capture.c:330
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:337
+#: src/capture.c:340
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:344
+#: src/capture.c:347
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:360
+#: src/capture.c:363
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:370
+#: src/capture.c:373
 msgid "Pausing live capture"
 msgstr ""
 
-#: src/capture.c:377
+#: src/capture.c:380
 msgid "Pausing offline capture"
 msgstr ""
 
-#: src/capture.c:382
+#: src/capture.c:385
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:401
+#: src/capture.c:404
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:407
+#: src/capture.c:410
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:413
+#: src/capture.c:416
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:419
+#: src/capture.c:422
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#: src/capture.c:455
+#: src/capture.c:458
 msgid "Capture device stopped or file closed"
 msgstr ""
 
-#: src/capture.c:656
+#: src/capture.c:659
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:708
+#: src/capture.c:711
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:841
+#: src/capture.c:844
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:879
+#: src/capture.c:882
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1024
+#: src/capture.c:1027
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:1229
+#: src/capture.c:1232
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1547
+#: src/capture.c:1550
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -356,51 +356,51 @@ msgstr ""
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:312
+#: src/diagram.c:314
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:316
+#: src/diagram.c:318
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:322
+#: src/diagram.c:324
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:324
+#: src/diagram.c:326
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:562
+#: src/diagram.c:564
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:639
+#: src/diagram.c:641
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:664
+#: src/diagram.c:666
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:998
+#: src/diagram.c:1000
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1064
+#: src/diagram.c:1066
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1210
+#: src/diagram.c:1212
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1213
+#: src/diagram.c:1215
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -968,6 +968,19 @@ msgstr ""
 
 #: src/glade-strings:159
 msgid "help_button1"
+msgstr ""
+
+#: src/glade-strings:160
+msgid "EtherApe: assign protocol"
+msgstr ""
+
+#: src/glade-strings:161
+msgid "Type protocol name..."
+msgstr ""
+
+#: src/glade-strings:162
+msgid ""
+"Type the name of the protocol that will be assigned to the selected color"
 msgstr ""
 
 #: src/info_windows.c:323

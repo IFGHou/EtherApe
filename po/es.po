@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
-"POT-Creation-Date: 2001-07-31 13:53+0200\n"
-"PO-Revision-Date: 2001-08-01 12:36+02:00\n"
+"POT-Creation-Date: 2001-08-02 15:11+0200\n"
+"PO-Revision-Date: 2001-08-02 15:12+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -89,18 +89,18 @@ msgstr "fijar el color de los enlaces"
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
-#: src/main.c:153
+#: src/main.c:157
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
-#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
+#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 #: src/menus.c:372
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
 
-#: src/main.c:287
+#: src/main.c:291
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -109,7 +109,7 @@ msgstr ""
 "favor, compruebe en el diálogo de preferencias que eso es lo que realmente "
 "quiere"
 
-#: src/main.c:376
+#: src/main.c:383
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -139,141 +139,141 @@ msgstr ""
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
 
-#: src/capture.c:125
+#: src/capture.c:126
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
 
-#: src/capture.c:137
+#: src/capture.c:138
 msgid "Link type is Ethernet"
 msgstr "Tipo de enlace es Ethernet"
 
 #. The case for PPP or SLIP, for instance
-#: src/capture.c:145
+#: src/capture.c:146
 msgid "Link type is RAW"
 msgstr "Tipo de enlace es RAW"
 
 #. We are assuming LLC async frames only
-#: src/capture.c:153
+#: src/capture.c:155
 msgid "Link type is FDDI"
 msgstr "Tipo de enlace es FDDI"
 
 #. As far as I know IEEE802 is Token Ring
-#: src/capture.c:162
+#: src/capture.c:164
 msgid "Link type is Token Ring"
 msgstr "Tipo de enlace es Token Ring"
 
 #. Loopback
-#: src/capture.c:170
+#: src/capture.c:172
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
-#: src/capture.c:178
+#: src/capture.c:181
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
-#: src/capture.c:231
+#: src/capture.c:234
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
-#: src/capture.c:253
+#: src/capture.c:256
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
-#: src/capture.c:279 src/capture.c:305
+#: src/capture.c:282 src/capture.c:308
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "No se puede usar el filtro: No se pudo obtener información de la máscara "
 "(%s)."
 
-#: src/capture.c:285 src/capture.c:311
+#: src/capture.c:288 src/capture.c:314
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
-#: src/capture.c:290 src/capture.c:316
+#: src/capture.c:293 src/capture.c:319
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
-#: src/capture.c:327
+#: src/capture.c:330
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
-#: src/capture.c:337
+#: src/capture.c:340
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
-#: src/capture.c:344
+#: src/capture.c:347
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
-#: src/capture.c:360
+#: src/capture.c:363
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
-#: src/capture.c:370
+#: src/capture.c:373
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
-#: src/capture.c:377
+#: src/capture.c:380
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
-#: src/capture.c:382
+#: src/capture.c:385
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
-#: src/capture.c:401
+#: src/capture.c:404
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
-#: src/capture.c:407
+#: src/capture.c:410
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
-#: src/capture.c:413
+#: src/capture.c:416
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
-#: src/capture.c:419
+#: src/capture.c:422
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
 
-#: src/capture.c:455
+#: src/capture.c:458
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
-#: src/capture.c:656
+#: src/capture.c:659
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
-#: src/capture.c:708
+#: src/capture.c:711
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
-#: src/capture.c:841
+#: src/capture.c:844
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
-#: src/capture.c:879
+#: src/capture.c:882
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 
-#: src/capture.c:1024
+#: src/capture.c:1027
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
-#: src/capture.c:1229
+#: src/capture.c:1232
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace. Número de enlaces: %d"
 
-#: src/capture.c:1547
+#: src/capture.c:1550
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
@@ -362,51 +362,51 @@ msgstr "Listo para capturar de "
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
-#: src/diagram.c:312
+#: src/diagram.c:314
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
-#: src/diagram.c:316
+#: src/diagram.c:318
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
 
-#: src/diagram.c:322
+#: src/diagram.c:324
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
-#: src/diagram.c:324
+#: src/diagram.c:326
 msgid ". TIMEOUT."
 msgstr ". EXPIRACIÓN."
 
-#: src/diagram.c:562
+#: src/diagram.c:564
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
-#: src/diagram.c:639
+#: src/diagram.c:641
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
-#: src/diagram.c:664
+#: src/diagram.c:666
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
-#: src/diagram.c:998
+#: src/diagram.c:1000
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
-#: src/diagram.c:1064
+#: src/diagram.c:1066
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
-#: src/diagram.c:1210
+#: src/diagram.c:1212
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
-#: src/diagram.c:1213
+#: src/diagram.c:1215
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -783,7 +783,9 @@ msgstr "Protocolo"
 #: src/glade-strings:93
 msgid ""
 "Add a new color to the list of colors that can be used to represent protocols"
-msgstr "Añadir un nuevo color a la lista de colores que se pueden usar para representar protocolos"
+msgstr ""
+"Añadir un nuevo color a la lista de colores que se pueden usar para "
+"representar protocolos"
 
 #: src/glade-strings:94
 msgid "Add color"
@@ -989,6 +991,19 @@ msgstr "cancel_button2"
 #: src/glade-strings:159
 msgid "help_button1"
 msgstr "help_button1"
+
+#: src/glade-strings:160
+msgid "EtherApe: assign protocol"
+msgstr "EtherApe: asignar protocolos"
+
+#: src/glade-strings:161
+msgid "Type protocol name..."
+msgstr "Escriba el nombre del protocolo..."
+
+#: src/glade-strings:162
+msgid ""
+"Type the name of the protocol that will be assigned to the selected color"
+msgstr "Escriba el nombre del protocolo que será asignado al color seleccionado"
 
 #: src/info_windows.c:323
 msgid "No node_id in on_node_info_delete_event"
