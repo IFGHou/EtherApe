@@ -14,6 +14,11 @@ any kind of compilation success report. :-) (Hint!)
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
+I've tried my best to find any other program that provides similar
+functionality as this (other than the real etherman, that is) to no
+avail. If you happen to know any such program, please let me now.
+Am I by chance waisting my time?
+
 
 Installation:
 -------------
