@@ -765,10 +765,11 @@ Web: http://etherape.sourceforge.net</comments>
 <widget>
   <class>GtkWindow</class>
   <name>node_popup</name>
+  <events>GDK_POINTER_MOTION_MASK</events>
   <signal>
     <name>motion_notify_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Sun, 12 Mar 2000 18:13:40 GMT</last_modification_time>
+    <handler>on_node_popup_motion_notify_event</handler>
+    <last_modification_time>Mon, 13 Mar 2000 16:49:40 GMT</last_modification_time>
   </signal>
   <title>window1</title>
   <type>GTK_WINDOW_POPUP</type>
@@ -797,6 +798,11 @@ Web: http://etherape.sourceforge.net</comments>
       <widget>
 	<class>GtkLabel</class>
 	<name>name</name>
+	<signal>
+	  <name>motion_notify_event</name>
+	  <handler>on_name_motion_notify_event</handler>
+	  <last_modification_time>Mon, 13 Mar 2000 17:00:02 GMT</last_modification_time>
+	</signal>
 	<label>name</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>

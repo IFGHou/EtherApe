@@ -109,16 +109,14 @@ typedef int mode_t;		/* for win32 */
  */
 
 struct search_user_data
-  {
-    char *name;
-    int found;
-  };
+{
+  char *name;
+  int found;
+};
 
-static void
-  search_for_if_cb (gpointer data, gpointer user_data);
+static void search_for_if_cb (gpointer data, gpointer user_data);
 
-static void
-  free_if_cb (gpointer data, gpointer user_data);
+static void free_if_cb (gpointer data, gpointer user_data);
 
 GList *
 get_interface_list (int *err, char *err_str)
@@ -134,8 +132,7 @@ get_interface_list (int *err, char *err_str)
 
   if (sock < 0)
     {
-      sprintf (err_str, "Error opening socket: %s",
-	       strerror (errno));
+      sprintf (err_str, "Error opening socket: %s", strerror (errno));
       return NULL;
     }
 
@@ -183,13 +180,13 @@ get_interface_list (int *err, char *err_str)
        * Get the interface flags.
        */
       memset (&ifrflags, 0, sizeof ifrflags);
-      strncpy (ifrflags.ifr_name, ifr->ifr_name,
-	       sizeof ifrflags.ifr_name);
+      strncpy (ifrflags.ifr_name, ifr->ifr_name, sizeof ifrflags.ifr_name);
       if (ioctl (sock, SIOCGIFFLAGS, (char *) &ifrflags) < 0)
 	{
 	  if (errno == ENXIO)
 	    goto next;
-	  sprintf (err_str, "SIOCGIFFLAGS error getting flags for interface %s: %s",
+	  sprintf (err_str,
+		   "SIOCGIFFLAGS error getting flags for interface %s: %s",
 		   ifr->ifr_name, strerror (errno));
 	  goto fail;
 	}
@@ -206,8 +203,7 @@ get_interface_list (int *err, char *err_str)
        * IRIX SIOCSNOOPLEN "ioctl" may fail if the capture length
        * supplied is too large, rather than just truncating it.
        */
-      pch = pcap_open_live (ifr->ifr_name, MIN_PACKET_SIZE, 0, 0,
-			    err_str);
+      pch = pcap_open_live (ifr->ifr_name, MIN_PACKET_SIZE, 0, 0, err_str);
       if (pch == NULL)
 	goto next;
       pcap_close (pch);
@@ -224,8 +220,7 @@ get_interface_list (int *err, char *err_str)
 	il = g_list_insert (il, g_strdup (ifr->ifr_name), -1);
       else
 	{
-	  il = g_list_insert (il, g_strdup (ifr->ifr_name),
-			      nonloopback_pos);
+	  il = g_list_insert (il, g_strdup (ifr->ifr_name), nonloopback_pos);
 	  /*
 	   * Insert the next non-loopback interface after this
 	   * one.

@@ -81,21 +81,21 @@ typedef unsigned int ip_t;
 /* Structures */
 
 struct resolve
-  {
-    struct resolve *next;
-    struct resolve *previous;
-    struct resolve *nextid;
-    struct resolve *previousid;
-    struct resolve *nextip;
-    struct resolve *previousip;
-    struct resolve *nexthost;
-    struct resolve *previoushost;
-    float expiretime;		/* Fucking HPUX has a problem with "double" here. */
-    char *hostname;
-    ip_t ip;
-    word id;
-    byte state;
-  };
+{
+  struct resolve *next;
+  struct resolve *previous;
+  struct resolve *nextid;
+  struct resolve *previousid;
+  struct resolve *nextip;
+  struct resolve *previousip;
+  struct resolve *nexthost;
+  struct resolve *previoushost;
+  float expiretime;		/* Fucking HPUX has a problem with "double" here. */
+  char *hostname;
+  ip_t ip;
+  word id;
+  byte state;
+};
 
 /* Non-blocking nameserver interface routines */
 
@@ -103,8 +103,7 @@ struct resolve
 #define DomainLength (MAXDNAME)
 
 #define OpcodeCount 3
-char *opcodes[OpcodeCount + 1] =
-{
+char *opcodes[OpcodeCount + 1] = {
   "standard query",
   "inverse query",
   "server status request",
@@ -112,8 +111,7 @@ char *opcodes[OpcodeCount + 1] =
 };
 
 #define ResponsecodeCount 6
-char *responsecodes[ResponsecodeCount + 1] =
-{
+char *responsecodes[ResponsecodeCount + 1] = {
   "no error",
   "format error in query",
   "server failure",
@@ -124,8 +122,7 @@ char *responsecodes[ResponsecodeCount + 1] =
 };
 
 #define ResourcetypeCount 17
-char *resourcetypes[ResourcetypeCount + 1] =
-{
+char *resourcetypes[ResourcetypeCount + 1] = {
   "unknown type",
   "A: host address",
   "NS: authoritative name server",
@@ -147,8 +144,7 @@ char *resourcetypes[ResourcetypeCount + 1] =
 };
 
 #define ClasstypeCount 5
-char *classtypes[ClasstypeCount + 1] =
-{
+char *classtypes[ClasstypeCount + 1] = {
   "unknown class",
   "IN: the Internet",
   "CS: CSNET (OBSOLETE)",
@@ -157,8 +153,7 @@ char *classtypes[ClasstypeCount + 1] =
   "unknown class"
 };
 
-char *rrtypes[] =
-{
+char *rrtypes[] = {
   "Unknown",
   "Query",
   "Answer",
@@ -167,35 +162,35 @@ char *rrtypes[] =
 };
 
 enum
-  {
-    RR_UNKNOWN,
-    RR_QUERY,
-    RR_ANSWER,
-    RR_AUTHORITY,
-    RR_RESOURCE,
-  };
+{
+  RR_UNKNOWN,
+  RR_QUERY,
+  RR_ANSWER,
+  RR_AUTHORITY,
+  RR_RESOURCE,
+};
 
 typedef struct
-  {
-    word id;			/* Packet id */
-    byte databyte_a;
-    /* rd:1           recursion desired
-     * tc:1           truncated message
-     * aa:1           authoritive answer
-     * opcode:4       purpose of message
-     * qr:1           response flag
-     */
-    byte databyte_b;
-    /* rcode:4        response code
-     * unassigned:2   unassigned bits
-     * pr:1           primary server required (non standard)
-     * ra:1           recursion available
-     */
-    word qdcount;		/* Query record count */
-    word ancount;		/* Answer record count */
-    word nscount;		/* Authority reference record count */
-    word arcount;		/* Resource reference record count */
-  }
+{
+  word id;			/* Packet id */
+  byte databyte_a;
+  /* rd:1           recursion desired
+   * tc:1           truncated message
+   * aa:1           authoritive answer
+   * opcode:4       purpose of message
+   * qr:1           response flag
+   */
+  byte databyte_b;
+  /* rcode:4        response code
+   * unassigned:2   unassigned bits
+   * pr:1           primary server required (non standard)
+   * ra:1           recursion available
+   */
+  word qdcount;			/* Query record count */
+  word ancount;			/* Answer record count */
+  word nscount;			/* Authority reference record count */
+  word arcount;			/* Resource reference record count */
+}
 packetheader;
 
 #ifndef HFIXEDSZ
@@ -235,13 +230,13 @@ packetheader;
 #endif
 
 enum
-  {
-    STATE_FINISHED,
-    STATE_FAILED,
-    STATE_PTRREQ1,
-    STATE_PTRREQ2,
-    STATE_PTRREQ3,
-  };
+{
+  STATE_FINISHED,
+  STATE_FAILED,
+  STATE_PTRREQ1,
+  STATE_PTRREQ2,
+  STATE_PTRREQ3,
+};
 
 #define Is_PTR(x) ((x->state == STATE_PTRREQ1) || (x->state == STATE_PTRREQ2) || (x->state == STATE_PTRREQ3))
 
@@ -324,7 +319,8 @@ statmalloc (size_t size)
   p = malloc (mallocsize);
   if (!p)
     {
-      fprintf (stderr, "malloc() of %u bytes failed: %s\n", size, strerror (errno));
+      fprintf (stderr, "malloc() of %u bytes failed: %s\n", size,
+	       strerror (errno));
       exit (-1);
     }
   *((dword *) p) = (dword) size;
@@ -361,10 +357,22 @@ statfree (void *p)
 	      exit (-1);
 	    }
 #ifdef CorruptCheck
-	  if ((*(byte *) ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 0) != 0xde) ||
-	      (*(byte *) ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 1) != 0xad) ||
-	      (*(byte *) ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 2) != 0xbe) ||
-	      (*(byte *) ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 3) != 0xef))
+	  if (
+	      (*(byte *)
+	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 0) !=
+	       0xde)
+	      ||
+	      (*(byte *)
+	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 1) !=
+	       0xad)
+	      ||
+	      (*(byte *)
+	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 2) !=
+	       0xbe)
+	      ||
+	      (*(byte *)
+	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 3) !=
+	       0xef))
 	    {
 	      fprintf (stderr, "ERROR: Corrupted free() buffer. (footer)\n");
 	      *(int *) 0 = 0;
@@ -443,8 +451,7 @@ strlongip (ip_t ip)
   return inet_ntoa (a);
 }
 
-ip_t
-longipstr (char *s)
+ip_t longipstr (char *s)
 {
   return inet_addr (s);
 }
@@ -481,14 +488,17 @@ dns_open ()
   resfd = socket (AF_INET, SOCK_DGRAM, 0);
   if (resfd == -1)
     {
-      fprintf (stderr, "Unable to allocate socket for nameserver communication: %s\n",
+      fprintf (stderr,
+	       "Unable to allocate socket for nameserver communication: %s\n",
 	       strerror (errno));
       exit (-1);
     }
   option = 1;
-  if (setsockopt (resfd, SOL_SOCKET, SO_BROADCAST, (char *) &option, sizeof (option)))
+  if (setsockopt
+      (resfd, SOL_SOCKET, SO_BROADCAST, (char *) &option, sizeof (option)))
     {
-      fprintf (stderr, "Unable to setsockopt() on nameserver communication socket: %s\n",
+      fprintf (stderr,
+	       "Unable to setsockopt() on nameserver communication socket: %s\n",
 	       strerror (errno));
       exit (-1);
     }
@@ -515,20 +525,17 @@ allocresolve ()
   return rp;
 }
 
-dword
-getidbash (word id)
+dword getidbash (word id)
 {
   return (dword) BashModulo (id);
 }
 
-dword
-getipbash (ip_t ip)
+dword getipbash (ip_t ip)
 {
   return (dword) BashModulo (ip);
 }
 
-dword
-gethostbash (char *host)
+dword gethostbash (char *host)
 {
   dword bashvalue = 0;
   for (; *host; host++)
@@ -601,9 +608,12 @@ linkresolvehost (struct resolve *addrp)
   rp = hostbash[bashnum];
   if (rp)
     {
-      while ((rp->nexthost) && (strcasecmp (addrp->hostname, rp->nexthost->hostname) < 0))
+      while ((rp->nexthost)
+	     && (strcasecmp (addrp->hostname, rp->nexthost->hostname) < 0))
 	rp = rp->nexthost;
-      while ((rp->previoushost) && (strcasecmp (addrp->hostname, rp->previoushost->hostname) > 0))
+      while ((rp->previoushost)
+	     && (strcasecmp (addrp->hostname, rp->previoushost->hostname) >
+		 0))
 	rp = rp->previoushost;
       if (strcasecmp (addrp->hostname, rp->hostname) < 0)
 	{
@@ -830,9 +840,11 @@ findhost (char *hostname)
   rp = hostbash[bashnum];
   if (rp)
     {
-      while ((rp->nexthost) && (strcasecmp (hostname, rp->nexthost->hostname) >= 0))
+      while ((rp->nexthost)
+	     && (strcasecmp (hostname, rp->nexthost->hostname) >= 0))
 	rp = rp->nexthost;
-      while ((rp->previoushost) && (strcasecmp (hostname, rp->nexthost->hostname) <= 0))
+      while ((rp->previoushost)
+	     && (strcasecmp (hostname, rp->nexthost->hostname) <= 0))
 	rp = rp->previoushost;
       if (strcasecmp (hostname, rp->hostname))
 	return NULL;
@@ -882,7 +894,9 @@ dorequest (char *s, int type, word id)
   packetheader *hp;
   int r, i;
   int buf[(MaxPacketsize / sizeof (int)) + 1];
-  r = res_mkquery (QUERY, s, C_IN, type, NULL, 0, NULL, (u_char *) buf, MaxPacketsize);
+  r =
+    res_mkquery (QUERY, s, C_IN, type, NULL, 0, NULL, (u_char *) buf,
+		 MaxPacketsize);
   if (r == -1)
     {
       restell ("Resolver error: Query too large.");
@@ -903,7 +917,8 @@ resendrequest (struct resolve *rp, int type)
       dorequest (rp->hostname, type, rp->id);
       if (debug)
 	{
-	  sprintf (tempstring, "Resolver: Sent reverse authentication request for \"%s\".",
+	  sprintf (tempstring,
+		   "Resolver: Sent reverse authentication request for \"%s\".",
 		   rp->hostname);
 	  restell (tempstring);
 	}
@@ -913,12 +928,12 @@ resendrequest (struct resolve *rp, int type)
       sprintf (tempstring, "%u.%u.%u.%u.in-addr.arpa",
 	       ((byte *) & rp->ip)[3],
 	       ((byte *) & rp->ip)[2],
-	       ((byte *) & rp->ip)[1],
-	       ((byte *) & rp->ip)[0]);
+	       ((byte *) & rp->ip)[1], ((byte *) & rp->ip)[0]);
       dorequest (tempstring, type, rp->id);
       if (debug)
 	{
-	  sprintf (tempstring, "Resolver: Sent domain lookup request for \"%s\".",
+	  sprintf (tempstring,
+		   "Resolver: Sent domain lookup request for \"%s\".",
 		   strlongip (rp->ip));
 	  restell (tempstring);
 	}
@@ -930,7 +945,9 @@ sendrequest (struct resolve *rp, int type)
 {
   do
     {
-      idseed = (((idseed + idseed) | (long) time (NULL)) + idseed - 0x54bad4a) ^ aseed;
+      idseed =
+	(((idseed + idseed) | (long) time (NULL)) + idseed -
+	 0x54bad4a) ^ aseed;
       aseed ^= idseed;
       rp->id = (word) idseed;
     }
@@ -1006,7 +1023,8 @@ parserespacket (byte * s, int l)
     }
   if (!getheader_qr (hp))
     {				/* Not a reply */
-      restell ("Resolver error: Query packet received on nameserver communication socket.");
+      restell
+	("Resolver error: Query packet received on nameserver communication socket.");
       return;
     }
   if (getheader_opcode (hp))
@@ -1023,7 +1041,8 @@ parserespacket (byte * s, int l)
 	{
 	  if (debug)
 	    {
-	      sprintf (tempstring, "Resolver: Received nameserver reply. (qd:%u an:%u ns:%u ar:%u)",
+	      sprintf (tempstring,
+		       "Resolver: Received nameserver reply. (qd:%u an:%u ns:%u ar:%u)",
 		       hp->qdcount, hp->ancount, hp->nscount, hp->arcount);
 	      restell (tempstring);
 	    }
@@ -1045,15 +1064,15 @@ parserespacket (byte * s, int l)
 	      sprintf (stackstring, "%u.%u.%u.%u.in-addr.arpa",
 		       ((byte *) & rp->ip)[3],
 		       ((byte *) & rp->ip)[2],
-		       ((byte *) & rp->ip)[1],
-		       ((byte *) & rp->ip)[0]);
+		       ((byte *) & rp->ip)[1], ((byte *) & rp->ip)[0]);
 	      break;
 	    }
 	  *namestring = '\0';
 	  r = dn_expand (s, s + l, c, namestring, MAXDNAME);
 	  if (r == -1)
 	    {
-	      restell ("Resolver error: dn_expand() failed while expanding query domain.");
+	      restell
+		("Resolver error: dn_expand() failed while expanding query domain.");
 	      return;
 	    }
 	  namestring[strlen (stackstring)] = '\0';
@@ -1061,7 +1080,8 @@ parserespacket (byte * s, int l)
 	    {
 	      if (debug)
 		{
-		  sprintf (tempstring, "Resolver: Unknown query packet dropped. (\"%s\" does not match \"%s\")",
+		  sprintf (tempstring,
+			   "Resolver: Unknown query packet dropped. (\"%s\" does not match \"%s\")",
 			   stackstring, namestring);
 		  restell (tempstring);
 		}
@@ -1069,7 +1089,8 @@ parserespacket (byte * s, int l)
 	    }
 	  if (debug)
 	    {
-	      sprintf (tempstring, "Resolver: Queried domain name: \"%s\"", namestring);
+	      sprintf (tempstring, "Resolver: Queried domain name: \"%s\"",
+		       namestring);
 	      restell (tempstring);
 	    }
 	  c += r;
@@ -1082,8 +1103,11 @@ parserespacket (byte * s, int l)
 	  qclass = sucknetword (c);
 	  if (qclass != C_IN)
 	    {
-	      sprintf (tempstring, "Resolver error: Received unsupported query class: %u (%s)",
-		       qclass, qclass < ClasstypeCount ? classtypes[qclass] :
+	      sprintf (tempstring,
+		       "Resolver error: Received unsupported query class: %u (%s)",
+		       qclass,
+		       qclass <
+		       ClasstypeCount ? classtypes[qclass] :
 		       classtypes[ClasstypeCount]);
 	      restell (tempstring);
 	    }
@@ -1093,28 +1117,34 @@ parserespacket (byte * s, int l)
 	      if (!Is_PTR (rp))
 		if (debug)
 		  {
-		    restell ("Resolver warning: Ignoring response with unexpected query type \"PTR\".");
+		    restell
+		      ("Resolver warning: Ignoring response with unexpected query type \"PTR\".");
 		    return;
 		  }
 	      break;
 	    default:
-	      sprintf (tempstring, "Resolver error: Received unimplemented query type: %u (%s)",
-		       qdatatype, qdatatype < ResourcetypeCount ?
-	       resourcetypes[qdatatype] : resourcetypes[ResourcetypeCount]);
+	      sprintf (tempstring,
+		       "Resolver error: Received unimplemented query type: %u (%s)",
+		       qdatatype,
+		       qdatatype <
+		       ResourcetypeCount ? resourcetypes[qdatatype] :
+		       resourcetypes[ResourcetypeCount]);
 	      restell (tempstring);
 	    }
 	  for (rr = hp->ancount + hp->nscount + hp->arcount; rr; rr--)
 	    {
 	      if (c > eob)
 		{
-		  restell ("Resolver error: Packet does not contain all specified resouce records.");
+		  restell
+		    ("Resolver error: Packet does not contain all specified resouce records.");
 		  return;
 		}
 	      *namestring = '\0';
 	      r = dn_expand (s, s + l, c, namestring, MAXDNAME);
 	      if (r == -1)
 		{
-		  restell ("Resolver error: dn_expand() failed while expanding answer domain.");
+		  restell
+		    ("Resolver error: dn_expand() failed while expanding answer domain.");
 		  return;
 		}
 	      namestring[strlen (stackstring)] = '\0';
@@ -1124,7 +1154,9 @@ parserespacket (byte * s, int l)
 		usefulanswer = 1;
 	      if (debug)
 		{
-		  sprintf (tempstring, "Resolver: answered domain query: \"%s\"", namestring);
+		  sprintf (tempstring,
+			   "Resolver: answered domain query: \"%s\"",
+			   namestring);
 		  restell (tempstring);
 		}
 	      c += r;
@@ -1139,13 +1171,18 @@ parserespacket (byte * s, int l)
 	      rdatalength = sucknetword (c);
 	      if (class != qclass)
 		{
-		  sprintf (tempstring, "query class: %u (%s)", qclass, qclass < ClasstypeCount ?
-			   classtypes[qclass] : classtypes[ClasstypeCount]);
+		  sprintf (tempstring, "query class: %u (%s)", qclass,
+			   qclass <
+			   ClasstypeCount ? classtypes[qclass] :
+			   classtypes[ClasstypeCount]);
 		  restell (tempstring);
-		  sprintf (tempstring, "rr class: %u (%s)", class, class < ClasstypeCount ?
-			   classtypes[class] : classtypes[ClasstypeCount]);
+		  sprintf (tempstring, "rr class: %u (%s)", class,
+			   class <
+			   ClasstypeCount ? classtypes[class] :
+			   classtypes[ClasstypeCount]);
 		  restell (tempstring);
-		  restell ("Resolver error: Answered class does not match queried class.");
+		  restell
+		    ("Resolver error: Answered class does not match queried class.");
 		  return;
 		}
 	      if (!rdatalength)
@@ -1155,14 +1192,16 @@ parserespacket (byte * s, int l)
 		}
 	      if (c + rdatalength > eob)
 		{
-		  restell ("Resolver error: Specified rdata length exceeds packet size.");
+		  restell
+		    ("Resolver error: Specified rdata length exceeds packet size.");
 		  return;
 		}
 	      if (datatype == qdatatype)
 		{
 		  if (debug)
 		    {
-		      sprintf (tempstring, "Resolver: TTL: %s", strtdiff (sendstring, ttl));
+		      sprintf (tempstring, "Resolver: TTL: %s",
+			       strtdiff (sendstring, ttl));
 		      restell (tempstring);
 		    }
 		  if (usefulanswer)
@@ -1171,14 +1210,16 @@ parserespacket (byte * s, int l)
 		      case T_A:
 			if (rdatalength != 4)
 			  {
-			    sprintf (tempstring, "Resolver error: Unsupported rdata format for \"A\" type. (%u bytes)",
+			    sprintf (tempstring,
+				     "Resolver error: Unsupported rdata format for \"A\" type. (%u bytes)",
 				     rdatalength);
 			    restell (tempstring);
 			    return;
 			  }
 			if (memcmp (&rp->ip, (ip_t *) c, sizeof (ip_t)))
 			  {
-			    sprintf (tempstring, "Resolver: Reverse authentication failed: %s != ",
+			    sprintf (tempstring,
+				     "Resolver: Reverse authentication failed: %s != ",
 				     strlongip (rp->ip));
 			    memcpy (&alignedip, (ip_t *) c, sizeof (ip_t));
 			    strcat (tempstring, strlongip (alignedip));
@@ -1188,8 +1229,10 @@ parserespacket (byte * s, int l)
 			  }
 			else
 			  {
-			    sprintf (tempstring, "Resolver: Reverse authentication complete: %s == \"%s\".",
-				 strlongip (rp->ip), nonull (rp->hostname));
+			    sprintf (tempstring,
+				     "Resolver: Reverse authentication complete: %s == \"%s\".",
+				     strlongip (rp->ip),
+				     nonull (rp->hostname));
 			    restell (tempstring);
 			    res_reversesuccess++;
 			    passrp (rp, ttl);
@@ -1201,12 +1244,15 @@ parserespacket (byte * s, int l)
 			r = dn_expand (s, s + l, c, namestring, MAXDNAME);
 			if (r == -1)
 			  {
-			    restell ("Resolver error: dn_expand() failed while expanding domain in rdata.");
+			    restell
+			      ("Resolver error: dn_expand() failed while expanding domain in rdata.");
 			    return;
 			  }
 			if (debug)
 			  {
-			    sprintf (tempstring, "Resolver: Answered domain: \"%s\"", namestring);
+			    sprintf (tempstring,
+				     "Resolver: Answered domain: \"%s\"",
+				     namestring);
 			    restell (tempstring);
 			  }
 			if (r > HostnameLength)
@@ -1217,10 +1263,12 @@ parserespacket (byte * s, int l)
 			  }
 			if (!rp->hostname)
 			  {
-			    rp->hostname = (char *) statmalloc (strlen (namestring) + 1);
+			    rp->hostname =
+			      (char *) statmalloc (strlen (namestring) + 1);
 			    if (!rp->hostname)
 			      {
-				fprintf (stderr, "statmalloc() error: %s\n", strerror (errno));
+				fprintf (stderr, "statmalloc() error: %s\n",
+					 strerror (errno));
 				exit (-1);
 			      }
 			    strcpy (rp->hostname, namestring);
@@ -1230,9 +1278,12 @@ parserespacket (byte * s, int l)
 			  }
 			break;
 		      default:
-			sprintf (tempstring, "Resolver error: Received unimplemented data type: %u (%s)",
-				 datatype, datatype < ResourcetypeCount ?
-				 resourcetypes[datatype] : resourcetypes[ResourcetypeCount]);
+			sprintf (tempstring,
+				 "Resolver error: Received unimplemented data type: %u (%s)",
+				 datatype,
+				 datatype <
+				 ResourcetypeCount ? resourcetypes[datatype] :
+				 resourcetypes[ResourcetypeCount]);
 			restell (tempstring);
 		      }
 		}
@@ -1240,9 +1291,12 @@ parserespacket (byte * s, int l)
 		{
 		  if (debug)
 		    {
-		      sprintf (tempstring, "Resolver: Ignoring resource type %u. (%s)",
-			       datatype, datatype < ResourcetypeCount ?
-			       resourcetypes[datatype] : resourcetypes[ResourcetypeCount]);
+		      sprintf (tempstring,
+			       "Resolver: Ignoring resource type %u. (%s)",
+			       datatype,
+			       datatype <
+			       ResourcetypeCount ? resourcetypes[datatype] :
+			       resourcetypes[ResourcetypeCount]);
 		      restell (tempstring);
 		    }
 		}
@@ -1260,8 +1314,10 @@ parserespacket (byte * s, int l)
       break;
     default:
       sprintf (tempstring, "Resolver: Received error response %u. (%s)",
-	    getheader_rcode (hp), getheader_rcode (hp) < ResponsecodeCount ?
-	       responsecodes[getheader_rcode (hp)] : responsecodes[ResponsecodeCount]);
+	       getheader_rcode (hp),
+	       getheader_rcode (hp) <
+	       ResponsecodeCount ? responsecodes[getheader_rcode (hp)] :
+	       responsecodes[ResponsecodeCount]);
       restell (tempstring);
       res_nserror++;
     }
@@ -1271,15 +1327,17 @@ void
 dns_ack ()
 {
   int r, i;
-  r = recvfrom (resfd, (byte *) resrecvbuf, MaxPacketsize, 0, (struct sockaddr *) &from, &fromlen);
+  r =
+    recvfrom (resfd, (byte *) resrecvbuf, MaxPacketsize, 0,
+	      (struct sockaddr *) &from, &fromlen);
   if (r > 0)
     {
       /* Check to see if this server is actually one we sent to */
       if (from.sin_addr.s_addr == localhost)
 	{
 	  for (i = 0; i < _res.nscount; i++)
-	    if ((_res.nsaddr_list[i].sin_addr.s_addr == from.sin_addr.s_addr) ||
-		(!_res.nsaddr_list[i].sin_addr.s_addr))		/* 0.0.0.0 replies as 127.0.0.1 */
+	    if ((_res.nsaddr_list[i].sin_addr.s_addr == from.sin_addr.s_addr)
+		|| (!_res.nsaddr_list[i].sin_addr.s_addr))	/* 0.0.0.0 replies as 127.0.0.1 */
 	      break;
 	}
       else
@@ -1288,7 +1346,8 @@ dns_ack ()
 	    break;
       if (i == _res.nscount)
 	{
-	  sprintf (tempstring, "Resolver error: Received reply from unknown source: %s",
+	  sprintf (tempstring,
+		   "Resolver error: Received reply from unknown source: %s",
 		   strlongip (from.sin_addr.s_addr));
 	  restell (tempstring);
 	}
@@ -1322,7 +1381,8 @@ void
 dns_events (double *sinterval)
 {
   struct resolve *rp, *nextrp;
-  for (rp = expireresolves; (rp) && (sweeptime >= rp->expiretime); rp = nextrp)
+  for (rp = expireresolves; (rp) && (sweeptime >= rp->expiretime);
+       rp = nextrp)
     {
       nextrp = rp->next;
       switch (rp->state)
@@ -1331,8 +1391,10 @@ dns_events (double *sinterval)
 	case STATE_FAILED:	/* Fake TTL has expired */
 	  if (debug)
 	    {
-	      sprintf (tempstring, "Resolver: Cache record for \"%s\" (%s) has expired. (state: %u)  Marked for expire at: %g, time: %g.",
-		       nonull (rp->hostname), strlongip (rp->ip), rp->state, rp->expiretime, sweeptime);
+	      sprintf (tempstring,
+		       "Resolver: Cache record for \"%s\" (%s) has expired. (state: %u)  Marked for expire at: %g, time: %g.",
+		       nonull (rp->hostname), strlongip (rp->ip), rp->state,
+		       rp->expiretime, sweeptime);
 	      restell (tempstring);
 	    }
 	  unlinkresolve (rp);
@@ -1378,7 +1440,8 @@ dns_lookup2 (ip_t ip)
 	    {
 	      if (debug)
 		{
-		  sprintf (tempstring, "Resolver: Used cached record: %s == \"%s\".\n",
+		  sprintf (tempstring,
+			   "Resolver: Used cached record: %s == \"%s\".\n",
 			   strlongip (ip), rp->hostname);
 		  restell (tempstring);
 		}
@@ -1388,7 +1451,8 @@ dns_lookup2 (ip_t ip)
 	    {
 	      if (debug)
 		{
-		  sprintf (tempstring, "Resolver: Used failed record: %s == ???\n",
+		  sprintf (tempstring,
+			   "Resolver: Used failed record: %s == ???\n",
 			   strlongip (ip));
 		  restell (tempstring);
 		}

@@ -32,7 +32,6 @@
 gboolean numeric = 0;
 gboolean dns = 1;
 gboolean diagram_only = 0;
-gboolean fix_overlap = 0;
 gboolean nofade = 0;
 gchar *interface;
 guint32 refresh_period = 800;
@@ -40,8 +39,8 @@ gint diagram_timeout;
 gchar *filter = "";
 
 extern gchar *node_color, *link_color, *text_color;
-extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
-  link_width_multiplier;
+extern double node_timeout_time, link_timeout_time, averaging_time,
+  node_radius_multiplier, link_width_multiplier;
 extern apemode_t mode;
 
 
@@ -52,41 +51,27 @@ main (int argc, char *argv[])
   GtkWidget *hscale;
   gchar *mode_string = NULL;
 
-  struct poptOption optionsTable[] =
-  {
+  struct poptOption optionsTable[] = {
     {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
-     _ ("don't convert addresses to names"), NULL
-    },
+     _("don't convert addresses to names"), NULL},
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
-     _ ("don't display any node text identification"), NULL
-    },
+     _("don't display any node text identification"), NULL},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     _ ("mode of operation"), _ ("<ethernet|ip|tcp|udp>")
-    },
+     _("mode of operation"), _("<ethernet|ip|tcp|udp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
-     _ ("set interface to listen to"), _ ("<interface name>")
-    },
+     _("set interface to listen to"), _("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &filter, 0,
-     _ ("set capture filter"), _ ("<capture filter>")
-    },
-    {"no-overlap", 'o', POPT_ARG_NONE, &fix_overlap, 0,
-     _ ("makes diagram more readable when it is crowded"), NULL
-    },
+     _("set capture filter"), _("<capture filter>")},
     {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
-     _ ("do not fade old links"), NULL
-    },
+     _("do not fade old links"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
-     _ ("set the node color"), _ ("color")
-    },
+     _("set the node color"), _("color")},
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
-     _ ("set the link color"), _ ("color")
-    },
+     _("set the link color"), _("color")},
     {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
-     _ ("set the text color"), _ ("color")
-    },
+     _("set the text color"), _("color")},
 
-    POPT_AUTOHELP
-    {NULL, 0, 0, NULL, 0}
+    POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
 
 #ifdef ENABLE_NLS
@@ -95,7 +80,8 @@ main (int argc, char *argv[])
 #endif
 
 
-  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
+  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable,
+			      0, NULL);
 
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
@@ -117,7 +103,8 @@ main (int argc, char *argv[])
       else if (strstr (mode_string, "udp"))
 	mode = UDP;
       else
-	g_warning (_ ("Unrecognized mode. Do etherape --help for a list of modes"));
+	g_warning (_
+		   ("Unrecognized mode. Do etherape --help for a list of modes"));
     }
 
   /* Only ip traffic makes sense when used as interape */
@@ -132,6 +119,7 @@ main (int argc, char *argv[])
     case DEFAULT:
     case UDP:
     case ETHERNET:
+      break;
     }
 
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
@@ -149,28 +137,35 @@ main (int argc, char *argv[])
 
   hscale = lookup_widget (app1, "node_radius_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-		      "value_changed", GTK_SIGNAL_FUNC (on_node_radius_slider_adjustment_changed),
-		      NULL);
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_node_radius_slider_adjustment_changed), NULL);
   hscale = lookup_widget (app1, "link_width_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-  "value_changed", GTK_SIGNAL_FUNC (on_link_width_slider_adjustment_changed),
-		      NULL);
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_link_width_slider_adjustment_changed), NULL);
   hscale = lookup_widget (app1, "averaging_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-    "value_changed", GTK_SIGNAL_FUNC (on_averaging_spin_adjustment_changed),
-		      NULL);
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_averaging_spin_adjustment_changed), NULL);
   hscale = lookup_widget (app1, "refresh_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-      "value_changed", GTK_SIGNAL_FUNC (on_refresh_spin_adjustment_changed),
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_refresh_spin_adjustment_changed),
 		      lookup_widget (GTK_WIDGET (app1), "canvas1"));
   hscale = lookup_widget (app1, "node_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-      "value_changed", GTK_SIGNAL_FUNC (on_node_to_spin_adjustment_changed),
-		      NULL);
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_node_to_spin_adjustment_changed), NULL);
   hscale = lookup_widget (app1, "link_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-      "value_changed", GTK_SIGNAL_FUNC (on_link_to_spin_adjustment_changed),
-		      NULL);
+		      "value_changed",
+		      GTK_SIGNAL_FUNC
+		      (on_link_to_spin_adjustment_changed), NULL);
 
   gtk_widget_show (app1);
 
@@ -182,7 +177,8 @@ main (int argc, char *argv[])
   /* TODO: Back up if CPU can't handle it */
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
 				     (GtkFunction) update_diagram,
-			      lookup_widget (GTK_WIDGET (app1), "canvas1"));
+				     lookup_widget (GTK_WIDGET (app1),
+						    "canvas1"));
 
   /* MAIN LOOP */
   gtk_main ();

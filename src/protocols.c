@@ -27,9 +27,56 @@ gchar *
 get_eth_type (const guint8 * packet)
 {
   etype_t etype;
+  ethhdrtype_t ethhdr_type;
   gchar *prot;
 
   etype = pntohs (&packet[12]);
+
+
+  if (etype <= IEEE_802_3_MAX_LEN)
+    {
+
+      /* Is there an 802.2 layer? I can tell by looking at the first 2
+       *        bytes after the 802.3 header. If they are 0xffff, then what
+       *        follows the 802.3 header is an IPX payload, meaning no 802.2.
+       *        (IPX/SPX is they only thing that can be contained inside a
+       *        straight 802.3 packet). A non-0xffff value means that there's an
+       *        802.2 layer inside the 802.3 layer */
+      if (packet[14] == 0xff && packet[15] == 0xff)
+	{
+	  ethhdr_type = ETHERNET_802_3;
+	}
+      else
+	{
+	  ethhdr_type = ETHERNET_802_2;
+	}
+
+      /* Oh, yuck.  Cisco ISL frames require special interpretation of the
+       *        destination address field; fortunately, they can be recognized by
+       *        checking the first 5 octets of the destination address, which are
+       *        01-00-0C-00-00 for ISL frames. */
+      if (packet[0] == 0x01 && packet[1] == 0x00 && packet[2] == 0x0C
+	  && packet[3] == 0x00 && packet[4] == 0x00)
+	/* TODO Analyze ISL frames */
+	prot = g_strdup ("ISL");
+      return prot;
+    }
+
+  if (ethhdr_type == ETHERNET_802_3)
+    {
+      prot = g_strdup ("802.3");
+      return prot;
+    }
+
+  if (ethhdr_type == ETHERNET_802_2)
+    {
+      prot = g_strdup ("802.2");
+      return prot;
+    }
+
+
+
+
 
   /* TODO We are just considering EthernetII here
    * I guess I'll have to do the Right Thing some day. :-) */
@@ -101,6 +148,7 @@ get_packet_prot (const guint8 * packet)
     case IP:
     case TCP:
     default:
+      break;
     }
 
   return prot;

@@ -167,8 +167,7 @@ ether_to_str (const guint8 * ad)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -197,8 +196,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -225,8 +223,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }
@@ -244,7 +241,8 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 
       fqdn = FALSE;
 
-      if (!node->ip_address && packet && (packet[12] == 0x08) && (packet[13] == 0x00))
+      if (!node->ip_address && packet && (packet[12] == 0x08)
+	  && (packet[13] == 0x00))
 	{
 	  const guint8 *ip_address;
 	  /* We do not know whether this was a source or destination
@@ -262,7 +260,8 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	{
 	  guint32 net_ip_address;
 	  net_ip_address = htonl (node->ip_address);
-	  node->numeric_ip = g_string_new (ip_to_str ((guint8 *) (&net_ip_address)));
+	  node->numeric_ip =
+	    g_string_new (ip_to_str ((guint8 *) (&net_ip_address)));
 	}
       if (numeric)
 	{
@@ -278,14 +277,14 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	   * the host is not found in /etc/ethers */
 	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
 	      (node->ip_address ||
-	       (packet && (packet[12] == 0x08) && (packet[13] == 0x00))
-	      )
-	    )
+	       (packet && (packet[12] == 0x08) && (packet[13] == 0x00))))
 	    {
 	      if (!node->name)
-		node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
+		node->name =
+		  g_string_new (dns_lookup (node->ip_address, fqdn));
 	      else
-		g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
+		g_string_assign (node->name,
+				 dns_lookup (node->ip_address, fqdn));
 	    }
 	  else
 	    node->name = g_string_new (get_ether_name (node_id));
@@ -329,7 +328,9 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	  node->numeric_name = g_string_append_c (node->numeric_name, ':');
 	  node->numeric_name = g_string_append (node->numeric_name,
 						g_strdup_printf ("%d",
-					       *(guint16 *) (node_id + 4)));
+								 *(guint16
+								   *) (node_id
+								       + 4)));
 	}
 
       if (numeric)
@@ -340,7 +341,9 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	      node->name = g_string_append_c (node->name, ':');
 	      node->name = g_string_append (node->name,
 					    g_strdup_printf ("%d",
-					       *(guint16 *) (node_id + 4)));
+							     *(guint16
+							       *) (node_id +
+								   4)));
 	    }
 	}
       else
@@ -350,21 +353,24 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	      node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
 	      node->name = g_string_append_c (node->name, ':');
 	      node->name = g_string_append (node->name,
-				 get_tcp_port (*(guint16 *) (node_id + 4)));
+					    get_tcp_port (*(guint16 *)
+							  (node_id + 4)));
 	    }
 	  else
 	    {
-	      g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
+	      g_string_assign (node->name,
+			       dns_lookup (node->ip_address, fqdn));
 	      node->name = g_string_append_c (node->name, ':');
 	      node->name = g_string_append (node->name,
-				 get_tcp_port (*(guint16 *) (node_id + 4)));
+					    get_tcp_port (*(guint16 *)
+							  (node_id + 4)));
 	    }
 	}
       break;
 
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Reached default in fill_names"));
+      g_error (_("Reached default in fill_names"));
     }
 }				/* fill_names */
 
@@ -377,7 +383,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node_t *node;
   gchar *na;
 
-  na = g_strdup (_ ("n/a"));
+  na = g_strdup (_("n/a"));
 
   node = g_malloc (sizeof (node_t));
 
@@ -398,9 +404,8 @@ create_node (const guint8 * packet, const guint8 * node_id)
 
   g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Creating node: %s. Number of nodes %d"),
-	 node->name->str,
-	 g_tree_nnodes (nodes));
+	 _("Creating node: %s. Number of nodes %d"),
+	 node->name->str, g_tree_nnodes (nodes));
 
   return node;
 }				/* create_node */
@@ -428,12 +433,12 @@ create_link (const guint8 * packet, const guint8 * link_id)
 #if 0
   if (interape)
     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _ ("Creating link: %s-%s. Number of links %d"),
+	   _("Creating link: %s-%s. Number of links %d"),
 	   ip_to_str (packet + 26), ip_to_str (packet + 30),
 	   g_tree_nnodes (links));
   else
     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _ ("Creating link: %s-%s. Number of links %d"),
+	   _("Creating link: %s-%s. Number of links %d"),
 	   get_ether_name (packet + 6), get_ether_name (packet),
 	   g_tree_nnodes (links));
 #endif
@@ -489,7 +494,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
   if (!packet)
     {
-      g_warning (_ ("Null packet in check_packet"));
+      g_warning (_("Null packet in check_packet"));
       return NULL;
     }
 
@@ -543,14 +548,14 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	    link->average = 0;
 	  /* We remove protocol aggregate information */
 	  protocol_item = g_list_find_custom (link->protocols,
-					      packet->prot,
-					      protocol_compare);
+					      packet->prot, protocol_compare);
 	  protocol_info = protocol_item->data;
 	  protocol_info->accumulated -= packet->size;
 	  if (!protocol_info->accumulated)
 	    {
 	      g_free (protocol_info->name);
-	      link->protocols = g_list_remove_link (link->protocols, protocol_item);
+	      link->protocols =
+		g_list_remove_link (link->protocols, protocol_item);
 	      g_list_free (protocol_item);
 	    }
 	}
@@ -579,8 +584,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 }				/* check_packet */
 
 /* Comparison function to sort protocols by their accumulated traffic */
-gint
-prot_freq_compare (gconstpointer a, gconstpointer b)
+gint prot_freq_compare (gconstpointer a, gconstpointer b)
 {
   protocol_t *prot_a, *prot_b;
 
@@ -644,8 +648,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
       else
 	{
-	  link->average = 8 *
-	    link->accumulated / usecs_from_oldest;
+	  link->average = 8 * link->accumulated / usecs_from_oldest;
 	  /* We look for the most used protocol for this link */
 	  if (link->main_prot)
 	    g_free (link->main_prot);
@@ -703,7 +706,7 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
       break;
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Reached default in get_node_id"));
+      g_error (_("Reached default in get_node_id"));
     }
 
   return node_id;
@@ -739,7 +742,7 @@ get_link_id (const guint8 * packet)
       g_memmove (link_id + 10, &port, 2);
       break;
     default:
-      g_error (_ ("Unsopported ape mode in get_link_id"));
+      g_error (_("Unsopported ape mode in get_link_id"));
     }
   return link_id;
 }				/* get_link_id */
@@ -749,7 +752,8 @@ get_link_id (const guint8 * packet)
  * network. If the node the packet refers to is unknown, we
  * create it. */
 void
-update_node (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * node_id)
+update_node (const guint8 * packet, struct pcap_pkthdr phdr,
+	     const guint8 * node_id)
 {
   node_t *node;
   packet_t *packet_info;
@@ -782,7 +786,8 @@ update_node (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * node
 
 /* Save as above plus we update protocol aggregate information */
 void
-update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link_id)
+update_link (const guint8 * packet, struct pcap_pkthdr phdr,
+	     const guint8 * link_id)
 {
   link_t *link;
   packet_t *packet_info;
@@ -848,9 +853,7 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link
  * the network interface. It then updates traffic information
  * for the appropriate nodes and links */
 void
-packet_read (pcap_t * pch,
-	     gint source,
-	     GdkInputCondition condition)
+packet_read (pcap_t * pch, gint source, GdkInputCondition condition)
 {
   struct pcap_pkthdr phdr;
   guint8 *src_id, *dst_id, *link_id, *pcap_packet;
@@ -912,16 +915,17 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  g_error (_ ("Error getting device: %s"), ebuf);
+	  g_error (_("Error getting device: %s"), ebuf);
 	  exit (1);
 	}
     }
 
-  if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
+  if (!
+      ((pcap_t *) pch =
+       pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
     {
-      g_error (_ ("Error opening %s : %s - perhaps you need to be root?"),
-	       device,
-	       ebuf);
+      g_error (_("Error opening %s : %s - perhaps you need to be root?"),
+	       device, ebuf);
     }
 
   if (filter)
@@ -930,28 +934,27 @@ init_capture (void)
       /* A capture filter was specified; set it up. */
       if (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0)
 	{
-	  g_warning (_ ("Can't use filter:  Couldn't obtain netmask info (%s)."), ebuf);
+	  g_warning (_
+		     ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+ebuf);
 	  ok = 0;
 	}
       if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
 	{
-	  g_warning (_ ("Unable to parse filter string (%s)."),
+	  g_warning (_("Unable to parse filter string (%s)."),
 		     pcap_geterr (pch));
 	  ok = 0;
 	}
       if (ok && (pcap_setfilter (pch, &fp) < 0))
 	{
-	  g_warning (_ ("Can't install filter (%s)."),
-		     pcap_geterr (pch));
+	  g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
 	}
     }
 
   pcap_fd = pcap_fileno (pch);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
   gdk_input_add (pcap_fd,
-		 GDK_INPUT_READ,
-		 (GdkInputFunction) packet_read,
-		 pch);
+		 GDK_INPUT_READ, (GdkInputFunction) packet_read, pch);
 
   linktype = pcap_datalink (pch);
 
@@ -969,14 +972,14 @@ init_capture (void)
 	mode = IP;
       if (mode == ETHERNET)
 	{
-	  g_message (_ ("Mode not available in this device"));
+	  g_message (_("Mode not available in this device"));
 	  /* TODO manage proper exit codes */
 	  exit (1);
 	}
       l3_offset = 0;
       break;
     default:
-      g_error (_ ("Link type not yet supported"));
+      g_error (_("Link type not yet supported"));
     }
 
 
@@ -995,7 +998,7 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      g_error (_ ("Ape mode not yet supported"));
+      g_error (_("Ape mode not yet supported"));
     }
 
   if (!numeric)
@@ -1003,9 +1006,7 @@ init_capture (void)
       dns_open ();
       dns_fd = dns_waitfd ();
       gdk_input_add (dns_fd,
-		     GDK_INPUT_READ,
-		     (GdkInputFunction) dns_ready,
-		     NULL);
+		     GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
     }
 
 

@@ -87,11 +87,11 @@
 /* hash table used for host and port lookup */
 
 typedef struct hashname
-  {
-    u_int addr;
-    u_char name[MAXNAMELEN];
-    struct hashname *next;
-  }
+{
+  u_int addr;
+  u_char name[MAXNAMELEN];
+  struct hashname *next;
+}
 hashname_t;
 
 /* hash table used for IPX network lookup */
@@ -101,38 +101,38 @@ typedef struct hashname hashipxnet_t;
 /* hash tables used for ethernet and manufacturer lookup */
 
 typedef struct hashmanuf
-  {
-    u_char addr[3];
-    char name[MAXMANUFLEN];
-    struct hashmanuf *next;
-  }
+{
+  u_char addr[3];
+  char name[MAXMANUFLEN];
+  struct hashmanuf *next;
+}
 hashmanuf_t;
 
 typedef struct hashether
-  {
-    u_char addr[6];
-    char name[MAXNAMELEN];
-    gboolean is_name_from_file;
-    struct hashether *next;
-  }
+{
+  u_char addr[6];
+  char name[MAXNAMELEN];
+  gboolean is_name_from_file;
+  struct hashether *next;
+}
 hashether_t;
 
 /* internal ethernet type */
 
 typedef struct _ether
-  {
-    u_char addr[6];
-    char name[MAXNAMELEN];
-  }
+{
+  u_char addr[6];
+  char name[MAXNAMELEN];
+}
 ether_t;
 
 /* internal ipxnet type */
 
 typedef struct _ipxnet
-  {
-    u_int addr;
-    char name[MAXNAMELEN];
-  }
+{
+  u_int addr;
+  char name[MAXNAMELEN];
+}
 ipxnet_t;
 
 #if 0				/* JTC */
@@ -454,9 +454,12 @@ parse_ether_line (char *line, ether_t * eth, int six_bytes)
     {
       if (sscanf (cp, "%x:%x:%x:%x:%x:%x", &a0, &a1, &a2, &a3, &a4, &a5) != 6)
 	{
-	  if (sscanf (cp, "%x-%x-%x-%x-%x-%x", &a0, &a1, &a2, &a3, &a4, &a5) != 6)
+	  if (sscanf (cp, "%x-%x-%x-%x-%x-%x", &a0, &a1, &a2, &a3, &a4, &a5)
+	      != 6)
 	    {
-	      if (sscanf (cp, "%x.%x.%x.%x.%x.%x", &a0, &a1, &a2, &a3, &a4, &a5) != 6)
+	      if (sscanf
+		  (cp, "%x.%x.%x.%x.%x.%x", &a0, &a1, &a2, &a3, &a4,
+		   &a5) != 6)
 		return -1;
 	    }
 	}
@@ -559,7 +562,8 @@ get_ethbyname (u_char * name)
 
       set_ethent (g_pethers_path);
 
-      while ((eth = get_ethent (1)) && strncmp (name, eth->name, MAXNAMELEN) != 0)
+      while ((eth = get_ethent (1))
+	     && strncmp (name, eth->name, MAXNAMELEN) != 0)
 	;
 
       end_ethent ();
@@ -938,7 +942,8 @@ get_ipxnetbyname (u_char * name)
 
   set_ipxnetent (g_ipxnets_path);
 
-  while ((ipxnet = get_ipxnetent ()) && strncmp (name, ipxnet->name, MAXNAMELEN) != 0)
+  while ((ipxnet = get_ipxnetent ())
+	 && strncmp (name, ipxnet->name, MAXNAMELEN) != 0)
     ;
 
   if (ipxnet == NULL)
@@ -947,7 +952,8 @@ get_ipxnetbyname (u_char * name)
 
       set_ipxnetent (g_pipxnets_path);
 
-      while ((ipxnet = get_ipxnetent ()) && strncmp (name, ipxnet->name, MAXNAMELEN) != 0)
+      while ((ipxnet = get_ipxnetent ())
+	     && strncmp (name, ipxnet->name, MAXNAMELEN) != 0)
 	;
 
       end_ipxnetent ();
@@ -1443,8 +1449,7 @@ get_manuf_name (u_char * addr)
  * a host name, to a numeric IP address.  Return TRUE if we succeed and
  * set "*addrp" to that numeric IP address; return FALSE if we fail.
  * Used more in the dfilter parser rather than in packet dissectors */
-gboolean
-get_host_ipaddr (const char *host, guint32 * addrp)
+gboolean get_host_ipaddr (const char *host, guint32 * addrp)
 {
   struct in_addr ipaddr;
   struct hostent *hp;
@@ -1481,8 +1486,7 @@ get_host_ipaddr (const char *host, guint32 * addrp)
  * Return TRUE if we succeed and set "*addrp" to that numeric IP address;
  * return FALSE if we fail.
  */
-gboolean
-get_host_ipaddr6 (const char *host, struct e_in6_addr * addrp)
+gboolean get_host_ipaddr6 (const char *host, struct e_in6_addr * addrp)
 {
   struct hostent *hp;
 

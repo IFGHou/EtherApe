@@ -18,5 +18,4 @@
  */
 
 /* Exported functions */
-gchar *
-  get_packet_prot (const guint8 * packet);
+gchar *get_packet_prot (const guint8 * packet);
