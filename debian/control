@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Frederic Peters <fpeters@debian.org>
 Standards-Version: 3.1.1
-Build-Depends: libpcap-dev, libgnome-dev, libglade-gnome0-dev
+Build-Depends: libpcap-dev, libgnome-dev, libglade-gnome-dev, debhelper
 
 Package: etherape
 Architecture: any
