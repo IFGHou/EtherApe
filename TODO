@@ -13,7 +13,6 @@ User visible features:
   * Ability to manually place nodes. It's dependent on the above.
     Once is done you will be able to open and save your own 
     diagrams.
-    
 
 Issues in the source code
 -------------------------
@@ -24,7 +23,10 @@ Issues in the source code
   * Clean up the mess with globals and functions definitions
     ¿Could somebody point me to a document that says what
     is the proper style of where things should be defined?
-  
+
+  * Find out a way to customize the gnome message that pop ups
+    if a SIGSEGV crashes us.
+    
   * Clean up the resolver functions. Right now I'm using two 
     different files from two different packages (resolv.c from 
     ethereal and dns.c from mtr)

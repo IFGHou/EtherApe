@@ -223,6 +223,12 @@ link_id_compare (gconstpointer a, gconstpointer b)
   return 0;
 }				/* link_id_compare */
 
+/* Comparison function used to compare two link protocols */
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
+{
+  return strcmp (((protocol_t *) a)->name, (gchar *) b);
+}
 
 /* Fills in the strings that characterize the node */
 void
@@ -392,7 +398,9 @@ create_link (const guint8 * packet, const guint8 * link_id)
   link->average = 0;
   link->n_packets = 0;
   link->accumulated = 0;
+  link->main_prot = NULL;
   link->packets = NULL;
+  link->protocols = NULL;
   g_tree_insert (links, link->link_id, link);
 
 /* TODO make proper debugging output */
@@ -450,6 +458,10 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
   struct timeval result;
   double time_comparison;
+  node_t *node;
+  link_t *link;
+  GList *protocol_item;
+  protocol_t *protocol_info;
 
   packet_t *packet;
   packet = (packet_t *) packets->data;
@@ -480,6 +492,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
   else
     time_comparison = averaging_time;
 
+  node = ((node_t *) (packet->parent));
+  link = ((link_t *) (packet->parent));
 
   /* If this packet is too old, we discard it */
   if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
@@ -487,26 +501,36 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
       if (belongs_to == NODE)
 	{
 	  /* Substract this packet's length to the accumulated */
-	  ((node_t *) (packet->parent))->accumulated -=
-	    packet->size;
+	  node->accumulated -= packet->size;
 	  /* Decrease the number of packets */
-	  ((node_t *) (packet->parent))->n_packets--;
+	  node->n_packets--;
 	  /* If it was the last packet in the queue, set
 	     * average to 0. It has to be done here because
 	     * otherwise average calculation in update_packet list 
 	     * requires some packets to exist */
-	  if (!((node_t *) (packet->parent))->accumulated)
-	    ((node_t *) (packet->parent))->average = 0;
+	  if (!node->accumulated)
+	    node->average = 0;
 	}
       else
 	/* belongs to LINK */
 	{
 	  /* See above for explanations */
-	  ((link_t *) (packet->parent))->accumulated -=
-	    packet->size;
-	  ((link_t *) (packet->parent))->n_packets--;
-	  if (!((link_t *) (packet->parent))->accumulated)
-	    ((link_t *) (packet->parent))->average = 0;
+	  link->accumulated -= packet->size;
+	  link->n_packets--;
+	  if (!link->accumulated)
+	    link->average = 0;
+	  /* We remove protocol aggregate information */
+	  protocol_item = g_list_find_custom (link->protocols,
+					      packet->prot,
+					      protocol_compare);
+	  protocol_info = protocol_item->data;
+	  protocol_info->accumulated -= packet->size;
+	  if (!protocol_info->accumulated)
+	    {
+	      g_free (protocol_info->name);
+	      g_list_remove_link (link->protocols, protocol_item);
+	      g_list_free (protocol_item);
+	    }
 	}
 
       if (((packet_t *) (packets->data))->prot)
@@ -532,6 +556,15 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 				 * End search */
 }				/* check_packet */
 
+/* Finds the most commmon protocol of all the packets in a
+ * given link (only link, by now) */
+gchar *
+get_main_prot (GList * packets)
+{
+  GList *protocols;
+  gchar *prot = NULL;
+  return prot;
+}				/* get_main_prot */
 
 /* This function is called to discard packets from the list 
  * of packets beloging to a node or a link, and to calculate
@@ -555,7 +588,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
   packet_l_e = g_list_last (packets);
   packet = (packet_t *) packet_l_e->data;
 
-  /* If the still has relevant packets, then calculate average
+  /* If there still is relevant packets, then calculate average
    * traffic and update names*/
   if (packet)
     {
@@ -572,8 +605,14 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 		      NULL);
 	}
       else
-	((link_t *) (packet->parent))->average = 8 *
-	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	{
+	  ((link_t *) (packet->parent))->average = 8 *
+	    ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	  /* We look for the most used protocol for this link */
+	  if (((link_t *) (packet->parent))->main_prot)
+	    g_free (((link_t *) (packet->parent))->main_prot);
+	  ((link_t *) (packet->parent))->main_prot = get_main_prot (packets);
+	}
 
     }
 
@@ -691,7 +730,7 @@ update_node (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * node
   /* We update node info */
   node->accumulated += phdr.len;
   node->last_time = now;
-  /* Packet cleaning is now done in diagram.c
+  /* update_packet_list is now called in diagram.c
    * I'm not too happy about it since I want to have a clear
    * separation between data structures and presentation, but it
    * is a fact that the proper moment for packet cleaning is right
@@ -700,11 +739,14 @@ update_node (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * node
 
 }				/* update_node */
 
+/* Save as above plus we update protocol aggregate information */
 void
 update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link_id)
 {
   link_t *link;
   packet_t *packet_info;
+  GList *protocol_item;
+  protocol_t *protocol_info;
 
   link = g_tree_lookup (links, link_id);
   if (!link)
@@ -719,10 +761,30 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link
   packet_info->prot = get_packet_prot (packet);
   link->packets = g_list_prepend (link->packets, packet_info);
 
+  /* Have we already heard this protocol on this link? */
+  if ((protocol_item = g_list_find_custom (link->protocols,
+					   packet_info->prot,
+					   protocol_compare)))
+    {
+      protocol_info = protocol_item->data;
+      protocol_info->accumulated += phdr.len;
+      protocol_info->n_packets++;
+    }
+  else
+    /* First time protocol. Will have to be created */
+    {
+      protocol_info = g_malloc (sizeof (protocol_t));
+      protocol_info->name = g_strdup (packet_info->prot);
+      protocol_info->accumulated = phdr.len;
+      protocol_info->n_packets = 1;
+      link->protocols = g_list_prepend (link->protocols, protocol_info);
+    }
+
+
   /* We update link info */
   link->accumulated += phdr.len;
   link->last_time = now;
-  /* Packet cleaning is now done in diagram.c */
+  /* update_packet_list is now called in diagram.c */
   link->n_packets++;
 
 }				/* update_link */

@@ -4,13 +4,16 @@
 
 SUBDIRS = intl po macros src
 
+indent:
+	cd src && make indent
+	
 NEWS: html/NEWS.html
 	lynx --dump html/NEWS.html > NEWS
 
 FAQ: html/FAQ.html
 	lynx --dump html/FAQ.html > FAQ
 
-cvs : NEWS FAQ
+cvs : NEWS FAQ indent
 	test `whoami` = toledo
 	cvs commit
 	cd ../www && make

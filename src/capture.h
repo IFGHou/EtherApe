@@ -104,9 +104,10 @@ typedef struct
     double average;
     double accumulated;
     guint n_packets;
-    gchar *prot;		/* Most common protocol for the link */
+    gchar *main_prot;		/* Most common protocol for the link */
     struct timeval last_time;	/* Timestamp of the last packet added */
-    GList *packets;
+    GList *packets;		/* List of packets heard on this link */
+    GList *protocols;		/* List of protocols heard on this link */
   }
 link_t;
 
@@ -121,6 +122,14 @@ typedef struct
   }
 packet_t;
 
+/* Information about each protocol heard on a link */
+typedef struct
+  {
+    gchar *name;		/* Name of the protocol */
+    gdouble accumulated;	/* Accumulated traffic in bytes for this protocol */
+    guint n_packets;		/* Number of packets containing this protocol */
+  }
+protocol_t;
 
 /* 
  * Exported functions 
