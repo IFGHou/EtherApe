@@ -723,7 +723,7 @@
 	    <class>GtkTable</class>
 	    <name>prot_table</name>
 	    <rows>1</rows>
-	    <columns>2</columns>
+	    <columns>1</columns>
 	    <homogeneous>True</homogeneous>
 	    <row_spacing>0</row_spacing>
 	    <column_spacing>0</column_spacing>

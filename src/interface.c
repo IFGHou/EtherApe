@@ -464,7 +464,7 @@ create_app1 (void)
   gtk_widget_show (frame3);
   gtk_box_pack_start (GTK_BOX (vbox1), frame3, TRUE, TRUE, 0);
 
-  prot_table = gtk_table_new (1, 2, TRUE);
+  prot_table = gtk_table_new (1, 1, TRUE);
   gtk_widget_ref (prot_table);
   gtk_object_set_data_full (GTK_OBJECT (app1), "prot_table", prot_table,
 			    (GtkDestroyNotify) gtk_widget_unref);

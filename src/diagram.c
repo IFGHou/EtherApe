@@ -38,7 +38,7 @@ double node_radius_multiplier = 100;	/* used to calculate the radius of the
 					 * multiplier*/
 double link_width_multiplier = 100;	/* Same explanation as above */
 
-gchar *node_color = "red", *link_color = "tan", *text_color = "black";
+gchar *node_color = "white", *link_color = "tan", *text_color = "black";
 
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
@@ -323,7 +323,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   gnome_canvas_item_set (canvas_link->link_item,
 			 "points", points,
-			 "fill_color", link_color,
+			 "fill_color", get_prot_color (link->main_prot),
 			 "width_units", link_size,
 			 NULL);
 
@@ -545,12 +545,44 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   return FALSE;
 }				/* check_new_node */
 
+gchar *
+get_prot_color (gchar * name)
+{
+  /* TODO This is all hardwired now. This should read preferences
+   * and whatnot */
+
+  if (!strcmp (name, "IP"))
+    return "red";
+  if (!strcmp (name, "ARP"))
+    return "blue";
+  if (!strcmp (name, "ATALK"))
+    return "yellow";
+  if (!strcmp (name, "IPX"))
+    return "black";
+  if (!strcmp (name, "VINES"))
+    return "orange";
+  if (!strcmp (name, "X25L3"))
+    return "green";
+  if (!strcmp (name, "IPv6"))
+    return "white";
+  if (!strcmp (name, "VLAN"))
+    return "cyan";
+  if (!strcmp (name, "SNMP"))
+    return "orange";
+
+
+  return "tan";
+}
+
 void
 check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 {
   GtkWidget *prot_table;
   GtkWidget *label, *app1;
   GtkArg args[2];
+  GdkColor prot_color;
+  GtkStyle *style;
+  gchar *color_string;
   guint n_rows, n_columns;
 
   args[0].name = "n_rows";
@@ -580,12 +612,19 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   app1 = lookup_widget (GTK_WIDGET (canvas), "app1");
   gtk_object_set_data_full (GTK_OBJECT (app1), protocol->name, label,
 			    (GtkDestroyNotify) gtk_widget_unref);
+
+
   gtk_widget_show (label);
   gtk_table_attach_defaults (GTK_TABLE (prot_table), label,
 			     1, 2, n_rows - 1, n_rows);
 
+  color_string = get_prot_color (protocol->name);
+  gdk_color_parse (color_string, &prot_color);
+  gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &prot_color, TRUE, TRUE);
 
-  g_message ("New protocol %s, rows %d", protocol->name, n_rows);
+  style = gtk_style_new ();
+  style->fg[GTK_STATE_NORMAL] = prot_color;
+  gtk_widget_set_style (label, style);
 
 }
 
