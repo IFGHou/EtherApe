@@ -86,9 +86,10 @@ create_node (guint8 ether_addr)
   node_t *node;
   node = g_malloc (sizeof (node_t));
   node->ether_addr=ether_addr;
+/*  g_print ("Ether de nodo creado: %s\n", ether_to_str(&(node->ether_addr)));*/
   node->average = 0;
   node->n_packets=0;
-  g_hash_table_insert (nodes, &node->ether_addr, node);
+  g_hash_table_insert (nodes, &(node->ether_addr), node);
 
   return node;
 }
@@ -100,7 +101,7 @@ packet_read (pcap_t * pch,
 {
   struct pcap_pkthdr phdr;
   gchar packet[MAXSIZE];
-  guint8 src, dst;
+  guint8 src=0, dst=0;
   node_t *node;
 
   char *pcap_packet;
