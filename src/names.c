@@ -53,6 +53,7 @@ get_packet_names (GList ** protocols,
     next_func->function ();
 
   g_strfreev (tokens);
+  tokens = NULL;
 }				/* get_packet_names */
 
 
@@ -69,6 +70,23 @@ get_raw_name (void)
     next_func->function ();
 
 }				/* get_raw_name */
+
+/* Null is used for loopback. There is actually no information,
+ * so we just jump to the next protocol */
+/* TODO Are we so sure there is actually no information?
+ * Then what are those four bytes? */
+static void
+get_null_name (void)
+{
+
+  level++;
+  offset += 4;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_null_name */
 
 static void
 get_eth_name (void)
@@ -160,6 +178,7 @@ get_tcp_name (void)
   str = g_strdup_printf ("%d", *(guint16 *) (id_buffer + 4));
   numeric_name = g_string_append (numeric_name, str);
   g_free (str);
+  str = NULL;
 
   resolved_name = g_string_new (dns_lookup (pntohl (id_buffer), TRUE));
   resolved_name = g_string_append_c (resolved_name, ':');
@@ -171,8 +190,11 @@ get_tcp_name (void)
   add_name (numeric_name->str, resolved_name->str);
 
   g_free (id_buffer);
+  id_buffer = NULL;
   g_string_free (numeric_name, TRUE);
+  numeric_name = NULL;
   g_string_free (resolved_name, TRUE);
+  resolved_name = NULL;
 
   level++;
   offset += 20;
@@ -187,6 +209,10 @@ get_tcp_name (void)
 static void
 add_name (gchar * numeric_name, gchar * resolved_name)
 {
+  GList *protocol_item = NULL;
+  protocol_t *protocol = NULL;
+  GList *name_item = NULL;
+
   /* Find the protocol entry */
   protocol_item = g_list_find_custom (prot_list[level],
 				      tokens[level], protocol_compare);
@@ -198,7 +224,7 @@ add_name (gchar * numeric_name, gchar * resolved_name)
   if (name_item)
     {
       name = name_item->data;
-      g_my_debug ("Dirección conocida en add_name");
+      g_my_debug ("Known address in add_name");
     }
   else
     name = NULL;

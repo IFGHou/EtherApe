@@ -38,9 +38,6 @@ static guint8 level;
 static guint id_length;
 static packet_direction dir;
 static GList **prot_list;
-static GList *protocol_item;
-static protocol_t *protocol;
-static GList *name_item;
 static name_t *name;
 static gchar **tokens = NULL;
 static GTree *prot_functions = NULL;
@@ -48,12 +45,13 @@ static prot_function_t *next_func = NULL;
 
 static void get_eth_name (void);
 static void get_raw_name (void);
+static void get_null_name (void);
 static void get_ip_name (void);
 static void get_tcp_name (void);
 static void add_name (gchar * numeric, gchar * resolved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 6
+#define KNOWN_PROTS 7
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
@@ -61,6 +59,7 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"802.3", get_eth_name},
   {"ISL", get_eth_name},
   {"RAW", get_raw_name},
+  {"NULL", get_null_name},
   {"IP", get_ip_name},
   {"TCP", get_tcp_name}
 };
