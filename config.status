@@ -73,7 +73,7 @@ s%@ACLOCAL@%aclocal -I macros%g
 s%@AUTOCONF@%autoconf%g
 s%@AUTOMAKE@%automake%g
 s%@AUTOHEADER@%autoheader%g
-s%@MAKEINFO@%/usr/local/src/etherape/missing makeinfo%g
+s%@MAKEINFO@%/home/toledo/etherape/missing makeinfo%g
 s%@SET_MAKE@%%g
 s%@INSIDE_GNOME_COMMON_TRUE@%#%g
 s%@INSIDE_GNOME_COMMON_FALSE@%%g

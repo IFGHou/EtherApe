@@ -85,7 +85,7 @@ INSTOBJEXT = .mo
 INTLDEPS = 
 INTLLIBS = 
 INTLOBJS = 
-MAKEINFO = /usr/local/src/etherape/missing makeinfo
+MAKEINFO = /home/toledo/etherape/missing makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 ORBIT_CFLAGS = -I/usr/lib/glib/include -I/usr/include
@@ -113,8 +113,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS acconfig.h aclocal.m4 config.h.in \
-configure configure.in install-sh missing mkinstalldirs
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
+config.h.in configure configure.in install-sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

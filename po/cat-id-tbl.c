@@ -8,16 +8,22 @@
 
 const struct _msg_ent _msg_tbl[] = {
   {"", 1},
-  {"_Nuevo archivo", 2},
-  {"Etherape", 3},
-  {"Nuevo", 4},
-  {"Nuevo archivo", 5},
-  {"Abrir", 6},
-  {"Abrir archivo", 7},
-  {"Guardar", 8},
-  {"Guardar archivo", 9},
-  {"Couldn't find pixmap file: %s", 10},
-  {"Couldn't create pixmap from file: %s", 11},
+  {"Creating canvas_node: %s. Number of nodes %d", 2},
+  {"._New File", 3},
+  {"Etherape", 4},
+  {"Nuevo", 5},
+  {"Nuevo archivo", 6},
+  {"Abrir", 7},
+  {"Abrir archivo", 8},
+  {"Guardar", 9},
+  {"Guardar archivo", 10},
+  {"Copyright 2000 Juan Toledo", 11},
+  {"\
+A Graphical Network Browser.\n\
+Web: http://etherape.sourceforge.net", 12},
+  {"Couldn't find pixmap file: %s", 13},
+  {"Couldn't create pixmap from file: %s", 14},
+  {"Creating node: %s. Number of nodes %d", 15},
 };
 
-int _msg_tbl_length = 11;
+int _msg_tbl_length = 15;

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-22 00:27+0100\n"
+"POT-Creation-Date: 2000-02-23 13:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,44 +14,64 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/interface.c:22
-msgid "_Nuevo archivo"
+#: src/main.c:157
+#, c-format
+msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/interface.c:84
+#: src/interface.c:22
+msgid "._New File"
+msgstr ""
+
+#: src/interface.c:85
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:207
+#: src/interface.c:209
 msgid "Nuevo"
 msgstr ""
 
-#: src/interface.c:208
+#: src/interface.c:210
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:219
+#: src/interface.c:221
 msgid "Abrir"
 msgstr ""
 
-#: src/interface.c:220
+#: src/interface.c:222
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:231
+#: src/interface.c:233
 msgid "Guardar"
 msgstr ""
 
-#: src/interface.c:232
+#: src/interface.c:234
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/support.c:99 src/support.c:137
+#: src/interface.c:302
+msgid "Copyright 2000 Juan Toledo"
+msgstr ""
+
+#: src/interface.c:304
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+
+#: src/support.c:97 src/support.c:135
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:115
+#: src/support.c:113
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
+msgstr ""
+
+#: src/capture.c:124
+#, c-format
+msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
