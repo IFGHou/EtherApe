@@ -603,7 +603,7 @@ display_node (node_t * node)
 
 #if 1
   if ((node_timeout_time == 1000) && !node->n_packets)
-    g_critical ("Impossible situation in display node");
+    g_my_critical ("Impossible situation in display node");
 #endif
 
   return TRUE;
