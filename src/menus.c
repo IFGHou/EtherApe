@@ -215,6 +215,8 @@ void
 on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   apemode_t new_mode = DEFAULT;
+   
+  g_assert (user_data!=NULL);
 
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) user_data);
@@ -254,7 +256,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
       break;
     default:
     }
-  gui_stop_capture ();
+  if (status!=STOP)
+     gui_stop_capture ();
   mode = new_mode;
   g_my_info (_("Mode set to %s in GUI"), (gchar *) user_data);
   gui_start_capture ();
