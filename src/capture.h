@@ -73,7 +73,11 @@ static void update_node_names (node_t * node);
 static void set_node_name (node_t * node, gchar * preferences);
 static gchar *get_main_prot (GList * packets,
 			     GList ** protocols, guint level);
+#if 0
 static GList *check_packet (GList * packets, enum packet_belongs belongs_to);
+#endif
+static GList *check_packet (GList * packets, GList ** packet_l_e,
+			    enum packet_belongs belongs_to);
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static gint names_freq_compare (gconstpointer a, gconstpointer b);
 gchar *print_mem (const guint8 * ad, guint length);
