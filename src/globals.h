@@ -249,7 +249,7 @@ gchar *filter;			/* Pcap filter to be used */
 /* Global functions declarations */
 
 /* From capture.c */
-void init_capture (void);
+gboolean init_capture (void);
 gboolean start_capture (void);
 gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);

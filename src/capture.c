@@ -27,6 +27,20 @@
 #include "dns.h"
 #include "eth_resolv.h"
 
+/* this has not its place here but... */
+void fatal_error_dialog(gchar *message)
+{
+	GtkWidget *dlg;
+	/*char *argv[] = { "gaby", NULL };
+	
+	gnome_init(_("Gaby"), VERSION, 1, argv);*/
+	
+	dlg = gnome_error_dialog (message);
+	gtk_signal_connect(GTK_OBJECT(dlg), "clicked", gtk_main_quit, NULL);
+	gtk_widget_show(dlg);
+	gtk_main();
+	exit(1);
+}
 
 
 /* 
@@ -38,7 +52,7 @@
  * Sets up dns if needed
  * Sets up callbacks for pcap and dns
  * Creates nodes and links trees */
-void
+gboolean
 init_capture (void)
 {
 
@@ -47,6 +61,7 @@ init_capture (void)
   gchar *device;
   gchar ebuf[300];
   gboolean error = FALSE;
+  gchar errorbuf[300];
 
 
   device = interface;
@@ -55,8 +70,9 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  g_error (_("Error getting device: %s"), ebuf);
-	  exit (1);
+	  sprintf(errorbuf, _("Error getting device: %s"), ebuf);
+	  fatal_error_dialog(errorbuf);
+	  return FALSE;
 	}
       /* TODO I should probably tidy this up, I probably don't
        * need the local variable device. But I need to reset 
@@ -73,9 +89,10 @@ init_capture (void)
 	  ((pcap_t *) pch =
 	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
 	{
-	  g_error (_("Error opening %s : %s - perhaps you need to be root?"),
+	  sprintf(errorbuf, _("Error opening %s : %s - perhaps you need to be root?"),
 		   device, ebuf);
-	  exit(1);
+	  fatal_error_dialog(errorbuf);
+	  return FALSE;
 	}
       pcap_fd = pcap_fileno (pch);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
@@ -84,8 +101,9 @@ init_capture (void)
     {
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
-	  g_error (_("Error opening %s : %s"), input_file, ebuf);
-	  exit(1);
+	  sprintf(errorbuf, _("Error opening %s : %s"), input_file, ebuf);
+	  fatal_error_dialog(errorbuf);
+	  return FALSE;
 	}
 
     }
@@ -126,14 +144,16 @@ init_capture (void)
       l3_offset = 21;
       break;
     default:
-      g_error (_("Link type not yet supported"));
+      sprintf(errorbuf, _("Link type not yet supported"));
+      fatal_error_dialog(errorbuf);
+      return FALSE;
     }
 
   if (error)
     {
-      g_message (_("Mode not available in this device"));
-      /* TODO manage proper exit codes */
-      exit (1);
+      sprintf(errorbuf, _("Mode not available in this device"));
+      fatal_error_dialog(errorbuf);
+      return FALSE;
     }
 
   switch (mode)
@@ -151,7 +171,9 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      g_error (_("Ape mode not yet supported"));
+      sprintf(errorbuf, _("Ape mode not yet supported"));
+      fatal_error_dialog(errorbuf);
+      return FALSE;
     }
 
   if (!numeric)
@@ -172,6 +194,7 @@ init_capture (void)
       i--;
     }
 
+  return TRUE;
 }				/* init_capture */
 
 /* TODO make it return an error value and act accordingly */
