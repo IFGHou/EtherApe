@@ -106,6 +106,8 @@ Makefile
 etherape.spec
 macros/Makefile
 src/Makefile
+doc/Makefile
+doc/C/Makefile
 intl/Makefile
 po/Makefile.in
 ])

@@ -2,7 +2,7 @@
 
 # $Id$
 
-SUBDIRS = intl po macros src
+SUBDIRS = intl po macros src doc
 
 
 indent:
