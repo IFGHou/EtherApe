@@ -466,6 +466,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 	     _("Creating canvas_node: %s. Number of nodes %d"),
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
 
+      new_canvas_node->is_new = TRUE;
       need_reposition = 1;
 
     }
@@ -555,7 +556,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 {
   static gfloat angle = 0.0;
   static guint node_i = 0, n_nodes = 0;
-  gdouble x, y, xmin, ymin, xmax, ymax, text_compensation = 50;
+  gdouble x = 0, y = 0, xmin, ymin, xmax, ymax, text_compensation = 50;
   gdouble x_rad_max, y_rad_max;
   gdouble oddAngle = angle;
 
@@ -574,21 +575,70 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   x_rad_max = 0.9 * (xmax - xmin) / 2;
   y_rad_max = 0.9 * (ymax - ymin) / 2;
 
-  if (n_nodes % 2 == 0)		/* spacing is better when n_nodes is odd and Y is linear */
-    oddAngle = (angle * n_nodes) / (n_nodes + 1);
-  if (n_nodes > 8)
+  /* TODO I've done all the stationary changes in a hurry
+   * I should review it an tidy up all this stuff */
+  if (stationary)
     {
-      x = x_rad_max * cos (oddAngle);
-      y = y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+      if (canvas_node->is_new)
+	{
+	  static guint count = 0, a_count = 1, b_count = 0, expon;
+	  static gdouble a, b, c;
+	  guint mod;
+
+	  expon = exp (a_count * log (2));
+	  a = M_PI / 2 / expon;
+	  b = b_count * 2 * a;
+
+	  mod = count % 4;
+	  c = M_PI / 2 * mod;
+
+	  x = x_rad_max * cos (a + b + c);
+	  y = y_rad_max * sin (a + b + c);
+	  count++;
+
+#if 0
+	  g_message ("count %d, a %d, b %d", count, a_count, b_count);
+	  g_message ("a=%d b=%d c=%d", (int) (a * 180 / M_PI),
+		     (int) (b * 180 / M_PI), (int) (c * 180 / M_PI));
+#endif
+
+	  if (mod == 3)
+	    {
+	      if (b_count == (exp ((a_count - 1) * log (2)) - 1))
+		{
+		  a_count++;
+		  b_count = 0;
+		}
+	      else
+		b_count++;
+	    }
+	}
+
     }
   else
     {
-      x = x_rad_max * cos (angle);
-      y = y_rad_max * sin (angle);
+
+      if (n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
+	oddAngle = (angle * n_nodes) / (n_nodes + 1);
+      if (n_nodes > 7)
+	{
+	  x = x_rad_max * cos (oddAngle);
+	  y = y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+	}
+      else
+	{
+	  x = x_rad_max * cos (angle);
+	  y = y_rad_max * sin (angle);
+	}
     }
 
-  gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
-			 "x", x, "y", y, NULL);
+  if (!stationary || canvas_node->is_new)
+    {
+      g_message ("%g %g", x, y);
+      gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
+			     "x", x, "y", y, NULL);
+      canvas_node->is_new = FALSE;
+    }
 
   /* We update the text font */
   gnome_canvas_item_set (canvas_node->text_item, "font", fontname, NULL);
@@ -608,9 +658,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   node_i--;
 
   if (node_i)
-    {
-      angle += 2 * M_PI / n_nodes;
-    }
+    angle += 2 * M_PI / n_nodes;
   else
     {
       angle = 0.0;

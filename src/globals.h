@@ -184,6 +184,7 @@ typedef struct
   GnomeCanvasItem *text_item;
   GnomeCanvasGroup *group_item;
   GdkColor color;
+  gboolean is_new;
 }
 canvas_node_t;
 
@@ -239,6 +240,7 @@ apemode_t mode;			/* Mode of operation. Can be
 
 gboolean diagram_only;		/* Do not use text on the diagram */
 gboolean nofade;		/* Do not fade unused links */
+gboolean stationary;		/* Use alternative algorith for node placing */
 guint32 refresh_period;		/* Time between diagram refreshes */
 gdouble node_radius_multiplier;	/* used to calculate the radius of the
 				 * displayed nodes. So that the user can

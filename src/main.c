@@ -53,6 +53,8 @@ main (int argc, char *argv[])
      _("don't display any node text identification"), NULL},
     {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
      _("do not fade old links"), NULL},
+    {"stationary", 's', POPT_ARG_NONE, &stationary, 0,
+     _("don't move nodes around"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
      _("set the node color"), _("color")},
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
@@ -193,6 +195,8 @@ load_config (char *prefix)
   gnome_config_push_prefix (prefix);
   diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
+  stationary
+    = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
   /* Not yet, since we can't force fading
      nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
    */
