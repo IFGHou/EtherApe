@@ -669,6 +669,8 @@ ethernet mode (-m ethernet)
     libpcap has a bug for which a filter -f "ip" doesn't show
   icmp traffic.
   </para>
+  <para>Most NFS traffic will show up as UDP_FRAGMENT, and even
+  some as just RPC</para>
 
  </sect1>
 
