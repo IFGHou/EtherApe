@@ -833,6 +833,8 @@ update_node (node_t * node)
 {
   struct timeval diff;
   guint8 *node_id = NULL;
+  GList *protocol_item=NULL;
+  protocol_t *protocol_info=NULL;
   guint i = STACK_SIZE;
 
   if (node->packets)
@@ -872,7 +874,48 @@ update_node (node_t * node)
 		g_free (node->main_prot[i]);
 		node->main_prot[i] = NULL;
 	      }
-
+#if 1	   
+	   i=0;
+	   while (i <= STACK_SIZE)
+	     {
+		
+		while (node->protocols[i])
+		  {
+		     protocol_item = node->protocols[i];
+		     protocol_info = protocol_item->data;
+		     
+		     if (!protocol_info->accumulated)
+		       {
+			  GList *name_item = NULL;
+			  name_t *name;
+			  g_free (protocol_info->name);
+			  protocol_info->name = NULL;
+			  
+			  while (protocol_info->node_names)
+			    {
+			       name_item = protocol_info->node_names;
+			       name = name_item->data;
+			       g_free (name->node_id);
+			       g_string_free (name->name, TRUE);
+			       g_string_free (name->numeric_name, TRUE);
+			       protocol_info->node_names =
+				 g_list_remove_link (protocol_info->node_names,
+						     name_item);
+			       g_free (name);
+			       g_list_free (name_item);
+			    }
+			  
+			  node->protocols[i] =
+			    g_list_remove_link (node->protocols[i], protocol_item);
+			  g_free (protocol_info);
+			  g_list_free (protocol_item);
+		       }
+		  }
+		i++;
+	     }
+#endif	   
+	   
+	   
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
@@ -880,10 +923,8 @@ update_node (node_t * node)
 	}
       else
 	{
-#if 0
-	  /* Now freed in check_packet */
-	  g_list_free (node->packets);
-#endif
+	  /* The packet list structure has already been freed in
+	   * check_packets */
 	  node->packets = NULL;
 	  while (i + 1)
 	    {
@@ -946,10 +987,8 @@ update_link (link_t * link)
 	}
       else
 	{
-#if 0
-	  /* Now freed in check_packet */
-	  g_list_free (link->packets);
-#endif
+	  /* The packet list structure has already been freed in
+	   * check_packets */
 	  link->packets = NULL;
 	  link->accumulated = 0;
 	  while (i + 1)
@@ -982,29 +1021,18 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 
   packet_l_e = g_list_last (packets);
 
-#if 0
-  /* Going from oldest to newer, delete all irrelevant packets */
-  while ((packet_l_e = check_packet (packet_l_e, belongs_to)));
-#endif
   /* Going from oldest to newer, delete all irrelevant packets */
   while (check_packet (packet_l_e, &packet_l_e, belongs_to));
 
+   /* TODO Move all this below to update_node and update_link */
+   /* If there still is relevant packets, then calculate average
+    * traffic and update names*/
+   
   if (packet_l_e)
     {
       packet_l_e = g_list_last (packets);
       packet = (packet_t *) packet_l_e->data;
-#if 0
-      /* Get oldest relevant packet */
-      packet_l_e = g_list_last (packets);
-      packet = (packet_t *) packet_l_e->data;
-
-
-      /* TODO Move all this below to update_node and update_link */
-      /* If there still is relevant packets, then calculate average
-       * traffic and update names*/
-      if (packet)
-#endif
-	node = ((node_t *) (packet->parent));
+      node = ((node_t *) (packet->parent));
       link = ((link_t *) (packet->parent));
       difference = substract_times (now, packet->timestamp);
       usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
@@ -1160,9 +1188,6 @@ get_main_prot (GList * packets, GList ** protocols, guint level)
 /* TODO This whole function is a mess. I must take it to pieces
  * so that it is more readble and maintainable */
 static gboolean
-#if 0
-check_packet (GList * packets, enum packet_belongs belongs_to)
-#endif
 check_packet (GList * packets, GList ** packet_l_e,
 	      enum packet_belongs belongs_to)
 {
@@ -1241,13 +1266,14 @@ check_packet (GList * packets, GList ** packet_l_e,
 						  protocol_compare);
 	      protocol_info = protocol_item->data;
 	      protocol_info->accumulated -= packet->size;
+#if 0	       
 	      if (!protocol_info->accumulated)
 		{
 		  GList *name_item = NULL;
 		  name_t *name;
 		  g_free (protocol_info->name);
 		  protocol_info->name = NULL;
-#if 1
+
 		  while (protocol_info->node_names)
 		    {
 		      name_item = protocol_info->node_names;
@@ -1261,12 +1287,13 @@ check_packet (GList * packets, GList ** packet_l_e,
 		      g_free (name);
 		      g_list_free (name_item);
 		    }
-#endif
+
 		  node->protocols[i] =
 		    g_list_remove_link (node->protocols[i], protocol_item);
 		  g_free (protocol_info);
 		  g_list_free (protocol_item);
 		}
+#endif	       
 	      i++;
 	    }
 	  g_strfreev (tokens);
