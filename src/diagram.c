@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -218,12 +218,10 @@ update_diagram (GtkWidget * canvas)
     }
   while (n_nodes_before != n_nodes_after);
 
-#if 1
   /* Limit the number of nodes displayed, if a limit has been set */
   limit_nodes ();
 
   /* Reposition canvas_nodes */
-
 
   if (need_reposition)
     {
@@ -296,7 +294,7 @@ update_diagram (GtkWidget * canvas)
 	  return FALSE;		/* removes the idle */
 	}
     }
-#endif
+
   return TRUE;			/* Keep on calling this function */
 
 }				/* update_diagram */
