@@ -505,7 +505,7 @@ cap_t_o_destroy (gpointer data)
 static void
 packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 {
-  guint8 *src_id = NULL, *dst_id = NULL, *link_id = NULL;
+  guint8 *link_id = NULL;
   node_t *node = NULL;
   packet_t *packet_info = NULL;
   gchar *prot = NULL;
@@ -885,7 +885,6 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocol_info->accumulated += phdr.len;
 	  protocol_info->aver_accu += phdr.len;
 	  protocol_info->n_packets++;
-	  protocol_info->last_heard = now;
 	}
       else
 	{
@@ -899,6 +898,8 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocol_info->node_ids = NULL;
 	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
 	}
+
+      protocol_info->last_heard = now;
 
       /* For the global protocols list, take note of nodes that are using
        * this protocol */
