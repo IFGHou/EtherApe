@@ -8,30 +8,15 @@ libpcap, a packet capture and filtering library.
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
+As of version 0.1.8 Etherape has incorporated interman-like
+capabilities. Run etherape as "etherape -I" and the diagram
+will display end to end IP traffic. If you have name resolution
+properly configured, use the -r option as well.
+
 Etherape will use /etc/ethers if there is one. If not, it will 
 display dotted quad ip addresses. You can even ask for ip
 name resolution with the -r option, but beware of very long
 DNS timeout times.
-
-Etherape has been compiled in at least:
-* Linux: Debian 2.2, Slackware 7.0
-* NetBSD 1.4T (i386)
-
-There has been many reports saying that RedHat 6.1 won't show
-any traffic. It turns out RedHat patched their version of the 
-library and software using it has had to work around it (!?),
-as ethereal did.
-
-I still haven't figured how they managed, but a user suggests
-compiling your own version of libpcap to solve your problems.
-If you are an RedHat 6.1 user, keep an eye on 
-http://sourceforge.net/bugs/?func=detailbug&bug_id=102377&group_id=2712
-
-Etherape should probably compile and run in other unix-like OS. If
-you manage to compile it in a configuration other than the ones
-listed, please post it to the mailing list
-<etherape-users@lists.sourceforge.net> No need to subscribe.
-
 
 
 Installation:
@@ -42,6 +27,30 @@ Please read the INSTALL file for installation instructions.  Brief summary:
         # make
 
 Executable is etherape, in the src directory
+
+
+Porting:
+--------
+Etherape has been compiled in at least:
+* Linux: Debian 2.2, Slackware 7.0, RedHat 6.1 (see note below)
+* NetBSD 1.4T (i386)
+* Sparc Solaris 7 with gcc 2.95.2
+
+There has been many reports saying that RedHat 6.1 won't show
+any traffic. It turns out RedHat patched their version of the 
+library and software using it has had to work around it (!?),
+as ethereal did.
+
+I still haven't figured how they ethereal developers managed,
+but a user suggests compiling your own version of libpcap to 
+solve your problems. If you are an RedHat 6.1 user, keep an 
+eye on
+http://sourceforge.net/bugs/?func=detailbug&bug_id=102377&group_id=2712
+
+Etherape should probably compile and run in other Unix-like OS. If
+you manage to compile it in a configuration other than the ones
+listed, please post it to the mailing list
+<etherape-users@lists.sourceforge.net> No need to subscribe.
 
 
 
@@ -55,7 +64,7 @@ Subscribe to the etherape mailing list. To subscribe, point your
 browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
 To post a message, mail to 'etherape-users@lists.sourceforge.net'
 Be advised that emails sent to me will always be replied cc'ed
-to the list, as an attempt to minimize the number of times I have
+to the list, as an attempt to minimise the number of times I have
 to answer a question. Being so you might as well write to the
 list directly. :-)
 

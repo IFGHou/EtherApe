@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-01 22:26+0100\n"
+"POT-Creation-Date: 2000-03-02 17:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -200,7 +200,7 @@ msgstr ""
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
-#: src/callbacks.c:195 src/callbacks.c:206
+#: src/callbacks.c:211 src/callbacks.c:222
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
@@ -215,41 +215,41 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:208
+#: src/capture.c:227
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:293
+#: src/capture.c:312
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:324 src/capture.c:329
+#: src/capture.c:343 src/capture.c:348
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:543
+#: src/capture.c:602
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:550
+#: src/capture.c:609
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:560
+#: src/capture.c:619
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:565
+#: src/capture.c:624
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:571
+#: src/capture.c:630
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""

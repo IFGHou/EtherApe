@@ -1,3 +1,21 @@
+/* Etherape
+ * Copyright (C) 2000 Juan Toledo
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -13,9 +31,7 @@
 extern GTree *canvas_nodes;	/* Defined in diagram.c */
 extern double averaging_time;
 extern double node_radius_multiplier;
-extern double node_radius_multiplier_control;
 extern double link_width_multiplier;
-extern double link_width_multiplier_control;
 extern double link_timeout_time;
 extern double node_timeout_time;
 extern guint32 refresh_period;
@@ -189,7 +205,7 @@ on_canvas1_size_allocate (GtkWidget * widget,
 void
 on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
 {
-  node_radius_multiplier_control = adj->value;
+
   node_radius_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _ ("Adjustment value: %g. Radius multiplier %g"),
@@ -200,7 +216,7 @@ on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
 void
 on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 {
-  link_width_multiplier_control = adj->value;
+
   link_width_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _ ("Adjustment value: %g. Radius multiplier %g"),

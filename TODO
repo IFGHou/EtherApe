@@ -1,7 +1,6 @@
-* Averaging should be done dividing not always by the averaging 
-  time. If only so many seconds of date has been gathered,
-  divide by that
-
+* belongs_to should be a packet property, and not have to be
+  passed from the functions.
+  
 * Update controls with variable data at init time.
 
 * Add incoming and outcoming traffic into a single canvas_link,

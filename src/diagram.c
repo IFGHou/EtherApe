@@ -1,3 +1,21 @@
+/* Etherape
+ * Copyright (C) 2000 Juan Toledo
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -12,23 +30,12 @@
 
 /* Global application parameters */
 
-double node_radius_multiplier_control = 3;	/* The multiplier is a positive number */
-double node_radius_multiplier = 1000;	/* used to calculate the radius of the
+double node_radius_multiplier = 100;	/* used to calculate the radius of the
 					 * displayed nodes. So that the user can
 					 * select with certain precision this
-					 * value, the GUI uses the log of the
-					 * multiplier in multiplier_control */
-double link_width_multiplier_control = 3;	/* Same explanation as above */
-double link_width_multiplier = 1000;
-
-double averaging_time = 10000000;	/* Microseconds of time we consider to
-					 * calculate traffic averages */
-double link_timeout_time = 2000000;	/* After this time
-					 * has passed with no traffic in a 
-					 * link, it disappears */
-double node_timeout_time = 10000000;	/* After this time has passed 
-					 * with no traffic in/out a 
-					 * node, it disappears */
+					 * value, the GUI uses the log10 of the
+					 * multiplier*/
+double link_width_multiplier = 100;	/* Same explanation as above */
 
 gchar *node_color = "red", *link_color = "tan", *text_color = "black";
 
@@ -39,7 +46,12 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * that info on the nodes tree itself */
 GTree *canvas_links;		/* See above */
 
+/* Extern global variables */
 
+extern double averaging_time;
+extern double link_timeout_time;
+extern double node_timeout_time;
+extern guint32 refresh_period;
 
 /* Extern functions declarations */
 
@@ -133,8 +145,8 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 				 * TODO: Need a function to calculate
 				 * text_compensation depending on font size */
   rad_max = ((xmax - xmin) > (ymax - ymin)) ? 0.9 * (y = (ymax - ymin)) / 2 : 0.9 * (x = (xmax - xmin)) / 2;
-  x = rad_max * cosf (angle);
-  y = rad_max * sinf (angle);
+  x = rad_max * cos (angle);
+  y = rad_max * sin (angle);
 
   gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
 			 "x", x,
@@ -231,7 +243,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   args[1].name = "y";
 
   points = gnome_canvas_points_new (2);
-   
+
   /* If either source or destination has disappeared, we hide the link
    * until it can be show again */
   /* TODO: This is a dirty hack. Redo this again later by properly 
@@ -239,10 +251,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* We get coords from source node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id);
-  if (!canvas_node) {
-     gnome_canvas_item_hide (canvas_link->link_item);
-     return FALSE;
-  }
+  if (!canvas_node)
+    {
+      gnome_canvas_item_hide (canvas_link->link_item);
+      return FALSE;
+    }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
@@ -255,10 +268,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   else
     canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
   if (!canvas_node)
-     {
-	gnome_canvas_item_hide (canvas_link->link_item);
-	return FALSE;
-     }
+    {
+      gnome_canvas_item_hide (canvas_link->link_item);
+      return FALSE;
+    }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
@@ -267,9 +280,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
-   
-  /* Average is measured in bps, thus 8* */
-  link->average = 8 * link->accumulated / averaging_time;
+
   link_size = get_link_size (link->average);
 
   gnome_canvas_item_set (canvas_link->link_item,
@@ -325,21 +336,18 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
-	   
+
 	  return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
 				 * the traversion (Does that word exist? :-) */
 	}
       else
 	node->packets = NULL;
-        node->accumulated = 0;
+      node->accumulated = 0;
     }
 
 
-  /* Average is measured in bps, thus 8* */
-  node->average = 8 * node->accumulated / averaging_time;
   node_size = get_node_size (node->average);
-
 
   gnome_canvas_item_set (canvas_node->node_item,
 			 "x1", -node_size / 2,
@@ -356,10 +364,8 @@ gint
 check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
-  canvas_node_t *canvas_node;
   GnomeCanvasGroup *group;
   GnomeCanvasPoints *points;
-  gdouble link_size;
 
   GtkArg args[2];
   args[0].name = "x";
@@ -378,38 +384,13 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       /* We set the lines position using groups positions */
       points = gnome_canvas_points_new (2);
 
-      /* We get coords from source node */
-      /* The node_id starts at the beginning of the link_id, 
-       * independent of the mode we are running */
-      canvas_node = g_tree_lookup (canvas_nodes, link_id);
-      gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
-		       2,
-		       args);
-      points->coords[0] = args[0].d.double_data;
-      points->coords[1] = args[1].d.double_data;
-
-      /* And then for the destination node */
-      /* Depending on the mode we are running in, the desttionation
-       * is 4 (ip) or 6 (ether) octects begind the src */
-      if (interape)
-	canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
-      else
-	canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
-
-      gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
-		       2,
-		       args);
-      points->coords[2] = args[0].d.double_data;
-      points->coords[3] = args[1].d.double_data;
-
-      link->average = link->accumulated / averaging_time,
-	link_size = get_link_size (link->average);
+      points->coords[0] = points->coords[1] = points->coords[2] = points->coords[3] = 0.0;
 
       new_canvas_link->link_item = gnome_canvas_item_new (group,
 					      gnome_canvas_line_get_type (),
 							  "points", points,
 						   "fill_color", link_color,
-						   "width_units", link_size,
+							  "width_units", 0.0,
 							  NULL);
 
 
@@ -444,8 +425,6 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
-  gdouble node_size;
-
 
   if (!g_tree_lookup (canvas_nodes, node_id))
     {
@@ -454,8 +433,6 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->canvas_node_id = node_id;
       new_canvas_node->node = node;
-      node->average = node->accumulated / averaging_time;
-      node_size = get_node_size (node->average);
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 					     gnome_canvas_group_get_type (),
@@ -466,9 +443,9 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->node_item = gnome_canvas_item_new (group,
 						  GNOME_TYPE_CANVAS_ELLIPSE,
 							  "x1", 0.0,
-							  "x2", node_size,
+							  "x2", 0.0,
 							  "y1", 0.0,
-							  "y2", node_size,
+							  "y2", 0.0,
 						   "fill_color", node_color,
 						   "outline_color", "black",
 							  "width_pixels", 0,
@@ -503,9 +480,15 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 guint
 update_diagram (GtkWidget * canvas)
 {
+  static GnomeAppBar *appbar=NULL;
   static guint n_nodes = 0, n_nodes_new;
   guint n_links = 0, n_links_new = 1;
 
+/* Now we update the status bar with the number of present nodes 
+ * TODO Find a nice use for the status bar. I can thik of very little */
+  if (!appbar) appbar = GNOME_APPBAR(lookup_widget (GTK_WIDGET(canvas), "appbar1"));
+  
+   
   /* Check if there are any new nodes */
   g_tree_traverse (nodes,
 		   (GTraverseFunc) check_new_node,
@@ -513,21 +496,31 @@ update_diagram (GtkWidget * canvas)
 		   canvas);
 
 
-  /* Update nodes aspect */
+  /* Update nodes look and delete outdated nodes*/
+  /* TODO: shouldn't we do the same thing we do with
+   * the links down there, to go on until no nodes are delete? */
   g_tree_traverse (canvas_nodes,
 		   (GTraverseFunc) update_canvas_nodes,
 		   G_IN_ORDER,
 		   canvas);
 
-  /* Reposition canvas_nodes */
-  
+  /* Reposition canvas_nodes and update status bar if a node has been
+   * added or deleted */
+
   if (n_nodes != (n_nodes_new = g_tree_nnodes (nodes)))
     {
-      g_tree_traverse (canvas_nodes,
-		       (GTraverseFunc) reposition_canvas_nodes,
-		       G_IN_ORDER,
-		       canvas);
-      n_nodes = n_nodes_new;
+       g_tree_traverse (canvas_nodes,
+			(GTraverseFunc) reposition_canvas_nodes,
+			G_IN_ORDER,
+			canvas);
+       gnome_appbar_pop (appbar);
+
+       /* TODO: Am I leaking here with each call to g_strdup_printf?
+	* How should I do this if so? */
+       gnome_appbar_push (appbar,  g_strconcat (_("Number of nodes: "),
+						g_strdup_printf ("%d", n_nodes_new),
+						NULL));
+       n_nodes = n_nodes_new;
     }
 
 
@@ -537,10 +530,10 @@ update_diagram (GtkWidget * canvas)
 		   G_IN_ORDER,
 		   canvas);
 
-  /* Update links aspect 
-     * We also delete timedout links, and when we do that we stop
-     * traversing, so we need to go on until we have finished updating */
-
+  /* Update links look 
+   * We also delete timedout links, and when we do that we stop
+   * traversing, so we need to go on until we have finished updating */
+   
   do
     {
       n_links = g_tree_nnodes (links);
@@ -553,15 +546,40 @@ update_diagram (GtkWidget * canvas)
   while (n_links != n_links_new);
 
 
-
-
   return TRUE;			/* Keep on calling this function */
 
 }				/* update_diagram */
 
 void
-init_diagram (void)
+init_diagram (GtkWidget *app1)
 {
+  GtkScale *scale;
+  GtkSpinButton *spin;
+   
+  /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
+   
+  /* Updates controls from values of variables */
+  scale = GTK_SCALE(lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));
+  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log(node_radius_multiplier)/log(10));
+  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment), "changed");
+
+  scale = GTK_SCALE(lookup_widget (GTK_WIDGET (app1), "link_width_slider"));
+  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log(link_width_multiplier)/log(10));
+  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment), "changed");
+
+  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "averaging_spin"));
+  gtk_spin_button_set_value (spin, averaging_time/1000);
+  
+  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "refresh_spin"));
+  gtk_spin_button_set_value (spin, refresh_period);
+  
+  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "node_to_spin"));
+  gtk_spin_button_set_value (spin, node_timeout_time/1000);
+  
+  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
+  gtk_spin_button_set_value (spin, link_timeout_time/1000);
+  
+
 }

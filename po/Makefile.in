@@ -8,7 +8,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = etherape
-VERSION = 0.1.8
+VERSION = 0.1.9
 
 SHELL = /bin/sh
 

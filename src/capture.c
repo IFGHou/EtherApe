@@ -1,5 +1,20 @@
-
-
+/* Etherape
+ * Copyright (C) 2000 Juan Toledo
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #include <pcap.h>
 #include <gnome.h>
@@ -9,10 +24,14 @@
 #include "resolv.h"
 
 
-
-extern double averaging_time;
-extern double link_timeout_time;
-extern double node_timeout_time;
+double averaging_time = 10000000;	/* Microseconds of time we consider to
+					 * calculate traffic averages */
+double link_timeout_time = 2000000;	/* After this time
+					 * has passed with no traffic in a 
+					 * link, it disappears */
+double node_timeout_time = 10000000;	/* After this time has passed 
+					 * with no traffic in/out a 
+					 * node, it disappears */
 extern gboolean numeric;
 extern gboolean dns;
 extern gboolean interape;
@@ -333,39 +352,49 @@ create_link (const guint8 * packet)
   return link;
 }				/* create_link */
 
+/* Returns a timeval structure with the time difference between to
+ * other timevals. result = a - b */
+struct timeval
+substract_times (struct timeval a, struct timeval b)
+{
+  struct timeval result;
+
+  /* Perform the carry for the later subtraction by updating Y. */
+  if (a.tv_usec < b.tv_usec)
+    {
+      int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
+      b.tv_usec -= 1000000 * nsec;
+      b.tv_sec += nsec;
+    }
+  if (a.tv_usec - b.tv_usec > 1000000)
+    {
+      int nsec = (a.tv_usec - b.tv_usec) / 1000000;
+      b.tv_usec += 1000000 * nsec;
+      b.tv_sec -= nsec;
+    }
+
+  result.tv_sec = a.tv_sec - b.tv_sec;
+  result.tv_usec = a.tv_usec - b.tv_usec;
+
+  return result;
+
+
+}				/* substract_times */
+
+/* Make sure this particular packet in a list of packets beloging to 
+ * either o link or a node is young enough to be relevant. Else
+ * remove it from the list */
 GList *
 check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_to)
 {
 
-  struct timeval packet_time;
   struct timeval result;
   double time_comparison;
 
   packet_t *packet;
   packet = (packet_t *) packets->data;
 
-//  if (!packet) return NULL; /* Last packet searched */
-
-  packet_time.tv_sec = packet->timestamp.tv_sec;
-  packet_time.tv_usec = packet->timestamp.tv_usec;
-
-
-  /* Perform the carry for the later subtraction by updating Y. */
-  if (now.tv_usec < packet_time.tv_usec)
-    {
-      int nsec = (packet_time.tv_usec - now.tv_usec) / 1000000 + 1;
-      packet_time.tv_usec -= 1000000 * nsec;
-      packet_time.tv_sec += nsec;
-    }
-  if (now.tv_usec - packet_time.tv_usec > 1000000)
-    {
-      int nsec = (now.tv_usec - packet_time.tv_usec) / 1000000;
-      packet_time.tv_usec += 1000000 * nsec;
-      packet_time.tv_sec -= nsec;
-    }
-
-  result.tv_sec = now.tv_sec - packet_time.tv_sec;
-  result.tv_usec = now.tv_usec - packet_time.tv_usec;
+  result = substract_times (now, packet->timestamp);
 
   /* If this packet is older than the averaging time,
    * then it is removed, and the process continues.
@@ -422,14 +451,44 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 				 * End search */
 }				/* check_packet */
 
+
+/* This function is called to discard packets from the list 
+ * of packets beloging to a node or a link, and to calculate
+ * the average traffic for that node or link */
 void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
-  struct timeval now;
-  gettimeofday (&now, NULL);
-  packets = g_list_last (packets);
+  struct timeval now, difference;
+  gdouble real_averaging_time;
+  gdouble usecs_from_oldest;	/* usecs since the first valid packet */
+  GList *packet_l_e;		/* Packets is a list of packets.
+				 * packet_l_e is always the latest (oldest)
+				 * list element */
+  packet_t *packet;
 
-  while ((packets = check_packet (packets, now, belongs_to)));
+  gettimeofday (&now, NULL);
+  packet_l_e = g_list_last (packets);
+
+  /* Going from oldest to newer, delete all irrelevant packets */
+  while ((packet_l_e = check_packet (packet_l_e, now, belongs_to)));
+
+  /* Get oldest relevant packet */
+  packet_l_e = g_list_last (packets);
+  packet = (packet_t *) packet_l_e->data;
+  /* Calculate average traffic */
+  if (packet)
+    {
+      difference = substract_times (now, packet->timestamp);
+      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
+
+      /* average in bps, so we multiply by 8 */
+      if (belongs_to == NODE)
+	((node_t *) (packet->parent))->average = 8 *
+	  ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
+      else
+	((link_t *) (packet->parent))->average = 8 *
+	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
+    }
 }
 
 

@@ -1,6 +1,4 @@
-
-
-/* Program Name
+/* Etherape
  * Copyright (C) 2000 Juan Toledo
  *
  * This program is free software; you can redistribute it and/or modify
@@ -37,6 +35,8 @@ gchar *interface = NULL;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
+extern double node_timeout_time, link_timeout_time, averaging_time,
+  node_radius_multiplier, link_width_multiplier;
 gchar *filter = NULL;
 
 int
@@ -87,6 +87,7 @@ main (int argc, char *argv[])
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
 
+  /* Only ip traffic makes sense when used as interape */
   if (interape)
     filter = g_strconcat ("ip ", filter, NULL);
 
@@ -95,9 +96,12 @@ main (int argc, char *argv[])
 				 * eventually I'd safely set the effective id to match the
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
-  init_diagram ();
 
   app1 = create_app1 ();
+   
+  /* Sets controls to the values of variables */
+  init_diagram (app1);
+  
   hscale = lookup_widget (app1, "node_radius_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
 		      "value_changed", GTK_SIGNAL_FUNC (on_node_radius_slider_adjustment_changed),
@@ -135,6 +139,7 @@ main (int argc, char *argv[])
 				     (GtkFunction) update_diagram,
 			      lookup_widget (GTK_WIDGET (app1), "canvas1"));
 
+  /* MAIN LOOP */
   gtk_main ();
   return 0;
 }
