@@ -1111,13 +1111,13 @@ update_node_names (node_t * node)
     {
     case ETHERNET:
       set_node_name (node,
-		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;IP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
+		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;NBSS,n;IP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
       break;
     case FDDI:
-      set_node_name (node, "LLC,SOLVED;IP,n");
+      set_node_name (node, "LLC,SOLVED;IP,n;ARP,n");
       break;
     case IP:
-      set_node_name (node, "NBSS,SOLVED;IP,n");
+      set_node_name (node, "NBSS,n;IP,n");
       break;
     case TCP:
       set_node_name (node, "TCP,n");
