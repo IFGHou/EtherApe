@@ -98,6 +98,8 @@ typedef struct
   guint8 *node_id;
   GString *name;
   GString *numeric_name;
+  gdouble accumulated;
+  gdouble n_packets;
 }
 name_t;
 
@@ -115,7 +117,7 @@ typedef struct
   gdouble accumulated;		/* Accumulated bytes in the last x ms */
   gdouble accumulated_in;	/* Accumulated incoming bytes in the last x ms */
   gdouble accumulated_out;	/* Accumulated outcoming bytes in the last x ms */
-  guint n_packets;		/* Number of total packets received */
+  gdouble n_packets;		/* Number of total packets received */
   struct timeval last_time;	/* Timestamp of the last packet to be added */
   GList *packets;		/* List of packets sizes in or out and
 				 * its sizes. Used to calculate average
@@ -289,6 +291,7 @@ gchar *get_packet_prot (const guint8 * packet);
 /* From names.c */
 void get_packet_names (GList ** protocols,
 		       const guint8 * packet,
+		       guint16 size,
 		       const gchar * prot_stack, packet_direction direction);
 
 /* From diagram.c */
