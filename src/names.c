@@ -463,8 +463,8 @@ get_nbss_name (void)
   gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
   guint name_len;
   int name_type;		/* TODO I hate to use an int here, while I have been
-				   * using glib data types all the time. But I just don't
-				   * know what it might mean in the ethereal implementation */
+				 * using glib data types all the time. But I just don't
+				 * know what it might mean in the ethereal implementation */
 
 
   mesg_type = *(guint8 *) (p + offset);

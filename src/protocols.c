@@ -82,8 +82,8 @@ get_packet_prot (const guint8 * p, guint len)
     }
 
   /* TODO I think this is a serious waste of CPU and memory.
-     * I think I should look at other ways of dealing with not recognized
-     * protocols other than just creating entries saying UNKNOWN */
+   * I think I should look at other ways of dealing with not recognized
+   * protocols other than just creating entries saying UNKNOWN */
   /* I think I'll do this by changing the global protocols into
    * a GArray */
 

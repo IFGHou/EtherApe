@@ -79,7 +79,7 @@ typedef unsigned long dword;
 
 typedef unsigned int ip_t;
 
-//#define USE_STATE_MACHINE
+#define USE_STATE_MACHINE
 
 /* Structures */
 
@@ -88,7 +88,7 @@ struct resolve
 #ifdef USE_STATE_MACHINE
   struct resolve *next;
   struct resolve *previous;
-#endif  
+#endif
   struct resolve *nextid;
   struct resolve *previousid;
   struct resolve *nextip;
@@ -96,9 +96,9 @@ struct resolve
   struct resolve *nexthost;
   struct resolve *previoushost;
 
-  /* linked list of struct for purging*/	
-  struct resolve *next_active; 
-  struct resolve *previous_active; 
+  /* linked list of struct for purging */
+  struct resolve *next_active;
+  struct resolve *previous_active;
 
   float expiretime;		/* Fucking HPUX has a problem with "double" here. */
   char *hostname;
@@ -263,7 +263,7 @@ struct logline *streamlog = NULL;
 struct logline *lastlog = NULL;
 
 /* max cache handling ... */
-static struct resolve *active_list = NULL; /* list of active item for purging */
+static struct resolve *active_list = NULL;	/* list of active item for purging */
 static long num_active = 0;
 static long max_active = 1024;
 
@@ -577,22 +577,22 @@ unlink_activelist (struct resolve *rp)
 {
   /* unlink only if linked */
   if (rp->next_active)
-  {
-     if (rp->next_active == rp)
-     {
-        /* last item of list */
-        active_list = NULL; 
-        num_active=0;
-     }
-     else
-     {     
-        rp->next_active->previous_active = rp->previous_active;
-        rp->previous_active->next_active = rp->next_active;
-	if (active_list == rp)
-	   active_list = rp->next_active;
-        num_active--;       
-     }
-  }
+    {
+      if (rp->next_active == rp)
+	{
+	  /* last item of list */
+	  active_list = NULL;
+	  num_active = 0;
+	}
+      else
+	{
+	  rp->next_active->previous_active = rp->previous_active;
+	  rp->previous_active->next_active = rp->next_active;
+	  if (active_list == rp)
+	    active_list = rp->next_active;
+	  num_active--;
+	}
+    }
 }
 
 /* makes room on active list if needed */
@@ -600,15 +600,15 @@ static void
 purge_activelist (void)
 {
   if (num_active > max_active && num_active > 10)
-  {
-     /* too much items, purge oldest items until we have some room */
-     while (active_list && num_active>0 && num_active >= max_active-10)
-     {
-        struct resolve *rp = active_list->previous_active;
-	unlinkresolve(rp);       
-	statfree(rp);
-     }
-  }
+    {
+      /* too much items, purge oldest items until we have some room */
+      while (active_list && num_active > 0 && num_active >= max_active - 10)
+	{
+	  struct resolve *rp = active_list->previous_active;
+	  unlinkresolve (rp);
+	  statfree (rp);
+	}
+    }
 }
 
 /* adds or moves rp to head of the active list */
@@ -616,36 +616,36 @@ static void
 link_activelist (struct resolve *rp)
 {
 #ifdef Debug
-  fprintf(stderr,"  active list size: %ld\n",num_active);
+  fprintf (stderr, "  active list size: %ld\n", num_active);
 #endif
 
   /* skip if rp is already the head */
   if (active_list != rp)
-  {
-     if (NULL == active_list)
-     {
-        /* list empty */
-        active_list = rp->next_active = rp->previous_active = rp; 
-	num_active=1;
-     }
-     else
-     {
-        if (NULL == rp->next_active)
-	   purge_activelist(); /* new element, make sure there is room ... */
-        else	   
-           unlink_activelist(rp);  /* moving element, first unlink, then relink */
-     
-        /* link at head */
-	rp->next_active = active_list;
-	rp->previous_active = active_list->previous_active;
+    {
+      if (NULL == active_list)
+	{
+	  /* list empty */
+	  active_list = rp->next_active = rp->previous_active = rp;
+	  num_active = 1;
+	}
+      else
+	{
+	  if (NULL == rp->next_active)
+	    purge_activelist ();	/* new element, make sure there is room ... */
+	  else
+	    unlink_activelist (rp);	/* moving element, first unlink, then relink */
 
-	active_list->previous_active->next_active = rp;
-	active_list->previous_active = rp;
+	  /* link at head */
+	  rp->next_active = active_list;
+	  rp->previous_active = active_list->previous_active;
 
-	active_list = rp;
-	num_active++;
-     }
-  }
+	  active_list->previous_active->next_active = rp;
+	  active_list->previous_active = rp;
+
+	  active_list = rp;
+	  num_active++;
+	}
+    }
 }
 
 void
@@ -904,10 +904,10 @@ untieresolve (struct resolve *rp)
 void
 unlinkresolve (struct resolve *rp)
 {
-  unlink_activelist(rp); /* removes from purge list */
+  unlink_activelist (rp);	/* removes from purge list */
 #ifdef USE_STATE_MACHINE
   untieresolve (rp);
-#endif    
+#endif
   unlinkresolveid (rp);
   unlinkresolveip (rp);
   if (rp->hostname)
@@ -1074,8 +1074,8 @@ failrp (struct resolve *rp)
   rp->state = STATE_FAILED;
 #ifdef USE_STATE_MACHINE
   untieresolve (rp);
-#endif  
-  link_activelist(rp); /* item becomes head of active list */
+#endif
+  link_activelist (rp);		/* item becomes head of active list */
   if (debug)
     restell ("Resolver: Lookup failed.\n");
 }
@@ -1087,8 +1087,8 @@ passrp (struct resolve *rp, long ttl)
   rp->expiretime = sweeptime + (double) ttl;
 #ifdef USE_STATE_MACHINE
   untieresolve (rp);
-#endif  
-  link_activelist(rp); /* item becomes head of active list */
+#endif
+  link_activelist (rp);		/* item becomes head of active list */
   if (debug)
     {
       sprintf (tempstring, "Resolver: Lookup successful: %s\n", rp->hostname);
@@ -1554,8 +1554,8 @@ dns_lookup2 (ip_t ip)
       if ((rp->state == STATE_FINISHED) || (rp->state == STATE_FAILED))
 	{
 	  /* item existing, make it the head of active list */
-          link_activelist(rp); 
-	
+	  link_activelist (rp);
+
 	  if ((rp->state == STATE_FINISHED) && (rp->hostname))
 	    {
 	      if (debug)
