@@ -25,17 +25,6 @@
 #include "main.h"
 #include "menus.h"
 
-static GnomeUIInfo help_submenu[] = {
-  GNOMEUIINFO_HELP ("etherape"),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_ABOUT_ITEM(on_about1_activate, NULL),
-  GNOMEUIINFO_END
-};
-
-static GnomeUIInfo help_menu[] = {
-  GNOMEUIINFO_MENU_HELP_TREE (help_submenu),
-  GNOMEUIINFO_END
-};
 
 int
 main (int argc, char *argv[])
@@ -243,8 +232,8 @@ main (int argc, char *argv[])
    * glade file and so it is not automatically adding the help items in the help
    * menu. Thus I must add it manually here */
 
-  widget = glade_xml_get_widget (xml, "menubar1");
-  gnome_app_fill_menu ((GtkMenuShell *)widget, help_menu, gtk_accel_group_get_default (), TRUE, 2);
+  widget = glade_xml_get_widget (xml, "help1_menu");
+  gnome_app_fill_menu ((GtkMenuShell *)widget, help_submenu, gtk_accel_group_get_default (), TRUE, 1);
 
 
   /* MAIN LOOP */

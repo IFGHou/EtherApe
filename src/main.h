@@ -36,3 +36,8 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
+
+static GnomeUIInfo help_submenu[] = {
+  GNOMEUIINFO_HELP ("etherape"),
+  GNOMEUIINFO_END
+};
