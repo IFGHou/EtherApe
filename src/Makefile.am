@@ -11,7 +11,6 @@ etherape_SOURCES = \
 	diagram.c diagram.h \
 	capture.c capture.h \
 	resolv.c resolv.h \
-	name.c \
 	util.c util.h \
 	support.c support.h \
 	interface.c interface.h \
