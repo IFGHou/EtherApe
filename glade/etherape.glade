@@ -533,7 +533,7 @@
 	  <tooltip>Display the protocols window</tooltip>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_protocols_toolbar_button_clicked</handler>
+	    <handler>toggle_protocols_window</handler>
 	    <last_modification_time>Tue, 08 May 2001 10:30:00 GMT</last_modification_time>
 	  </signal>
 	  <label>Prot.</label>
@@ -2654,8 +2654,8 @@ Accumulated traffic (Outbound)
   <visible>False</visible>
   <signal>
     <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Mon, 07 May 2001 18:32:05 GMT</last_modification_time>
+    <handler>toggle_protocols_window</handler>
+    <last_modification_time>Tue, 08 May 2001 10:57:06 GMT</last_modification_time>
   </signal>
   <title>EtherApe: Protocols</title>
   <type>GTK_WINDOW_TOPLEVEL</type>

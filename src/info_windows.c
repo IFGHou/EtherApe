@@ -286,7 +286,7 @@ update_node_info_window (node_info_window_t * node_info_window)
 }				/* update_node_info_window */
 
 void
-display_protocols_window (void)
+toggle_protocols_window (void)
 {
   static GtkWidget *protocols_window = NULL;
   static GtkWidget *protocols_check = NULL;
@@ -294,31 +294,8 @@ display_protocols_window (void)
   if (!protocols_check)
     protocols_check = glade_xml_get_widget (xml, "protocols_check");
 
-  if (!(GTK_CHECK_MENU_ITEM (protocols_check)->active))
-    {
-      gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
-      return;
-    }
-
-  if (!protocols_window)
-    protocols_window = glade_xml_get_widget (xml, "protocols_window");
-
-  gtk_widget_show (protocols_window);
-  gdk_window_raise (protocols_window->window);
-  update_protocols_window ();
-}				/* display_protocols_window */
-
-void
-on_protocols_toolbar_button_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *protocols_check = NULL;
-
-  if (!protocols_check)
-    protocols_check = glade_xml_get_widget (xml, "protocols_check");
-
   gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
-
-}				/* on_protocols_toolbar_button_clicked */
+}				/* toggle_protocols_window */
 
 void
 on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
@@ -329,7 +306,11 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     protocols_window = glade_xml_get_widget (xml, "protocols_window");
 
   if (menuitem->active)
-    display_protocols_window ();
+    {
+      gtk_widget_show (protocols_window);
+      gdk_window_raise (protocols_window->window);
+      update_protocols_window ();
+    }
   else
     gtk_widget_hide (protocols_window);
 }				/* on_protocols_check_activate */
@@ -342,7 +323,7 @@ on_prot_table_button_press_event (GtkWidget * widget,
   switch (event->type)
     {
     case GDK_2BUTTON_PRESS:
-      display_protocols_window ();
+      toggle_protocols_window ();
     default:
     }
 

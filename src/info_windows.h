@@ -33,5 +33,3 @@ static void update_node_info_window (node_info_window_t * node_info_window);
 static gint node_info_compare (gconstpointer a, gconstpointer b);
 
 void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);
-void on_protocols_toolbar_button_clicked (GtkButton * button,
-					  gpointer user_data);
