@@ -2,7 +2,7 @@
 
 # $Id$
 
-SUBDIRS = intl m4  intl po macros src doc glade
+SUBDIRS = intl m4 po macros src doc glade
 
 
 indent:
