@@ -95,6 +95,9 @@ main (int argc, char *argv[])
   text_color = g_strdup ("yellow");
   node_limit = -1;
 
+   
+  set_debug_level();
+   
   /* Config file */
   load_config ("/Etherape/");
 
@@ -102,11 +105,13 @@ main (int argc, char *argv[])
   poptcon = poptGetContext ("Etherape", argc, argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
+#if 0
+  /* As far as I know this is not useful since the load_config is _ALWAYS_ 
+   * providing with a default */
   if (!fontname)
-    fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
-
-  set_debug_level ();
-
+    fontname = g_strdup ("-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-koi8-r");
+#endif   
+  
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
 
@@ -288,7 +293,7 @@ load_config (char *prefix)
 		 "you really want"));
   fontname =
     gnome_config_get_string_with_default
-    ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
+    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
 
   g_free (config_file_version);
   gnome_config_pop_prefix ();
