@@ -1,11 +1,12 @@
-# List of source files containing translatable strings.
-
+#[encoding: UTF-8]
 src/main.c
 src/callbacks.c
 src/capture.c
 src/menus.c
 src/diagram.c
 src/protocols.c
-src/glade-strings
+#src/glade-strings
 src/conversations.c
 src/info_windows.c
+# files added by intltool-prepare
+etherape.desktop.in

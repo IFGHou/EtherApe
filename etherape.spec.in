@@ -62,3 +62,4 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/etherape/*/*
 %{prefix}/share/gnome/*/*/*
 %{prefix}/share/pixmaps/*
+%{prefix}/man/man1/*

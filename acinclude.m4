@@ -131,9 +131,8 @@ AC_DEFUN(AC_ETHEREAL_PCAP_CHECK,
 	fi
 
 	# Pcap header checks
-	AC_CHECK_HEADER(net/bpf.h,,
-	    AC_MSG_ERROR([[Header file net/bpf.h not found; if you installed libpcap from source, did you also do \"make install-incl\"?]]))
-	AC_CHECK_HEADER(pcap.h,, AC_MSG_ERROR(Header file pcap.h not found.))
+	AC_CHECK_HEADER(pcap.h,,
+	    AC_MSG_ERROR([[Header file pcap.h not found; if you installed libpcap from source, did you also do \"make install-incl\"?]]))
 
 	#
 	# Check to see if we find "pcap_open_live" in "-lpcap".

@@ -1,20 +1,36 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.57)
-AC_INIT(etherape, 0.9.0)
+AC_PREREQ(2.53)
+AC_INIT([etherape],[0.9.1])
 AC_CONFIG_SRCDIR(README)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
+# defines
+#AC_DEFINE([ENABLE_NLS],[],[cmt])
+AC_DEFINE([HAVE_CATGETS],[],[cmt])
+#AC_DEFINE([HAVE_GETTEXT],[],[cmt])
+AC_DEFINE([GETTEXT_PACKAGE],[],[cmt])
+#AC_DEFINE([HAVE_LC_MESSAGES],[],[cmt])
+#AC_DEFINE([HAVE_STPCPY],[],[cmt])
+AC_DEFINE([HAVE_LIBSM],[],[cmt])
+#AC_DEFINE([PACKAGE_LOCALE_DIR],[],[cmt])
+AC_DEFINE([PACKAGE_DATA_DIR],[],[cmt])
+AC_DEFINE([PACKAGE_SOURCE_DIR],[],[cmt])
+#AC_DEFINE([DATAFILE_DIR],[],[Directory of data files])
+#AC_DEFINE([PIXMAPS_DIR],[],[cmt])
+AC_DEFINE([HAVE_LIBPCAP],[],[cmt])
+AC_DEFINE([HAVE_U_INT],[],[cmt])
+
 # Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
+#AC_PROG_INTLTOOL(0.27)
 
 # gnome checks
 GNOME_COMPILE_WARNINGS
@@ -61,7 +77,6 @@ AC_ARG_ENABLE(static-pcap,
 AC_ETHEREAL_PCAP_CHECK
 
 # Checks for library functions.
-#AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
@@ -77,43 +92,39 @@ DATAFILE_DIR=$sysconfdir
 #    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
 #    eval echo "$DATAFILE_DIR"
 #    )
-AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
+AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR",[data file directory])
 AC_SUBST(DATAFILE_DIR)
 
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr"
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.11.5])
 GETTEXT_PACKAGE=etherape
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale",[package locale directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",[package locale directory])
 fi
 
 dnl Set PIXMAPS_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps")
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
 else
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps")
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
 fi
 
-
-
-
-
 AC_CONFIG_FILES([Makefile
-                 etherape.spec
-                 glade/Makefile
-                 src/Makefile
-		 m4/Makefile
-        	 doc/Makefile
- 		 doc/C/Makefile
-		 po/Makefile.in])
-
-
+	   po/Makefile.in
+           etherape.spec
+           glade/Makefile
+           src/Makefile
+	   m4/Makefile
+           doc/Makefile
+ 	   doc/C/Makefile])
 AC_OUTPUT
+

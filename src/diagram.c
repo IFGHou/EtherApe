@@ -421,7 +421,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 		    0, 1, n_rows - 1, n_rows,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
-  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1);
+  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns );
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 

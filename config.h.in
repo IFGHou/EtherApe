@@ -18,8 +18,15 @@
 #undef u_long
 #undef u_short
 
-/* always defined to indicate that i18n is enabled */
+/* data file directory */
+#undef DATAFILE_DIR
+
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
 #undef ENABLE_NLS
+
+/* cmt */
+#undef GETTEXT_PACKAGE
 
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
@@ -27,10 +34,11 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Define to 1 if you have the `bind_textdomain_codeset' function. */
-#undef HAVE_BIND_TEXTDOMAIN_CODESET
+/* cmt */
+#undef HAVE_CATGETS
 
-/* Define to 1 if you have the `dcgettext' function. */
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
 #undef HAVE_DCGETTEXT
 
 /* Define to 1 if you have the <fcntl.h> header file. */
@@ -51,14 +59,14 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define if you have the iconv() function. */
+#undef HAVE_ICONV
+
 /* Define to 1 if you have the `inet_ntoa' function. */
 #undef HAVE_INET_NTOA
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define if your <locale.h> file defines LC_MESSAGES. */
-#undef HAVE_LC_MESSAGES
 
 /* Define to 1 if you have the `bind' library (-lbind). */
 #undef HAVE_LIBBIND
@@ -66,11 +74,14 @@
 /* Define to 1 if you have the `c' library (-lc). */
 #undef HAVE_LIBC
 
+/* cmt */
+#undef HAVE_LIBPCAP
+
 /* Define to 1 if you have the `resolv' library (-lresolv). */
 #undef HAVE_LIBRESOLV
 
-/* Define to 1 if you have the <locale.h> header file. */
-#undef HAVE_LOCALE_H
+/* cmt */
+#undef HAVE_LIBSM
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
@@ -169,8 +180,17 @@
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
+/* cmt */
+#undef PACKAGE_DATA_DIR
+
+/* package locale directory */
+#undef PACKAGE_LOCALE_DIR
+
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
+
+/* cmt */
+#undef PACKAGE_SOURCE_DIR
 
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING
@@ -180,6 +200,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* pixmaps directory */
+#undef PIXMAPS_DIR
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE

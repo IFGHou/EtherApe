@@ -396,7 +396,6 @@
 	      <child>
 		<widget class="button" id="pause_button">
 		  <property name="visible">True</property>
-		  <property name="sensitive">False</property>
 		  <property name="tooltip" translatable="yes">Pause capture</property>
 		  <property name="label" translatable="yes">Pause</property>
 		  <property name="use_underline">True</property>
@@ -408,7 +407,6 @@
 	      <child>
 		<widget class="button" id="stop_button">
 		  <property name="visible">True</property>
-		  <property name="sensitive">False</property>
 		  <property name="tooltip" translatable="yes">Stop capture</property>
 		  <property name="label" translatable="yes">Stop</property>
 		  <property name="use_underline">True</property>
