@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
-"POT-Creation-Date: 2001-04-20 00:54+0200\n"
+"POT-Creation-Date: 2001-04-21 04:51+0200\n"
 "PO-Revision-Date: 2001-03-24 17:39+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -229,17 +229,17 @@ msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/capture.c:861
+#: src/capture.c:855
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
-#: src/capture.c:990
+#: src/capture.c:984
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Lijn verwijderd. Aantal lijnen %d"
 
-#: src/capture.c:1230
+#: src/capture.c:1216
 msgid "Null packet in check_packet"
 msgstr "(null)-pakket in check_packet"
 
