@@ -1,9 +1,10 @@
 
   Overview of changes in CVS Etherape 0.1.7 (Tuesday 02-28-2000):
   
-     * Added libm to autoconf.in for systems with a separate math lib.
      * Pcap filtering added. Now you can use tcpdump style filtering
        (enclosed in quotes) with the -f option.
+     * Added libm to autoconf.in for systems with a separate math lib.
+     * First try at debian packaging.
        
   Overview of changes in Etherape 0.1.6 (Monday 02-28-2000):
   

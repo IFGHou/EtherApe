@@ -4,7 +4,7 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR)
 
-bin_PROGRAMS = etherape
+sbin_PROGRAMS = etherape
 
 etherape_SOURCES = \
 	main.c \

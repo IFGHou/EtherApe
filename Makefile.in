@@ -110,6 +110,8 @@ cxxflags_set = @cxxflags_set@
 l = @l@
 
 SUBDIRS = intl po macros src
+
+EXTRA_DIST = README.thanks NEWS.html
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h

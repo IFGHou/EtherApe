@@ -10,6 +10,8 @@ cvs : NEWS
 	cvs commit
 	cd ../www && make
 
+EXTRA_DIST = README.thanks NEWS.html
+
 full-dist :
 	test `whoami` = toledo
 	test `echo ${VERSION}` != `cat old.version`
