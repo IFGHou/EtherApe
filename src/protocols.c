@@ -357,8 +357,6 @@ get_ip (void)
 static void
 get_tcp (void)
 {
-#define IS_PORT(p) ( (src_service && src_service->number==p) \
-		       || (dst_service && dst_service->number==p) )
 
   tcp_service_t *src_service, *dst_service;
   tcp_type_t src_port, dst_port;
@@ -410,7 +408,7 @@ get_tcp (void)
 static void
 get_udp (void)
 {
-  udp_service_t *service;
+  udp_service_t *src_service, *dst_service;
   udp_type_t src_port, dst_port;
   gchar *str;
 
@@ -425,21 +423,32 @@ get_udp (void)
   /* TODO We should check up the size of the packet the same
    * way it is done in TCP */
 
+  src_service = g_tree_lookup (udp_services, &src_port);
+  dst_service = g_tree_lookup (udp_services, &dst_port);
+
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
-
   if (get_rpc ())
     return;
 
-  if (!(service = g_tree_lookup (udp_services, &src_port)))
-    service = g_tree_lookup (udp_services, &dst_port);
+  if (IS_PORT (UDP_NETBIOS_NS))
+    {
+      get_netbios_dgm ();
+      return;
+    }
 
-  if (!service)
+  if (!dst_service && !src_service)
     {
       prot = g_string_append (prot, "/UDP_UNKNOWN");
       return;
     }
-  str = g_strdup_printf ("/%s", service->name);
+
+  /* In case both src and dst are known port numbers,
+     * we arbitrarely say the dst port marks the protocol */
+  if (!dst_service)
+    dst_service = src_service;
+
+  str = g_strdup_printf ("/%s", dst_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
   str = NULL;
@@ -458,6 +467,9 @@ get_rpc (void)
     return FALSE;		/* not big enough */
 
   msg_type = pntohl (packet + offset + 4);
+  if (msg_type != RPC_REPLY || msg_type != RPC_CALL)
+    return FALSE;
+
   prot = g_string_append (prot, "/RPC");
 
   switch (msg_type)
@@ -516,17 +528,34 @@ get_netbios_ssn (void)
   guint8 mesg_type;
 
   prot = g_string_append (prot, "/NBSS");
-  g_my_debug ("Found NBSS packet");
+
   mesg_type = *(guint8 *) (packet + offset);
 
   if (mesg_type == SESSION_MESSAGE)
-    {
-      prot = g_string_append (prot, "/SMB");
-      g_my_debug ("Found NBSS/SMB packet");
-    }
+    prot = g_string_append (prot, "/SMB");
 
+  /* TODO Calculate new offset whenever we have
+   * a "dissector" for a higher protocol */
   return;
 }				/* get_netbions_ssn */
+
+void
+get_netbios_dgm (void)
+{
+  guint8 mesg_type;
+
+  prot = g_string_append (prot, "/NETBIOS-DGM");
+
+  mesg_type = *(guint8 *) (packet + offset);
+
+  /* Magic numbers copied from ethereal, as usual */
+  if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
+    prot = g_string_append (prot, "/SMB");
+
+  /* TODO Calculate new offset whenever we have
+   * a "dissector" for a higher protocol */
+  return;
+}
 
 /* Comparison function to sort tcp services port number */
 static gint

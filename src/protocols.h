@@ -20,6 +20,8 @@
 
 #include "prot_types.h"
 
+#define IS_PORT(p) ( (src_service && src_service->number==p) \
+		       || (dst_service && dst_service->number==p) )
 #define LINESIZE 1024
 
 /* Enums */
@@ -61,5 +63,6 @@ static gint tcp_compare (gconstpointer a, gconstpointer b);
 static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
 static void get_netbios_ssn (void);
+static void get_netbios_dgm (void);
 static gboolean get_rpc (void);
 static void load_services (void);
