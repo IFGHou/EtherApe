@@ -23,4 +23,5 @@
 #include "prot_types.h"
 
 void get_eth_name (void);
+void get_ip_name (void);
 gint id_compare (gconstpointer a, gconstpointer b);

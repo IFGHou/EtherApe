@@ -19,8 +19,26 @@
 
 #include <gnome.h>
 #include <netinet/in.h>
-
 #include "names.h"
+
+typedef void (p_func_t) (void);
+
+typedef struct
+{
+  gchar *prot;
+  p_func_t *function;
+}
+prot_function_t;
+
+#define KNOWN_PROTS 4
+
+static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
+  {"ETH_II", get_eth_name},
+  {"802.2", get_eth_name},
+  {"802.3", get_eth_name},
+  {"ISL", get_eth_name},
+  {"IP", get_ip_name}
+};
 
 static const guint8 *p;
 static guint16 offset;
@@ -33,6 +51,10 @@ static protocol_t *protocol;
 static GList *name_item;
 static name_t *name;
 static gchar **tokens = NULL;
+static GTree *prot_functions = NULL;
+static prot_function_t *next_func = NULL;
+
+
 
 void
 get_packet_names (GList ** protocols,
@@ -41,6 +63,16 @@ get_packet_names (GList ** protocols,
 {
   g_assert (protocols != NULL);
   g_assert (packet != NULL);
+
+  if (!prot_functions)
+    {
+      guint i = 0;
+      prot_functions = g_tree_new ((GCompareFunc) strcmp);
+      for (; i <= KNOWN_PROTS; i++)
+	g_tree_insert (prot_functions,
+		       prot_functions_table[i].prot,
+		       &(prot_functions_table[i]));
+    }
 
   p = packet;
   dir = direction;
@@ -71,16 +103,9 @@ void
 get_eth_name (void)
 {
   const guint8 *eth_address;
-  etype_t etype;
-  ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
   static gchar *prot = NULL;
 
   prot = tokens[level];
-
-#if 0
-  if (prot)
-    g_free (prot);
-#endif
 
   if (dir == INBOUND)
     eth_address = p + offset;
@@ -88,35 +113,6 @@ get_eth_name (void)
     eth_address = p + offset + 6;
 
   id_length = 6;
-
-#if 0
-  etype = pntohs (&p[offset + 12]);
-
-  /* See protocols.c for an explanation */
-  if (etype <= IEEE_802_3_MAX_LEN)
-    {
-      if (p[offset + 14] == 0xff && p[offset + 15] == 0xff)
-	{
-	  ethhdr_type = ETHERNET_802_3;
-	  prot = g_strdup ("802.3");
-	}
-      else
-	{
-	  ethhdr_type = ETHERNET_802_2;
-	  prot = g_strdup ("802.2");
-	}
-
-      if (p[offset + 0] == 0x01 && p[offset + 1] == 0x00
-	  && p[offset + 2] == 0x0C && p[offset + 3] == 0x00
-	  && p[offset + 4] == 0x00)
-	{
-	  prot = g_strdup ("ISL");
-	}
-
-    }
-  else
-    prot = g_strdup ("ETH_II");
-#endif
 
   /* Find the protocol entry */
   protocol_item = g_list_find_custom (prot_list[level],
@@ -143,12 +139,21 @@ get_eth_name (void)
   level++;
   offset += 14;
 
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
 }				/* get_eth_name */
 
 
+void
+get_ip_name (void)
+{
+}				/* get_ip_name */
+
+
 /* Comparison function used to compare two node ids */
-gint
-id_compare (gconstpointer a, gconstpointer b)
+gint id_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
