@@ -52,10 +52,10 @@ gboolean need_reposition;	/* It is set when a canvas_node has been added
 				 * or deleted */
 
 struct popup_data
-{
-  GtkWidget *node_popup;
-  canvas_node_t *canvas_node;
-};
+  {
+    GtkWidget *node_popup;
+    canvas_node_t *canvas_node;
+  };
 
 /* Extern global variables */
 
@@ -109,12 +109,14 @@ get_prot_color (gchar * name)
   return "tan";
 }				/* get_prot_color */
 
-gdouble get_node_size (gdouble average)
+gdouble
+get_node_size (gdouble average)
 {
   return (double) 5 + node_radius_multiplier * average;
 }
 
-gdouble get_link_size (gdouble average)
+gdouble
+get_link_size (gdouble average)
 {
   return (double) 1 + link_width_multiplier * average;
 }
@@ -127,7 +129,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
     {
 
     case GDK_BUTTON_PRESS:
-      g_message (_("Most common prot is %s"), canvas_link->link->main_prot);
+      g_message (_ ("Most common prot is %s"), canvas_link->link->main_prot);
       break;
     default:
       break;
@@ -136,7 +138,8 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
   return FALSE;
 }
 
-guint popup_to (struct popup_data * pd)
+guint
+popup_to (struct popup_data * pd)
 {
 
   GtkLabel *label;
@@ -148,19 +151,15 @@ guint popup_to (struct popup_data * pd)
     gtk_label_set_text (label,
 			g_strdup_printf ("%s (%s, %s)",
 					 pd->canvas_node->node->name->str,
-					 pd->canvas_node->node->numeric_ip->
-					 str,
-					 pd->canvas_node->node->numeric_name->
-					 str));
+				     pd->canvas_node->node->numeric_ip->str,
+				 pd->canvas_node->node->numeric_name->str));
   else
     gtk_label_set_text (label,
 			g_strdup_printf ("%s (%s)",
 					 pd->canvas_node->node->name->str,
-					 pd->canvas_node->node->numeric_name->
-					 str));
+				 pd->canvas_node->node->numeric_name->str));
 
-  label =
-    (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
+  label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
   gtk_label_set_text (label,
 		      g_strdup_printf ("Acummulated bytes: %g",
 				       pd->canvas_node->node->accumulated));
@@ -182,7 +181,8 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 {
 
   gdouble item_x, item_y;
-  static struct popup_data pd = { NULL, NULL };
+  static struct popup_data pd =
+  {NULL, NULL};
   static gint popup = 0;
 
   /* This is not used yet, but it will be. */
@@ -224,7 +224,10 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   gdouble oddAngle = angle;
 
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
-				  &xmin, &ymin, &xmax, &ymax);
+				  &xmin,
+				  &ymin,
+				  &xmax,
+				  &ymax);
   if (!n_nodes)
     {
       n_nodes = node_i = g_tree_nnodes (canvas_nodes);
@@ -235,9 +238,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 				 * the node name is not lost
 				 * TODO: Need a function to calculate
 				 * text_compensation depending on font size */
-  rad_max = ((xmax - xmin) > (ymax - ymin)) ? 0.9 * (y =
-						     (ymax -
-						      ymin)) / 2 : 0.9 *
+  rad_max = ((xmax - xmin) > (ymax - ymin)) ? 0.9 * (y = (ymax - ymin)) / 2 : 0.9 *
     (x = (xmax - xmin)) / 2;
 
   if (n_nodes % 2 == 0)		/* spacing is better when n_nodes is odd and Y is linear */
@@ -254,7 +255,9 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
     }
 
   gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
-			 "x", x, "y", y, NULL);
+			 "x", x,
+			 "y", y,
+			 NULL);
   if (diagram_only)
     {
       gnome_canvas_item_hide (canvas_node->text_item);
@@ -323,13 +326,13 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	  if (interape)
 	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		   _
-		   ("Removing link and canvas_link: %s-%s. Number of links %d"),
+	       ("Removing link and canvas_link: %s-%s. Number of links %d"),
 		   ip_to_str (link_id), ip_to_str (link_id + 4),
 		   g_tree_nnodes (canvas_links));
 	  else
 	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		   _
-		   ("Removing link and canvas_link: %s-%s. Number of links %d"),
+	       ("Removing link and canvas_link: %s-%s. Number of links %d"),
 		   get_ether_name (link_id + 6), get_ether_name (link_id),
 		   g_tree_nnodes (canvas_links));
 #endif
@@ -414,12 +417,14 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
     gnome_canvas_item_set (canvas_link->link_item,
 			   "points", points,
 			   "fill_color", get_prot_color (link->main_prot),
-			   "width_units", link_size, NULL);
+			   "width_units", link_size,
+			   NULL);
   else
     gnome_canvas_item_set (canvas_link->link_item,
 			   "points", points,
 			   "fill_color_rgba", baseColor,
-			   "width_units", link_size, NULL);
+			   "width_units", link_size,
+			   NULL);
 
   gnome_canvas_points_unref (points);
 
@@ -497,7 +502,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   gnome_canvas_item_set (canvas_node->node_item,
 			 "x1", -node_size / 2,
 			 "x2", node_size / 2,
-			 "y1", -node_size / 2, "y2", node_size / 2, NULL);
+			 "y1", -node_size / 2,
+			 "y2", node_size / 2,
+			 NULL);
 
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
@@ -506,7 +513,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   if (strcmp (args[0].d.string_data, node->name->str))
     {
       gnome_canvas_item_set (canvas_node->text_item,
-			     "text", node->name->str, NULL);
+			     "text", node->name->str,
+			     NULL);
       gnome_canvas_item_request_update (canvas_node->text_item);
     }
 
@@ -515,7 +523,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint
+check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -541,14 +550,12 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       points->coords[0] = points->coords[1] = points->coords[2] =
 	points->coords[3] = 0.0;
 
-      new_canvas_link->link_item = gnome_canvas_item_new (group,
-							  gnome_canvas_line_get_type
-							  (), "points",
-							  points,
-							  "fill_color",
-							  link_color,
-							  "width_units",
-							  0.0, NULL);
+      new_canvas_link->link_item = gnome_canvas_item_new (group, 
+							  gnome_canvas_line_get_type (),
+							  "points", points,
+							  "fill_color", link_color,
+							  "width_units", 0.0,
+							  NULL);
 
 
       g_tree_insert (canvas_links, link_id, new_canvas_link);
@@ -563,10 +570,10 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 /* TODO properly give link creating message */
 #if 0
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Creating canvas_link: %s-%s. Number of links %d"),
+	     _ ("Creating canvas_link: %s-%s. Number of links %d"),
 	     (node_t
 	      *) (g_tree_lookup (nodes,
-				 new_canvas_link->canvas_link_id))->name->str,
+			       new_canvas_link->canvas_link_id))->name->str,
 	     (node_t
 	      *) (g_tree_lookup (nodes,
 				 (new_canvas_link->canvas_link_id) +
@@ -582,7 +589,8 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint
+check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -596,12 +604,13 @@ gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->node = node;
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
-							 gnome_canvas_group_get_type
-							 (), "x", 100.0,
-							 "y", 100.0, NULL));
+						 gnome_canvas_group_get_type (),
+							 "x", 100.0,
+							 "y", 100.0,
+							 NULL));
 
       new_canvas_node->node_item = gnome_canvas_item_new (group,
-							  GNOME_TYPE_CANVAS_ELLIPSE,
+						  GNOME_TYPE_CANVAS_ELLIPSE,
 							  "x1", 0.0,
 							  "x2", 0.0,
 							  "y1", 0.0,
@@ -614,10 +623,13 @@ gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							  NULL);
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT, "text",
-			       node->name->str, "x", 0.0, "y", 0.0,
-			       "anchor", GTK_ANCHOR_CENTER, "font",
-			       "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
-			       "fill_color", text_color, NULL);
+			       node->name->str,
+			       "x", 0.0,
+			       "y", 0.0,
+			       "anchor", GTK_ANCHOR_CENTER,
+			       "font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+			       "fill_color", text_color,
+			       NULL);
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
@@ -627,7 +639,7 @@ gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 
       g_tree_insert (canvas_nodes, node_id, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Creating canvas_node: %s. Number of nodes %d"),
+	     _ ("Creating canvas_node: %s. Number of nodes %d"),
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
 
       need_reposition = 1;
@@ -681,11 +693,6 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
   color_string = get_prot_color (protocol->name);
   gdk_color_parse (color_string, &prot_color);
-
-
-
-
-
   gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &prot_color,
 			    TRUE, TRUE);
 
@@ -700,7 +707,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new;
@@ -749,9 +757,9 @@ guint update_diagram (GtkWidget * canvas)
 
       /* TODO: Am I leaking here with each call to g_strdup_printf?
        * How should I do this if so? */
-      gnome_appbar_push (appbar, g_strconcat (_("Number of nodes: "),
+      gnome_appbar_push (appbar, g_strconcat (_ ("Number of nodes: "),
 					      g_strdup_printf ("%d",
-							       n_nodes_after),
+							     n_nodes_after),
 					      NULL));
 
       need_reposition = 0;

@@ -278,9 +278,9 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	   * this is not right in the first place. */
 	  /* We look for the ip side only if it is an IP packet and 
 	   * the host is not found in /etc/ethers */
-	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
-	      (node->ip_address ||
-	       (packet && (packet[12] == 0x08) && (packet[13] == 0x00))))
+	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id))
+	      && (node->ip_address ||
+		  (packet && (packet[12] == 0x08) && (packet[13] == 0x00))))
 	    {
 	      if (!node->name)
 		node->name =
@@ -329,11 +329,10 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	{
 	  node->numeric_name = g_string_new (ip_to_str (node_id));
 	  node->numeric_name = g_string_append_c (node->numeric_name, ':');
-	  node->numeric_name = g_string_append (node->numeric_name,
-						g_strdup_printf ("%d",
-								 *(guint16
-								   *) (node_id
-								       + 4)));
+	  node->numeric_name =
+	    g_string_append (node->numeric_name,
+			     g_strdup_printf ("%d",
+					      *(guint16 *) (node_id + 4)));
 	}
 
       if (numeric)
@@ -342,11 +341,11 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	    {
 	      node->name = g_string_new (ip_to_str (node_id));
 	      node->name = g_string_append_c (node->name, ':');
-	      node->name = g_string_append (node->name,
-					    g_strdup_printf ("%d",
-							     *(guint16
-							       *) (node_id +
-								   4)));
+	      node->name =
+		g_string_append (node->name,
+				 g_strdup_printf ("%d",
+						  *(guint16 *)
+						  (node_id + 4)));
 	    }
 	}
       else
@@ -373,7 +372,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 
     default:
       /* TODO Write proper assertion code here */
-      g_error (_("Reached default in fill_names"));
+      g_error (_ ("Reached default in fill_names"));
     }
 }				/* fill_names */
 
@@ -386,7 +385,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node_t *node;
   gchar *na;
 
-  na = g_strdup (_("n/a"));
+  na = g_strdup (_ ("n/a"));
 
   node = g_malloc (sizeof (node_t));
 
@@ -407,7 +406,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
 
   g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Creating node: %s. Number of nodes %d"),
+	 _ ("Creating node: %s. Number of nodes %d"),
 	 node->name->str, g_tree_nnodes (nodes));
 
   return node;
@@ -436,12 +435,12 @@ create_link (const guint8 * packet, const guint8 * link_id)
 #if 0
   if (interape)
     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _("Creating link: %s-%s. Number of links %d"),
+	   _ ("Creating link: %s-%s. Number of links %d"),
 	   ip_to_str (packet + 26), ip_to_str (packet + 30),
 	   g_tree_nnodes (links));
   else
     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	   _("Creating link: %s-%s. Number of links %d"),
+	   _ ("Creating link: %s-%s. Number of links %d"),
 	   get_ether_name (packet + 6), get_ether_name (packet),
 	   g_tree_nnodes (links));
 #endif
@@ -497,7 +496,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
   if (!packet)
     {
-      g_warning (_("Null packet in check_packet"));
+      g_warning (_ ("Null packet in check_packet"));
       return NULL;
     }
 
@@ -551,7 +550,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	    link->average = 0;
 	  /* We remove protocol aggregate information */
 	  protocol_item = g_list_find_custom (link->protocols,
-					      packet->prot, protocol_compare);
+					      packet->prot,
+					      protocol_compare);
 	  protocol_info = protocol_item->data;
 	  protocol_info->accumulated -= packet->size;
 	  if (!protocol_info->accumulated)
@@ -710,7 +710,7 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
       break;
     default:
       /* TODO Write proper assertion code here */
-      g_error (_("Reached default in get_node_id"));
+      g_error (_ ("Reached default in get_node_id"));
     }
 
   return node_id;
@@ -746,7 +746,7 @@ get_link_id (const guint8 * packet)
       g_memmove (link_id + 10, &port, 2);
       break;
     default:
-      g_error (_("Unsopported ape mode in get_link_id"));
+      g_error (_ ("Unsopported ape mode in get_link_id"));
     }
   return link_id;
 }				/* get_link_id */
@@ -919,7 +919,7 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  g_error (_("Error getting device: %s"), ebuf);
+	  g_error (_ ("Error getting device: %s"), ebuf);
 	  exit (1);
 	}
     }
@@ -928,7 +928,7 @@ init_capture (void)
       ((pcap_t *) pch =
        pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
     {
-      g_error (_("Error opening %s : %s - perhaps you need to be root?"),
+      g_error (_ ("Error opening %s : %s - perhaps you need to be root?"),
 	       device, ebuf);
     }
 
@@ -939,19 +939,19 @@ init_capture (void)
       if (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0)
 	{
 	  g_warning (_
-		     ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+		  ("Can't use filter:  Couldn't obtain netmask info (%s)."),
 		     ebuf);
 	  ok = 0;
 	}
       if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
 	{
-	  g_warning (_("Unable to parse filter string (%s)."),
+	  g_warning (_ ("Unable to parse filter string (%s)."),
 		     pcap_geterr (pch));
 	  ok = 0;
 	}
       if (ok && (pcap_setfilter (pch, &fp) < 0))
 	{
-	  g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
+	  g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
 	}
     }
 
@@ -976,14 +976,14 @@ init_capture (void)
 	mode = IP;
       if (mode == ETHERNET)
 	{
-	  g_message (_("Mode not available in this device"));
+	  g_message (_ ("Mode not available in this device"));
 	  /* TODO manage proper exit codes */
 	  exit (1);
 	}
       l3_offset = 0;
       break;
     default:
-      g_error (_("Link type not yet supported"));
+      g_error (_ ("Link type not yet supported"));
     }
 
 
@@ -1002,7 +1002,7 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      g_error (_("Ape mode not yet supported"));
+      g_error (_ ("Ape mode not yet supported"));
     }
 
   if (!numeric)
