@@ -1,0 +1,445 @@
+# Etherape.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>, 2001.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Etherape\n"
+"POT-Creation-Date: 2000-05-04 15:51+0200\n"
+"PO-Revision-Date: 2001-03-24 17:39+0100\n"
+"Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/main.c:38
+msgid "mode of operation"
+msgstr "operatie-modus"
+
+#: src/main.c:38
+msgid "<ethernet|fddi|ip|tcp>"
+msgstr "<ethernet|fddi|ip|tcp>"
+
+#: src/main.c:40
+msgid "set interface to listen to"
+msgstr "hou deze interface in de gaten"
+
+#: src/main.c:40
+msgid "<interface name>"
+msgstr "<interface naam>"
+
+#: src/main.c:42
+msgid "set capture filter"
+msgstr "weergavefilter"
+
+#: src/main.c:42
+msgid "<capture filter>"
+msgstr "<filter>"
+
+#: src/main.c:44
+msgid "set input file"
+msgstr "selecteer invoerbestand"
+
+#: src/main.c:44
+msgid "<file name>"
+msgstr "<bestand>"
+
+#: src/main.c:46
+msgid "don't convert addresses to names"
+msgstr "converteer adressen niet naar namen"
+
+#: src/main.c:48
+msgid "don't display any node text identification"
+msgstr "geef geen enkele identificatie van de knooppunten weer"
+
+#: src/main.c:50
+msgid "do not fade old links"
+msgstr "laat oude lijnen niet vervagen"
+
+#: src/main.c:52
+msgid "don't move nodes around"
+msgstr "verschuif de knooppunten niet"
+
+#: src/main.c:54
+msgid "limits nodes displayed"
+msgstr "beperk aantal weergegeven knooppunten"
+
+#: src/main.c:54
+msgid "<number of nodes>"
+msgstr "<aantal knooppunten>"
+
+#: src/main.c:56
+msgid "Don't show warnings"
+msgstr "laat geen waarschuwingen zien"
+
+#: src/main.c:58
+msgid "set the node color"
+msgstr "kies de knooppuntskleur"
+
+#: src/main.c:58 src/main.c:60 src/main.c:62
+msgid "color"
+msgstr "kleur"
+
+#: src/main.c:60
+msgid "set the link color"
+msgstr "kies de lijnkleur"
+
+#: src/main.c:62
+msgid "set the text color"
+msgstr "kies de tekstkleur"
+
+#: src/main.c:131
+msgid "Unrecognized mode. Do etherape --help for a list of modes"
+msgstr "Modus niet herkend. Type etherape --help voor een lijst."
+
+#: src/main.c:186
+#, c-format
+msgid "We could not load the interface! (%s)"
+msgstr "We konden de interface niet laden! (%s)"
+
+#: src/main.c:284
+msgid ""
+"Stack Level is not set to Topmost Recognized Protocol. Please check in the "
+"preferences dialog that this is what you really want"
+msgstr ""
+"Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de "
+"voorkeuren of dit echt is wat je wilt."
+
+#: src/main.c:369
+msgid "Preferences saved"
+msgstr "Voorkeuren opgeslagen"
+
+#: src/capture.c:58
+#, c-format
+msgid "Error getting device: %s"
+msgstr "Fout bij het openen van het apparaat: %s"
+
+#: src/capture.c:76
+#, c-format
+msgid "Error opening %s : %s - perhaps you need to be root?"
+msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
+
+#: src/capture.c:86
+#, c-format
+msgid "Error opening %s : %s"
+msgstr "Fout bij het openen van %s : %s"
+
+#: src/capture.c:127
+msgid "Link type not yet supported"
+msgstr "Lijntype nog niet beschikbaar"
+
+#: src/capture.c:132
+msgid "Mode not available in this device"
+msgstr "Deze modus is niet beschikbaar bij dit apparaat"
+
+#: src/capture.c:152
+msgid "Ape mode not yet supported"
+msgstr "Ape modus is nog niet beschikbaar"
+
+#: src/capture.c:196
+#, c-format
+msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
+msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
+
+#: src/capture.c:202
+#, c-format
+msgid "Unable to parse filter string (%s)."
+msgstr "Ik begrijp het filter niet (%s)."
+
+#: src/capture.c:207
+#, c-format
+msgid "Can't install filter (%s)."
+msgstr "Kan filter niet gebruiken (%s)."
+
+#: src/capture.c:216
+msgid "Starting live capture"
+msgstr "Live luisteren wordt gestart"
+
+#: src/capture.c:223
+msgid "Starting offline capture"
+msgstr "Offline luisteren wordt gestart"
+
+#: src/capture.c:240
+msgid "Stopping live capture"
+msgstr "Live luisteren wordt gestopt"
+
+#: src/capture.c:246
+msgid "Stopping offline capture"
+msgstr "Offline luisteren wordt gestopt"
+
+#: src/capture.c:251
+msgid "Error while trying to stop capture"
+msgstr "Fout bij het stoppen van het luisteren"
+
+#. TODO Write proper assertion code here
+#: src/capture.c:399
+msgid "Reached default in get_node_id"
+msgstr "Default bereikt in get_node_id"
+
+#: src/capture.c:442
+msgid "Unsopported ape mode in get_link_id"
+msgstr "Ape modus in get_link_id is niet beschikbaar"
+
+#: src/capture.c:562
+#, c-format
+msgid "Creating node: %s. Number of nodes %d"
+msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
+
+#: src/capture.c:600
+#, c-format
+msgid "Creating link: %s-%s. Number of links %d"
+msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
+
+#. TODO Write proper assertion code here
+#: src/capture.c:755
+msgid "Reached default in fill_names"
+msgstr "Default bereikt in fill_names"
+
+#: src/capture.c:825
+#, c-format
+msgid "Removing node: %s. Number of node %d"
+msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
+
+#: src/capture.c:894
+#, c-format
+msgid "Removing link. Number of links %d"
+msgstr "Lijn verwijderd. Aantal lijnen %d"
+
+#: src/capture.c:1113
+msgid "Null packet in check_packet"
+msgstr "(null)-pakket in check_packet"
+
+#. print_mem
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: src/glade-strings:7
+msgid "Etherape"
+msgstr "Etherape"
+
+#: src/glade-strings:8 src/glade-strings:18
+msgid "Start capture"
+msgstr "Start het luisteren"
+
+#: src/glade-strings:9 src/glade-strings:19
+msgid "Start"
+msgstr "Start"
+
+#: src/glade-strings:10 src/glade-strings:20
+msgid "Stop capture"
+msgstr "Stop het luisteren"
+
+#: src/glade-strings:11 src/glade-strings:21
+msgid "Stop"
+msgstr "Stop"
+
+#: src/glade-strings:12
+msgid "Show or hide the toolbar"
+msgstr "Verbergen / weergeven werkbalk"
+
+#: src/glade-strings:13
+msgid "_Toolbar"
+msgstr "_Werkbalk"
+
+#: src/glade-strings:14
+msgid "Show or hide the legend"
+msgstr "Weergeven / verbergen legenda"
+
+#: src/glade-strings:15
+msgid "_Legend"
+msgstr "_Legenda"
+
+#: src/glade-strings:16
+msgid "Show or hide the status bar"
+msgstr "Weergeven / verbergen statusbalk"
+
+#: src/glade-strings:17
+msgid "_Status Bar"
+msgstr "_Statusbalk"
+
+#: src/glade-strings:22
+msgid "Preferences (Ctrl-P)"
+msgstr "Voorkeuren (Ctrl-P)"
+
+#: src/glade-strings:23
+msgid "Pref."
+msgstr "Voork."
+
+#: src/glade-strings:24
+msgid "Protocols"
+msgstr "Protocollen"
+
+#: src/glade-strings:25
+msgid "Copyright 2000 Juan Toledo"
+msgstr "Copyright 2000 Juan Toledo"
+
+#: src/glade-strings:26
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+"Een grafisch netwerkanalyse programma\n"
+"Web: http://etherape.sourceforge.net"
+
+#: src/glade-strings:28
+msgid "window1"
+msgstr "window1"
+
+#: src/glade-strings:29
+msgid "name"
+msgstr "naam"
+
+#: src/glade-strings:30
+msgid "accumulated"
+msgstr "opgeteld"
+
+#: src/glade-strings:31
+msgid "average"
+msgstr "gemiddeld"
+
+#: src/glade-strings:32
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr "Dit bericht bestaat nu nog niet. (Niemand vertellen hoor. ;-) )"
+
+#: src/glade-strings:33
+msgid "Etherape: Preferences"
+msgstr "Etherape: Voorkeuren"
+
+#: src/glade-strings:34
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/glade-strings:35
+msgid "Toggle whether text is shown on the diagram"
+msgstr "Schakel tekstweergave in het diagram aan/uit."
+
+#: src/glade-strings:36
+msgid "Click to toggle"
+msgstr "Klik om om te schakelen."
+
+#: src/glade-strings:37
+msgid "No text"
+msgstr "Geen tekst weergeven"
+
+#: src/glade-strings:38
+msgid "Max. Node Radius"
+msgstr "Maximale knooppuntsgrootte"
+
+#: src/glade-strings:39
+msgid "Max. Link Width"
+msgstr "Maximale lijnbreedte"
+
+#: src/glade-strings:40
+msgid ""
+"Choose how node radius and link width are calculated as a function of average "
+"traffic"
+msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
+
+#: src/glade-strings:41
+msgid ""
+"Linear\n"
+"Logarithmic\n"
+"Square Root\n"
+msgstr ""
+"Lineair\n"
+"Logaritmisch\n"
+"Wortel\n"
+
+#: src/glade-strings:45
+msgid "Size Mode"
+msgstr "Grootte berekenen"
+
+#: src/glade-strings:46
+msgid "Choose the font used to display text in the diagram"
+msgstr "Kies welk font gebruikt moet worden in het diagram"
+
+#: src/glade-strings:47
+msgid "Font"
+msgstr "Font"
+
+#: src/glade-strings:48
+msgid "Refresh diagram every this many miliseconds"
+msgstr "Wacht zo veel milliseconden tussen de verversingen van het diagram"
+
+#: src/glade-strings:49
+msgid "Diagram refresh period (ms)"
+msgstr "Diagram verversingsperiode (ms)"
+
+#: src/glade-strings:50
+msgid "Set what level of the protocol stack is displayed in the legend"
+msgstr "Protocolniveau wat weergegeven moet worden in de legenda"
+
+#: src/glade-strings:51
+msgid ""
+"Topmost recognized protocol\n"
+"Level 2 (Eg: ETH_II)\n"
+"Level 3 (Eg: IP)\n"
+"Level 4 (Eg: TCP)\n"
+"Level 5 (Eg: HTTP)\n"
+msgstr ""
+"Hoogste herkende niveau\n"
+"Niveau 2 (Bijv: ETH_II)\n"
+"Niveau 3 (Bijv: IP)\n"
+"Niveau 4 (Bijv: TCP)\n"
+"Niveau 5 (Bijv: HTTP)\n"
+
+#: src/glade-strings:57
+msgid "Protocol Stack Level"
+msgstr "Herkenningsniveau protocol"
+
+#: src/glade-strings:58
+msgid "Diagram"
+msgstr "Diagram"
+
+#: src/glade-strings:59
+msgid "Capture filter"
+msgstr "Weergavefilter"
+
+#: src/glade-strings:60
+msgid "Packet information is averaged for this amount of time"
+msgstr "De informatie wordt uitgemiddeld over zo veel tijd"
+
+#: src/glade-strings:61
+msgid "Averaging Time (ms)"
+msgstr "Uitmiddel tijd (ms)"
+
+#: src/glade-strings:62
+msgid "Delete this link after this much time. 0 means never timeout."
+msgstr "Verwijder een lijn nadat deze zo lang niets heeft gedaan. 0 = nooit"
+
+#: src/glade-strings:63
+msgid "Link Timeout (ms)"
+msgstr "Lijn timeout (ms)"
+
+#: src/glade-strings:64
+msgid "Delete this node after this much time. 0 means never timeout."
+msgstr ""
+"Verwijder dit knooppunt nadat deze zo lang niets heeft gedaan. 0 = nooit"
+
+#: src/glade-strings:65
+msgid "Node Timeout (ms)"
+msgstr "Knooppunt timeout (ms)"
+
+#: src/glade-strings:66
+msgid "Capture"
+msgstr "Luisteren"
+
+#: src/glade-strings:67
+msgid "Select Font"
+msgstr "Selecteer Lettertype"
+
+#: src/glade-strings:68
+msgid "Aceptar"
+msgstr "OK"
+
+#: src/glade-strings:69
+msgid "Aplicar"
+msgstr "Toepassen"
+
+#: src/glade-strings:70
+msgid "Cancelar"
+msgstr "Annuleren"
+
