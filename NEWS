@@ -1,4 +1,6 @@
 
+                            Changelog for Etherape
+                                       
   Overview of changes in Etherape 0.2.3 (Wednesday 03-08-2000):
   
      * Non blocking reverse lookups. I brought dns.c in from mtr to
