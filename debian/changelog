@@ -1,8 +1,8 @@
-etherape (0.3.2-0unoff) unstable; urgency=low
+etherape (0.3.7-0unoff) unstable; urgency=low
 
   * New upstream release. (unofficial package)
 
- -- Your Name <your.name@your.domain>  Tue, 21 Mar 2000 18:33:00 +0100
+ -- Your Name <your.name@your.domain>  Sun, 26 Mar 2000 18:21:58 +0200
  
 Local variables:
 mode: debian-changelog
