@@ -56,8 +56,9 @@ binary-arch: build install
 #	dh_installinit
 	dh_installcron
 	dh_installmanpages
-	dh_installinfo
-	dh_undocumented etherape.8 interape.8
+#	dh_installinfo
+#	dh_undocumented etherape.8 interape.8
+	ln -s etherape.8.gz `pwd`/debian/tmp/usr/share/man/man8/interape.8.gz
 	dh_installchangelogs ChangeLog
 	dh_link
 	dh_strip
