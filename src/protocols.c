@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This file is mostly a rehash of algorithms found in
@@ -27,9 +27,10 @@
 
 static GString *prot;
 static const guint8 *packet;
+guint capture_len = 0;
 
 gchar *
-get_packet_prot (const guint8 * p)
+get_packet_prot (const guint8 * p, guint len)
 {
   gchar **tokens = NULL;
   gchar *top_prot = NULL;
@@ -47,6 +48,7 @@ get_packet_prot (const guint8 * p)
   prot = g_string_new ("");
 
   packet = p;
+  capture_len = len;
 
   switch (linktype)
     {
@@ -87,7 +89,7 @@ get_packet_prot (const guint8 * p)
     prot = g_string_append (prot, "/UNKNOWN");
 
   tokens = g_strsplit (prot->str, "/", 0);
-  for (i = 0; strcmp (tokens[i], "UNKNOWN"); i++)
+  for (i = 0; (i <= STACK_SIZE) && strcmp (tokens[i], "UNKNOWN"); i++)
     top_prot = tokens[i];
 
   g_assert (top_prot != NULL);
@@ -243,6 +245,7 @@ get_ip (void)
   ip_type = packet[l3_offset + 9];
   fragment_offset = pntohs (packet + l3_offset + 6);
   fragment_offset &= 0x0fff;
+  offset = l3_offset + 20;
 
   switch (ip_type)
     {
@@ -361,8 +364,8 @@ get_tcp (void)
   if (!tcp_services)
     load_services ();
 
-  src_port = pntohs (packet + l3_offset + 20);
-  dst_port = pntohs (packet + l3_offset + 22);
+  src_port = pntohs (packet + offset);
+  dst_port = pntohs (packet + offset + 2);
 
   if (!(service = g_tree_lookup (tcp_services, &src_port)))
     service = g_tree_lookup (tcp_services, &dst_port);
@@ -389,15 +392,21 @@ get_udp (void)
   if (!udp_services)
     load_services ();
 
-  src_port = pntohs (packet + l3_offset + 20);
-  dst_port = pntohs (packet + l3_offset + 22);
+  src_port = pntohs (packet + offset);
+  dst_port = pntohs (packet + offset + 2);
+
+  offset += 8;
 
   if (!(service = g_tree_lookup (udp_services, &src_port)))
     service = g_tree_lookup (udp_services, &dst_port);
 
   if (!service)
     {
-      prot = g_string_append (prot, "/UDP_UNKNOWN");
+      /* It's not possible to know in advance whether an UDP
+       * packet is an RPC packet. We'll try */
+
+      if (!get_rpc ())
+	prot = g_string_append (prot, "/UDP_UNKNOWN");
       return;
     }
   str = g_strdup_printf ("/%s", service->name);
@@ -406,6 +415,69 @@ get_udp (void)
   str = NULL;
   return;
 }				/* get_udp */
+
+static gboolean
+get_rpc (void)
+{
+  enum rpc_type msg_type;
+  enum rpc_program msg_program;
+
+  /* Determine whether this is an RPC packet */
+
+  if ((offset + 24) > capture_len)
+    return FALSE;		/* not big enough */
+
+  msg_type = pntohl (packet + offset + 4);
+  prot = g_string_append (prot, "/RPC");
+
+  switch (msg_type)
+    {
+    case RPC_REPLY:
+      /* RPC_REPLYs don't carry an rpc program tag */
+      /* TODO In order to be able to dissect what is it's 
+       * protocol I'd have to keep track of who sent
+       * which call */
+      return TRUE;
+    case RPC_CALL:
+      msg_program = pntohl (packet + offset + 12);
+      switch (msg_program)
+	{
+	case BOOTPARAMS_PROGRAM:
+	  prot = g_string_append (prot, "/BOOTPARAMS");
+	  break;
+	case MOUNT_PROGRAM:
+	  prot = g_string_append (prot, "/MOUNT");
+	  break;
+	case NLM_PROGRAM:
+	  prot = g_string_append (prot, "/NLM");
+	  break;
+	case PORTMAP_PROGRAM:
+	  prot = g_string_append (prot, "/PORTMAP");
+	  break;
+	case STAT_PROGRAM:
+	  prot = g_string_append (prot, "/STAT");
+	  break;
+	case NFS_PROGRAM:
+	  prot = g_string_append (prot, "/NFS");
+	  break;
+	case YPBIND_PROGRAM:
+	  prot = g_string_append (prot, "/YPBIND");
+	  break;
+	case YPSERV_PROGRAM:
+	  prot = g_string_append (prot, "/YPSERV");
+	  break;
+	case YPXFR_PROGRAM:
+	  prot = g_string_append (prot, "/YPXFR");
+	  break;
+	default:
+	  prot = g_string_append (prot, "/RPC_UNKNOWN");
+	}
+      return TRUE;
+    default:
+      return FALSE;
+    }
+  return FALSE;
+}				/* get_rpc */
 
 /* Comparison function to sort tcp services port number */
 static gint

@@ -22,8 +22,32 @@
 
 #define LINESIZE 1024
 
+/* Enums */
+
+enum rpc_type
+{
+  RPC_CALL = 0,
+  RPC_REPLY = 1
+};
+
+enum rpc_program
+{
+  BOOTPARAMS_PROGRAM = 1,
+  MOUNT_PROGRAM = 100005,
+  NFS_PROGRAM = 100003,
+  NLM_PROGRAM = 100021,
+  PORTMAP_PROGRAM = 100000,
+  STAT_PROGRAM = 100024,
+  YPBIND_PROGRAM = 100007,
+  YPSERV_PROGRAM = 100004,
+  YPXFR_PROGRAM = 100069
+};
+
+/* Variables */
+
 static GTree *tcp_services = NULL;
 static GTree *udp_services = NULL;
+static guint offset = 0;
 
 /* Functions declarations */
 
@@ -36,4 +60,5 @@ static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
 static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
+static gboolean get_rpc (void);
 static void load_services (void);
