@@ -37,7 +37,7 @@ const struct _msg_ent _msg_tbl[] = {
   {"Max. Link Width", 28},
   {"Node Timeout (ms)", 29},
   {"Link Timeout (ms)", 30},
-  {"Place Holder for The Color Coded Protocols display", 31},
+  {"Protocols", 31},
   {"Copyright 2000 Juan Toledo", 32},
   {"\
 A Graphical Network Browser.\n\

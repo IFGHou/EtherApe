@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-10 19:04+0100\n"
+"POT-Creation-Date: 2000-03-11 19:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,137 +74,137 @@ msgstr ""
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:111
+#: src/interface.c:112
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:235
+#: src/interface.c:236
 msgid "New"
 msgstr ""
 
-#: src/interface.c:236
+#: src/interface.c:237
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:247
+#: src/interface.c:248
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:248
+#: src/interface.c:249
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:259
+#: src/interface.c:260
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:260
+#: src/interface.c:261
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:302
+#: src/interface.c:303
 msgid "Diagram settings"
 msgstr ""
 
-#: src/interface.c:332
+#: src/interface.c:333
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:355
+#: src/interface.c:356
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:379
+#: src/interface.c:380
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:403
+#: src/interface.c:404
 msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:427
+#: src/interface.c:428
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:451
+#: src/interface.c:452
 msgid "Link Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:459
-msgid "Place Holder for The Color Coded Protocols display"
+#: src/interface.c:460
+msgid "Protocols"
 msgstr ""
 
-#: src/interface.c:499
+#: src/interface.c:506
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:501
+#: src/interface.c:508
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:532
+#: src/interface.c:539
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:552
+#: src/interface.c:559
 msgid "Name"
 msgstr ""
 
-#: src/interface.c:562
+#: src/interface.c:569
 msgid "IP Name"
 msgstr ""
 
-#: src/interface.c:572
+#: src/interface.c:579
 msgid "IP Address"
 msgstr ""
 
-#: src/interface.c:582
+#: src/interface.c:589
 msgid "Ether Name"
 msgstr ""
 
-#: src/interface.c:592
+#: src/interface.c:599
 msgid "Ether Address"
 msgstr ""
 
-#: src/interface.c:602
+#: src/interface.c:609
 msgid "Accum. bytes"
 msgstr ""
 
-#: src/interface.c:612
+#: src/interface.c:619
 msgid "Average bps"
 msgstr ""
 
-#: src/interface.c:622
+#: src/interface.c:629
 msgid "average"
 msgstr ""
 
-#: src/interface.c:631
+#: src/interface.c:638
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:640
+#: src/interface.c:647
 msgid "ether address"
 msgstr ""
 
-#: src/interface.c:649
+#: src/interface.c:656
 msgid "ether name"
 msgstr ""
 
-#: src/interface.c:658
+#: src/interface.c:665
 msgid "ip address"
 msgstr ""
 
-#: src/interface.c:667
+#: src/interface.c:674
 msgid "ip host name"
 msgstr ""
 
-#: src/interface.c:676
+#: src/interface.c:683
 msgid "name"
 msgstr ""
 
-#: src/interface.c:696
+#: src/interface.c:703
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
@@ -255,39 +255,39 @@ msgstr ""
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:880
+#: src/capture.c:891
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:887
+#: src/capture.c:898
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:898
+#: src/capture.c:909
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:903
+#: src/capture.c:914
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:909
+#: src/capture.c:920
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:937
+#: src/capture.c:948
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:944
+#: src/capture.c:955
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:963
+#: src/capture.c:974
 msgid "Ape mode not yet supported"
 msgstr ""

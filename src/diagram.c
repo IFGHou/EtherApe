@@ -38,7 +38,7 @@ double node_radius_multiplier = 100;	/* used to calculate the radius of the
 					 * multiplier*/
 double link_width_multiplier = 100;	/* Same explanation as above */
 
-gchar *node_color = "white", *link_color = "tan", *text_color = "black";
+gchar *node_color = "brown", *link_color = "tan", *text_color = "yellow";
 
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
@@ -67,6 +67,35 @@ extern gint link_id_compare (gconstpointer a, gconstpointer b);
 extern gboolean diagram_only;
 
 /* Local functions definitions */
+
+gchar *
+get_prot_color (gchar * name)
+{
+  /* TODO This is all hardwired now. This should read preferences
+   * and whatnot */
+
+  if (!strcmp (name, "IP"))
+    return "red";
+  if (!strcmp (name, "ARP"))
+    return "blue";
+  if (!strcmp (name, "ATALK"))
+    return "yellow";
+  if (!strcmp (name, "IPX"))
+    return "white";
+  if (!strcmp (name, "VINES"))
+    return "orange";
+  if (!strcmp (name, "X25L3"))
+    return "green";
+  if (!strcmp (name, "IPv6"))
+    return "white";
+  if (!strcmp (name, "VLAN"))
+    return "cyan";
+  if (!strcmp (name, "SNMP"))
+    return "orange";
+
+
+  return "tan";
+}				/* get_prot_color */
 
 gdouble
 get_node_size (gdouble average)
@@ -545,34 +574,6 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
   return FALSE;
 }				/* check_new_node */
 
-gchar *
-get_prot_color (gchar * name)
-{
-  /* TODO This is all hardwired now. This should read preferences
-   * and whatnot */
-
-  if (!strcmp (name, "IP"))
-    return "red";
-  if (!strcmp (name, "ARP"))
-    return "blue";
-  if (!strcmp (name, "ATALK"))
-    return "yellow";
-  if (!strcmp (name, "IPX"))
-    return "black";
-  if (!strcmp (name, "VINES"))
-    return "orange";
-  if (!strcmp (name, "X25L3"))
-    return "green";
-  if (!strcmp (name, "IPv6"))
-    return "white";
-  if (!strcmp (name, "VLAN"))
-    return "cyan";
-  if (!strcmp (name, "SNMP"))
-    return "orange";
-
-
-  return "tan";
-}
 
 void
 check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
@@ -727,6 +728,9 @@ init_diagram (GtkWidget * app1)
 {
   GtkScale *scale;
   GtkSpinButton *spin;
+  GtkStyle *style;
+  GtkWidget *canvas;
+  GdkColor color;
 
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
@@ -753,5 +757,16 @@ init_diagram (GtkWidget * app1)
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
+  /* Sets canvas background to black */
 
+  canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
+  gdk_color_parse ("black", &color);
+  gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &color, TRUE, TRUE);
+  style = gtk_style_new ();
+  style->bg[GTK_STATE_NORMAL] = color;
+  gtk_widget_set_style (canvas, style);
+
+  gtk_style_set_background (canvas->style,
+			    canvas->window,
+			    GTK_STATE_NORMAL);
 }
