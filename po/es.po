@@ -180,32 +180,32 @@ msgid "Link type is Ethernet"
 msgstr "Tipo de enlace es Ethernet"
 
 # src/capture.c:146
-#. The case for PPP or SLIP, for instance
+#  The case for PPP or SLIP, for instance
 #: src/capture.c:146
 msgid "Link type is RAW"
 msgstr "Tipo de enlace es RAW"
 
 # src/capture.c:155
-#. We are assuming LLC async frames only
+#  We are assuming LLC async frames only
 #: src/capture.c:155
 msgid "Link type is FDDI"
 msgstr "Tipo de enlace es FDDI"
 
 # src/capture.c:164
-#. As far as I know IEEE802 is Token Ring
+#  As far as I know IEEE802 is Token Ring
 #: src/capture.c:164
 msgid "Link type is Token Ring"
 msgstr "Tipo de enlace es Token Ring"
 
 # src/capture.c:172
-#. Loopback
+#  Loopback
 #: src/capture.c:172
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
 # src/capture.c:164
-#. Linux cooked sockets (I believe this
-#. * is used for ISDN on linux)
+#  Linux cooked sockets (I believe this
+#  * is used for ISDN on linux)
 #: src/capture.c:183
 msgid "Link type is Linux cooked sockets"
 msgstr "Tipo de enlace es \"Linux cooked sockets\""
@@ -372,7 +372,7 @@ msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
 # src/menus.c:544
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:544
 msgid "Reading data from "
 msgstr "Leyendo datos de "
@@ -423,7 +423,7 @@ msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
 # src/menus.c:623
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:623
 msgid "Paused"
 msgstr "Pausado"
@@ -439,7 +439,7 @@ msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 
 # src/menus.c:688
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:688
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
@@ -546,12 +546,12 @@ msgid "DDP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
 
 # src/glade-strings:7
-#. append_etype_prot
-#.
-#. * Archivo de cadenas traducibles generado por Glade.
-#. * Añada este archivo a su POTFILES.in de su proyecto.
-#. * NO lo compile como parte de su aplicación.
-#.
+#  append_etype_prot
+# 
+#  * Archivo de cadenas traducibles generado por Glade.
+#  * Añada este archivo a su POTFILES.in de su proyecto.
+#  * NO lo compile como parte de su aplicación.
+# 
 #: src/glade-strings:7
 msgid "EtherApe"
 msgstr "EtherApe"
@@ -1390,7 +1390,7 @@ msgid "No info available"
 msgstr "No hay información disponible"
 
 # src/info_windows.c:754
-#. Meaning "n seconds" ago
+#  Meaning "n seconds" ago
 #: src/info_windows.c:754
 #, c-format
 msgid "%d\" ago"
@@ -1403,7 +1403,7 @@ msgid "%d'%d\" ago"
 msgstr "hace %d'%d\""
 
 # src/info_windows.c:772
-#. Watch out! The first is month, the second day of the month
+#  Watch out! The first is month, the second day of the month
 #: src/info_windows.c:772
 #, c-format
 msgid "%d/%d %d:%d"
