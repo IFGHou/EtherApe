@@ -198,7 +198,10 @@ update_diagram (GtkWidget * canvas)
     return FALSE;
 
   if (end_of_file && status != STOP)
-    gui_pause_capture ();
+    {
+      g_my_info (_("End of file and status != STOP. Pausing."));
+      gui_pause_capture ();
+    }
 
   /* 
    * It could happen that during an intensive calculation, in order

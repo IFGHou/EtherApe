@@ -282,13 +282,14 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+  g_my_info (_("on_start_menuitem_activate called"));
   gui_start_capture ();
-
 }				/* on_start_menuitem_activate */
 
 void
 on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+  g_my_info (_("on_pause_menuitem_activate called"));
   gui_pause_capture ();
 
 }				/* on_pause_menuitem_activate */
@@ -296,7 +297,7 @@ on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-
+  g_my_info (_("on_stop_menuitem_activate called"));
   gui_stop_capture ();
 
 }				/* on_stop_menuitem_activate */
