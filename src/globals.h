@@ -361,6 +361,14 @@ guint update_info_windows (void);
 void update_protocols_window (void);
 void update_node_info_windows (void);
 
+/* From conversations.c */
+void add_conversation (guint32 src_address, guint32 dst_address,
+		       guint16 src_port, guint16 dst_port, gchar * data);
+gchar *find_conversation (guint32 src_address, guint32 dst_address,
+			  guint16 src_port, guint16 dst_port);
+void delete_conversations (void);
+
+
 /* Macros */
 
 
