@@ -403,6 +403,11 @@ void delete_conversations (void);
 		       (guint32)*((guint8 *)p+2)<<8|   \
 		       (guint32)*((guint8 *)p+3)<<0)
 
+#define pletohs(p)  ((guint16)                       \
+			((guint16)*((guint8 *)(p)+1)<<8|  \
+			    (guint16)*((guint8 *)(p)+0)<<0))
+
+
 /* Takes the hi_nibble value from a byte */
 #define hi_nibble(b) ((b & 0xf0) >> 4)
 
