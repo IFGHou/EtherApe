@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.1//EN">
 
 <html>
   <head>
@@ -6,64 +6,127 @@
 
     <title>EtherApe FAQ</title>
     <link rel="STYLESHEET" type="text/css" href="etherape.css">
+<style type="text/css">
+    span.q { font-weight : bold }
+    div.a { margin-bottom: 1em }
+</style>
   </head>
 
   <body>
     <h1>EtherApe FAQ</h1>
 
-    <ol>
-      <li>Why is one computer constantly changing names?<br>
-       You are running in ethernet mode. Switch to IP mode.</li>
-
-      <li>Why can I only see computers on my own network?<br>
-       See question above</li>
-
-      <li>The rpm package says it requires libdb2.so.2. Where can I
-      find that file?<br>
-       Install the db2-devel package</li>
-
-      <li>I can't see any text, just little squares. What
-      gives?<br>
-       Go to preferences and change the text font. Make sure you
-      save your changes</li>
-
-      <li>What's the format for /etc/ethers?<br>
-       Just pairs of Ethernet addresses and names, like<br>
-       <tt>00:40:33:35:80:5F LAZARO<br>
-       00:40:33:35:80:6D NEBAJ<br>
-       00:C0:26:A2:58:FE ARGOS</tt></li>
-
+    <ul>
       <li>
-        How do I find the ether address of an IP node?<br>
-         Here is an example:<br>
-         <tt>argos:~# ping lazaro<br>
-         PING lazaro.tattoine.es (192.168.1.1): 56 data bytes<br>
-         64 bytes from 192.168.1.1: icmp_seq=0 ttl=255 time=1.8
-        ms<br>
-         round-trip min/avg/max = 1.6/1.7/1.8 ms<br>
-         argos:~# arp lazaro<br>
-         Address HWtype HWaddress Iface<br>
-         lazaro.tattoine.es ether 00:40:33:35:80:5F eth0</tt> 
+        <span class="q">Why is one computer constantly changing
+        names?</span><br>
+         
 
-        <p>Of course, you can only do this for nodes in your
-        network.</p>
+        <div class="a">
+          You are running in ethernet mode. Switch to IP mode.
+        </div>
       </li>
 
       <li>
-        How do I find the IP corresponding to an ether address?<br>
-         You could, for instance, use <tt><br>
-         argos:~# tcpdump -f "ether src 00:40:33:35:80:5F" -n<br>
-         tcpdump: listening on eth0<br>
-         10:34:11.116930 192.168.1.1.7002 &gt; 192.168.1.2.1031: P
-        76753564:76753576(12)</tt> 
+        <span class="q">Why can I only see computers on my own
+        network?</span><br>
+         
 
-        <p>There you have it, the IP src is 192.168.1.1</p>
+        <div class="a">
+          See question above
+        </div>
       </li>
 
-      <li>Hosts keep moving because they come and go... What can I
-      do?<br>
-       Set node timeout to 0.</li>
-    </ol>
+      <li>
+        <span class="q">I can't see any text, just little squares.
+        What gives?</span><br>
+         
+
+        <div class="a">
+          Go to preferences and change the text font. Make sure you
+          save your changes
+        </div>
+      </li>
+
+      <li>
+        <span class="q">Is it possible to see just traffic
+        within my network? Is it possible to see just traffic
+        to/from the internet?</span><br>
+         
+
+        <div class="a">
+          You can indeed filter traffic. Have a look at the filter
+          entry in preferences-&gt;capture-&gt;filter<br>
+           Suppose your network address starts with 213.227<br>
+           If you only want to see traffic within your network,
+          then the proper syntax is<br>
+           <tt>ip and src net 213.227 and dst net 213.227</tt><br>
+           Or if you want to see connections to/from outside your
+          network then try something like<br>
+           <tt>ip and ((not src net 213.227) and dst net 213.227)
+          or (src net 213.227 and (not dst net 213.227))</tt>
+        </div>
+      </li>
+
+      <li>
+        <span class="q">What's the format for
+        /etc/ethers?</span><br>
+         
+
+        <div class="a">
+          Just pairs of Ethernet addresses and names, like<br>
+           <tt>00:40:33:35:80:5F LAZARO<br>
+           00:40:33:35:80:6D NEBAJ<br>
+           00:C0:26:A2:58:FE ARGOS</tt>
+        </div>
+      </li>
+
+      <li>
+        <span class="q">How do I find the ether address of an IP
+        node?</span><br>
+         
+
+        <div class="a">
+          Here is an example:<br>
+           <tt>argos:~# ping lazaro<br>
+           PING lazaro.tattoine.es (192.168.1.1): 56 data bytes<br>
+           64 bytes from 192.168.1.1: icmp_seq=0 ttl=255 time=1.8
+          ms<br>
+           round-trip min/avg/max = 1.6/1.7/1.8 ms<br>
+           argos:~# arp lazaro<br>
+           Address HWtype HWaddress Iface<br>
+           lazaro.tattoine.es ether 00:40:33:35:80:5F eth0</tt> 
+
+          <p>Of course, you can only do this for nodes in your
+          network.</p>
+        </div>
+      </li>
+
+      <li>
+        <span class="q">How do I find the IP corresponding to an
+        ether address?<br>
+        </span> 
+
+        <div class="a">
+          You could, for instance, use <tt><br>
+           argos:~# tcpdump -f "ether src 00:40:33:35:80:5F" -n<br>
+           tcpdump: listening on eth0<br>
+           10:34:11.116930 192.168.1.1.7002 &gt; 192.168.1.2.1031:
+          P 76753564:76753576(12)</tt> 
+
+          <p>There you have it, the IP src is 192.168.1.1</p>
+        </div>
+      </li>
+
+      <li>
+        <span class="q">Hosts keep moving because they come and
+        go... What can I do?</span><br>
+         
+
+        <div class="a">
+          Set node timeout to 0.
+        </div>
+      </li>
+    </ul>
     <hr>
     <i>$Id$</i> 
 
