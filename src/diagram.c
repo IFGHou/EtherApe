@@ -306,6 +306,11 @@ update_diagram (GtkWidget * canvas)
   g_string_free (status_string, TRUE);
   status_string = NULL;
 
+#if 0
+  g_message ("Total Packets %g, packets in memory: %g", n_packets,
+	     n_mem_packets);
+#endif
+
   if (!is_idle)
     {
       if (diff_msecs > refresh_period * 1.2)
@@ -553,6 +558,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   GtkArg args[1];
   GList *protocol_item;
   protocol_t *protocol = NULL;
+  static clock_t start = 0;
+  clock_t end;
+  gdouble cpu_time_used;
 
   /* We don't need this anymore since now update_nodes is called in update_diagram */
 #if 0
@@ -567,12 +575,18 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   /* Remove node if node is too old or if capture is stopped */
   if (!node || !display_node (node))
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-      gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
-      gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-      gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
-      gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
-      gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+      if (canvas_node->group_item)
+	gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+      if (canvas_node->node_item)
+	gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
+      if (canvas_node->text_item)
+	gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
+      if (canvas_node->group_item)
+	gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
+      if (canvas_node->node_item)
+	gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
+      if (canvas_node->text_item)
+	gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
 
       g_tree_remove (canvas_nodes, node_id);
       g_my_debug ("Removing canvas_node. Number of nodes %d",
@@ -634,17 +648,32 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
-  args[0].name = "text";
-  gtk_object_getv (GTK_OBJECT (canvas_node->text_item), 1, args);
-  if (strcmp (args[0].d.string_data, node->name->str))
+  /*TODO why is it exactly that sometimes it is NULL? */
+  if (canvas_node->text_item)
     {
-      gnome_canvas_item_set (canvas_node->text_item,
-			     "text", node->name->str, NULL);
-      gnome_canvas_item_request_update (canvas_node->text_item);
+      args[0].name = "text";
+      gtk_object_getv (GTK_OBJECT (canvas_node->text_item), 1, args);
+      if (strcmp (args[0].d.string_data, node->name->str))
+	{
+	  gnome_canvas_item_set (canvas_node->text_item,
+				 "text", node->name->str, NULL);
+	  gnome_canvas_item_request_update (canvas_node->text_item);
+	}
+
+      /* Memprof is telling us that we have to free the string */
+      g_free (args[0].d.string_data);
     }
 
-  /* Memprof is telling us that we have to free the string */
-  g_free (args[0].d.string_data);
+  /* Processor time check. If too much time has passed, update the GUI */
+  end = clock ();
+  cpu_time_used = ((gdouble) (end - start)) / CLOCKS_PER_SEC;
+  if (cpu_time_used > 0.05)
+    {
+      /* Force redraw */
+      while (gtk_events_pending ())
+	gtk_main_iteration ();
+      start = end;
+    }
   return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
