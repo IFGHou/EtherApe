@@ -24,7 +24,6 @@
 #include <gnome.h>
 
 #include "globals.h"
-#include "diagram.h"
 #include "interface.h"
 #include "support.h"
 

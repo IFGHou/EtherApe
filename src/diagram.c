@@ -42,121 +42,9 @@ struct popup_data
 
 /* Local functions definitions */
 
-gchar *
-get_prot_color (gchar * name)
-{
-  gchar *colors[] = { "red", "blue", "yellow", "white", "orange", "green",
-    "white", "cyan", "orange", "brown", "purple"
-  };
-  static gint i = -1;
 
-  i++;
 
-  if (i <= 10)
-    return colors[i];
-
-  return "tan";
-#if 0
-  /* TODO This is all hardwired now. This should read preferences
-     * and whatnot */
-
-  if (!strcmp (name, "IP"))
-    return "red";
-  if (!strcmp (name, "ARP"))
-    return "blue";
-  if (!strcmp (name, "ATALK"))
-    return "yellow";
-  if (!strcmp (name, "IPX"))
-    return "white";
-  if (!strcmp (name, "VINES"))
-    return "orange";
-  if (!strcmp (name, "X25L3"))
-    return "green";
-  if (!strcmp (name, "IPv6"))
-    return "white";
-  if (!strcmp (name, "VLAN"))
-    return "cyan";
-  if (!strcmp (name, "SNMP"))
-    return "orange";
-  if (!strcmp (name, "802.3"))
-    return "brown";
-  if (!strcmp (name, "802.2"))
-    return "purple";
-
-  /* UNKNOWN */
-  return "tan";
-#endif
-}				/* get_prot_color */
-
-gdouble
-get_node_size (gdouble average)
-{
-  gdouble result = 0.0;
-  switch (size_mode)
-    {
-    case LINEAR:
-      result = average + 1;
-      break;
-    case LOG:
-      result = log (average + 1);
-      break;
-    case SQRT:
-      result = sqrt (average + 1);
-      break;
-    }
-  return (double) (5 + node_radius_multiplier * result);
-}
-
-gdouble
-get_link_size (gdouble average)
-{
-  gdouble result = 0.0;
-  switch (size_mode)
-    {
-    case LINEAR:
-      result = average + 1;
-      break;
-    case LOG:
-      result = log (average + 1);
-      break;
-    case SQRT:
-      result = sqrt (average + 1);
-      break;
-    }
-  return (double) (1 + link_width_multiplier * result);
-}
-
-static gint
-link_item_event (GnomeCanvasItem * item, GdkEvent * event,
-		 canvas_link_t * canvas_link)
-{
-  static GnomeAppBar *appbar;
-  gchar *str;
-
-  if (!appbar)
-    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
-
-  switch (event->type)
-    {
-
-    case GDK_ENTER_NOTIFY:
-      str = g_strdup_printf (_("Link main protocol: %s"),
-			     canvas_link->link->main_prot[stack_level]);
-      gnome_appbar_push (appbar, str);
-      g_free (str);
-      break;
-    case GDK_LEAVE_NOTIFY:
-      gnome_appbar_pop (appbar);
-      break;
-    default:
-      break;
-    }
-
-  return FALSE;
-}
-
-guint
-popup_to (struct popup_data * pd)
+guint popup_to (struct popup_data *pd)
 {
 
   GtkLabel *label;
@@ -164,6 +52,11 @@ popup_to (struct popup_data * pd)
 
   pd->node_popup = create_node_popup ();
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "name");
+
+  /* This function may be called even before the node has a name
+   * If that happens, return */
+  if (!(pd->canvas_node->node->name))
+    return FALSE;
 
   if (mode == ETHERNET && pd->canvas_node->node->ip_address)
     {
@@ -446,6 +339,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
+  GString *str = NULL;
   GtkArg args[1];
 
   node = canvas_node->node;
@@ -457,6 +351,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   if (!node)
     {
       gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+      gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
+      gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
       g_tree_remove (canvas_nodes, node_id);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _("Removing canvas_node. Number of node %d"),
@@ -468,64 +364,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 				 * the traversion (Does that word exist? :-) */
     }
 
-#if 0
-  if (node->packets)
-    update_packet_list (node->packets, NODE);
-
-  if (node->n_packets == 0)
-    {
-      diff = substract_times (now, node->last_time);
-
-      if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
-	  && node_timeout_time)
-	{
-
-	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-
-	  g_tree_remove (canvas_nodes, node_id);
-
-#if 0				/* TODO redo */
-	  if (interape)
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _
-		   ("Removing node and canvas_node: %s. Number of node %d"),
-		   ip_to_str (node_id), g_tree_nnodes (canvas_nodes));
-	  else
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _
-		   ("Removing node and canvas_node: %s. Number of nodes %d"),
-		   get_ether_name (node_id), g_tree_nnodes (canvas_nodes));
-#endif
-
-
-	  /* TODO I have to create a free_node and a free_link function
-	   * in capture.c */
-	  node_id = node->node_id;	/* Since we are freeing the node
-					 * we must free its members as well 
-					 * but if we free the id then we will
-					 * not be able to find the link again 
-					 * to free it, thus the intermediate variable */
-	  g_string_free (node->name, TRUE);
-	  g_string_free (node->numeric_name, TRUE);
-	  if (node->numeric_ip)
-	    g_string_free (node->numeric_ip, TRUE);
-	  g_free (node);
-	  g_tree_remove (nodes, node_id);
-	  g_free (node_id);
-
-	  need_reposition = 1;
-
-	  return TRUE;		/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
-	}
-      else
-	{
-	  node->packets = NULL;
-	  node->accumulated = 0;	/* TODO: do we really need this here anymore? */
-	}
-    }
-#endif
 
   node_size = get_node_size (node->average);
 
@@ -545,12 +383,43 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       gnome_canvas_item_request_update (canvas_node->text_item);
     }
 
+  /* Update tooltips text */
+#if 0
+  str = g_string_new ("");
+  if (mode == ETHERNET && canvas_node->node->ip_address)
+    g_string_sprintf (str,
+		      "%s (%s, %s)",
+		      canvas_node->node->name->str,
+		      canvas_node->node->numeric_ip->str,
+		      canvas_node->node->numeric_name->str);
+  else
+    g_string_sprintf (str,
+		      "%s (%s)",
+		      canvas_node->node->name->str,
+		      canvas_node->node->numeric_name->str);
+
+  g_string_sprintfa (str,
+		     _("\nAcummulated bytes: %g"),
+		     canvas_node->node->accumulated);
+  g_string_sprintfa (str, _("\nAverage bps: %g"), canvas_node->node->average);
+
+  gtk_tooltips_set_tip (canvas_node->tooltips,
+			GTK_WIDGET (canvas_node->group_item), str->str, NULL);
+
+  gtk_tooltips_set_tip (canvas_node->tooltips,
+			GTK_WIDGET (canvas_node->node_item), str->str, NULL);
+
+  gtk_tooltips_set_tip (canvas_node->tooltips,
+			GTK_WIDGET (canvas_node->text_item), str->str, NULL);
+
+  g_string_free (str, TRUE);
+#endif
+
   return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
 
-gint
-check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -585,6 +454,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 							  link_color,
 							  "width_units", 0.0,
 							  NULL);
+      gtk_object_ref (GTK_OBJECT (new_canvas_link->link_item));
 
 
       g_tree_insert (canvas_links,
@@ -609,8 +479,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint
-check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -627,6 +496,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							 gnome_canvas_group_get_type
 							 (), "x", 100.0, "y",
 							 100.0, NULL));
+      gtk_object_ref (GTK_OBJECT (group));
 
       new_canvas_node->node_item = gnome_canvas_item_new (group,
 							  GNOME_TYPE_CANVAS_ELLIPSE,
@@ -640,6 +510,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							  "black",
 							  "width_pixels", 0,
 							  NULL);
+      gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT, "text",
 			       node->name->str,
@@ -648,7 +519,12 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "anchor", GTK_ANCHOR_CENTER,
 			       "font", fontname,
 			       "fill_color", text_color, NULL);
+      gtk_object_ref (GTK_OBJECT (new_canvas_node->text_item));
       new_canvas_node->group_item = group;
+#if 0				/* TODO make sure that canvas item can't use tooltips and
+				 * delete this line */
+      new_canvas_node->tooltips = gtk_tooltips_new ();
+#endif
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
@@ -747,8 +623,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint
-update_diagram (GtkWidget * canvas)
+guint update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
@@ -781,7 +656,6 @@ update_diagram (GtkWidget * canvas)
 
   /* Check if there are any new nodes */
   g_tree_traverse (nodes, (GTraverseFunc) check_new_node, G_IN_ORDER, canvas);
-
 
   /* Update nodes look and delete outdated nodes */
   do
@@ -881,7 +755,7 @@ init_diagram ()
   widget = lookup_widget (diag_pref, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
   widget = lookup_widget (diag_pref, "filter_gnome_entry");
-  gnome_entry_load_history (GNOME_ENTRY(widget));
+  gnome_entry_load_history (GNOME_ENTRY (widget));
   /* TODO Write code to set the options menu to the positions 
    * indicated by the variables */
 
@@ -950,3 +824,125 @@ init_diagram ()
   gtk_menu_item_select (widget);
 #endif
 }
+
+/* For a given protocols, returns the color string that should be used
+ * Right now it's just assigning colors from a list until it runs
+ * out, but this behavious will change */
+static gchar *
+get_prot_color (gchar * name)
+{
+  gchar *colors[] = { "red", "blue", "yellow", "white", "orange", "green",
+    "white", "cyan", "orange", "brown", "purple"
+  };
+  static gint i = -1;
+
+  i++;
+
+  if (i <= 10)
+    return colors[i];
+
+  return "tan";
+#if 0
+  /* TODO This is all hardwired now. This should read preferences
+     * and whatnot */
+
+  if (!strcmp (name, "IP"))
+    return "red";
+  if (!strcmp (name, "ARP"))
+    return "blue";
+  if (!strcmp (name, "ATALK"))
+    return "yellow";
+  if (!strcmp (name, "IPX"))
+    return "white";
+  if (!strcmp (name, "VINES"))
+    return "orange";
+  if (!strcmp (name, "X25L3"))
+    return "green";
+  if (!strcmp (name, "IPv6"))
+    return "white";
+  if (!strcmp (name, "VLAN"))
+    return "cyan";
+  if (!strcmp (name, "SNMP"))
+    return "orange";
+  if (!strcmp (name, "802.3"))
+    return "brown";
+  if (!strcmp (name, "802.2"))
+    return "purple";
+
+  /* UNKNOWN */
+  return "tan";
+#endif
+}				/* get_prot_color */
+
+
+/* Returs the radius in pixels given average traffic and size mode */
+static gdouble
+get_node_size (gdouble average)
+{
+  gdouble result = 0.0;
+  switch (size_mode)
+    {
+    case LINEAR:
+      result = average + 1;
+      break;
+    case LOG:
+      result = log (average + 1);
+      break;
+    case SQRT:
+      result = sqrt (average + 1);
+      break;
+    }
+  return (double) (5 + node_radius_multiplier * result);
+}
+
+/* Returs the width in pixels given average traffic and size mode */
+static gdouble
+get_link_size (gdouble average)
+{
+  gdouble result = 0.0;
+  switch (size_mode)
+    {
+    case LINEAR:
+      result = average + 1;
+      break;
+    case LOG:
+      result = log (average + 1);
+      break;
+    case SQRT:
+      result = sqrt (average + 1);
+      break;
+    }
+  return (double) (1 + link_width_multiplier * result);
+}
+
+
+/* Called for every event a link receives. Right now it's used to 
+ * set a message in the appbar */
+static gint
+link_item_event (GnomeCanvasItem * item, GdkEvent * event,
+		 canvas_link_t * canvas_link)
+{
+  static GnomeAppBar *appbar;
+  gchar *str;
+
+  if (!appbar)
+    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (app1), "appbar1"));
+
+  switch (event->type)
+    {
+
+    case GDK_ENTER_NOTIFY:
+      str = g_strdup_printf (_("Link main protocol: %s"),
+			     canvas_link->link->main_prot[stack_level]);
+      gnome_appbar_push (appbar, str);
+      g_free (str);
+      break;
+    case GDK_LEAVE_NOTIFY:
+      gnome_appbar_pop (appbar);
+      break;
+    default:
+      break;
+    }
+
+  return FALSE;
+}				/* link_item_event */

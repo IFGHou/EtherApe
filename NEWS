@@ -1,12 +1,24 @@
+Looking up  'Not-Configured-Yet' first.
+Looking up  'www.Not-Configured-Yet.com', guessing...
+Looking up  'www.Not-Configured-Yet.edu', guessing...
+Looking up  'www.Not-Configured-Yet.net', guessing...
+Looking up  'www.Not-Configured-Yet.org', guessing...
 
                             Changelog for Etherape
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.8 (Wednesday 03-29-2000):
+  
+     * Filter entry has history.
+     * Prefs window is raised when called.
+     * I think I fixed almost all memory leaks.
+     * Some more segfaults fixed.
+       
   Overview of changes in Etherape 0.3.7 (Friday 03-24-2000):
   
      * You can now "playback" tcpdump output files.
-     * The legend now has a scrollbar if there are more protocols that it
+     * The legend now has a scrollbar if there are more protocols than it
        can hold.
        
   Overview of changes in Etherape 0.3.6 (Friday 03-24-2000):

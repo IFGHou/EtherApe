@@ -150,9 +150,8 @@ typedef struct
   node_t *node;
   GnomeCanvasItem *node_item;
   GnomeCanvasItem *text_item;
-  GnomeCanvasItem *accu_item;
-  gchar *accu_str;
   GnomeCanvasGroup *group_item;
+  GtkTooltips *tooltips;
 }
 canvas_node_t;
 
@@ -256,6 +255,10 @@ gchar *ether_to_str_punct (const guint8 * ad, char punct);
 
 /* From protocols.c */
 gchar *get_packet_prot (const guint8 * packet);
+
+/* From diagram.c */
+guint update_diagram (GtkWidget * canvas);
+void init_diagram ();
 
 /* Macros */
 

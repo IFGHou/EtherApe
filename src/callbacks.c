@@ -26,7 +26,6 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
-#include "diagram.h"
 #include "math.h"
 
 #include "globals.h"
@@ -175,17 +174,15 @@ on_canvas1_size_allocate (GtkWidget * widget,
 			  GtkAllocation * allocation, gpointer user_data)
 {
 
+  GtkWidget *canvas;
   gnome_canvas_set_scroll_region (GNOME_CANVAS (widget),
 				  -widget->allocation.width / 2,
 				  -widget->allocation.height / 2,
 				  widget->allocation.width / 2,
 				  widget->allocation.height / 2);
-
-  /* We have to make sure we put all nodes on it's place now */
-  g_tree_traverse (canvas_nodes,
-		   (GTraverseFunc) reposition_canvas_nodes,
-		   G_IN_ORDER, GNOME_CANVAS (widget));
-
+  need_reposition = TRUE;
+  canvas = lookup_widget (GTK_WIDGET (app1), "canvas1");
+  update_diagram (canvas);
 }
 
 void
@@ -471,14 +468,11 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   GtkWidget *widget;
   widget = lookup_widget (GTK_WIDGET (button), "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = lookup_widget (GTK_WIDGET (diag_pref),
-				      "filter_gnome_entry");
+  widget = lookup_widget (GTK_WIDGET (diag_pref), "filter_gnome_entry");
   /* TODO should only be done if the filter is not already
    * in the history */
-   gnome_entry_prepend_history     (GNOME_ENTRY(widget),
-				    TRUE,
-				    filter);
-   gnome_entry_save_history (GNOME_ENTRY(widget));
+  gnome_entry_prepend_history (GNOME_ENTRY (widget), TRUE, filter);
+  gnome_entry_save_history (GNOME_ENTRY (widget));
 
 }
 
