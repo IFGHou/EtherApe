@@ -140,26 +140,26 @@ get_eth_type (void)
 	  && packet[3] == 0x00 && packet[4] == 0x00)
 	{
 	  /* TODO Analyze ISL frames */
-	  prot = g_string_new ("ISL");
+	  prot = g_string_append (prot,"ISL");
 	  return;
 	}
     }
 
   if (ethhdr_type == ETHERNET_802_3)
     {
-      prot = g_string_new ("802.3");
+      prot = g_string_append (prot,"802.3");
       return;
     }
 
   if (ethhdr_type == ETHERNET_802_2)
     {
-      prot = g_string_new ("802.2");
+      prot = g_string_append (prot,"802.2");
       return;
     }
 
   /* Else, it's ETHERNET_II */
 
-  prot = g_string_new ("ETH_II");
+  prot = g_string_append (prot,"ETH_II");
   get_eth_II (etype);
   return;
 
@@ -168,7 +168,7 @@ get_eth_type (void)
 static void
 get_fddi_type (void)
 {
-  prot = g_string_new ("LLC");
+  prot = g_string_append (prot,"LLC");
   /* Ok, this is only temporary while I truly dissect LLC 
    * and fddi */
   if ((packet[19] == 0x08) && (packet[20] == 0x00))
