@@ -717,7 +717,6 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node->ip_address = 0;
   node->numeric_ip = NULL;
 
-  /* fill_names (node, node_id, packet); */
   node->name = g_string_new (print_mem (node_id, node_id_length));
   node->numeric_name = g_string_new (print_mem (node_id, node_id_length));
 
@@ -780,159 +779,6 @@ create_link (const guint8 * packet, const guint8 * link_id)
   return link;
 }				/* create_link */
 
-#if 0
-/* Fills in the strings that characterize the node */
-static void
-fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
-{
-
-  gboolean fqdn;
-
-  switch (mode)
-    {
-    case ETHERNET:
-
-      fqdn = FALSE;
-
-      if (!node->ip_address && packet && (packet[12] == 0x08)
-	  && (packet[13] == 0x00))
-	{
-	  const guint8 *ip_address;
-	  /* We do not know whether this was a source or destination
-	   * node, so we have to check it out */
-	  if (!node_id_compare (node_id, packet + 6))
-	    ip_address = packet + 26;	/* SRC packet */
-	  else
-	    ip_address = packet + 30;
-	  node->ip_address = ntohl (*(guint32 *) ip_address);
-	}
-
-      if (!node->numeric_name)
-	node->numeric_name = g_string_new (ether_to_str (node_id));
-      if (!node->numeric_ip && node->ip_address)
-	{
-	  guint32 net_ip_address;
-	  net_ip_address = htonl (node->ip_address);
-	  node->numeric_ip =
-	    g_string_new (ip_to_str ((guint8 *) (&net_ip_address)));
-	}
-      if (numeric)
-	{
-	  if (!node->name)
-	    node->name = g_string_new (ether_to_str (node_id));
-	}
-      else
-	{
-	  /* Code to display the IP address if host is not found
-	   * in /etc/ethers. It is ugly, but that's because 
-	   * this is not right in the first place. */
-	  /* We look for the ip side only if it is an IP packet and 
-	   * the host is not found in /etc/ethers */
-	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id))
-	      && (node->ip_address ||
-		  (packet && (packet[12] == 0x08) && (packet[13] == 0x00))))
-	    {
-	      if (!node->name)
-		node->name =
-		  g_string_new (dns_lookup (node->ip_address, fqdn));
-	      else
-		g_string_assign (node->name,
-				 dns_lookup (node->ip_address, fqdn));
-	    }
-	  else
-	    node->name = g_string_new (get_ether_name (node_id));
-	}
-      break;
-
-    case FDDI:
-      if (!node->numeric_name)
-	node->numeric_name = g_string_new (ether_to_str (node_id));
-      if (!node->name)
-	node->name = g_string_new (ether_to_str (node_id));
-      break;
-
-    case IP:
-
-      fqdn = TRUE;
-
-      if (!node->ip_address)
-	node->ip_address = ntohl (*(guint32 *) node_id);
-
-      if (!node->numeric_name)
-	node->numeric_name = g_string_new (ip_to_str (node_id));
-
-      if (numeric)
-	{
-	  if (!node->name)
-	    node->name = g_string_new (ip_to_str (node_id));
-	}
-      else
-	{
-	  if (!node->name)
-	    node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
-	  else
-	    g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
-	}
-      break;
-
-    case TCP:
-
-      fqdn = TRUE;
-
-      if (!node->ip_address)
-	node->ip_address = ntohl (*(guint32 *) node_id);
-
-      if (!node->numeric_name)
-	{
-	  node->numeric_name = g_string_new (ip_to_str (node_id));
-	  node->numeric_name = g_string_append_c (node->numeric_name, ':');
-	  node->numeric_name =
-	    g_string_append (node->numeric_name,
-			     g_strdup_printf ("%d",
-					      *(guint16 *) (node_id + 4)));
-	}
-
-      if (numeric)
-	{
-	  if (!node->name)
-	    {
-	      node->name = g_string_new (ip_to_str (node_id));
-	      node->name = g_string_append_c (node->name, ':');
-	      node->name =
-		g_string_append (node->name,
-				 g_strdup_printf ("%d",
-						  *(guint16 *)
-						  (node_id + 4)));
-	    }
-	}
-      else
-	{
-	  if (!node->name)
-	    {
-	      node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
-	      node->name = g_string_append_c (node->name, ':');
-	      node->name = g_string_append (node->name,
-					    get_tcp_port (*(guint16 *)
-							  (node_id + 4)));
-	    }
-	  else
-	    {
-	      g_string_assign (node->name,
-			       dns_lookup (node->ip_address, fqdn));
-	      node->name = g_string_append_c (node->name, ':');
-	      node->name = g_string_append (node->name,
-					    get_tcp_port (*(guint16 *)
-							  (node_id + 4)));
-	    }
-	}
-      break;
-
-    default:
-      /* TODO Write proper assertion code here */
-      g_error (_("Reached default in fill_names"));
-    }
-}				/* fill_names */
-#endif
 
 /* Callback function everytime a dns_lookup function is finished */
 static void
@@ -1165,7 +1011,6 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
       if (belongs_to == NODE)
 	{
 	  node->average = 8000000 * node->accumulated / usecs_from_oldest;
-	  /* fill_names (node, node->node_id, NULL); */
 	  node->average_in =
 	    8000000 * node->accumulated_in / usecs_from_oldest;
 	  node->average_out =
