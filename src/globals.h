@@ -26,7 +26,7 @@
 #include <glade/glade.h>
 
 #define ETHERAPE_GLADE_FILE "etherape.glade"
-#define STACK_SIZE 4		/* How many protocol levels to keep
+#define STACK_SIZE 5		/* How many protocol levels to keep
 				 * track of (+1) */
 
 /* Enumerations */
