@@ -10,6 +10,7 @@
 #include <gnome.h>
 
 extern guint averaging_time;
+enum packet_belongs { NODE = 0, LINK = 1 };
 
 /* Places char punct in the string as the hex-digit separator.
  * If punct is '\0', no punctuation is applied (and thus
@@ -75,6 +76,8 @@ ether_to_str (const guint8 * ad)
 
 
 
+/* Comparison function used to order the (GTree *) nodes
+ * and canvas_nodes heard on the network */
 gint
 ether_compare (gconstpointer a, gconstpointer b)
 {
@@ -101,13 +104,38 @@ ether_compare (gconstpointer a, gconstpointer b)
   return 0;
 } /* ether_compare */
 
-
-void
-init_data (void)
+/* Comparison function used to order the (GTree *) links
+ * and canvas_links heard on the network */
+gint
+link_compare (gconstpointer a, gconstpointer b)
 {
-  nodes = g_tree_new (ether_compare);
-}
+  int i = 11;
 
+  g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
+					 * We arbitrarily passing 1 to
+					 * the comparison */
+  g_return_val_if_fail (b != NULL, 1);
+
+  
+
+  while (i)
+    {
+      if (((guint8 *) a)[i] < ((guint8 *) b)[i])
+	{
+	  return -1;
+	}
+      else if (((guint8 *) a)[i] > ((guint8 *) b)[i])
+	return 1;
+      i--;
+    }
+
+  return 0;
+} /* link_compare */
+
+
+
+/* Allocates a new node structure, and adds it to the
+ * global nodes binary tree */
 node_t *
 create_node (const guint8 * ether_addr)
 {
@@ -121,20 +149,46 @@ create_node (const guint8 * ether_addr)
   node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
-	 _ ("Creating node: %s. Number of nodes %d"), \
-	 node->name->str, \
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
+	 _("Creating node: %s. Number of nodes %d"), 
+	 node->name->str, 
 	 g_tree_nnodes (nodes));
 
   return node;
 } /* create_node */
 
+
+/* Allocates a new link structure, and adds it to the
+ * global links binary tree */
+link_t *
+create_link (const guint8 *ether_link)
+{
+   link_t *link;
+   
+   link = g_malloc (sizeof (link_t));
+   link->ether_link = g_memdup (ether_link, 12);
+   link->average=0;
+   link->n_packets=0;
+   link->packets=NULL;
+   g_tree_insert (links, link->ether_link, link);
+   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
+          _("Creating link: %s-%s. Number of links %d"), 
+          get_ether_name(ether_link), get_ether_name (ether_link+6),
+	  g_tree_nnodes (links));
+
+   return link;
+} /* create_link */
+         
 GList *
-check_packet (GList * packets, struct timeval now)
+check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_to)
 {
 
   struct timeval packet_time, result;
-  packet_time = ((packet_t *) packets->data)->timestamp;
+  packet_t *packet;
+  packet = (packet_t *) packets->data;
+   
+  packet_time = packet->timestamp;
+  
 
   /* Perform the carry for the later subtraction by updating Y. */
   if (now.tv_usec < packet_time.tv_usec)
@@ -161,8 +215,14 @@ check_packet (GList * packets, struct timeval now)
        packet_time.tv_sec * 1000000 - packet_time.tv_usec)
       > averaging_time)
     {
-      ((packet_t *) packets->data)->parent_node->accumulated -=
-	((packet_t *) packets->data)->size;
+       if (belongs_to == NODE) {
+	  ((node_t *)(packet->parent))->accumulated -=
+	    packet->size;
+       } else {
+	  ((link_t *)(packet->parent))->accumulated -=
+	    packet->size;
+       }
+	  
       g_free (packets->data);
       packets = packets->prev;
       g_list_remove (packets, packets->next->data);
@@ -173,41 +233,35 @@ check_packet (GList * packets, struct timeval now)
 } /* check_packet */
 
 void
-update_packet_list (GList * packets)
+update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
   packets = g_list_last (packets);
 
-  while ((packets = check_packet (packets, now)));
+  while ((packets = check_packet (packets, now, belongs_to)));
 }
 
+
+/* This function is called everytime there is a new packet in
+ * the network interface. It then updates traffic information
+ * for the appropriate nodes and links */
 void
 packet_read (pcap_t * pch,
 	     gint source,
 	     GdkInputCondition condition)
 {
   struct pcap_pkthdr phdr;
-  gchar packet[MAXSIZE];
-  guint8 src[6], dst[6];
+  guint8 *src, *dst, *pcap_packet;
   node_t *node;
   packet_t *packet_info;
+  link_t *link;
 
-  gchar *pcap_packet;
+  pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
-  /* We copy the next available packet */
-  memcpy (packet, pcap_packet = (gchar *) pcap_next (pch, &phdr), phdr.caplen);
-
-  memcpy (src, (char *) pcap_packet, 6);
-  memcpy (dst, (char *) pcap_packet + 6, 6);
-
-#if 0
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
-	 "source: %s, destination: %s", \
-	 ether_to_str (src), \
-	 ether_to_str (dst));
-#endif
-
+  src = pcap_packet;
+  dst = pcap_packet + 6;
+   
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
     node = create_node (src);
@@ -217,11 +271,11 @@ packet_read (pcap_t * pch,
   packet_info = g_malloc (sizeof (packet_t));
   packet_info->size = phdr.len;
   gettimeofday (&(packet_info->timestamp), NULL);
-  packet_info->parent_node = node;
+  packet_info->parent= node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
   /* Now we clean all packets we don't care for anymore */
-  update_packet_list (node->packets);
+  update_packet_list (node->packets, NODE);
   node->n_packets++;
 
   /* Now we do the same with the destination node */
@@ -235,13 +289,28 @@ packet_read (pcap_t * pch,
   packet_info = g_malloc (sizeof (packet_t));
   packet_info->size = phdr.len;
   gettimeofday (&(packet_info->timestamp), NULL);
-  packet_info->parent_node = node;
+  packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
   /* Now we clean all packets we don't care for anymore */
-  update_packet_list (node->packets);
+  update_packet_list (node->packets, NODE);
   node->n_packets++;
 
+  /* And now we update link traffic information for this packet */
+   link = g_tree_lookup (links, src); /* The comparison function actually
+				       * looks at both src and dst */
+   if (!link)
+      link = create_link (src);
+
+   packet_info = g_malloc (sizeof (link_t));
+   packet_info->size = phdr.len;
+   gettimeofday (&(packet_info->timestamp), NULL);
+   packet_info->parent = link;
+   link->packets = g_list_prepend (link->packets, packet_info);
+   link->accumulated += phdr.len;
+   /* Now we clean all packets we don't care for anymore */
+   update_packet_list (link->packets, LINK);
+   link->n_packets++;
 
 } /* packet_read */
 
@@ -251,7 +320,6 @@ init_capture (void)
 {
 
   gint pcap_fd;
-  gint error;
   pcap_t *pch;
 
   char ebuf[100];
@@ -267,6 +335,8 @@ init_capture (void)
 		 GDK_INPUT_READ,
 		 packet_read,
 		 pch);
-  init_data ();
+
+  nodes = g_tree_new (ether_compare);
+  links = g_tree_new (link_compare);
 
 }

@@ -2,11 +2,12 @@
 #include <sys/time.h>
 
 GTree *nodes;
+GTree *links;
 
-typedef struct _node
+typedef struct 
   {
-    guint8 *ether_addr;
-    GString *name;
+    guint8 *ether_addr;		/* pointer to the hardware address of the node */
+    GString *name;		/* String with a readable name of the node */
     glong average;		/* Average bytes in or out in the last x ms */
     glong accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */
@@ -16,11 +17,23 @@ typedef struct _node
   }
 node_t;
 
-typedef struct _packet
+
+typedef struct 
+{
+   guint8 *ether_link;		/* pointer to guint8[12] containing src and
+				 * destination hardware addresses of the link */
+   glong average;
+   glong accumulated;
+   guint n_packets;
+   GList *packets;
+}
+link_t;
+
+typedef struct 
   {
     guint size;
     struct timeval timestamp;
-    node_t *parent_node;
+    gpointer parent;
   }
 packet_t;
 

@@ -28,6 +28,7 @@
 #include "support.h"
 #include "capture.h"
 #include "math.h"
+#include "resolv.h"
 
 guint averaging_time = 10000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
@@ -35,6 +36,8 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
+GTree *canvas_links;		/* See above */
+
 typedef struct
   {
     guint8 *ether_addr;
@@ -45,8 +48,16 @@ typedef struct
   }
 canvas_node_t;
 
-extern gint ether_compare (gconstpointer a, gconstpointer b);
+typedef struct
+{
+   guint8 *ether_link;
+   link_t *link;
+   GnomeCanvasItem *link_item;
+}
+canvas_link_t;
 
+extern gint ether_compare (gconstpointer a, gconstpointer b);
+extern gint link_compare (gconstpointer a, gconstpointer b);
 
 GdkFont *fixed_font;
 
@@ -90,6 +101,51 @@ reposition_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidg
 
 
 gint 
+update_canvas_links (guint8 *ether_link, canvas_link_t *canvas_link, GtkWidget *canvas)
+{
+   link_t *link;
+   GnomeCanvasPoints *points;
+   canvas_node_t *canvas_node;
+   GtkArg args[2];
+
+   args[0].name = "x";
+   args[1].name = "y";
+   link=canvas_link->link;
+   
+   points=gnome_canvas_points_new (2);
+   
+   /* We get coords from source node */
+   canvas_node= g_tree_lookup (canvas_nodes,ether_link);
+   gtk_object_getv(canvas_node->group_item, 
+		   2, 
+		   args);
+   points->coords[0]=args[0].d.double_data;
+   points->coords[1]=args[1].d.double_data;       
+   
+   /* And then for the destination node */
+   canvas_node= g_tree_lookup (canvas_nodes,ether_link+6);
+   gtk_object_getv(canvas_node->group_item, 
+		   2, 
+		   args);
+   points->coords[2]=args[0].d.double_data;
+   points->coords[3]=args[1].d.double_data;
+   
+   link->average = link->accumulated * 1000 / averaging_time;
+   
+   gnome_canvas_item_set (canvas_link->link_item,
+			  "points", points,
+			  "fill_color", "tan",
+			  "outline_color", "black",
+			  "width_units", (double) link->average,
+			  NULL);
+   
+   gnome_canvas_points_unref (points);
+   
+   return FALSE;
+
+} /* update_canvas_links */
+
+gint 
 update_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *canvas)
 {
    node_t *node;
@@ -107,7 +163,78 @@ update_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *
    
    return FALSE;
 
-}
+} /* update_canvas_nodes */
+
+gint
+check_new_link (guint8 *ether_link, link_t *link, GtkWidget *canvas)
+{
+  canvas_link_t *new_canvas_link;
+  canvas_node_t *canvas_node;
+  GnomeCanvasGroup *group;
+  GnomeCanvasPoints *points;
+  node_t *node;
+  double x, y;
+  GtkArg args[2];
+  args[0].name = "x";
+  args[1].name = "y";
+ 
+
+
+  if (!g_tree_lookup (canvas_links, ether_link))
+    {
+       group = gnome_canvas_root (GNOME_CANVAS (canvas));
+       
+       new_canvas_link = g_malloc (sizeof (canvas_link_t));
+       new_canvas_link->ether_link = ether_link;
+       new_canvas_link->link = link;
+       
+       /* We set the lines position using groups positions */
+       points=gnome_canvas_points_new (2);
+
+       /* We get coords from source node */
+       canvas_node= g_tree_lookup (canvas_nodes,ether_link);
+       gtk_object_getv(canvas_node->group_item, 
+		       2, 
+		       args);
+       points->coords[0]=args[0].d.double_data;
+       points->coords[1]=args[1].d.double_data;       
+      
+       /* And then for the destination node */
+       canvas_node= g_tree_lookup (canvas_nodes,ether_link+6);
+       gtk_object_getv(canvas_node->group_item, 
+		       2, 
+		       args);
+       points->coords[2]=args[0].d.double_data;
+       points->coords[3]=args[1].d.double_data;
+       
+       link->average = link->accumulated * 100000 / averaging_time;
+       
+       new_canvas_link->link_item = gnome_canvas_item_new (group,
+							   gnome_canvas_polygon_get_type (),
+							   "points", points,
+							   "fill_color", "tan",
+							   "outline_color", "green",
+							   "width_units", (double) link->average,
+							   NULL);
+       
+       
+       g_tree_insert (canvas_links, ether_link, new_canvas_link);
+       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
+       
+       gnome_canvas_points_unref (points);
+       
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
+	     _ ("Creating canvas_link: %s-%s. Number of links %d"), 
+	     get_ether_name (new_canvas_link->ether_link),
+	     get_ether_name ((new_canvas_link->ether_link)+6),
+	     g_tree_nnodes (canvas_links));
+
+    }
+   
+   return FALSE;
+} /* check_new_link */
+
+
 
 gint
 check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
@@ -155,13 +282,13 @@ check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
       g_tree_insert (canvas_nodes, ether_addr, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
 	     _ ("Creating canvas_node: %s. Number of nodes %d"), \
-	     ether_to_str (new_canvas_node->ether_addr), \
+	     get_ether_name (new_canvas_node->ether_addr), \
 	     g_tree_nnodes (canvas_nodes));
 
     }
    
    return FALSE;
-}
+} /* check_new_node */
 
 guint
 update_diagram (GtkWidget * canvas)
@@ -180,6 +307,12 @@ update_diagram (GtkWidget * canvas)
    
   /* Update nodes aspect */
   g_tree_traverse (canvas_nodes, update_canvas_nodes, G_IN_ORDER, canvas);
+   
+  /* Check if there are any new links */
+  g_tree_traverse (links, check_new_link, G_IN_ORDER, canvas);
+   
+  /* Update links aspect */
+  g_tree_traverse (canvas_links, update_canvas_links, G_IN_ORDER, canvas);
    
   group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
@@ -211,6 +344,7 @@ main (int argc, char *argv[])
 
   init_capture ();
   canvas_nodes = g_tree_new (ether_compare);
+  canvas_links = g_tree_new (link_compare);
 
   gnome_init ("etherape", VERSION, argc, argv);
 
@@ -219,7 +353,7 @@ main (int argc, char *argv[])
   app1 = create_app1 ();
   gtk_widget_show (app1);
 
-  gtk_timeout_add (100 /*ms */ ,
+  gtk_timeout_add (200 /*ms */ ,
 		   update_diagram,
 		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
 
