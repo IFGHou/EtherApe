@@ -228,12 +228,16 @@ get_tcp_name (void)
 static void
 get_nbss_name (void)
 {
+  /* TODO this really shouldn't be definened both here and in
+   * names_netbios.h */
 #define SESSION_REQUEST 0x81
 #define MAXDNAME        1025	/* maximum domain name length */
 #define NETBIOS_NAME_LEN  16
 
+  guint i = 0;
   guint8 mesg_type;
   guint16 length;
+  gchar *resolved_name, *numeric_name;
   gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
   int name_type;		/* TODO I hate to use an int here, while I have been
 				   * using glib data types all the time. But I just don't
@@ -243,10 +247,30 @@ get_nbss_name (void)
   mesg_type = *(guint8 *) (p + offset);
   length = pntohs ((p + 2));
 
+  g_my_debug ("In get_nbss_name");
+
   if (mesg_type == SESSION_REQUEST)
     {
-      ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
-      g_warning (name);
+      if (dir == OUTBOUND)
+	ethereal_nbns_name (p, offset + 4, offset + 4, name, &name_type);
+      else
+	ethereal_nbns_name (p, offset + 4 + NETBIOS_NAME_LEN * 2 + 2,
+			    offset + 4 + NETBIOS_NAME_LEN * 2 + 2, name,
+			    &name_type);
+
+      /* We just want the name */
+
+      for (; i <= 15 && name[i] != ' '; i++);
+      name[i] = '\0';
+
+      resolved_name = g_strdup (name);
+      numeric_name = g_strdup_printf ("%s <%d> (%s)", name, name_type,
+				      get_netbios_host_type (name_type));
+
+      add_name (numeric_name, resolved_name);
+      g_free (resolved_name);
+      g_free (numeric_name);
+
     }
 
 
