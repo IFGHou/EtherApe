@@ -756,20 +756,19 @@ update_node (node_t * node)
 
 	  /* TODO remove all names information */
 
-	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _("Removing node: %s. Number of node %d"),
-		 node->name->str, g_tree_nnodes (nodes));
 	  node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
+	  g_tree_remove (nodes, node_id);
+	  g_my_debug ( _("Removing node: %s. Number of nodes: %d"),
+		      node->name->str, g_tree_nnodes (nodes));
 	  g_string_free (node->name, TRUE);
 	  g_string_free (node->numeric_name, TRUE);
 	  if (node->numeric_ip)
 	    g_string_free (node->numeric_ip, TRUE);
 	  g_free (node);
-	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
 	  node = NULL;
 	}
