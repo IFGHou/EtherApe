@@ -157,3 +157,6 @@ gchar *s = N_("Select color");
 gchar *s = N_("ok_button2");
 gchar *s = N_("cancel_button2");
 gchar *s = N_("help_button1");
+gchar *s = N_("EtherApe: assign protocol");
+gchar *s = N_("Type protocol name...");
+gchar *s = N_("Type the name of the protocol that will be assigned to the selected color");

@@ -290,20 +290,29 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
   if (!color_clist)
     color_clist = glade_xml_get_widget (xml, "color_clist");
 
-  if (gtk_object_get_data (GTK_OBJECT (color_clist), "row") != NULL)
-    row_number =
-      GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
-  else
+  if (!
+      (row_number =
+       GPOINTER_TO_INT (gtk_object_get_data
+			(GTK_OBJECT (color_clist), "row"))))
     return;
 
-  gtk_clist_remove (GTK_CLIST (color_clist), row_number);
+  gtk_clist_remove (GTK_CLIST (color_clist), row_number - 1);
 
+  /*
+   * We have removed the selected row. We'll make sure a new row has to be selected
+   * before more are deleted
+   */
+  gtk_object_set_data (GTK_OBJECT (color_clist), "row", GINT_TO_POINTER (0));
 
 }				/* on_color_remove_button_clicked */
 
 void
 on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data)
 {
+  static GtkWidget *protocol_edit_dialog = NULL;
+  if (!protocol_edit_dialog)
+    protocol_edit_dialog = glade_xml_get_widget (xml, "protocol_edit_dialog");
+  gtk_widget_show (protocol_edit_dialog);
 }				/* on_protocol_edit_button_clicked */
 
 
@@ -326,21 +335,20 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
   gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
 
-  g_warning ("%f %f %f", colors[0], colors[1], colors[2]);
-
   if (!color_clist)
     color_clist = glade_xml_get_widget (xml, "color_clist");
 
-  if (gtk_object_get_data (GTK_OBJECT (color_clist), "row") != NULL)
-    row_number =
-      GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
-  else
-    row_number = 0;
+  /*
+   * We save row_number + 1, so we have to remove one here
+   * if row_number == -1, no row was selected.
+   */
+  row_number =
+    GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row")) -
+    1;
 
   row[0] = "hola";
-  row[1] = "adios";
+  row[1] = g_strdup_printf ("row_number %d", row_number);
 
-  gtk_clist_insert (GTK_CLIST (color_clist), row_number, row);
   colormap = gtk_widget_get_colormap (color_clist);
 
   gdk_color.red = (guint16) (colors[0] * 65535.0);
@@ -352,11 +360,26 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   style = gtk_style_new ();
   style->base[GTK_STATE_NORMAL] = gdk_color;
 
-  gtk_clist_set_cell_style (GTK_CLIST (color_clist), row_number, 0, style);
-
-  /* Since we have added a row, the selected row has been pushed one step down */
-  gtk_object_set_data (GTK_OBJECT (color_clist), "row",
-		       GINT_TO_POINTER (row_number + 1));
+  /*
+   * If an insertion point was defined, then
+   */
+  if (row_number >= 0)
+    {
+      gtk_clist_insert (GTK_CLIST (color_clist), row_number, row);
+      gtk_clist_set_cell_style (GTK_CLIST (color_clist), row_number, 0,
+				style);
+      /*
+       * Since we have added a row, the selected row has been pushed one step down
+       * Then we add one more to distinguish non-existance from row number zero.
+       */
+      gtk_object_set_data (GTK_OBJECT (color_clist), "row",
+			   GINT_TO_POINTER (row_number + 1 + 1));
+    }
+  else
+    {
+      gtk_clist_insert (GTK_CLIST (color_clist), 0, row);
+      gtk_clist_set_cell_style (GTK_CLIST (color_clist), 0, 0, style);
+    }
 
 }
 
@@ -365,5 +388,9 @@ on_color_clist_select_row (GtkCList * clist,
 			   gint row,
 			   gint column, GdkEvent * event, gpointer user_data)
 {
-  gtk_object_set_data (GTK_OBJECT (clist), "row", GINT_TO_POINTER (row));
+  /*
+   * To distinguish non-existance from row number zero, we save the row
+   * number plus one
+   */
+  gtk_object_set_data (GTK_OBJECT (clist), "row", GINT_TO_POINTER (row + 1));
 }
