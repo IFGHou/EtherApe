@@ -103,6 +103,7 @@ main (int argc, char *argv[])
   if (!fontname)
     fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
 
+  set_debug_level ();
 
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
@@ -135,37 +136,38 @@ main (int argc, char *argv[])
   switch (mode)
     {
     case IP:
-      if (!filter_string)
-	  filter = g_strconcat ("ip and ", filter_string, NULL);
+      if (filter_string)
+	filter = g_strconcat ("ip and ", filter_string, NULL);
       else
-	  {
-	     g_free (filter);
-	     filter = g_strdup ("ip");
-	  }
+	{
+	  g_free (filter);
+	  filter = g_strdup ("ip");
+	}
       break;
     case TCP:
-      if (!filter_string)
-	  filter = g_strconcat ("tcp and ", filter_string, NULL);
+      if (filter_string)
+	filter = g_strconcat ("tcp and ", filter_string, NULL);
       else
-	  {
-	     g_free (filter);
-	     filter = g_strdup ("tcp");
-	  }
+	{
+	  g_free (filter);
+	  filter = g_strdup ("tcp");
+	}
       break;
     case UDP:
-      if (!filter_string)
-	  filter = g_strconcat ("udp and ", filter_string, NULL);
+      if (filter_string)
+	filter = g_strconcat ("udp and ", filter_string, NULL);
       else
-	  {
-	     g_free (filter);
-	     filter = g_strdup ("udp");
-	  }
+	{
+	  g_free (filter);
+	  filter = g_strdup ("udp");
+	}
       break;
     case DEFAULT:
     case ETHERNET:
     case IPX:
     case FDDI:
-       filter = g_strdup (filter_string);
+      if (filter_string)
+	filter = g_strdup (filter_string);
       break;
     }
 
@@ -195,8 +197,15 @@ main (int argc, char *argv[])
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
+#if 0
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
 				     (GtkFunction) update_diagram, widget);
+#endif
+  diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					refresh_period,
+					(GtkFunction) update_diagram,
+					widget,
+					(GDestroyNotify) destroying_timeout);
 
   /* MAIN LOOP */
   gtk_main ();
@@ -291,6 +300,12 @@ save_config (char *prefix)
 
 }				/* save_config */
 
+
+static void
+set_debug_level (void)
+{
+
+}
 
 /* the gnome session manager may call this function */
 static void
