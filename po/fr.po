@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-04-25 00:49+0200\n"
+"POT-Creation-Date: 2001-04-26 18:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -118,13 +118,13 @@ msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:260
+#: src/main.c:256
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:346
+#: src/main.c:342
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
@@ -325,142 +325,152 @@ msgstr "Capture"
 msgid "_Mode"
 msgstr ""
 
+# src/interface.c:709
 #: src/glade-strings:10
-msgid "Set FDDI mode"
-msgstr ""
+#, fuzzy
+msgid "Set Token Ring mode"
+msgstr "Mode de la taille"
 
 #: src/glade-strings:11
-msgid "_FDDI"
+msgid "Token _Ring"
 msgstr ""
 
 #: src/glade-strings:12
+msgid "Set FDDI mode"
+msgstr ""
+
+#: src/glade-strings:13
+msgid "_FDDI"
+msgstr ""
+
+#: src/glade-strings:14
 msgid "Set Ethernet mode"
 msgstr ""
 
 # src/interface.c:107
-#: src/glade-strings:13
+#: src/glade-strings:15
 #, fuzzy
 msgid "_Ethernet"
 msgstr "Etherape"
 
 # src/interface.c:709
-#: src/glade-strings:14
+#: src/glade-strings:16
 #, fuzzy
 msgid "Set IP mode"
 msgstr "Mode de la taille"
 
-#: src/glade-strings:15
+#: src/glade-strings:17
 msgid "_IP"
 msgstr ""
 
-#: src/glade-strings:16
+#: src/glade-strings:18
 msgid "Set TCP mode"
 msgstr ""
 
-#: src/glade-strings:17
+#: src/glade-strings:19
 msgid "_TCP"
 msgstr ""
 
-#: src/glade-strings:18
+#: src/glade-strings:20
 msgid "Set UDP mode"
 msgstr ""
 
-#: src/glade-strings:19
+#: src/glade-strings:21
 msgid "_UDP"
 msgstr ""
 
-#: src/glade-strings:20
-msgid "_Interfaces"
-msgstr ""
-
-#: src/glade-strings:21 src/glade-strings:33
-#, fuzzy
-msgid "Start capture"
-msgstr "Capture"
-
 #: src/glade-strings:22
-msgid "_Start"
+msgid "_Interfaces"
 msgstr ""
 
 #: src/glade-strings:23 src/glade-strings:35
 #, fuzzy
-msgid "Pause capture"
+msgid "Start capture"
 msgstr "Capture"
 
 #: src/glade-strings:24
-msgid "_Pause"
+msgid "_Start"
 msgstr ""
 
 #: src/glade-strings:25 src/glade-strings:37
 #, fuzzy
-msgid "Stop capture"
+msgid "Pause capture"
 msgstr "Capture"
 
 #: src/glade-strings:26
+msgid "_Pause"
+msgstr ""
+
+#: src/glade-strings:27 src/glade-strings:39
+#, fuzzy
+msgid "Stop capture"
+msgstr "Capture"
+
+#: src/glade-strings:28
 msgid "St_op"
 msgstr ""
 
-#: src/glade-strings:27
+#: src/glade-strings:29
 msgid "Show or hide the toolbar"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:46
-#: src/glade-strings:28
+#: src/glade-strings:30
 msgid "_Toolbar"
 msgstr "Barre d'_outils"
 
-#: src/glade-strings:29
+#: src/glade-strings:31
 msgid "Show or hide the legend"
 msgstr "Affiche ou cache la légende"
 
 # src/interface.c:53
-#: src/glade-strings:30
+#: src/glade-strings:32
 msgid "_Legend"
 msgstr "_Légende"
 
-#: src/glade-strings:31
+#: src/glade-strings:33
 msgid "Show or hide the status bar"
 msgstr "Affiche ou cache la barre d'état"
 
 # src/interface.c:60
-#: src/glade-strings:32
+#: src/glade-strings:34
 msgid "_Status Bar"
 msgstr "Barre d'_état"
 
-#: src/glade-strings:34
+#: src/glade-strings:36
 msgid "Start"
 msgstr ""
 
-#: src/glade-strings:36
+#: src/glade-strings:38
 msgid "Pause"
 msgstr ""
 
-#: src/glade-strings:38
+#: src/glade-strings:40
 msgid "Stop"
 msgstr ""
 
-#: src/glade-strings:39
+#: src/glade-strings:41
 #, fuzzy
 msgid "Preferences (Ctrl-P)"
 msgstr "Préférences enregistrées"
 
-#: src/glade-strings:40
+#: src/glade-strings:42
 msgid "Pref."
 msgstr ""
 
 # src/interface.c:278
-#: src/glade-strings:41
+#: src/glade-strings:43
 msgid "Protocols"
 msgstr "Protocoles"
 
 # src/interface.c:348
-#: src/glade-strings:42
+#: src/glade-strings:44
 #, fuzzy
 msgid "Copyright 2001 Juan Toledo"
 msgstr "Copyright 2000 Juan Toledo"
 
 # src/interface.c:350
-#: src/glade-strings:43
+#: src/glade-strings:45
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
@@ -469,68 +479,68 @@ msgstr ""
 "Web: http://etherape.sourceforge.net"
 
 # src/interface.c:371
-#: src/glade-strings:45
+#: src/glade-strings:47
 msgid "window1"
 msgstr ""
 
 # src/interface.c:391
-#: src/glade-strings:46
+#: src/glade-strings:48
 msgid "name"
 msgstr ""
 
 # src/interface.c:400
-#: src/glade-strings:47
+#: src/glade-strings:49
 msgid "accumulated"
 msgstr ""
 
 # src/interface.c:409
-#: src/glade-strings:48
+#: src/glade-strings:50
 msgid "average"
 msgstr ""
 
 # src/interface.c:436
-#: src/glade-strings:49
+#: src/glade-strings:51
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 "Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
 
-#: src/glade-strings:50
+#: src/glade-strings:52
 msgid "Information"
 msgstr ""
 
-#: src/glade-strings:51
+#: src/glade-strings:53
 #, fuzzy
 msgid "EtherApe: Preferences"
 msgstr "Etherape: Préférences"
 
 # src/interface.c:270
-#: src/glade-strings:52
+#: src/glade-strings:54
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/glade-strings:53
+#: src/glade-strings:55
 msgid "Toggle whether text is shown on the diagram"
 msgstr "Défini si le texte est affiché sur le diagramme"
 
-#: src/glade-strings:54
+#: src/glade-strings:56
 msgid "Click to toggle"
 msgstr "Cliquer pour sélectionner"
 
-#: src/glade-strings:55
+#: src/glade-strings:57
 msgid "No text"
 msgstr "Pas de texte"
 
 # src/interface.c:596
-#: src/glade-strings:56
+#: src/glade-strings:58
 msgid "Max. Node Radius"
 msgstr "Rayon de noeud maximal"
 
 # src/interface.c:622
-#: src/glade-strings:57
+#: src/glade-strings:59
 msgid "Max. Link Width"
 msgstr "Largeur de liaison maximale"
 
-#: src/glade-strings:58
+#: src/glade-strings:60
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
@@ -539,180 +549,231 @@ msgstr ""
 "calculésen fonction du traffic moyen"
 
 # src/interface.c:698
-#: src/glade-strings:59
+#: src/glade-strings:61
 msgid "Linear"
 msgstr "Linéaire"
 
 # src/interface.c:701
-#: src/glade-strings:60
+#: src/glade-strings:62
 msgid "Logarithmic"
 msgstr "Lograrithmique"
 
 # src/interface.c:704
-#: src/glade-strings:61
+#: src/glade-strings:63
 msgid "Square Root"
 msgstr "Racine carrée"
 
 # src/interface.c:709
-#: src/glade-strings:62
+#: src/glade-strings:64
 msgid "Size Mode"
 msgstr "Mode de la taille"
 
-#: src/glade-strings:63
+#: src/glade-strings:65
 msgid "Choose the font used to display text in the diagram"
 msgstr "Défini la police utilisée pour afficher le texte dans le diagramme"
 
-#: src/glade-strings:64
+#: src/glade-strings:66
 msgid "Font"
 msgstr "Police"
 
-#: src/glade-strings:65
+#: src/glade-strings:67
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Nombre de millisecondes entre les rafraîchissement du diagramme"
 
 # src/interface.c:570
-#: src/glade-strings:66
+#: src/glade-strings:68
 msgid "Diagram refresh period (ms)"
 msgstr "Période de rafraichissement (ms)"
 
-#: src/glade-strings:67 src/glade-strings:74
+#: src/glade-strings:69 src/glade-strings:76
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Défini le niveau du protocole affiché dans la légende"
 
-#: src/glade-strings:68
+#: src/glade-strings:70
 msgid "Topmost recognized protocol"
 msgstr ""
 
-#: src/glade-strings:69
+#: src/glade-strings:71
 msgid "Level 2 (Eg: ETH_II)"
 msgstr ""
 
-#: src/glade-strings:70
+#: src/glade-strings:72
 msgid "Level 3 (Eg: IP)"
 msgstr ""
 
-#: src/glade-strings:71
+#: src/glade-strings:73
 msgid "Level 4 (Eg: TCP)"
 msgstr ""
 
-#: src/glade-strings:72
+#: src/glade-strings:74
 msgid "Level 5 (Eg: HTTP)"
 msgstr ""
 
-#: src/glade-strings:73
+#: src/glade-strings:75
 msgid "Protocol Stack Level"
 msgstr "Niveau du protocole"
 
-#: src/glade-strings:75
+#: src/glade-strings:77
 msgid "Instantaneous traffic (In+Out)"
 msgstr ""
 
-#: src/glade-strings:76
+#: src/glade-strings:78
 msgid "Instantaneous traffic (Inbound)"
 msgstr ""
 
-#: src/glade-strings:77
+#: src/glade-strings:79
 msgid "Instantaneous traffic (Outbound)"
 msgstr ""
 
-#: src/glade-strings:78
+#: src/glade-strings:80
 msgid "Accumulated traffic (In+Out)"
 msgstr ""
 
-#: src/glade-strings:79
+#: src/glade-strings:81
 msgid "Accumulated traffic (Inbound)"
 msgstr ""
 
-#: src/glade-strings:80
+#: src/glade-strings:82
 msgid "Accumulated traffic (Outbound)"
 msgstr ""
 
-#: src/glade-strings:81
+#: src/glade-strings:83
 msgid "Node size variable"
 msgstr ""
 
 # src/interface.c:510
-#: src/glade-strings:82
+#: src/glade-strings:84
 msgid "Diagram"
 msgstr "Diagramme"
 
 # src/main.c:70
-#: src/glade-strings:83
+#: src/glade-strings:85
 msgid "Capture filter"
 msgstr "Filtre de capture"
 
-#: src/glade-strings:84
+#: src/glade-strings:86
 msgid "Packet information is averaged for this amount of time"
 msgstr ""
 "La moyenne sur les informations des paquets est effectuée pour cette "
 "quantité de temps"
 
 # src/interface.c:545
-#: src/glade-strings:85
+#: src/glade-strings:87
 msgid "Averaging Time (ms)"
 msgstr "Temps moyen (ms)"
 
-#: src/glade-strings:86
+#: src/glade-strings:88
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr ""
 
 # src/interface.c:674
-#: src/glade-strings:87
+#: src/glade-strings:89
 msgid "Link Timeout (ms)"
 msgstr "Timeout pour les liaisons (ms)"
 
-#: src/glade-strings:88
+#: src/glade-strings:90
 msgid "Delete this node after this much time. 0 means never timeout."
 msgstr "Supprime ce noeud après cette quantité de temps. 0 signifie jamais."
 
 # src/interface.c:648
-#: src/glade-strings:89
+#: src/glade-strings:91
 msgid "Node Timeout (ms)"
 msgstr "Timeout pour les noeuds (ms)"
 
-#: src/glade-strings:90
+#: src/glade-strings:92
 msgid "Capture"
 msgstr "Capture"
 
-#: src/glade-strings:91
+#: src/glade-strings:93
 msgid "Select Font"
 msgstr "Choisir la police"
 
-#: src/glade-strings:92
+#: src/glade-strings:94
 msgid "EtherApe: Open Capture File"
 msgstr ""
 
 # src/main.c:70
-#: src/glade-strings:93
+#: src/glade-strings:95
 #, fuzzy
 msgid "EtherApe: Select capture file"
 msgstr "définir le filtre de capture"
 
-#: src/glade-strings:94
+#: src/glade-strings:96
 #, fuzzy
 msgid "EtherApe: Select Capture File"
 msgstr "Etherape: Préférences"
 
 # src/main.c:70
-#: src/glade-strings:95
+#: src/glade-strings:97
 #, fuzzy
 msgid "Select capture file"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/glade-strings:96
+#: src/glade-strings:98
 #, fuzzy
 msgid "Optionally, set a capture filter"
 msgstr "définir le filtre de capture"
 
 # src/interface.c:23
-#: src/glade-strings:97
+#: src/glade-strings:99
 #, fuzzy
 msgid "File:"
 msgstr "Nouveau fichier"
 
-#: src/glade-strings:98
+#: src/glade-strings:100
 msgid "Filter:"
+msgstr ""
+
+#: src/glade-strings:101
+msgid "Name:"
+msgstr ""
+
+#: src/glade-strings:102 src/glade-strings:104
+msgid "This is a test node name"
+msgstr ""
+
+#: src/glade-strings:103
+msgid "Numeric Name:"
+msgstr ""
+
+#: src/glade-strings:105
+msgid "Show traffic"
+msgstr ""
+
+# src/interface.c:278
+#: src/glade-strings:106
+#, fuzzy
+msgid "Show protocols"
+msgstr "Protocoles"
+
+#: src/glade-strings:107
+msgid "Instantaneous"
+msgstr ""
+
+#: src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
+#: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
+msgid "test label"
+msgstr ""
+
+#: src/glade-strings:109
+msgid "Accumulated"
+msgstr ""
+
+#: src/glade-strings:111
+msgid "Inst. Inbound"
+msgstr ""
+
+#: src/glade-strings:113
+msgid "Accu. Outbound"
+msgstr ""
+
+#: src/glade-strings:115
+msgid "Accu. Inbound"
+msgstr ""
+
+#: src/glade-strings:117
+msgid "Inst. Outbound"
 msgstr ""
 
 # src/capture.c:375
