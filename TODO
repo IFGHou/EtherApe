@@ -1,6 +1,9 @@
 User visible features:
 ----------------------
 
+  * I need information on what is the best set of colors to display
+    over a black background
+ 
   * Make protocol colors user-selectable.
   
   * Ability to set per node preferences. Like setting an hour long
@@ -42,6 +45,9 @@ Issues in the source code
   
   * Define GLADEDIR in config.h the same way that PIXMAPS_DIR is, and not
     just pass it to the compiler
+    
+  * Move preference controls initialization for init_diagram to a new
+    function in preferences.c
 
 --
 $Id$
