@@ -207,6 +207,9 @@ guint update_diagram (GtkWidget * canvas)
     }
   while (n_nodes_before != n_nodes_after);
 
+  /* Limit the number of nodes displayed, if a limit has been set */
+  limit_nodes ();
+
   /* Reposition canvas_nodes and update status bar if a node has been
    * added or deleted */
   if (!appbar)
@@ -485,12 +488,13 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
 
       new_canvas_node->is_new = TRUE;
-      need_reposition = 1;
-
+      new_canvas_node->shown = TRUE;
+      need_reposition = TRUE;
     }
 
-  return FALSE;
+  return FALSE;			/* False to keep on traversing */
 }				/* check_new_node */
+
 
 /* - calls update_nodes, so that the related nodes updates its average
  *   traffic and old nodes are deleted
@@ -526,7 +530,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 	     g_tree_nnodes (canvas_nodes));
       g_free (node_id);
       g_free (canvas_node);
-      need_reposition = 1;
+      need_reposition = TRUE;
       return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
 				 * the traversion (Does that word exist? :-) */
@@ -571,6 +575,102 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 }				/* update_canvas_nodes */
 
 
+/* Sorts canvas nodes with the criterium set in preferences and sets
+ * which will be displayed in the diagram */
+static void
+limit_nodes (void)
+{
+  static GTree *ordered_nodes = NULL;
+  static guint limit;
+  displayed_nodes = 0;		/* We'll increment for each node we don't
+				 * limit */
+
+  if (node_limit < 0)
+    {
+      displayed_nodes = g_tree_nnodes (canvas_nodes);
+      return;
+    }
+
+  limit = node_limit;
+
+  ordered_nodes = g_tree_new (traffic_compare);
+
+  g_tree_traverse (canvas_nodes, (GTraverseFunc) add_ordered_node, G_IN_ORDER,
+		   ordered_nodes);
+  g_tree_traverse (ordered_nodes, (GTraverseFunc) check_ordered_node,
+		   G_IN_ORDER, &limit);
+  g_tree_destroy (ordered_nodes);
+  ordered_nodes = NULL;
+}				/* limit_nodes */
+
+static gint
+add_ordered_node (guint8 * node_id, canvas_node_t * node,
+		  GTree * ordered_nodes)
+{
+  g_tree_insert (ordered_nodes, node->node, node);
+  g_my_debug ("Adding ordered node. Number of nodes: %d",
+	      g_tree_nnodes (ordered_nodes));
+  return FALSE;			/* keep on traversing */
+}				/* add_ordered_node */
+
+static gint
+check_ordered_node (gdouble * traffic, canvas_node_t * node, guint * count)
+{
+  /* TODO We can probably optimize this by stopping the traversion once
+   * the limit has been reached */
+  if (*count)
+    {
+      if (!node->shown)
+	need_reposition = TRUE;
+      node->shown = TRUE;
+      displayed_nodes++;
+      (*count)--;
+    }
+  else
+    {
+      if (node->shown)
+	need_reposition = TRUE;
+      node->shown = FALSE;
+    }
+  return FALSE;			/* keep on traversing */
+}				/* check_ordered_node */
+
+/* Comparison function used to order the (GTree *) nodes
+ * and canvas_nodes heard on the network */
+static gint
+traffic_compare (gconstpointer a, gconstpointer b)
+{
+#if 1
+  node_t *node_a, *node_b;
+#endif
+
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
+  node_a = (node_t *) a;
+  node_b = (node_t *) b;
+
+  if (node_a->average < node_b->average)
+    return 1;
+  if (node_a->average > node_b->average)
+    return -1;
+
+  /* If two nodes have the same traffic, we still have
+   * to distinguish them somehow. We use the node_id */
+
+  return (node_id_compare (node_a->node_id, node_b->node_id));
+
+#if 0
+  if (*(gdouble *) a < *(gdouble *) b)
+    return 1;
+  if (*(gdouble *) a > *(gdouble *) b)
+    return -1;
+#endif
+
+  return 0;
+}				/* traffic_compare */
+
+
 /* Called from update_diagram if the global need_reposition
  * is set. It rearranges the nodes*/
 /* TODO I think I should update all links as well, so as not having
@@ -585,11 +685,23 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   gdouble x_rad_max, y_rad_max;
   gdouble oddAngle = angle;
 
+  if (!canvas_node->shown)
+    {
+      gnome_canvas_item_hide (canvas_node->node_item);
+      gnome_canvas_item_hide (canvas_node->text_item);
+      return FALSE;
+    }
+
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &xmin, &ymin, &xmax, &ymax);
   if (!n_nodes)
     {
+
+#if 0
       n_nodes = node_i = g_tree_nnodes (canvas_nodes);
+#endif
+      n_nodes = node_i = displayed_nodes;
+      g_my_debug ("Displayed nodes = %d", displayed_nodes);
     }
 
   xmin += text_compensation;
@@ -670,9 +782,11 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
     {
       gnome_canvas_item_show (canvas_node->text_item);
       gnome_canvas_item_request_update (canvas_node->text_item);
-      gnome_canvas_item_request_update (canvas_node->node_item);
-
     }
+
+  gnome_canvas_item_show (canvas_node->node_item);
+  gnome_canvas_item_request_update (canvas_node->node_item);
+
 
   node_i--;
 
@@ -810,9 +924,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   /* We get coords for the destination node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id + node_id_length);
-  if (!canvas_node)
+  if (!canvas_node || !canvas_node->shown)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
+      gnome_canvas_points_unref (points);
       return FALSE;
     }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
@@ -821,9 +936,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   /* We get coords from source node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id);
-  if (!canvas_node)
+  if (!canvas_node || !canvas_node->shown)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
+      gnome_canvas_points_unref (points);
       return FALSE;
     }
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);

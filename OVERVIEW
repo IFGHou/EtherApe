@@ -12,6 +12,9 @@ future reference.
 0. Index of files
 -----------------
 
+etherape.glade
+	This file has all of the GUI. Use glade to modify it.
+
 src/globals.h
 	Declaration of all main data structures.
 	
@@ -35,6 +38,9 @@ src/resolv.c
 	Several helper functions, mostly to look up the ethernet
 	address in /etc/ethers
 
+src/util.c
+	helper functions for resolv.c
+
 src/diagram.c
 	Updates the diagram, which is a gnome_canvas widget.
 	Takes care of appbar information and node pop-ups.
@@ -43,12 +49,7 @@ src/callbacks.c
 	Handles GUI interaction. Buttons clicked, adjustments
 	changed, etc.
 	
-src/interface.c
-	GUI creation. Automatically created by glade from
-	etherape.glade.
 	
-src/util.c and src/support.c
-	helper functions provided by glade.
 
 
 1. Basic Architecture

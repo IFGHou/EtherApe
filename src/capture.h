@@ -40,11 +40,11 @@ create_node_type_t;
 static pcap_t *pch;		/* pcap structure */
 static struct pcap_pkthdr phdr;
 
-static  guint32 ms_to_next;	/* Used for offline mode to store the amount
+static guint32 ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
-static gboolean end_of_file=FALSE;	/* Marks that the end of the offline file
-				 * has been reached */
+static gboolean end_of_file = FALSE;	/* Marks that the end of the offline file
+					   * has been reached */
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-15 23:45+0200\n"
+"POT-Creation-Date: 2000-04-21 02:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,35 +63,43 @@ msgid "don't move nodes around"
 msgstr ""
 
 #: src/main.c:54
-msgid "Don't show warnings"
+msgid "limits nodes displayed"
+msgstr ""
+
+#: src/main.c:54
+msgid "<number of nodes>"
 msgstr ""
 
 #: src/main.c:56
-msgid "set the node color"
-msgstr ""
-
-#: src/main.c:56 src/main.c:58 src/main.c:60
-msgid "color"
+msgid "Don't show warnings"
 msgstr ""
 
 #: src/main.c:58
-msgid "set the link color"
+msgid "set the node color"
+msgstr ""
+
+#: src/main.c:58 src/main.c:60 src/main.c:62
+msgid "color"
 msgstr ""
 
 #: src/main.c:60
+msgid "set the link color"
+msgstr ""
+
+#: src/main.c:62
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:128
+#: src/main.c:131
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/callbacks.c:159 src/main.c:183
+#: src/callbacks.c:159 src/main.c:186
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:308
+#: src/main.c:311
 msgid "Preferences saved"
 msgstr ""
 
@@ -110,72 +118,68 @@ msgstr ""
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:121
+#: src/capture.c:128
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:126
+#: src/capture.c:133
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:146
+#: src/capture.c:153
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:189
+#: src/capture.c:197
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:195
+#: src/capture.c:203
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:200
+#: src/capture.c:208
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:331
+#: src/capture.c:351
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:374
+#: src/capture.c:394
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:465
-msgid "n/a"
-msgstr ""
-
-#: src/capture.c:497
+#: src/capture.c:514
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:535
+#: src/capture.c:552
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:690
+#: src/capture.c:707
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:760
+#: src/capture.c:777
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:828
+#: src/capture.c:846
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1046
+#: src/capture.c:1064
 msgid "Null packet in check_packet"
 msgstr ""
 

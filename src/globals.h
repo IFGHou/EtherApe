@@ -176,30 +176,6 @@ typedef struct
 }
 protocol_t;
 
-/* Diagram structures */
-
-typedef struct
-{
-  guint8 *canvas_node_id;
-  node_t *node;
-  GnomeCanvasItem *node_item;
-  GnomeCanvasItem *text_item;
-  GnomeCanvasGroup *group_item;
-  GdkColor color;
-  gboolean is_new;
-}
-canvas_node_t;
-
-typedef struct
-{
-  guint8 *canvas_link_id;
-  link_t *link;
-  GnomeCanvasItem *link_item;
-  GdkColor color;
-}
-canvas_link_t;
-
-
 /* Variables */
 
 GladeXML *xml;
@@ -218,12 +194,6 @@ GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of
 				 * like to be quoted just like them:
 				 * "10 should be enough for everybody" :-) */
 
-GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
-				 * separate data from presentation: that is, we need to
-				 * keep a list of CanvasItems, but we do not want to keep
-				 * that info on the nodes tree itself */
-GTree *canvas_links;		/* See above */
-GList *legend_protocols;
 
 link_type_t linktype;		/* Type of device we are listening to */
 guint node_id_length;		/* Length of the node_id key. Depends
@@ -261,6 +231,8 @@ gchar *fontname;		/* Font to be used for text display */
 gboolean need_reposition;	/* Force a diagram relayout */
 guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
+gint node_limit;		/* Max number of nodes to show. If <0 it's not
+				 * limited */
 
 /* Capture settings */
 

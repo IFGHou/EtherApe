@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-15 23:45+0200\n"
+"POT-Creation-Date: 2000-04-21 02:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,8 +162,16 @@ msgstr "no desvanecer enlaces en desuso"
 msgid "don't move nodes around"
 msgstr "no mover los nodos"
 
-# src/main.c:54
 #: src/main.c:54
+msgid "limits nodes displayed"
+msgstr ""
+
+#: src/main.c:54
+msgid "<number of nodes>"
+msgstr ""
+
+# src/main.c:54
+#: src/main.c:56
 msgid "Don't show warnings"
 msgstr "no mostrar mensajes de aviso"
 
@@ -176,7 +184,7 @@ msgstr "no mostrar mensajes de aviso"
 # src/main.c:173
 # src/main.c:57
 # src/main.c:56
-#: src/main.c:56
+#: src/main.c:58
 msgid "set the node color"
 msgstr "fijar el color de los nodos"
 
@@ -189,7 +197,7 @@ msgstr "fijar el color de los nodos"
 # src/main.c:173 src/main.c:176 src/main.c:179
 # src/main.c:57 src/main.c:59 src/main.c:61
 # src/main.c:56 src/main.c:58 src/main.c:60
-#: src/main.c:56 src/main.c:58 src/main.c:60
+#: src/main.c:58 src/main.c:60 src/main.c:62
 msgid "color"
 msgstr "color"
 
@@ -202,7 +210,7 @@ msgstr "color"
 # src/main.c:176
 # src/main.c:59
 # src/main.c:58
-#: src/main.c:58
+#: src/main.c:60
 msgid "set the link color"
 msgstr "fijar el color de los enlaces"
 
@@ -215,7 +223,7 @@ msgstr "fijar el color de los enlaces"
 # src/main.c:179
 # src/main.c:61
 # src/main.c:60
-#: src/main.c:60
+#: src/main.c:62
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
@@ -228,13 +236,13 @@ msgstr "fijar el color del texto"
 # src/main.c:247
 # src/main.c:127
 # src/main.c:128
-#: src/main.c:128
+#: src/main.c:131
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
 # src/callbacks.c:159 src/main.c:182
-#: src/callbacks.c:159 src/main.c:183
+#: src/callbacks.c:159 src/main.c:186
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -246,7 +254,7 @@ msgstr "No ha sido posible cargar el interfaz (%s)"
 # src/main.c:141
 # src/main.c:267
 # src/main.c:307
-#: src/main.c:308
+#: src/main.c:311
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -301,7 +309,7 @@ msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 # src/capture.c:124
 # src/capture.c:121
 # src/capture.c:121
-#: src/capture.c:121
+#: src/capture.c:128
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
@@ -314,7 +322,7 @@ msgstr "Tipo de enlace aún no soportado"
 # src/capture.c:117
 # src/capture.c:126
 # src/capture.c:126
-#: src/capture.c:126
+#: src/capture.c:133
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
@@ -327,7 +335,7 @@ msgstr "Modo no disponible para este interfaz"
 # src/capture.c:140
 # src/capture.c:146
 # src/capture.c:146
-#: src/capture.c:146
+#: src/capture.c:153
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
@@ -340,7 +348,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:79 src/capture.c:183
 # src/capture.c:189
 # src/capture.c:189
-#: src/capture.c:189
+#: src/capture.c:197
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -356,7 +364,7 @@ msgstr ""
 # src/capture.c:85 src/capture.c:189
 # src/capture.c:195
 # src/capture.c:195
-#: src/capture.c:195
+#: src/capture.c:203
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -370,7 +378,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:91 src/capture.c:195
 # src/capture.c:200
 # src/capture.c:200
-#: src/capture.c:200
+#: src/capture.c:208
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
@@ -385,7 +393,7 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/capture.c:331
 # src/capture.c:331
 #. TODO Write proper assertion code here
-#: src/capture.c:331
+#: src/capture.c:351
 msgid "Reached default in get_node_id"
 msgstr ""
 
@@ -398,22 +406,9 @@ msgstr ""
 # src/capture.c:315
 # src/capture.c:374
 # src/capture.c:374
-#: src/capture.c:374
+#: src/capture.c:394
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
-
-# src/capture.c:388
-# src/capture.c:387
-# src/capture.c:390
-# src/capture.c:390
-# src/capture.c:325
-# src/capture.c:325
-# src/capture.c:430
-# src/capture.c:462
-# src/capture.c:465
-#: src/capture.c:465
-msgid "n/a"
-msgstr "n/d"
 
 # src/capture.c:409
 # src/capture.c:408
@@ -424,7 +419,7 @@ msgstr "n/d"
 # src/capture.c:451
 # src/capture.c:490
 # src/capture.c:497
-#: src/capture.c:497
+#: src/capture.c:514
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -438,7 +433,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:489
 # src/capture.c:528
 # src/capture.c:535
-#: src/capture.c:535
+#: src/capture.c:552
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -453,7 +448,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:683
 # src/capture.c:690
 #. TODO Write proper assertion code here
-#: src/capture.c:690
+#: src/capture.c:707
 msgid "Reached default in fill_names"
 msgstr ""
 
@@ -466,7 +461,7 @@ msgstr ""
 # src/capture.c:708
 # src/capture.c:746
 # src/capture.c:760
-#: src/capture.c:760
+#: src/capture.c:777
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -480,7 +475,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:769
 # src/capture.c:808
 # src/capture.c:828
-#: src/capture.c:828
+#: src/capture.c:846
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -494,7 +489,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:886
 # src/capture.c:939
 # src/capture.c:1046
-#: src/capture.c:1046
+#: src/capture.c:1064
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -1086,6 +1081,18 @@ msgstr ""
 #: src/glade-strings:67
 msgid "Cancelar"
 msgstr ""
+
+# src/capture.c:388
+# src/capture.c:387
+# src/capture.c:390
+# src/capture.c:390
+# src/capture.c:325
+# src/capture.c:325
+# src/capture.c:430
+# src/capture.c:462
+# src/capture.c:465
+#~ msgid "n/a"
+#~ msgstr "n/d"
 
 # src/interface.c:816
 # src/interface.c:816

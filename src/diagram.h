@@ -19,7 +19,37 @@
 
 #include "globals.h"
 
+typedef struct
+{
+  guint8 *canvas_node_id;
+  node_t *node;
+  GnomeCanvasItem *node_item;
+  GnomeCanvasItem *text_item;
+  GnomeCanvasGroup *group_item;
+  GdkColor color;
+  gboolean is_new;
+  gboolean shown;		/* True if it is to be displayed. */
+}
+canvas_node_t;
+
+typedef struct
+{
+  guint8 *canvas_link_id;
+  link_t *link;
+  GnomeCanvasItem *link_item;
+  GdkColor color;
+}
+canvas_link_t;
+
+GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+				 * separate data from presentation: that is, we need to
+				 * keep a list of CanvasItems, but we do not want to keep
+				 * that info on the nodes tree itself */
+GTree *canvas_links;		/* See above */
+GList *legend_protocols;
+
 static gboolean is_idle = FALSE;
+static guint displayed_nodes;
 
 struct popup_data
 {
@@ -35,6 +65,13 @@ static gint check_new_node (guint8 * ether_addr,
 static gint update_canvas_nodes (guint8 * ether_addr,
 				 canvas_node_t * canvas_node,
 				 GtkWidget * canvas);
+static void limit_nodes (void);
+static gint add_ordered_node (guint8 * node_id,
+			      canvas_node_t * canvas_node,
+			      GTree * ordered_nodes);
+static gint check_ordered_node (gdouble * traffic, canvas_node_t * node,
+				guint * count);
+static gint traffic_compare (gconstpointer a, gconstpointer b);
 static gint reposition_canvas_nodes (guint8 * ether_addr,
 				     canvas_node_t * canvas_node,
 				     GtkWidget * canvas);

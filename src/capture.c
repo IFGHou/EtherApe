@@ -81,17 +81,16 @@ init_capture (void)
 		   device, ebuf);
 	}
       /* This function will be calle right after gtk_main */
-#if 0       
+#if 0
       capture_timeout = gtk_timeout_add (1,
 					 (GtkFunction) get_offline_packet,
 					 NULL);
 #endif
-    g_timeout_add_full (G_PRIORITY_DEFAULT,
-			1,
-			(GtkFunction) get_offline_packet,
-			NULL,
-			(GDestroyNotify) cap_t_o_destroy);
-       
+      g_timeout_add_full (G_PRIORITY_DEFAULT,
+			  1,
+			  (GtkFunction) get_offline_packet,
+			  NULL, (GDestroyNotify) cap_t_o_destroy);
+
     }
 
 
@@ -191,7 +190,7 @@ set_filter (gchar * filter, gchar * device)
     current_device = g_strdup (device);
 
   /* A capture filter was specified; set it up. */
-  if (current_device 
+  if (current_device
       && (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0))
     {
       g_warning (_
@@ -219,12 +218,13 @@ get_offline_packet (void)
   static guint8 *packet = NULL;
   static struct timeval last_time = { 0, 0 }, this_time, diff;
 
-   
+
   if (packet)
     packet_read (packet, 0, GDK_INPUT_READ);
 
   packet = (guint8 *) pcap_next (pch, &phdr);
-  if (!packet) end_of_file=TRUE;
+  if (!packet)
+    end_of_file = TRUE;
 
   if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
     {
@@ -249,11 +249,10 @@ cap_t_o_destroy (gpointer data)
 {
 
   if (!end_of_file)
-     g_timeout_add_full (G_PRIORITY_DEFAULT,
-			 ms_to_next,
-			 (GtkFunction) get_offline_packet,
-			 data,
-			 (GDestroyNotify) cap_t_o_destroy);
+    g_timeout_add_full (G_PRIORITY_DEFAULT,
+			ms_to_next,
+			(GtkFunction) get_offline_packet,
+			data, (GDestroyNotify) cap_t_o_destroy);
 
 }				/* capture_t_o_destroy */
 
@@ -786,9 +785,9 @@ update_node (node_t * node)
 	  g_string_free (node->numeric_name, TRUE);
 	  if (node->numeric_ip)
 	    g_string_free (node->numeric_ip, TRUE);
-	  for (;i + 1;i--)
-	     if (node->main_prot[i])
-		g_free (node->main_prot[i]);
+	  for (; i + 1; i--)
+	    if (node->main_prot[i])
+	      g_free (node->main_prot[i]);
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
@@ -836,16 +835,16 @@ update_link (link_t * link)
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
-	  for (;i + 1;i--)
-	      if (link->main_prot[i])
-		g_free (link->main_prot[i]);
+	  for (; i + 1; i--)
+	    if (link->main_prot[i])
+	      g_free (link->main_prot[i]);
 	  g_free (link->src_name);
 	  g_free (link->dst_name);
 	  g_free (link);
 	  g_tree_remove (links, link_id);
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		 _("Removing link. Number of links %d"),
-		 g_tree_nnodes (canvas_links));
+		 g_tree_nnodes (links));
 
 	  g_free (link_id);
 	  link = NULL;
@@ -1204,11 +1203,8 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
   i = node_id_length - 1;
 
-  g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
-					 * We arbitrarily pass 1 to
-					 * the comparison */
-  g_return_val_if_fail (b != NULL, 1);
-
+  g_assert (a != NULL);
+  g_assert (b != NULL);
 
 
   while (i)

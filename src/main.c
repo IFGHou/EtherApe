@@ -50,6 +50,8 @@ main (int argc, char *argv[])
      N_("do not fade old links"), NULL},
     {"stationary", 's', POPT_ARG_NONE, &stationary, 0,
      N_("don't move nodes around"), NULL},
+    {"node_limit", 'l', POPT_ARG_INT, &node_limit, 0,
+     N_("limits nodes displayed"), N_("<number of nodes>")},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
      N_("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
@@ -89,6 +91,7 @@ main (int argc, char *argv[])
 					 * actually never used anymore,
 					 * is it? */
   text_color = g_strdup ("yellow");
+  node_limit = -1;
 
   /* Config file */
   load_config ("/Etherape/");
