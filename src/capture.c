@@ -537,7 +537,7 @@ create_link (const guint8 * packet, const guint8 * link_id)
   return link;
 }				/* create_link */
 
-
+#if 0
 /* Fills in the strings that characterize the node */
 static void
 fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
@@ -689,7 +689,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
       g_error (_("Reached default in fill_names"));
     }
 }				/* fill_names */
-
+#endif
 
 /* Callback function everytime a dns_lookup function is finished */
 static void
@@ -918,8 +918,6 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
 
     }
-  else
-    g_message ("No packet!");
 }				/* update_packet_list */
 
 /* Sets the node->name and node->numeric_name to the most used of 
@@ -1152,7 +1150,6 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	}
       else
 	{
-	  g_message ("Would have freed in check_packet");
 	  packets->data = NULL;
 	  /* g_list_free (packets) */ ;
 	  /* Last packet removed,
