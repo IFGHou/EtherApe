@@ -1,8 +1,6 @@
 User visible features:
 ----------------------
 
-  * Extend the protocols known further than just IP.
-  
   * Make protocol colors user-selectable.
   
   * Ability to set per node preferences. Like setting an hour long
@@ -11,13 +9,13 @@ User visible features:
   * Ability to manually place nodes. It's dependent on the above.
     Once is done you will be able to open and save your own 
     diagrams.
+    
+  * Hitting cancel on the preferences window should undo all
+    changes done.
 
 Issues in the source code
 -------------------------
 
-  * gui_start_capture and gui_pause_capture should return an
-    error code that should be handled (as with gui_stop_capture)
- 
   * Generalize a way to return error messages from capture.c
   
   * Stablish criteria for the meaning of a function's gboolean 
@@ -42,13 +40,6 @@ Issues in the source code
   * belongs_to should be a packet property, and not have to be
     passed from the functions.
   
-  * Add incoming and outcoming traffic into a single canvas_link,
-    and not put them one underneath the other. Funny no one has
-    noticed. :-)
-
-  * Only now I realize that I could just use a regular
-    GtkTooltips for the canvas tooltips and not create my own.
-
   * Define GLADEDIR in config.h the same way that PIXMAPS_DIR is, and not
     just pass it to the compiler
 
