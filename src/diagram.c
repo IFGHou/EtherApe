@@ -81,6 +81,22 @@ get_link_size (gdouble average)
 }
 
 static gint
+link_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_link_t * canvas_link)
+{
+  switch (event->type)
+    {
+
+    case GDK_BUTTON_PRESS:
+      g_message (_ ("Most common prot is %s"), canvas_link->link->main_prot);
+      break;
+    default:
+      break;
+    }
+
+  return FALSE;
+}
+
+static gint
 node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canvas_node)
 {
 
@@ -447,6 +463,10 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
+
+      gtk_signal_connect (GTK_OBJECT (new_canvas_link->link_item), "event",
+			  (GtkSignalFunc) link_item_event,
+			  new_canvas_link);
 
 
 /* TODO properly give link creating message */

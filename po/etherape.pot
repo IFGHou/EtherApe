@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-10 10:39+0100\n"
+"POT-Creation-Date: 2000-03-10 19:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,141 +70,141 @@ msgstr ""
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/interface.c:22
+#: src/interface.c:23
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:110
+#: src/interface.c:111
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:234
+#: src/interface.c:235
 msgid "New"
 msgstr ""
 
-#: src/interface.c:235
+#: src/interface.c:236
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:246
+#: src/interface.c:247
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:247
+#: src/interface.c:248
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:258
+#: src/interface.c:259
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:259
+#: src/interface.c:260
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:301
+#: src/interface.c:302
 msgid "Diagram settings"
 msgstr ""
 
-#: src/interface.c:331
+#: src/interface.c:332
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:354
+#: src/interface.c:355
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:378
+#: src/interface.c:379
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:402
+#: src/interface.c:403
 msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:426
+#: src/interface.c:427
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:450
+#: src/interface.c:451
 msgid "Link Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:458
+#: src/interface.c:459
 msgid "Place Holder for The Color Coded Protocols display"
 msgstr ""
 
-#: src/interface.c:497
+#: src/interface.c:499
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:499
+#: src/interface.c:501
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:530
+#: src/interface.c:532
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:550
+#: src/interface.c:552
 msgid "Name"
 msgstr ""
 
-#: src/interface.c:560
+#: src/interface.c:562
 msgid "IP Name"
 msgstr ""
 
-#: src/interface.c:570
+#: src/interface.c:572
 msgid "IP Address"
 msgstr ""
 
-#: src/interface.c:580
+#: src/interface.c:582
 msgid "Ether Name"
 msgstr ""
 
-#: src/interface.c:590
+#: src/interface.c:592
 msgid "Ether Address"
 msgstr ""
 
-#: src/interface.c:600
+#: src/interface.c:602
 msgid "Accum. bytes"
 msgstr ""
 
-#: src/interface.c:610
+#: src/interface.c:612
 msgid "Average bps"
 msgstr ""
 
-#: src/interface.c:620
+#: src/interface.c:622
 msgid "average"
 msgstr ""
 
-#: src/interface.c:629
+#: src/interface.c:631
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:638
+#: src/interface.c:640
 msgid "ether address"
 msgstr ""
 
-#: src/interface.c:647
+#: src/interface.c:649
 msgid "ether name"
 msgstr ""
 
-#: src/interface.c:656
+#: src/interface.c:658
 msgid "ip address"
 msgstr ""
 
-#: src/interface.c:665
+#: src/interface.c:667
 msgid "ip host name"
 msgstr ""
 
-#: src/interface.c:674
+#: src/interface.c:676
 msgid "name"
 msgstr ""
 
-#: src/interface.c:694
+#: src/interface.c:696
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
@@ -213,81 +213,81 @@ msgstr ""
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/support.c:97 src/support.c:135
+#: src/support.c:98 src/support.c:136
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:113
+#: src/support.c:114
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:336
+#: src/capture.c:347
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:349
+#: src/capture.c:360
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:369
+#: src/capture.c:380
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:397 src/capture.c:402
+#: src/capture.c:410 src/capture.c:415
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:454
+#: src/capture.c:471
 msgid "Null packet in check_packet"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:605
+#: src/capture.c:682
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:641
+#: src/capture.c:718
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:761
+#: src/capture.c:880
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:768
+#: src/capture.c:887
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:779
+#: src/capture.c:898
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:784
+#: src/capture.c:903
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:790
+#: src/capture.c:909
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:818
+#: src/capture.c:937
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:825
+#: src/capture.c:944
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:844
+#: src/capture.c:963
 msgid "Ape mode not yet supported"
 msgstr ""

@@ -24,7 +24,7 @@ Issues in the source code
     ¿Could somebody point me to a document that says what
     is the proper style of where things should be defined?
 
-  * Find out a way to customize the gnome message that pop ups
+  * Find out a way to customize the gnome message that pops up
     if a SIGSEGV crashes us.
     
   * Clean up the resolver functions. Right now I'm using two 

@@ -3,6 +3,13 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.5 (Friday 03-10-2000):
+  
+     * Initial support for color coded protocols display
+     * Click on a link and a get a debug message with the most common
+       ethernet protocol
+     * Released to test for bugs some major changes in the code.
+       
   Overview of changes in Etherape 0.2.4 (Thursday 03-09-2000):
   
      * Major bug fix.

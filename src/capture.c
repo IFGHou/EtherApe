@@ -498,6 +498,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
   /* If this packet is too old, we discard it */
   if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
     {
+
       if (belongs_to == NODE)
 	{
 	  /* Substract this packet's length to the accumulated */
@@ -528,7 +529,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	  if (!protocol_info->accumulated)
 	    {
 	      g_free (protocol_info->name);
-	      g_list_remove_link (link->protocols, protocol_item);
+	      link->protocols = g_list_remove_link (link->protocols, protocol_item);
 	      g_list_free (protocol_item);
 	    }
 	}
@@ -556,14 +557,29 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 				 * End search */
 }				/* check_packet */
 
+/* Comparison function to sort protocols by their accumulated traffic */
+gint
+prot_freq_compare (gconstpointer a, gconstpointer b)
+{
+  protocol_t *prot_a, *prot_b;
+
+  prot_a = (protocol_t *) a;
+  prot_b = (protocol_t *) b;
+
+  if (prot_a->accumulated > prot_b->accumulated)
+    return 1;
+  if (prot_a->accumulated < prot_b->accumulated)
+    return -1;
+  return 0;
+}				/* prot_freq_compare */
+
 /* Finds the most commmon protocol of all the packets in a
  * given link (only link, by now) */
 gchar *
-get_main_prot (GList * packets)
+get_main_prot (GList * packets, link_t * link)
 {
-  GList *protocols;
-  gchar *prot = NULL;
-  return prot;
+//  link->protocols=g_list_sort (link->protocols, prot_freq_compare);
+  return g_strdup (((protocol_t *) link->protocols->data)->name);
 }				/* get_main_prot */
 
 /* This function is called to discard packets from the list 
@@ -573,6 +589,8 @@ void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
   struct timeval difference;
+  node_t *node;
+  link_t *link;
   gdouble usecs_from_oldest;	/* usecs since the first valid packet */
   GList *packet_l_e;		/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
@@ -592,26 +610,25 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
    * traffic and update names*/
   if (packet)
     {
+      node = ((node_t *) (packet->parent));
+      link = ((link_t *) (packet->parent));
       difference = substract_times (now, packet->timestamp);
       usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
 
       /* average in bps, so we multiply by 8 */
       if (belongs_to == NODE)
 	{
-	  ((node_t *) (packet->parent))->average = 8 *
-	    ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
-	  fill_names ((node_t *) (packet->parent),
-		      ((node_t *) (packet->parent))->node_id,
-		      NULL);
+	  node->average = 8 * node->accumulated / usecs_from_oldest;
+	  fill_names (node, node->node_id, NULL);
 	}
       else
 	{
-	  ((link_t *) (packet->parent))->average = 8 *
-	    ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	  link->average = 8 *
+	    link->accumulated / usecs_from_oldest;
 	  /* We look for the most used protocol for this link */
-	  if (((link_t *) (packet->parent))->main_prot)
-	    g_free (((link_t *) (packet->parent))->main_prot);
-	  ((link_t *) (packet->parent))->main_prot = get_main_prot (packets);
+	  if (link->main_prot)
+	    g_free (link->main_prot);
+	  link->main_prot = get_main_prot (packets, link);
 	}
 
     }
@@ -769,12 +786,14 @@ update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link
       protocol_info = protocol_item->data;
       protocol_info->accumulated += phdr.len;
       protocol_info->n_packets++;
+      /*g_message (protocol_info->name); */
     }
   else
     /* First time protocol. Will have to be created */
     {
       protocol_info = g_malloc (sizeof (protocol_t));
       protocol_info->name = g_strdup (packet_info->prot);
+      /*g_message (protocol_info->name); */
       protocol_info->accumulated = phdr.len;
       protocol_info->n_packets = 1;
       link->protocols = g_list_prepend (link->protocols, protocol_info);
