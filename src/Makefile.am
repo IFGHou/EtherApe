@@ -8,6 +8,7 @@ bin_PROGRAMS = etherape
 
 etherape_SOURCES = \
 	main.c \
+	diagram.c diagram.h \
 	capture.c capture.h \
 	resolv.c resolv.h \
 	util.c util.h \

@@ -26,4 +26,5 @@ Please read the INSTALL file for installation instructions.  Brief summary:
 
         # ./configure
         # make
-        # make install
+
+Executable is etherape, in the src directory

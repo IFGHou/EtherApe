@@ -1,3 +1,8 @@
+Overview of changes in Etherape 0.1.0
+* Diagram resizes with window
+* Basic functionality is all there now, and calls for a minor
+  version upgrade. :-)
+  
 Overview of changes in Etherape 0.0.8
 * Correctly (I hope) calculates average traffic intensity
   for nodes and links. The proper constant multiplier

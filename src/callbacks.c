@@ -7,10 +7,10 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
+#include "diagram.h"
 
-GdkPixmap *pixmap = NULL;
-/* I need to make this global so that I can later draw unto it */
-GtkWidget *drawing_area = NULL;
+extern GTree *canvas_nodes;	/* Defined in diagram.c */
+
 
 void
 on_file1_activate (GtkMenuItem * menuitem,
@@ -19,49 +19,6 @@ on_file1_activate (GtkMenuItem * menuitem,
 
 }
 
-gboolean
-on_drawingarea1_configure_event (GtkWidget * widget,
-				 GdkEventConfigure * event,
-				 gpointer user_data)
-{
-  if (pixmap)
-    {
-      gdk_pixmap_unref (pixmap);
-    }
-
-  pixmap = gdk_pixmap_new (widget->window,
-			   widget->allocation.width,
-			   widget->allocation.height,
-			   -1);
-
-  /* Exports the widget's address */
-  drawing_area = widget;
-
-  /* Fills the pixmap in white */
-  gdk_draw_rectangle (pixmap,
-		      widget->style->white_gc,
-		      TRUE,
-		      0, 0,
-		      widget->allocation.width,
-		      widget->allocation.height);
-
-  return TRUE;
-}
-
-gboolean
-on_drawingarea1_expose_event (GtkWidget * widget,
-			      GdkEventExpose * event,
-			      gpointer user_data)
-{
-  gdk_draw_pixmap (widget->window,
-		   widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-		   pixmap,
-		   event->area.x, event->area.y,
-		   event->area.x, event->area.y,
-		   event->area.width, event->area.height);
-
-  return FALSE;
-}
 
 void
 on_new_file1_activate (GtkMenuItem * menuitem,
@@ -155,19 +112,54 @@ void
 on_about1_activate (GtkMenuItem * menuitem,
 		    gpointer user_data)
 {
-  GtkWidget *about2; 
-  about2=create_about2();
+  GtkWidget *about2;
+  about2 = create_about2 ();
   gtk_widget_show (about2);
 
 }
 
 
 gboolean
-on_app1_delete_event                   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_app1_delete_event (GtkWidget * widget,
+		      GdkEvent * event,
+		      gpointer user_data)
 {
   gtk_exit (0);
   return FALSE;
 }
 
+
+
+void
+on_canvas1_size_allocate (GtkWidget * widget,
+			  GtkAllocation * allocation,
+			  gpointer user_data)
+{
+
+  gnome_canvas_set_scroll_region (GNOME_CANVAS (widget),
+				  -widget->allocation.width / 2,
+				  -widget->allocation.height / 2,
+				  widget->allocation.width / 2,
+				  widget->allocation.height / 2);
+
+  g_tree_traverse (canvas_nodes, reposition_canvas_nodes, G_IN_ORDER, GNOME_CANVAS (widget));
+
+
+}
+
+
+void
+on_scrolledwindow1_size_allocate (GtkWidget * widget,
+				  GtkAllocation * allocation,
+				  gpointer user_data)
+{
+  GtkWidget *canvas;
+  canvas = lookup_widget (GTK_WIDGET (widget), "canvas1");
+  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),
+				  -canvas->allocation.width / 2,
+				  -canvas->allocation.height / 2,
+				  canvas->allocation.width / 2,
+				  canvas->allocation.height / 2);
+
+
+}

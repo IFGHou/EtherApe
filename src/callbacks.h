@@ -79,6 +79,31 @@ on_app1_destroy_event (GtkWidget * widget,
 		       gpointer user_data);
 
 gboolean
-on_app1_delete_event                   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_app1_delete_event (GtkWidget * widget,
+		      GdkEvent * event,
+		      gpointer user_data);
+
+gboolean
+on_canvas1_configure_event (GtkWidget * widget,
+			    GdkEventConfigure * event,
+			    gpointer user_data);
+
+gboolean
+on_scrolledwindow1_configure_event (GtkWidget * widget,
+				    GdkEventConfigure * event,
+				    gpointer user_data);
+
+void
+  on_canvas1_size_allocate (GtkWidget * widget,
+			    GtkAllocation * allocation,
+			    gpointer user_data);
+
+void
+  on_scrolledwindow1_size_allocate (GtkWidget * widget,
+				    GtkAllocation * allocation,
+				    gpointer user_data);
+
+void
+  on_canvas1_size_allocate (GtkWidget * widget,
+			    GtkAllocation * allocation,
+			    gpointer user_data);

@@ -1,6 +1,7 @@
+
+
 #include <pcap.h>
-#include <glib.h>
-#include <gtk/gtk.h>
+#include <gnome.h>
 
 #include "capture.h"
 #include "resolv.h"
@@ -10,7 +11,10 @@
 #include <gnome.h>
 
 extern guint averaging_time;
-enum packet_belongs { NODE = 0, LINK = 1 };
+enum packet_belongs
+  {
+    NODE = 0, LINK = 1
+  };
 
 /* Places char punct in the string as the hex-digit separator.
  * If punct is '\0', no punctuation is applied (and thus
@@ -102,7 +106,7 @@ ether_compare (gconstpointer a, gconstpointer b)
     }
 
   return 0;
-} /* ether_compare */
+}				/* ether_compare */
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
@@ -116,7 +120,7 @@ link_compare (gconstpointer a, gconstpointer b)
 					 * the comparison */
   g_return_val_if_fail (b != NULL, 1);
 
-  
+
 
   while (i)
     {
@@ -130,7 +134,7 @@ link_compare (gconstpointer a, gconstpointer b)
     }
 
   return 0;
-} /* link_compare */
+}				/* link_compare */
 
 
 
@@ -145,42 +149,42 @@ create_node (const guint8 * ether_addr)
   node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
-  node->accumulated=0;
-  node->name = g_string_new (get_ether_name(ether_addr));
+  node->accumulated = 0;
+  node->name = g_string_new (get_ether_name (ether_addr));
   node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
-	 _("Creating node: %s. Number of nodes %d"), 
-	 node->name->str, 
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	 _ ("Creating node: %s. Number of nodes %d"),
+	 node->name->str,
 	 g_tree_nnodes (nodes));
 
   return node;
-} /* create_node */
+}				/* create_node */
 
 
 /* Allocates a new link structure, and adds it to the
  * global links binary tree */
 link_t *
-create_link (const guint8 *ether_link)
+create_link (const guint8 * ether_link)
 {
-   link_t *link;
-   
-   link = g_malloc (sizeof (link_t));
-   link->ether_link = g_memdup (ether_link, 12);
-   link->average=0;
-   link->n_packets=0;
-   link->accumulated=0;
-   link->packets=NULL;
-   g_tree_insert (links, link->ether_link, link);
-   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, 
-          _("Creating link: %s-%s. Number of links %d"), 
-          get_ether_name(ether_link), get_ether_name (ether_link+6),
-	  g_tree_nnodes (links));
+  link_t *link;
 
-   return link;
-} /* create_link */
-         
+  link = g_malloc (sizeof (link_t));
+  link->ether_link = g_memdup (ether_link, 12);
+  link->average = 0;
+  link->n_packets = 0;
+  link->accumulated = 0;
+  link->packets = NULL;
+  g_tree_insert (links, link->ether_link, link);
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	 _ ("Creating link: %s-%s. Number of links %d"),
+	 get_ether_name (ether_link), get_ether_name (ether_link + 6),
+	 g_tree_nnodes (links));
+
+  return link;
+}				/* create_link */
+
 GList *
 check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_to)
 {
@@ -189,10 +193,10 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   struct timeval result;
   packet_t *packet;
   packet = (packet_t *) packets->data;
-   
+
   packet_time.tv_sec = packet->timestamp.tv_sec;
-  packet_time.tv_usec= packet->timestamp.tv_usec;
-  
+  packet_time.tv_usec = packet->timestamp.tv_usec;
+
 
   /* Perform the carry for the later subtraction by updating Y. */
   if (now.tv_usec < packet_time.tv_usec)
@@ -210,23 +214,26 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 
   result.tv_sec = now.tv_sec - packet_time.tv_sec;
   result.tv_usec = now.tv_usec - packet_time.tv_usec;
-   
+
 /*  printf ("sec %d, usec %d\n",result.tv_sec,result.tv_usec); */
 
   /* If this node is older than the averaging time,
    * then it is removed, and the process continues.
    * Else, we are done. */
 
-  if ( (result.tv_sec * 1000000 + result.tv_usec) > averaging_time)
+  if ((result.tv_sec * 1000000 + result.tv_usec) > averaging_time)
     {
-       if (belongs_to == NODE) {
-	  ((node_t *)(packet->parent))->accumulated -=
+      if (belongs_to == NODE)
+	{
+	  ((node_t *) (packet->parent))->accumulated -=
 	    packet->size;
-       } else {
-	  ((link_t *)(packet->parent))->accumulated -=
+	}
+      else
+	{
+	  ((link_t *) (packet->parent))->accumulated -=
 	    packet->size;
-       }
-	  
+	}
+
       g_free (packets->data);
       packets = packets->prev;
       g_list_remove (packets, packets->next->data);
@@ -234,7 +241,7 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
     }
 
   return NULL;
-} /* check_packet */
+}				/* check_packet */
 
 void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
@@ -265,7 +272,7 @@ packet_read (pcap_t * pch,
 
   src = pcap_packet;
   dst = pcap_packet + 6;
-   
+
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
     node = create_node (src);
@@ -275,7 +282,7 @@ packet_read (pcap_t * pch,
   packet_info = g_malloc (sizeof (packet_t));
   packet_info->size = phdr.len;
   gettimeofday (&(packet_info->timestamp), NULL);
-  packet_info->parent= node;
+  packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
   /* Now we clean all packets we don't care for anymore */
@@ -301,22 +308,22 @@ packet_read (pcap_t * pch,
   node->n_packets++;
 
   /* And now we update link traffic information for this packet */
-   link = g_tree_lookup (links, src); /* The comparison function actually
-				       * looks at both src and dst */
-   if (!link)
-      link = create_link (src);
+  link = g_tree_lookup (links, src);	/* The comparison function actually
+					 * looks at both src and dst */
+  if (!link)
+    link = create_link (src);
 
-   packet_info = g_malloc (sizeof (link_t));
-   packet_info->size = phdr.len;
-   gettimeofday (&(packet_info->timestamp), NULL);
-   packet_info->parent = link;
-   link->packets = g_list_prepend (link->packets, packet_info);
-   link->accumulated += phdr.len;
-   /* Now we clean all packets we don't care for anymore */
-   update_packet_list (link->packets, LINK);
-   link->n_packets++;
+  packet_info = g_malloc (sizeof (link_t));
+  packet_info->size = phdr.len;
+  gettimeofday (&(packet_info->timestamp), NULL);
+  packet_info->parent = link;
+  link->packets = g_list_prepend (link->packets, packet_info);
+  link->accumulated += phdr.len;
+  /* Now we clean all packets we don't care for anymore */
+  update_packet_list (link->packets, LINK);
+  link->n_packets++;
 
-} /* packet_read */
+}				/* packet_read */
 
 
 void
@@ -328,11 +335,11 @@ init_capture (void)
 
   char ebuf[100];
   if (!((pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf)))
-     {
-	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	       _("You need to be root to run this program"));
-     }
-   
+    {
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
+	     _ ("You need to be root to run this program"));
+    }
+
   pcap_fd = pcap_fileno (pch);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
   gdk_input_add (pcap_fd,

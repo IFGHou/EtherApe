@@ -8,25 +8,23 @@
 
 const struct _msg_ent _msg_tbl[] = {
   {"", 1},
-  {"Creating canvas_link: %s-%s. Number of links %d", 2},
-  {"Creating canvas_node: %s. Number of nodes %d", 3},
-  {"._New File", 4},
-  {"Etherape", 5},
-  {"Nuevo", 6},
-  {"Nuevo archivo", 7},
-  {"Abrir", 8},
-  {"Abrir archivo", 9},
-  {"Guardar", 10},
-  {"Guardar archivo", 11},
-  {"Copyright 2000 Juan Toledo", 12},
+  {"._New File", 2},
+  {"Etherape", 3},
+  {"Nuevo", 4},
+  {"Nuevo archivo", 5},
+  {"Abrir", 6},
+  {"Abrir archivo", 7},
+  {"Guardar", 8},
+  {"Guardar archivo", 9},
+  {"Copyright 2000 Juan Toledo", 10},
   {"\
 A Graphical Network Browser.\n\
-Web: http://etherape.sourceforge.net", 13},
-  {"Couldn't find pixmap file: %s", 14},
-  {"Couldn't create pixmap from file: %s", 15},
-  {"Creating node: %s. Number of nodes %d", 16},
-  {"Creating link: %s-%s. Number of links %d", 17},
-  {"You need to be root to run this program", 18},
+Web: http://etherape.sourceforge.net", 11},
+  {"Couldn't find pixmap file: %s", 12},
+  {"Couldn't create pixmap from file: %s", 13},
+  {"Creating node: %s. Number of nodes %d", 14},
+  {"Creating link: %s-%s. Number of links %d", 15},
+  {"You need to be root to run this program", 16},
 };
 
-int _msg_tbl_length = 18;
+int _msg_tbl_length = 16;

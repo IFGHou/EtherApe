@@ -4,7 +4,7 @@
 GTree *nodes;
 GTree *links;
 
-typedef struct 
+typedef struct
   {
     guint8 *ether_addr;		/* pointer to the hardware address of the node */
     GString *name;		/* String with a readable name of the node */
@@ -18,18 +18,18 @@ typedef struct
 node_t;
 
 
-typedef struct 
-{
-   guint8 *ether_link;		/* pointer to guint8[12] containing src and
+typedef struct
+  {
+    guint8 *ether_link;		/* pointer to guint8[12] containing src and
 				 * destination hardware addresses of the link */
-   double average;
-   double accumulated;
-   guint n_packets;
-   GList *packets;
-}
+    double average;
+    double accumulated;
+    guint n_packets;
+    GList *packets;
+  }
 link_t;
 
-typedef struct 
+typedef struct
   {
     guint size;
     struct timeval timestamp;
