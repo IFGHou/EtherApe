@@ -12,6 +12,7 @@ etherape_SOURCES = \
 	main.c \
 	diagram.c diagram.h \
 	capture.c capture.h \
+	protocols.c protocols.h etypes.h \
 	resolv.c eth_resolv.h \
 	dns.c dns.h \
 	util.c util.h \

@@ -531,7 +531,7 @@ update_diagram (GtkWidget * canvas)
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1;
   guint n_nodes_before = 0, n_nodes_after = 1;
-   
+
   gettimeofday (&now, NULL);
 
 /* Now we update the status bar with the number of present nodes 

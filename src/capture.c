@@ -24,6 +24,7 @@
 #include "capture.h"
 #include "eth_resolv.h"
 #include "dns.h"
+#include "protocols.h"
 
 
 /* Exported global variables */
@@ -97,7 +98,7 @@ ip_to_str (const guint8 * ad)
       i--;
     }
   return p;
-}			/* ip_to_str */
+}				/* ip_to_str */
 
 /* (toledo) This function I copied from capture.c of ethereal it was
  * without comments, but I believe it keeps three different
@@ -148,7 +149,7 @@ ether_to_str_punct (const guint8 * ad, char punct)
       i--;
     }
   return p;
-}			/* ether_to_str_punct */
+}				/* ether_to_str_punct */
 
 
 
@@ -159,7 +160,7 @@ gchar *
 ether_to_str (const guint8 * ad)
 {
   return ether_to_str_punct (ad, ':');
-}		/* ether_to_str */
+}				/* ether_to_str */
 
 
 
@@ -251,7 +252,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	    )
 	    {
 	      if (!node->ip_address && packet)
-		 {
+		{
 		  const guint8 *ip_address;
 		  /* We do not know whether this was a source or destination
 		   * node, so we have to check it out */
@@ -339,7 +340,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
       /* TODO Write proper assertion code here */
       g_error (_ ("Reached default in fill_names"));
     }
-}		/* fill_names */
+}				/* fill_names */
 
 
 /* Allocates a new node structure, and adds it to the
@@ -480,21 +481,36 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
     time_comparison = averaging_time;
 
 
+  /* If this packet is too old, we discard it */
   if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
     {
       if (belongs_to == NODE)
 	{
+	  /* Substract this packet's length to the accumulated */
 	  ((node_t *) (packet->parent))->accumulated -=
 	    packet->size;
+	  /* Decrease the number of packets */
 	  ((node_t *) (packet->parent))->n_packets--;
+	  /* If it was the last packet in the queue, set
+	     * average to 0. It has to be done here because
+	     * otherwise average calculation in update_packet list 
+	     * requires some packets to exist */
+	  if (!((node_t *) (packet->parent))->accumulated)
+	    ((node_t *) (packet->parent))->average = 0;
 	}
       else
+	/* belongs to LINK */
 	{
+	  /* See above for explanations */
 	  ((link_t *) (packet->parent))->accumulated -=
 	    packet->size;
 	  ((link_t *) (packet->parent))->n_packets--;
+	  if (!((link_t *) (packet->parent))->accumulated)
+	    ((link_t *) (packet->parent))->average = 0;
 	}
 
+      if (((packet_t *) (packets->data))->prot)
+	g_free (((packet_t *) (packets->data))->prot);
       g_free (packets->data);
 
       if (packets->prev)
@@ -538,8 +554,9 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
   /* Get oldest relevant packet */
   packet_l_e = g_list_last (packets);
   packet = (packet_t *) packet_l_e->data;
-  /* If the node will still exist, then calculate average
-   * traffic and update names */
+
+  /* If the still has relevant packets, then calculate average
+   * traffic and update names*/
   if (packet)
     {
       difference = substract_times (now, packet->timestamp);
@@ -550,7 +567,6 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	{
 	  ((node_t *) (packet->parent))->average = 8 *
 	    ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
-	  /* Update names */
 	  fill_names ((node_t *) (packet->parent),
 		      ((node_t *) (packet->parent))->node_id,
 		      NULL);
@@ -560,7 +576,9 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
 
     }
-}		/* update_packet_list */
+
+
+}				/* update_packet_list */
 
 /* Returns a pointer to a set of octects that define a link for the
  * current mode in this particular packet */
@@ -609,7 +627,7 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
     }
 
   return node_id;
-}		/* get_node_id */
+}				/* get_node_id */
 
 /* Returns a pointer to a set of octects that define a link for the
  * current mode in this particular packet */
@@ -644,18 +662,18 @@ get_link_id (const guint8 * packet)
       g_error (_ ("Unsopported ape mode in get_link_id"));
     }
   return link_id;
-}		/* get_link_id */
+}				/* get_link_id */
 
 
 /* We update node information for each new packet that arrives in the
  * network. If the node the packet refers to is unknown, we
  * create it. */
 void
-update_node (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *node_id)
+update_node (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * node_id)
 {
   node_t *node;
   packet_t *packet_info;
-  
+
   node = g_tree_lookup (nodes, node_id);
   if (node == NULL)
     node = create_node (packet, node_id);
@@ -666,9 +684,11 @@ update_node (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *node_i
   packet_info->size = phdr.len;
   packet_info->timestamp = now;
   packet_info->parent = node;
+  /* Right now we don't need protocol info for node packets. */
+  packet_info->prot = NULL;
   node->packets = g_list_prepend (node->packets, packet_info);
 
-  /* We update node info */ 
+  /* We update node info */
   node->accumulated += phdr.len;
   node->last_time = now;
   /* Packet cleaning is now done in diagram.c
@@ -677,15 +697,15 @@ update_node (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *node_i
    * is a fact that the proper moment for packet cleaning is right
    * before presentation */
   node->n_packets++;
-   
-}			/* update_node */
+
+}				/* update_node */
 
 void
-update_link (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *link_id)
+update_link (const guint8 * packet, struct pcap_pkthdr phdr, const guint8 * link_id)
 {
   link_t *link;
   packet_t *packet_info;
-   
+
   link = g_tree_lookup (links, link_id);
   if (!link)
     link = create_link (packet, link_id);
@@ -696,16 +716,16 @@ update_link (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *link_i
   packet_info->size = phdr.len;
   packet_info->timestamp = now;
   packet_info->parent = link;
-
+  packet_info->prot = get_packet_prot (packet);
   link->packets = g_list_prepend (link->packets, packet_info);
-   
+
   /* We update link info */
   link->accumulated += phdr.len;
   link->last_time = now;
   /* Packet cleaning is now done in diagram.c */
   link->n_packets++;
 
-}			/* update_link */
+}				/* update_link */
 
 
 /* This function is called everytime there is a new packet in
@@ -718,9 +738,7 @@ packet_read (pcap_t * pch,
 {
   struct pcap_pkthdr phdr;
   guint8 *src_id, *dst_id, *link_id, *pcap_packet;
-  node_t *node;
-  packet_t *packet_info;
-  link_t *link;
+
   /* I have to love how RedHat messes with libraries.
    * I'm forced to use my own timestamp since the phdr is
    * different in RedHat6.1 >:-( */
@@ -736,69 +754,15 @@ packet_read (pcap_t * pch,
   gettimeofday (&now, NULL);
 
   src_id = get_node_id (pcap_packet, SRC);
-
-  node = g_tree_lookup (nodes, src_id);
   update_node (pcap_packet, phdr, src_id);
-  /* TODO clean up these #if 0 when made sure they are not needed */
-#if 0
-   if (node == NULL)
-    node = create_node (pcap_packet, src_id);
-
-  /* We add a packet to the list of packets to/from that host which we want
-   * to account for */
-  packet_info = g_malloc (sizeof (packet_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->parent = node;
-  node->packets = g_list_prepend (node->packets, packet_info);
-  node->accumulated += phdr.len;
-  node->last_time = now;
-  /* Packet cleaning is now done in diagram.c
-   * I'm not too happy about it since I want to have a clear
-   * separation between data structures and presentation, but it
-   * is a fact that the proper moment for packet cleaning is right
-   * before presentation */
-  node->n_packets++;
-#endif   
 
   /* Now we do the same with the destination node */
-
   dst_id = get_node_id (pcap_packet, DST);
   update_node (pcap_packet, phdr, dst_id);
-#if 0
-   node = g_tree_lookup (nodes, dst_id);
-  if (node == NULL)
-    node = create_node (pcap_packet, dst_id);
-
-  /* We add a packet to the list of packets to/from that host which we want
-   * to account for */
-  packet_info = g_malloc (sizeof (packet_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->parent = node;
-  node->packets = g_list_prepend (node->packets, packet_info);
-  node->accumulated += phdr.len;
-  node->last_time = now;
-  /* Packet cleaning is now done in diagram.c */
-  node->n_packets++;
-#endif   
-
 
   link_id = get_link_id (pcap_packet);
   /* And now we update link traffic information for this packet */
-  link = g_tree_lookup (links, link_id);
-  if (!link)
-    link = create_link (pcap_packet, link_id);
-
-  packet_info = g_malloc (sizeof (link_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->parent = link;
-  link->packets = g_list_prepend (link->packets, packet_info);
-  link->accumulated += phdr.len;
-  link->last_time = now;
-  /* Packet cleaning is now done in diagram.c */
-  link->n_packets++;
+  update_link (pcap_packet, phdr, link_id);
 
 }				/* packet_read */
 

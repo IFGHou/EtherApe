@@ -18,6 +18,13 @@ User visible features:
 Issues in the source code
 -------------------------
 
+  * update_packet_list should be given a pointer to the parent
+    node or link
+  
+  * Clean up the mess with globals and functions definitions
+    ¿Could somebody point me to a document that says what
+    is the proper style of where things should be defined?
+  
   * Clean up the resolver functions. Right now I'm using two 
     different files from two different packages (resolv.c from 
     ethereal and dns.c from mtr)

@@ -3,9 +3,27 @@
 #include <sys/time.h>
 #include <pcap.h>
 
+/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
+ * byte array, returns the value of the two or four bytes at the pointer.
+ */
+#define pntohs(p)  ((guint16)                       \
+		       ((guint16)*((guint8 *)p+0)<<8|  \
+			   (guint16)*((guint8 *)p+1)<<0))
+
+#define pntohl(p)  ((guint32)*((guint8 *)p+0)<<24|  \
+		       (guint32)*((guint8 *)p+1)<<16|  \
+		       (guint32)*((guint8 *)p+2)<<8|   \
+		       (guint32)*((guint8 *)p+3)<<0)
+
 GTree *nodes;
 GTree *links;
 
+
+/* 
+ * Enumerations 
+ */
+
+/* Modes of operation */
 typedef enum
   {
     DEFAULT = -1,
@@ -41,36 +59,44 @@ typedef enum
 link_type_t;
 
 
+/* Flag to indicate whether a packet belongs to a node or a link */
 enum packet_belongs
   {
     NODE = 0, LINK = 1
   };
 
+/* Used on some functions to indicate how to operate on the node info
+ * depending on what side of the comm the node was at */
 enum create_node_type
   {
     SRC = 0,
     DST = 1
   };
 
+
+/* 
+ * Structures 
+ */
+
+/* Node information */
 typedef struct
   {
-
     guint8 *node_id;		/* pointer to the node identification
 				 * could be an ether or ip address*/
     GString *name;		/* String with a readable default name of the node */
     GString *numeric_name;	/* String with a numeric representation of the id */
     guint32 ip_address;		/* Needed by the resolver */
-    double average;		/* Average bytes in or out in the last x ms */
-    double accumulated;		/* Accumulated bytes in the last x ms */
+    gdouble average;		/* Average bytes in or out in the last x ms */
+    gdouble accumulated;	/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */
     struct timeval last_time;	/* Timestamp of the last packet to be added */
     GList *packets;		/* List of packets sizes in or out and
-				   * its sizes. Used to calculate average
-				   * traffic */
+				 * its sizes. Used to calculate average
+				 * traffic */
   }
 node_t;
 
-
+/* Link information */
 typedef struct
   {
     guint8 *link_id;		/* pointer to guint8 containing src and
@@ -78,20 +104,27 @@ typedef struct
     double average;
     double accumulated;
     guint n_packets;
-    struct timeval last_time;	/* Timestamp of the last packet to be added */
+    gchar *prot;		/* Most common protocol for the link */
+    struct timeval last_time;	/* Timestamp of the last packet added */
     GList *packets;
   }
 link_t;
 
+/* Information about each packet heard on the network */
 typedef struct
   {
-    guint size;
-    struct timeval timestamp;
-    gpointer parent;
+    guint size;			/* Size in bytes of the packet */
+    struct timeval timestamp;	/* Time at which the packet was heard */
+    gchar *prot;		/* Protocol type the packet was carrying */
+    gpointer parent;		/* Pointer to the link or node owner of the 
+				 * packet */
   }
 packet_t;
 
-/* Exported functions */
+
+/* 
+ * Exported functions 
+ */
 
 void init_capture (void);
 gchar *ip_to_str (const guint8 * ad);
