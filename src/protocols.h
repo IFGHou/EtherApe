@@ -51,6 +51,12 @@ static GTree *tcp_services = NULL;
 static GTree *udp_services = NULL;
 static guint offset = 0;
 
+/* These are used for conversations */
+static guint32 global_src_address;
+static guint32 global_dst_address;
+static guint16 global_src_port;
+static guint16 global_dst_port;
+
 /* Functions declarations */
 
 static void get_eth_type (void);
@@ -65,6 +71,6 @@ static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
 static void get_netbios_ssn (void);
 static void get_netbios_dgm (void);
-static gboolean get_rpc (void);
+static gboolean get_rpc (gboolean is_udp);
 static void load_services (void);
 static guint16 choose_port (guint16 a, guint16 b);

@@ -264,6 +264,11 @@ get_ip (void)
   ip_type = packet[l3_offset + 9];
   fragment_offset = pntohs (packet + l3_offset + 6);
   fragment_offset &= 0x0fff;
+
+  /*This is used for conversations */
+  global_src_address = pntohl (packet + l3_offset + 12);
+  global_dst_address = pntohl (packet + l3_offset + 16);
+
   offset = l3_offset + 20;
 
   switch (ip_type)
@@ -386,8 +391,8 @@ get_tcp (void)
   if (!tcp_services)
     load_services ();
 
-  src_port = pntohs (packet + offset);
-  dst_port = pntohs (packet + offset + 2);
+  global_src_port = src_port = pntohs (packet + offset);
+  global_dst_port = dst_port = pntohs (packet + offset + 2);
   th_off_x2 = *(guint8 *) (packet + offset + 12);
   tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
 
@@ -399,6 +404,11 @@ get_tcp (void)
 
   src_service = g_tree_lookup (tcp_services, &src_port);
   dst_service = g_tree_lookup (tcp_services, &dst_port);
+
+  /* It's not possible to know in advance whether an UDP
+   * packet is an RPC packet. We'll try */
+  if (get_rpc (FALSE))
+    return;
 
   if (IS_PORT (TCP_NETBIOS_SSN))
     {
@@ -451,8 +461,8 @@ get_udp (void)
   if (!udp_services)
     load_services ();
 
-  src_port = pntohs (packet + offset);
-  dst_port = pntohs (packet + offset + 2);
+  global_src_port = src_port = pntohs (packet + offset);
+  global_dst_port = dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
 
@@ -464,7 +474,7 @@ get_udp (void)
 
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
-  if (get_rpc ())
+  if (get_rpc (TRUE))
     return;
 
   if (IS_PORT (UDP_NETBIOS_NS))
@@ -509,17 +519,28 @@ get_udp (void)
 }				/* get_udp */
 
 static gboolean
-get_rpc (void)
+get_rpc (gboolean is_udp)
 {
   enum rpc_type msg_type;
   enum rpc_program msg_program;
+  gchar *rpc_prot = NULL;
 
   /* Determine whether this is an RPC packet */
 
   if ((offset + 24) > capture_len)
     return FALSE;		/* not big enough */
 
-  msg_type = pntohl (packet + offset + 4);
+  if (is_udp)
+    {
+      msg_type = pntohl (packet + offset + 4);
+      msg_program = pntohl (packet + offset + 12);
+    }
+  else
+    {
+      msg_type = pntohl (packet + offset + 8);
+      msg_program = pntohl (packet + offset + 16);
+    }
+
   if (msg_type != RPC_REPLY && msg_type != RPC_CALL)
     return FALSE;
 
@@ -532,41 +553,52 @@ get_rpc (void)
       /* TODO In order to be able to dissect what is it's 
        * protocol I'd have to keep track of who sent
        * which call */
+      if (!(rpc_prot = find_conversation (global_dst_address, 0,
+					  global_dst_port, 0)))
+	return FALSE;
+      prot = g_string_append (prot, rpc_prot);
       return TRUE;
     case RPC_CALL:
-      msg_program = pntohl (packet + offset + 12);
       switch (msg_program)
 	{
 	case BOOTPARAMS_PROGRAM:
-	  prot = g_string_append (prot, "/BOOTPARAMS");
+	  rpc_prot = g_strdup ("/BOOTPARAMS");
 	  break;
 	case MOUNT_PROGRAM:
-	  prot = g_string_append (prot, "/MOUNT");
+	  rpc_prot = g_strdup ("/MOUNT");
 	  break;
 	case NLM_PROGRAM:
-	  prot = g_string_append (prot, "/NLM");
+	  rpc_prot = g_strdup ("/NLM");
 	  break;
 	case PORTMAP_PROGRAM:
-	  prot = g_string_append (prot, "/PORTMAP");
+	  rpc_prot = g_strdup ("/PORTMAP");
 	  break;
 	case STAT_PROGRAM:
-	  prot = g_string_append (prot, "/STAT");
+	  rpc_prot = g_strdup ("/STAT");
 	  break;
 	case NFS_PROGRAM:
-	  prot = g_string_append (prot, "/NFS");
+	  rpc_prot = g_strdup ("/NFS");
 	  break;
 	case YPBIND_PROGRAM:
-	  prot = g_string_append (prot, "/YPBIND");
+	  rpc_prot = g_strdup ("/YPBIND");
 	  break;
 	case YPSERV_PROGRAM:
-	  prot = g_string_append (prot, "/YPSERV");
+	  rpc_prot = g_strdup ("/YPSERV");
 	  break;
 	case YPXFR_PROGRAM:
-	  prot = g_string_append (prot, "/YPXFR");
+	  rpc_prot = g_strdup ("/YPXFR");
 	  break;
 	default:
 	  return FALSE;
 	}
+      prot = g_string_append (prot, rpc_prot);
+
+      /* Search for an already existing conversation, if not, create one */
+      if (!find_conversation (global_src_address, 0, global_src_port, 0))
+	add_conversation (global_src_address, 0,
+			  global_src_port, 0, rpc_prot);
+
+      g_free (rpc_prot);
       return TRUE;
     default:
       return FALSE;
