@@ -119,5 +119,6 @@ typedef struct
 }
 udp_service_t;
 
+#define TCP_FTP 21
 #define TCP_NETBIOS_SSN 139
 #define UDP_NETBIOS_NS 138

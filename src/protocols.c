@@ -405,14 +405,29 @@ get_tcp (void)
   src_service = g_tree_lookup (tcp_services, &src_port);
   dst_service = g_tree_lookup (tcp_services, &dst_port);
 
+  /* Check whether this packet belongs to a registered conversation */
+
+  if ((str = find_conversation (global_src_address, global_dst_address,
+				src_port, dst_port)))
+    {
+      prot = g_string_append (prot, str);
+      return;
+    }
+
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
+  /* False means we are calling rpc from a TCP packet */
   if (get_rpc (FALSE))
     return;
 
   if (IS_PORT (TCP_NETBIOS_SSN))
     {
       get_netbios_ssn ();
+      return;
+    }
+  else if (IS_PORT (TCP_FTP))
+    {
+      get_ftp ();
       return;
     }
 
@@ -640,6 +655,60 @@ get_netbios_dgm (void)
 
   /* TODO Calculate new offset whenever we have
    * a "dissector" for a higher protocol */
+  return;
+}				/* get_netbios_dgm */
+
+void
+get_ftp (void)
+{
+  gchar *mesg = NULL;
+  guint size = capture_len - offset;
+  gchar *hi_str = NULL, *low_str = NULL;
+  guint hi_byte, low_byte;
+  guint16 server_port;
+  guint i = 0;
+
+
+  prot = g_string_append (prot, "/FTP");
+
+
+  if ((offset + 3) > capture_len)
+    return;			/* not big enough */
+
+  if ((gchar) packet[offset] != '2'
+      || (gchar) packet[offset + 1] != '2'
+      || (gchar) packet[offset + 2] != '7')
+    return;
+
+  /* We have a passive message. Get the port */
+  mesg = g_malloc (size + 1);
+  memcpy (mesg, packet + offset, size);
+  mesg[size] = '\0';
+
+  g_my_debug ("Found FTP passive command: %s", mesg);
+
+  g_my_debug ("FTP Token: %s", strtok (mesg, "(,)"));
+  for (i = 1; i <= 4; i++)
+    g_my_debug ("FTP Token: %s", strtok (NULL, "(,)"));
+
+  g_my_debug ("FTP Token: %s", hi_str = strtok (NULL, "(,)"));
+  if (!sscanf (hi_str, "%d", &hi_byte))
+    return;
+  g_my_debug ("FTP Token: %s", low_str = strtok (NULL, "(,)"));
+  if (!sscanf (low_str, "%d", &low_byte))
+    return;
+
+  server_port = hi_byte * 256 + low_byte;
+
+  g_my_debug ("FTP Hi: %d. Low: %d. Passive port is %d", hi_byte, low_byte,
+	      server_port);
+
+  /* A port number zero means any port */
+  add_conversation (global_src_address, global_dst_address,
+		    server_port, 0, "/FTP-PASSIVE");
+
+  g_free (mesg);
+
   return;
 }
 

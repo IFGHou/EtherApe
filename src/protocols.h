@@ -71,6 +71,7 @@ static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
 static void get_netbios_ssn (void);
 static void get_netbios_dgm (void);
+static void get_ftp (void);
 static gboolean get_rpc (gboolean is_udp);
 static void load_services (void);
 static guint16 choose_port (guint16 a, guint16 b);
