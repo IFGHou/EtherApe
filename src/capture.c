@@ -9,57 +9,54 @@
 
 
 
-extern guint averaging_time;
-
-enum packet_belongs
-  {
-    NODE = 0, LINK = 1
-  };
-
-enum create_node_type
-{
-   SRC = 0,
-   DST = 1
-};
+extern double averaging_time;
+extern double link_timeout_time;
 
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */
 
 gchar *
-ip_to_str(const guint8 *ad) {
-  static gchar  str[3][16];
+ip_to_str (const guint8 * ad)
+{
+  static gchar str[3][16];
   static gchar *cur;
-  gchar        *p;
-  int           i;
-  guint32       octet;
-  guint32       digit;
+  gchar *p;
+  int i;
+  guint32 octet;
+  guint32 digit;
 
-  if (cur == &str[0][0]) {
-    cur = &str[1][0];
-  } else if (cur == &str[1][0]) {  
-    cur = &str[2][0];
-  } else {  
-    cur = &str[0][0];
-  }
+  if (cur == &str[0][0])
+    {
+      cur = &str[1][0];
+    }
+  else if (cur == &str[1][0])
+    {
+      cur = &str[2][0];
+    }
+  else
+    {
+      cur = &str[0][0];
+    }
   p = &cur[16];
   *--p = '\0';
   i = 3;
-  for (;;) {
-    octet = ad[i];
-    *--p = (octet%10) + '0';
-    octet /= 10;
-    digit = octet%10;
-    octet /= 10;
-    if (digit != 0 || octet != 0)
-      *--p = digit + '0';
-    if (octet != 0)
-      *--p = octet + '0';
-    if (i == 0)
-      break;
-    *--p = '.';
-    i--;
-  }
+  for (;;)
+    {
+      octet = ad[i];
+      *--p = (octet % 10) + '0';
+      octet /= 10;
+      digit = octet % 10;
+      octet /= 10;
+      if (digit != 0 || octet != 0)
+	*--p = digit + '0';
+      if (octet != 0)
+	*--p = octet + '0';
+      if (i == 0)
+	break;
+      *--p = '.';
+      i--;
+    }
   return p;
 }
 
@@ -191,30 +188,39 @@ node_t *
 create_node (const guint8 * packet, enum create_node_type node_type)
 {
   node_t *node;
-  guint8 *ether_addr;
-   
-  if (node_type==SRC) ether_addr=packet;
-  else ether_addr=packet+6;
-  
+  const guint8 *ether_addr;
+
+  if (node_type == SRC)
+    ether_addr = packet + 6;
+  else
+    ether_addr = packet;
+
   node = g_malloc (sizeof (node_t));
   node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
   node->accumulated = 0;
-  
+
   /* If there is no proper definition in /etc/ethers, we try to get
    * the IP name of the host. Note this is inherently wrong and I feel
    * uneasy about leaving it by default, but let's make users happy by now.
    * We also make sure that it is an IP packet */
 
-   if ((!strcmp(get_ether_name (ether_addr), ether_to_str (ether_addr)))
-      && (packet[12]==0x08) && (packet[13]==0x00))
-     {
-	if (node_type==SRC) node->name = g_string_new (ip_to_str(packet+26));
-	else node->name = g_string_new (ip_to_str(packet+30));
-     }
-   else node->name = g_string_new (get_ether_name (ether_addr));
-   
+  if ((!strcmp (get_ether_name (ether_addr), ether_to_str (ether_addr)))
+      && (packet[12] == 0x08) && (packet[13] == 0x00)
+      && strcmp (get_ether_name(ether_addr),"ff:ff:ff:ff:ff:ff"))
+    {
+      guint address;
+
+      if (node_type == SRC)
+	address = *(guint32 *) (packet + 26);
+      else
+	address = *(guint32 *) (packet + 30);
+      node->name = g_string_new (get_hostname (address));
+    }
+  else
+    node->name = g_string_new (get_ether_name (ether_addr));
+
   node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
@@ -243,7 +249,7 @@ create_link (const guint8 * ether_link)
   g_tree_insert (links, link->ether_link, link);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _ ("Creating link: %s-%s. Number of links %d"),
-	 get_ether_name (ether_link), get_ether_name (ether_link + 6),
+	 get_ether_name (ether_link + 6), get_ether_name (ether_link),
 	 g_tree_nnodes (links));
 
   return link;
@@ -255,6 +261,8 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 
   struct timeval packet_time;
   struct timeval result;
+  double time_comparison;
+   
   packet_t *packet;
   packet = (packet_t *) packets->data;
 
@@ -279,32 +287,48 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
   result.tv_sec = now.tv_sec - packet_time.tv_sec;
   result.tv_usec = now.tv_usec - packet_time.tv_usec;
 
-/*  printf ("sec %d, usec %d\n",result.tv_sec,result.tv_usec); */
-
-  /* If this node is older than the averaging time,
+  /* If this packet is older than the averaging time,
    * then it is removed, and the process continues.
-   * Else, we are done. */
+   * Else, we are done. 
+   * For links, if the timeout time is smaller than the
+   * averaging time, we use that instead */
+   
+  if (belongs_to == NODE) time_comparison=averaging_time;
+  else time_comparison = (link_timeout_time>averaging_time) ?
+     averaging_time : link_timeout_time;
 
-  if ((result.tv_sec * 1000000 + result.tv_usec) > averaging_time)
+  if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
     {
       if (belongs_to == NODE)
 	{
 	  ((node_t *) (packet->parent))->accumulated -=
 	    packet->size;
+	  ((node_t *) (packet->parent))->n_packets--;
 	}
       else
 	{
 	  ((link_t *) (packet->parent))->accumulated -=
 	    packet->size;
+	  ((link_t *) (packet->parent))->n_packets--;
 	}
 
       g_free (packets->data);
-      packets = packets->prev;
-      g_list_remove (packets, packets->next->data);
-      return (packets);
+       
+      if (packets->prev) {
+	 packets = packets->prev;
+	 g_list_remove (packets, packets->next->data);
+         return (packets);			/* Old packet removed,
+						 * keep on searching */
+      }  
+      else {
+	 g_list_free (packets);			/* Last packet removed,
+						 * don't search anymore 
+						 */
+      }
     }
 
-  return NULL;
+  return NULL;					/* Last packet searched
+						 * End search */
 }				/* check_packet */
 
 void
@@ -334,8 +358,8 @@ packet_read (pcap_t * pch,
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
-  src = pcap_packet;
-  dst = pcap_packet + 6;
+  src = pcap_packet +6;
+  dst = pcap_packet;
 
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
@@ -372,10 +396,13 @@ packet_read (pcap_t * pch,
   node->n_packets++;
 
   /* And now we update link traffic information for this packet */
-  link = g_tree_lookup (links, src);	/* The comparison function actually
-					 * looks at both src and dst */
+  link = g_tree_lookup (links, dst);	/* The comparison function for
+					 * the links tree actually
+					 * looks at both src and dst,
+					 * although we pass the pointer 
+					 * src */
   if (!link)
-    link = create_link (src);
+    link = create_link (dst);
 
   packet_info = g_malloc (sizeof (link_t));
   packet_info->size = phdr.len;
@@ -399,20 +426,20 @@ init_capture (void)
   gchar *device;
   gchar ebuf[300];
 
-  device = pcap_lookupdev(ebuf);
+  device = pcap_lookupdev (ebuf);
   if (device == NULL)
-     {
-	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	       _ ("Error getting device: %s"), ebuf);
-	exit(1);
-     }
-   
-   
+    {
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
+	     _ ("Error getting device: %s"), ebuf);
+      exit (1);
+    }
+
+
   if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
     {
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	     _ ("Error opening %s : %s - perhaps you need to be root?"), 
-	     device, 
+	     _ ("Error opening %s : %s - perhaps you need to be root?"),
+	     device,
 	     ebuf);
     }
 

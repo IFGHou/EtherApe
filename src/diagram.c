@@ -11,15 +11,19 @@
 
 /* Global application parameters */
 
-double node_radius_multiplier_control=3;/* The multiplier is a positive number */
-double node_radius_multiplier=1000;     /* used to calculate the radius of the
+double node_radius_multiplier_control = 3;	/* The multiplier is a positive number */
+double node_radius_multiplier = 1000;	/* used to calculate the radius of the
 					 * displayed nodes. So that the user can
 					 * select with certain precision this
 					 * value, the GUI uses the log of the
 					 * multiplier in multiplier_control */
 
-guint averaging_time = 2000000;	/* Microseconds of time we consider to
-				   * calculate traffic averages */
+double averaging_time = 2000000;	/* Microseconds of time we consider to
+					 * calculate traffic averages */
+double link_timeout_time = 5000000;	/* After this time
+					 * has passed with no traffic in a 
+					 * link, it disappears */
+
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
@@ -113,9 +117,37 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   canvas_node_t *canvas_node;
   GtkArg args[2];
 
+  link = canvas_link->link;
+
+   
+  /* First we check whether the link has timed out.
+   */
+  
+  update_packet_list (link->packets,LINK);
+   
+  if (link->n_packets == 0) {
+     guint8 *ether_addr;
+     
+     gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+     
+
+     g_tree_remove (canvas_links, ether_link);
+     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	    _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+	    get_ether_name (ether_link+6),
+	    get_ether_name (ether_link),
+	    g_tree_nnodes (canvas_links));
+     ether_addr=link->ether_link;
+     g_free (link);
+     g_tree_remove (links, ether_link);
+     g_free (ether_addr);
+
+     return TRUE; /* I've checked it's not safe to traverse while deleting */
+  }   
+     
+
   args[0].name = "x";
   args[1].name = "y";
-  link = canvas_link->link;
 
   points = gnome_canvas_points_new (2);
 
@@ -230,8 +262,8 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
 
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _ ("Creating canvas_link: %s-%s. Number of links %d"),
+	     get_ether_name ((new_canvas_link->ether_link)+6),
 	     get_ether_name (new_canvas_link->ether_link),
-	     get_ether_name ((new_canvas_link->ether_link) + 6),
 	     g_tree_nnodes (canvas_links));
 
     }
@@ -310,9 +342,9 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  static GnomeCanvasItem *circle = NULL;
   GnomeCanvasGroup *group;
   static guint n_nodes = 0, n_nodes_new;
+  guint n_links = 0, n_links_new=1;
 
   /* Check if there are any new nodes */
   g_tree_traverse (nodes, check_new_node, G_IN_ORDER, canvas);
@@ -333,24 +365,17 @@ update_diagram (GtkWidget * canvas)
   /* Check if there are any new links */
   g_tree_traverse (links, check_new_link, G_IN_ORDER, canvas);
 
-  /* Update links aspect */
-  g_tree_traverse (canvas_links, update_canvas_links, G_IN_ORDER, canvas);
+  /* Update links aspect 
+   * We also delete timedout links, and when we do that we stop
+   * traversing, so we need to go on until we have finished updating */
 
-  group = gnome_canvas_root (GNOME_CANVAS (canvas));
-
-#if 0
-  if (!circle)
-    {
-      circle = gnome_canvas_item_new (group,
-				      GNOME_TYPE_CANVAS_ELLIPSE,
-				      "x1", 0.0, "x2", 100.0,
-				      "y1", 0.0, "y2", 100.0,
-				      "fill_color_rgba", 0x00FF00FF,
-				      "outline_color", "black",
-				      "width_pixels", 0,
-				      NULL);
-    }
-#endif
+  do {
+     n_links=g_tree_nnodes (links);
+     g_tree_traverse (canvas_links, update_canvas_links, G_IN_ORDER, canvas);
+     n_links_new=g_tree_nnodes (links);
+  } while (n_links != n_links_new);
+   
+   group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
 }
 

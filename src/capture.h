@@ -4,6 +4,17 @@
 GTree *nodes;
 GTree *links;
 
+enum packet_belongs
+  {
+    NODE = 0, LINK = 1
+  };
+
+enum create_node_type
+  {
+    SRC = 0,
+    DST = 1
+  };
+
 typedef struct
   {
     guint8 *ether_addr;		/* pointer to the hardware address of the node */

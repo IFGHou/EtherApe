@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-26 11:28+0100\n"
+"POT-Creation-Date: 2000-02-26 22:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,22 +95,22 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:222
+#: src/capture.c:228
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:245
+#: src/capture.c:251
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:406
+#: src/capture.c:433
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:414
+#: src/capture.c:441
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
