@@ -694,7 +694,7 @@ load_services (void)
 	    error = TRUE;
 
 	  if (error)
-	    g_warning ("Unable to  parse line %s", line);
+	    g_warning (_("Unable to  parse line %s"), line);
 	  else
 	    {
 	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
@@ -716,7 +716,7 @@ load_services (void)
 				 &(udp_service->number), udp_service);
 		}
 	      else
-		g_my_info ("DDP protocols not supported in %s", line);
+		g_my_info (_("DDP protocols not supported in %s"), line);
 
 	    }
 
