@@ -34,6 +34,13 @@ conf_DATA =					\
 gladedir   = $(datadir)/etherape/glade
 glade_DATA = 				\
 	etherape.glade
+	
+Developmentdir = $(datadir)/gnome/apps/Applications
+Development_DATA = etherape.desktop
+
+pixmapsdir = $(datadir)/pixmaps
+pixmaps_DATA = etherape.png
+	
 
 purge:
 	rm -f *~ *.bak *.tar.gz
@@ -73,7 +80,7 @@ full-dist :
 	cvs tag `echo rel-${VERSION} | tr . - `
 	make dist
 	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
-	scp ${PACKAGE}-${VERSION}.tar.gz etherape:ftp
+	scp ${PACKAGE}-${VERSION}.tar.gz etherape.sourceforge.net:ftp
 	echo ${VERSION} > old.version
 #	cd ../www && make
 #	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
