@@ -46,6 +46,7 @@ static guint32 ms_to_next;	/* Used for offline mode to store the amount
 gint pcap_fd;			/* The file descriptor used by libpcap */
 gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
+static gint dns_fd = 0;		/* The file descriptor used by dns.c */
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);

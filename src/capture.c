@@ -41,7 +41,6 @@ gchar *
 init_capture (void)
 {
 
-  gint dns_fd;
   guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
@@ -60,6 +59,17 @@ init_capture (void)
 	  protocols[i] = NULL;
 	  i--;
 	}
+      if (!numeric)
+	{
+	  dns_open ();
+	  dns_fd = dns_waitfd ();
+	  g_my_debug ("File descriptor for DNS is %d", dns_fd);
+	  gdk_input_add (dns_fd,
+			 GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
+	}
+      else
+	dns_fd = 0;
+
       status = STOP;
       data_initialized = TRUE;
     }
@@ -238,13 +248,6 @@ init_capture (void)
       return errorbuf;
     }
 
-  if (!numeric)
-    {
-      dns_open ();
-      dns_fd = dns_waitfd ();
-      gdk_input_add (dns_fd,
-		     GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
-    }
 
   return NULL;
 }				/* init_capture */
@@ -498,7 +501,7 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   if (!packet)
     return;
 
-  prot = get_packet_prot (packet);
+  prot = get_packet_prot (packet, phdr.len);
   add_protocol (protocols, prot, phdr);
 
   src_id = get_node_id (packet, SRC);
