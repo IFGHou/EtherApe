@@ -29,6 +29,8 @@
 #include "diagram.h"
 #include "math.h"
 
+/* Global variables */
+
 extern GTree *canvas_nodes;	/* Defined in diagram.c */
 extern double averaging_time;
 extern double node_radius_multiplier;
@@ -43,6 +45,9 @@ extern size_mode_t size_mode;
 extern GtkWidget *diag_pref;
 extern GtkWidget *app1;
 
+/* Extern functions */
+
+extern void save_config (gchar * prefix);
 
 void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -433,5 +438,31 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell,
   /* Beware! Size mode is an enumeration. The menu options
    * must much the enumaration values */
   size_mode = g_list_index (menu_shell->children, active_item);
+
+}
+
+void
+on_save_pref_button_clicked (GtkButton * button,
+			     gpointer user_data)
+{
+  save_config ("/Etherape/");
+}
+
+
+void
+on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
+				gpointer user_data)
+{
+
+}
+
+
+void
+on_button10_clicked (GtkButton * button,
+		     gpointer user_data)
+{
+  GtkWidget *dialog;
+  dialog = lookup_widget (GTK_WIDGET (button), "diag_pref");
+  gtk_widget_hide (dialog);
 
 }

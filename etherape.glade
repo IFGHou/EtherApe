@@ -10,18 +10,6 @@
   <language>C</language>
   <gnome_support>True</gnome_support>
   <gettext_support>True</gettext_support>
-  <use_widget_names>False</use_widget_names>
-  <output_main_file>True</output_main_file>
-  <output_support_files>True</output_support_files>
-  <output_build_files>True</output_build_files>
-  <backup_source_files>True</backup_source_files>
-  <main_source_file>interface.c</main_source_file>
-  <main_header_file>interface.h</main_header_file>
-  <handler_source_file>callbacks.c</handler_source_file>
-  <handler_header_file>callbacks.h</handler_header_file>
-  <support_source_file>support.c</support_source_file>
-  <support_header_file>support.h</support_header_file>
-  <translatable_strings_file></translatable_strings_file>
 </project>
 
 <widget>
@@ -652,7 +640,7 @@ Web: http://etherape.sourceforge.net</comments>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
-  <auto_close>True</auto_close>
+  <auto_close>False</auto_close>
   <hide_on_close>True</hide_on_close>
 
   <widget>
@@ -668,11 +656,61 @@ Web: http://etherape.sourceforge.net</comments>
     </child>
 
     <widget>
-      <class>GtkFrame</class>
-      <name>frame1</name>
-      <label>Diagram settings</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <class>GtkHButtonBox</class>
+      <child_name>GnomeDialog:action_area</child_name>
+      <name>dialog-action_area2</name>
+      <layout_style>GTK_BUTTONBOX_END</layout_style>
+      <spacing>8</spacing>
+      <child_min_width>85</child_min_width>
+      <child_min_height>27</child_min_height>
+      <child_ipad_x>7</child_ipad_x>
+      <child_ipad_y>0</child_ipad_y>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>save_pref_button</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_save_pref_button_clicked</handler>
+	  <last_modification_time>Sat, 18 Mar 2000 15:00:56 GMT</last_modification_time>
+	</signal>
+	<label>Save</label>
+	<stock_pixmap>GNOME_STOCK_PIXMAP_SAVE</stock_pixmap>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button10</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_button10_clicked</handler>
+	  <last_modification_time>Sat, 18 Mar 2000 15:21:38 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_OK</stock_button>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkNotebook</class>
+      <name>notebook1</name>
+      <can_focus>True</can_focus>
+      <show_tabs>True</show_tabs>
+      <show_border>True</show_border>
+      <tab_pos>GTK_POS_TOP</tab_pos>
+      <scrollable>False</scrollable>
+      <tab_hborder>2</tab_hborder>
+      <tab_vborder>2</tab_vborder>
+      <popup_enable>False</popup_enable>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
@@ -682,8 +720,8 @@ Web: http://etherape.sourceforge.net</comments>
       <widget>
 	<class>GtkTable</class>
 	<name>table2</name>
-	<border_width>3</border_width>
-	<rows>4</rows>
+	<border_width>5</border_width>
+	<rows>5</rows>
 	<columns>2</columns>
 	<homogeneous>True</homogeneous>
 	<row_spacing>5</row_spacing>
@@ -898,7 +936,7 @@ Web: http://etherape.sourceforge.net</comments>
 	    <value_pos>GTK_POS_TOP</value_pos>
 	    <digits>1</digits>
 	    <policy>GTK_UPDATE_DISCONTINUOUS</policy>
-	    <value>3</value>
+	    <value>1</value>
 	    <lower>-4</lower>
 	    <upper>1</upper>
 	    <step>0.25</step>
@@ -1134,7 +1172,7 @@ Square Root
 	      <handler>on_font_button_clicked</handler>
 	      <last_modification_time>Thu, 16 Mar 2000 12:53:06 GMT</last_modification_time>
 	    </signal>
-	    <label>Click to set</label>
+	    <stock_button>GNOME_STOCK_BUTTON_FONT</stock_button>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -1159,32 +1197,92 @@ Square Root
 	    </child>
 	  </widget>
 	</widget>
-      </widget>
-    </widget>
 
-    <widget>
-      <class>GtkHButtonBox</class>
-      <child_name>GnomeDialog:action_area</child_name>
-      <name>dialog-action_area2</name>
-      <layout_style>GTK_BUTTONBOX_END</layout_style>
-      <spacing>8</spacing>
-      <child_min_width>85</child_min_width>
-      <child_min_height>27</child_min_height>
-      <child_ipad_x>7</child_ipad_x>
-      <child_ipad_y>0</child_ipad_y>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox11</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkToggleButton</class>
+	    <name>diagram_only_toggle</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>on_diagram_only_toggle_toggled</handler>
+	      <last_modification_time>Sat, 18 Mar 2000 15:17:38 GMT</last_modification_time>
+	    </signal>
+	    <label>Click to toggle</label>
+	    <active>False</active>
+	    <child>
+	      <padding>2</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label30</name>
+	    <label>No text</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
 
       <widget>
-	<class>GtkButton</class>
-	<name>button9</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
-	<stock_button>GNOME_STOCK_BUTTON_OK</stock_button>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label28</name>
+	<label>Diagram</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>Placeholder</class>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label29</name>
+	<label>Capture</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
   </widget>

@@ -41,16 +41,100 @@ GtkWidget *app1;		/* Pointer to the main app window */
 GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
 
 extern gchar *node_color, *link_color, *text_color;
-extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
+extern gdouble node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
   link_width_multiplier;
 extern apemode_t mode;
+extern size_mode_t size_mode;
+extern gchar *fontname;
 
+static void
+session_die (GnomeClient * client, gpointer client_data)
+{
+  g_message ("in die");
+  gtk_main_quit ();
+}
 
+static gint
+save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
+	      gint is_shutdown, GnomeInteractStyle interact_style,
+	      gint is_fast, gpointer client_data)
+{
+  gchar **argv;
+  guint argc;
+
+  /* allocate 0-filled, so it will be NULL-terminated */
+  argv = g_malloc0 (sizeof (gchar *) * 4);
+  argc = 1;
+
+  argv[0] = client_data;
+
+  g_message ("In save_session");
+#if 0
+  if (message)
+    {
+      argv[1] = "--message";
+      argv[2] = message;
+      argc = 3;
+    }
+#endif
+
+  gnome_client_set_clone_command (client, argc, argv);
+  gnome_client_set_restart_command (client, argc, argv);
+
+  return TRUE;
+}
+
+void
+load_config (char *prefix)
+{
+  gnome_config_push_prefix (prefix);
+  diagram_only = gnome_config_get_bool ("General/diagram_only");
+  node_timeout_time = gnome_config_get_float ("Diagram/node_timeout_time");
+  link_timeout_time = gnome_config_get_float ("Diagram/link_timeout_time");
+  averaging_time = gnome_config_get_float ("Diagram/averaging_time");
+  node_radius_multiplier = gnome_config_get_float ("Diagram/node_radius_multiplier");
+  link_width_multiplier = gnome_config_get_float ("Diagram/link_width_multiplier");
+  refresh_period = gnome_config_get_int ("Diagram/refresh_period");
+  size_mode = gnome_config_get_int ("Diagram/size_mode");
+  fontname = gnome_config_get_string ("Diagram/fontname");
+
+  gnome_config_pop_prefix ();
+}				/* load_config */
+
+void
+save_config (char *prefix)
+{
+  gnome_config_push_prefix (prefix);
+  gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
+  gnome_config_set_float ("Diagram/node_timeout_time",
+			  node_timeout_time);
+  gnome_config_set_float ("Diagram/link_timeout_time",
+			  link_timeout_time);
+  gnome_config_set_float ("Diagram/averaging_time",
+			  averaging_time);
+  gnome_config_set_float ("Diagram/node_radius_multiplier",
+			  node_radius_multiplier);
+  gnome_config_set_float ("Diagram/link_width_multiplier",
+			  link_width_multiplier);
+  gnome_config_set_int ("Diagram/refresh_period",
+			refresh_period);
+  gnome_config_set_int ("Diagram/size_mode",
+			size_mode);
+  gnome_config_set_string ("Diagram/fontname",
+			   fontname);
+
+  gnome_config_sync ();
+  gnome_config_pop_prefix ();
+
+  g_message (_ ("Preferences saved"));
+
+}				/* save_config */
 int
 main (int argc, char *argv[])
 {
   gchar *mode_string = NULL;
   GtkWidget *widget;
+  GnomeClient *client;
 
   struct poptOption optionsTable[] =
   {
@@ -92,8 +176,9 @@ main (int argc, char *argv[])
 #endif
 
 
-  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable,
+  gnome_init_with_popt_table ("Etherape", VERSION, argc, argv, optionsTable,
 			      0, NULL);
+  load_config ("/Etherape/");
 
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
@@ -139,11 +224,20 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
+  /* We create main windows */
   app1 = create_app1 ();
   diag_pref = create_diag_pref ();
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
+
+  /* Session handling */
+  client = gnome_master_client ();
+  gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
+		      GTK_SIGNAL_FUNC (save_session), argv[0]);
+  gtk_signal_connect (GTK_OBJECT (client), "die",
+		      GTK_SIGNAL_FUNC (session_die), NULL);
+
 
   gtk_widget_show (app1);
 
@@ -162,4 +256,4 @@ main (int argc, char *argv[])
   /* MAIN LOOP */
   gtk_main ();
   return 0;
-}
+}				/* main */
