@@ -468,8 +468,14 @@ update_protocols_window (void)
 	  g_free (protocol->name);
 	  g_free (protocol);
 
-	  /* remove row - after, iter points to next row */
+	  /* remove row - after, iter points to next row if res = TRUE */
+#if GTK_CHECK_VERSION(2,2,0)
 	  res = gtk_list_store_remove (gs, &it);
+#else
+	  /* gtk < 2.2 had gtk_list_store_remove void */
+	  gtk_list_store_remove (gs, &it);
+	  res = FALSE;		/* to be sure, act like remove() returned FALSE */
+#endif
 	}
       else
 	res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);

@@ -443,6 +443,8 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
   /* get iterator from path  and removes from store */
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;			/* path not found */
+
+#if GTK_CHECK_VERSION(2,2,0)
   if (gtk_list_store_remove (ep.gs, &it))
     {
       /* iterator still valid, selects current pos */
@@ -450,6 +452,10 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
       gtk_tree_view_set_cursor (ep.gv, gpath, NULL, 0);
       gtk_tree_path_free (gpath);
     }
+#else
+  /* gtk < 2.2 has gtk_list_store_remove void */
+  gtk_list_store_remove (ep.gs, &it);
+#endif
 
   colors_changed = TRUE;
 }				/* on_color_remove_button_clicked */
