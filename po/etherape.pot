@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-21 21:30+0100\n"
+"POT-Creation-Date: 2000-03-22 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,7 +247,7 @@ msgid "5"
 msgstr ""
 
 #: src/interface.c:740
-msgid "All"
+msgid "6"
 msgstr ""
 
 #: src/interface.c:745
@@ -313,85 +313,81 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:58
+#: src/capture.c:57
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:67
+#: src/capture.c:66
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:80 src/capture.c:182
+#: src/capture.c:79 src/capture.c:183
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:86 src/capture.c:188
+#: src/capture.c:85 src/capture.c:189
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:92 src/capture.c:194
+#: src/capture.c:91 src/capture.c:195
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:118
+#: src/capture.c:117
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:125
+#: src/capture.c:124
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:141
+#: src/capture.c:140
 msgid "Ape mode not yet supported"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:278
+#: src/capture.c:279
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:314
+#: src/capture.c:315
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:431
+#: src/capture.c:430
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:452
+#: src/capture.c:451
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:490
+#: src/capture.c:489
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:639
+#: src/capture.c:638
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:690
-msgid "Higher than 10 items protocols stacks are not supported"
-msgstr ""
-
-#: src/capture.c:711
+#: src/capture.c:708
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:772
+#: src/capture.c:769
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:887
+#: src/capture.c:886
 msgid "Null packet in check_packet"
 msgstr ""

@@ -3,7 +3,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
@@ -20,8 +20,7 @@ static GtkWidget *create_dummy_pixmap (GtkWidget * widget,
 				       gboolean gnome_pixmap);
 
 GtkWidget *
-lookup_widget (GtkWidget * widget,
-	       const gchar * widget_name)
+lookup_widget (GtkWidget * widget, const gchar * widget_name)
 {
   GtkWidget *parent, *found_widget;
 
@@ -44,8 +43,7 @@ lookup_widget (GtkWidget * widget,
 }
 
 /* This is a dummy pixmap we use when a pixmap can't be found. */
-static char *dummy_pixmap_xpm[] =
-{
+static char *dummy_pixmap_xpm[] = {
 /* columns rows colors chars-per-pixel */
   "1 1 1 1",
   "  c None",
@@ -56,8 +54,7 @@ static char *dummy_pixmap_xpm[] =
 
 /* This is an internally used function to create pixmaps. */
 static GtkWidget *
-create_dummy_pixmap (GtkWidget * widget,
-		     gboolean gnome_pixmap)
+create_dummy_pixmap (GtkWidget * widget, gboolean gnome_pixmap)
 {
   GdkColormap *colormap;
   GdkPixmap *gdkpixmap;
@@ -83,8 +80,7 @@ create_dummy_pixmap (GtkWidget * widget,
 /* This is an internally used function to create pixmaps. */
 GtkWidget *
 create_pixmap (GtkWidget * widget,
-	       const gchar * filename,
-	       gboolean gnome_pixmap)
+	       const gchar * filename, gboolean gnome_pixmap)
 {
   GtkWidget *pixmap;
   GdkColormap *colormap;
@@ -95,7 +91,7 @@ create_pixmap (GtkWidget * widget,
   pathname = gnome_pixmap_file (filename);
   if (!pathname)
     {
-      g_warning (_ ("Couldn't find pixmap file: %s"), filename);
+      g_warning (_("Couldn't find pixmap file: %s"), filename);
       return create_dummy_pixmap (widget, gnome_pixmap);
     }
 
@@ -111,7 +107,7 @@ create_pixmap (GtkWidget * widget,
 						   NULL, pathname);
   if (gdkpixmap == NULL)
     {
-      g_warning (_ ("Couldn't create pixmap from file: %s"), pathname);
+      g_warning (_("Couldn't create pixmap from file: %s"), pathname);
       g_free (pathname);
       return create_dummy_pixmap (widget, gnome_pixmap);
     }
@@ -133,7 +129,7 @@ create_image (const gchar * filename)
   pathname = gnome_pixmap_file (filename);
   if (!pathname)
     {
-      g_warning (_ ("Couldn't find pixmap file: %s"), filename);
+      g_warning (_("Couldn't find pixmap file: %s"), filename);
       return NULL;
     }
 

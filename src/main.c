@@ -75,25 +75,30 @@ load_config (char *prefix)
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
   nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   node_timeout_time =
-    gnome_config_get_float_with_default ("Diagram/node_timeout_time=60000000.0", &u);
+    gnome_config_get_float_with_default
+    ("Diagram/node_timeout_time=60000000.0", &u);
   if (nofade)
     link_timeout_time =
-      gnome_config_get_float_with_default ("Diagram/link_timeout_time=5000000.0", &u);
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=5000000.0", &u);
   else
     link_timeout_time =
-      gnome_config_get_float_with_default ("Diagram/link_timeout_time=20000000.0", &u);
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=20000000.0", &u);
   averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0", &u);
+    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0",
+					 &u);
   node_radius_multiplier =
-    gnome_config_get_float_with_default ("Diagram/node_radius_multiplier=0.0005", &u);
+    gnome_config_get_float_with_default
+    ("Diagram/node_radius_multiplier=0.0005", &u);
   if (u)
     node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
   link_width_multiplier =
-    gnome_config_get_float_with_default ("Diagram/link_width_multiplier=0.0005", &u);
+    gnome_config_get_float_with_default
+    ("Diagram/link_width_multiplier=0.0005", &u);
   if (u)
     link_width_multiplier = 0.0005;
-  mode =
-    gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
   if (mode == IP || mode == TCP)
     refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
@@ -101,12 +106,12 @@ load_config (char *prefix)
     refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
 
-  size_mode =
-    gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
   stack_level =
     gnome_config_get_int_with_default ("Diagram/stack_level=1", &u);
   fontname =
-    gnome_config_get_string_with_default ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
+    gnome_config_get_string_with_default
+    ("Diagram/fontname=-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*", &u);
 
   gnome_config_pop_prefix ();
 }				/* load_config */
@@ -117,12 +122,9 @@ save_config (char *prefix)
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", diagram_only);
   gnome_config_set_bool ("Diagram/nofade", nofade);
-  gnome_config_set_float ("Diagram/node_timeout_time",
-			  node_timeout_time);
-  gnome_config_set_float ("Diagram/link_timeout_time",
-			  link_timeout_time);
-  gnome_config_set_float ("Diagram/averaging_time",
-			  averaging_time);
+  gnome_config_set_float ("Diagram/node_timeout_time", node_timeout_time);
+  gnome_config_set_float ("Diagram/link_timeout_time", link_timeout_time);
+  gnome_config_set_float ("Diagram/averaging_time", averaging_time);
   gnome_config_set_float ("Diagram/node_radius_multiplier",
 			  node_radius_multiplier);
   gnome_config_set_float ("Diagram/link_width_multiplier",
@@ -138,9 +140,10 @@ save_config (char *prefix)
   gnome_config_sync ();
   gnome_config_pop_prefix ();
 
-  g_message (_ ("Preferences saved"));
+  g_message (_("Preferences saved"));
 
 }				/* save_config */
+
 int
 main (int argc, char *argv[])
 {
@@ -149,38 +152,27 @@ main (int argc, char *argv[])
   GnomeClient *client;
   poptContext poptcon;
 
-  struct poptOption optionsTable[] =
-  {
+  struct poptOption optionsTable[] = {
     {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
-     _ ("don't convert addresses to names"), NULL
-    },
+     _("don't convert addresses to names"), NULL},
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
-     _ ("don't display any node text identification"), NULL
-    },
+     _("don't display any node text identification"), NULL},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     _ ("mode of operation"), _ ("<ethernet|ip|tcp|udp>")
-    },
+     _("mode of operation"), _("<ethernet|ip|tcp|udp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
-     _ ("set interface to listen to"), _ ("<interface name>")
-    },
+     _("set interface to listen to"), _("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &filter, 0,
-     _ ("set capture filter"), _ ("<capture filter>")
-    },
+     _("set capture filter"), _("<capture filter>")},
     {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
-     _ ("do not fade old links"), NULL
-    },
+     _("do not fade old links"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
-     _ ("set the node color"), _ ("color")
-    },
+     _("set the node color"), _("color")},
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
-     _ ("set the link color"), _ ("color")
-    },
+     _("set the link color"), _("color")},
     {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
-     _ ("set the text color"), _ ("color")
-    },
+     _("set the text color"), _("color")},
 
-    POPT_AUTOHELP
-    {NULL, 0, 0, NULL, 0}
+    POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
 
 #ifdef ENABLE_NLS
@@ -214,10 +206,7 @@ main (int argc, char *argv[])
   load_config ("/Etherape/");
 
   /* Command line */
-  poptcon = poptGetContext ("Etherape", argc,
-			    argv,
-			    optionsTable,
-			    0);
+  poptcon = poptGetContext ("Etherape", argc, argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
   if (!fontname)
@@ -244,7 +233,8 @@ main (int argc, char *argv[])
       else if (strstr (mode_string, "udp"))
 	mode = UDP;
       else
-	g_warning (_ ("Unrecognized mode. Do etherape --help for a list of modes"));
+	g_warning (_
+		   ("Unrecognized mode. Do etherape --help for a list of modes"));
     }
 
   /* Only ip traffic makes sense when used as interape */
@@ -294,8 +284,7 @@ main (int argc, char *argv[])
   /* TODO: Back up if CPU can't handle it */
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
-				     (GtkFunction) update_diagram,
-				     widget);
+				     (GtkFunction) update_diagram, widget);
 
   /* MAIN LOOP */
   gtk_main ();

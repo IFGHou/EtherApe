@@ -69,7 +69,7 @@ average traffic", 45},
   {"3", 56},
   {"4", 57},
   {"5", 58},
-  {"All", 59},
+  {"6", 59},
   {"Protocol Stack Level", 60},
   {"Diagram", 61},
   {"Filter what's captured. See the tcpdump man page for details", 62},
@@ -99,10 +99,9 @@ average traffic", 45},
   {"Creating node: %s. Number of nodes %d", 86},
   {"Creating link: %s-%s. Number of links %d", 87},
   {"Reached default in fill_names", 88},
-  {"Higher than 10 items protocols stacks are not supported", 89},
-  {"Removing node: %s. Number of node %d", 90},
-  {"Removing link. Number of links %d", 91},
-  {"Null packet in check_packet", 92},
+  {"Removing node: %s. Number of node %d", 89},
+  {"Removing link. Number of links %d", 90},
+  {"Null packet in check_packet", 91},
 };
 
-int _msg_tbl_length = 92;
+int _msg_tbl_length = 91;

@@ -29,22 +29,44 @@ static GString *prot;
 gchar *
 get_packet_prot (const guint8 * packet)
 {
+  gchar **tokens = NULL;
+  guint i = 0;
   if (prot)
     g_string_free (prot, TRUE);
   prot = NULL;
 
-  switch (mode)
+  switch (linktype)
     {
-    case ETHERNET:
+    case L_EN10MB:
       get_eth_type (packet);
       break;
-    case IP:
-    case TCP:
+    case L_PPP:
+      prot = g_string_new ("PPP/IP");
+      break;
+    case L_SLIP:
+      prot = g_string_new ("SLIP/IP");
+      break;
     default:
-      prot = g_string_new ("UNKNOWN");
       break;
     }
 
+  /* TODO I think this is a serious waste of CPU and memory.
+     * I think I should look at other ways of dealing with not recognized
+     * protocols other than just creating entries saying UNKNOWN */
+  /* I think I'll do this by changing the global protocols into
+   * a GArray */
+
+  if (prot)
+    {
+      tokens = g_strsplit (prot->str, "/", 0);
+      while ((tokens[i] != NULL) && i <= STACK_SIZE)
+	i++;
+      g_strfreev (tokens);
+    }
+  for (i = STACK_SIZE - i; i <= STACK_SIZE; i++)
+    prot = g_string_append (prot, "/UNKNOWN");
+
+  /* g_message ("Protocol stack is %s", prot->str); */
   return prot->str;
 }				/* get_packet_prot */
 

@@ -46,7 +46,6 @@ init_capture (void)
   guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
-  link_type_t linktype;		/* Type of device we are listening to */
 
 
   device = interface;
@@ -55,7 +54,7 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  g_error (_ ("Error getting device: %s"), ebuf);
+	  g_error (_("Error getting device: %s"), ebuf);
 	  exit (1);
 	}
     }
@@ -64,7 +63,7 @@ init_capture (void)
       ((pcap_t *) pch =
        pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
     {
-      g_error (_ ("Error opening %s : %s - perhaps you need to be root?"),
+      g_error (_("Error opening %s : %s - perhaps you need to be root?"),
 	       device, ebuf);
     }
 
@@ -83,13 +82,13 @@ init_capture (void)
       }
     if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
       {
-	g_warning (_ ("Unable to parse filter string (%s)."),
+	g_warning (_("Unable to parse filter string (%s)."),
 		   pcap_geterr (pch));
 	ok = 0;
       }
     if (ok && (pcap_setfilter (pch, &fp) < 0))
       {
-	g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
+	g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
       }
   }
 #endif
@@ -115,14 +114,14 @@ init_capture (void)
 	mode = IP;
       if (mode == ETHERNET)
 	{
-	  g_message (_ ("Mode not available in this device"));
+	  g_message (_("Mode not available in this device"));
 	  /* TODO manage proper exit codes */
 	  exit (1);
 	}
       l3_offset = 0;
       break;
     default:
-      g_error (_ ("Link type not yet supported"));
+      g_error (_("Link type not yet supported"));
     }
 
 
@@ -138,7 +137,7 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      g_error (_ ("Ape mode not yet supported"));
+      g_error (_("Ape mode not yet supported"));
     }
 
   if (!numeric)
@@ -161,8 +160,9 @@ init_capture (void)
 
 }				/* init_capture */
 
-gint
-set_filter (gchar * filter, gchar * device)
+/* TODO make it return an error value and act accordingly */
+/* Installs a filter in the pcap structure */
+gint set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -185,13 +185,12 @@ set_filter (gchar * filter, gchar * device)
     }
   if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
     {
-      g_warning (_ ("Unable to parse filter string (%s)."),
-		 pcap_geterr (pch));
+      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
       ok = 0;
     }
   if (ok && (pcap_setfilter (pch, &fp) < 0))
     {
-      g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
+      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
     }
 }
 
@@ -275,7 +274,7 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
       break;
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Reached default in get_node_id"));
+      g_error (_("Reached default in get_node_id"));
     }
 
   return node_id;
@@ -311,7 +310,7 @@ get_link_id (const guint8 * packet)
       g_memmove (link_id + 10, &port, 2);
       break;
     default:
-      g_error (_ ("Unsopported ape mode in get_link_id"));
+      g_error (_("Unsopported ape mode in get_link_id"));
     }
   return link_id;
 }				/* get_link_id */
@@ -360,8 +359,6 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
 {
   link_t *link;
   packet_t *packet_info;
-  GList *protocol_item;
-  protocol_t *protocol_info;
 
   link = g_tree_lookup (links, link_id);
   if (!link)
@@ -428,7 +425,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node_t *node;
   gchar *na;
 
-  na = g_strdup (_ ("n/a"));
+  na = g_strdup (_("n/a"));
 
   node = g_malloc (sizeof (node_t));
 
@@ -449,7 +446,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
 
   g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Creating node: %s. Number of nodes %d"),
+	 _("Creating node: %s. Number of nodes %d"),
 	 node->name->str, g_tree_nnodes (nodes));
 
   return node;
@@ -487,9 +484,8 @@ create_link (const guint8 * packet, const guint8 * link_id)
   link->dst_name = g_strdup (node->name->str);
 
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Creating link: %s-%s. Number of links %d"),
-	 link->src_name, link->dst_name,
-	 g_tree_nnodes (links));
+	 _("Creating link: %s-%s. Number of links %d"),
+	 link->src_name, link->dst_name, g_tree_nnodes (links));
 
   return link;
 }				/* create_link */
@@ -636,7 +632,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Reached default in fill_names"));
+      g_error (_("Reached default in fill_names"));
     }
 }				/* fill_names */
 
@@ -660,11 +656,11 @@ add_protocol (GList ** protocols, gchar * stack, struct pcap_pkthdr phdr,
   gchar **tokens;
   guint i = 0;
   tokens = g_strsplit (stack, "/", 0);
-  while (tokens[i] != NULL)
+  /* while (tokens[i] != NULL) */
+  for (i = 0; i <= STACK_SIZE; i++)
     {
       if ((protocol_item = g_list_find_custom (protocols[i],
-					       tokens[i],
-					       protocol_compare)))
+					       tokens[i], protocol_compare)))
 	{
 	  if (is_link)
 	    {
@@ -685,9 +681,6 @@ add_protocol (GList ** protocols, gchar * stack, struct pcap_pkthdr phdr,
 	    }
 	}
 
-      i++;
-      if (i == 10)
-	g_error (_ ("Higher than 10 items protocols stacks are not supported"));
     }
   g_strfreev (tokens);
 }				/* add_protocol */
@@ -708,7 +701,7 @@ update_node (node_t * node)
 	  && node_timeout_time)
 	{
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _ ("Removing node: %s. Number of node %d"),
+		 _("Removing node: %s. Number of node %d"),
 		 node->name->str, g_tree_nnodes (nodes));
 	  node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
@@ -769,7 +762,7 @@ update_link (link_t * link)
 	  g_free (link);
 	  g_tree_remove (links, link_id);
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _ ("Removing link. Number of links %d"),
+		 _("Removing link. Number of links %d"),
 		 g_tree_nnodes (canvas_links));
 
 	  g_free (link_id);
@@ -856,6 +849,8 @@ static gchar *
 get_main_prot (GList * packets, link_t * link, guint level)
 {
   protocol_t *protocol;
+  /* If we haven't recognized any protocol at that level,
+   * we say it's unknown */
   if (!(link->protocols[level]))
     return NULL;
   link->protocols[level]
@@ -884,7 +879,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
   if (!packet)
     {
-      g_warning (_ ("Null packet in check_packet"));
+      g_warning (_("Null packet in check_packet"));
       return NULL;
     }
 
@@ -985,8 +980,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1015,8 +1009,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1043,8 +1036,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

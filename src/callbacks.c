@@ -194,7 +194,7 @@ on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
 
   node_radius_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Adjustment value: %g. Radius multiplier %g"),
+	 _("Adjustment value: %g. Radius multiplier %g"),
 	 adj->value, node_radius_multiplier);
 
 }
@@ -205,7 +205,7 @@ on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 
   link_width_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Adjustment value: %g. Radius multiplier %g"),
+	 _("Adjustment value: %g. Radius multiplier %g"),
 	 adj->value, link_width_multiplier);
 
 }
@@ -239,7 +239,7 @@ on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 
 gboolean
 on_node_popup_motion_notify_event (GtkWidget * widget,
-				 GdkEventMotion * event, gpointer user_data)
+				   GdkEventMotion * event, gpointer user_data)
 {
 
   gtk_widget_destroy (widget);
@@ -257,8 +257,7 @@ on_name_motion_notify_event (GtkWidget * widget,
 }
 
 void
-on_toolbar_check_activate (GtkMenuItem * menuitem,
-			   gpointer user_data)
+on_toolbar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   static gboolean active = TRUE;
   GnomeDock *dock;
@@ -293,8 +292,7 @@ on_toolbar_check_activate (GtkMenuItem * menuitem,
 }
 
 void
-on_legend_check_activate (GtkMenuItem * menuitem,
-			  gpointer user_data)
+on_legend_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   static gboolean active = TRUE;
   GnomeDock *dock;
@@ -331,8 +329,7 @@ on_legend_check_activate (GtkMenuItem * menuitem,
 
 
 void
-on_status_bar_check_activate (GtkMenuItem * menuitem,
-			      gpointer user_data)
+on_status_bar_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   static gboolean active = TRUE;
   GtkWidget *widget;
@@ -353,28 +350,27 @@ on_status_bar_check_activate (GtkMenuItem * menuitem,
 
 
 void
-on_font_button_clicked (GtkButton * button,
-			gpointer user_data)
+on_font_button_clicked (GtkButton * button, gpointer user_data)
 {
   static GtkWidget *fontsel = NULL;
   if (!fontsel)
     fontsel = create_fontselectiondialog1 ();
-  gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG (fontsel),
-					   fontname);
+  gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
+					   (fontsel), fontname);
   gtk_widget_show (fontsel);
 }
 
 
 void
-on_ok_button1_clicked (GtkButton * button,
-		       gpointer user_data)
+on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
 
   fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
   str =
-    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG (fontsel));
+    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
+					     (fontsel));
   if (str)
     {
       if (fontname)
@@ -389,8 +385,7 @@ on_ok_button1_clicked (GtkButton * button,
 
 
 void
-on_cancel_button1_clicked (GtkButton * button,
-			   gpointer user_data)
+on_cancel_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
 
@@ -401,15 +396,15 @@ on_cancel_button1_clicked (GtkButton * button,
 
 
 void
-on_apply_button1_clicked (GtkButton * button,
-			  gpointer user_data)
+on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *fontsel;
   gchar *str;
 
   fontsel = lookup_widget (GTK_WIDGET (button), "fontselectiondialog1");
   str =
-    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG (fontsel));
+    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
+					     (fontsel));
   if (str)
     {
       if (fontname)
@@ -421,8 +416,7 @@ on_apply_button1_clicked (GtkButton * button,
 }
 
 void
-on_size_mode_menu_selected (GtkMenuShell * menu_shell,
-			    gpointer data)
+on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
 {
   GtkWidget *active_item;
 
@@ -434,8 +428,7 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell,
 }
 
 void
-on_stack_level_menu_selected (GtkMenuShell * menu_shell,
-			      gpointer data)
+on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
 {
   GtkWidget *active_item;
 
@@ -445,8 +438,7 @@ on_stack_level_menu_selected (GtkMenuShell * menu_shell,
 }
 
 void
-on_save_pref_button_clicked (GtkButton * button,
-			     gpointer user_data)
+on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   save_config ("/Etherape/");
 }
@@ -464,8 +456,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 
 
 void
-on_ok_pref_button_clicked (GtkButton * button,
-			   gpointer user_data)
+on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *dialog;
   on_apply_pref_button_clicked (button, NULL);
@@ -475,8 +466,7 @@ on_ok_pref_button_clicked (GtkButton * button,
 }
 
 void
-on_apply_pref_button_clicked (GtkButton * button,
-			      gpointer user_data)
+on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *widget;
   widget = lookup_widget (GTK_WIDGET (button), "filter_entry");
@@ -485,8 +475,7 @@ on_apply_pref_button_clicked (GtkButton * button,
 }
 
 void
-on_cancel_pref_button_clicked (GtkButton * button,
-			       gpointer user_data)
+on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *dialog;
   dialog = lookup_widget (GTK_WIDGET (button), "diag_pref");
@@ -496,8 +485,7 @@ on_cancel_pref_button_clicked (GtkButton * button,
 
 /* Makes a new filter */
 void
-on_filter_entry_changed (GtkEditable * editable,
-			 gpointer user_data)
+on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
 {
   gchar *str;
   /* TODO should make sure that for each mode the filter is set up

@@ -14,7 +14,10 @@ User visible features:
 
 Issues in the source code
 -------------------------
- 
+
+  * Use a GArray instead of a fixed array for the protocols
+    stack.
+
   * change all those ugly while (i+1) in capture.c
 
   * update_packet_list should be given a pointer to the parent

@@ -3,6 +3,15 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.2 (Wednesday 03-22-2000):
+  
+     * You may choose what level of the protocol stack to look at. Now I
+       should be able to add more protocol decoding easyly.
+     * I think I have squashed the growing legend bug. Please report.
+     * Diagram tries to use most of the window.
+     * Got away with some other memory leaks, though I probably just
+       introduced some others.
+       
   Overview of changes in Etherape 0.3.1 (Monday 03-20-2000):
   
      * Capture filter may be set in the preferences dialog in runtime
