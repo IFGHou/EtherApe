@@ -53,7 +53,14 @@ dnl ANSI C (and POSIX.1)'s math.h guarantees:
 dnl acos, asin, atan2, atan, ceil, cos, cosh, exp, fabs, floor, fmod, frexp,
 dnl ldexp, log10, log, modf, pow, sin, sinh, sqrt, tan, tanh
 
-#LIBS="$LIBS -lm"
+
+dnl Checks for "gethostbyname()" - and "-lnsl", if we need it to get
+dnl "gethostbyname()".
+AC_ETHEREAL_GETHOSTBY_LIB_CHECK
+
+dnl Checks for "connect()", used as a proxy for "socket()" - and
+dnl "-lsocket", if we need it to get "connect()".
+AC_ETHEREAL_SOCKET_LIB_CHECK
 
 # Check for the pcap library.
 

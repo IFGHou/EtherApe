@@ -51,6 +51,61 @@ dnl Franc,ois Pinard, Karl Berry, Richard Pixley, Ian Lance Taylor,
 dnl Roland McGrath, Noah Friedman, david d zuhn, and many others.
 dnl Adapted for etherape by Juan Toledo (if you can call adapt to cut &
 dnl paste :-) )
+#
+# AC_ETHEREAL_GETHOSTBY_LIB_CHECK
+#
+# Checks whether we need "-lnsl" to get "gethostby*()", which we use
+# in "resolv.c".
+#
+# Adapted from stuff in the AC_PATH_XTRA macro in "acspecific.m4" in
+# GNU Autoconf 2.13; the comment came from there.
+# Done by Guy Harris <guy@alum.mit.edu> on 2000-01-14. 
+#
+AC_DEFUN(AC_ETHEREAL_GETHOSTBY_LIB_CHECK,
+[
+    # msh@cis.ufl.edu says -lnsl (and -lsocket) are needed for his 386/AT,
+    # to get the SysV transport functions.
+    # chad@anasazi.com says the Pyramid MIS-ES running DC/OSx (SVR4)
+    # needs -lnsl.
+    # The nsl library prevents programs from opening the X display
+    # on Irix 5.2, according to dickey@clark.net.
+    AC_CHECK_FUNC(gethostbyname)
+    if test $ac_cv_func_gethostbyname = no; then
+      AC_CHECK_LIB(nsl, gethostbyname, NSL_LIBS="-lnsl")
+    fi
+    AC_SUBST(NSL_LIBS)
+])
+
+#
+# AC_ETHEREAL_SOCKET_LIB_CHECK
+#
+# Checks whether we need "-lsocket" to get "socket()", which is used
+# by libpcap on some platforms - and, in effect, "gethostby*()" on
+# most if not all platforms (so that it can use NIS or DNS or...
+# to look up host names).
+#
+# Adapted from stuff in the AC_PATH_XTRA macro in "acspecific.m4" in
+# GNU Autoconf 2.13; the comment came from there.
+# Done by Guy Harris <guy@alum.mit.edu> on 2000-01-14. 
+#
+# We use "connect" because that's what AC_PATH_XTRA did.
+#
+AC_DEFUN(AC_ETHEREAL_SOCKET_LIB_CHECK,
+[
+    # lieder@skyler.mavd.honeywell.com says without -lsocket,
+    # socket/setsockopt and other routines are undefined under SCO ODT
+    # 2.0.  But -lsocket is broken on IRIX 5.2 (and is not necessary
+    # on later versions), says simon@lia.di.epfl.ch: it contains
+    # gethostby* variants that don't use the nameserver (or something).
+    # -lsocket must be given before -lnsl if both are needed.
+    # We assume that if connect needs -lnsl, so does gethostbyname.
+    AC_CHECK_FUNC(connect)
+    if test $ac_cv_func_connect = no; then
+      AC_CHECK_LIB(socket, connect, SOCKET_LIBS="-lsocket",
+		AC_MSG_ERROR(Function 'socket' not found.), $NSL_LIBS)
+    fi
+    AC_SUBST(SOCKET_LIBS)
+])
 
 #
 # AC_ETHEREAL_PCAP_CHECK
