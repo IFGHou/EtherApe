@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
-"POT-Creation-Date: 2001-08-03 14:24+0200\n"
-"PO-Revision-Date: 2001-08-03 14:25+02:00\n"
+"POT-Creation-Date: 2001-08-06 17:22+0200\n"
+"PO-Revision-Date: 2001-08-06 17:23+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -203,23 +203,30 @@ msgstr "Tipo de enlace es Token Ring"
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
+# src/capture.c:164
+#. Linux cooked sockets (I believe this
+#. * is used for ISDN on linux)
+#: src/capture.c:182
+msgid "Link type is Linux cooked sockets"
+msgstr "Tipo de enlace es \"Linux cooked sockets\""
+
 # src/capture.c:181
-#: src/capture.c:181
+#: src/capture.c:191
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:234
-#: src/capture.c:234
+#: src/capture.c:244
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
 # src/capture.c:256
-#: src/capture.c:256
+#: src/capture.c:266
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
 # src/capture.c:282 src/capture.c:308
-#: src/capture.c:282 src/capture.c:308
+#: src/capture.c:292 src/capture.c:318
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -227,113 +234,113 @@ msgstr ""
 "(%s)."
 
 # src/capture.c:288 src/capture.c:314
-#: src/capture.c:288 src/capture.c:314
+#: src/capture.c:298 src/capture.c:324
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
 # src/capture.c:293 src/capture.c:319
-#: src/capture.c:293 src/capture.c:319
+#: src/capture.c:303 src/capture.c:329
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
 # src/capture.c:330
-#: src/capture.c:330
+#: src/capture.c:340
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
 # src/capture.c:340
-#: src/capture.c:340
+#: src/capture.c:350
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:347
-#: src/capture.c:347
+#: src/capture.c:357
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:363
-#: src/capture.c:363
+#: src/capture.c:373
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
 # src/capture.c:373
-#: src/capture.c:373
+#: src/capture.c:383
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
 # src/capture.c:380
-#: src/capture.c:380
+#: src/capture.c:390
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:385
-#: src/capture.c:385
+#: src/capture.c:395
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:404
-#: src/capture.c:404
+#: src/capture.c:414
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
 # src/capture.c:410
-#: src/capture.c:410
+#: src/capture.c:420
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:416
-#: src/capture.c:416
+#: src/capture.c:426
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:422
-#: src/capture.c:422
+#: src/capture.c:432
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
 
 # src/capture.c:458
-#: src/capture.c:458
+#: src/capture.c:468
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
 # src/capture.c:659
-#: src/capture.c:659
+#: src/capture.c:669
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:711
-#: src/capture.c:711
+#: src/capture.c:721
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
 # src/capture.c:844
-#: src/capture.c:844
+#: src/capture.c:854
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:882
-#: src/capture.c:882
+#: src/capture.c:892
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 
 # src/capture.c:1027
-#: src/capture.c:1027
+#: src/capture.c:1037
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:1232
-#: src/capture.c:1232
+#: src/capture.c:1242
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace. Número de enlaces: %d"
 
 # src/capture.c:1550
-#: src/capture.c:1550
+#: src/capture.c:1560
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
@@ -514,26 +521,26 @@ msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
 # src/protocols.c:995
-#: src/protocols.c:995
+#: src/protocols.c:1018
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr ""
 "No se ha podido abrir %s. Los servicios TCP o UDP no podrán ser reconocidos"
 
 # src/protocols.c:1001
-#: src/protocols.c:1001
+#: src/protocols.c:1024
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr "Leyendo servicios TCP y UDP de %s"
 
 # src/protocols.c:1046
-#: src/protocols.c:1046
+#: src/protocols.c:1069
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr "Imposible analizar la línea %s"
 
 # src/protocols.c:1070
-#: src/protocols.c:1070
+#: src/protocols.c:1093
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
