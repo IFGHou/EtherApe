@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -90,6 +90,12 @@ typedef enum
   INBOUND = 0, OUTBOUND = 1
 }
 packet_direction;
+
+/* Possible states of capture status */
+enum status_t
+{
+  STOP = 0, PLAY = 1, PAUSE = 2
+};
 
 /* Capture structures */
 
@@ -191,6 +197,10 @@ guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
+enum status_t status;		/* Keeps capture status (playing, stopped, paused) */
+gboolean end_of_file;		/* Marks that the end of the offline file
+				 * has been reached */
+
 
 /* Genereral settings */
 
@@ -244,6 +254,7 @@ gchar *filter;			/* Pcap filter to be used */
 /* From capture.c */
 gchar *init_capture (void);
 gboolean start_capture (void);
+gboolean pause_capture (void);
 gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 node_t *update_node (node_t * node);
@@ -271,6 +282,15 @@ guint update_diagram (GtkWidget * canvas);
 void init_diagram ();
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
+
+/* From menus.c */
+void fatal_error_dialog (const gchar * message);
+void update_history (GnomeEntry * gentry, const gchar * str,
+		     gboolean is_fileentry);
+void gui_start_capture (void);
+void gui_pause_capture (void);
+void gui_stop_capture (void);
+
 
 /* Macros */
 
