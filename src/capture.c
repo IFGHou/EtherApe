@@ -1021,6 +1021,8 @@ update_node_packets (guint8 * node_id, node_t * node, gpointer pointer)
 
   if (node->packets)
     update_packet_list (node->packets, (gpointer) node, NODE);
+   
+   return FALSE;
 }				/* update_node_packets */
 
 
