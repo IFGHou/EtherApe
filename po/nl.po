@@ -17,7 +17,6 @@ msgid "mode of operation"
 msgstr "luister-modus"
 
 #: src/main.c:39
-#, fuzzy
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "&lt;ethernet|fddi|ip|tcp&gt;"
 
@@ -26,7 +25,6 @@ msgid "set interface to listen to"
 msgstr "luister naar deze interface"
 
 #: src/main.c:41
-#, fuzzy
 msgid "<interface name>"
 msgstr "&lt;interface naam&gt;"
 
@@ -35,16 +33,14 @@ msgid "set capture filter"
 msgstr "weergavefilter"
 
 #: src/main.c:43
-#, fuzzy
 msgid "<capture filter>"
-msgstr "Weergavefilter"
+msgstr "&lt;weergavefilter&gt;"
 
 #: src/main.c:45
 msgid "set input file"
 msgstr "selecteer invoerbestand"
 
 #: src/main.c:45
-#, fuzzy
 msgid "<file name>"
 msgstr "&lt;bestand&gt;"
 
@@ -69,9 +65,8 @@ msgid "limits nodes displayed"
 msgstr "beperk aantal weergegeven knooppunten"
 
 #: src/main.c:55
-#, fuzzy
 msgid "<number of nodes>"
-msgstr "Aantal knooppunten:"
+msgstr "&lt;aantal knooppunten&gt;"
 
 #: src/main.c:57
 msgid "Don't show warnings"
@@ -375,9 +370,7 @@ msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
 #: src/diagram.c:596
 msgid "Main node protocol not found in update_canvas_nodes"
-msgstr ""
-"Hoofdprotocol van het knooppunt niet gevonden bij de functie "
-"update_canvas_nodes"
+msgstr "Hoofdprotocol van het knooppunt niet gevonden bij de functie update_canvas_nodes"
 
 #: src/diagram.c:621
 msgid "Unknown value or node_size_variable"
@@ -390,8 +383,7 @@ msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
 #: src/diagram.c:1003
 msgid "Main link protocol not found in update_canvas_links"
-msgstr ""
-"Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
+msgstr "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
 #: src/diagram.c:1149
 #, c-format
@@ -586,7 +578,7 @@ msgstr "naam"
 
 #: src/glade-strings:49
 msgid "accumulated"
-msgstr "opgeteld"
+msgstr "totaal
 
 #: src/glade-strings:50
 msgid "average"
@@ -614,11 +606,11 @@ msgstr "Schakel tekstweergave in het diagram aan/uit."
 
 #: src/glade-strings:56
 msgid "Click to toggle"
-msgstr "Klik om om te schakelen."
+msgstr "Geen tekst bij de knooppunten"
 
 #: src/glade-strings:57
 msgid "No text"
-msgstr "Geen tekst weergeven"
+msgstr " 
 
 #: src/glade-strings:58
 msgid "Max. Node Radius"
@@ -708,15 +700,15 @@ msgstr "Direct verkeer (uit)"
 
 #: src/glade-strings:80
 msgid "Accumulated traffic (In+Out)"
-msgstr "Opgeteld verkeer (in+uit)"
+msgstr "Totaal verkeer (in+uit)"
 
 #: src/glade-strings:81
 msgid "Accumulated traffic (Inbound)"
-msgstr "Opgeteld verkeer (in)"
+msgstr "Totaal verkeer (in)"
 
 #: src/glade-strings:82
 msgid "Accumulated traffic (Outbound)"
-msgstr "Opgeteld verkeer (uit)"
+msgstr "Totaal verkeer (uit)"
 
 #: src/glade-strings:83
 msgid "Node size variable"
@@ -748,7 +740,7 @@ msgstr "De informatie wordt uitgemiddeld over zo veel tijd"
 
 #: src/glade-strings:89
 msgid "Averaging Time (ms)"
-msgstr "Uitmiddel tijd (ms)"
+msgstr "Uitmiddeltijd (ms)"
 
 #: src/glade-strings:90
 msgid "Delete this link after this much time. 0 means never timeout."
@@ -771,7 +763,7 @@ msgstr "Knooppunt timeout (ms)"
 
 #: src/glade-strings:94
 msgid "Capture"
-msgstr "Luisteren"
+msgstr "Capture
 
 #: src/glade-strings:95
 msgid "Select Font"
@@ -815,7 +807,7 @@ msgstr "Dit is een testnaam"
 
 #: src/glade-strings:105
 msgid "Numeric Name:"
-msgstr "Numerieke naam:"
+msgstr "Adres:"
 
 #: src/glade-strings:107
 msgid "Show traffic"
@@ -823,7 +815,7 @@ msgstr "Laat verkeer zien"
 
 #: src/glade-strings:108
 msgid "Show protocols"
-msgstr "Protocollen"
+msgstr "Laat protocollen zien"
 
 #: src/glade-strings:109
 msgid "Instantaneous"
@@ -836,7 +828,7 @@ msgstr "test label"
 
 #: src/glade-strings:111
 msgid "Accumulated"
-msgstr "Opgeteld"
+msgstr "Totaal"
 
 #: src/glade-strings:113
 msgid "Inst. Inbound"
@@ -844,33 +836,31 @@ msgstr "Direct in"
 
 #: src/glade-strings:115
 msgid "Accu. Outbound"
-msgstr "Opgeteld uit"
+msgstr "Totaal uit"
 
 #: src/glade-strings:117
 msgid "Accu. Inbound"
-msgstr "Opgeteld in"
+msgstr "Totaal in"
 
 #: src/glade-strings:119
 msgid "Inst. Outbound"
 msgstr "Direct uit"
 
 #: src/glade-strings:121
-#, fuzzy
 msgid "EtherApe: Protocols"
-msgstr "EtherApe: Voorkeuren"
+msgstr "EtherApe: Protocollen"
 
 #: src/glade-strings:122
-#, fuzzy
 msgid "Protocol"
-msgstr "Protocollen"
+msgstr "Protocol"
 
 #: src/glade-strings:123
 msgid "Inst Traffic"
-msgstr ""
+msgstr "Direct verkeer"
 
 #: src/glade-strings:124
 msgid "Accum Traffic"
-msgstr ""
+msgstr "Totaal verkeer"
 
 #~ msgid "&lt;capture filter&gt;"
 #~ msgstr "&lt;filter&gt;"
