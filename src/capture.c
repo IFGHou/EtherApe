@@ -850,6 +850,12 @@ update_node (node_t * node)
       if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
 	   && node_timeout_time) || (status == STOP))
 	{
+	  if (!strcmp
+	      (node->name->str,
+	       "cliente-213227049071.cm128.senpb.supercable.es")
+	      || !strcmp (node->name->str, "213.227.49.71")
+	      || !strcmp (node->name->str, "ETHER"))
+	    dump_node_info (node);
 
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 		 _("Removing node: %s. Number of nodes %d"),
@@ -927,11 +933,13 @@ update_node (node_t * node)
 	  /* The packet list structure has already been freed in
 	   * check_packets */
 	  node->packets = NULL;
+#if 0
 	  while (i + 1)
 	    {
 	      node->protocols[i] = NULL;
 	      i--;
 	    }
+#endif
 	  node->accumulated = node->accumulated_in
 	    = node->accumulated_out = 0.0;
 	  node->average = node->average_in = node->average_out = 0.0;
@@ -1150,6 +1158,19 @@ set_node_name (node_t * node, gchar * preferences)
 		   * the we have to go on */
 		  if (strcmp (tokens[1], "SOLVED") || name->solved)
 		    {
+		      if (node->name)
+			if (strcmp (node->name->str, name->name->str))
+			  {
+			    g_my_debug ("Switching node name from %s to %s",
+					node->name->str, name->name->str);
+			    if (!strcmp
+				(node->name->str,
+				 "cliente-213227049071.cm128.senpb.supercable.es")
+				|| !strcmp (node->name->str, "213.227.49.71")
+				|| !strcmp (node->name->str, "ETHER"))
+			      dump_node_info (node);
+			  }
+
 		      g_string_assign (node->name, name->name->str);
 		      g_string_assign (node->numeric_name,
 				       name->numeric_name->str);
@@ -1682,3 +1703,45 @@ print_mem (const guint8 * ad, guint length)
     }
   return p;
 }				/* print_mem */
+
+
+static void
+dump_node_info (node_t * node)
+{
+
+  GList *protocol_item = NULL, *name_item = NULL;
+  protocol_t *protocol = NULL;
+  name_t *name = NULL;
+  guint i = 1;
+
+  if (!node)
+    return;
+
+  if (node->name)
+    g_my_info ("NODE %s INFORMATION", node->name->str);
+
+  for (; i <= STACK_SIZE; i++)
+    {
+      if (node->protocols[i])
+	{
+	  g_my_info ("Protocol level %d information", i);
+	  protocol_item = node->protocols[i];
+	  while (protocol_item)
+	    {
+	      protocol = protocol_item->data;
+	      g_my_info ("\tProtocol %s", protocol->name);
+	      if ((name_item = protocol->node_names))
+		{
+		  while (name_item)
+		    {
+		      name = name_item->data;
+		      g_my_info ("\tName %s", name->name->str);
+		      name_item = name_item->next;
+		    }
+		}
+	      protocol_item = protocol_item->next;
+	    }
+	}
+    }
+
+}				/* dump_node_info */

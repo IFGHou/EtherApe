@@ -80,3 +80,4 @@ static gboolean check_packet (GList * packets, GList ** packet_l_e,
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static gint names_freq_compare (gconstpointer a, gconstpointer b);
 gchar *print_mem (const guint8 * ad, guint length);
+static void dump_node_info (node_t * node);
