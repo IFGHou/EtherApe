@@ -311,6 +311,7 @@ gui_start_capture (void)
 {
   GtkWidget *widget;
   gchar *errorbuf = NULL;
+  GString *status_string = NULL;
 
   if (status == STOP)
     if ((errorbuf = init_capture ()) != NULL)
@@ -396,13 +397,50 @@ gui_start_capture (void)
     default:
     }
 
+  /* Sets the appbar */
+
+  status_string = g_string_new (_("Reading data from "));
+
+  if (input_file)
+    g_string_append (status_string, input_file);
+  else if (interface)
+    g_string_append (status_string, interface);
+  else
+    g_string_append (status_string, _("default interface"));
+
+  switch (mode)
+    {
+    case FDDI:
+      g_string_append (status_string, _(" in FDDI mode"));
+      break;
+    case ETHERNET:
+      g_string_append (status_string, _(" in Ethernet mode"));
+      break;
+    case IP:
+      g_string_append (status_string, _(" in IP mode"));
+      break;
+    case TCP:
+      g_string_append (status_string, _(" in TCP mode"));
+      break;
+    case UDP:
+      g_string_append (status_string, _(" in UDP mode"));
+      break;
+    default:
+    }
+
+  set_appbar_status (status_string->str);
+  g_string_free (status_string, TRUE);
+
   g_my_info (_("Diagram started"));
 }				/* gui_start_capture */
+
+
 
 void
 gui_pause_capture (void)
 {
   GtkWidget *widget;
+  GString *status_string = NULL;
 
   if (status == PAUSE)
     {
@@ -426,6 +464,14 @@ gui_pause_capture (void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
+
+  /* Sets the appbar */
+
+  status_string = g_string_new (_("Paused"));
+
+  set_appbar_status (status_string->str);
+  g_string_free (status_string, TRUE);
+
   g_my_info (_("Diagram paused"));
 
 }				/* gui_pause_capture */
@@ -436,6 +482,7 @@ void
 gui_stop_capture (void)
 {
   GtkWidget *widget;
+  GString *status_string = NULL;
 
   if (status == STOP)
     {
@@ -465,6 +512,20 @@ gui_stop_capture (void)
    * status=STOP. Then the diagram is redrawn */
   widget = glade_xml_get_widget (xml, "canvas1");
   update_diagram (widget);
+
+  /* Sets the appbar */
+
+  status_string = g_string_new (_("Ready to capture from "));
+
+  if (input_file)
+    g_string_append (status_string, input_file);
+  else if (interface)
+    g_string_append (status_string, interface);
+  else
+    g_string_append (status_string, _("default interface"));
+
+  set_appbar_status (status_string->str);
+  g_string_free (status_string, TRUE);
 
   g_my_info (_("Diagram stopped"));
 }				/* gui_stop_capture */
