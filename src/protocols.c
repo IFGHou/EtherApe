@@ -692,10 +692,10 @@ get_ftp (void)
     g_my_debug ("FTP Token: %s", strtok (NULL, "(,)"));
 
   g_my_debug ("FTP Token: %s", hi_str = strtok (NULL, "(,)"));
-  if (!sscanf (hi_str, "%d", &hi_byte))
+  if (!hi_str || !sscanf (hi_str, "%d", &hi_byte))
     return;
   g_my_debug ("FTP Token: %s", low_str = strtok (NULL, "(,)"));
-  if (!sscanf (low_str, "%d", &low_byte))
+  if (!low_str || !sscanf (low_str, "%d", &low_byte))
     return;
 
   server_port = hi_byte * 256 + low_byte;
