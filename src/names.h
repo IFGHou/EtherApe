@@ -48,13 +48,14 @@ static void get_eth_name (void);
 static void get_raw_name (void);
 static void get_null_name (void);
 static void get_llc_name (void);
+static void get_arp_name (void);
 static void get_ip_name (void);
 static void get_tcp_name (void);
 static void get_nbss_name (void);
 static void add_name (gchar * numeric, gchar * resolved, gboolean solved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 9
+#define KNOWN_PROTS 10
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
@@ -64,6 +65,7 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"RAW", get_raw_name},
   {"NULL", get_null_name},
   {"LLC", get_llc_name},
+  {"ARP", get_arp_name},
   {"IP", get_ip_name},
   {"TCP", get_tcp_name},
   {"NBSS", get_nbss_name}

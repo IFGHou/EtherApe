@@ -147,6 +147,40 @@ get_eth_name (void)
 
 
 static void
+get_arp_name (void)
+{
+  guint16 protocol_type;
+  guint8 hardware_len, protocol_len;
+  const guint8 *id;
+#define ARPTYPE_IP 0x0800
+
+  /* We can only tell the IP address of the asking node.
+   * Most of the times the callee will be the broadcast 
+   * address */
+  if (dir == INBOUND)
+    return;
+
+  /* We only know about IP ARP queries */
+  protocol_type = pntohs ((p + offset + 2));
+  if (protocol_type != ARPTYPE_IP)
+    return;
+
+  hardware_len = *(guint8 *) (p + offset + 4);
+  protocol_len = *(guint8 *) (p + offset + 5);
+
+  id = p + offset + 8 + hardware_len;
+
+  if (mode == ETHERNET)
+    add_name (ip_to_str (id), dns_lookup (pntohl (id), FALSE), TRUE);
+  else
+    add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE), TRUE);
+
+
+  /* ARP doesn't carry any other protocol on top, so we return 
+   * directly */
+}				/* get_arp_name */
+
+static void
 get_ip_name (void)
 {
 
