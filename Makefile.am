@@ -83,7 +83,7 @@ full-dist :
 	make cvs
 	cvs tag `echo rel-${VERSION} | tr . - `
 	make dist
-	ln -s ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
+	ln -fs ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
 	rpm -ba etherape.spec
 	ncftpput upload.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
 	ncftpput upload.sourceforge.net /incoming/ /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm
