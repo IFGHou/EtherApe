@@ -53,7 +53,7 @@ draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t * draw_nodes_da
    
   xmax = drawing_area->allocation.width;
   ymax = drawing_area->allocation.height;
-  rad_max = (xmax > ymax) ? 0.75 * (xmax/2) : 0.75 * (ymax/2);
+  rad_max = (xmax < ymax) ? 0.75 * (xmax/2) : 0.75 * (ymax/2);
 
   if (draw_nodes_data->first_flag)
     {
@@ -69,8 +69,8 @@ draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t * draw_nodes_da
 		TRUE,
 		x,
 		y,
-		node->average/10,
-		node->average/10,
+		node->average/node->n_packets,
+		node->average/node->n_packets,
 		0,
 		360000);
    

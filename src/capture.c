@@ -63,8 +63,12 @@ gchar *
 guint
 node_hash (gconstpointer v)
 {
+  /* TODO 
+   * I still don't know how to properly calculate the hash value!
+   */
+   
   int hash_val = 0;
-  memcpy (&hash_val, v, sizeof (guint));
+  memcpy (&hash_val, (guint8 *)v, sizeof (guint));
   return hash_val;
 }
 
@@ -83,6 +87,7 @@ create_node (guint8 ether_addr)
   node = g_malloc (sizeof (node_t));
   node->ether_addr=ether_addr;
   node->average = 0;
+  node->n_packets=0;
   g_hash_table_insert (nodes, &node->ether_addr, node);
 
   return node;
@@ -112,11 +117,13 @@ packet_read (pcap_t * pch,
       if (node == NULL)
 	node = create_node (src);
       node->average += phdr.len;
+      node->n_packets++;
 
       node = g_hash_table_lookup (nodes, &dst);
       if (node == NULL)
 	node = create_node (dst);
       node->average += phdr.len;
+      node->n_packets++;   
 
 }
 
