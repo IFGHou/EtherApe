@@ -56,6 +56,8 @@ main (int argc, char *argv[])
      _("do not fade old links"), NULL},
     {"stationary", 's', POPT_ARG_NONE, &stationary, 0,
      _("don't move nodes around"), NULL},
+    {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
+     _("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
      _("set the node color"), _("color")},
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
@@ -296,7 +298,7 @@ save_config (char *prefix)
   gnome_config_sync ();
   gnome_config_pop_prefix ();
 
-  g_message (_("Preferences saved"));
+  g_my_info (_("Preferences saved"));
 
 }				/* save_config */
 
@@ -304,7 +306,32 @@ save_config (char *prefix)
 static void
 set_debug_level (void)
 {
+  gchar *env_debug;
+  env_debug = g_getenv ("DEBUG");
 
+  debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
+
+  if (env_debug)
+    {
+      if (!strcmp (env_debug, "INFO"))
+	debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
+      else if (!strcmp (env_debug, "DEBUG"))
+	debug_mask = G_LOG_LEVEL_MASK;
+    }
+
+  if (quiet)
+    debug_mask = 0;
+
+  g_log_set_handler (NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
+  g_my_debug ("debug_mask %d", debug_mask);
+}
+
+static void
+log_handler (gchar * log_domain,
+	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
+{
+  if (mask & debug_mask)
+    g_log_default_handler (NULL, mask, message, user_data);
 }
 
 /* the gnome session manager may call this function */

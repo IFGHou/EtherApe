@@ -17,7 +17,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+static GLogLevelFlags debug_mask;
+static gboolean quiet = FALSE;
+
 static void load_config (char *prefix);
+static void set_debug_level (void);
 
 static void session_die (GnomeClient * client, gpointer client_data);
 
@@ -25,3 +29,6 @@ static gint
 save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 	      gint is_shutdown, GnomeInteractStyle interact_style,
 	      gint is_fast, gpointer client_data);
+static void
+log_handler (gchar * log_domain,
+	     GLogLevelFlags mask, const gchar * message, gpointer user_data);

@@ -307,6 +307,15 @@ void destroying_idle (gpointer data);
 /* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
  * byte array, returns the value of the two or four bytes at the pointer.
  */
+
+#define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
+						  G_LOG_LEVEL_DEBUG, \
+						  format, ##args)
+#define g_my_info(format, args...)      g_log (G_LOG_DOMAIN, \
+						  G_LOG_LEVEL_INFO, \
+						  format, ##args)
+
+
 #define pntohs(p)  ((guint16)                       \
 		       ((guint16)*((guint8 *)p+0)<<8|  \
 			   (guint16)*((guint8 *)p+1)<<0))
