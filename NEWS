@@ -3,6 +3,12 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.11 (Friday 03-17-2000):
+  
+     * Fixed a segfault in linuxppc
+     * Fixed a minor bug in the protocols legend
+     * Translations to French and Spanish
+       
   Overview of changes in Etherape 0.2.10 (Thursday 03-16-2000):
   
      * Fixed several memory leaks (it's still leaking, though :-( )

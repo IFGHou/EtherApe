@@ -340,6 +340,7 @@ create_about2 (void)
     "Simon Kirby <sim@neato.org>",
     "Jasper Wallace <jasper@pointless.net>",
     "Ted Wright <ted.wright@grc.nasa.gov>",
+    "Frederic Peters <fpeters@debian.org>",
     NULL
   };
   GtkWidget *about2;

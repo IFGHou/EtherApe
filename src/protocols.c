@@ -150,8 +150,8 @@ get_packet_prot (const guint8 * packet)
     case IP:
     case TCP:
     default:
-       prot = g_strdup ("UNKNOWN");
-       break;
+      prot = g_strdup ("UNKNOWN");
+      break;
     }
 
   return prot;

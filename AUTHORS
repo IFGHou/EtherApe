@@ -1,19 +1,21 @@
-Original Author
--------- ------
 Juan Toledo	<toledo@users.sourceforge.net>
+  Original Author
 
-resolv.c "stolen" from
--------- -------- ----
 Laurent Deniel	<deniel@worldnet.fr>
+  resolv.c
 
-dns.c "stolen" from
------ -------- ----
 Simon Kirby	<sim@neato.org>
+  dns.c
 
-User supplied patches
----- -------- -------
-Jasper Wallace	<jasper@pointless.net> (pcap device autodetection)
-Ted Wright	<ted.wright@grc.nasa.gov> (non-overlapping display mode)
+Frederic Peters	<fpeters@debian.org>
+  Debian package, french translation
+  
+Jasper Wallace	<jasper@pointless.net>
+  pcap device autodetection
 
+Ted Wright	<ted.wright@grc.nasa.gov>
+  non-overlapping display mode, link fading
+
+  
 --
 $Id$
