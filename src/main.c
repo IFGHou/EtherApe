@@ -32,6 +32,7 @@
 gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
+gboolean interape=0;
 gchar *interface = NULL;
 guint32 refresh_period = 800;
 gint diagram_timeout;
@@ -54,6 +55,9 @@ main (int argc, char *argv[])
     },
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
      _ ("don't display any node text identification"), NULL
+    },
+    {"interape", 'I', POPT_ARG_NONE, &interape, 0,
+     _ ("run in interape mode"), NULL
     },
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _ ("set interface to listen to"), _ ("<interface name>")
@@ -82,6 +86,9 @@ main (int argc, char *argv[])
 
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
+
+  if (interape) filter = g_strconcat ("ip ", filter, NULL);
+   
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
 				 * socket without having initialized gnome, so that 
 				 * eventually I'd safely set the effective id to match the

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-29 12:59+0100\n"
+"POT-Creation-Date: 2000-03-01 16:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,47 +14,51 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:50
+#: src/main.c:51
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:53
+#: src/main.c:54
 msgid "use IP name resolving. Caution! Long timeouts!"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:59
+#: src/main.c:60
+msgid "run in interape mode"
+msgstr ""
+
+#: src/main.c:63
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:59
+#: src/main.c:63
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:62
+#: src/main.c:66
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:62
+#: src/main.c:66
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:65
+#: src/main.c:69
 msgid "sets the node color"
 msgstr ""
 
-#: src/main.c:65 src/main.c:68 src/main.c:71
+#: src/main.c:69 src/main.c:72 src/main.c:75
 msgid "color"
 msgstr ""
 
-#: src/main.c:68
+#: src/main.c:72
 msgid "sets the link color"
 msgstr ""
 
-#: src/main.c:71
+#: src/main.c:75
 msgid "sets the text color"
 msgstr ""
 
@@ -203,41 +207,41 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:199
+#: src/capture.c:207
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:273
+#: src/capture.c:288
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:296
+#: src/capture.c:319 src/capture.c:324
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:488
+#: src/capture.c:524
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:495
+#: src/capture.c:531
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:503
+#: src/capture.c:539
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:507
+#: src/capture.c:543
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:512
+#: src/capture.c:548
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""

@@ -40,9 +40,10 @@ GTree *canvas_links;		/* See above */
 
 /* Extern functions declarations */
 
-extern gint ether_compare (gconstpointer a, gconstpointer b);
-extern gint link_compare (gconstpointer a, gconstpointer b);
+extern gint node_id_compare (gconstpointer a, gconstpointer b);
+extern gint link_id_compare (gconstpointer a, gconstpointer b);
 extern gboolean diagram_only;
+extern gboolean interape;
 
 
 /* Local functions definitions */
@@ -163,7 +164,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 
 
 gint
-update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget * canvas)
+update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * canvas)
 {
   link_t *link;
   GnomeCanvasPoints *points;
@@ -180,21 +181,32 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
 
   if (link->n_packets == 0)
     {
-      guint8 *ether_addr;
-
       gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
 
+      g_tree_remove (canvas_links, link_id);
 
-      g_tree_remove (canvas_links, ether_link);
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
-	     get_ether_name (ether_link + 6),
-	     get_ether_name (ether_link),
-	     g_tree_nnodes (canvas_links));
-      ether_addr = link->ether_link;
+      if (interape)
+	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		_ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		ip_to_str (link_id),
+		ip_to_str (link_id+4),
+		g_tree_nnodes (canvas_links));
+      else
+	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		_ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		get_ether_name (link_id + 6),
+		get_ether_name (link_id),
+		g_tree_nnodes (canvas_links));
+       
+	 
+      link_id = link->link_id;			/* Since we are freeing the link
+						 * we must free its members as well 
+						 * but if we free the id then we will
+						 * not be able to find the link again 
+						 * to free it, thus the intermediate variable */
       g_free (link);
-      g_tree_remove (links, ether_link);
-      g_free (ether_addr);
+      g_tree_remove (links, link_id);
+      g_free (link_id);
 
       return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
@@ -208,7 +220,7 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   points = gnome_canvas_points_new (2);
 
   /* We get coords from source node */
-  canvas_node = g_tree_lookup (canvas_nodes, ether_link);
+  canvas_node = g_tree_lookup (canvas_nodes, link_id);
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
@@ -216,7 +228,11 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   points->coords[1] = args[1].d.double_data;
 
   /* And then for the destination node */
-  canvas_node = g_tree_lookup (canvas_nodes, ether_link + 6);
+  if (interape)
+     canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
+  else
+     canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
+
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
 		   args);
@@ -263,7 +279,7 @@ update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget
 }				/* update_canvas_nodes */
 
 gint
-check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
+check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   canvas_node_t *canvas_node;
@@ -277,19 +293,21 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
 
 
 
-  if (!g_tree_lookup (canvas_links, ether_link))
+  if (!g_tree_lookup (canvas_links, link_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
-      new_canvas_link->ether_link = ether_link;
+      new_canvas_link->canvas_link_id = link_id;
       new_canvas_link->link = link;
 
       /* We set the lines position using groups positions */
       points = gnome_canvas_points_new (2);
 
       /* We get coords from source node */
-      canvas_node = g_tree_lookup (canvas_nodes, ether_link);
+      /* The node_id starts at the beginning of the link_id, 
+       * independent of the mode we are running */
+      canvas_node = g_tree_lookup (canvas_nodes, link_id);
       gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		       2,
 		       args);
@@ -297,7 +315,13 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
       points->coords[1] = args[1].d.double_data;
 
       /* And then for the destination node */
-      canvas_node = g_tree_lookup (canvas_nodes, ether_link + 6);
+      /* Depending on the mode we are running in, the desttionation
+       * is 4 (ip) or 6 (ether) octects begind the src */
+      if (interape) 
+	 canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
+      else
+	 canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
+       
       gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		       2,
 		       args);
@@ -315,16 +339,23 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
 							  NULL);
 
 
-      g_tree_insert (canvas_links, ether_link, new_canvas_link);
+      g_tree_insert (canvas_links, link_id, new_canvas_link);
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
-
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _ ("Creating canvas_link: %s-%s. Number of links %d"),
-	     get_ether_name ((new_canvas_link->ether_link) + 6),
-	     get_ether_name (new_canvas_link->ether_link),
-	     g_tree_nnodes (canvas_links));
+      
+      if (interape)
+	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		_ ("Creating canvas_link: %s-%s. Number of links %d"),
+		ip_to_str ((new_canvas_link->canvas_link_id) + 4),
+		ip_to_str (new_canvas_link->canvas_link_id),
+		g_tree_nnodes (canvas_links));
+      else 
+	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		_ ("Creating canvas_link: %s-%s. Number of links %d"),
+		get_ether_name ((new_canvas_link->canvas_link_id) + 6),
+		get_ether_name (new_canvas_link->canvas_link_id),
+		g_tree_nnodes (canvas_links));
 
     }
 
@@ -332,21 +363,22 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
 }				/* check_new_link */
 
 
-
+/* Checks if there is a canvas_node per each node. If not, one canvas_node
+ * must be created and initiated */
 gint
-check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
+check_new_node (guint8 *node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
   gdouble node_size;
 
 
-  if (!g_tree_lookup (canvas_nodes, ether_addr))
+  if (!g_tree_lookup (canvas_nodes, node_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
-      new_canvas_node->ether_addr = ether_addr;
+      new_canvas_node->canvas_node_id = node_id;
       new_canvas_node->node = node;
       node->average=node->accumulated/averaging_time;
       node_size = get_node_size (node->average);
@@ -383,10 +415,10 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
 			  (GtkSignalFunc) node_item_event,
 			  new_canvas_node);
 
-      g_tree_insert (canvas_nodes, ether_addr, new_canvas_node);
+      g_tree_insert (canvas_nodes, node_id, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
 	     _ ("Creating canvas_node: %s. Number of nodes %d"), \
-	     get_ether_name (new_canvas_node->ether_addr), \
+	     new_canvas_node->node->name->str, \
 	     g_tree_nnodes (canvas_nodes));
 
     }
@@ -453,6 +485,6 @@ update_diagram (GtkWidget * canvas)
 void
 init_diagram (void)
 {
-  canvas_nodes = g_tree_new (ether_compare);
-  canvas_links = g_tree_new (link_compare);
+  canvas_nodes = g_tree_new (node_id_compare);
+  canvas_links = g_tree_new (link_id_compare);
 }

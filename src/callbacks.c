@@ -74,7 +74,6 @@ on_exit1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
    gtk_exit (0);
-   return FALSE;
 }
 
 

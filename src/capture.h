@@ -18,6 +18,8 @@ enum create_node_type
 typedef struct
   {
     
+    guint8 *node_id;		/* pointer to the node identification
+				 * could be an ether or ip address*/
     guint8 *ether_addr;		/* pointer to the hardware address of the node */
     GString *ether_numeric_str;	/* Readable hardware address xx:xx:xx:xx:xx:xx */
     GString *ether_str;
@@ -37,8 +39,8 @@ node_t;
 
 typedef struct
   {
-    guint8 *ether_link;		/* pointer to guint8[12] containing src and
-				 * destination hardware addresses of the link */
+    guint8 *link_id;		/* pointer to guint8 containing src and
+				 * destination nodes_id's of the link */
     double average;
     double accumulated;
     guint n_packets;

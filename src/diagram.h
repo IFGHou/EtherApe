@@ -5,7 +5,7 @@
 
 typedef struct
   {
-    guint8 *ether_addr;
+    guint8 *canvas_node_id;
     node_t *node;
     GnomeCanvasItem *node_item;
     GnomeCanvasItem *text_item;
@@ -17,7 +17,7 @@ canvas_node_t;
 
 typedef struct
   {
-    guint8 *ether_link;
+    guint8 *canvas_link_id;
     link_t *link;
     GnomeCanvasItem *link_item;
   }

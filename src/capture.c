@@ -14,6 +14,7 @@ extern double averaging_time;
 extern double link_timeout_time;
 extern gboolean numeric;
 extern gboolean dns;
+extern gboolean interape;
 extern gchar *interface;
 extern gchar *filter;
 
@@ -131,14 +132,17 @@ ether_to_str (const guint8 * ad)
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
 gint
-ether_compare (gconstpointer a, gconstpointer b)
+node_id_compare (gconstpointer a, gconstpointer b)
 {
-  int i = 5;
+  int i;
 
-  g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
-					 * We arbitrarily passing 1 to
+   i = interape ? 3 : 5; 		/* If we are in interape mode
+					 * it's enough with 4 octects */
+   
+   g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
+					 * We arbitrarily pass 1 to
 					 * the comparison */
-  g_return_val_if_fail (b != NULL, 1);
+   g_return_val_if_fail (b != NULL, 1);
 
 
 
@@ -154,14 +158,18 @@ ether_compare (gconstpointer a, gconstpointer b)
     }
 
   return 0;
-}				/* ether_compare */
+}				/* node_id_compare */
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
 gint
-link_compare (gconstpointer a, gconstpointer b)
+link_id_compare (gconstpointer a, gconstpointer b)
 {
-  int i = 11;
+  int i;
+   
+  i = interape ? 7 : 11; 		/* If we are in interape mode
+					 * it's enough with 4 octects */
+
 
   g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
 					 * We arbitrarily passing 1 to
@@ -182,7 +190,7 @@ link_compare (gconstpointer a, gconstpointer b)
     }
 
   return 0;
-}				/* link_compare */
+}				/* link_id_compare */
 
 
 
@@ -192,7 +200,7 @@ node_t *
 create_node (const guint8 * packet, enum create_node_type node_type)
 {
   node_t *node;
-  const guint8 *ether_addr;
+  const guint8 *ether_addr, *node_id;
   guint32 ip_addr;
   gchar *na;
 
@@ -202,18 +210,25 @@ create_node (const guint8 * packet, enum create_node_type node_type)
      {
 	ether_addr = packet + 6;
 	ip_addr = *(guint32 *) (packet + 26);
+	node_id = interape ? packet + 26 : packet + 6;
      }
   else
      {
 	ether_addr = packet;
 	ip_addr = *(guint32 *) (packet + 30);
+	node_id = interape ? packet +30 : packet;
      }
     
 
   node = g_malloc (sizeof (node_t));
-  node->ether_addr = g_memdup (ether_addr, 6);
-  node->ether_numeric_str = g_string_new (ether_to_str(ether_addr));
-  if  ( (packet[12] == 0x08) && (packet[13] == 0x00) )
+
+   if (interape) node->node_id = g_memdup (node_id, 4);
+   else node->node_id = g_memdup (node_id, 6);
+   
+   node->ether_addr = g_memdup (ether_addr, 6);
+   node->ether_numeric_str = g_string_new (ether_to_str(ether_addr));
+
+   if  ( (packet[12] == 0x08) && (packet[13] == 0x00) )
      {
 	node->ip_addr = ip_addr;
 	node->ip_numeric_str = g_string_new (ip_to_str((guint8 *)(&ip_addr)));
@@ -268,7 +283,7 @@ create_node (const guint8 * packet, enum create_node_type node_type)
 
   node->packets = NULL;
 
-  g_tree_insert (nodes, node->ether_addr, node);
+  g_tree_insert (nodes, node->node_id, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _ ("Creating node: %s. Number of nodes %d"),
 	 node->name->str,
@@ -281,22 +296,35 @@ create_node (const guint8 * packet, enum create_node_type node_type)
 /* Allocates a new link structure, and adds it to the
  * global links binary tree */
 link_t *
-create_link (const guint8 * ether_link)
+create_link (const guint8 *packet)
 {
   link_t *link;
-
+   
   link = g_malloc (sizeof (link_t));
-  link->ether_link = g_memdup (ether_link, 12);
+  if (interape) 
+     {
+     	link->link_id = g_memdup (packet+26,8);
+     }
+  else
+     {
+	link->link_id = g_memdup (packet, 12);
+     }
   link->average = 0;
   link->n_packets = 0;
   link->accumulated = 0;
   link->packets = NULL;
-  g_tree_insert (links, link->ether_link, link);
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _ ("Creating link: %s-%s. Number of links %d"),
-	 get_ether_name (ether_link + 6), get_ether_name (ether_link),
-	 g_tree_nnodes (links));
-
+  g_tree_insert (links, link->link_id, link);
+  if (interape)
+     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	    _ ("Creating link: %s-%s. Number of links %d"),
+	    ip_to_str (packet + 26), ip_to_str (packet + 30),
+	    g_tree_nnodes (links));
+  else 
+     g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	    _ ("Creating link: %s-%s. Number of links %d"),
+	    get_ether_name (packet + 6), get_ether_name (packet),
+	    g_tree_nnodes (links));
+   
   return link;
 }				/* create_link */
 
@@ -409,9 +437,17 @@ packet_read (pcap_t * pch,
    
   if (!pcap_packet) return;
 
-  src = pcap_packet + 6;
-  dst = pcap_packet;
-
+  if (interape) 
+     {
+	src = pcap_packet + 26;
+	dst = pcap_packet + 30;
+     }
+   else 
+     {
+	src = pcap_packet + 6;
+	dst = pcap_packet;
+     }
+   
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
     node = create_node (pcap_packet, SRC);
@@ -447,13 +483,16 @@ packet_read (pcap_t * pch,
   node->n_packets++;
 
   /* And now we update link traffic information for this packet */
-  link = g_tree_lookup (links, dst);	/* The comparison function for
+  if (interape)
+     link = g_tree_lookup (links, src);	/* The comparison function for
 					 * the links tree actually
 					 * looks at both src and dst,
 					 * although we pass the pointer 
 					 * src */
+  else link = g_tree_lookup (links, dst);
+   
   if (!link)
-    link = create_link (dst);
+    link = create_link (pcap_packet);
 
   packet_info = g_malloc (sizeof (link_t));
   packet_info->size = phdr.len;
@@ -521,7 +560,7 @@ init_capture (void)
 		 (GdkInputFunction) packet_read,
 		 pch);
 
-  nodes = g_tree_new (ether_compare);
-  links = g_tree_new (link_compare);
+  nodes = g_tree_new (node_id_compare);
+  links = g_tree_new (link_id_compare);
 
 }
