@@ -36,10 +36,12 @@ glade_DATA = 				\
 	etherape.glade
 	
 Developmentdir = $(datadir)/gnome/apps/Applications
-Development_DATA = etherape.desktop
+Development_DATA =			\
+	etherape.desktop
 
 pixmapsdir = $(datadir)/pixmaps
-pixmaps_DATA = etherape.png
+pixmaps_DATA =				\
+	etherape.png
 	
 
 purge:
@@ -69,6 +71,7 @@ EXTRA_DIST = \
 	$(conf_DATA)		\
 	$(glade_DATA)		\
 	$(Development_DATA)	\
+	$(pixmaps_DATA)		\
 	$(man_MANS)
 
 
@@ -80,8 +83,15 @@ full-dist :
 	make cvs
 	cvs tag `echo rel-${VERSION} | tr . - `
 	make dist
-	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
+	ln -s ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
+	rpm -ba etherape.spec
+	ncftpput upload.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
+	ncftpput upload.sourceforge.net /incoming/ /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm
+	ncftpput upload.sourceforge.net /incoming/ /usr/src/redhat/SRPMS/${PACKAGE}-${VERSION}-1.src.rpm
+
 	scp ${PACKAGE}-${VERSION}.tar.gz etherape.sourceforge.net:ftp
+	scp /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm etherape.sourceforge.net:ftp
+	
 	echo ${VERSION} > old.version
 #	cd ../www && make
 #	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
