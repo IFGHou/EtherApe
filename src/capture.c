@@ -58,7 +58,13 @@ init_capture (void)
 	  g_error (_("Error getting device: %s"), ebuf);
 	  exit (1);
 	}
+      /* TODO I should probably tidy this up, I probably don't
+       * need the local variable device. But I need to reset 
+       * interface since I need to know whether we are in
+       * online or offline mode later on */
+      interface = device;
     }
+
 
   end_of_file = FALSE;
   if (!input_file)
@@ -165,7 +171,8 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint set_filter (gchar * filter, gchar * device)
+gint
+set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -198,7 +205,8 @@ gint set_filter (gchar * filter, gchar * device)
     }
 }
 
-gboolean start_capture (void)
+gboolean
+start_capture (void)
 {
   if (interface)
     {
@@ -221,7 +229,8 @@ gboolean start_capture (void)
   return TRUE;
 }				/* start_capture */
 
-gboolean stop_capture (void)
+gboolean
+stop_capture (void)
 {
   if (interface)
     {
@@ -1032,8 +1041,8 @@ set_node_name (node_t * node, gchar * preferences)
   prots = g_strsplit (preferences, ";", 0);
   for (; prots[i] && cont; i++)
     {
-      for (j = STACK_SIZE; j && cont; j--) /* We don't do level 0,
-					    * which has the topmost prot */
+      for (j = STACK_SIZE; j && cont; j--)	/* We don't do level 0,
+						 * which has the topmost prot */
 	{
 	  tokens = g_strsplit (prots[i], ",", 0);
 	  protocol_item = g_list_find_custom (node->protocols[j],
@@ -1233,7 +1242,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1259,7 +1269,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1286,7 +1297,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
