@@ -358,7 +358,7 @@ static void
 get_tcp (void)
 {
 
-  tcp_service_t *src_service, *dst_service;
+  tcp_service_t *src_service, *dst_service, *chosen_service;
   tcp_type_t src_port, dst_port;
   guint8 th_off_x2;
   guint8 tcp_len;
@@ -393,12 +393,17 @@ get_tcp (void)
       return;
     }
 
-  /* In case both src and dst are known port numbers,
-   * we arbitrarely say the dst port marks the protocol */
-  if (!dst_service)
-    dst_service = src_service;
+  /* Give priority to registered ports */
+  if ((src_port < 1024) && (dst_port >= 1024))
+    chosen_service = src_service;
+  else if ((src_port >= 1024) && (dst_port < 1024))
+    chosen_service = dst_service;
+  else if (!dst_service)	/* Give priority to dst_service just because */
+    chosen_service = src_service;
+  else
+    chosen_service = dst_service;
 
-  str = g_strdup_printf ("/%s", dst_service->name);
+  str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
   str = NULL;
@@ -408,7 +413,7 @@ get_tcp (void)
 static void
 get_udp (void)
 {
-  udp_service_t *src_service, *dst_service;
+  udp_service_t *src_service, *dst_service, *chosen_service;
   udp_type_t src_port, dst_port;
   gchar *str;
 
@@ -443,12 +448,17 @@ get_udp (void)
       return;
     }
 
-  /* In case both src and dst are known port numbers,
-     * we arbitrarely say the dst port marks the protocol */
-  if (!dst_service)
-    dst_service = src_service;
+  /* Give priority to registered ports */
+  if ((src_port < 1024) && (dst_port >= 1024))
+    chosen_service = src_service;
+  else if ((src_port >= 1024) && (dst_port < 1024))
+    chosen_service = dst_service;
+  else if (!dst_service)	/* Give priority to dst_service just because */
+    chosen_service = src_service;
+  else
+    chosen_service = dst_service;
 
-  str = g_strdup_printf ("/%s", dst_service->name);
+  str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
   str = NULL;
@@ -467,7 +477,7 @@ get_rpc (void)
     return FALSE;		/* not big enough */
 
   msg_type = pntohl (packet + offset + 4);
-  if (msg_type != RPC_REPLY || msg_type != RPC_CALL)
+  if (msg_type != RPC_REPLY && msg_type != RPC_CALL)
     return FALSE;
 
   prot = g_string_append (prot, "/RPC");
