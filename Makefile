@@ -61,7 +61,7 @@ CC = gcc
 GTK_CFLAGS = -I/usr/X11R6/include -I/usr/lib/glib/include
 GTK_CONFIG = /usr/bin/gtk-config
 GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-MAKEINFO = /home/toledo/Projects/etherape/missing makeinfo
+MAKEINFO = /usr/local/src/etherape/missing makeinfo
 PACKAGE = etherape
 VERSION = 0.1
 

@@ -70,7 +70,7 @@ s%@ACLOCAL@%aclocal%g
 s%@AUTOCONF@%autoconf%g
 s%@AUTOMAKE@%automake%g
 s%@AUTOHEADER@%autoheader%g
-s%@MAKEINFO@%/home/toledo/Projects/etherape/missing makeinfo%g
+s%@MAKEINFO@%/usr/local/src/etherape/missing makeinfo%g
 s%@SET_MAKE@%%g
 s%@CC@%gcc%g
 s%@CPP@%gcc -E%g
@@ -226,9 +226,9 @@ CEOF
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
-${ac_dA}PACKAGE_SOURCE_DIR${ac_dB}PACKAGE_SOURCE_DIR${ac_dC}"/home/toledo/Projects/etherape"${ac_dD}
-${ac_uA}PACKAGE_SOURCE_DIR${ac_uB}PACKAGE_SOURCE_DIR${ac_uC}"/home/toledo/Projects/etherape"${ac_uD}
-${ac_eA}PACKAGE_SOURCE_DIR${ac_eB}PACKAGE_SOURCE_DIR${ac_eC}"/home/toledo/Projects/etherape"${ac_eD}
+${ac_dA}PACKAGE_SOURCE_DIR${ac_dB}PACKAGE_SOURCE_DIR${ac_dC}"/usr/local/src/etherape"${ac_dD}
+${ac_uA}PACKAGE_SOURCE_DIR${ac_uB}PACKAGE_SOURCE_DIR${ac_uC}"/usr/local/src/etherape"${ac_uD}
+${ac_eA}PACKAGE_SOURCE_DIR${ac_eB}PACKAGE_SOURCE_DIR${ac_eC}"/usr/local/src/etherape"${ac_eD}
 ${ac_dA}HAVE_LIBPCAP${ac_dB}HAVE_LIBPCAP${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_LIBPCAP${ac_uB}HAVE_LIBPCAP${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_LIBPCAP${ac_eB}HAVE_LIBPCAP${ac_eC}1${ac_eD}
