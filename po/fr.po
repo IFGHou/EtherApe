@@ -21,9 +21,8 @@ msgstr "mode d'opération"
 
 # src/main.c:64
 #: src/main.c:38
-#, fuzzy
 msgid "<ethernet|fddi|ip|tcp>"
-msgstr "<ethernet|ip|tcp|udp>"
+msgstr "<ethernet|fddiip|tcp>"
 
 # src/main.c:67
 #: src/main.c:40
@@ -47,15 +46,14 @@ msgstr "<filtre de capture>"
 
 # src/main.c:70
 #: src/main.c:44
-#, fuzzy
 msgid "set input file"
-msgstr "définir le filtre de capture"
+msgstr "définir le fichier d'entrée"
 
 # src/main.c:67
 #: src/main.c:44
 #, fuzzy
 msgid "<file name>"
-msgstr "<nom de l'interface>"
+msgstr "<nom du fichier>"
 
 # src/main.c:58
 #: src/main.c:46
@@ -74,11 +72,11 @@ msgstr "ne pas assombrir les anciennes liaisons"
 
 #: src/main.c:52
 msgid "don't move nodes around"
-msgstr ""
+msgstr "ne pas déplacer les noeuds"
 
 #: src/main.c:54
 msgid "Don't show warnings"
-msgstr ""
+msgstr "Ne pas afficher d'avertissements"
 
 # src/main.c:76
 #: src/main.c:56
@@ -108,7 +106,7 @@ msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 #: src/callbacks.c:159 src/main.c:183
 #, c-format
 msgid "We could not load the interface! (%s)"
-msgstr ""
+msgstr "Impossible de charger l'interface! (%s)"
 
 #: src/main.c:308
 msgid "Preferences saved"
@@ -410,6 +408,11 @@ msgid ""
 "5\n"
 "6\n"
 msgstr ""
+"2\n"
+"3\n"
+"4\n"
+"5\n"
+"6\n"
 
 #: src/glade-strings:54
 msgid "Protocol Stack Level"
@@ -438,7 +441,7 @@ msgstr "Temps moyen (ms)"
 
 #: src/glade-strings:59
 msgid "Delete this link after this much time. 0 means never timeout."
-msgstr ""
+msgstr "Supprime ce lien après cette durée. (0 pour jamais)"
 
 # src/interface.c:674
 #: src/glade-strings:60
