@@ -40,8 +40,8 @@ on_app1_delete_event (GtkWidget * widget,
 		      GdkEvent * event, gpointer user_data);
 
 void
-  on_canvas1_size_allocate (GtkWidget * widget,
-			    GtkAllocation * allocation, gpointer user_data);
+on_canvas1_size_allocate (GtkWidget * widget,
+			  GtkAllocation * allocation, gpointer user_data);
 
 void on_averaging_spin_adjustment_changed (GtkAdjustment * adj);
 void on_refresh_spin_adjustment_changed (GtkAdjustment * adj,
@@ -80,86 +80,50 @@ on_name_motion_notify_event (GtkWidget * widget,
 			     GdkEventMotion * event, gpointer user_data);
 
 void
-  on_toolbar_check_activate (GtkMenuItem * menuitem,
-			     gpointer user_data);
+on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
 
 void
-  on_legend_check_activate (GtkMenuItem * menuitem,
-			    gpointer user_data);
+on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
 
 void
-  on_status_bar_check_activate (GtkMenuItem * menuitem,
+on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
+			      gpointer user_data);
+
+void on_font_button_clicked (GtkButton * button, gpointer user_data);
+
+void on_ok_button1_clicked (GtkButton * button, gpointer user_data);
+
+void on_cancel_button1_clicked (GtkButton * button, gpointer user_data);
+
+void on_apply_button1_clicked (GtkButton * button, gpointer user_data);
+void on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data);
+void on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data);
+void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
+
+void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
+
+void
+on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data);
 
 void
-  on_font_button_clicked (GtkButton * button,
-			  gpointer user_data);
-
-void
-  on_ok_button1_clicked (GtkButton * button,
-			 gpointer user_data);
-
-void
-  on_cancel_button1_clicked (GtkButton * button,
-			     gpointer user_data);
-
-void
-  on_apply_button1_clicked (GtkButton * button,
-			    gpointer user_data);
-void
-  on_size_mode_menu_selected (GtkMenuShell * menu_shell,
-			      gpointer data);
-void
-  on_stack_level_menu_selected (GtkMenuShell * menu_shell,
-				gpointer data);
-void
-  on_save_pref_button_clicked (GtkButton * button,
-			       gpointer user_data);
-
-void
-  on_save_pref_button_clicked (GtkButton * button,
-			       gpointer user_data);
-
-void
-  on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
-				  gpointer user_data);
-
-void
-  on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
-				  gpointer user_data);
-
-void
-  on_filter_entry_changed (GtkEditable * editable,
-			   gpointer user_data);
-
-void
-  on_filter_entry_changed (GtkEditable * editable,
-			   gpointer user_data);
-
-void
-  on_apply_pref_button_clicked (GtkButton * button,
+on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data);
 
-void
-  on_ok_pref_button_clicked (GtkButton * button,
-			     gpointer user_data);
+void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
 
-void
-  on_ok_pref_button_clicked (GtkButton * button,
-			     gpointer user_data);
+void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
 
-void
-  on_cancel_pref_button_clicked (GtkButton * button,
-				 gpointer user_data);
+void on_apply_pref_button_clicked (GtkButton * button, gpointer user_data);
 
-void
-  on_ok_pref_button_clicked (GtkButton * button,
-			     gpointer user_data);
+void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 
-void
-  on_cancel_pref_button_clicked (GtkButton * button,
-				 gpointer user_data);
+void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 
-void
-  on_apply_pref_button_clicked (GtkButton * button,
-				gpointer user_data);
+void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
+
+void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
+
+void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
+
+void on_apply_pref_button_clicked (GtkButton * button, gpointer user_data);

@@ -4,3 +4,7 @@
 Makefile
 Makefile.in
 etherape
+interface.c
+interface.h
+support.h
+support.c

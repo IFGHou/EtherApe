@@ -35,29 +35,29 @@ main (int argc, char *argv[])
 
   struct poptOption optionsTable[] = {
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     _("mode of operation"), _("<ethernet|fddi|ip|tcp>")},
+     N_("mode of operation"), N_("<ethernet|fddi|ip|tcp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
-     _("set interface to listen to"), _("<interface name>")},
+     N_("set interface to listen to"), N_("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &filter_string, 0,
-     _("set capture filter"), _("<capture filter>")},
+     N_("set capture filter"), N_("<capture filter>")},
     {"infile", 'r', POPT_ARG_STRING, &input_file, 0,
-     _("set input file"), _("<file name>")},
+     N_("set input file"), N_("<file name>")},
     {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
-     _("don't convert addresses to names"), NULL},
+     N_("don't convert addresses to names"), NULL},
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
-     _("don't display any node text identification"), NULL},
+     N_("don't display any node text identification"), NULL},
     {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
-     _("do not fade old links"), NULL},
+     N_("do not fade old links"), NULL},
     {"stationary", 's', POPT_ARG_NONE, &stationary, 0,
-     _("don't move nodes around"), NULL},
+     N_("don't move nodes around"), NULL},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
-     _("Don't show warnings"), NULL},
+     N_("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
-     _("set the node color"), _("color")},
+     N_("set the node color"), N_("color")},
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
-     _("set the link color"), _("color")},
+     N_("set the link color"), N_("color")},
     {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
-     _("set the text color"), _("color")},
+     N_("set the text color"), N_("color")},
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
@@ -71,8 +71,8 @@ main (int argc, char *argv[])
   /* We initiate the application and read command line options */
   gnome_init_with_popt_table ("Etherape", VERSION, argc, argv, optionsTable,
 			      0, NULL);
-   
-   
+
+
   /* We obtain application parameters 
    * First, absolute defaults
    * Second, values saved in the config file
@@ -174,25 +174,26 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
-   /* Glade */
+  /* Glade */
 
-   glade_gnome_init();
-   xml = glade_xml_new(GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL);
-   if(!xml) {
-      g_error(_("We could not load the interface! (%s)"),
-	      GLADEDIR "/" ETHERAPE_GLADE_FILE);
+  glade_gnome_init ();
+  xml = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL);
+  if (!xml)
+    {
+      g_error (_("We could not load the interface! (%s)"),
+	       GLADEDIR "/" ETHERAPE_GLADE_FILE);
       return 1;
-   }
-   glade_xml_signal_autoconnect(xml);
-   
-   
-   app1 = glade_xml_get_widget(xml, "app1");
-   diag_pref = glade_xml_get_widget(xml, "diag_pref");
+    }
+  glade_xml_signal_autoconnect (xml);
+
+
+  app1 = glade_xml_get_widget (xml, "app1");
+  diag_pref = glade_xml_get_widget (xml, "diag_pref");
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
 
-   
+
   /* Session handling */
   client = gnome_master_client ();
   gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
@@ -205,10 +206,10 @@ main (int argc, char *argv[])
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
-#if 0  
+#if 0
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
-#endif   
-  widget = glade_xml_get_widget(xml, "canvas1");
+#endif
+  widget = glade_xml_get_widget (xml, "canvas1");
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					refresh_period,
 					(GtkFunction) update_diagram,
