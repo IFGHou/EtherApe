@@ -393,7 +393,7 @@
 	  <class>GtkFrame</class>
 	  <name>legend_frame</name>
 	  <border_width>3</border_width>
-	  <height>39</height>
+	  <height>150</height>
 	  <label>Protocols</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -423,7 +423,7 @@
 	    <widget>
 	      <class>GtkViewport</class>
 	      <name>viewport1</name>
-	      <shadow_type>GTK_SHADOW_IN</shadow_type>
+	      <shadow_type>GTK_SHADOW_NONE</shadow_type>
 
 	      <widget>
 		<class>GtkTable</class>
@@ -1532,38 +1532,6 @@ Square Root
       <last_modification_time>Thu, 16 Mar 2000 13:58:15 GMT</last_modification_time>
     </signal>
     <label>Cancelar</label>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>window1</name>
-  <title>window1</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>Placeholder</class>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>window2</name>
-  <title>window2</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>Placeholder</class>
   </widget>
 </widget>
 

@@ -37,11 +37,15 @@ typedef enum
 }
 create_node_type_t;
 
-pcap_t *pch;			/* pcap structure */
+static pcap_t *pch;		/* pcap structure */
+static gint capture_timeout;	/* timeout function used when 
+				 * reading capture data from
+				 * a file */
 
 
 /* Local funtions declarations */
-static void packet_read (pcap_t * pch, gint source,
+guint get_offline_packet (void);
+static void packet_read (guint8 * packet, gint source,
 			 GdkInputCondition condition);
 static guint8 *get_node_id (const guint8 * packet,
 			    create_node_type_t node_type);

@@ -287,7 +287,7 @@ create_app1 (void)
   gtk_table_attach (GTK_TABLE (table4), legend_frame, 0, 1, 0, 1,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_usize (legend_frame, -2, 39);
+  gtk_widget_set_usize (legend_frame, -2, 150);
   gtk_container_set_border_width (GTK_CONTAINER (legend_frame), 3);
 
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
@@ -306,6 +306,7 @@ create_app1 (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (viewport1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), viewport1);
+  gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport1), GTK_SHADOW_NONE);
 
   prot_table = gtk_table_new (1, 1, FALSE);
   gtk_widget_ref (prot_table);
@@ -1076,28 +1077,4 @@ create_fontselectiondialog1 (void)
 		      GTK_SIGNAL_FUNC (on_apply_button1_clicked), NULL);
 
   return fontselectiondialog1;
-}
-
-GtkWidget *
-create_window1 (void)
-{
-  GtkWidget *window1;
-
-  window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("window1"));
-
-  return window1;
-}
-
-GtkWidget *
-create_window2 (void)
-{
-  GtkWidget *window2;
-
-  window2 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (window2), "window2", window2);
-  gtk_window_set_title (GTK_WINDOW (window2), _("window2"));
-
-  return window2;
 }

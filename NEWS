@@ -3,6 +3,12 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.7 (Friday 03-24-2000):
+  
+     * You can now "playback" tcpdump output files.
+     * The legend now has a scrollbar if there are more protocols that it
+       can hold.
+       
   Overview of changes in Etherape 0.3.6 (Friday 03-24-2000):
   
      * Recognizes level 5 UDP protocols.
