@@ -74,9 +74,11 @@
     bad results), it is most useful if I can see what was the
     program doing when it crashed.</p>
 
-    <p>It is actually simple, you just need to type three
+    <p>It is actually simple, you just need to type four
     instructions.</p>
 <pre>
+
+# export GNOME_DISABLE_CRASH_DIALOG=1
 # gdb etherape
 (gdb) run [options your were using]
 (gdb) backtrace
