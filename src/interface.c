@@ -221,7 +221,7 @@ create_app1 (void)
   button1 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
-                                _("Nuevo"),
+                                _("New"),
                                 _("Nuevo archivo"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (button1);
@@ -233,7 +233,7 @@ create_app1 (void)
   button2 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
-                                _("Abrir"),
+                                _("Open"),
                                 _("Abrir archivo"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (button2);
@@ -245,7 +245,7 @@ create_app1 (void)
   button3 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
-                                _("Guardar"),
+                                _("Save"),
                                 _("Guardar archivo"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (button3);

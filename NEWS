@@ -1,3 +1,8 @@
+Overview of changes in Etherape 0.1.3
+* Webpage now has a much more interesting screenshot thanks 
+  to Nico Lumma 
+* Buttons are in English now.
+
 Overview of changes in Etherape 0.1.2
 * James Wallace provided code to automatically
   detect proper network interface. It now compiles in NetBSD.

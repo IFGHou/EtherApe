@@ -307,7 +307,7 @@
 	  <child_name>Toolbar:button</child_name>
 	  <name>button1</name>
 	  <tooltip>Nuevo archivo</tooltip>
-	  <label>Nuevo</label>
+	  <label>New</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_NEW</stock_pixmap>
 	</widget>
 
@@ -316,7 +316,7 @@
 	  <child_name>Toolbar:button</child_name>
 	  <name>button2</name>
 	  <tooltip>Abrir archivo</tooltip>
-	  <label>Abrir</label>
+	  <label>Open</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_OPEN</stock_pixmap>
 	</widget>
 
@@ -325,7 +325,7 @@
 	  <child_name>Toolbar:button</child_name>
 	  <name>button3</name>
 	  <tooltip>Guardar archivo</tooltip>
-	  <label>Guardar</label>
+	  <label>Save</label>
 	  <stock_pixmap>GNOME_STOCK_PIXMAP_SAVE</stock_pixmap>
 	</widget>
       </widget>
