@@ -382,7 +382,7 @@
 
       <widget>
 	<class>GtkTable</class>
-	<name>table4</name>
+	<name>legend_table</name>
 	<rows>1</rows>
 	<columns>1</columns>
 	<homogeneous>False</homogeneous>

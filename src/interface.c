@@ -89,7 +89,7 @@ create_app1 (void)
   GtkWidget *button1;
   GtkWidget *button2;
   GtkWidget *button3;
-  GtkWidget *table4;
+  GtkWidget *legend_table;
   GtkWidget *legend_frame;
   GtkWidget *scrolledwindow2;
   GtkWidget *viewport1;
@@ -269,12 +269,12 @@ create_app1 (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button3);
 
-  table4 = gtk_table_new (1, 1, FALSE);
-  gtk_widget_ref (table4);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "table4", table4,
+  legend_table = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (legend_table);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "legend_table", legend_table,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table4);
-  gnome_app_add_docked (GNOME_APP (app1), table4, "table4",
+  gtk_widget_show (legend_table);
+  gnome_app_add_docked (GNOME_APP (app1), legend_table, "legend_table",
 			GNOME_DOCK_ITEM_BEH_EXCLUSIVE
 			| GNOME_DOCK_ITEM_BEH_NEVER_HORIZONTAL,
 			GNOME_DOCK_LEFT, 0, 0, 66);
@@ -284,7 +284,7 @@ create_app1 (void)
   gtk_object_set_data_full (GTK_OBJECT (app1), "legend_frame", legend_frame,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (legend_frame);
-  gtk_table_attach (GTK_TABLE (table4), legend_frame, 0, 1, 0, 1,
+  gtk_table_attach (GTK_TABLE (legend_table), legend_frame, 0, 1, 0, 1,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_widget_set_usize (legend_frame, -2, 150);

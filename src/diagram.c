@@ -152,7 +152,8 @@ init_diagram ()
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   static GString *status_string;
@@ -346,7 +347,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 }				/* check_new_protocol */
 
 
-/* For a given protocols, returns the color string that should be used
+/* For a given protocol, returns the color string that should be used
  * Right now it's just assigning colors from a list until it runs
  * out, but this behavious will change */
 static gchar *
@@ -418,18 +419,17 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							 100.0, NULL));
       gtk_object_ref (GTK_OBJECT (group));
 
-      new_canvas_node->node_item = gnome_canvas_item_new (group,
-							  GNOME_TYPE_CANVAS_ELLIPSE,
-							  "x1", 0.0,
-							  "x2", 0.0,
-							  "y1", 0.0,
-							  "y2", 0.0,
-							  "fill_color",
-							  node_color,
-							  "outline_color",
-							  "black",
-							  "width_pixels", 0,
-							  NULL);
+      new_canvas_node->node_item
+	= gnome_canvas_item_new (group,
+				 GNOME_TYPE_CANVAS_ELLIPSE,
+				 "x1", 0.0,
+				 "x2", 0.0,
+				 "y1", 0.0,
+				 "y2", 0.0,
+				 "fill_color",
+				 node_color,
+				 "outline_color",
+				 "black", "width_pixels", 0, NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT, "text",

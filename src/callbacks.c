@@ -301,7 +301,7 @@ on_legend_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   if (active)
     {
       dock_item = gnome_dock_get_item_by_name (dock,
-					       "legend_frame",
+					       "legend_table",
 					       &placement_return,
 					       &num_band_return,
 					       &band_position_return,
@@ -313,7 +313,7 @@ on_legend_check_activate (GtkMenuItem * menuitem, gpointer user_data)
   else
     {
       dock_item = gnome_dock_get_item_by_name (dock,
-					       "legend_frame",
+					       "legend_table",
 					       &placement_return,
 					       &num_band_return,
 					       &band_position_return,

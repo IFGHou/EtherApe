@@ -326,7 +326,10 @@ get_link_id (const guint8 * packet)
   switch (mode)
     {
     case ETHERNET:
-      link_id = g_memdup (packet, 2 * node_id_length);
+      link_id = g_malloc (2 * node_id_length);
+      g_memmove (link_id, packet + 6, node_id_length);
+      g_memmove (link_id + 6, packet, node_id_length);
+/*      link_id = g_memdup (packet, 2 * node_id_length); */
       break;
     case IP:
       link_id = g_memdup (packet + l3_offset + 12, 2 * node_id_length);
