@@ -1,0 +1,111 @@
+I want to take this chance to thank at list some of the people
+I owe to, because they allowed to make etherape possible:
+
+* The Free Software Foundation, and RMS, for:
+  - the GNU utilities
+  - the GPL
+  - initiating GCC and glibc
+  - making "free software" ;-) popular.
+  - autoconf and automake
+  - gettext
+  - probably so many other things I forget to think about.
+  - stablishing agreed upon standards for software development and
+    distribution
+  
+* Linus Torvalds and the kernel crew
+  - What else could I be running on my old home network?
+  - Do I really need to say more?
+  
+* Peter Mattis, Spencer Kimball, Josh MacDonald and the rest of
+  the GTK+ crew
+  - For such an easy to code for C toolkit
+
+* Miguel de Icaza, Federico Mena Quintero, the rest of the 
+  GNOME crew
+  - Making GUI development more friendly
+  - The wonderful gnome_canvas widget. Etherape is only a demo
+    program of basic gnome_canvas capabilities.
+  - Being there so that there are some Spanish names on this list
+    ¡Hola, chicos! :-)
+
+* Damon Chaplin, and other glade developers.
+  - Making as easy as snapping your fingers to use all of
+    the avobe.
+
+* Ethereal authors: Gerald Combs, Laurent Deniel, and the rest
+  - The source of "inspiration" (read blatant copy & paste) 
+    for my source code.
+  - Licensing ethereal under the GPL so that others like me
+    could learn and build upon it.
+    
+* Authors of cvs and openssh
+  - More open tools to do open works.
+
+* All etherape users.
+  - The reason I made etherape, in the first place.
+  - Thanks for their comments
+  - Thanks for their patches
+  
+* The original Etherman authors.
+  - For giving me the idea to copy their work. :-)
+  
+* VA Research and SourceForge maintainers
+  - For providing such efficient resources to develop and 
+    publish OSS.
+    
+* Debian developers.
+  - My GNU/Linux distribution of choice. 
+  - Run apt-get install gnome-lib-dev libpcap-dev. I love it. :-)
+  
+* All documentation writers.
+  - Easy to read howtos, books, and api references made
+    etherape possible with no previous knowledge of
+    neither GTK nor GNOME
+
+* ESR.
+  - His super famous paper, which I first read even before it
+    was published on slashdot :-), has been the guide for 
+    the development process of etherape. And, boy, does 
+    it work! 
+    
+* Last, but not least, my girlfriend, for putting up with a many
+  to many relationship between us an my computers. :-)
+  
+
+
+If you read this far, now take some breath: rant mode on.
+
+The reader is probably already a believer of open source software,
+but I want to point out how nice it is to be there and realize
+this by experience.
+
+As of version 0.1.2, etherape reached hundreds of users to whom 
+it's useful, has been ported to at least one different  
+architecture different than it was built on and has improved
+thanks to user patches.
+
+And guess what. Version 0.1.2 has been developped in 7 days on 
+an old 486 with 48Mb of memory, at the confort of my home, using
+just a 28.8kbps link to the internet to download everything 
+necessary. I really didn't think it would be this easy.
+
+It's not that I'm smart at all, it's the wonders of the 
+collaborative efforts worldwide, the synergy of a movement 
+that is changing  the world. A movement that allows an
+individual putting very little effort from sunny Seville
+to make a bit happier many other people all over the globe.
+
+Today I feel happy. It's the realization that we are making
+a better world. :-)
+
+
+
+
+
+And after thanking everybody, just a little question I feel
+a bit embarrased to ask. :-)
+Does anybody have a bank of 32pin memory to spare? My
+486DX50, 8Mb RAM router, mail server and www proxy could do 
+with a bit more memory, although I feel sad about cuttting
+out its 114 days uptime. Email me if you are interested.
+(Humm... That felt bad. I feel like a Benetton commercial)
