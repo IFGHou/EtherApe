@@ -354,10 +354,11 @@ void gui_pause_capture (void);
 void gui_stop_capture (void);
 
 /* From info_windows.c */
+void display_protocols_window (void);
+void create_node_info_window (canvas_node_t * canvas_node);
 guint update_info_windows (void);
 void update_protocols_window (void);
 void update_node_info_windows (void);
-void create_node_info_window (canvas_node_t * canvas_node);
 
 /* Macros */
 

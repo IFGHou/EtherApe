@@ -42,25 +42,6 @@ update_info_windows (void)
 
 }				/* update_info_windows */
 
-gboolean
-on_prot_table_button_press_event (GtkWidget * widget,
-				  GdkEventButton * event, gpointer user_data)
-{
-  GtkWidget *protocols_window = NULL;
-
-  switch (event->type)
-    {
-    case GDK_2BUTTON_PRESS:
-      protocols_window = glade_xml_get_widget (xml, "protocols_window");
-      gtk_widget_show (protocols_window);
-      gdk_window_raise (protocols_window->window);
-      update_protocols_window ();
-    default:
-    }
-
-  return FALSE;
-}				/* on_prot_table_button_press_event */
-
 void
 update_protocols_window (void)
 {
@@ -303,6 +284,60 @@ update_node_info_window (node_info_window_t * node_info_window)
 
   gtk_container_queue_resize (GTK_CONTAINER (node_info_window->window));
 }				/* update_node_info_window */
+
+void
+display_protocols_window (void)
+{
+  static GtkWidget *protocols_window = NULL;
+
+  if (!protocols_window)
+    protocols_window = glade_xml_get_widget (xml, "protocols_window");
+
+  gtk_widget_show (protocols_window);
+  gdk_window_raise (protocols_window->window);
+  update_protocols_window ();
+}				/* display_protocols_window */
+
+void
+on_protocols_toolbar_button_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkWidget *protocols_check = NULL;
+  if (!protocols_check)
+    protocols_check = glade_xml_get_widget (xml, "protocols_check");
+
+  gtk_check_menu_item_toggled (GTK_CHECK_MENU_ITEM (protocols_check));
+  gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
+
+}				/* on_protocols_toolbar_button_clicked */
+
+void
+on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+{
+  static GtkWidget *protocols_window = NULL;
+
+  if (!protocols_window)
+    protocols_window = glade_xml_get_widget (xml, "protocols_window");
+
+  if (menuitem->active)
+    display_protocols_window ();
+  else
+    gtk_widget_hide (protocols_window);
+}				/* on_protocols_check_activate */
+
+/* Displays the protocols window when the legend is double clicked */
+gboolean
+on_prot_table_button_press_event (GtkWidget * widget,
+				  GdkEventButton * event, gpointer user_data)
+{
+  switch (event->type)
+    {
+    case GDK_2BUTTON_PRESS:
+      display_protocols_window ();
+    default:
+    }
+
+  return FALSE;
+}				/* on_prot_table_button_press_event */
 
 /* Comparison function used to compare node_info_windows */
 static gint
