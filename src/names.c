@@ -109,7 +109,7 @@ static void
 get_eth_name (void)
 {
   gchar *numeric = NULL, *solved = NULL;
-  gboolean found_in_ethers;
+  gboolean found_in_ethers = FALSE;
 
   if (dir == INBOUND)
     id = p + offset;
@@ -128,8 +128,9 @@ get_eth_name (void)
    * be the same, and we will note that the name hasn't
    * been solved */
 
-  found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
-			    solved + strlen (solved) - 8);
+  if (numeric && solved)
+    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
+			      solved + strlen (solved) - 8);
 
   if (found_in_ethers)
     add_name (numeric, solved, TRUE);
@@ -209,6 +210,7 @@ get_ip_name (void)
   offset += 20;
 
   next_func = g_tree_lookup (prot_functions, tokens[level]);
+
   if (next_func)
     next_func->function ();
 
@@ -296,6 +298,8 @@ get_udp_name (void)
 
 }				/* get_udp_name */
 
+
+/* TODO SET UP THE id's FOR THIS NETBIOS NAME FUNCTIONS */
 static void
 get_nbss_name (void)
 {
@@ -445,7 +449,6 @@ add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved)
       name->numeric_name = NULL;
       name->name = NULL;
       protocol->node_names = g_list_prepend (protocol->node_names, name);
-
     }
 
   if (!name->numeric_name)
