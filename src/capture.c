@@ -667,6 +667,8 @@ add_node_packet (const guint8 * packet,
   /* Update names list for this node */
   get_packet_names (node->protocols, packet, phdr.len, prot, direction);
 
+  update_node (node);
+
 }				/* add_node_packet */
 
 
@@ -699,6 +701,8 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   link->accumulated += phdr.len;
   link->last_time = now;
   link->n_packets++;
+
+  update_link (link);
 
 }				/* add_link_packet */
 
