@@ -3,6 +3,13 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.10 (Thursday 03-16-2000):
+  
+     * Fixed several memory leaks (it's still leaking, though :-( )
+     * Added font picker to the diagram settings
+     * Size mode menu is now working.
+     * Should compile again in Solaris
+       
   Overview of changes in Etherape 0.2.9 (Thursday 03-16-2000):
   
      * Fix for bug introduced in 0.2.8. Resetting the refresh rate

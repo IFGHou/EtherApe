@@ -20,7 +20,6 @@
 #include <gnome.h>
 #include <ctype.h>
 #include <netinet/in.h>
-#include <net/if.h>
 
 #include "capture.h"
 #include "eth_resolv.h"
@@ -644,15 +643,15 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
       difference = substract_times (now, packet->timestamp);
       usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
 
-      /* average in bps, so we multiply by 8 */
+      /* average in bps, so we multiply by 8 and 1000000 */
       if (belongs_to == NODE)
 	{
-	  node->average = 8 * node->accumulated / usecs_from_oldest;
+	  node->average = 8000000 * node->accumulated / usecs_from_oldest;
 	  fill_names (node, node->node_id, NULL);
 	}
       else
 	{
-	  link->average = 8 * link->accumulated / usecs_from_oldest;
+	  link->average = 8000000 * link->accumulated / usecs_from_oldest;
 	  /* We look for the most used protocol for this link */
 	  if (link->main_prot)
 	    g_free (link->main_prot);
@@ -660,7 +659,7 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	}
 
     }
-   
+
   /* TODO timedout nodes and links should be freed here, not in
    * diagram.c, shouldn't they? */
 

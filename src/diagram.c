@@ -33,12 +33,12 @@
 
 /* Global application parameters */
 
-double node_radius_multiplier = 100;	/* used to calculate the radius of the
-					 * displayed nodes. So that the user can
-					 * select with certain precision this
-					 * value, the GUI uses the log10 of the
-					 * multiplier*/
-double link_width_multiplier = 100;	/* Same explanation as above */
+double node_radius_multiplier = 0.0005;		/* used to calculate the radius of the
+						 * displayed nodes. So that the user can
+						 * select with certain precision this
+						 * value, the GUI uses the log10 of the
+						 * multiplier*/
+double link_width_multiplier = 0.0005;	/* Same explanation as above */
 
 size_mode_t size_mode = LINEAR;	/* Default mode for node size and
 				 * link width calculation */
@@ -119,39 +119,39 @@ get_prot_color (gchar * name)
 gdouble
 get_node_size (gdouble average)
 {
-  gdouble result = 0;
+  gdouble result = 0.0;
   switch (size_mode)
     {
     case LINEAR:
-      result = average;
-      break;
-    case SQRT:
-      result = sqrt (average);
+      result = average + 1;
       break;
     case LOG:
-      result = log (average);
+      result = log (average + 1);
+      break;
+    case SQRT:
+      result = sqrt (average + 1);
       break;
     }
-  return (double) 5 + node_radius_multiplier * result;
+  return (double) (5 + node_radius_multiplier * result);
 }
 
 gdouble
 get_link_size (gdouble average)
 {
-  gdouble result = 0;
+  gdouble result = 0.0;
   switch (size_mode)
     {
     case LINEAR:
-      result = average;
-      break;
-    case SQRT:
-      result = sqrt (average);
+      result = average + 1;
       break;
     case LOG:
-      result = log (average);
+      result = log (average + 1);
+      break;
+    case SQRT:
+      result = sqrt (average + 1);
       break;
     }
-  return (double) 1 + link_width_multiplier * result;
+  return (double) (1 + link_width_multiplier * result);
 }
 
 static gint
@@ -182,35 +182,34 @@ popup_to (struct popup_data * pd)
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "name");
 
   if (mode == ETHERNET && pd->canvas_node->node->ip_address)
-     {
-	str = g_strdup_printf ("%s (%s, %s)",
-			       pd->canvas_node->node->name->str,
-			       pd->canvas_node->node->numeric_ip->str,
-			       pd->canvas_node->node->numeric_name->str);
-	gtk_label_set_text (label,str);
-	g_free (str);
-     }
-	
+    {
+      str = g_strdup_printf ("%s (%s, %s)",
+			     pd->canvas_node->node->name->str,
+			     pd->canvas_node->node->numeric_ip->str,
+			     pd->canvas_node->node->numeric_name->str);
+      gtk_label_set_text (label, str);
+      g_free (str);
+    }
+
   else
-     {
-	str = g_strdup_printf ("%s (%s)",
-			       pd->canvas_node->node->name->str,
-			       pd->canvas_node->node->numeric_name->str);
-	gtk_label_set_text (label,str);
-	g_free (str);
-     }
+    {
+      str = g_strdup_printf ("%s (%s)",
+			     pd->canvas_node->node->name->str,
+			     pd->canvas_node->node->numeric_name->str);
+      gtk_label_set_text (label, str);
+      g_free (str);
+    }
 
 
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
   str = g_strdup_printf ("Acummulated bytes: %g",
 			 pd->canvas_node->node->accumulated);
-  gtk_label_set_text (label,str);
+  gtk_label_set_text (label, str);
   g_free (str);
 
   label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "average");
-  str =  g_strdup_printf ("Average bps: %g",
-			  pd->canvas_node->node->average *
-			  1000000);
+  str = g_strdup_printf ("Average bps: %g",
+			 pd->canvas_node->node->average);
   gtk_label_set_text (label, str);
   g_free (str);
 
@@ -303,11 +302,11 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 			 "x", x,
 			 "y", y,
 			 NULL);
-   
+
   /* We update the text font */
-   gnome_canvas_item_set (canvas_node->text_item,
-			  "font", fontname,
-			  NULL);
+  gnome_canvas_item_set (canvas_node->text_item,
+			 "font", fontname,
+			 NULL);
 
   if (diagram_only)
     {
@@ -765,9 +764,9 @@ update_diagram (GtkWidget * canvas)
   static guint n_protocols = 0;
   gchar *str;
 
-   
+
   g_mem_profile ();
-   
+
   gettimeofday (&now, NULL);
 
   /* We search for new protocols */
@@ -850,7 +849,7 @@ init_diagram ()
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
-   
+
   fontname = g_strdup ("-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*");
 
   /* These variables but refresh_period are measured in usecs */
@@ -919,6 +918,11 @@ init_diagram ()
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_link_to_spin_adjustment_changed), NULL);
+  widget = lookup_widget (diag_pref, "size_mode_menu");
+  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		 "deactivate", GTK_SIGNAL_FUNC (on_size_mode_menu_selected),
+		      NULL);
+
 
 
   /* Sets canvas background to black */
