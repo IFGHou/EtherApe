@@ -1,6 +1,6 @@
 Run ./autogen.sh to be able to compile.
 
-You will need GTK1.2, pcap, autoconf and automake to be able to 
+You will need gnome, GTK1.2, pcap, autoconf and automake to be able to 
 compile this. And even then you might not see anything yet. :-)
 
 And whenever this becomes useful, you will want to run it as root.

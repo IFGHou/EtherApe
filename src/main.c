@@ -29,6 +29,9 @@
 #include "capture.h"
 #include "math.h"
 
+guint averaging_time=10000000; /* Microseconds of time we consider to
+		                * calculate traffic averages */
+
 typedef struct _draw_nodes_data
   {
     gboolean first_flag;
@@ -43,7 +46,7 @@ extern GtkWidget *drawing_area;
 GdkFont *fixed_font;
 
 gint
-draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t *draw_nodes_data)
+draw_nodes (gpointer ether_addr, node_t * node, draw_nodes_data_t * draw_nodes_data)
 {
 
   static gfloat angle;		/* Angle at which this node is to be drawn */
@@ -59,17 +62,19 @@ draw_nodes (gpointer ether_addr, node_t *node, draw_nodes_data_t *draw_nodes_dat
       draw_nodes_data->first_flag = FALSE;
       angle = 0;
     }
+   
+  node->average=node->accumulated*1000000/averaging_time;
 
-  x = xmax / 2 + rad_max * cosf (angle) - node->average / node->n_packets / 2;
-  y = ymax / 2 + rad_max * sinf (angle) - node->average / node->n_packets / 2;
+  x = xmax / 2 + rad_max * cosf (angle) - node->average / 2;
+  y = ymax / 2 + rad_max * sinf (angle) - node->average / 2;
 
   gdk_draw_arc (pixmap,
 		drawing_area->style->black_gc,
 		TRUE,
 		x,
 		y,
-		node->average / node->n_packets,
-		node->average / node->n_packets,
+		node->average,
+		node->average,
 		0,
 		360000);
 
@@ -92,7 +97,6 @@ draw_diagram (gpointer data)
 
   GdkRectangle update_rect;
   draw_nodes_data_t draw_nodes_data;
-  static gint x = 0, y = 0;
 
   /* Resets the pixmap */
   gdk_draw_rectangle (pixmap,

@@ -7,8 +7,7 @@
 
 #include <ctype.h>
 
-char ascii[20];
-
+extern guint averaging_time;
 
 /* Places char punct in the string as the hex-digit separator.
  * If punct is '\0', no punctuation is applied (and thus
@@ -88,16 +87,16 @@ ether_compare (gconstpointer a, gconstpointer b)
 
   while (i)
     {
-      if (((guint8 *)a)[i] < ((guint8 *)b)[i])
+      if (((guint8 *) a)[i] < ((guint8 *) b)[i])
 	{
 	  return -1;
 	}
-      else if (((guint8 *)a)[i] > ((guint8 *)b)[i]) 
+      else if (((guint8 *) a)[i] > ((guint8 *) b)[i])
 	return 1;
       i--;
     }
-   
-   return 0;
+
+  return 0;
 }
 
 
@@ -111,11 +110,14 @@ node_t *
 create_node (const guint8 * ether_addr)
 {
   node_t *node;
+
   node = g_malloc (sizeof (node_t));
-  node->ether_addr = g_memdup (ether_addr,6);
+  node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
   node->name = g_string_new (ether_to_str (ether_addr));
+  node->packets=NULL;
+
   g_tree_insert (nodes, node->ether_addr, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
 	 "Creating node: %s. Number of nodes %d", \
@@ -123,6 +125,58 @@ create_node (const guint8 * ether_addr)
 	 g_tree_nnodes (nodes));
 
   return node;
+}
+
+GList *
+check_packet (GList *packets, struct timeval now) {
+   
+   struct timeval packet_time, result;
+   packet_time=((packet_t *)packets->data)->timestamp;
+   
+  /* Perform the carry for the later subtraction by updating Y. */
+  if (now.tv_usec < packet_time.tv_usec)
+    {
+      int nsec = (packet_time.tv_usec - now.tv_usec) / 1000000 + 1;
+      packet_time.tv_usec -= 1000000 * nsec;
+      packet_time.tv_sec += nsec;
+    }
+  if (now.tv_usec - packet_time.tv_usec > 1000000)
+    {
+      int nsec = (now.tv_usec - packet_time.tv_usec) / 1000000;
+      packet_time.tv_usec += 1000000 * nsec;
+      packet_time.tv_sec -= nsec;
+    }
+
+  result.tv_sec = now.tv_sec - packet_time.tv_sec;
+  result.tv_usec = now.tv_usec - packet_time.tv_usec;
+   
+  /* If this node is older than the averaging time,
+   * then it is removed, and the process continues.
+   * Else, we are done. */
+   
+  if ( (now.tv_sec*1000000+now.tv_usec - 
+        packet_time.tv_sec*1000000-packet_time.tv_usec)
+      > averaging_time ) 
+    {
+     ((packet_t *)packets->data)->parent_node->accumulated -= 
+	 ((packet_t *) packets->data)->size;
+     g_free (packets->data);
+     packets=packets->prev;
+     g_list_remove (packets,packets->next->data);  
+     return (packets);
+    }
+   
+  return NULL;
+}
+
+void
+update_packet_list (GList * packets)
+{
+  struct timeval now;
+  gettimeofday(&now,NULL);
+  packets=g_list_last(packets);
+  
+  while ((packets=check_packet(packets,now))); 
 }
 
 void
@@ -134,10 +188,9 @@ packet_read (pcap_t * pch,
   gchar packet[MAXSIZE];
   guint8 src[6], dst[6];
   node_t *node;
+  packet_t *packet_info;
 
   gchar *pcap_packet;
-
-
 
   /* We copy the next available packet */
   memcpy (packet, pcap_packet = (gchar *) pcap_next (pch, &phdr), phdr.caplen);
@@ -151,18 +204,41 @@ packet_read (pcap_t * pch,
 	 ether_to_str (src), \
 	 ether_to_str (dst));
 #endif
-   
+
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
     node = create_node (src);
-  node->average += phdr.len;
+
+  /* We add a packet to the list of packets to/from that host which we want
+   * to account for */
+  packet_info = g_malloc (sizeof (packet_t));
+  packet_info->size = phdr.len;
+  gettimeofday (&(packet_info->timestamp), NULL);
+  packet_info->parent_node = node;
+  node->packets = g_list_prepend (node->packets, packet_info);
+  node->accumulated += phdr.len;
+  /* Now we clean all packets we don't care for anymore */
+  update_packet_list (node->packets);
   node->n_packets++;
+
+  /* Now we do the same with the destination node */
 
   node = g_tree_lookup (nodes, dst);
   if (node == NULL)
     node = create_node (dst);
-  node->average += phdr.len;
+
+  /* We add a packet to the list of packets to/from that host which we want
+   * to account for */
+  packet_info = g_malloc (sizeof (packet_t));
+  packet_info->size = phdr.len;
+  gettimeofday (&(packet_info->timestamp), NULL);
+  packet_info->parent_node = node;
+  node->packets = g_list_prepend (node->packets, packet_info);
+  node->accumulated += phdr.len;
+  /* Now we clean all packets we don't care for anymore */
+  update_packet_list (node->packets);
   node->n_packets++;
+
 
 }
 

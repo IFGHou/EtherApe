@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-19 22:02+0100\n"
+"POT-Creation-Date: 2000-02-21 20:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,12 +46,12 @@ msgstr ""
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/support.c:97 src/support.c:135
+#: src/support.c:99 src/support.c:137
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:113
+#: src/support.c:115
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
