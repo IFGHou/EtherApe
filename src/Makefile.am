@@ -31,7 +31,7 @@ etherape_SOURCES = \
 	prot_types.h \
 	info_windows.c info_windows.h \
 	conversations.c conversations.h \
-	gnomesupport.h
+	datastructs.c datastructs.h
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
 etherape_LDFLAGS = 

@@ -495,7 +495,7 @@
 			      <property name="visible">True</property>
 			      <property name="n_rows">1</property>
 			      <property name="n_columns">1</property>
-			      <property name="homogeneous">False</property>
+			      <property name="homogeneous">True</property>
 			      <property name="row_spacing">0</property>
 			      <property name="column_spacing">0</property>
 			    </widget>
@@ -538,7 +538,7 @@
 	  <property name="placement">BONOBO_DOCK_LEFT</property>
 	  <property name="band">0</property>
 	  <property name="position">0</property>
-	  <property name="offset">66</property>
+	  <property name="offset">0</property>
 	  <property name="behavior">BONOBO_DOCK_ITEM_BEH_EXCLUSIVE|BONOBO_DOCK_ITEM_BEH_NEVER_HORIZONTAL</property>
 	</packing>
       </child>
