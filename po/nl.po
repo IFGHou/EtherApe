@@ -510,7 +510,7 @@ msgstr "Stop het luisteren"
 
 #: src/glade-strings:28
 msgid "St_op"
-msgstr "St_op"
+msgstr "S_top"
 
 #: src/glade-strings:29
 msgid "Show or hide the protocols window"
@@ -518,7 +518,7 @@ msgstr "Protocolvenster verbergen / weergeven"
 
 #: src/glade-strings:30
 msgid "_Protocols"
-msgstr "Protocollen"
+msgstr "_Protocollen"
 
 #: src/glade-strings:31
 msgid "Show or hide the toolbar"
@@ -570,7 +570,7 @@ msgstr ""
 
 #: src/glade-strings:46
 msgid "Prot."
-msgstr "Prot."
+msgstr "Protocollen"
 
 #: src/glade-strings:47
 msgid "Protocols"
@@ -784,7 +784,7 @@ msgstr "Knooppunt timeout (ms)"
 
 #: src/glade-strings:98
 msgid "Capture"
-msgstr "Capture"
+msgstr "Fijnafstelling"
 
 #: src/glade-strings:99
 msgid "Select Font"
@@ -808,7 +808,7 @@ msgstr "Selecteer capture bestand"
 
 #: src/glade-strings:104
 msgid "Optionally, set a capture filter"
-msgstr "Kiez een capture filter (optioneel)"
+msgstr "Kies een capture filter (optioneel)"
 
 #: src/glade-strings:105
 msgid "File:"
