@@ -252,6 +252,7 @@ load_config (char *prefix)
       gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
 
   size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
   stack_level =
     gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
   if ((stack_level != 0)
@@ -334,6 +335,7 @@ save_config (char *prefix)
 #endif
   gnome_config_set_int ("Diagram/refresh_period", refresh_period);
   gnome_config_set_int ("Diagram/size_mode", size_mode);
+  gnome_config_set_int ("Diagram/node_size_variable", node_size_variable);
   gnome_config_set_int ("Diagram/stack_level", stack_level);
   gnome_config_set_string ("Diagram/fontname", fontname);
   gnome_config_set_string ("General/version", VERSION);

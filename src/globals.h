@@ -66,6 +66,17 @@ size_mode_t;
 
 typedef enum
 {
+  INST_TOTAL = 0,
+  INST_INBOUND = 1,
+  INST_OUTBOUND = 2,
+  ACCU_TOTAL = 3,
+  ACCU_INBOUND = 4,
+  ACCU_OUTBOUND = 5
+}
+node_size_variable_t;
+
+typedef enum
+{
   DEFAULT = -1,
   ETHERNET = 0,
   FDDI = 1,
@@ -229,6 +240,8 @@ gdouble node_radius_multiplier;	/* used to calculate the radius of the
 gdouble link_width_multiplier;	/* Same explanation as above */
 size_mode_t size_mode;		/* Default mode for node size and
 				 * link width calculation */
+node_size_variable_t node_size_variable;	/* Default variable that sets the node
+						 * size */
 gchar *node_color, *link_color, *text_color;	/* Default colors 
 						 * TODO do we need link_color anymore? */
 gchar *fontname;		/* Font to be used for text display */

@@ -163,6 +163,18 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
 }				/* on_size_mode_menu_selected */
 
 void
+on_node_size_optionmenu_selected (GtkMenuShell * menu_shell, gpointer data)
+{
+  GtkWidget *active_item;
+
+  active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
+  /* Beware! Size mode is an enumeration. The menu options
+   * must much the enumaration values */
+  node_size_variable = g_list_index (menu_shell->children, active_item);
+
+}				/* on_node_size_optionmenu_selected */
+
+void
 on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
 {
   GtkWidget *active_item;

@@ -41,6 +41,8 @@ void on_ok_button1_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_button1_clicked (GtkButton * button, gpointer user_data);
 void on_apply_button1_clicked (GtkButton * button, gpointer user_data);
 void on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data);
+void on_node_size_optionmenu_selected (GtkMenuShell * menu_shell,
+				       gpointer data);
 void on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data);
 void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,

@@ -70,6 +70,8 @@ init_diagram ()
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), size_mode);
+  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), node_size_variable);
   widget = glade_xml_get_widget (xml, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
@@ -116,6 +118,11 @@ init_diagram ()
   gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		      "deactivate",
 		      GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
+  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
+  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		      "deactivate",
+		      GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected),
+		      NULL);
   widget = glade_xml_get_widget (xml, "stack_level_menu");
   gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		      "deactivate",
@@ -524,8 +531,32 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       protocol = protocol_item->data;
     }
 
+#if 0
   /* TODO Make GUI to select among _in, _out and total. */
   node_size = get_node_size (node->average_out);
+#endif
+  switch (node_size_variable)
+    {
+    case INST_TOTAL:
+      node_size = get_node_size (node->average);
+      break;
+    case INST_INBOUND:
+      node_size = get_node_size (node->average_in);
+      break;
+    case INST_OUTBOUND:
+      node_size = get_node_size (node->average_out);
+      break;
+    case ACCU_TOTAL:
+      node_size = get_node_size (node->accumulated);
+      break;
+    case ACCU_INBOUND:
+      node_size = get_node_size (node->accumulated_in);
+      break;
+    case ACCU_OUTBOUND:
+      node_size = get_node_size (node->accumulated_out);
+      break;
+    }
+
 
   if (protocol)
     canvas_node->color = protocol->color;
