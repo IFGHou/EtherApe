@@ -27,22 +27,6 @@
 #include "dns.h"
 #include "eth_resolv.h"
 
-/* this has not its place here but... */
-void
-fatal_error_dialog (gchar * message)
-{
-  GtkWidget *dlg;
-  /*char *argv[] = { "gaby", NULL };
-
-     gnome_init(_("Gaby"), VERSION, 1, argv); */
-
-  dlg = gnome_error_dialog (message);
-  gtk_signal_connect (GTK_OBJECT (dlg), "clicked", gtk_main_quit, NULL);
-  gtk_widget_show (dlg);
-  gtk_main ();
-  exit (1);
-}
-
 
 /* 
  * FUNCTION DEFINITIONS
@@ -53,7 +37,7 @@ fatal_error_dialog (gchar * message)
  * Sets up dns if needed
  * Sets up callbacks for pcap and dns
  * Creates nodes and links trees */
-gboolean
+gchar *
 init_capture (void)
 {
 
@@ -62,7 +46,7 @@ init_capture (void)
   gchar *device;
   gchar ebuf[300];
   gboolean error = FALSE;
-  gchar errorbuf[300];
+  static gchar errorbuf[300];
 
 
   device = interface;
@@ -72,8 +56,7 @@ init_capture (void)
       if (device == NULL)
 	{
 	  sprintf (errorbuf, _("Error getting device: %s"), ebuf);
-	  fatal_error_dialog (errorbuf);
-	  return FALSE;
+	  return errorbuf;
 	}
       /* TODO I should probably tidy this up, I probably don't
        * need the local variable device. But I need to reset 
@@ -93,8 +76,7 @@ init_capture (void)
 	  sprintf (errorbuf,
 		   _("Error opening %s : %s - perhaps you need to be root?"),
 		   device, ebuf);
-	  fatal_error_dialog (errorbuf);
-	  return FALSE;
+	  return errorbuf;
 	}
       pcap_fd = pcap_fileno (pch);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
@@ -104,13 +86,10 @@ init_capture (void)
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
 	  sprintf (errorbuf, _("Error opening %s : %s"), input_file, ebuf);
-	  fatal_error_dialog (errorbuf);
-	  return FALSE;
+	  return errorbuf;
 	}
 
     }
-
-  start_capture ();		/* Sets up the appropriate input or idle function */
 
   if (filter)
     set_filter (filter, device);
@@ -124,7 +103,7 @@ init_capture (void)
     case L_EN10MB:
       g_my_debug ("Link type is Ethernet");
       if (mode == DEFAULT)
-	mode = ETHERNET;
+	mode = IP;
       if (mode == FDDI)
 	error = TRUE;
       l3_offset = 14;
@@ -145,17 +124,23 @@ init_capture (void)
 	error = TRUE;
       l3_offset = 21;
       break;
+    case L_NULL:		/* Loopback */
+      g_my_debug ("Link type is NULL");
+      if (mode == DEFAULT)
+	mode = IP;
+      if ((mode == ETHERNET) || (mode == FDDI))
+	error = TRUE;
+      l3_offset = 4;
+      break;
     default:
       sprintf (errorbuf, _("Link type not yet supported"));
-      fatal_error_dialog (errorbuf);
-      return FALSE;
+      return errorbuf;
     }
 
   if (error)
     {
       sprintf (errorbuf, _("Mode not available in this device"));
-      fatal_error_dialog (errorbuf);
-      return FALSE;
+      return errorbuf;
     }
 
   switch (mode)
@@ -174,8 +159,7 @@ init_capture (void)
       break;
     default:
       sprintf (errorbuf, _("Ape mode not yet supported"));
-      fatal_error_dialog (errorbuf);
-      return FALSE;
+      return errorbuf;
     }
 
   if (!numeric)
@@ -196,7 +180,9 @@ init_capture (void)
       i--;
     }
 
-  return TRUE;
+
+  start_capture ();		/* Sets up the appropriate input or idle function */
+  return NULL;
 }				/* init_capture */
 
 /* TODO make it return an error value and act accordingly */
@@ -371,6 +357,7 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   /* And now we update link traffic information for this packet */
   add_link_packet (packet, phdr, link_id, prot);
 
+
 }				/* packet_read */
 
 
@@ -382,7 +369,10 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
   static guint8 *node_id = NULL;
 
   if (node_id)
-    g_free (node_id);
+    {
+      g_free (node_id);
+      node_id = NULL;
+    }
 
   switch (mode)
     {
@@ -438,7 +428,11 @@ get_link_id (const guint8 * packet)
   guint16 port;
 
   if (link_id)
-    g_free (link_id);
+    {
+      g_free (link_id);
+      link_id = NULL;
+    }
+
 
   switch (mode)
     {
@@ -558,7 +552,7 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
 static node_t *
 create_node (const guint8 * packet, const guint8 * node_id)
 {
-  node_t *node;
+  node_t *node = NULL;
   guint i = STACK_SIZE;
 
   node = g_malloc (sizeof (node_t));
@@ -803,9 +797,9 @@ void
 add_protocol (GList ** protocols, const gchar * stack,
 	      struct pcap_pkthdr phdr)
 {
-  GList *protocol_item;
-  protocol_t *protocol_info;
-  gchar **tokens;
+  GList *protocol_item = NULL;
+  protocol_t *protocol_info = NULL;
+  gchar **tokens = NULL;
   guint i = 0;
   tokens = g_strsplit (stack, "/", 0);
 
@@ -830,13 +824,14 @@ add_protocol (GList ** protocols, const gchar * stack,
 
     }
   g_strfreev (tokens);
+  tokens = NULL;
 }				/* add_protocol */
 
 node_t *
 update_node (node_t * node)
 {
   struct timeval diff;
-  guint8 *node_id;
+  guint8 *node_id = NULL;
   guint i = STACK_SIZE;
 
   if (node->packets)
@@ -845,6 +840,7 @@ update_node (node_t * node)
 
   if (node->n_packets == 0)
     {
+
       diff = substract_times (now, node->last_time);
 
       if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
@@ -862,12 +858,21 @@ update_node (node_t * node)
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
 	  g_string_free (node->name, TRUE);
+	  node->name = NULL;
 	  g_string_free (node->numeric_name, TRUE);
+	  node->numeric_name = NULL;
 	  if (node->numeric_ip)
-	    g_string_free (node->numeric_ip, TRUE);
+	    {
+	      g_string_free (node->numeric_ip, TRUE);
+	      node->numeric_ip = NULL;
+	    }
 	  for (; i + 1; i--)
 	    if (node->main_prot[i])
-	      g_free (node->main_prot[i]);
+	      {
+		g_free (node->main_prot[i]);
+		node->main_prot[i] = NULL;
+	      }
+
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
@@ -875,7 +880,10 @@ update_node (node_t * node)
 	}
       else
 	{
+#if 0
+	  /* Now freed in check_packet */
 	  g_list_free (node->packets);
+#endif
 	  node->packets = NULL;
 	  while (i + 1)
 	    {
@@ -917,9 +925,14 @@ update_link (link_t * link)
 					 * to free it, thus the intermediate variable */
 	  for (; i + 1; i--)
 	    if (link->main_prot[i])
-	      g_free (link->main_prot[i]);
+	      {
+		g_free (link->main_prot[i]);
+		link->main_prot[i] = NULL;
+	      }
 	  g_free (link->src_name);
+	  link->src_name = NULL;
 	  g_free (link->dst_name);
+	  link->dst_name = NULL;
 	  g_free (link);
 	  g_tree_remove (links, link_id);
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
@@ -932,7 +945,10 @@ update_link (link_t * link)
 	}
       else
 	{
+#if 0
+	  /* Now freed in check_packet */
 	  g_list_free (link->packets);
+#endif
 	  link->packets = NULL;
 	  link->accumulated = 0;
 	  while (i + 1)
@@ -955,30 +971,39 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
   struct timeval difference;
   guint i = STACK_SIZE;
-  node_t *node;
-  link_t *link;
+  node_t *node = NULL;
+  link_t *link = NULL;
   gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-  GList *packet_l_e;		/* Packets is a list of packets.
+  GList *packet_l_e = NULL;	/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
 				 * list element */
-  packet_t *packet;
+  packet_t *packet = NULL;
 
   packet_l_e = g_list_last (packets);
 
+#if 0
   /* Going from oldest to newer, delete all irrelevant packets */
   while ((packet_l_e = check_packet (packet_l_e, belongs_to)));
+#endif
+  /* Going from oldest to newer, delete all irrelevant packets */
+  while (check_packet (packet_l_e, &packet_l_e, belongs_to));
 
-  /* Get oldest relevant packet */
-  packet_l_e = g_list_last (packets);
-  packet = (packet_t *) packet_l_e->data;
-
-
-  /* TODO Move all this below to update_node and update_link */
-  /* If there still is relevant packets, then calculate average
-   * traffic and update names*/
-  if (packet)
+  if (packet_l_e)
     {
-      node = ((node_t *) (packet->parent));
+      packet_l_e = g_list_last (packets);
+      packet = (packet_t *) packet_l_e->data;
+#if 0
+      /* Get oldest relevant packet */
+      packet_l_e = g_list_last (packets);
+      packet = (packet_t *) packet_l_e->data;
+
+
+      /* TODO Move all this below to update_node and update_link */
+      /* If there still is relevant packets, then calculate average
+       * traffic and update names*/
+      if (packet)
+#endif
+	node = ((node_t *) (packet->parent));
       link = ((link_t *) (packet->parent));
       difference = substract_times (now, packet->timestamp);
       usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
@@ -1099,10 +1124,12 @@ set_node_name (node_t * node, gchar * preferences)
 		}
 	    }
 	  g_strfreev (tokens);
+	  tokens = NULL;
 
 	}
     }
   g_strfreev (prots);
+  prots = NULL;
 }				/* set_node_name */
 
 
@@ -1124,20 +1151,26 @@ get_main_prot (GList * packets, GList ** protocols, guint level)
 /* Make sure this particular packet in a list of packets beloging to 
  * either o link or a node is young enough to be relevant. Else
  * remove it from the list */
+/* TODO This whole function is a mess. I must take it to pieces
+ * so that it is more readble and maintainable */
 static GList *
+#if 0
 check_packet (GList * packets, enum packet_belongs belongs_to)
+#endif
+check_packet (GList * packets, GList ** packet_l_e,
+	      enum packet_belongs belongs_to)
 {
 
   struct timeval result;
   double time_comparison;
   guint i = 0;
-  node_t *node;
-  link_t *link;
-  GList *protocol_item;
-  protocol_t *protocol_info;
-  gchar **tokens;
+  node_t *node = NULL;
+  link_t *link = NULL;
+  GList *protocol_item = NULL;
+  protocol_t *protocol_info = NULL;
+  gchar **tokens = NULL;
+  packet_t *packet = NULL;
 
-  packet_t *packet;
   packet = (packet_t *) packets->data;
 
   if (!packet)
@@ -1192,7 +1225,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 	  /* We remove protocol aggregate information */
 	  tokens = g_strsplit (packet->prot->str, "/", 0);
-	  while ((i < STACK_SIZE) && tokens[i])
+	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
 
 	      protocol_item = g_list_find_custom (node->protocols[i],
@@ -1202,7 +1235,25 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	      protocol_info->accumulated -= packet->size;
 	      if (!protocol_info->accumulated)
 		{
+		  GList *name_item = NULL;
+		  name_t *name;
 		  g_free (protocol_info->name);
+		  protocol_info->name = NULL;
+#if 1
+		  while (protocol_info->node_names)
+		    {
+		      name_item = protocol_info->node_names;
+		      name = name_item->data;
+		      g_free (name->node_id);
+		      g_string_free (name->name, TRUE);
+		      g_string_free (name->numeric_name, TRUE);
+		      protocol_info->node_names =
+			g_list_remove_link (protocol_info->node_names,
+					    name_item);
+		      g_free (name);
+		      g_list_free (name_item);
+		    }
+#endif
 		  node->protocols[i] =
 		    g_list_remove_link (node->protocols[i], protocol_item);
 		  g_free (protocol_info);
@@ -1211,6 +1262,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	      i++;
 	    }
 	  g_strfreev (tokens);
+	  tokens = NULL;
 
 	}
       else
@@ -1224,7 +1276,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 	  /* We remove protocol aggregate information */
 	  tokens = g_strsplit (packet->prot->str, "/", 0);
-	  while ((i < STACK_SIZE) && tokens[i])
+	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
 
 	      protocol_item = g_list_find_custom (link->protocols[i],
@@ -1234,7 +1286,25 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	      protocol_info->accumulated -= packet->size;
 	      if (!protocol_info->accumulated)
 		{
+		  GList *name_item = NULL;
+		  name_t *name;
 		  g_free (protocol_info->name);
+		  protocol_info->name = NULL;
+#if 1
+		  while (protocol_info->node_names)
+		    {
+		      name_item = protocol_info->node_names;
+		      name = name_item->data;
+		      g_free (name->node_id);
+		      g_string_free (name->name, TRUE);
+		      g_string_free (name->numeric_name, TRUE);
+		      protocol_info->node_names =
+			g_list_remove_link (protocol_info->node_names,
+					    name_item);
+		      g_free (name);
+		      g_list_free (name_item);
+		    }
+#endif
 		  link->protocols[i] =
 		    g_list_remove_link (link->protocols[i], protocol_item);
 		  g_free (protocol_info);
@@ -1243,11 +1313,16 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	      i++;
 	    }
 	  g_strfreev (tokens);
+	  tokens = NULL;
 	}
 
-      if (((packet_t *) (packets->data))->prot)
-	g_string_free (((packet_t *) (packets->data))->prot, TRUE);
-      g_free (packets->data);
+      if (packet->prot)
+	{
+	  g_string_free (packet->prot, TRUE);
+	  packet->prot = NULL;
+	}
+      g_free (packet);
+      packets->data = packet = NULL;
 
       /* TODO I have to come back here and make sure I can't make
        * this any simpler */
@@ -1258,13 +1333,23 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	  item = packets->next;
 	  g_list_remove_link (packets, item);
 	  g_list_free_1 (item);
+#if 0
 	  return (packets);	/* Old packet removed,
+				 * keep on searching */
+#endif
+	  *packet_l_e = packets;
+	  return (TRUE);	/* Old packet removed,
 				 * keep on searching */
 	}
       else
 	{
 	  packets->data = NULL;
-	  /* g_list_free (packets) */ ;
+#if 0
+	  /* TODO Why am I so sure that I don't need to free the list? */
+	  /* g_list_free (packets); */
+#endif
+	  *packet_l_e = NULL;
+	  g_list_free (packets);
 	  /* Last packet removed,
 	   * don't search anymore
 	   */
@@ -1412,6 +1497,8 @@ substract_times (struct timeval a, struct timeval b)
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */
+
+/* Output has to be copied elsewhere */
 /* TODO should I dump this funtion now that I have dns_lookup? */
 gchar *
 ip_to_str (const guint8 * ad)
