@@ -4,11 +4,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
-"POT-Creation-Date: 2001-05-06 21:32+0200\n"
+"POT-Creation-Date: 2001-05-08 00:08+0200\n"
 "PO-Revision-Date: 2001-05-07 11:05+0100\n"
-"Last-Translator: Vincent van Adrighem &lt;V.vanAdrighem@ITS.TUDelft.nl&gt;"
-"Language-Team: Dutch &lt;nl@li.org&gt;"
-"MIME-Version: 1.0\n"
+"Last-Translator: Vincent van Adrighem "
+"&lt;V.vanAdrighem@ITS.TUDelft.nl&gt;Language-Team: Dutch "
+"&lt;nl@li.org&gt;MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -17,7 +17,8 @@ msgid "mode of operation"
 msgstr "luister-modus"
 
 #: src/main.c:39
-msgid "&lt;ethernet|fddi|ip|tcp&gt;"
+#, fuzzy
+msgid "<ethernet|fddi|ip|tcp>"
 msgstr "&lt;ethernet|fddi|ip|tcp&gt;"
 
 #: src/main.c:41
@@ -25,7 +26,8 @@ msgid "set interface to listen to"
 msgstr "luister naar deze interface"
 
 #: src/main.c:41
-msgid "&lt;interface name&gt;"
+#, fuzzy
+msgid "<interface name>"
 msgstr "&lt;interface naam&gt;"
 
 #: src/main.c:43
@@ -33,15 +35,17 @@ msgid "set capture filter"
 msgstr "weergavefilter"
 
 #: src/main.c:43
-msgid "&lt;capture filter&gt;"
-msgstr "&lt;filter&gt;"
+#, fuzzy
+msgid "<capture filter>"
+msgstr "Weergavefilter"
 
 #: src/main.c:45
 msgid "set input file"
 msgstr "selecteer invoerbestand"
 
 #: src/main.c:45
-msgid "&lt;file name&gt;"
+#, fuzzy
+msgid "<file name>"
 msgstr "&lt;bestand&gt;"
 
 #: src/main.c:47
@@ -65,8 +69,9 @@ msgid "limits nodes displayed"
 msgstr "beperk aantal weergegeven knooppunten"
 
 #: src/main.c:55
-msgid "&lt;number of nodes&gt;"
-msgstr "&lt;aantal knooppunten&gt;"
+#, fuzzy
+msgid "<number of nodes>"
+msgstr "Aantal knooppunten:"
 
 #: src/main.c:57
 msgid "Don't show warnings"
@@ -76,9 +81,7 @@ msgstr "laat geen waarschuwingen zien"
 msgid "set the node color"
 msgstr "kies de knooppuntskleur"
 
-#: src/main.c:59
-#: src/main.c:61
-#: src/main.c:63
+#: src/main.c:59 src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "kleur"
 
@@ -94,19 +97,20 @@ msgstr "kies de tekstkleur"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Modus niet herkend. Type etherape --help voor een lijst."
 
-#: src/diagram.c:1379
-#: src/main.c:155
-#: src/menus.c:34
-#: src/menus.c:367
+#: src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "We konden de interface niet laden! (%s)"
 
-#: src/main.c:259
-msgid "Stack Level is not set to Topmost Recognized Protocol. Please check in the preferences dialog that this is what you really want"
-msgstr "Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de voorkeuren of dit echt is wat je wilt."
+#: src/main.c:262
+msgid ""
+"Stack Level is not set to Topmost Recognized Protocol. Please check in the "
+"preferences dialog that this is what you really want"
+msgstr ""
+"Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de "
+"voorkeuren of dit echt is wat je wilt."
 
-#: src/main.c:347
+#: src/main.c:350
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
@@ -171,20 +175,17 @@ msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:276
-#: src/capture.c:302
+#: src/capture.c:276 src/capture.c:302
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
-#: src/capture.c:282
-#: src/capture.c:308
+#: src/capture.c:282 src/capture.c:308
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:287
-#: src/capture.c:313
+#: src/capture.c:287 src/capture.c:313
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
@@ -292,8 +293,7 @@ msgstr "Status is geen PLAY of PAUZE bij gui_start_capture"
 msgid "Reading data from "
 msgstr "Data wordt ingelezen vanuit "
 
-#: src/menus.c:542
-#: src/menus.c:665
+#: src/menus.c:542 src/menus.c:665
 msgid "default interface"
 msgstr "standaardinterface"
 
@@ -351,63 +351,54 @@ msgstr "Klaar om te luisteren naar"
 msgid "Diagram stopped"
 msgstr "Diagram gestopt"
 
-#: src/diagram.c:311
+#: src/diagram.c:296
 msgid "Number of nodes: "
 msgstr "Aantal knooppunten:"
 
-#: src/diagram.c:315
+#: src/diagram.c:300
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Verversingsperiode: %d"
 
-#: src/diagram.c:317
+#: src/diagram.c:302
 msgid ". IDLE."
 msgstr ". IDLE ."
 
-#: src/diagram.c:319
+#: src/diagram.c:304
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT ."
 
-#: src/diagram.c:549
+#: src/diagram.c:534
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:611
+#: src/diagram.c:596
 msgid "Main node protocol not found in update_canvas_nodes"
-msgstr "Hoofdprotocol van het knooppunt niet gevonden bij de functie update_canvas_nodes"
+msgstr ""
+"Hoofdprotocol van het knooppunt niet gevonden bij de functie "
+"update_canvas_nodes"
 
-#: src/diagram.c:636
+#: src/diagram.c:621
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:956
+#: src/diagram.c:940
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1019
+#: src/diagram.c:1003
 msgid "Main link protocol not found in update_canvas_links"
-msgstr "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
+msgstr ""
+"Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
-#: src/diagram.c:1197
-msgid "No node_id in on_node_info_delete_event"
-msgstr "Geen node_id bij de functie on_node_info_delete_event"
-
-#: src/diagram.c:1204
-msgid "No node_info_window in on_node_info_delete_event"
-msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
-
-#: src/diagram.c:1229
-msgid "No info available"
-msgstr "Geen informatie becshikbaar"
-
-#: src/diagram.c:1296
+#: src/diagram.c:1149
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1299
+#: src/diagram.c:1152
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 
@@ -501,8 +492,7 @@ msgstr "_UDP"
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
-#: src/glade-strings:23
-#: src/glade-strings:35
+#: src/glade-strings:23 src/glade-strings:35
 msgid "Start capture"
 msgstr "Start het luisteren"
 
@@ -510,8 +500,7 @@ msgstr "Start het luisteren"
 msgid "_Start"
 msgstr "_Start"
 
-#: src/glade-strings:25
-#: src/glade-strings:37
+#: src/glade-strings:25 src/glade-strings:37
 msgid "Pause capture"
 msgstr "Pauzeer het luisteren"
 
@@ -519,8 +508,7 @@ msgstr "Pauzeer het luisteren"
 msgid "_Pause"
 msgstr "_Pauze"
 
-#: src/glade-strings:27
-#: src/glade-strings:39
+#: src/glade-strings:27 src/glade-strings:39
 msgid "Stop capture"
 msgstr "Stop het luisteren"
 
@@ -641,7 +629,9 @@ msgid "Max. Link Width"
 msgstr "Maximale lijnbreedte"
 
 #: src/glade-strings:60
-msgid "Choose how node radius and link width are calculated as a function of average traffic"
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
 msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
 
 #: src/glade-strings:61
@@ -676,8 +666,7 @@ msgstr "Wacht zo veel milliseconden tussen de verversingen van het diagram"
 msgid "Diagram refresh period (ms)"
 msgstr "Diagram verversingsperiode (ms)"
 
-#: src/glade-strings:69
-#: src/glade-strings:76
+#: src/glade-strings:69 src/glade-strings:76
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Protocolniveau wat weergegeven moet worden in de legenda"
 
@@ -734,8 +723,12 @@ msgid "Node size variable"
 msgstr "knooppuntsgrootte"
 
 #: src/glade-strings:84
-msgid "Remove this node from the diagram after this much time. 0 means never timeout."
-msgstr "Verwijder dit knooppunt uit het diagram nadat deze zo lang niets heeft gedaan. 0 = nooit"
+msgid ""
+"Remove this node from the diagram after this much time. 0 means never "
+"timeout."
+msgstr ""
+"Verwijder dit knooppunt uit het diagram nadat deze zo lang niets heeft "
+"gedaan. 0 = nooit"
 
 #: src/glade-strings:85
 msgid "Diagram Node Timeout (ms)"
@@ -766,8 +759,11 @@ msgid "Link Timeout (ms)"
 msgstr "Lijn timeout (ms)"
 
 #: src/glade-strings:92
-msgid "Delete this node from memory after this much time. 0 means never timeout."
-msgstr "Verwijder dit knooppunt uit het geheugen nadat deze zo lang niets heeft gedaan. 0 = nooit"
+msgid ""
+"Delete this node from memory after this much time. 0 means never timeout."
+msgstr ""
+"Verwijder dit knooppunt uit het geheugen nadat deze zo lang niets heeft "
+"gedaan. 0 = nooit"
 
 #: src/glade-strings:93
 msgid "Node Timeout (ms)"
@@ -813,8 +809,7 @@ msgstr "Filter:"
 msgid "Name:"
 msgstr "Naam:"
 
-#: src/glade-strings:104
-#: src/glade-strings:106
+#: src/glade-strings:104 src/glade-strings:106
 msgid "This is a test node name"
 msgstr "Dit is een testnaam"
 
@@ -834,12 +829,8 @@ msgstr "Protocollen"
 msgid "Instantaneous"
 msgstr "Direct"
 
-#: src/glade-strings:110
-#: src/glade-strings:112
-#: src/glade-strings:114
-#: src/glade-strings:116
-#: src/glade-strings:118
-#: src/glade-strings:120
+#: src/glade-strings:110 src/glade-strings:112 src/glade-strings:114
+#: src/glade-strings:116 src/glade-strings:118 src/glade-strings:120
 msgid "test label"
 msgstr "test label"
 
@@ -862,3 +853,36 @@ msgstr "Opgeteld in"
 #: src/glade-strings:119
 msgid "Inst. Outbound"
 msgstr "Direct uit"
+
+#: src/glade-strings:121
+#, fuzzy
+msgid "EtherApe: Protocols"
+msgstr "EtherApe: Voorkeuren"
+
+#: src/glade-strings:122
+#, fuzzy
+msgid "Protocol"
+msgstr "Protocollen"
+
+#: src/glade-strings:123
+msgid "Inst Traffic"
+msgstr ""
+
+#: src/glade-strings:124
+msgid "Accum Traffic"
+msgstr ""
+
+#~ msgid "&lt;capture filter&gt;"
+#~ msgstr "&lt;filter&gt;"
+
+#~ msgid "&lt;number of nodes&gt;"
+#~ msgstr "&lt;aantal knooppunten&gt;"
+
+#~ msgid "No node_id in on_node_info_delete_event"
+#~ msgstr "Geen node_id bij de functie on_node_info_delete_event"
+
+#~ msgid "No node_info_window in on_node_info_delete_event"
+#~ msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
+
+#~ msgid "No info available"
+#~ msgstr "Geen informatie becshikbaar"
