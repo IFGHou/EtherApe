@@ -1405,6 +1405,10 @@ traffic_to_str (gdouble traffic, gboolean is_speed)
     }
   else
     {
+      /* Debug code for sanity check */
+      if (traffic && traffic < 1)
+	g_warning ("Ill traffic value in traffic_to_str");
+
       if (traffic > 1024 * 1024)
 	str = g_strdup_printf ("%.3f Mbytes", traffic / 1024 / 1024);
       else if (traffic > 1024)
