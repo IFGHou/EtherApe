@@ -487,7 +487,7 @@ create_about2 (void)
     "Juan Toledo <toledo@users.sourceforge.net>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "Jasper Wallace <jasper@pointless.net>",
-    "Ted Wright",
+    "Ted Wright <ted.wright@grc.nasa.gov>",
     NULL
   };
   GtkWidget *about2;

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-07 12:38+0100\n"
+"POT-Creation-Date: 2000-03-07 21:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,39 +259,39 @@ msgstr ""
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:705
+#: src/capture.c:700
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:712
+#: src/capture.c:707
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:723
+#: src/capture.c:718
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:728
+#: src/capture.c:723
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:734
+#: src/capture.c:729
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:760
+#: src/capture.c:755
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:767
+#: src/capture.c:762
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:786
+#: src/capture.c:781
 msgid "Ape mode not yet supported"
 msgstr ""

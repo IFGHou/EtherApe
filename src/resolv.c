@@ -72,7 +72,7 @@
 #endif /* JTC */
 
 #include <glib.h>		/* JTC */
-#include "resolv.h"
+#include "eth_resolv.h"		/* JTC name space conflict */
 #include "util.h"
 #include "capture.h"		/* JTC */
 

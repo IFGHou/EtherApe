@@ -37,6 +37,7 @@ You may uninstall later by running
 
 	# make uninstall
 
+
 Porting:
 --------
 Etherape has been compiled in at least:
@@ -84,6 +85,12 @@ of preference:
 Even though I'd ask you to post your bug report or feature 
 request on the bug tracking system, it would be nice if you could
 drop a note on the mailing list as well to say that you did so.
+
+You might want to have a look at 
+http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
+before reporting your bug. It makes an interesting reading.
+But if you will only do one thing, I prefer receiving your
+bug than you reading the article! :-)
 
 If you already are a sourceforge user, please take the time to 
 tell me what would be your favourite next feature filling the 

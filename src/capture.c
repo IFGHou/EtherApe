@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #include "capture.h"
-#include "resolv.h"
+#include "eth_resolv.h"
 
 
 double averaging_time = 10000000;	/* Microseconds of time we consider to
@@ -634,14 +634,16 @@ packet_read (pcap_t * pch,
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
   node->last_time = now;
-  /* Now we clean all packets we don't care for anymore */
-  update_packet_list (node->packets, NODE);
+  /* Packet cleaning is now done in diagram.c
+   * I'm not too happy about it since I want to have a clear
+   * separation between data structures and presentation, but it
+   * is a fact that the proper moment for packet cleaning is right
+   * before presentation */
   node->n_packets++;
 
   /* Now we do the same with the destination node */
 
   dst_id = get_node_id (pcap_packet, DST);
-
   node = g_tree_lookup (nodes, dst_id);
   if (node == NULL)
     node = create_node (pcap_packet, dst_id);
@@ -655,17 +657,13 @@ packet_read (pcap_t * pch,
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
   node->last_time = now;
-  /* Now we clean all packets we don't care for anymore */
-  update_packet_list (node->packets, NODE);
+  /* Packet cleaning is now done in diagram.c */
   node->n_packets++;
 
 
   link_id = get_link_id (pcap_packet);
-
   /* And now we update link traffic information for this packet */
-
   link = g_tree_lookup (links, link_id);
-
   if (!link)
     link = create_link (pcap_packet, link_id);
 
@@ -676,11 +674,8 @@ packet_read (pcap_t * pch,
   link->packets = g_list_prepend (link->packets, packet_info);
   link->accumulated += phdr.len;
   link->last_time = now;
-  /* Now we clean all packets we don't care for anymore */
-  update_packet_list (link->packets, LINK);
+  /* Packet cleaning is now done in diagram.c */
   link->n_packets++;
-
-
 
 }				/* packet_read */
 

@@ -114,7 +114,7 @@ INCLUDES =  	-I$(top_srcdir)/intl 	$(GNOME_INCLUDEDIR)
 
 sbin_PROGRAMS = etherape
 
-etherape_SOURCES =  	main.c 	diagram.c diagram.h 	capture.c capture.h 	resolv.c resolv.h 	util.c util.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
+etherape_SOURCES =  	main.c 	diagram.c diagram.h 	capture.c capture.h 	resolv.c eth_resolv.h 	dns.c dns.h 	util.c util.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
 
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
@@ -128,8 +128,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-etherape_OBJECTS =  main.o diagram.o capture.o resolv.o util.o support.o \
-interface.o callbacks.o
+etherape_OBJECTS =  main.o diagram.o capture.o resolv.o dns.o util.o \
+support.o interface.o callbacks.o
 etherape_DEPENDENCIES = 
 etherape_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -144,8 +144,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/callbacks.P .deps/capture.P .deps/diagram.P \
-.deps/interface.P .deps/main.P .deps/resolv.P .deps/support.P \
-.deps/util.P
+.deps/dns.P .deps/interface.P .deps/main.P .deps/resolv.P \
+.deps/support.P .deps/util.P
 SOURCES = $(etherape_SOURCES)
 OBJECTS = $(etherape_OBJECTS)
 

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(etherape, 0.2.2)
+AM_INIT_AUTOMAKE(etherape, 0.2.3)
 AM_CONFIG_HEADER(config.h)
 
 dnl Pick up the Gnome macros.
@@ -53,6 +53,17 @@ DATAFILE_DIR=$sysconfdir
 
 AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
 AC_SUBST(DATAFILE_DIR)
+
+# Copied from mtr to support dns.c
+
+AC_CHECK_FUNC(res_init, , 
+  AC_CHECK_LIB(bind, res_init, , 
+   AC_CHECK_LIB(resolv, res_init, , AC_MSG_ERROR(No resolver library found))))
+
+AC_CHECK_FUNC(res_mkquery, , 
+  AC_CHECK_LIB(bind, res_init, , 
+   AC_CHECK_LIB(resolv, res_init, , AC_MSG_ERROR(No resolver library found))))
+
 
 dnl Checks for header files.
 AC_HEADER_STDC

@@ -124,6 +124,7 @@ main (int argc, char *argv[])
       case TCP:
 	filter = g_strconcat ("tcp ", filter, NULL);
 	break;
+      case DEFAULT:
       case UDP:
       case ETHERNET:
      }

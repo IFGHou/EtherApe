@@ -1,8 +1,10 @@
+* Clean up the resolver functions. Right now I'm using two different
+  files from two different packages (resolv.c from ethereal and
+  dns.c from mtr)
+
 * belongs_to should be a packet property, and not have to be
   passed from the functions.
   
-* Update controls with variable data at init time.
-
 * Add incoming and outcoming traffic into a single canvas_link,
   and not put them one underneath the other. Funny no one has
   noticed. :-)
