@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,14 +45,29 @@ init_capture (void)
   guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
+  gchar *str = NULL;
   gboolean error = FALSE;
   static gchar errorbuf[300];
+  static gboolean data_initialized = FALSE;
 
+
+  if (!data_initialized)
+    {
+      nodes = g_tree_new (node_id_compare);
+      links = g_tree_new (link_id_compare);
+      while (i + 1)
+	{
+	  protocols[i] = NULL;
+	  i--;
+	}
+      status = STOP;
+      data_initialized = TRUE;
+    }
 
   device = interface;
   if (!device && !input_file)
     {
-      device = pcap_lookupdev (ebuf);
+      device = g_strdup (pcap_lookupdev (ebuf));
       if (device == NULL)
 	{
 	  sprintf (errorbuf, _("Error getting device: %s"), ebuf);
@@ -83,6 +98,13 @@ init_capture (void)
     }
   else
     {
+      if (device)
+	{
+	  sprintf (errorbuf,
+		   _("Can't open both %s and device %s. Please choose one."),
+		   input_file, device);
+	  return errorbuf;
+	}
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
 	  sprintf (errorbuf, _("Error opening %s : %s"), input_file, ebuf);
@@ -91,8 +113,6 @@ init_capture (void)
 
     }
 
-  if (filter)
-    set_filter (filter, device);
 
   linktype = pcap_datalink (pch);
 
@@ -137,6 +157,53 @@ init_capture (void)
       return errorbuf;
     }
 
+  /* Only ip traffic makes sense when used as interape */
+  /* TODO Shouldn't we free memory somwhere because of the strconcat? */
+  switch (mode)
+    {
+    case IP:
+      if (filter)
+	str = g_strconcat ("ip and ", filter, NULL);
+      else
+	{
+	  g_free (filter);
+	  str = g_strdup ("ip");
+	}
+      break;
+    case TCP:
+      if (filter)
+	str = g_strconcat ("tcp and ", filter, NULL);
+      else
+	{
+	  g_free (filter);
+	  str = g_strdup ("tcp");
+	}
+      break;
+    case UDP:
+      if (filter)
+	str = g_strconcat ("udp and ", filter, NULL);
+      else
+	{
+	  g_free (filter);
+	  str = g_strdup ("udp");
+	}
+      break;
+    case DEFAULT:
+    case ETHERNET:
+    case IPX:
+    case FDDI:
+      if (filter)
+	str = g_strdup (filter);
+      break;
+    }
+  g_free (filter);
+  filter = str;
+  str = NULL;
+
+  if (filter)
+    set_filter (filter, device);
+
+
   if (error)
     {
       sprintf (errorbuf, _("Mode not available in this device"));
@@ -170,18 +237,6 @@ init_capture (void)
 		     GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
     }
 
-
-
-  nodes = g_tree_new (node_id_compare);
-  links = g_tree_new (link_id_compare);
-  while (i + 1)
-    {
-      protocols[i] = NULL;
-      i--;
-    }
-
-
-  start_capture ();		/* Sets up the appropriate input or idle function */
   return NULL;
 }				/* init_capture */
 
@@ -193,9 +248,35 @@ set_filter (gchar * filter, gchar * device)
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
   static struct bpf_program fp;
+#if 0
   static gchar *current_device = NULL;
+#endif
   gboolean ok = 1;
 
+
+  if (!pch)
+    return 1;
+
+  /* A capture filter was specified; set it up. */
+  if (device && (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0))
+    {
+      g_warning (_
+		 ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+		 ebuf);
+      ok = 0;
+    }
+  if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
+    {
+      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
+      ok = 0;
+    }
+  if (ok && (pcap_setfilter (pch, &fp) < 0))
+    {
+      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
+    }
+
+  return 0;
+#if 0
   /* TODO pending to be more general, since we want to be able 
    * to change the capturing device in runtime. */
   if (!current_device)
@@ -219,11 +300,19 @@ set_filter (gchar * filter, gchar * device)
     {
       g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
     }
+#endif
 }
 
 gboolean
 start_capture (void)
 {
+
+  if ((status != PAUSE) && (status != STOP))
+    {
+      g_warning (_("Status not PAUSE or STOP at start_capture"));
+      return FALSE;
+    }
+
   if (interface)
     {
       g_my_debug (_("Starting live capture"));
@@ -242,12 +331,53 @@ start_capture (void)
 					   (GDestroyNotify) cap_t_o_destroy);
     }
 
+  status = PLAY;
   return TRUE;
 }				/* start_capture */
 
 gboolean
+pause_capture (void)
+{
+  if (status != PLAY)
+    g_warning (_("Status not PLAY at pause_capture"));
+
+  if (interface)
+    {
+      g_my_debug (_("Pausing live capture"));
+      gdk_input_remove (capture_source);	/* gdk_input_remove does not
+						 * return an error code */
+    }
+  else
+    {
+      g_my_debug (_("Pausing offline capture"));
+      if (!end_of_file)
+	{
+	  end_of_file = TRUE;	/* Otherwise a new timeout would be
+				 * created automatically */
+	  if (!g_source_remove (capture_source))
+	    {
+	      g_warning (_("Error while trying to pause capture"));
+	      return FALSE;
+	    }
+	}
+    }
+
+  status = PAUSE;
+  return TRUE;
+
+}
+
+
+gboolean
 stop_capture (void)
 {
+
+  if ((status != PLAY) && (status != PAUSE))
+    {
+      g_warning (_("Status not PLAY or PAUSE at stop_capture"));
+      return FALSE;
+    }
+
   if (interface)
     {
       g_my_debug (_("Stopping live capture"));
@@ -257,14 +387,30 @@ stop_capture (void)
   else
     {
       g_my_debug (_("Stopping offline capture"));
-      end_of_file = TRUE;	/* Otherwise a new timeout would be
-				 * created automatically */
-      if (!g_source_remove (capture_source))
+      if (!end_of_file)
 	{
-	  g_warning (_("Error while trying to stop capture"));
-	  return FALSE;
+	  end_of_file = TRUE;	/* Otherwise a new timeout would be
+				 * created automatically */
+	  if (!g_source_remove (capture_source))
+	    {
+	      g_warning (_("Error while trying to stop capture"));
+	      return FALSE;
+	    }
 	}
     }
+
+  /* Next time update_nodes and update_links are called,
+     all node and link information will be deleted */
+  /* TODO Perhaps we should make sure we delete all that data here instead of relying
+   * in the GUI to do it (by calling update_node and update_link) */
+  status = STOP;
+
+  if (filter)
+    {
+      g_free (filter);
+      filter = NULL;
+    }
+
   return TRUE;
 }				/* stop_capture */
 
@@ -843,8 +989,9 @@ update_node (node_t * node)
 
       diff = substract_times (now, node->last_time);
 
-      if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
-	  && node_timeout_time)
+      /* Remove node if node is too old or if capture is stopped */
+      if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
+	   && node_timeout_time) || (status == STOP))
 	{
 
 	  /* TODO remove all names information */
@@ -915,8 +1062,9 @@ update_link (link_t * link)
   if (link->n_packets == 0)
     {
 
-      if (((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
-	  && link_timeout_time)
+      /* Remove link if it is too old or if capture is stopped */
+      if ((((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
+	   && link_timeout_time) || (status == STOP))
 	{
 	  link_id = link->link_id;	/* Since we are freeing the link
 					 * we must free its members as well 
@@ -1076,6 +1224,9 @@ update_node_names (node_t * node)
       set_node_name (node,
 		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;IP,n;ETH_II,n;802.2,n;802.3,n");
       break;
+    case FDDI:
+      set_node_name (node, "LLC,SOLVED;IP,n");
+      break;
     case IP:
       set_node_name (node, "IP,n");
       break;
@@ -1111,16 +1262,19 @@ set_node_name (node_t * node, gchar * preferences)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
 	      name_item = protocol->node_names;
-	      name = (name_t *) (name_item->data);
-	      /* If we require this protocol to be solved and it's not,
-	       * the we have to go on */
-	      if (strcmp (tokens[1], "SOLVED")
-		  || strcmp (name->name->str, name->numeric_name->str))
+	      if (name_item)
 		{
-		  g_string_assign (node->name, name->name->str);
-		  g_string_assign (node->numeric_name,
-				   name->numeric_name->str);
-		  cont = FALSE;
+		  name = (name_t *) (name_item->data);
+		  /* If we require this protocol to be solved and it's not,
+		   * the we have to go on */
+		  if (strcmp (tokens[1], "SOLVED")
+		      || strcmp (name->name->str, name->numeric_name->str))
+		    {
+		      g_string_assign (node->name, name->name->str);
+		      g_string_assign (node->numeric_name,
+				       name->numeric_name->str);
+		      cont = FALSE;
+		    }
 		}
 	    }
 	  g_strfreev (tokens);
@@ -1153,7 +1307,7 @@ get_main_prot (GList * packets, GList ** protocols, guint level)
  * remove it from the list */
 /* TODO This whole function is a mess. I must take it to pieces
  * so that it is more readble and maintainable */
-static GList *
+static gboolean
 #if 0
 check_packet (GList * packets, enum packet_belongs belongs_to)
 #endif
@@ -1176,7 +1330,7 @@ check_packet (GList * packets, GList ** packet_l_e,
   if (!packet)
     {
       g_warning (_("Null packet in check_packet"));
-      return NULL;
+      return FALSE;
     }
 
   result = substract_times (now, packet->timestamp);
@@ -1203,7 +1357,9 @@ check_packet (GList * packets, GList ** packet_l_e,
   link = ((link_t *) (packet->parent));
 
   /* If this packet is too old, we discard it */
-  if ((result.tv_sec * 1000000 + result.tv_usec) > time_comparison)
+  /* We also delete all packets if capture is stopped */
+  if (((result.tv_sec * 1000000 + result.tv_usec) > time_comparison) ||
+      (status == STOP))
     {
 
       if (belongs_to == NODE)
@@ -1356,7 +1512,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	}
     }
 
-  return NULL;			/* Last packet searched
+  return FALSE;			/* Last packet searched
 				 * End search */
 }				/* check_packet */
 

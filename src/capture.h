@@ -46,8 +46,6 @@ static guint32 ms_to_next;	/* Used for offline mode to store the amount
 gint pcap_fd;			/* The file descriptor used by libpcap */
 gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
-gboolean end_of_file = FALSE;	/* Marks that the end of the offline file
-				 * has been reached */
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);
@@ -76,8 +74,8 @@ static gchar *get_main_prot (GList * packets,
 #if 0
 static GList *check_packet (GList * packets, enum packet_belongs belongs_to);
 #endif
-static GList *check_packet (GList * packets, GList ** packet_l_e,
-			    enum packet_belongs belongs_to);
+static gboolean check_packet (GList * packets, GList ** packet_l_e,
+			      enum packet_belongs belongs_to);
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static gint names_freq_compare (gconstpointer a, gconstpointer b);
 gchar *print_mem (const guint8 * ad, guint length);
