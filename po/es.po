@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-05 17:31+0200\n"
+"POT-Creation-Date: 2001-04-12 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 # src/main.c:38
 # src/main.c:38
 # src/main.c:38
-#: src/main.c:38
+#: src/main.c:40
 msgid "mode of operation"
 msgstr "modo de operación"
 
@@ -42,7 +42,7 @@ msgstr "modo de operación"
 # src/main.c:38
 # src/main.c:38
 # src/main.c:38
-#: src/main.c:38
+#: src/main.c:40
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr ""
 
@@ -58,7 +58,7 @@ msgstr ""
 # src/main.c:40
 # src/main.c:40
 # src/main.c:40
-#: src/main.c:40
+#: src/main.c:42
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
@@ -74,7 +74,7 @@ msgstr "definir el interfaz a escuchar"
 # src/main.c:40
 # src/main.c:40
 # src/main.c:40
-#: src/main.c:40
+#: src/main.c:42
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
@@ -90,7 +90,7 @@ msgstr "<nombre del interfaz>"
 # src/main.c:42
 # src/main.c:42
 # src/main.c:42
-#: src/main.c:42
+#: src/main.c:44
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
@@ -106,7 +106,7 @@ msgstr "definir el filtro de captura"
 # src/main.c:42
 # src/main.c:42
 # src/main.c:42
-#: src/main.c:42
+#: src/main.c:44
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
@@ -122,7 +122,7 @@ msgstr "<filtro de captura>"
 # src/main.c:44
 # src/main.c:44
 # src/main.c:44
-#: src/main.c:44
+#: src/main.c:46
 msgid "set input file"
 msgstr "definir el fichero de entrada"
 
@@ -138,7 +138,7 @@ msgstr "definir el fichero de entrada"
 # src/main.c:44
 # src/main.c:44
 # src/main.c:44
-#: src/main.c:44
+#: src/main.c:46
 msgid "<file name>"
 msgstr "<nombre de archivo>"
 
@@ -154,7 +154,7 @@ msgstr "<nombre de archivo>"
 # src/main.c:46
 # src/main.c:46
 # src/main.c:46
-#: src/main.c:46
+#: src/main.c:48
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
@@ -170,7 +170,7 @@ msgstr "no convertir las direcciones en nombres"
 # src/main.c:48
 # src/main.c:48
 # src/main.c:48
-#: src/main.c:48
+#: src/main.c:50
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
@@ -186,7 +186,7 @@ msgstr "no mostrar ninguna identificación de texto del nodo"
 # src/main.c:50
 # src/main.c:50
 # src/main.c:50
-#: src/main.c:50
+#: src/main.c:52
 msgid "do not fade old links"
 msgstr "no desvanecer enlaces en desuso"
 
@@ -194,21 +194,21 @@ msgstr "no desvanecer enlaces en desuso"
 # src/main.c:52
 # src/main.c:52
 # src/main.c:52
-#: src/main.c:52
+#: src/main.c:54
 msgid "don't move nodes around"
 msgstr "no mover los nodos"
 
 # src/main.c:54
 # src/main.c:54
 # src/main.c:54
-#: src/main.c:54
+#: src/main.c:56
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
 # src/main.c:54
 # src/main.c:54
 # src/main.c:54
-#: src/main.c:54
+#: src/main.c:56
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
@@ -216,7 +216,7 @@ msgstr "<número de nodos>"
 # src/main.c:56
 # src/main.c:56
 # src/main.c:56
-#: src/main.c:56
+#: src/main.c:58
 msgid "Don't show warnings"
 msgstr "no mostrar mensajes de aviso"
 
@@ -232,7 +232,7 @@ msgstr "no mostrar mensajes de aviso"
 # src/main.c:58
 # src/main.c:58
 # src/main.c:58
-#: src/main.c:58
+#: src/main.c:60
 msgid "set the node color"
 msgstr "fijar el color de los nodos"
 
@@ -248,7 +248,7 @@ msgstr "fijar el color de los nodos"
 # src/main.c:58 src/main.c:60 src/main.c:62
 # src/main.c:58 src/main.c:60 src/main.c:62
 # src/main.c:58 src/main.c:60 src/main.c:62
-#: src/main.c:58 src/main.c:60 src/main.c:62
+#: src/main.c:60 src/main.c:62 src/main.c:64
 msgid "color"
 msgstr "color"
 
@@ -264,7 +264,7 @@ msgstr "color"
 # src/main.c:60
 # src/main.c:60
 # src/main.c:60
-#: src/main.c:60
+#: src/main.c:62
 msgid "set the link color"
 msgstr "fijar el color de los enlaces"
 
@@ -280,7 +280,7 @@ msgstr "fijar el color de los enlaces"
 # src/main.c:62
 # src/main.c:62
 # src/main.c:62
-#: src/main.c:62
+#: src/main.c:64
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
@@ -296,7 +296,7 @@ msgstr "fijar el color del texto"
 # src/main.c:131
 # src/main.c:131
 # src/main.c:131
-#: src/main.c:133
+#: src/main.c:142
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
@@ -305,14 +305,14 @@ msgstr ""
 # src/main.c:186
 # src/main.c:186
 # src/main.c:186
-#: src/main.c:188
+#: src/main.c:204
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
 
 # src/main.c:284
 # src/main.c:284
-#: src/main.c:286
+#: src/main.c:309
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -331,7 +331,7 @@ msgstr ""
 # src/main.c:311
 # src/main.c:364
 # src/main.c:369
-#: src/main.c:371
+#: src/main.c:394
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -347,7 +347,7 @@ msgstr "Preferencias guardadas"
 # src/capture.c:58
 # src/capture.c:58
 # src/capture.c:58
-#: src/capture.c:74
+#: src/capture.c:58
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Error buscando dispositivo: %s"
@@ -364,7 +364,7 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:68 src/capture.c:80
 # src/capture.c:70
 # src/capture.c:76
-#: src/capture.c:94
+#: src/capture.c:77
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
@@ -381,7 +381,7 @@ msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 # src/capture.c:58
 # src/capture.c:80
 # src/capture.c:87
-#: src/capture.c:106
+#: src/capture.c:88
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo: %s"
@@ -398,7 +398,7 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:128
 # src/capture.c:118
 # src/capture.c:129
-#: src/capture.c:149
+#: src/capture.c:136
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
@@ -414,7 +414,7 @@ msgstr "Tipo de enlace aún no soportado"
 # src/capture.c:133
 # src/capture.c:123
 # src/capture.c:134
-#: src/capture.c:156
+#: src/capture.c:142
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
@@ -430,7 +430,7 @@ msgstr "Modo no disponible para este interfaz"
 # src/capture.c:153
 # src/capture.c:143
 # src/capture.c:154
-#: src/capture.c:176
+#: src/capture.c:161
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
@@ -446,7 +446,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:197
 # src/capture.c:186
 # src/capture.c:198
-#: src/capture.c:223
+#: src/capture.c:209
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -465,7 +465,7 @@ msgstr ""
 # src/capture.c:203
 # src/capture.c:192
 # src/capture.c:204
-#: src/capture.c:229
+#: src/capture.c:215
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -482,7 +482,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:208
 # src/capture.c:197
 # src/capture.c:209
-#: src/capture.c:234
+#: src/capture.c:220
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
@@ -497,7 +497,7 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:205
 # src/capture.c:218
-#: src/capture.c:243
+#: src/capture.c:229
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Comenzar captura"
@@ -512,7 +512,7 @@ msgstr "Comenzar captura"
 # src/glade-strings:8 src/glade-strings:18
 # src/capture.c:212
 # src/capture.c:225
-#: src/capture.c:250
+#: src/capture.c:236
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Comenzar captura"
@@ -527,7 +527,7 @@ msgstr "Comenzar captura"
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:228
 # src/capture.c:242
-#: src/capture.c:267
+#: src/capture.c:253
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Parar captura"
@@ -542,14 +542,14 @@ msgstr "Parar captura"
 # src/glade-strings:10 src/glade-strings:20
 # src/capture.c:234
 # src/capture.c:248
-#: src/capture.c:273
+#: src/capture.c:259
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Parar captura"
 
 # src/capture.c:239
 # src/capture.c:253
-#: src/capture.c:278
+#: src/capture.c:264
 msgid "Error while trying to stop capture"
 msgstr "Error al intentar parar la captura"
 
@@ -566,7 +566,7 @@ msgstr "Error al intentar parar la captura"
 # src/capture.c:387
 # src/capture.c:401
 #. TODO Write proper assertion code here
-#: src/capture.c:426
+#: src/capture.c:416
 msgid "Reached default in get_node_id"
 msgstr ""
 
@@ -582,7 +582,7 @@ msgstr ""
 # src/capture.c:394
 # src/capture.c:430
 # src/capture.c:444
-#: src/capture.c:469
+#: src/capture.c:463
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -598,7 +598,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:514
 # src/capture.c:550
 # src/capture.c:569
-#: src/capture.c:594
+#: src/capture.c:588
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -615,7 +615,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:552
 # src/capture.c:588
 # src/capture.c:607
-#: src/capture.c:632
+#: src/capture.c:626
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -633,7 +633,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:743
 # src/capture.c:762
 #. TODO Write proper assertion code here
-#: src/capture.c:787
+#: src/capture.c:781
 msgid "Reached default in fill_names"
 msgstr ""
 
@@ -649,7 +649,7 @@ msgstr ""
 # src/capture.c:777
 # src/capture.c:813
 # src/capture.c:832
-#: src/capture.c:857
+#: src/capture.c:853
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -666,7 +666,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:846
 # src/capture.c:882
 # src/capture.c:901
-#: src/capture.c:926
+#: src/capture.c:939
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -683,7 +683,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1064
 # src/capture.c:1101
 # src/capture.c:1120
-#: src/capture.c:1145
+#: src/capture.c:1178
 msgid "Null packet in check_packet"
 msgstr ""
 

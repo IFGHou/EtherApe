@@ -357,8 +357,7 @@ statfree (void *p)
 	      exit (-1);
 	    }
 #ifdef CorruptCheck
-	  if (
-	      (*(byte *)
+	  if ((*(byte *)
 	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 0) !=
 	       0xde)
 	      ||
@@ -1340,8 +1339,7 @@ dns_ack ()
       if (from.sin_addr.s_addr == localhost)
 	{
 	  for (i = 0; i < _res.nscount; i++)
-	    if ((_res.nsaddr_list[i].sin_addr.s_addr == from.sin_addr.s_addr)
-		|| (!_res.nsaddr_list[i].sin_addr.s_addr))	/* 0.0.0.0 replies as 127.0.0.1 */
+	    if ((_res.nsaddr_list[i].sin_addr.s_addr == from.sin_addr.s_addr) || (!_res.nsaddr_list[i].sin_addr.s_addr))	/* 0.0.0.0 replies as 127.0.0.1 */
 	      break;
 	}
       else

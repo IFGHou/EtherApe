@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-04-05 17:31+0200\n"
+"POT-Creation-Date: 2001-04-12 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -15,238 +15,238 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:64
-#: src/main.c:38
+#: src/main.c:40
 msgid "mode of operation"
 msgstr "mode d'opération"
 
 # src/main.c:64
-#: src/main.c:38
+#: src/main.c:40
 #, fuzzy
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|ip|tcp|udp>"
 
 # src/main.c:67
-#: src/main.c:40
+#: src/main.c:42
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:40
+#: src/main.c:42
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:70
-#: src/main.c:42
+#: src/main.c:44
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:42
+#: src/main.c:44
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:70
-#: src/main.c:44
+#: src/main.c:46
 #, fuzzy
 msgid "set input file"
 msgstr "définir le filtre de capture"
 
 # src/main.c:67
-#: src/main.c:44
+#: src/main.c:46
 #, fuzzy
 msgid "<file name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:58
-#: src/main.c:46
+#: src/main.c:48
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
 # src/main.c:61
-#: src/main.c:48
+#: src/main.c:50
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
 # src/main.c:73
-#: src/main.c:50
+#: src/main.c:52
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
-#: src/main.c:52
+#: src/main.c:54
 msgid "don't move nodes around"
 msgstr ""
 
-#: src/main.c:54
+#: src/main.c:56
 msgid "limits nodes displayed"
 msgstr ""
 
-#: src/main.c:54
+#: src/main.c:56
 msgid "<number of nodes>"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:58
 msgid "Don't show warnings"
 msgstr ""
 
 # src/main.c:76
-#: src/main.c:58
+#: src/main.c:60
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:58 src/main.c:60 src/main.c:62
+#: src/main.c:60 src/main.c:62 src/main.c:64
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:79
-#: src/main.c:60
+#: src/main.c:62
 msgid "set the link color"
 msgstr "définir la couleur des liaisons"
 
 # src/main.c:82
-#: src/main.c:62
+#: src/main.c:64
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
 # src/main.c:118
-#: src/main.c:133
+#: src/main.c:142
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:188
+#: src/main.c:204
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:286
+#: src/main.c:309
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:371
+#: src/main.c:394
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
 # src/capture.c:922
-#: src/capture.c:74
+#: src/capture.c:58
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Erreur au périphérique: %s"
 
 # src/capture.c:931
-#: src/capture.c:94
+#: src/capture.c:77
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Erreur à l'ouverture de %s : %s (vous devriez peut-être être root?)"
 
 # src/capture.c:922
-#: src/capture.c:106
+#: src/capture.c:88
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Erreur au périphérique: %s"
 
 # src/capture.c:986
-#: src/capture.c:149
+#: src/capture.c:136
 msgid "Link type not yet supported"
 msgstr "Type de liaison pas encore supporté"
 
 # src/capture.c:979
-#: src/capture.c:156
+#: src/capture.c:142
 msgid "Mode not available in this device"
 msgstr "Mode non disponible pour ce périphérique."
 
 # src/capture.c:1005
-#: src/capture.c:176
+#: src/capture.c:161
 msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
 
 # src/capture.c:942
-#: src/capture.c:223
+#: src/capture.c:209
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "Impossible d'utiliser le filtre: impossible d'obtenir l'info de netmask (%s)."
 
 # src/capture.c:948
-#: src/capture.c:229
+#: src/capture.c:215
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Impossible d'analyser le filtre (%s)."
 
 # src/capture.c:954
-#: src/capture.c:234
+#: src/capture.c:220
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Impossible d'installer le filtre (%s)."
 
-#: src/capture.c:243
+#: src/capture.c:229
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Capture"
 
-#: src/capture.c:250
+#: src/capture.c:236
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Capture"
 
-#: src/capture.c:267
+#: src/capture.c:253
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Capture"
 
-#: src/capture.c:273
+#: src/capture.c:259
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Capture"
 
-#: src/capture.c:278
+#: src/capture.c:264
 msgid "Error while trying to stop capture"
 msgstr ""
 
 # src/capture.c:713
 #. TODO Write proper assertion code here
-#: src/capture.c:426
+#: src/capture.c:416
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:469
+#: src/capture.c:463
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:594
+#: src/capture.c:588
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:632
+#: src/capture.c:626
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:375
 #. TODO Write proper assertion code here
-#: src/capture.c:787
+#: src/capture.c:781
 msgid "Reached default in fill_names"
 msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
-#: src/capture.c:857
+#: src/capture.c:853
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:926
+#: src/capture.c:939
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1145
+#: src/capture.c:1178
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 

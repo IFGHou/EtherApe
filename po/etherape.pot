@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-05 17:31+0200\n"
+"POT-Creation-Date: 2001-04-12 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,198 +14,198 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:38
+#: src/main.c:40
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:38
+#: src/main.c:40
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr ""
 
-#: src/main.c:40
+#: src/main.c:42
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:40
+#: src/main.c:42
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:42
+#: src/main.c:44
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:42
+#: src/main.c:44
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:44
+#: src/main.c:46
 msgid "set input file"
 msgstr ""
 
-#: src/main.c:44
+#: src/main.c:46
 msgid "<file name>"
 msgstr ""
 
-#: src/main.c:46
+#: src/main.c:48
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:48
+#: src/main.c:50
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:50
+#: src/main.c:52
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:52
+#: src/main.c:54
 msgid "don't move nodes around"
 msgstr ""
 
-#: src/main.c:54
+#: src/main.c:56
 msgid "limits nodes displayed"
 msgstr ""
 
-#: src/main.c:54
+#: src/main.c:56
 msgid "<number of nodes>"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:58
 msgid "Don't show warnings"
 msgstr ""
 
-#: src/main.c:58
+#: src/main.c:60
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:58 src/main.c:60 src/main.c:62
+#: src/main.c:60 src/main.c:62 src/main.c:64
 msgid "color"
 msgstr ""
 
-#: src/main.c:60
+#: src/main.c:62
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:62
+#: src/main.c:64
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:133
+#: src/main.c:142
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/main.c:188
+#: src/main.c:204
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:286
+#: src/main.c:309
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:371
+#: src/main.c:394
 msgid "Preferences saved"
 msgstr ""
 
-#: src/capture.c:74
+#: src/capture.c:58
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:94
+#: src/capture.c:77
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:106
+#: src/capture.c:88
 #, c-format
 msgid "Error opening %s : %s"
 msgstr ""
 
-#: src/capture.c:149
+#: src/capture.c:136
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:156
+#: src/capture.c:142
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:176
+#: src/capture.c:161
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:223
+#: src/capture.c:209
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:229
+#: src/capture.c:215
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:234
+#: src/capture.c:220
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:243
+#: src/capture.c:229
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:250
+#: src/capture.c:236
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:267
+#: src/capture.c:253
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:273
+#: src/capture.c:259
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:278
+#: src/capture.c:264
 msgid "Error while trying to stop capture"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:426
+#: src/capture.c:416
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:469
+#: src/capture.c:463
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:594
+#: src/capture.c:588
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:632
+#: src/capture.c:626
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:787
+#: src/capture.c:781
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:857
+#: src/capture.c:853
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:926
+#: src/capture.c:939
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1145
+#: src/capture.c:1178
 msgid "Null packet in check_packet"
 msgstr ""
 
