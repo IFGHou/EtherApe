@@ -191,13 +191,8 @@ main (int argc, char *argv[])
 					widget,
 					(GDestroyNotify) destroying_timeout);
 
-  /* It seems libglade is not acknowledging the "Use gnome help" option in the 
-   * glade file and so it is not automatically adding the help items in the help
-   * menu. Thus I must add it manually here */
+  init_menus ();
 
-  widget = glade_xml_get_widget (xml, "help1_menu");
-  gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
-		       gtk_accel_group_get_default (), TRUE, 1);
 
 
 
