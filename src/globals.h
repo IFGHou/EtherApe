@@ -232,6 +232,8 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
 GTree *canvas_links;		/* See above */
+gboolean already_updating;	/* True while an instance of update_diagram is running */
+
 
 /* Variables */
 
@@ -356,7 +358,8 @@ void update_history (GnomeEntry * gentry, const gchar * str,
 		     gboolean is_fileentry);
 void gui_start_capture (void);
 void gui_pause_capture (void);
-void gui_stop_capture (void);
+gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
+					 * it can't run if diagram_update is running */
 
 /* From info_windows.c */
 void display_protocols_window (void);

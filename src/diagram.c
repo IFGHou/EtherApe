@@ -151,16 +151,8 @@ init_diagram ()
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
 
-  /* Since glade doesn't do it, we'll have to do it manually 
-   * TODO Remove when glade is fixed */
-
-#if 0
-  widget = glade_xml_get_widget (xml, "appbar1");
-  gnome_app_install_appbar_menu_hints (widget, &(view1_menu_uiinfo[0]));
-
-  widget = glade_xml_get_widget (xml, "toolbar_check");
-  gtk_menu_item_select (widget);
-#endif
+  /* Set the already_updating global flag */
+  already_updating = FALSE;
 }				/* init_diagram */
 
 
@@ -201,7 +193,6 @@ update_diagram (GtkWidget * canvas)
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
   node_t *new_node = NULL;
-  static gboolean already_updating = FALSE;
 
   if (status == PAUSE)
     return FALSE;
@@ -467,6 +458,7 @@ delete_gui_protocols (void)
       item = item->next;
     }
 
+  g_list_free (legend_protocols);
   legend_protocols = NULL;
   prot_color_index = 0;
   for (; i <= STACK_SIZE; i++)

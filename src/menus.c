@@ -141,7 +141,8 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
   gchar *str = NULL;
 
   if (status != STOP)
-    gui_stop_capture ();
+    if (!gui_stop_capture ())
+      return;
 
   if (interface)
     {
@@ -196,7 +197,8 @@ on_interface_radio_activate (gchar * gui_device)
 				 * start_capture */
 
   if (status != STOP)
-    gui_stop_capture ();
+    if (!gui_stop_capture ())
+      return;
 
   if (input_file)
     g_free (input_file);
@@ -277,7 +279,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     default:
     }
   if (status != STOP)
-    gui_stop_capture ();
+    if (!gui_stop_capture ())
+      return;
   mode = new_mode;
   g_my_info (_("Mode set to %s in GUI"), (gchar *) user_data);
   gui_start_capture ();
@@ -301,6 +304,7 @@ on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+
   gui_stop_capture ();
 
 }				/* on_stop_menuitem_activate */
@@ -438,7 +442,8 @@ gui_start_capture (void)
   GString *status_string = NULL;
 
   if ((status == PAUSE) && end_of_file)
-    gui_stop_capture ();
+    if (!gui_stop_capture ())
+      return;
 
   if (status == STOP)
     if ((errorbuf = init_capture ()) != NULL)
@@ -633,20 +638,32 @@ gui_pause_capture (void)
 
 
 /* Sets up the GUI to reflect changes and calls stop_capture() */
-void
+gboolean
 gui_stop_capture (void)
 {
   GtkWidget *widget;
   GString *status_string = NULL;
 
+
+  /*
+   * gui_stop_capture needs to call update_diagram in order to
+   * delete all canvas_nodes and nodes. But since a slow running
+   * update_diagram will yield to pending events, gui_stop_capture
+   * might end up being called below another update_diagram. We can't
+   * allow two simultaneous calls, so we fail
+   */
+
+  if (already_updating)
+    return FALSE;
+
   if (status == STOP)
     {
       g_warning (_("Status not PLAY or PAUSE at gui_stop_capture"));
-      return;
+      return FALSE;
     }
 
   if (!stop_capture ())
-    return;
+    return FALSE;
 
   widget = glade_xml_get_widget (xml, "start_button");
   gtk_widget_set_sensitive (widget, TRUE);
@@ -688,6 +705,8 @@ gui_stop_capture (void)
   g_string_free (status_string, TRUE);
 
   g_my_info (_("Diagram stopped"));
+
+  return TRUE;
 }				/* gui_stop_capture */
 
 void
