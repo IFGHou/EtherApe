@@ -83,9 +83,9 @@ get_ip_name (void)
 {
 
   if (dir == INBOUND)
-    id = p + offset + 12;
-  else
     id = p + offset + 16;
+  else
+    id = p + offset + 12;
 
   id_length = 4;
 
