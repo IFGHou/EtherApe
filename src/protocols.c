@@ -31,6 +31,9 @@ get_packet_prot (const guint8 * p)
 {
   gchar **tokens = NULL;
   guint i = 0;
+
+  g_assert (p != NULL);
+
   if (prot)
     g_string_free (prot, TRUE);
   prot = g_string_new ("");
@@ -213,20 +216,34 @@ get_eth_II (etype_t etype)
 static void
 get_ip (void)
 {
+  guint16 fragment_offset;
   iptype_t ip_type;
   ip_type = packet[l3_offset + 9];
+  fragment_offset = pntohs (packet + l3_offset + 6);
+  fragment_offset &= 0x0fff;
+
   switch (ip_type)
     {
     case IP_PROTO_ICMP:
       prot = g_string_append (prot, "/ICMP");
       break;
     case IP_PROTO_TCP:
-      prot = g_string_append (prot, "/TCP");
-      get_tcp ();
+      if (fragment_offset)
+	prot = g_string_append (prot, "/TCP_FRAGMENT");
+      else
+	{
+	  prot = g_string_append (prot, "/TCP");
+	  get_tcp ();
+	}
       break;
     case IP_PROTO_UDP:
-      prot = g_string_append (prot, "/UDP");
-      get_udp ();
+      if (fragment_offset)
+	prot = g_string_append (prot, "/UDP_FRAGMENT");
+      else
+	{
+	  prot = g_string_append (prot, "/UDP");
+	  get_udp ();
+	}
       break;
     case IP_PROTO_IGMP:
       prot = g_string_append (prot, "/IGMP");
