@@ -1,0 +1,21 @@
+h1
+  {
+    background: darkblue;
+    color: white;
+    border: solid thin white;
+    padding: 0.25em;
+  }
+				
+				
+ol,ul {margin-left: 10}
+
+table
+  {
+    background: darkblue;
+    margin: 20;
+  }
+  
+#table
+  {
+    color: white;
+  }

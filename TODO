@@ -1,11 +1,31 @@
-* Clean up the resolver functions. Right now I'm using two different
-  files from two different packages (resolv.c from ethereal and
-  dns.c from mtr)
+User visible features:
+----------------------
 
-* belongs_to should be a packet property, and not have to be
-  passed from the functions.
+  * Color coded protocol display. It's been on the drawing board
+    from day 1. That's what the "Place holder for the color coded
+    protocol display" means. ;-)
   
-* Add incoming and outcoming traffic into a single canvas_link,
-  and not put them one underneath the other. Funny no one has
-  noticed. :-)
+  * Autosaving of preferences..
+  
+  * Ability to set per node preferences. Like setting an hour long
+    averaging time only for the router.
+    
+  * Ability to manually place nodes. It's dependent on the above.
+    Once is done you will be able to open and save your own 
+    diagrams.
+    
+
+Issues in the source code
+-------------------------
+
+  * Clean up the resolver functions. Right now I'm using two 
+    different files from two different packages (resolv.c from 
+    ethereal and dns.c from mtr)
+
+  * belongs_to should be a packet property, and not have to be
+    passed from the functions.
+  
+  * Add incoming and outcoming traffic into a single canvas_link,
+    and not put them one underneath the other. Funny no one has
+    noticed. :-)
 

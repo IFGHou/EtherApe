@@ -30,3 +30,6 @@ uninstall-local:
 	indent $? 
 	touch .indent
 indent: .indent 
+
+purge:
+	rm -f *~ *.bak

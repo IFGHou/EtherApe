@@ -2,19 +2,28 @@
 
 SUBDIRS = intl po macros src
 
-NEWS: NEWS.html
-	lynx --dump NEWS.html > NEWS
+NEWS: html/NEWS.html
+	lynx --dump html/NEWS.html > NEWS
 
-cvs : NEWS
+FAQ: html/FAQ.html
+	lynx --dump html/FAQ.html > FAQ
+
+cvs : NEWS FAQ
 	test `whoami` = toledo
 	cvs commit
 	cd ../www && make
 
+purge:
+	rm -f *~ *.bak
+	cd src && make purge
+
 EXTRA_DIST = \
 	README.thanks 		\
 	README.help		\
-	NEWS.html		\
+	FAQ			\
 	etherape.glade		\
+	html/NEWS.html		\
+	html/FAQ.html		\
 	debian/README.debian	\
 	debian/changelog	\
 	debian/control		\
