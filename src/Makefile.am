@@ -9,7 +9,7 @@ INCLUDES = \
 sbin_PROGRAMS = etherape
 
 etherape_SOURCES = \
-	main.c \
+	main.c globals.h\
 	diagram.c diagram.h \
 	capture.c capture.h \
 	protocols.c protocols.h etypes.h \

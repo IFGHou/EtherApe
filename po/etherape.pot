@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-18 20:39+0100\n"
+"POT-Creation-Date: 2000-03-18 20:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,63 +14,63 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:150
+#: src/main.c:152
 msgid "Preferences saved"
 msgstr ""
 
-#: src/main.c:164
+#: src/main.c:166
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:167
+#: src/main.c:169
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:170
+#: src/main.c:172
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:170
+#: src/main.c:172
 msgid "<ethernet|ip|tcp|udp>"
 msgstr ""
 
-#: src/main.c:173
+#: src/main.c:175
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:173
+#: src/main.c:175
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:176
+#: src/main.c:178
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:176
+#: src/main.c:178
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:179
+#: src/main.c:181
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:182
+#: src/main.c:184
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:182 src/main.c:185 src/main.c:188
+#: src/main.c:184 src/main.c:187 src/main.c:190
 msgid "color"
 msgstr ""
 
-#: src/main.c:185
+#: src/main.c:187
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:188
+#: src/main.c:190
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:256
+#: src/main.c:258
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 

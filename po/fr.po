@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-18 20:39+0100\n"
+"POT-Creation-Date: 2000-03-18 20:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,77 +14,77 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:150
+#: src/main.c:152
 msgid "Preferences saved"
 msgstr ""
 
 # src/main.c:58
-#: src/main.c:164
+#: src/main.c:166
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
 # src/main.c:61
-#: src/main.c:167
+#: src/main.c:169
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
 # src/main.c:64
-#: src/main.c:170
+#: src/main.c:172
 msgid "mode of operation"
 msgstr "mode d'opération"
 
 # src/main.c:64
-#: src/main.c:170
+#: src/main.c:172
 msgid "<ethernet|ip|tcp|udp>"
 msgstr "<ethernet|ip|tcp|udp>"
 
 # src/main.c:67
-#: src/main.c:173
+#: src/main.c:175
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:173
+#: src/main.c:175
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:70
-#: src/main.c:176
+#: src/main.c:178
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:176
+#: src/main.c:178
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:73
-#: src/main.c:179
+#: src/main.c:181
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
 # src/main.c:76
-#: src/main.c:182
+#: src/main.c:184
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:182 src/main.c:185 src/main.c:188
+#: src/main.c:184 src/main.c:187 src/main.c:190
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:79
-#: src/main.c:185
+#: src/main.c:187
 msgid "set the link color"
 msgstr "définir la couleur des liaisons"
 
 # src/main.c:82
-#: src/main.c:188
+#: src/main.c:190
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
 # src/main.c:118
-#: src/main.c:256
+#: src/main.c:258
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
