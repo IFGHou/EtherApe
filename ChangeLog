@@ -1,7 +1,54 @@
+2003-03-05 19:58  bchiara
+
+	* configure.in: 
+	corrected release number
+
+2003-03-05 19:56  bchiara
+
+	* config.h.in, glade/etherape.glade2, src/diagram.c, src/dns.c,
+	src/dns.h, src/info_windows.c, src/info_windows.h, src/main.c,
+	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
+	src/protocols.c: 
+	- protocol detail window now displays protocol color - added
+	missing app icon - converted deprecated gtk2/gnome2 calls
+
+2003-03-04 19:43  bchiara
+
+	* glade/etherape.glade2, src/protocols.c: 
+	Updated translator credits (about box) and fixed a small bug
+	affecting service parsing
+
+2003-03-01 20:28  bchiara
+
+	* configure.in: 
+	readded docs
+
+2003-03-01 19:49  bchiara
+
+	* m4/compiler-flags.m4: file compiler-flags.m4 was initially added
+	on branch gnome2.
+
+2003-03-01 19:49  bchiara
+
+	* Makefile.am, acconfig.h, configure.in, glade/etherape.glade1,
+	m4/Makefile.am, m4/compiler-flags.m4, m4/gnome-gettext.m4,
+	src/Makefile.am, src/info_windows.c: 
+	minor tweaks to build process
+
+2003-03-01 10:07  bchiara
+
+	* src/preferences.c: 
+	typo
+
+2003-03-01 08:12  bchiara
+
+	* src/: info_windows.c, preferences.c: 
+	small changes to help compiling etherape under Gnome 2.0
+
 2003-02-25 22:09  bchiara
 
 	* glade/etherape.glade2, src/globals.h, src/info_windows.c,
-	src/info_windows.h, src/menus.c, src/preferences.c: 
+	src/info_windows.h, src/menus.c, src/preferences.c, ChangeLog: 
 	Signal handling fixes
 
 2003-02-25 00:05  bchiara
@@ -1116,10 +1163,8 @@
 
 2001-04-20 15:04  toledo
 
-	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
-	etherape/docbook.css, etherape/index.html, etherape/license.html,
-	etherape/ln7.html, etherape/prefs.html, etherape/usage.html:
-	etherape directory needed for people building from CVS
+	* doc/C/Makefile.am: etherape directory needed for people building
+	from CVS
 
 2001-04-20 08:19  toledo
 
