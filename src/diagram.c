@@ -152,17 +152,15 @@ init_diagram ()
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint
-update_diagram (GtkWidget * canvas)
+guint update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
-  static GString *status_string;
+  GString *status_string = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
   guint n_nodes_before = 0, n_nodes_after = 1;
   static guint n_protocols[STACK_SIZE + 1] = { 0 };
   static struct timeval last_time = { 0, 0 }, diff;
   static gboolean is_idle = FALSE;
-  gchar *str;
 
   g_mem_profile ();
 
@@ -203,15 +201,11 @@ update_diagram (GtkWidget * canvas)
       g_tree_traverse (canvas_nodes,
 		       (GTraverseFunc) reposition_canvas_nodes,
 		       G_IN_ORDER, canvas);
-      gnome_appbar_pop (appbar);
-
-      str = g_strdup_printf (_("Number of nodes: %d"), n_nodes_after);
-      gnome_appbar_push (appbar, str);
-      g_free (str);
-
       need_reposition = 0;
     }
 
+  status_string = g_string_new (_("Number of nodes: "));
+  g_string_sprintfa (status_string, "%d", n_nodes_after);
 
   /* Check if there are any new links */
   g_tree_traverse (links, (GTraverseFunc) check_new_link, G_IN_ORDER, canvas);
@@ -237,23 +231,40 @@ update_diagram (GtkWidget * canvas)
   if ((last_time.tv_sec == 0) && (last_time.tv_usec == 0))
     last_time = now;
 
-  gettimeofday (&now, NULL);
+  /* TODO I'm trying to force canvas redraw with this. Is it working? */
+  while (gtk_events_pending ())
+    gtk_main_iteration ();
 
+#if 0
+  gettimeofday (&now, NULL);
+#endif
+#if 1
   diff = substract_times (now, last_time);
+  g_string_sprintfa (status_string,
+		     _(". Refresh Period: %d"),
+		     (int) (diff.tv_sec * 1000 + diff.tv_usec / 1000));
+  if (is_idle)
+    status_string = g_string_append (status_string, _(". IDLE."));
+  else
+    status_string = g_string_append (status_string, _(". TIMEOUT."));
+  gnome_appbar_pop (appbar);
+  gnome_appbar_push (appbar, status_string->str);
+  g_string_free (status_string, TRUE);
+
   if (!is_idle)
     {
       if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) > refresh_period * 1.1)
 	{
+#if 1
 	  diagram_timeout =
 	    gtk_idle_add ((GtkFunction) update_diagram, canvas);
+#endif
 	  is_idle = TRUE;
 	  return FALSE;		/* Removes the timeout */
 	}
     }
   else
     {
-      while (gtk_events_pending ())
-	gtk_main_iteration ();
       if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) < refresh_period)
 	{
 	  diagram_timeout = gtk_timeout_add (refresh_period,
@@ -263,8 +274,9 @@ update_diagram (GtkWidget * canvas)
 	  return FALSE;		/* removes the idle */
 	}
     }
-
+#endif
   last_time = now;
+
 
   return TRUE;			/* Keep on calling this function */
 

@@ -1,3 +1,16 @@
+body
+  {
+    background: #f0f0ff;
+    font-family: sans-serif;
+  }
+
+
+/* I don't understand why font-family is not inherited from body */
+td
+  {
+    font-family: verdana, sans-serif;
+  }
+  
 h1
   {
     background: darkblue;
@@ -6,16 +19,18 @@ h1
     padding: 0.25em;
   }
 				
-				
-ol,ul {margin-left: 10}
+#subtitle  { font-style: italic; font-weight: bold }
 
-table
-  {
+
+th
+  { 
     background: darkblue;
-    margin: 20;
-  }
-  
-#table
-  {
+/*    padding: 0.5em; */
     color: white;
+    text-align: left;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-variant: small-caps;
+    font-size: 120%;
   }
+

@@ -35,6 +35,7 @@ EXTRA_DIST = \
 	README.bugs		\
 	FAQ			\
 	etherape.glade		\
+	etherape.spec		\
 	html/NEWS.html		\
 	html/FAQ.html		\
 	html/bug-reporting.html \

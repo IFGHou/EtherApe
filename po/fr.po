@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-03-29 20:34+0200\n"
+"POT-Creation-Date: 2000-03-31 12:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -14,89 +14,89 @@ msgstr ""
 "Content-Type: text/plain; charset=8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:142
+#: src/main.c:144
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
 # src/main.c:64
-#: src/main.c:156
+#: src/main.c:158
 msgid "mode of operation"
 msgstr "mode d'opération"
 
 # src/main.c:64
-#: src/main.c:156
+#: src/main.c:158
 msgid "<ethernet|ip|tcp|udp>"
 msgstr "<ethernet|ip|tcp|udp>"
 
 # src/main.c:67
-#: src/main.c:158
+#: src/main.c:160
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:158
+#: src/main.c:160
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:70
-#: src/main.c:160
+#: src/main.c:162
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:160
+#: src/main.c:162
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:70
-#: src/main.c:162
+#: src/main.c:164
 #, fuzzy
 msgid "set input file"
 msgstr "définir le filtre de capture"
 
 # src/main.c:67
-#: src/main.c:162
+#: src/main.c:164
 #, fuzzy
 msgid "<file name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:58
-#: src/main.c:164
+#: src/main.c:166
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
 # src/main.c:61
-#: src/main.c:166
+#: src/main.c:168
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
 # src/main.c:73
-#: src/main.c:168
+#: src/main.c:170
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
 # src/main.c:76
-#: src/main.c:170
+#: src/main.c:172
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:170 src/main.c:172 src/main.c:174
+#: src/main.c:172 src/main.c:174 src/main.c:176
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:79
-#: src/main.c:172
+#: src/main.c:174
 msgid "set the link color"
 msgstr "définir la couleur des liaisons"
 
 # src/main.c:82
-#: src/main.c:174
+#: src/main.c:176
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
 # src/main.c:118
-#: src/main.c:238
+#: src/main.c:240
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
@@ -409,72 +409,72 @@ msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
 
 # src/capture.c:942
-#: src/capture.c:174
+#: src/capture.c:173
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "Impossible d'utiliser le filtre: impossible d'obtenir l'info de netmask (%s)."
 
 # src/capture.c:948
-#: src/capture.c:180
+#: src/capture.c:179
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Impossible d'analyser le filtre (%s)."
 
 # src/capture.c:954
-#: src/capture.c:185
+#: src/capture.c:184
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Impossible d'installer le filtre (%s)."
 
 # src/capture.c:713
 #. TODO Write proper assertion code here
-#: src/capture.c:311
+#: src/capture.c:309
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:347
+#: src/capture.c:348
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:388
-#: src/capture.c:431
+#: src/capture.c:432
 msgid "n/a"
 msgstr "n/a"
 
 # src/capture.c:409
-#: src/capture.c:452
+#: src/capture.c:453
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:490
+#: src/capture.c:491
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:375
 #. TODO Write proper assertion code here
-#: src/capture.c:638
+#: src/capture.c:639
 msgid "Reached default in fill_names"
 msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
-#: src/capture.c:707
+#: src/capture.c:708
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:769
+#: src/capture.c:770
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:890
+#: src/capture.c:891
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 

@@ -3,6 +3,13 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.4.1 (Monday 04-03-2000):
+  
+     * Hiding legend works again (for me, at least).
+     * Link directions were reversed in ethernet mode.
+     * New webpage (mostly copied from ethereal's :-) )
+     * First try at RPM distribution. Please report whether it works.
+       
   Overview of changes in Etherape 0.4.0 (Wednesday 03-29-2000):
   
      * Node size is dependent on outbound traffic
