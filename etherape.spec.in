@@ -60,3 +60,5 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/sbin/*
 %{prefix}/share/locale/*/*/*
 %{prefix}/share/etherape/*/*
+%{prefix}/share/gnome/*/*/*
+%{prefix}/share/pixmaps/*
