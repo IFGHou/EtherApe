@@ -12,7 +12,7 @@ configure
 install-sh
 missing
 mkinstalldirs
-intl
+intl/
 stamp-h
 stamp-h.in
 *.tar.gz

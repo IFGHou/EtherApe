@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-13 12:14+0100\n"
+"POT-Creation-Date: 2000-03-13 19:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,240 +14,236 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:58
+#: src/main.c:56
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:61
+#: src/main.c:58
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:64
+#: src/main.c:60
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:64
+#: src/main.c:60
 msgid "<ethernet|ip|tcp|udp>"
 msgstr ""
 
-#: src/main.c:67
+#: src/main.c:62
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:67
+#: src/main.c:62
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:70
+#: src/main.c:64
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:70
+#: src/main.c:64
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:73
-msgid "makes diagram more readable when it is crowded"
-msgstr ""
-
-#: src/main.c:76
+#: src/main.c:66
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:79
+#: src/main.c:68
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:79 src/main.c:82 src/main.c:85
+#: src/main.c:68 src/main.c:70 src/main.c:72
 msgid "color"
 msgstr ""
 
-#: src/main.c:82
+#: src/main.c:70
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:85
+#: src/main.c:72
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:120
+#: src/main.c:107
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/interface.c:23
+#: src/interface.c:21
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:112
+#: src/interface.c:106
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:236
+#: src/interface.c:231
 msgid "New"
 msgstr ""
 
-#: src/interface.c:237
+#: src/interface.c:232
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:248
+#: src/interface.c:243
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:249
+#: src/interface.c:244
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:260
+#: src/interface.c:255
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:261
+#: src/interface.c:256
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:303
+#: src/interface.c:301
 msgid "Diagram settings"
 msgstr ""
 
-#: src/interface.c:333
+#: src/interface.c:335
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:356
+#: src/interface.c:359
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:380
+#: src/interface.c:387
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:404
+#: src/interface.c:415
 msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:428
+#: src/interface.c:441
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:452
+#: src/interface.c:467
 msgid "Link Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:460
+#: src/interface.c:475
 msgid "Protocols"
 msgstr ""
 
-#: src/interface.c:506
+#: src/interface.c:518
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:508
+#: src/interface.c:521
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:528
+#: src/interface.c:542
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:548
+#: src/interface.c:562
 msgid "name"
 msgstr ""
 
-#: src/interface.c:557
+#: src/interface.c:571
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:566
+#: src/interface.c:580
 msgid "average"
 msgstr ""
 
-#: src/interface.c:590
+#: src/interface.c:608
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
-#: src/callbacks.c:212 src/callbacks.c:223
+#: src/callbacks.c:196 src/callbacks.c:207
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/support.c:98 src/support.c:136
+#: src/support.c:94 src/support.c:132
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:114
+#: src/support.c:110
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:367
+#: src/capture.c:373
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:380
+#: src/capture.c:386
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:401
+#: src/capture.c:407
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:431 src/capture.c:436
+#: src/capture.c:436 src/capture.c:441
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:492
+#: src/capture.c:497
 msgid "Null packet in check_packet"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:706
+#: src/capture.c:709
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:742
+#: src/capture.c:745
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:915
+#: src/capture.c:918
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:922
+#: src/capture.c:927
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:933
+#: src/capture.c:938
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:938
+#: src/capture.c:944
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:944
+#: src/capture.c:950
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:972
+#: src/capture.c:975
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:979
+#: src/capture.c:982
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:998
+#: src/capture.c:1001
 msgid "Ape mode not yet supported"
 msgstr ""

@@ -3,6 +3,15 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.7 (Monday 03-13-2000):
+  
+     * Node info is now a popup.
+     * Popup window shows Name, IP address and MAC address again.
+     * Name is only FQDN in ip and tcp modes (more readable)
+     * Now links age the moment they are not used.
+     * Added 802.2 and 802.3 to ethernet protocols.
+     * Fix for sigsegv when small link timeouts.
+       
   Overview of changes in Etherape 0.2.6 (Saturday 03-11-2000):
   
      * Ethernet protocols are recognized and presented in different
