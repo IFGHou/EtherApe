@@ -210,6 +210,7 @@ get_ip (void)
       break;
     case IP_PROTO_UDP:
       prot = g_string_append (prot, "/UDP");
+      get_udp ();
       break;
     case IP_PROTO_IGMP:
       prot = g_string_append (prot, "/IGMP");
@@ -328,31 +329,44 @@ get_tcp (void)
   prot = g_string_append (prot, str);
   g_free (str);
   return;
-}
+}				/* get_tcp */
 
-#if 0
-typedef struct _e_tcphdr
+static void
+get_udp (void)
 {
-  guint16 th_sport;
-  guint16 th_dport;
-  guint32 th_seq;
-  guint32 th_ack;
-  guint8 th_off_x2;		/* combines th_off and th_x2 */
-  guint8 th_flags;
-#define TH_FIN  0x01
-#define TH_SYN  0x02
-#define TH_RST  0x04
-#define TH_PUSH 0x08
-#define TH_ACK  0x10
-#define TH_URG  0x20
-  guint16 th_win;
-  guint16 th_sum;
-  guint16 th_urp;
-}
-e_tcphdr;
-#endif
+  static GTree *udp_services = NULL;
+  udp_service_t *service;
+  udp_type_t src_port, dst_port;
+  gchar *str;
 
-/* Comparison function to sort tcp/udp services port number */
+  if (!udp_services)
+    {
+      guint i = 0;
+      udp_services = g_tree_new ((GCompareFunc) udp_compare);
+      for (i; i <= UDP_SERVICES + 1; i++)
+	g_tree_insert (udp_services,
+		       &(udp_services_table[i].number),
+		       &(udp_services_table[i]));
+    }
+
+  src_port = pntohs (packet + l3_offset + 20);
+  dst_port = pntohs (packet + l3_offset + 22);
+
+  if (!(service = g_tree_lookup (udp_services, &src_port)))
+    service = g_tree_lookup (udp_services, &dst_port);
+
+  if (!service)
+    {
+      prot = g_string_append (prot, "/UDP_UNKNOWN");
+      return;
+    }
+  str = g_strdup_printf ("/%s", service->name);
+  prot = g_string_append (prot, str);
+  g_free (str);
+  return;
+}				/* get_udp */
+
+/* Comparison function to sort tcp services port number */
 static gint
 tcp_compare (gconstpointer a, gconstpointer b)
 {
@@ -367,3 +381,19 @@ tcp_compare (gconstpointer a, gconstpointer b)
     return -1;
   return 0;
 }				/* tcp_compare */
+
+/* Comparison function to sort udp services port number */
+static gint
+udp_compare (gconstpointer a, gconstpointer b)
+{
+  udp_type_t port_a, port_b;
+
+  port_a = *(tcp_type_t *) a;
+  port_b = *(tcp_type_t *) b;
+
+  if (port_a > port_b)
+    return 1;
+  if (port_a < port_b)
+    return -1;
+  return 0;
+}				/* udp_compare */

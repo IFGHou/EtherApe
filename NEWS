@@ -3,6 +3,14 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.6 (Friday 03-24-2000):
+  
+     * Recognizes level 5 UDP protocols.
+     * Default stack level is now 5
+     * Can anybody please send me the most complete /etc/services in
+       Earth? Mine in debian is quite complete, but it's missing things
+       like ICQ.
+       
   Overview of changes in Etherape 0.3.5 (Thursday 03-23-2000):
   
      * Sorry. I forgot to include the new files in the distribution. :-(

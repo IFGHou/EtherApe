@@ -110,3 +110,5 @@ static void get_eth_II (etype_t etype);
 static void get_ip (void);
 static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
+static void get_udp (void);
+static gint udp_compare (gconstpointer a, gconstpointer b);
