@@ -949,13 +949,14 @@ update_node_names (node_t * node)
   switch (mode)
     {
     case ETHERNET:
-      set_node_name (node, "IP,ETHERNET");
+      set_node_name (node,
+		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;IP,n;ETH_II,n;802.2,n;802.3,n");
       break;
     case IP:
-      set_node_name (node, "IP");
+      set_node_name (node, "IP,n");
       break;
     case TCP:
-      set_node_name (node, "IP");
+      set_node_name (node, "IP,n");
       break;
     default:
       break;
@@ -968,30 +969,40 @@ set_node_name (node_t * node, gchar * preferences)
   GList *name_item = NULL, *protocol_item = NULL;
   name_t *name = NULL;
   protocol_t *protocol = NULL;
-  gchar **tokens;
+  gchar **prots, **tokens;
   guint i = 0;
   guint j = STACK_SIZE;
   gboolean cont = TRUE;
 
-  tokens = g_strsplit (preferences, ",", 0);
-  for (; tokens[i] && cont; i++)
+  prots = g_strsplit (preferences, ";", 0);
+  for (; prots[i] && cont; i++)
     {
-      for (; j && cont; j--)
+      for (j = STACK_SIZE; j + 1 && cont; j--)
 	{
+	  tokens = g_strsplit (prots[i], ",", 0);
 	  protocol_item = g_list_find_custom (node->protocols[j],
-					      tokens[i], protocol_compare);
+					      tokens[0], protocol_compare);
 	  if (protocol_item)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
 	      name_item = protocol->node_names;
 	      name = (name_t *) (name_item->data);
-	      g_string_assign (node->name, name->name->str);
-	      g_string_assign (node->numeric_name, name->numeric_name->str);
-	      cont = FALSE;
+	      /* If we require this protocol to be solved and it's not,
+	       * the we have to go on */
+	      if (strcmp (tokens[1], "SOLVED")
+		  || strcmp (name->name->str, name->numeric_name->str))
+		{
+		  g_string_assign (node->name, name->name->str);
+		  g_string_assign (node->numeric_name,
+				   name->numeric_name->str);
+		  cont = FALSE;
+		}
 	    }
+	  g_strfreev (tokens);
+
 	}
     }
-  g_strfreev (tokens);
+  g_strfreev (prots);
 }				/* set_node_name */
 
 
