@@ -170,12 +170,12 @@ apemode_t mode;			/* Mode of operation. Can be
 gboolean diagram_only;		/* Do not use text on the diagram */
 gboolean nofade;		/* Do not fade unused links */
 guint32 refresh_period;		/* Time between diagram refreshes */
-double node_radius_multiplier;	/* used to calculate the radius of the
+gdouble node_radius_multiplier;	/* used to calculate the radius of the
 				 * displayed nodes. So that the user can
 				 * select with certain precision this
 				 * value, the GUI uses the log10 of the
 				 * multiplier */
-double link_width_multiplier;	/* Same explanation as above */
+gdouble link_width_multiplier;	/* Same explanation as above */
 size_mode_t size_mode;		/* Default mode for node size and
 				 * link width calculation */
 gchar *node_color, *link_color, *text_color;	/* Default colors 
@@ -185,12 +185,12 @@ gboolean need_reposition;	/* Force a diagram relayout */
 
 /* Capture settings */
 
-double averaging_time;		/* Microseconds of time we consider to
+gdouble averaging_time;		/* Microseconds of time we consider to
 				 * calculate traffic averages */
-double link_timeout_time;	/* After this time
+gdouble link_timeout_time;	/* After this time
 				 * has passed with no traffic in a 
 				 * link, it disappears */
-double node_timeout_time;	/* After this time has passed 
+gdouble node_timeout_time;	/* After this time has passed 
 				 * with no traffic in/out a 
 				 * node, it disappears */
 gchar *interface;		/* Network interface to listen to */
@@ -201,6 +201,7 @@ gchar *filter;			/* Pcap filter to be used */
 
 /* From capture.c */
 void init_capture (void);
+gint set_filter (gchar * filter, gchar * device);
 void update_packet_list (GList * packets, enum packet_belongs belongs_to);
 struct timeval substract_times (struct timeval a, struct timeval b);
 gint node_id_compare (gconstpointer a, gconstpointer b);
@@ -209,8 +210,6 @@ gint protocol_compare (gconstpointer a, gconstpointer b);
 gchar *ip_to_str (const guint8 * ad);
 gchar *ether_to_str (const guint8 * ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
-
-
 
 /* Macros */
 

@@ -59,6 +59,8 @@ typedef enum
   }
 create_node_type_t;
 
+pcap_t *pch;			/* pcap structure */
+
 
 /* Local funtions declarations */
 static void packet_read (pcap_t * pch, gint source,

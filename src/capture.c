@@ -44,11 +44,8 @@ init_capture (void)
 {
 
   gint pcap_fd, dns_fd;
-  pcap_t *pch;
   gchar *device;
   gchar ebuf[300];
-  static bpf_u_int32 netnum, netmask;
-  static struct bpf_program fp;
   link_type_t linktype;		/* Type of device we are listening to */
 
 
@@ -72,27 +69,30 @@ init_capture (void)
     }
 
   if (filter)
-    {
-      gboolean ok = 1;
-      /* A capture filter was specified; set it up. */
-      if (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0)
-	{
-	  g_warning (_
-		  ("Can't use filter:  Couldn't obtain netmask info (%s)."),
-		     ebuf);
-	  ok = 0;
-	}
-      if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
-	{
-	  g_warning (_ ("Unable to parse filter string (%s)."),
-		     pcap_geterr (pch));
-	  ok = 0;
-	}
-      if (ok && (pcap_setfilter (pch, &fp) < 0))
-	{
-	  g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
-	}
-    }
+    set_filter (filter, device);
+#if 0
+  {
+    gboolean ok = 1;
+    /* A capture filter was specified; set it up. */
+    if (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0)
+      {
+	g_warning (_
+		   ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+		   ebuf);
+	ok = 0;
+      }
+    if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
+      {
+	g_warning (_ ("Unable to parse filter string (%s)."),
+		   pcap_geterr (pch));
+	ok = 0;
+      }
+    if (ok && (pcap_setfilter (pch, &fp) < 0))
+      {
+	g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
+      }
+  }
+#endif
 
   pcap_fd = pcap_fileno (pch);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
@@ -133,9 +133,6 @@ init_capture (void)
       break;
     case IP:
       node_id_length = 4;
-#if 0
-      interape = 1;
-#endif
       break;
     case TCP:
       node_id_length = 6;
@@ -159,6 +156,39 @@ init_capture (void)
 
 }				/* init_capture */
 
+gint
+set_filter (gchar * filter, gchar * device)
+{
+  gchar ebuf[300];
+  static bpf_u_int32 netnum, netmask;
+  static struct bpf_program fp;
+  static gchar *current_device = NULL;
+  gboolean ok = 1;
+
+  /* TODO pending to be more general, since we want to be able 
+   * to change the capturing device in runtime. */
+  if (!current_device)
+    current_device = g_strdup (device);
+
+  /* A capture filter was specified; set it up. */
+  if (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0)
+    {
+      g_warning (_
+		 ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+		 ebuf);
+      ok = 0;
+    }
+  if (ok && (pcap_compile (pch, &fp, filter, 1, netmask) < 0))
+    {
+      g_warning (_ ("Unable to parse filter string (%s)."),
+		 pcap_geterr (pch));
+      ok = 0;
+    }
+  if (ok && (pcap_setfilter (pch, &fp) < 0))
+    {
+      g_warning (_ ("Can't install filter (%s)."), pcap_geterr (pch));
+    }
+}
 
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information

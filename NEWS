@@ -3,6 +3,12 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.1 (Monday 03-20-2000):
+  
+     * Capture filter may be set in the preferences dialog in runtime
+     * Warning! The above is just candy to have you all test some major
+       code restructuring. Please report any problems.
+       
   Overview of changes in Etherape 0.3.0 (Saturday 03-18-2000):
   
      * Preferences can be saved

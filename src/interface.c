@@ -502,13 +502,21 @@ create_diag_pref (void)
   GtkWidget *diagram_only_toggle;
   GtkWidget *label30;
   GtkWidget *label28;
-  GtkWidget *empty_notebook_page;
+  GtkWidget *table3;
+  GtkWidget *vbox12;
+  GtkWidget *filter_entry;
+  GtkWidget *label31;
   GtkWidget *label29;
   GtkWidget *dialog_action_area2;
   GtkWidget *save_pref_button;
-  GtkWidget *button10;
+  GtkWidget *ok_pref_button;
+  GtkWidget *ok_apply_button;
+  GtkWidget *cancel_pref_button;
+  GtkTooltips *tooltips;
 
-  diag_pref = gnome_dialog_new (NULL, NULL);
+  tooltips = gtk_tooltips_new ();
+
+  diag_pref = gnome_dialog_new (_ ("Etherape: Preferences"), NULL);
   gtk_object_set_data (GTK_OBJECT (diag_pref), "diag_pref", diag_pref);
   gtk_window_set_policy (GTK_WINDOW (diag_pref), FALSE, FALSE, FALSE);
   gnome_dialog_close_hides (GNOME_DIALOG (diag_pref), TRUE);
@@ -550,6 +558,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (averaging_spin);
   gtk_box_pack_start (GTK_BOX (vbox3), averaging_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, averaging_spin, _ ("Packet information is averaged for this amount of time"), NULL);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (averaging_spin), GTK_UPDATE_IF_VALID);
 
   label6 = gtk_label_new (_ ("Averaging Time (ms)"));
@@ -576,6 +585,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (refresh_spin);
   gtk_box_pack_start (GTK_BOX (vbox4), refresh_spin, FALSE, FALSE, 2);
+  gtk_tooltips_set_tip (tooltips, refresh_spin, _ ("Refresh diagram every this many miliseconds"), NULL);
 
   label7 = gtk_label_new (_ ("Diagram refresh period (ms)"));
   gtk_widget_ref (label7);
@@ -653,6 +663,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (node_to_spin);
   gtk_box_pack_start (GTK_BOX (vbox7), node_to_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, node_to_spin, _ ("Delete this node after this much time. 0 means never timeout."), NULL);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (node_to_spin), GTK_UPDATE_IF_VALID);
 
   label24 = gtk_label_new (_ ("Node Timeout (ms)"));
@@ -679,6 +690,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (link_to_spin);
   gtk_box_pack_start (GTK_BOX (vbox8), link_to_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, link_to_spin, _ ("Delete this link after this much time. 0 means never timeout."), NULL);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (link_to_spin), GTK_UPDATE_IF_VALID);
 
   label25 = gtk_label_new (_ ("Link Timeout (ms)"));
@@ -763,6 +775,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (diagram_only_toggle);
   gtk_box_pack_start (GTK_BOX (vbox11), diagram_only_toggle, FALSE, FALSE, 2);
+  gtk_tooltips_set_tip (tooltips, diagram_only_toggle, _ ("Toggle whether text is shown on the diagram"), NULL);
 
   label30 = gtk_label_new (_ ("No text"));
   gtk_widget_ref (label30);
@@ -779,9 +792,38 @@ create_diag_pref (void)
   gtk_widget_show (label28);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label28);
 
-  empty_notebook_page = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (empty_notebook_page);
-  gtk_container_add (GTK_CONTAINER (notebook1), empty_notebook_page);
+  table3 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table3);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "table3", table3,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table3);
+  gtk_container_add (GTK_CONTAINER (notebook1), table3);
+  gtk_container_set_border_width (GTK_CONTAINER (table3), 6);
+
+  vbox12 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox12);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox12", vbox12,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox12);
+  gtk_table_attach (GTK_TABLE (table3), vbox12, 0, 1, 0, 1,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (0), 0, 0);
+
+  filter_entry = gtk_entry_new ();
+  gtk_widget_ref (filter_entry);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "filter_entry", filter_entry,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (filter_entry);
+  gtk_box_pack_start (GTK_BOX (vbox12), filter_entry, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, filter_entry, _ ("Filter what's captured. See the tcpdump man page for details"), NULL);
+
+  label31 = gtk_label_new (_ ("Capture filter"));
+  gtk_widget_ref (label31);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label31", label31,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label31);
+  gtk_box_pack_start (GTK_BOX (vbox12), label31, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_LEFT);
 
   label29 = gtk_label_new (_ ("Capture"));
   gtk_widget_ref (label29);
@@ -806,12 +848,28 @@ create_diag_pref (void)
   GTK_WIDGET_SET_FLAGS (save_pref_button, GTK_CAN_DEFAULT);
 
   gnome_dialog_append_button (GNOME_DIALOG (diag_pref), GNOME_STOCK_BUTTON_OK);
-  button10 = g_list_last (GNOME_DIALOG (diag_pref)->buttons)->data;
-  gtk_widget_ref (button10);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "button10", button10,
+  ok_pref_button = g_list_last (GNOME_DIALOG (diag_pref)->buttons)->data;
+  gtk_widget_ref (ok_pref_button);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "ok_pref_button", ok_pref_button,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button10);
-  GTK_WIDGET_SET_FLAGS (button10, GTK_CAN_DEFAULT);
+  gtk_widget_show (ok_pref_button);
+  GTK_WIDGET_SET_FLAGS (ok_pref_button, GTK_CAN_DEFAULT);
+
+  gnome_dialog_append_button (GNOME_DIALOG (diag_pref), GNOME_STOCK_BUTTON_APPLY);
+  ok_apply_button = g_list_last (GNOME_DIALOG (diag_pref)->buttons)->data;
+  gtk_widget_ref (ok_apply_button);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "ok_apply_button", ok_apply_button,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ok_apply_button);
+  GTK_WIDGET_SET_FLAGS (ok_apply_button, GTK_CAN_DEFAULT);
+
+  gnome_dialog_append_button (GNOME_DIALOG (diag_pref), GNOME_STOCK_BUTTON_CANCEL);
+  cancel_pref_button = g_list_last (GNOME_DIALOG (diag_pref)->buttons)->data;
+  gtk_widget_ref (cancel_pref_button);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "cancel_pref_button", cancel_pref_button,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (cancel_pref_button);
+  GTK_WIDGET_SET_FLAGS (cancel_pref_button, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (font_button), "clicked",
 		      GTK_SIGNAL_FUNC (on_font_button_clicked),
@@ -822,9 +880,17 @@ create_diag_pref (void)
   gtk_signal_connect (GTK_OBJECT (save_pref_button), "clicked",
 		      GTK_SIGNAL_FUNC (on_save_pref_button_clicked),
 		      NULL);
-  gtk_signal_connect (GTK_OBJECT (button10), "clicked",
-		      GTK_SIGNAL_FUNC (on_button10_clicked),
+  gtk_signal_connect (GTK_OBJECT (ok_pref_button), "clicked",
+		      GTK_SIGNAL_FUNC (on_ok_pref_button_clicked),
 		      NULL);
+  gtk_signal_connect (GTK_OBJECT (ok_apply_button), "clicked",
+		      GTK_SIGNAL_FUNC (on_apply_pref_button_clicked),
+		      NULL);
+  gtk_signal_connect (GTK_OBJECT (cancel_pref_button), "clicked",
+		      GTK_SIGNAL_FUNC (on_cancel_pref_button_clicked),
+		      NULL);
+
+  gtk_object_set_data (GTK_OBJECT (diag_pref), "tooltips", tooltips);
 
   return diag_pref;
 }
@@ -869,4 +935,55 @@ create_fontselectiondialog1 (void)
 		      NULL);
 
   return fontselectiondialog1;
+}
+
+GtkWidget *
+create_dialog2 (void)
+{
+  GtkWidget *dialog2;
+  GtkWidget *dialog_vbox4;
+  GtkWidget *dialog_action_area4;
+  GtkWidget *button18;
+  GtkWidget *button19;
+  GtkWidget *button20;
+
+  dialog2 = gnome_dialog_new (NULL, NULL);
+  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog2", dialog2);
+  gtk_window_set_policy (GTK_WINDOW (dialog2), FALSE, FALSE, FALSE);
+
+  dialog_vbox4 = GNOME_DIALOG (dialog2)->vbox;
+  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog_vbox4", dialog_vbox4);
+  gtk_widget_show (dialog_vbox4);
+
+  dialog_action_area4 = GNOME_DIALOG (dialog2)->action_area;
+  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog_action_area4", dialog_action_area4);
+  gtk_widget_show (dialog_action_area4);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area4), GTK_BUTTONBOX_END);
+  gtk_button_box_set_spacing (GTK_BUTTON_BOX (dialog_action_area4), 8);
+
+  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_OK);
+  button18 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
+  gtk_widget_ref (button18);
+  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button18", button18,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button18);
+  GTK_WIDGET_SET_FLAGS (button18, GTK_CAN_DEFAULT);
+
+  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_APPLY);
+  button19 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
+  gtk_widget_ref (button19);
+  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button19", button19,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button19);
+  GTK_WIDGET_SET_FLAGS (button19, GTK_CAN_DEFAULT);
+
+  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_CANCEL);
+  button20 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
+  gtk_widget_ref (button20);
+  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button20", button20,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button20);
+  GTK_WIDGET_SET_FLAGS (button20, GTK_CAN_DEFAULT);
+
+  return dialog2;
 }

@@ -127,5 +127,37 @@ void
 				  gpointer user_data);
 
 void
-  on_button10_clicked (GtkButton * button,
-		       gpointer user_data);
+  on_filter_entry_changed (GtkEditable * editable,
+			   gpointer user_data);
+
+void
+  on_filter_entry_changed (GtkEditable * editable,
+			   gpointer user_data);
+
+void
+  on_apply_pref_button_clicked (GtkButton * button,
+				gpointer user_data);
+
+void
+  on_ok_pref_button_clicked (GtkButton * button,
+			     gpointer user_data);
+
+void
+  on_ok_pref_button_clicked (GtkButton * button,
+			     gpointer user_data);
+
+void
+  on_cancel_pref_button_clicked (GtkButton * button,
+				 gpointer user_data);
+
+void
+  on_ok_pref_button_clicked (GtkButton * button,
+			     gpointer user_data);
+
+void
+  on_cancel_pref_button_clicked (GtkButton * button,
+				 gpointer user_data);
+
+void
+  on_apply_pref_button_clicked (GtkButton * button,
+				gpointer user_data);

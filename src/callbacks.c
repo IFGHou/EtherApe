@@ -157,6 +157,13 @@ on_properties1_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+  GtkEditable *entry;
+  gint position = 0;
+
+  entry = GTK_EDITABLE (lookup_widget (GTK_WIDGET (diag_pref),
+				       "filter_entry"));
+  gtk_editable_delete_text (entry, 0, -1);
+  gtk_editable_insert_text (entry, filter, strlen (filter), &position);
   gtk_widget_show (diag_pref);
 
 }
@@ -464,11 +471,48 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 
 
 void
-on_button10_clicked (GtkButton * button,
-		     gpointer user_data)
+on_ok_pref_button_clicked (GtkButton * button,
+			   gpointer user_data)
+{
+  GtkWidget *dialog;
+  on_apply_pref_button_clicked (button, NULL);
+  dialog = lookup_widget (GTK_WIDGET (button), "diag_pref");
+  gtk_widget_hide (dialog);
+
+}
+
+void
+on_apply_pref_button_clicked (GtkButton * button,
+			      gpointer user_data)
+{
+  GtkWidget *widget;
+  widget = lookup_widget (GTK_WIDGET (button), "filter_entry");
+  on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
+
+}
+
+void
+on_cancel_pref_button_clicked (GtkButton * button,
+			       gpointer user_data)
 {
   GtkWidget *dialog;
   dialog = lookup_widget (GTK_WIDGET (button), "diag_pref");
   gtk_widget_hide (dialog);
 
+}
+
+/* Makes a new filter */
+void
+on_filter_entry_changed (GtkEditable * editable,
+			 gpointer user_data)
+{
+  gchar *str;
+  /* TODO should make sure that for each mode the filter is set up
+   * correctly */
+  str = gtk_editable_get_chars (editable, 0, -1);
+  if (filter)
+    g_free (filter);
+  filter = g_strdup (str);
+  g_free (str);
+  set_filter (filter, NULL);
 }
