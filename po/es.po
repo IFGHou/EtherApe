@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-21 04:59+0200\n"
+"POT-Creation-Date: 2001-04-21 22:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -717,7 +717,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:550
 # src/capture.c:569
 # src/capture.c:742
-#: src/capture.c:742
+#: src/capture.c:746
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -735,7 +735,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:588
 # src/capture.c:607
 # src/capture.c:780
-#: src/capture.c:780
+#: src/capture.c:784
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -753,7 +753,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:813
 # src/capture.c:832
 # src/capture.c:855
-#: src/capture.c:855
+#: src/capture.c:859
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -771,7 +771,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:882
 # src/capture.c:901
 # src/capture.c:984
-#: src/capture.c:984
+#: src/capture.c:988
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -789,7 +789,7 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1101
 # src/capture.c:1120
 # src/capture.c:1216
-#: src/capture.c:1216
+#: src/capture.c:1220
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 

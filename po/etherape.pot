@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-21 04:59+0200\n"
+"POT-Creation-Date: 2001-04-21 22:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,27 +214,27 @@ msgstr ""
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:742
+#: src/capture.c:746
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:780
+#: src/capture.c:784
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:855
+#: src/capture.c:859
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:984
+#: src/capture.c:988
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1216
+#: src/capture.c:1220
 msgid "Null packet in check_packet"
 msgstr ""
 
