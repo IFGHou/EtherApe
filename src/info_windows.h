@@ -25,6 +25,8 @@ typedef struct
 node_info_window_t;
 
 GList *node_info_windows = NULL;
+static guint prot_clist_sort_column = 0;
+static gboolean prot_clist_reverse_sort = FALSE;
 
 gboolean on_prot_table_button_press_event (GtkWidget * widget,
 					   GdkEventButton * event,
@@ -33,3 +35,7 @@ static void update_node_info_window (node_info_window_t * node_info_window);
 static gint node_info_compare (gconstpointer a, gconstpointer b);
 
 void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);
+static void prot_clist_button_clicked (GtkButton * button,
+				       gpointer func_data);
+static gint prot_window_compare (GtkCList * clist, gconstpointer p1,
+				 gconstpointer p2);
