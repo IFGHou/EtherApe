@@ -134,12 +134,12 @@ typedef struct
 {
   guint8 *link_id;		/* pointer to guint8 containing src and
 				 * destination nodes_id's of the link */
-  double average;
-  double accumulated;
+  gdouble average;
+  gdouble accumulated;
   guint n_packets;
-  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the link */
   struct timeval last_time;	/* Timestamp of the last packet added */
   GList *packets;		/* List of packets heard on this link */
+  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the link */
   GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
 					 * all protocols heard at that level */
   gchar *src_name;
@@ -185,13 +185,6 @@ GTree *nodes;			/* Has all the nodes heard on the network */
 GTree *links;			/* Has all links heard on the net */
 GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
 					 * all protocols heards at that level */
-				/* TODO Ask around whether 10 is too bad
-				 * a hard limit 
-				 * On the other hand, some other people have
-				 * said this kind of stuff before, and I'd
-				 * like to be quoted just like them:
-				 * "10 should be enough for everybody" :-) */
-
 
 link_type_t linktype;		/* Type of device we are listening to */
 guint node_id_length;		/* Length of the node_id key. Depends
@@ -249,7 +242,7 @@ gchar *filter;			/* Pcap filter to be used */
 /* Global functions declarations */
 
 /* From capture.c */
-gboolean init_capture (void);
+gchar *init_capture (void);
 gboolean start_capture (void);
 gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);
@@ -281,9 +274,6 @@ void destroying_idle (gpointer data);
 
 /* Macros */
 
-/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
- * byte array, returns the value of the two or four bytes at the pointer.
- */
 
 #define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
 						  G_LOG_LEVEL_DEBUG, \
@@ -296,6 +286,9 @@ void destroying_idle (gpointer data);
 						      format, ##args)
 
 
+/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
+ * byte array, returns the value of the two or four bytes at the pointer.
+ */
 #define pntohs(p)  ((guint16)                       \
 		       ((guint16)*((guint8 *)p+0)<<8|  \
 			   (guint16)*((guint8 *)p+1)<<0))
