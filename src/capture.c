@@ -203,6 +203,7 @@ init_capture (void)
       else
 	{
 	  g_free (pref.filter);
+	  pref.filter = NULL;
 	  str = g_strdup ("ip");
 	}
       break;
@@ -212,6 +213,7 @@ init_capture (void)
       else
 	{
 	  g_free (pref.filter);
+	  pref.filter = NULL;
 	  str = g_strdup ("tcp");
 	}
       break;
@@ -221,6 +223,7 @@ init_capture (void)
       else
 	{
 	  g_free (pref.filter);
+	  pref.filter = NULL;
 	  str = g_strdup ("udp");
 	}
       break;
@@ -233,7 +236,8 @@ init_capture (void)
 	str = g_strdup (pref.filter);
       break;
     }
-  g_free (pref.filter);
+  if (pref.filter)
+    g_free (pref.filter);
   pref.filter = str;
   str = NULL;
 
@@ -821,9 +825,6 @@ create_node (const guint8 * packet, const guint8 * node_id)
   /* We have already allocated memory for the id when we created the
    * packet. We will use that, and will free it when the node disappears
    * and not with the packet */
-#if 0
-  node->node_id = g_memdup (node_id, node_id_length);
-#endif
   node->node_id = node_id;
 
   node->name = NULL;
@@ -1104,7 +1105,11 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 	    /* Remove all mentions to this node in the globals protocols list */
 	    forget_node_from_protocols (node_id);
 
+	    /* TODO 
+	     * I believe there might be instances where the node_id is still
+	     * tried to be used, by check_packet, in particular.  */
 	    g_free (node_id);
+
 	    node = NULL;
 	    return TRUE;	/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
