@@ -72,7 +72,8 @@ main (int argc, char *argv[])
 
   /* We initiate the application and read command line options */
   /* But first we set the window icon to use */
-  putenv ("GNOME_DESKTOP_ICON="PIXMAPS_DIR"/etherape.png");
+  if (!getenv("GNOME_DESKTOP_ICON"))
+      putenv ("GNOME_DESKTOP_ICON="PIXMAPS_DIR"/etherape.png");
   gnome_init_with_popt_table ("EtherApe", VERSION, argc, argv, optionsTable,
 			      0, NULL);
 
