@@ -29,6 +29,7 @@ etherape_SOURCES = \
 	protocols.c protocols.h \
 	prot_types.h \
 	info_windows.c info_windows.h \
+	conversations.c conversations.h \
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
