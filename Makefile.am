@@ -68,6 +68,7 @@ EXTRA_DIST = \
 	src/glade-strings	\
 	$(conf_DATA)		\
 	$(glade_DATA)		\
+	$(Development_DATA)	\
 	$(man_MANS)
 
 
