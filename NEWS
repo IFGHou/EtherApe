@@ -1,6 +1,13 @@
 
                             Changelog for Etherape
                                        
+   $Date$
+   
+  Overview of changes in Etherape 0.2.4 (Thursday 03-09-2000):
+  
+     * Major bug fix.
+     * Added README.bugs with procedures for bug reporting.
+       
   Overview of changes in Etherape 0.2.3 (Wednesday 03-08-2000):
   
      * Non blocking reverse lookups. I brought dns.c in from mtr to

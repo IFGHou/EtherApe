@@ -1,5 +1,6 @@
 /* resolv.c
  * Routines for network object lookup
+ * $Id$
  *
  * Originally written by Laurent Deniel <deniel@worldnet.fr>
  * Adapted to etherape by Juan Toledo <toledo@users.sourceforge.net>

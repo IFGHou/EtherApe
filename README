@@ -77,21 +77,7 @@ To receive a message whenever a new version of Etherape is
 available, go to http://sourceforge.net/project/?group_id=2712 and
 click on the "Monitor this module" link.
 
-Bug reports and feature requests should be sent in order 
-of preference:
-* The bug tracking system, http://sourceforge.net/bugs/?group_id=2712
-* The mailing list, etherape-users@lists.sourceforge.net
-* The author himself.
-
-Even though I'd ask you to post your bug report or feature 
-request on the bug tracking system, it would be nice if you could
-drop a note on the mailing list as well to say that you did so.
-
-You might want to have a look at 
-http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
-before reporting your bug. It makes an interesting reading.
-But if you will only do one thing, I prefer receiving your
-bug than you reading the article! :-)
+See README.bugs for instructions on how to send a bug report.
 
 If you already are a sourceforge user, please take the time to 
 tell me what would be your favourite next feature filling the 

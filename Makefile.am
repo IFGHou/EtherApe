@@ -22,6 +22,7 @@ purge:
 EXTRA_DIST = \
 	README.thanks 		\
 	README.help		\
+	README.bugs		\
 	FAQ			\
 	etherape.glade		\
 	html/NEWS.html		\
@@ -38,7 +39,7 @@ EXTRA_DIST = \
 full-dist :
 	test `whoami` = toledo
 	test `echo ${VERSION}` != `cat old.version`
-	jed NEWS.html
+	jed html/NEWS.html
 	make NEWS
 	make dist
 	make cvs

@@ -1,5 +1,6 @@
 /* Etherape
  * Copyright (C) 2000 Juan Toledo
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,10 +242,12 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	   * the host is not found in /etc/ethers */
 	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
 	      (node->ip_address ||
-	       ((packet[12] == 0x08) && (packet[13] == 0x00))))
+	       (packet && (packet[12] == 0x08) && (packet[13] == 0x00))
+	      )
+	    )
 	    {
 	      if (!node->ip_address && packet)
-		{
+		 {
 		  const guint8 *ip_address;
 		  /* We do not know whether this was a source or destination
 		   * node, so we have to check it out */
@@ -332,7 +335,7 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
       /* TODO Write proper assertion code here */
       g_error (_ ("Reached default in fill_names"));
     }
-}
+}		/* fill_names */
 
 
 /* Allocates a new node structure, and adds it to the

@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+# $Id$
+
 INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR)
