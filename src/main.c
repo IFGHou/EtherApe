@@ -31,116 +31,172 @@
 
 guint averaging_time = 10000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
-
-typedef struct _draw_nodes_data
+GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+				 * separate data from presentation: that is, we need to
+				 * keep a list of CanvasItems, but we do not want to keep
+				 * that info on the nodes tree itself */
+typedef struct
   {
-    gboolean first_flag;
-    guint n_nodes;		/* Number of nodes
-				 * We put it here so that it does not have to be calculated
-				 * everytime in draw_nodes */
+    guint8 *ether_addr;
+    node_t *node;
+    GnomeCanvasItem *node_item;
+    GnomeCanvasItem *text_item;
+    GnomeCanvasGroup *group_item;
   }
-draw_nodes_data_t;
+canvas_node_t;
 
-extern GdkPixmap *pixmap;
-extern GtkWidget *drawing_area;
+extern gint ether_compare (gconstpointer a, gconstpointer b);
+
+
 GdkFont *fixed_font;
 
-gint
-draw_nodes (gpointer ether_addr, node_t * node, draw_nodes_data_t * draw_nodes_data)
+
+gint 
+reposition_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *canvas)
 {
+   static gfloat angle=0.0;
+   static guint node_i=0,n_nodes=0;
+   GnomeCanvasGroup *group;
+   double x,y,xmax,ymax,rad_max=150.0;
+   
+   if (!n_nodes) 
+     {
+	n_nodes=node_i=g_tree_nnodes(canvas_nodes);
+     }
 
-  static gfloat angle;		/* Angle at which this node is to be drawn */
-  gint x, y, xmax, ymax;
-  gint rad_max;
-
-  xmax = drawing_area->allocation.width;
-  ymax = drawing_area->allocation.height;
-  rad_max = (xmax < ymax) ? 0.75 * (xmax / 2) : 0.75 * (ymax / 2);
-
-  if (draw_nodes_data->first_flag)
-    {
-      draw_nodes_data->first_flag = FALSE;
-      angle = 0;
-    }
-
-  node->average = node->accumulated * 1000000 / averaging_time;
-
-  x = xmax / 2 + rad_max * cosf (angle) - node->average / 2;
-  y = ymax / 2 + rad_max * sinf (angle) - node->average / 2;
-
-  gdk_draw_arc (pixmap,
-		drawing_area->style->black_gc,
-		TRUE,
-		x,
-		y,
-		node->average,
-		node->average,
-		0,
-		360000);
-
-  gdk_draw_text (pixmap,
-		 fixed_font,
-		 drawing_area->style->black_gc,
-		 x, y,
-		 ether_to_str (node->ether_addr),
-		 17);		/*Size of text */
-
-
-  angle += 2 * M_PI / draw_nodes_data->n_nodes;
-
-  return FALSE;			/* Continue with traverse function */
+   x = rad_max * cosf (angle);
+   y = rad_max * sinf (angle);
+   
+   gnome_canvas_item_set (canvas_node->group_item,
+			  "x", x,
+			  "y", y,
+			  NULL);
+   gnome_canvas_item_request_update (canvas_node->text_item);
+   
+   node_i--;
+   
+   if (node_i) 
+     {
+	angle += 2 * M_PI / n_nodes;
+     }
+   else 
+     {
+	angle=0.0;
+	n_nodes=0;
+     }
+   
+   return FALSE;
 }
 
+
+gint 
+update_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *canvas)
+{
+   node_t *node;
+   node=canvas_node->node;
+   
+   node->average = node->accumulated * 1000000 / averaging_time;
+
+
+   gnome_canvas_item_set (canvas_node->node_item,
+			  "x1", -(double)node->average/2,
+			  "x2", (double) node->average/2,
+			  "y1", -(double)node->average/2,
+			  "y2", (double) node->average/2,
+			  NULL);
+   
+   return FALSE;
+
+}
+
+gint
+check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
+{
+  canvas_node_t *new_canvas_node;
+  GnomeCanvasGroup *group;
+
+
+  if (!g_tree_lookup (canvas_nodes, ether_addr))
+    {
+      group = gnome_canvas_root (GNOME_CANVAS (canvas));
+
+      new_canvas_node = g_malloc (sizeof (canvas_node_t));
+      new_canvas_node->ether_addr = ether_addr;
+      new_canvas_node->node = node;
+      node->average = node->accumulated * 1000000 / averaging_time;
+
+      group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
+							  gnome_canvas_group_get_type (),
+							  "x", 0.0,
+							  "y", 0.0,
+							  NULL));
+       
+      new_canvas_node->node_item = gnome_canvas_item_new (group, 
+							    GNOME_TYPE_CANVAS_ELLIPSE,
+							    "x1", 0.0,
+							    "x2", (double) node->average,
+							    "y1", 0.0,
+							    "y2", (double) node->average,
+							    "fill_color_rgba", 0xFF0000FF,
+							    "outline_color", "black",
+							    "width_pixels", 0,
+							    NULL);
+      new_canvas_node->text_item = gnome_canvas_item_new (group,
+							  GNOME_TYPE_CANVAS_TEXT,
+							  "text", node->name->str,
+							  "x", 0.0,
+							  "y", 0.0,
+							  "anchor", GTK_ANCHOR_CENTER,
+							  "font","-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+							  "fill_color", "black",
+							  NULL);
+      new_canvas_node->group_item=group;
+
+      g_tree_insert (canvas_nodes, ether_addr, new_canvas_node);
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
+	     _ ("Creating canvas_node: %s. Number of nodes %d"), \
+	     ether_to_str (new_canvas_node->ether_addr), \
+	     g_tree_nnodes (canvas_nodes));
+
+    }
+   
+   return FALSE;
+}
 
 guint
-draw_diagram (gpointer data)
+update_diagram (GtkWidget * canvas)
 {
+  static GnomeCanvasItem *circle = NULL;
+  GnomeCanvasGroup *group;
 
-  GdkRectangle update_rect;
-  draw_nodes_data_t draw_nodes_data;
-
-  /* Resets the pixmap */
-  gdk_draw_rectangle (pixmap,
-		      drawing_area->style->white_gc,
-		      TRUE,
-		      0, 0,
-		      drawing_area->allocation.width,
-		      drawing_area->allocation.height);
-
-  draw_nodes_data.n_nodes = g_tree_nnodes (nodes);
-  draw_nodes_data.first_flag = TRUE;
-
-  g_tree_traverse (nodes, draw_nodes, G_IN_ORDER, &draw_nodes_data);
-
-  /* Tells gtk_main to update the whole widget area */
-  update_rect.x = update_rect.y = 0;
-  update_rect.width = drawing_area->allocation.width;
-  update_rect.height = drawing_area->allocation.height;
-
-  gtk_widget_draw (drawing_area, &update_rect);
-
-  return TRUE;
-}
-
-guint 
-update_diagram (GtkWidget *canvas)
-{
-  static GnomeCanvasItem *circle=NULL;
-  GnomeCanvasGroup* group;
+  /* Check if there are any new nodes */
+  g_tree_traverse (nodes, check_new_node, G_IN_ORDER, canvas);
    
-  group = gnome_canvas_root(GNOME_CANVAS(canvas));
+  /* Reposition canvas_nodes 
+   * TODO: This should be conditional. Look for a way to know
+   * whether the canvas needs updating, that is, a new node has been added
+   */
+  g_tree_traverse (canvas_nodes, reposition_canvas_nodes, G_IN_ORDER, canvas);
+   
+  /* Update nodes aspect */
+  g_tree_traverse (canvas_nodes, update_canvas_nodes, G_IN_ORDER, canvas);
+   
+  group = gnome_canvas_root (GNOME_CANVAS (canvas));
+
 #if 0   
-  if (!circle) {
-     circle = gnome_canvas_item_new (group,
-				  GNOME_TYPE_CANVAS_ELLIPSE,
-				  "x1",0,"x2",100,
-				  "y1",0,"y2",100,
-				  "fill_color_rgba", 0x5f9ea0FF,
-				  "outline_color", "black",
-				  "width_units", 4.0,
-				  NULL);
-  }
-#endif        
+  if (!circle)
+    {
+      circle = gnome_canvas_item_new (group,
+				      GNOME_TYPE_CANVAS_ELLIPSE,
+				      "x1", 0.0, "x2", 100.0,
+				      "y1", 0.0, "y2", 100.0,
+				      "fill_color_rgba", 0x00FF00FF,
+				      "outline_color", "black",
+				      "width_pixels", 0,
+				      NULL);
+    }
+#endif 
+   
 }
 
 int
@@ -154,6 +210,7 @@ main (int argc, char *argv[])
 #endif
 
   init_capture ();
+  canvas_nodes = g_tree_new (ether_compare);
 
   gnome_init ("etherape", VERSION, argc, argv);
 

@@ -1,4 +1,3 @@
-
 #include <pcap.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -6,6 +5,8 @@
 #include "capture.h"
 
 #include <ctype.h>
+
+#include <gnome.h>
 
 extern guint averaging_time;
 
@@ -116,11 +117,11 @@ create_node (const guint8 * ether_addr)
   node->average = 0;
   node->n_packets = 0;
   node->name = g_string_new (ether_to_str (ether_addr));
-  node->packets=NULL;
+  node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \
-	 "Creating node: %s. Number of nodes %d", \
+	 _ ("Creating node: %s. Number of nodes %d"), \
 	 node->name->str, \
 	 g_tree_nnodes (nodes));
 
@@ -128,11 +129,12 @@ create_node (const guint8 * ether_addr)
 }
 
 GList *
-check_packet (GList *packets, struct timeval now) {
-   
-   struct timeval packet_time, result;
-   packet_time=((packet_t *)packets->data)->timestamp;
-   
+check_packet (GList * packets, struct timeval now)
+{
+
+  struct timeval packet_time, result;
+  packet_time = ((packet_t *) packets->data)->timestamp;
+
   /* Perform the carry for the later subtraction by updating Y. */
   if (now.tv_usec < packet_time.tv_usec)
     {
@@ -149,23 +151,23 @@ check_packet (GList *packets, struct timeval now) {
 
   result.tv_sec = now.tv_sec - packet_time.tv_sec;
   result.tv_usec = now.tv_usec - packet_time.tv_usec;
-   
+
   /* If this node is older than the averaging time,
    * then it is removed, and the process continues.
    * Else, we are done. */
-   
-  if ( (now.tv_sec*1000000+now.tv_usec - 
-        packet_time.tv_sec*1000000-packet_time.tv_usec)
-      > averaging_time ) 
+
+  if ((now.tv_sec * 1000000 + now.tv_usec -
+       packet_time.tv_sec * 1000000 - packet_time.tv_usec)
+      > averaging_time)
     {
-     ((packet_t *)packets->data)->parent_node->accumulated -= 
-	 ((packet_t *) packets->data)->size;
-     g_free (packets->data);
-     packets=packets->prev;
-     g_list_remove (packets,packets->next->data);  
-     return (packets);
+      ((packet_t *) packets->data)->parent_node->accumulated -=
+	((packet_t *) packets->data)->size;
+      g_free (packets->data);
+      packets = packets->prev;
+      g_list_remove (packets, packets->next->data);
+      return (packets);
     }
-   
+
   return NULL;
 }
 
@@ -173,10 +175,10 @@ void
 update_packet_list (GList * packets)
 {
   struct timeval now;
-  gettimeofday(&now,NULL);
-  packets=g_list_last(packets);
-  
-  while ((packets=check_packet(packets,now))); 
+  gettimeofday (&now, NULL);
+  packets = g_list_last (packets);
+
+  while ((packets = check_packet (packets, now)));
 }
 
 void
@@ -254,11 +256,11 @@ init_capture (void)
   char ebuf[100];
   (pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf);
   pcap_fd = pcap_fileno (pch);
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,"pcap_fd: %d", pcap_fd);
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
   gdk_input_add (pcap_fd,
-			 GDK_INPUT_READ,
-			 packet_read,
-			 pch);
+		 GDK_INPUT_READ,
+		 packet_read,
+		 pch);
   init_data ();
 
 }
