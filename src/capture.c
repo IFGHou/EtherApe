@@ -599,7 +599,7 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
 gchar *
 get_main_prot (GList * packets, link_t * link)
 {
-//  link->protocols=g_list_sort (link->protocols, prot_freq_compare);
+  link->protocols = g_list_sort (link->protocols, prot_freq_compare);
   return g_strdup (((protocol_t *) link->protocols->data)->name);
 }				/* get_main_prot */
 
@@ -654,6 +654,9 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 
     }
 
+  /* TODO Change the parameters to this function.
+   * I'd like to be able to access data of the parents
+   * when the packet list is empty */
 
 }				/* update_packet_list */
 

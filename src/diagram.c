@@ -304,12 +304,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   if (link->packets)
     update_packet_list (link->packets, LINK);
 
-  gdk_color_parse (get_prot_color (link->main_prot), &color);
-  baseColor = ((color.red & 0xFF00) << 16) |
-    ((color.green & 0xFF00) << 8) |
-    (color.blue & 0xFF00) |
-    0xFF;
-
   diff = substract_times (now, link->last_time);
   age = diff.tv_sec + diff.tv_usec / 1000000.0;
 
@@ -359,6 +353,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
       link->accumulated = 0;
     }
 
+  gdk_color_parse (get_prot_color (link->main_prot), &color);
+  baseColor = ((color.red & 0xFF00) << 16) |
+    ((color.green & 0xFF00) << 8) |
+    (color.blue & 0xFF00) |
+    0xFF;
 
   args[0].name = "x";
   args[1].name = "y";
