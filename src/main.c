@@ -72,7 +72,9 @@ load_config (char *prefix)
   gnome_config_push_prefix (prefix);
   diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
-  nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+  /* Not yet, since we can't force fading
+     nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+   */
   node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=60000000.0", &u);

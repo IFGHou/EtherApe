@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-29 19:14+0200\n"
+"POT-Creation-Date: 2000-03-30 17:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,71 +14,71 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:142
+#: src/main.c:144
 msgid "Preferences saved"
 msgstr ""
 
-#: src/main.c:156
+#: src/main.c:158
 msgid "mode of operation"
 msgstr ""
 
-#: src/main.c:156
+#: src/main.c:158
 msgid "<ethernet|ip|tcp|udp>"
 msgstr ""
 
-#: src/main.c:158
+#: src/main.c:160
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:158
+#: src/main.c:160
 msgid "<interface name>"
 msgstr ""
 
-#: src/main.c:160
+#: src/main.c:162
 msgid "set capture filter"
 msgstr ""
 
-#: src/main.c:160
+#: src/main.c:162
 msgid "<capture filter>"
 msgstr ""
 
-#: src/main.c:162
+#: src/main.c:164
 msgid "set input file"
 msgstr ""
 
-#: src/main.c:162
+#: src/main.c:164
 msgid "<file name>"
 msgstr ""
 
-#: src/main.c:164
+#: src/main.c:166
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:166
+#: src/main.c:168
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:168
+#: src/main.c:170
 msgid "do not fade old links"
 msgstr ""
 
-#: src/main.c:170
+#: src/main.c:172
 msgid "set the node color"
 msgstr ""
 
-#: src/main.c:170 src/main.c:172 src/main.c:174
+#: src/main.c:172 src/main.c:174 src/main.c:176
 msgid "color"
 msgstr ""
 
-#: src/main.c:172
+#: src/main.c:174
 msgid "set the link color"
 msgstr ""
 
-#: src/main.c:174
+#: src/main.c:176
 msgid "set the text color"
 msgstr ""
 
-#: src/main.c:238
+#: src/main.c:240
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
@@ -343,59 +343,59 @@ msgstr ""
 msgid "Ape mode not yet supported"
 msgstr ""
 
-#: src/capture.c:173
+#: src/capture.c:174
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:179
+#: src/capture.c:180
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:184
+#: src/capture.c:185
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:309
+#: src/capture.c:311
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:345
+#: src/capture.c:347
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:429
+#: src/capture.c:431
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:450
+#: src/capture.c:452
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:488
+#: src/capture.c:490
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:636
+#: src/capture.c:638
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:705
+#: src/capture.c:707
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:767
+#: src/capture.c:769
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:888
+#: src/capture.c:890
 msgid "Null packet in check_packet"
 msgstr ""

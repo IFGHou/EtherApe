@@ -19,19 +19,33 @@
 
 #include "globals.h"
 
+struct popup_data
+{
+  GtkWidget *node_popup;
+  canvas_node_t *canvas_node;
+};
+
 /* Function definitions */
 
-gint reposition_canvas_nodes (guint8 * ether_addr,
-			      canvas_node_t * canvas_node,
-			      GtkWidget * canvas);
-gint update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link,
-			  GtkWidget * canvas);
-gint update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
-			  GtkWidget * canvas);
-gint check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas);
-gint check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas);
+static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
+static gint check_new_node (guint8 * ether_addr,
+			    node_t * node, GtkWidget * canvas);
+static gint update_canvas_nodes (guint8 * ether_addr,
+				 canvas_node_t * canvas_node,
+				 GtkWidget * canvas);
+static gint reposition_canvas_nodes (guint8 * ether_addr,
+				     canvas_node_t * canvas_node,
+				     GtkWidget * canvas);
+static gint check_new_link (guint8 * ether_link,
+			    link_t * link, GtkWidget * canvas);
+static gint update_canvas_links (guint8 * ether_link,
+				 canvas_link_t * canvas_link,
+				 GtkWidget * canvas);
 static gchar *get_prot_color (gchar * name);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
 static gint link_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_link_t * canvas_link);
+static gint node_item_event (GnomeCanvasItem * item,
+			     GdkEvent * event, canvas_node_t * canvas_node);
+static guint popup_to (struct popup_data *pd);
