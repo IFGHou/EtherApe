@@ -45,6 +45,9 @@ purge:
 	rm -f *~ *.bak *.tar.gz
 	cd src && make purge
 
+splint:
+	cd src && make splint
+	
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.thanks 		\
 	README.help		\

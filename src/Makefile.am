@@ -10,6 +10,7 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
+	$(WARN_CFLAGS) \
 	$(ETHERAPE_CFLAGS) 
 
 bin_PROGRAMS = etherape
@@ -43,3 +44,6 @@ indent: .indent
 
 purge:
 	rm -f *~ *.bak
+
+splint:
+	splint $(INCLUDES) $(etherape_SOURCES)

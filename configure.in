@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(etherape, 0.9.0)
-AC_CONFIG_SRCDIR(acconfig.h)
+AC_INIT(etherape, 0.9.0alpha)
+AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
@@ -16,6 +16,9 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
+# gnome checks
+GNOME_COMPILE_WARNINGS
+
 # Checks for libraries.
 PKG_CHECK_MODULES(ETHERAPE, libglade-2.0 libgnomeui-2.0)
 AC_SUBST(ETHERAPE_CFLAGS)
@@ -24,9 +27,6 @@ AC_SUBST(ETHERAPE_LIBS)
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h net/if.h])
-
-# gnome checks
-GNOME_COMPILE_WARNINGS
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -84,6 +84,9 @@ AC_SUBST(DATAFILE_DIR)
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr"
 AM_GLIB_GNU_GETTEXT
+GETTEXT_PACKAGE=etherape
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -104,9 +107,7 @@ fi
 
 
 AC_CONFIG_FILES([Makefile
-                 doc/C/Makefile
                  etherape.spec
-                 doc/Makefile
                  glade/Makefile
                  src/Makefile
 		 m4/Makefile

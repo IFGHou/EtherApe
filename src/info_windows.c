@@ -811,20 +811,22 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
   if (!node_id)
     {
       g_my_critical (_("No node_id in on_node_info_delete_event"));
-      return;
+      return TRUE; /* ignore signal */
     }
 
   if (!(item =
 	g_list_find_custom (node_info_windows, node_id, node_info_compare)))
     {
       g_my_critical (_("No node_info_window in on_node_info_delete_event"));
-      return;
+      return TRUE; /* ignore signal */
     }
 
   node_info_window = item->data;
   g_free (node_info_window->node_id);
   gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
   node_info_windows = g_list_remove_link (node_info_windows, item);
+
+  return FALSE;
 }				/* on_node_info_delete_event */
 
 static void

@@ -1,6 +1,7 @@
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
+#undef GETTEXT_PACKAGE
 #undef HAVE_LC_MESSAGES
 #undef HAVE_STPCPY
 #undef HAVE_LIBSM
@@ -11,3 +12,7 @@
 #undef PIXMAPS_DIR
 #undef HAVE_LIBPCAP
 #undef HAVE_U_INT
+#undef u_char
+#undef u_int
+#undef u_long
+#undef u_short
