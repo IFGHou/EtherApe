@@ -1,8 +1,14 @@
 
+  Overview of changes in Etherape 0.2.3 (Wednesday 03-08-2000):
+  
+     * Non blocking reverse lookups. I brought dns.c in from mtr to
+       provide this functionality. This code is from Simon Kirby.
+     * Removed now unnecessary -r option.
+       
   Overview of changes in Etherape 0.2.2 (Tuesday 03-07-2000):
   
      * Added ppp and slip devices support.
-     * Broght back IP address display in ethernet mode when no
+     * Brought back IP address display in ethernet mode when no
        /etc/ethers is available
      * Fixed another bug with RedHat 6.1. (I really have to find time to
        talk to this guy)

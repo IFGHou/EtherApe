@@ -44,7 +44,6 @@ guint l3_offset;		/* Offset to the level 3 protocol data
 /* Extern global variables */
 
 extern gboolean numeric;
-extern gboolean dns;
 extern gchar *interface;
 extern gchar *filter;
 
@@ -241,10 +240,10 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	  /* We look for the ip side only if it is an IP packet and 
 	   * the host is not found in /etc/ethers */
 	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
-	      ( node->ip_address || 
-	       ( (packet[12] == 0x08) && (packet[13] == 0x00) ) ))
+	      (node->ip_address ||
+	       ((packet[12] == 0x08) && (packet[13] == 0x00))))
 	    {
-	      if ((!(node->ip_address)) && packet)
+	      if (!node->ip_address && packet)
 		{
 		  const guint8 *ip_address;
 		  /* We do not know whether this was a source or destination
@@ -255,24 +254,23 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 		    ip_address = packet + 30;
 		  node->ip_address = ntohl (*(guint32 *) ip_address);
 		}
-
-	      if (dns)
-		{
-		  if (!node->name)
-		    node->name = g_string_new (dns_lookup (node->ip_address));
-		  else
-		     g_string_assign (node->name, dns_lookup (node->ip_address));
-		}
+	      if (!node->name)
+		node->name = g_string_new (dns_lookup (node->ip_address));
 	      else
-		node->name = g_string_new (ip_to_str ((guint8 *) (&(node->ip_address))));
+		g_string_assign (node->name, dns_lookup (node->ip_address));
 	    }
 	  else
 	    node->name = g_string_new (get_ether_name (node_id));
 	}
       break;
+
     case IP:
+      if (!node->ip_address)
+	node->ip_address = ntohl (*(guint32 *) node_id);
+
       if (!node->numeric_name)
 	node->numeric_name = g_string_new (ip_to_str (node_id));
+
       if (numeric)
 	{
 	  if (!node->name)
@@ -280,45 +278,59 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	}
       else
 	{
-	  if (!node->ip_address)
-	     node->ip_address=ntohl(*(guint32 *)node_id);
-//	  if (dns)
-//	    {
-	      if (!node->name)
-		node->name = g_string_new (dns_lookup (node->ip_address));
-	      else
-		g_string_assign (node->name, dns_lookup (node->ip_address));
-//	    }
-
-//	  else
-//	    node->name = g_string_new (ip_to_str (node_id));
+	  if (!node->name)
+	    node->name = g_string_new (dns_lookup (node->ip_address));
+	  else
+	    g_string_assign (node->name, dns_lookup (node->ip_address));
 	}
       break;
+
     case TCP:
-      node->numeric_name = g_string_new (ip_to_str (node_id));
-      node->numeric_name = g_string_append_c (node->numeric_name, ':');
-      node->numeric_name = g_string_append (node->numeric_name,
+      if (!node->ip_address)
+	node->ip_address = ntohl (*(guint32 *) node_id);
+
+      if (!node->numeric_name)
+	{
+	  node->numeric_name = g_string_new (ip_to_str (node_id));
+	  node->numeric_name = g_string_append_c (node->numeric_name, ':');
+	  node->numeric_name = g_string_append (node->numeric_name,
+						g_strdup_printf ("%d",
+					       *(guint16 *) (node_id + 4)));
+	}
+
+      if (numeric)
+	{
+	  if (!node->name)
+	    {
+	      node->name = g_string_new (ip_to_str (node_id));
+	      node->name = g_string_append_c (node->name, ':');
+	      node->name = g_string_append (node->name,
 					    g_strdup_printf ("%d",
 					       *(guint16 *) (node_id + 4)));
-      if (dns)
-	node->name = g_string_new (get_hostname (*(guint32 *) node_id));
+	    }
+	}
       else
-	node->name = g_string_new (ip_to_str (node_id));
-      node->name = g_string_append_c (node->name, ':');
-      if (numeric)
-	node->name = g_string_append (node->name,
-				      g_strdup_printf ("%d",
-					       *(guint16 *) (node_id + 4)));
-      else
-	node->name = g_string_append (node->name,
+	{
+	  if (!node->name)
+	    {
+	      node->name = g_string_new (dns_lookup (node->ip_address));
+	      node->name = g_string_append_c (node->name, ':');
+	      node->name = g_string_append (node->name,
 				 get_tcp_port (*(guint16 *) (node_id + 4)));
-
-
+	    }
+	  else
+	    {
+	      g_string_assign (node->name, dns_lookup (node->ip_address));
+	      node->name = g_string_append_c (node->name, ':');
+	      node->name = g_string_append (node->name,
+				 get_tcp_port (*(guint16 *) (node_id + 4)));
+	    }
+	}
       break;
 
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Cobadde! Pecadorl!"));
+      g_error (_ ("Reached default in fill_names"));
     }
 }
 
@@ -367,16 +379,6 @@ create_link (const guint8 * packet, const guint8 * link_id)
   link_t *link;
 
   link = g_malloc (sizeof (link_t));
-#if 0
-  if (interape)
-    {
-      link->link_id = g_memdup (packet + 26, 8);
-    }
-  else
-    {
-      link->link_id = g_memdup (packet, 12);
-    }
-#endif /* TODO remove this */
 
   link->link_id = g_memdup (link_id, 2 * node_id_length);
   link->average = 0;
@@ -539,14 +541,14 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 
       /* average in bps, so we multiply by 8 */
       if (belongs_to == NODE)
-	 {
-	    ((node_t *) (packet->parent))->average = 8 *
-	      ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
-	    /* Update names */
-	    fill_names ((node_t *) (packet->parent),
-			((node_t *) (packet->parent))->node_id,
-			NULL);
-	 }
+	{
+	  ((node_t *) (packet->parent))->average = 8 *
+	    ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	  /* Update names */
+	  fill_names ((node_t *) (packet->parent),
+		      ((node_t *) (packet->parent))->node_id,
+		      NULL);
+	}
       else
 	((link_t *) (packet->parent))->average = 8 *
 	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
@@ -595,7 +597,7 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
       break;
     default:
       /* TODO Write proper assertion code here */
-      g_error (_ ("Dise que viene ese pedaso de vacarll!!!"));
+      g_error (_ ("Reached default in get_node_id"));
     }
 
   return node_id;
@@ -720,8 +722,10 @@ packet_read (pcap_t * pch,
 }				/* packet_read */
 
 
-void dns_ready(gpointer data, gint fd, GdkInputCondition cond) {
-     dns_ack();
+void
+dns_ready (gpointer data, gint fd, GdkInputCondition cond)
+{
+  dns_ack ();
 }
 
 
@@ -832,20 +836,20 @@ init_capture (void)
     default:
       g_error (_ ("Ape mode not yet supported"));
     }
-   
-  if ( ( (mode==IP) || (mode==TCP) ) && (!numeric) )
-     {
-	dns_open ();
-	dns_fd = dns_waitfd();
-	gdk_input_add (dns_fd,
-		       GDK_INPUT_READ,
-		       (GdkInputFunction) dns_ready,
-		       NULL);
-     }
-	
-	
+
+  if (!numeric)
+    {
+      dns_open ();
+      dns_fd = dns_waitfd ();
+      gdk_input_add (dns_fd,
+		     GDK_INPUT_READ,
+		     (GdkInputFunction) dns_ready,
+		     NULL);
+    }
+
+
 
   nodes = g_tree_new (node_id_compare);
   links = g_tree_new (link_id_compare);
 
-}	/* înit_capture */
+}				/* înit_capture */

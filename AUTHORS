@@ -6,6 +6,10 @@ resolv.c "stolen" from
 -------- -------- ----
 Laurent Deniel	<deniel@worldnet.fr>
 
+dns.c "stolen" from
+----- -------- ----
+Simon Kirby	<sim@neato.org>
+
 User supplied patches
 ---- -------- -------
 Jasper Wallace	<jasper@pointless.net> (pcap device autodetection)

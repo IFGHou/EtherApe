@@ -27,6 +27,6 @@ uninstall-local:
 	rm -f $(sbindir)/interape
 
 .indent: $(etherape_SOURCES)
-	indent $? || true
+	indent $? 
 	touch .indent
 indent: .indent 

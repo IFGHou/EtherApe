@@ -42,6 +42,7 @@ Porting:
 --------
 Etherape has been compiled in at least:
 * Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1
+* linuxppc
 * NetBSD 1.4T (i386)
 * Sparc Solaris 7 with gcc 2.95.2
 

@@ -29,7 +29,7 @@
 
 /* TODO Organize global variables in a sensible way */
 gboolean numeric = 0;
-gboolean dns = 0;
+gboolean dns = 1;
 gboolean diagram_only = 0;
 gboolean fix_overlap = 0;
 gchar *interface;
@@ -54,9 +54,6 @@ main (int argc, char *argv[])
   {
     {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
      _ ("don't convert addresses to names"), NULL
-    },
-    {"with-dns-resolving", 'r', POPT_ARG_NONE, &dns, 0,
-     _ ("use IP name resolving. Caution! Long timeouts!"), NULL
     },
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
      _ ("don't display any node text identification"), NULL
@@ -94,6 +91,9 @@ main (int argc, char *argv[])
 
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
+
+  /* dns is used in dns.c as opposite of numeric */
+  dns = !numeric;
 
   /* If called as interape, act as interape */
   if (strstr (argv[0], "interape"))
