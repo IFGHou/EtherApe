@@ -10,7 +10,17 @@ cvs : NEWS
 	cvs commit
 	cd ../www && make
 
-EXTRA_DIST = README.thanks NEWS.html
+EXTRA_DIST = \
+	README.thanks 		\
+	NEWS.html		\
+	debian/README.debian	\
+	debian/changelog	\
+	debian/control		\
+	debian/copyright	\
+	debian/dirs		\
+	debian/docs		\
+	debian/menu		\
+	debian/rules		
 
 full-dist :
 	test `whoami` = toledo
