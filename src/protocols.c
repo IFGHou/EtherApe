@@ -500,7 +500,7 @@ get_rpc (void)
 	  prot = g_string_append (prot, "/YPXFR");
 	  break;
 	default:
-	  prot = g_string_append (prot, "/RPC_UNKNOWN");
+	  return FALSE;
 	}
       return TRUE;
     default:
@@ -516,10 +516,14 @@ get_netbios_ssn (void)
   guint8 mesg_type;
 
   prot = g_string_append (prot, "/NBSS");
+  g_my_debug ("Found NBSS packet");
   mesg_type = *(guint8 *) (packet + offset);
 
   if (mesg_type == SESSION_MESSAGE)
-    prot = g_string_append (prot, "/SMB");
+    {
+      prot = g_string_append (prot, "/SMB");
+      g_my_debug ("Found NBSS/SMB packet");
+    }
 
   return;
 }				/* get_netbions_ssn */
