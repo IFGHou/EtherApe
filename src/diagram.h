@@ -29,7 +29,6 @@ typedef struct
   GdkColor color;
   gboolean is_new;
   gboolean shown;		/* True if it is to be displayed. */
-  gboolean debug;		/* Debugging variable */
 }
 canvas_node_t;
 

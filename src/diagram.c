@@ -476,10 +476,6 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
       need_reposition = TRUE;
-#if 1
-      new_canvas_node->debug = FALSE;
-#endif
-
     }
 
   return FALSE;			/* False to keep on traversing */
@@ -496,11 +492,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   GtkArg args[1];
   GList *protocol_item;
   protocol_t *protocol = NULL;
-
-#if 1
-  if (canvas_node->debug)
-    g_my_debug ("Debug is true");
-#endif
 
   /* We don't need this anymore since now update_nodes is called in update_diagram */
 #if 0
@@ -1317,12 +1308,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
       update_node_info_window (node_info_window);
 
       if (canvas_node && canvas_node->node)
-	{
 	  dump_node_info (canvas_node->node);
-#if 1
-	  canvas_node->debug = TRUE;
-#endif
-	}
 
       break;
     default:
