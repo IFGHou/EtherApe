@@ -77,3 +77,8 @@ gboolean
 on_app1_destroy_event (GtkWidget * widget,
 		       GdkEvent * event,
 		       gpointer user_data);
+
+gboolean
+on_app1_delete_event                   (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);

@@ -254,13 +254,11 @@ init_capture (void)
   char ebuf[100];
   (pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf);
   pcap_fd = pcap_fileno (pch);
-  printf ("pcap_fd: %d\n", pcap_fd);
-  error = gdk_input_add (pcap_fd,
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,"pcap_fd: %d", pcap_fd);
+  gdk_input_add (pcap_fd,
 			 GDK_INPUT_READ,
 			 packet_read,
 			 pch);
-  printf ("gdk_input_add error: %d\n", error);
-
   init_data ();
 
 }

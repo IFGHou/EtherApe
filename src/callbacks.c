@@ -155,16 +155,19 @@ void
 on_about1_activate (GtkMenuItem * menuitem,
 		    gpointer user_data)
 {
+  GtkWidget *about2; 
+  about2=create_about2();
+  gtk_widget_show (about2);
 
 }
 
 
-
 gboolean
-on_app1_destroy_event (GtkWidget * widget,
-		       GdkEvent * event,
-		       gpointer user_data)
+on_app1_delete_event                   (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
 {
   gtk_exit (0);
   return FALSE;
 }
+

@@ -8,7 +8,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = etherape
-VERSION = 0.0.4
+VERSION = 0.0.5
 
 SHELL = /bin/sh
 
@@ -36,8 +36,8 @@ XGETTEXT = PATH=../src:$$PATH /usr/bin/xgettext
 MSGMERGE = PATH=../src:$$PATH msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
-CPPFLAGS =  -I/usr/X11R6/include -I/usr/lib/glib/include
+CFLAGS = -g -O2 -Wall -Wunused 
+CPPFLAGS =  -I/usr/lib/glib/include -I/usr/X11R6/include
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
 

@@ -70,7 +70,7 @@ am_cv_val_LC_MESSAGES=${am_cv_val_LC_MESSAGES=yes}
 gnome_cv_gnorba_found=${gnome_cv_gnorba_found=yes}
 gnome_cv_orbit_found=${gnome_cv_orbit_found=yes}
 gnome_cv_passdown_GTK_LIBS=${gnome_cv_passdown_GTK_LIBS='-L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm'}
-gnome_cv_passdown_X_CFLAGS=${gnome_cv_passdown_X_CFLAGS='-I/usr/X11R6/include -I/usr/lib/glib/include'}
+gnome_cv_passdown_X_CFLAGS=${gnome_cv_passdown_X_CFLAGS='-I/usr/lib/glib/include -I/usr/X11R6/include'}
 gnome_cv_passdown_X_LIBS=${gnome_cv_passdown_X_LIBS='-L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm'}
 gnome_cv_passdown_x_libs=${gnome_cv_passdown_x_libs='-L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm'}
 gt_cv_func_gettext_libc=${gt_cv_func_gettext_libc=yes}

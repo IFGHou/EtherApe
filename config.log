@@ -36,7 +36,7 @@ configure:1899: checking what language compliance flags to pass to the C compile
 configure:1924: checking for pthread_create in -lpthread
 configure:2148: checking for gtk-config
 configure:2183: checking for GTK - version >= 1.2.0
-configure:2284: gcc -o conftest -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations  -I/usr/X11R6/include -I/usr/lib/glib/include   conftest.c -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm  1>&5
+configure:2284: gcc -o conftest -g -O2 -Wall -Wunused  -I/usr/lib/glib/include -I/usr/X11R6/include   conftest.c -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm  1>&5
 configure:2387: checking for SmcSaveYourselfDone in -lSM
 configure:2435: checking for X11/SM/SMlib.h
 configure:2483: checking for XpmFreeXpmImage in -lXpm
@@ -78,5 +78,5 @@ configure:3635: checking for msgfmt
 configure:3669: checking for dcgettext
 configure:3724: checking for gmsgfmt
 configure:3760: checking for xgettext
-configure:3800: gcc -o conftest -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations   -I/usr/X11R6/include -I/usr/lib/glib/include  conftest.c  1>&5
+configure:3800: gcc -o conftest -g -O2 -Wall -Wunused   -I/usr/lib/glib/include -I/usr/X11R6/include  conftest.c  1>&5
 configure:4377: checking for pcap_open_live in -lpcap

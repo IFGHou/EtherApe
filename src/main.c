@@ -29,8 +29,8 @@
 #include "capture.h"
 #include "math.h"
 
-guint averaging_time=10000000; /* Microseconds of time we consider to
-		                * calculate traffic averages */
+guint averaging_time = 10000000;	/* Microseconds of time we consider to
+					 * calculate traffic averages */
 
 typedef struct _draw_nodes_data
   {
@@ -62,8 +62,8 @@ draw_nodes (gpointer ether_addr, node_t * node, draw_nodes_data_t * draw_nodes_d
       draw_nodes_data->first_flag = FALSE;
       angle = 0;
     }
-   
-  node->average=node->accumulated*1000000/averaging_time;
+
+  node->average = node->accumulated * 1000000 / averaging_time;
 
   x = xmax / 2 + rad_max * cosf (angle) - node->average / 2;
   y = ymax / 2 + rad_max * sinf (angle) - node->average / 2;
@@ -90,6 +90,7 @@ draw_nodes (gpointer ether_addr, node_t * node, draw_nodes_data_t * draw_nodes_d
 
   return FALSE;			/* Continue with traverse function */
 }
+
 
 guint
 draw_diagram (gpointer data)
@@ -121,6 +122,26 @@ draw_diagram (gpointer data)
   return TRUE;
 }
 
+guint 
+update_diagram (GtkWidget *canvas)
+{
+  static GnomeCanvasItem *circle=NULL;
+  GnomeCanvasGroup* group;
+   
+  group = gnome_canvas_root(GNOME_CANVAS(canvas));
+#if 0   
+  if (!circle) {
+     circle = gnome_canvas_item_new (group,
+				  GNOME_TYPE_CANVAS_ELLIPSE,
+				  "x1",0,"x2",100,
+				  "y1",0,"y2",100,
+				  "fill_color_rgba", 0x5f9ea0FF,
+				  "outline_color", "black",
+				  "width_units", 4.0,
+				  NULL);
+  }
+#endif        
+}
 
 int
 main (int argc, char *argv[])
@@ -142,8 +163,8 @@ main (int argc, char *argv[])
   gtk_widget_show (app1);
 
   gtk_timeout_add (100 /*ms */ ,
-		   draw_diagram,
-		   NULL);
+		   update_diagram,
+		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
 
   gtk_main ();
   return 0;

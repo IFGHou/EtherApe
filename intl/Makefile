@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 PACKAGE = etherape
-VERSION = 0.0.4
+VERSION = 0.0.5
 
 SHELL = /bin/sh
 
@@ -50,8 +50,8 @@ RANLIB = ranlib
 
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DGNULOCALEDIR=\"$(gnulocaledir)\" \
 -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" -DHAVE_CONFIG_H
-CPPFLAGS =  -I/usr/X11R6/include -I/usr/lib/glib/include
-CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
+CPPFLAGS =  -I/usr/lib/glib/include -I/usr/X11R6/include
+CFLAGS = -g -O2 -Wall -Wunused 
 LDFLAGS = 
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
