@@ -887,8 +887,11 @@ findip (ip_t ip)
 void
 restell (char *s)
 {
+  /* TODO JTC Turn this into a g_my_debug or something */
+#if 0
   fputs (s, stderr);
   fputs ("\r", stderr);
+#endif
 }
 
 void
