@@ -19,6 +19,8 @@
 
 #include "globals.h"
 
+static gboolean is_idle = FALSE;
+
 struct popup_data
 {
   GtkWidget *node_popup;
