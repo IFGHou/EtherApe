@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
-"POT-Creation-Date: 2000-05-04 15:51+0200\n"
+"POT-Creation-Date: 2001-04-03 21:43+0200\n"
 "PO-Revision-Date: 2001-03-24 17:39+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -110,103 +110,103 @@ msgstr ""
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
-#: src/capture.c:58
+#: src/capture.c:74
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Fout bij het openen van het apparaat: %s"
 
-#: src/capture.c:76
+#: src/capture.c:94
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
 
-#: src/capture.c:86
+#: src/capture.c:106
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Fout bij het openen van %s : %s"
 
-#: src/capture.c:127
+#: src/capture.c:149
 msgid "Link type not yet supported"
 msgstr "Lijntype nog niet beschikbaar"
 
-#: src/capture.c:132
+#: src/capture.c:156
 msgid "Mode not available in this device"
 msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 
-#: src/capture.c:152
+#: src/capture.c:176
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:196
+#: src/capture.c:223
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
-#: src/capture.c:202
+#: src/capture.c:229
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:207
+#: src/capture.c:234
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
 
-#: src/capture.c:216
+#: src/capture.c:243
 msgid "Starting live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:223
+#: src/capture.c:250
 msgid "Starting offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:240
+#: src/capture.c:267
 msgid "Stopping live capture"
 msgstr "Live luisteren wordt gestopt"
 
-#: src/capture.c:246
+#: src/capture.c:273
 msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
-#: src/capture.c:251
+#: src/capture.c:278
 msgid "Error while trying to stop capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
 #. TODO Write proper assertion code here
-#: src/capture.c:399
+#: src/capture.c:426
 msgid "Reached default in get_node_id"
 msgstr "Default bereikt in get_node_id"
 
-#: src/capture.c:442
+#: src/capture.c:469
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/capture.c:562
+#: src/capture.c:594
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 
-#: src/capture.c:600
+#: src/capture.c:632
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
 #. TODO Write proper assertion code here
-#: src/capture.c:755
+#: src/capture.c:787
 msgid "Reached default in fill_names"
 msgstr "Default bereikt in fill_names"
 
-#: src/capture.c:825
+#: src/capture.c:857
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
-#: src/capture.c:894
+#: src/capture.c:926
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Lijn verwijderd. Aantal lijnen %d"
 
-#: src/capture.c:1113
+#: src/capture.c:1145
 msgid "Null packet in check_packet"
 msgstr "(null)-pakket in check_packet"
 
@@ -334,8 +334,8 @@ msgstr "Maximale lijnbreedte"
 
 #: src/glade-strings:40
 msgid ""
-"Choose how node radius and link width are calculated as a function of average "
-"traffic"
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
 msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
 
 #: src/glade-strings:41
@@ -442,4 +442,3 @@ msgstr "Toepassen"
 #: src/glade-strings:70
 msgid "Cancelar"
 msgstr "Annuleren"
-
