@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-31 12:21+0200\n"
+"POT-Creation-Date: 2000-04-03 14:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -824,7 +824,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:82 src/capture.c:179
 # src/capture.c:82 src/capture.c:179
 # src/capture.c:79 src/capture.c:183
-#: src/capture.c:173
+#: src/capture.c:174
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -838,7 +838,7 @@ msgstr ""
 # src/capture.c:88 src/capture.c:185
 # src/capture.c:88 src/capture.c:185
 # src/capture.c:85 src/capture.c:189
-#: src/capture.c:179
+#: src/capture.c:180
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
@@ -850,7 +850,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:94 src/capture.c:191
 # src/capture.c:94 src/capture.c:191
 # src/capture.c:91 src/capture.c:195
-#: src/capture.c:184
+#: src/capture.c:185
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
@@ -863,7 +863,7 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/capture.c:275
 # src/capture.c:279
 #. TODO Write proper assertion code here
-#: src/capture.c:309
+#: src/capture.c:311
 msgid "Reached default in get_node_id"
 msgstr ""
 
@@ -874,7 +874,7 @@ msgstr ""
 # src/capture.c:311
 # src/capture.c:311
 # src/capture.c:315
-#: src/capture.c:348
+#: src/capture.c:350
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
@@ -885,7 +885,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:325
 # src/capture.c:325
 # src/capture.c:430
-#: src/capture.c:432
+#: src/capture.c:434
 msgid "n/a"
 msgstr "n/d"
 
@@ -896,7 +896,7 @@ msgstr "n/d"
 # src/capture.c:346
 # src/capture.c:346
 # src/capture.c:451
-#: src/capture.c:453
+#: src/capture.c:455
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -908,7 +908,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:489
-#: src/capture.c:491
+#: src/capture.c:493
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -921,7 +921,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:529
 # src/capture.c:638
 #. TODO Write proper assertion code here
-#: src/capture.c:639
+#: src/capture.c:641
 msgid "Reached default in fill_names"
 msgstr ""
 
@@ -932,7 +932,7 @@ msgstr ""
 # src/capture.c:346
 # src/capture.c:346
 # src/capture.c:708
-#: src/capture.c:708
+#: src/capture.c:710
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -944,7 +944,7 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:769
-#: src/capture.c:770
+#: src/capture.c:772
 #, fuzzy, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -956,6 +956,6 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:730
 # src/capture.c:730
 # src/capture.c:886
-#: src/capture.c:891
+#: src/capture.c:893
 msgid "Null packet in check_packet"
 msgstr ""

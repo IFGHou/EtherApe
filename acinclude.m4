@@ -85,7 +85,16 @@ AC_DEFUN(AC_ETHEREAL_PCAP_CHECK,
 	#
 	AC_CHECK_LIB(pcap, pcap_open_live,
 	  [
-	    PCAP_LIBS=-lpcap
+	    # TODO
+	    # This is a dirty hack, but I don't know any other way 
+	    # to do it. If you do, please tell me.
+	    if test "x$STATIC_PCAP" != "xyes"; then
+	      PCAP_LIBS=-lpcap
+	    fi
+	    if test "x$STATIC_PCAP" = "xyes"; then
+	      PCAP_LIBS="-Wl,-Bstatic -lpcap -Wl,-Bdynamic"
+	      echo "Forcing static pcap linking"
+	    fi
 	    AC_DEFINE(HAVE_LIBPCAP)
 	  ], AC_MSG_ERROR(Library libpcap not found.),
 	  $SOCKET_LIBS $NSL_LIBS)

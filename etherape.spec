@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.4.1
+%define ver      0.4.2
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
@@ -16,7 +16,7 @@ Source: http://download.sourceforge.net/etherape/etherape-%{ver}.tar.gz
 BuildRoot: /var/tmp/etherape-%{PACKAGE_VERSION}-root
 URL: http://etherape.sourceforge.net/
 Docdir: %{prefix}/doc
-Requires: gnome-libs >= 1.0.55, libpcap >= 0.4
+Requires: gnome-libs >= 1.0.0
 
 %description
 Etherape is a graphical network monitor for Unix modeled after
@@ -37,7 +37,7 @@ from a file as well as live from the network.
 #cp %{SOURCE1} stdimg.xpm
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-static-pcap
 make
 
 %install
@@ -45,7 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT%{prefix} install
 
-strip $RPM_BUILD_ROOT%{prefix}/bin/* ||:
+strip $RPM_BUILD_ROOT%{prefix}/sbin/* ||:
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -55,7 +55,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.help README.bugs README.thanks
 %{prefix}/sbin/*
-# %{prefix}/share/gnome/help/ee
 %{prefix}/share/locale/*/*/*
-# %{prefix}/share/gnome/apps/*
-# %{prefix}/share/mime-info/ee.keys
