@@ -111,6 +111,8 @@ AC_CONFIG_FILES([Makefile
                  glade/Makefile
                  src/Makefile
 		 m4/Makefile
+        	 doc/Makefile
+ 		 doc/C/Makefile
 		 po/Makefile.in])
 
 
