@@ -634,7 +634,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 
   if (!stationary || canvas_node->is_new)
     {
-      g_message ("%g %g", x, y);
+      /* g_message ("%g %g", x, y); */
       gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
 			     "x", x, "y", y, NULL);
       canvas_node->is_new = FALSE;
