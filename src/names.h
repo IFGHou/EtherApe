@@ -52,14 +52,17 @@ static void get_ieee802_name (void);
 static void get_llc_name (void);
 static void get_arp_name (void);
 static void get_ip_name (void);
+static void get_ipx_name (void);
 static void get_udp_name (void);
 static void get_tcp_name (void);
+static void get_ipxsap_name (void);
+static void get_nbipx_name (void);
 static void get_nbss_name (void);
 static void get_nbdgm_name (void);
 static void add_name (gchar * numeric, gchar * resolved, gboolean solved);
 static gint id_compare (gconstpointer a, gconstpointer b);
 
-#define KNOWN_PROTS 14
+#define KNOWN_PROTS 17
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"ETH_II", get_eth_name},
@@ -73,8 +76,11 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"LLC", get_llc_name},
   {"ARP", get_arp_name},
   {"IP", get_ip_name},
+  {"IPX", get_ipx_name},
   {"TCP", get_tcp_name},
   {"UDP", get_udp_name},
+  {"IPX-SAP", get_ipxsap_name},
+  {"IPX-NetBIOS", get_nbipx_name},
   {"NETBIOS-SSN", get_nbss_name},
   {"NETBIOS-DGM", get_nbdgm_name}
 };

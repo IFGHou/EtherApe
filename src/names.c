@@ -218,7 +218,16 @@ get_llc_name (void)
 {
 
   level++;
-  offset += 8;
+  /* TODO IMPORTANT
+   * We must decode the llc header to calculate the offset
+   * We are just doing assumptions by now */
+
+  if ((linktype == L_FDDI) || (linktype == L_IEEE802))
+    offset += 8;
+  else if (linktype == L_EN10MB)
+    offset += 3;
+  else
+    return;
 
   next_func = g_tree_lookup (prot_functions, tokens[level]);
   if (next_func)
@@ -294,6 +303,17 @@ get_ip_name (void)
     next_func->function ();
 
 }				/* get_ip_name */
+
+static void
+get_ipx_name (void)
+{
+  level++;
+  offset += 30;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+}
 
 static void
 get_tcp_name (void)
@@ -379,6 +399,33 @@ get_udp_name (void)
 
 
 /* TODO SET UP THE id's FOR THIS NETBIOS NAME FUNCTIONS */
+static void
+get_ipxsap_name (void)
+{
+  guint16 sap_type;
+  gchar *name;
+
+  sap_type = pntohs (p + offset);
+
+  /* we want responses */
+  if (sap_type != 0x0002)
+    return;
+
+  name = (gchar *) (p + offset + 4);
+
+  g_my_debug ("Sap name %s found", name);
+
+  add_name (name, name, TRUE);
+
+}				/* get_ipxsap_name */
+
+static void
+get_nbipx_name (void)
+{
+
+}				/* get_ipxsap_name */
+
+
 static void
 get_nbss_name (void)
 {
