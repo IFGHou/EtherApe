@@ -8,6 +8,14 @@ Looking up  'www.Not-Configured-Yet.org', guessing...
                                        
    $Date$
    
+  Overview of changes in Etherape 0.3.9 (Wednesday 03-29-2000):
+  
+     * You may safely turn down refresh period to minimum. If CPU can't
+       handle it, it will just do a best effort.
+     * Patch from Fabrice Bellet. Should fix more RedHat problems. Please
+       report if it solves yours.
+     * Some more segfault fixing.
+       
   Overview of changes in Etherape 0.3.8 (Wednesday 03-29-2000):
   
      * Filter entry has history.

@@ -41,6 +41,8 @@ static pcap_t *pch;		/* pcap structure */
 static gint capture_timeout;	/* timeout function used when 
 				 * reading capture data from
 				 * a file */
+static struct pcap_pkthdr phdr;
+
 
 
 /* Local funtions declarations */

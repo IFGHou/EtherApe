@@ -56,9 +56,9 @@ full-dist :
 	make dist
 	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
 	scp ${PACKAGE}-${VERSION}.tar.gz etherape:ftp
-	cd ../www && make
-	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 	echo ${VERSION} > old.version
+#	cd ../www && make
+#	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 
 install-data-local:
 	@$(NORMAL_INSTALL)

@@ -153,8 +153,7 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint
-set_filter (gchar * filter, gchar * device)
+gint set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -189,13 +188,11 @@ set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint
-get_offline_packet (void)
+guint get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
-  struct pcap_pkthdr phdr;
-  static struct timeval last_time = { 0, 0 }, diff;
+  static struct timeval last_time = { 0, 0 }, this_time, diff;
   guint32 ms_to_next;
 
   gtk_timeout_remove (capture_timeout);
@@ -204,10 +201,18 @@ get_offline_packet (void)
     packet_read (packet, 0, GDK_INPUT_READ);
   packet = (guint8 *) pcap_next (pch, &phdr);
   if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
-    last_time = phdr.ts;
-  diff = substract_times (phdr.ts, last_time);
+    {
+      last_time.tv_sec = phdr.ts.tv_sec;
+      last_time.tv_usec = phdr.ts.tv_usec;
+    }
+
+  this_time.tv_sec = phdr.ts.tv_sec;
+  this_time.tv_usec = phdr.ts.tv_usec;
+
+  diff = substract_times (this_time, last_time);
   ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
-  last_time = phdr.ts;
+
+  last_time = this_time;
   capture_timeout = gtk_timeout_add (ms_to_next,
 				     (GtkFunction) get_offline_packet, NULL);
   i *= 2;
@@ -221,7 +226,6 @@ get_offline_packet (void)
 static void
 packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 {
-  struct pcap_pkthdr phdr;
   guint8 *src_id, *dst_id, *link_id;
 
   /* I have to love how RedHat messes with libraries.
@@ -231,12 +235,19 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
    * timestamp defined there, so that I can use it and save lots of
    * OS calls */
 
-  packet = (guint8 *) pcap_next (pch, &phdr);
+  /* Get next packet only if in live mode */
+  if (source)
+    {
+      packet = (guint8 *) pcap_next (pch, &phdr);
+      now.tv_sec = phdr.ts.tv_sec;
+      now.tv_usec = phdr.ts.tv_usec;
+    }
+  else
+    gettimeofday (&now, NULL);
 
   if (!packet)
     return;
 
-  gettimeofday (&now, NULL);
 
   src_id = get_node_id (packet, SRC);
   add_node_packet (packet, phdr, src_id);
@@ -970,8 +981,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1000,8 +1010,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1028,8 +1037,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

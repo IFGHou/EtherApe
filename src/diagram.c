@@ -301,12 +301,17 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   link_size = get_link_size (link->average);
 
+  /* TODO What if there never is a protocol?
+   * I have to initialize canvas_link->color to a known value */
+  if (protocol)
+    canvas_link->color = protocol->color;
+
   if (nofade)
     {
       guint32 color;
-      color = (((int) (protocol->color.red) & 0xFF00) << 16) |
-	(((int) (protocol->color.green) & 0xFF00) << 8) |
-	((int) (protocol->color.blue) & 0xFF00) | 0xFF;
+      color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
+	(((int) (canvas_link->color.green) & 0xFF00) << 8) |
+	((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
       gnome_canvas_item_set (canvas_link->link_item,
 			     "points", points,
 			     "fill_color_rgba", color,
@@ -319,9 +324,9 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	pow (0.10,
 	     (diff.tv_sec * 1000000.0 + diff.tv_usec) / link_timeout_time);
       scaledColor =
-	(((int) (scale * protocol->color.red) & 0xFF00) << 16) |
-	(((int) (scale * protocol->color.green) & 0xFF00) << 8) |
-	((int) (scale * protocol->color.blue) & 0xFF00) | 0xFF;
+	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
+	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
+	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
       gnome_canvas_item_set (canvas_link->link_item, "points", points,
 			     "fill_color_rgba", scaledColor, "width_units",
 			     link_size, NULL);
@@ -339,7 +344,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  GString *str = NULL;
   GtkArg args[1];
 
   node = canvas_node->node;
@@ -382,38 +386,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 			     "text", node->name->str, NULL);
       gnome_canvas_item_request_update (canvas_node->text_item);
     }
-
-  /* Update tooltips text */
-#if 0
-  str = g_string_new ("");
-  if (mode == ETHERNET && canvas_node->node->ip_address)
-    g_string_sprintf (str,
-		      "%s (%s, %s)",
-		      canvas_node->node->name->str,
-		      canvas_node->node->numeric_ip->str,
-		      canvas_node->node->numeric_name->str);
-  else
-    g_string_sprintf (str,
-		      "%s (%s)",
-		      canvas_node->node->name->str,
-		      canvas_node->node->numeric_name->str);
-
-  g_string_sprintfa (str,
-		     _("\nAcummulated bytes: %g"),
-		     canvas_node->node->accumulated);
-  g_string_sprintfa (str, _("\nAverage bps: %g"), canvas_node->node->average);
-
-  gtk_tooltips_set_tip (canvas_node->tooltips,
-			GTK_WIDGET (canvas_node->group_item), str->str, NULL);
-
-  gtk_tooltips_set_tip (canvas_node->tooltips,
-			GTK_WIDGET (canvas_node->node_item), str->str, NULL);
-
-  gtk_tooltips_set_tip (canvas_node->tooltips,
-			GTK_WIDGET (canvas_node->text_item), str->str, NULL);
-
-  g_string_free (str, TRUE);
-#endif
 
   return FALSE;			/* False means keep on calling the function */
 
@@ -521,10 +493,6 @@ gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "fill_color", text_color, NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_node->text_item));
       new_canvas_node->group_item = group;
-#if 0				/* TODO make sure that canvas item can't use tooltips and
-				 * delete this line */
-      new_canvas_node->tooltips = gtk_tooltips_new ();
-#endif
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
@@ -629,10 +597,9 @@ guint update_diagram (GtkWidget * canvas)
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
   guint n_nodes_before = 0, n_nodes_after = 1;
   static guint n_protocols[STACK_SIZE + 1] = { 0 };
+  static struct timeval last_time = { 0, 0 }, diff;
+  static gboolean is_idle = FALSE;
   gchar *str;
-
-
-  g_mem_profile ();
 
   gettimeofday (&now, NULL);
 
@@ -647,11 +614,6 @@ guint update_diagram (GtkWidget * canvas)
 		      canvas);
       n_protocols[stack_level] = n_protocols_new[stack_level];
     }
-
-/* Now we update the status bar with the number of present nodes 
- * TODO Find a nice use for the status bar. I can thik of very little */
-  if (!appbar)
-    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (canvas), "appbar1"));
 
 
   /* Check if there are any new nodes */
@@ -670,6 +632,8 @@ guint update_diagram (GtkWidget * canvas)
 
   /* Reposition canvas_nodes and update status bar if a node has been
    * added or deleted */
+  if (!appbar)
+    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (canvas), "appbar1"));
 
   if (need_reposition)
     {
@@ -703,6 +667,41 @@ guint update_diagram (GtkWidget * canvas)
     }
   while (n_links != n_links_new);
 
+
+  /* With this we make sure that we don't overload the
+   * CPU with redraws */
+
+  if ((last_time.tv_sec == 0) && (last_time.tv_usec == 0))
+    last_time = now;
+
+  gettimeofday (&now, NULL);
+
+  diff = substract_times (now, last_time);
+  if (!is_idle)
+    {
+      if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) > refresh_period * 1.1)
+	{
+	  diagram_timeout =
+	    gtk_idle_add ((GtkFunction) update_diagram, canvas);
+	  is_idle = TRUE;
+	  return FALSE;		/* Removes the timeout */
+	}
+    }
+  else
+    {
+      while (gtk_events_pending ())
+	gtk_main_iteration ();
+      if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) < refresh_period)
+	{
+	  diagram_timeout = gtk_timeout_add (refresh_period,
+					     (GtkFunction) update_diagram,
+					     canvas);
+	  is_idle = FALSE;
+	  return FALSE;		/* removes the idle */
+	}
+    }
+
+  last_time = now;
 
   return TRUE;			/* Keep on calling this function */
 
@@ -756,8 +755,6 @@ init_diagram ()
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), stack_level);
   widget = lookup_widget (diag_pref, "filter_gnome_entry");
   gnome_entry_load_history (GNOME_ENTRY (widget));
-  /* TODO Write code to set the options menu to the positions 
-   * indicated by the variables */
 
   /* Connects signals */
   widget = lookup_widget (diag_pref, "node_radius_slider");

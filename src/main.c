@@ -272,17 +272,12 @@ main (int argc, char *argv[])
 		      GTK_SIGNAL_FUNC (save_session), argv[0]);
   gtk_signal_connect (GTK_OBJECT (client), "die",
 		      GTK_SIGNAL_FUNC (session_die), NULL);
-
-
   gtk_widget_show (app1);
-
 
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when
-   * the gtk loop is idle. If the diagram is too complicated, calls to
-   * update_diagram will be stacked with no gtk idle time, thus freezing
-   * the display */
-  /* TODO: Back up if CPU can't handle it */
+   * the gtk loop is idle. If the CPU can't handle the set refresh_period,
+   * then it will just do a best effort */
   widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
 				     (GtkFunction) update_diagram, widget);

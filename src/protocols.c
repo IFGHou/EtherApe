@@ -33,7 +33,7 @@ get_packet_prot (const guint8 * p)
   guint i = 0;
   if (prot)
     g_string_free (prot, TRUE);
-  prot = NULL;
+  prot = g_string_new ("");
 
   packet = p;
 
