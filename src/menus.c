@@ -218,6 +218,11 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 
   g_assert (user_data != NULL);
 
+  if (in_start_capture)
+    return;			/* Disregard when called because
+				 * of interface look change from
+				 * start_capture */
+
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) user_data);
 
@@ -245,6 +250,9 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
   /* I don't know why, but this menu item is called twice, instead
    * of once. This forces me to make sure we are not trying to set
    * anything impossible */
+
+  g_my_debug ("Mode menuitem active: %d",
+	      GTK_CHECK_MENU_ITEM (menuitem)->active);
 
   switch (linktype)
     {
@@ -429,6 +437,9 @@ gui_start_capture (void)
   gchar *errorbuf = NULL;
   GString *status_string = NULL;
 
+  if ((status == PAUSE) && end_of_file)
+    gui_stop_capture ();
+
   if (status == STOP)
     if ((errorbuf = init_capture ()) != NULL)
       {
@@ -585,6 +596,12 @@ gui_pause_capture (void)
       g_warning (_("Status not PLAY at gui_pause_capture"));
       return;
     }
+
+  /*
+   * Make sure the data in the info windows is updated
+   * so that it is consistent
+   */
+  update_info_windows ();
 
   if (!pause_capture ())
     return;
