@@ -1046,18 +1046,18 @@ load_services (void)
 	  if (!error && t1[0])
 	    g_strup (t1[0]);
 
-	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++);
-
+	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
+             ;
 
 	  if (!error && (str = t1[i]))
 	    if (!(t2 = g_strsplit (str, "/", 0)))
 	      error = TRUE;
 
-	  if (error || !t2[0])
+	  if (error || !t2 || !t2[0])
 	    error = TRUE;
 
 	  /* TODO The h here is not portable */
-	  if (!sscanf (t2[0], "%hd", &port_number) || (port_number < 1))
+	  if (error || !sscanf (t2[0], "%hd", &port_number) || (port_number < 1))
 	    error = TRUE;
 
 	  if (error || !t2[1])
