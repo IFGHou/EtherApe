@@ -201,7 +201,6 @@ enum status_t status;		/* Keeps capture status (playing, stopped, paused) */
 gboolean end_of_file;		/* Marks that the end of the offline file
 				 * has been reached */
 
-
 /* Genereral settings */
 
 gchar *input_file;		/* Capture file to read from */
@@ -269,7 +268,7 @@ gchar *ether_to_str (const guint8 * ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
 
 /* From protocols.c */
-gchar *get_packet_prot (const guint8 * packet);
+gchar *get_packet_prot (const guint8 * packet, guint len);
 
 /* From names.c */
 void get_packet_names (GList ** protocols,
@@ -279,12 +278,13 @@ void get_packet_names (GList ** protocols,
 
 /* From diagram.c */
 guint update_diagram (GtkWidget * canvas);
-void init_diagram ();
+void init_diagram (void);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
 void set_appbar_status (gchar * str);
 
 /* From menus.c */
+void init_menus (void);
 void fatal_error_dialog (const gchar * message);
 void update_history (GnomeEntry * gentry, const gchar * str,
 		     gboolean is_fileentry);
