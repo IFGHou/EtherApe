@@ -10,8 +10,7 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
-	$(GNOME_INCLUDEDIR) \
-	$(LIBGLADE_CFLAGS) 
+	$(ETHERAPE_CFLAGS) 
 
 bin_PROGRAMS = etherape
 
@@ -33,8 +32,8 @@ etherape_SOURCES = \
 	conversations.c conversations.h \
 	gnomesupport.h
 
-etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS) 
-etherape_LDFLAGS = $(etherape_LIBS) -lpcap
+etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
+etherape_LDFLAGS = 
 etherape_LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 .indent: $(etherape_SOURCES)
