@@ -1,8 +1,21 @@
-etherape (0.5.6-0unoff) unstable; urgency=low
+etherape (0.5.6-4unoff) unstable; urgency=low
 
   * (unofficial package, check the version number)
 
  -- Your Name <your.name@your.domain>  Sun, 26 Mar 2000 18:21:58 +0200
+
+etherape (0.5.6-4) unstable; urgency=low
+
+  * debian/rules: added dh_installmenu so that menu entry is installed.
+
+ -- Frederic Peters <fpeters@debian.org>  Tue,  3 Apr 2001 10:08:53 +0200
+
+etherape (0.5.6-3) unstable; urgency=low
+
+  * show error messages in a dialog box instead of printing a message to
+    the console and segfaulting. (closes: #63951, #66815)
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 27 Nov 2000 19:19:23 +0100
 
 etherape (0.5.6-2) unstable; urgency=low
 
@@ -21,9 +34,9 @@ etherape (0.5.6-2) unstable; urgency=low
   * debian/control:
     - Upgrade to standards 3.1.1 since the package actually is
       3.1.1 compatible.
-    - Added libglade-gnome0-dev to Build-Depends
+    - Added libglade-gnome-dev to Build-Depends (closes: #63878)
 
- -- Frederic Peters <fpeters@debian.org>  Wed, 10 May 2000 18:44:29 +0200
+ -- Frederic Peters <fpeters@debian.org>  Mon, 27 Nov 2000 19:17:58 +0100
 
 etherape (0.5.6-1) unstable; urgency=low
 
