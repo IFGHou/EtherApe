@@ -181,7 +181,7 @@ typedef struct
   GnomeCanvasItem *node_item;
   GnomeCanvasItem *text_item;
   GnomeCanvasGroup *group_item;
-  GtkTooltips *tooltips;
+  GdkColor color;
 }
 canvas_node_t;
 
