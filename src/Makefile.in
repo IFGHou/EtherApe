@@ -366,6 +366,11 @@ install-exec-local:
 uninstall-local:
 	rm -f $(sbindir)/interape
 
+.indent: $(etherape_SOURCES)
+	indent $? || true
+	touch .indent
+indent: .indent 
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

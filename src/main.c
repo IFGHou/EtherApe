@@ -48,7 +48,7 @@ main (int argc, char *argv[])
 {
   GtkWidget *app1;
   GtkWidget *hscale;
-  gchar *mode_string=NULL;
+  gchar *mode_string = NULL;
 
   struct poptOption optionsTable[] =
   {
@@ -117,17 +117,17 @@ main (int argc, char *argv[])
 
   /* Only ip traffic makes sense when used as interape */
   switch (mode)
-     {
-      case IP:
-	filter = g_strconcat ("ip ", filter, NULL);
-	break;
-      case TCP:
-	filter = g_strconcat ("tcp ", filter, NULL);
-	break;
-      case DEFAULT:
-      case UDP:
-      case ETHERNET:
-     }
+    {
+    case IP:
+      filter = g_strconcat ("ip ", filter, NULL);
+      break;
+    case TCP:
+      filter = g_strconcat ("tcp ", filter, NULL);
+      break;
+    case DEFAULT:
+    case UDP:
+    case ETHERNET:
+    }
 
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
 				 * socket without having initialized gnome, so that 

@@ -27,41 +27,42 @@
 #define __UTIL_H__
 
 #ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+extern "C"
+{
+#endif				/* __cplusplus */
 
 /*
  * Given a pathname, return the last component.
  */
-char *get_basename(char *);
+  char *get_basename (char *);
 
 /*
  * Given a pathname, return a string containing everything but the
  * last component.  NOTE: this overwrites the pathname handed into
  * it....
  */
-char *get_dirname(char *);
+  char *get_dirname (char *);
 
-int create_tempfile(char *, int, const char *);
+  int create_tempfile (char *, int, const char *);
 
 /* Returns the user's home directory, via the HOME environment
  * variable, or a default directory if HOME is not set */
-const char* get_home_dir(void);
+  const char *get_home_dir (void);
 
 #ifdef HAVE_LIBPCAP
 
-GList *get_interface_list(int *err, char *err_str);
+  GList *get_interface_list (int *err, char *err_str);
 
 /* Error values from "get_interface_list()". */
 #define	CANT_GET_INTERFACE_LIST	0	/* error getting list */
 #define	NO_INTERFACES_FOUND	1	/* list is empty */
 
-void free_interface_list(GList *if_list);
+  void free_interface_list (GList * if_list);
 
 #endif
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif				/* __cplusplus */
 
-#endif /* __UTIL_H__ */
+#endif				/* __UTIL_H__ */

@@ -224,12 +224,12 @@ on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 	 link_width_multiplier);
 
 }
-void 
+void
 on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 {
   averaging_time = adj->value * 1000;	/* Control in ms, value in us */
 }
-void 
+void
 on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 {
   gtk_timeout_remove (diagram_timeout);
@@ -238,12 +238,12 @@ on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 				     (GtkFunction) update_diagram,
 				     canvas);
 }
-void 
+void
 on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
   node_timeout_time = adj->value * 1000;	/* Control in ms, value in us */
 }
-void 
+void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
   link_timeout_time = adj->value * 1000;	/* Control in ms, value in us */

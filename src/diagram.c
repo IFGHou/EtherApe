@@ -259,7 +259,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
       else
 	link->packets = NULL;
 
-       link->accumulated = 0;
+      link->accumulated = 0;
     }
 
 
@@ -322,7 +322,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
   node_t *node;
   gdouble node_size;
   struct timeval now, diff;
-  GtkArg args[1];   
+  GtkArg args[1];
 
   node = canvas_node->node;
 
@@ -389,23 +389,23 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 			 "y1", -node_size / 2,
 			 "y2", node_size / 2,
 			 NULL);
-   
+
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
-  args[0].name="text";
+  args[0].name = "text";
   gtk_object_getv (GTK_OBJECT (canvas_node->text_item),
 		   1,
 		   args);
-  if (strcmp(args[0].d.string_data,node->name->str))
-     {
-	gnome_canvas_item_set(canvas_node->text_item,
-			      "text", node->name->str,
-			      NULL);
-	gnome_canvas_item_request_update (canvas_node->text_item);
-     }
-	
+  if (strcmp (args[0].d.string_data, node->name->str))
+    {
+      gnome_canvas_item_set (canvas_node->text_item,
+			     "text", node->name->str,
+			     NULL);
+      gnome_canvas_item_request_update (canvas_node->text_item);
+    }
 
-   return FALSE;		/* False means keep on calling the function */
+
+  return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
 

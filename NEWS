@@ -9,7 +9,7 @@
        
   Overview of changes in Etherape 0.2.1 (Monday 03-06-2000):
   
-     * Added tcp support. Run with etherape -m tcp
+     * Added tcp mode. Run with etherape -m tcp
      * Added fix from Ted Wright to provide a more readable display in
        crowded diagrams. Run with -o. Very useful for tcp.
      * Cleaned up sources so that adding other modes should be trivial.

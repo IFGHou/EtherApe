@@ -58,6 +58,7 @@ typedef struct
 				 * could be an ether or ip address*/
     GString *name;		/* String with a readable default name of the node */
     GString *numeric_name;	/* String with a numeric representation of the id */
+    guint32 ip_address;		/* Needed by the resolver */
     double average;		/* Average bytes in or out in the last x ms */
     double accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */

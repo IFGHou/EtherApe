@@ -245,7 +245,7 @@ serv_name_lookup (u_int port, u_int proto)
 
 jmp_buf hostname_env;
 
-static void 
+static void
 abort_network_query (int sig)
 {
   longjmp (hostname_env, 1);
@@ -320,7 +320,7 @@ host_name_lookup (u_int addr)
 
 }				/* host_name_lookup */
 
-#if 0 /* JTC */
+#if 0				/* JTC */
 static u_char *
 host_name_lookup6 (struct e_in6_addr *addr)
 {
@@ -363,7 +363,7 @@ host_name_lookup6 (struct e_in6_addr *addr)
  *  Miscellaneous functions
  */
 
-static int 
+static int
 fgetline (char **buf, int *size, FILE * fp)
 {
   int len;
@@ -430,7 +430,7 @@ fgetline (char **buf, int *size, FILE * fp)
  */
 
 
-static int 
+static int
 parse_ether_line (char *line, ether_t * eth, int six_bytes)
 {
   /*
@@ -500,7 +500,7 @@ parse_ether_line (char *line, ether_t * eth, int six_bytes)
 
 static FILE *eth_p = NULL;
 
-static void 
+static void
 set_ethent (char *path)
 {
   if (eth_p)
@@ -509,7 +509,7 @@ set_ethent (char *path)
     eth_p = fopen (path, "r");
 }
 
-static void 
+static void
 end_ethent (void)
 {
   if (eth_p)
@@ -595,7 +595,7 @@ get_ethbyaddr (const u_char * addr)
 
 }				/* get_ethbyaddr */
 
-static void 
+static void
 add_manuf_name (u_char * addr, u_char * name)
 {
 
@@ -652,7 +652,7 @@ manuf_name_lookup (const u_char * addr)
 
 }				/* manuf_name_lookup */
 
-static void 
+static void
 initialize_ethers (void)
 {
   ether_t *eth;
@@ -827,7 +827,7 @@ eth_addr_lookup (u_char * name)
 #if 0				/* JTC */
 
 /* IPXNETS */
-static int 
+static int
 parse_ipxnets_line (char *line, ipxnet_t * ipxnet)
 {
   /*
@@ -888,7 +888,7 @@ parse_ipxnets_line (char *line, ipxnet_t * ipxnet)
 
 static FILE *ipxnet_p = NULL;
 
-static void 
+static void
 set_ipxnetent (char *path)
 {
   if (ipxnet_p)
@@ -897,7 +897,7 @@ set_ipxnetent (char *path)
     ipxnet_p = fopen (path, "r");
 }
 
-static void 
+static void
 end_ipxnetent (void)
 {
   if (ipxnet_p)
@@ -982,7 +982,7 @@ get_ipxnetbyaddr (guint32 addr)
 
 }				/* get_ipxnetbyaddr */
 
-static void 
+static void
 initialize_ipxnets (void)
 {
 
@@ -1095,7 +1095,7 @@ ipxnet_name_lookup (const u_int addr)
 
 }				/* ipxnet_name_lookup */
 
-static u_int 
+static u_int
 ipxnet_addr_lookup (u_char * name, gboolean * success)
 {
   ipxnet_t *ipxnet;
@@ -1147,7 +1147,7 @@ get_hostname (u_int addr)
   return host_name_lookup (addr);
 }
 
-#if 0 /*JTC*/
+#if 0				/*JTC */
 extern gchar *
 get_hostname6 (struct e_in6_addr *addr)
 {
@@ -1161,7 +1161,7 @@ get_hostname6 (struct e_in6_addr *addr)
 }
 #endif
 
-extern void 
+extern void
 add_host_name (u_int addr, u_char * name)
 {
 
@@ -1378,7 +1378,7 @@ get_ipxnet_name (const guint32 addr)
 
 }				/* get_ipxnet_name */
 
-extern guint32 
+extern guint32
 get_ipxnet_addr (u_char * name, gboolean * known)
 {
   guint32 addr;
@@ -1442,7 +1442,7 @@ get_manuf_name (u_char * addr)
  * a host name, to a numeric IP address.  Return TRUE if we succeed and
  * set "*addrp" to that numeric IP address; return FALSE if we fail.
  * Used more in the dfilter parser rather than in packet dissectors */
-gboolean 
+gboolean
 get_host_ipaddr (const char *host, guint32 * addrp)
 {
   struct in_addr ipaddr;
@@ -1480,7 +1480,7 @@ get_host_ipaddr (const char *host, guint32 * addrp)
  * Return TRUE if we succeed and set "*addrp" to that numeric IP address;
  * return FALSE if we fail.
  */
-gboolean 
+gboolean
 get_host_ipaddr6 (const char *host, struct e_in6_addr * addrp)
 {
   struct hostent *hp;

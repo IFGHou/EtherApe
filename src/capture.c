@@ -18,9 +18,11 @@
 
 #include <gnome.h>
 #include <ctype.h>
+#include <netinet/in.h>
 
 #include "capture.h"
 #include "eth_resolv.h"
+#include "dns.h"
 
 
 double averaging_time = 10000000;	/* Microseconds of time we consider to
@@ -33,8 +35,8 @@ double node_timeout_time = 10000000;	/* After this time has passed
 					 * node, it disappears */
 guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
-apemode_t mode=DEFAULT;			/* Mode of operation. Can be
-				 * ETHERNET, IP, UDP or TCP */
+apemode_t mode = DEFAULT;	/* Mode of operation. Can be
+				   * ETHERNET, IP, UDP or TCP */
 link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
@@ -202,7 +204,6 @@ link_id_compare (gconstpointer a, gconstpointer b)
   g_return_val_if_fail (b != NULL, 1);
 
 
-
   while (i)
     {
       if (((guint8 *) a)[i] < ((guint8 *) b)[i])
@@ -225,9 +226,13 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
   switch (mode)
     {
     case ETHERNET:
-      node->numeric_name = g_string_new (ether_to_str (node_id));
+      if (!node->numeric_name)
+	node->numeric_name = g_string_new (ether_to_str (node_id));
       if (numeric)
-	node->name = g_string_new (ether_to_str (node_id));
+	{
+	  if (!node->name)
+	    node->name = g_string_new (ether_to_str (node_id));
+	}
       else
 	{
 	  /* Code to display the IP address if host is not found
@@ -236,34 +241,57 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	  /* We look for the ip side only if it is an IP packet and 
 	   * the host is not found in /etc/ethers */
 	  if (!strcmp (ether_to_str (node_id), get_ether_name (node_id)) &&
-	      (packet[12] == 0x08) && (packet[13] == 0x00))
+	      ( node->ip_address || 
+	       ( (packet[12] == 0x08) && (packet[13] == 0x00) ) ))
 	    {
-	      const guint8 *ip_address;
-	      /* We do not know whether this was a source or destination
-	       * node, so we have to check it out */
-	      if (!node_id_compare (node_id, packet + 6))
-		ip_address = packet + 26; /* SRC packet */
-	      else
-		ip_address = packet + 30;
+	      if ((!(node->ip_address)) && packet)
+		{
+		  const guint8 *ip_address;
+		  /* We do not know whether this was a source or destination
+		   * node, so we have to check it out */
+		  if (!node_id_compare (node_id, packet + 6))
+		    ip_address = packet + 26;	/* SRC packet */
+		  else
+		    ip_address = packet + 30;
+		  node->ip_address = ntohl (*(guint32 *) ip_address);
+		}
+
 	      if (dns)
-		node->name = g_string_new (get_hostname (*(guint32 *) ip_address));
+		{
+		  if (!node->name)
+		    node->name = g_string_new (dns_lookup (node->ip_address));
+		  else
+		     g_string_assign (node->name, dns_lookup (node->ip_address));
+		}
 	      else
-		node->name = g_string_new (ip_to_str (ip_address));
+		node->name = g_string_new (ip_to_str ((guint8 *) (&(node->ip_address))));
 	    }
 	  else
 	    node->name = g_string_new (get_ether_name (node_id));
 	}
       break;
     case IP:
-      node->numeric_name = g_string_new (ip_to_str (node_id));
+      if (!node->numeric_name)
+	node->numeric_name = g_string_new (ip_to_str (node_id));
       if (numeric)
-	node->name = g_string_new (ip_to_str (node_id));
+	{
+	  if (!node->name)
+	    node->name = g_string_new (ip_to_str (node_id));
+	}
       else
 	{
-	  if (dns)
-	    node->name = g_string_new (get_hostname (*(guint32 *) node_id));
-	  else
-	    node->name = g_string_new (ip_to_str (node_id));
+	  if (!node->ip_address)
+	     node->ip_address=ntohl(*(guint32 *)node_id);
+//	  if (dns)
+//	    {
+	      if (!node->name)
+		node->name = g_string_new (dns_lookup (node->ip_address));
+	      else
+		g_string_assign (node->name, dns_lookup (node->ip_address));
+//	    }
+
+//	  else
+//	    node->name = g_string_new (ip_to_str (node_id));
 	}
       break;
     case TCP:
@@ -308,7 +336,11 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node = g_malloc (sizeof (node_t));
 
   node->node_id = g_memdup (node_id, node_id_length);
-
+  node->name = NULL;
+  node->numeric_name = NULL;
+  /* We initialize the ip_address, although it won't be
+   * used in many cases */
+  node->ip_address = 0;
   fill_names (node, node_id, packet);
 
   node->average = 0;
@@ -498,7 +530,8 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
   /* Get oldest relevant packet */
   packet_l_e = g_list_last (packets);
   packet = (packet_t *) packet_l_e->data;
-  /* Calculate average traffic */
+  /* If the node will still exist, then calculate average
+   * traffic and update names */
   if (packet)
     {
       difference = substract_times (now, packet->timestamp);
@@ -506,11 +539,18 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 
       /* average in bps, so we multiply by 8 */
       if (belongs_to == NODE)
-	((node_t *) (packet->parent))->average = 8 *
-	  ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	 {
+	    ((node_t *) (packet->parent))->average = 8 *
+	      ((node_t *) (packet->parent))->accumulated / usecs_from_oldest;
+	    /* Update names */
+	    fill_names ((node_t *) (packet->parent),
+			((node_t *) (packet->parent))->node_id,
+			NULL);
+	 }
       else
 	((link_t *) (packet->parent))->average = 8 *
 	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
+
     }
 }
 
@@ -680,11 +720,21 @@ packet_read (pcap_t * pch,
 }				/* packet_read */
 
 
+void dns_ready(gpointer data, gint fd, GdkInputCondition cond) {
+     dns_ack();
+}
+
+
+/* Sets up the pcap device
+ * Sets up the mode and related variables
+ * Sets up dns if needed
+ * Sets up callbacks for pcap and dns
+ * Creates nodes and links trees */
 void
 init_capture (void)
 {
 
-  gint pcap_fd;
+  gint pcap_fd, dns_fd;
   pcap_t *pch;
   gchar *device;
   gchar ebuf[300];
@@ -741,21 +791,23 @@ init_capture (void)
   linktype = pcap_datalink (pch);
 
   /* l3_offset is equal to the size of the link layer header */
-   
+
   switch (linktype)
     {
     case L_EN10MB:
-      if (mode==DEFAULT) mode=ETHERNET;
+      if (mode == DEFAULT)
+	mode = ETHERNET;
       l3_offset = 14;
       break;
-     case L_RAW: /* The case for PPP or SLIP, for instance */
-      if (mode==DEFAULT) mode=IP;
-      if (mode==ETHERNET)
-	 {
-	    g_message (_("Mode not available in this device"));
-	    /* TODO manage proper exit codes */
-	    exit (1);
-	 }
+    case L_RAW:		/* The case for PPP or SLIP, for instance */
+      if (mode == DEFAULT)
+	mode = IP;
+      if (mode == ETHERNET)
+	{
+	  g_message (_ ("Mode not available in this device"));
+	  /* TODO manage proper exit codes */
+	  exit (1);
+	}
       l3_offset = 0;
       break;
     default:
@@ -780,8 +832,20 @@ init_capture (void)
     default:
       g_error (_ ("Ape mode not yet supported"));
     }
+   
+  if ( ( (mode==IP) || (mode==TCP) ) && (!numeric) )
+     {
+	dns_open ();
+	dns_fd = dns_waitfd();
+	gdk_input_add (dns_fd,
+		       GDK_INPUT_READ,
+		       (GdkInputFunction) dns_ready,
+		       NULL);
+     }
+	
+	
 
   nodes = g_tree_new (node_id_compare);
   links = g_tree_new (link_id_compare);
 
-}
+}	/* înit_capture */

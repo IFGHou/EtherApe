@@ -68,9 +68,9 @@ void
 			    GtkAllocation * allocation,
 			    gpointer user_data);
 
-void on_averaging_spin_adjustment_changed (GtkAdjustment *adj);
-void on_refresh_spin_adjustment_changed (GtkAdjustment *adj, GtkWidget *canvas);
-void on_node_radius_slider_adjustment_changed (GtkAdjustment *adj);
-void on_link_width_slider_adjustment_changed (GtkAdjustment *adj);
-void on_node_to_spin_adjustment_changed (GtkAdjustment *adj);
-void on_link_to_spin_adjustment_changed (GtkAdjustment *adj);
+void on_averaging_spin_adjustment_changed (GtkAdjustment * adj);
+void on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas);
+void on_node_radius_slider_adjustment_changed (GtkAdjustment * adj);
+void on_link_width_slider_adjustment_changed (GtkAdjustment * adj);
+void on_node_to_spin_adjustment_changed (GtkAdjustment * adj);
+void on_link_to_spin_adjustment_changed (GtkAdjustment * adj);

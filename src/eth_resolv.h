@@ -26,14 +26,14 @@
 #define __RESOLV_H__
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#include "config.h"
 #endif
 
 #define EPATH_ETHERS 		"/etc/ethers"
 #define EPATH_IPXNETS 		"/etc/ipxnets"
 #define EPATH_MANUF  		DATAFILE_DIR "/manuf"
-#define EPATH_PERSONAL_ETHERS 	".etherape/ethers"  /* with "$HOME/" prefix */ /* JTC */
-#define EPATH_PERSONAL_IPXNETS 	".etherape/ipxnets" /* with "$HOME/" prefix */ /* JTC */
+#define EPATH_PERSONAL_ETHERS 	".etherape/ethers"  /* with "$HOME/" prefix */	/* JTC */
+#define EPATH_PERSONAL_IPXNETS 	".etherape/ipxnets" /* with "$HOME/" prefix */	/* JTC */
 
 #ifndef MAXNAMELEN
 #define MAXNAMELEN  	64	/* max name length (hostname and port name) */
@@ -50,53 +50,53 @@ extern gchar *g_pipxnets_path;
 /* Functions in resolv.c */
 
 /* get_tcp_port returns the UDP port name or "%d" if not found */
-extern u_char *get_udp_port(u_int port);
+extern u_char *get_udp_port (u_int port);
 
 /* get_tcp_port returns the TCP port name or "%d" if not found */
-extern u_char *get_tcp_port(u_int port);
+extern u_char *get_tcp_port (u_int port);
 
 /* get_hostname returns the host name or "%d.%d.%d.%d" if not found */
-extern u_char *get_hostname(u_int addr);
+extern u_char *get_hostname (u_int addr);
 
 /* get_hostname returns the host name, or numeric addr if not found */
 struct e_in6_addr;
-gchar* get_hostname6(struct e_in6_addr *ad);
+gchar *get_hostname6 (struct e_in6_addr *ad);
 
 /* get_ether_name returns the logical name if found in ethers files else
    "<vendor>_%02x:%02x:%02x" if the vendor code is known else
    "%02x:%02x:%02x:%02x:%02x:%02x" */
-extern u_char *get_ether_name(const u_char *addr);
+extern u_char *get_ether_name (const u_char * addr);
 
 /* get_ether_name returns the logical name if found in ethers files else NULL */
-extern u_char *get_ether_name_if_known(const u_char *addr);
+extern u_char *get_ether_name_if_known (const u_char * addr);
 
 /* get_manuf_name returns the vendor name or "%02x:%02x:%02x" if not known */
-extern u_char *get_manuf_name(u_char *addr);
+extern u_char *get_manuf_name (u_char * addr);
 
 /* get_ipxnet_name returns the logical name if found in an ipxnets file,
  * or a string formatted with "%X" if not */
-extern u_char *get_ipxnet_name(const guint32 addr);
+extern u_char *get_ipxnet_name (const guint32 addr);
 
 /* returns the ethernet address corresponding to name or NULL if not known */
-extern u_char *get_ether_addr(u_char *name);
+extern u_char *get_ether_addr (u_char * name);
 
 /* returns the ipx network corresponding to name. If name is unknown,
  * 0 is returned and 'known' is set to TRUE. */
-guint32 get_ipxnet_addr(u_char *name, gboolean *known);
+guint32 get_ipxnet_addr (u_char * name, gboolean * known);
 
 /* adds a hostname/IP in the hash table */
-extern void add_host_name(u_int addr, u_char *name);
+extern void add_host_name (u_int addr, u_char * name);
 
 /* Translates a string representing the hostname or dotted-decimal IP address
  * into a numeric IP address value, returning TRUE if it succeeds and
  * FALSE if it fails. */
-gboolean get_host_ipaddr(const char *host, guint32 *addrp);
+gboolean get_host_ipaddr (const char *host, guint32 * addrp);
 
 /*
  * Translate IPv6 numeric address or FQDN hostname, into binary IPv6 address.
  * Return TRUE if we succeed and set "*addrp" to that numeric IP address;
  * return FALSE if we fail.
  */
-gboolean get_host_ipaddr6(const char *host, struct e_in6_addr *addrp);
+gboolean get_host_ipaddr6 (const char *host, struct e_in6_addr *addrp);
 
 #endif /* __RESOLV_H__ */

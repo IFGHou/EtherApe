@@ -24,7 +24,7 @@ typedef struct
 canvas_link_t;
 
 
-/* Function definitions */ 
+/* Function definitions */
 
 gdouble get_node_size (gdouble average);
 gdouble get_link_size (gdouble average);
