@@ -1,0 +1,757 @@
+<!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+        <!-- if not using PNG graphic, replace reference above with
+             .....PUBLIC "-//OASIS//DTD DocBook V3.1//EN"[
+         -->
+<!ENTITY version "0.5.7"> <!-- replace with application version -->
+]>
+
+
+<!-- 
+  This is a GNOME documentation template, designed by the GNOME
+  Documentation Project Team. Please use it for writing GNOME
+  documentation, making obvious changes. In particular, all the words
+  written in UPPERCASE (with the exception of GNOME) should be
+  replaced. As for "legalnotice", please leave the reference
+  unchanged.
+
+  Remember that this is a guide, rather than a perfect model to follow
+  slavishly. Make your manual logical and readable.  And don't forget
+  to remove these comments in your final documentation!  ;-)
+-->
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 1.0.3
+  Template last modified: Nov 16, 2000
+-->
+
+
+<!-- =============Document Header ============================= -->
+
+<article id="index"> <!-- please do not change the id -->
+
+  <artheader>
+    <title>EtherApe Manual</title>
+    <copyright>
+      <year>2001</year>
+      <holder>Juan Toledo</holder>
+    </copyright>
+
+  <!-- translators: uncomment this:
+
+  <copyright>
+   <year>2000</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+  <!-- do not put authorname in the header except in copyright - use
+  section "authors" below -->
+
+  <!-- Use this legal notice for online documents which depend on -->
+  <!-- core GNOME packages.                                       -->
+  <legalnotice id="legalnotice">
+   <para>
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <ulink type="help" 
+    url="gnome-help:fdl"><citetitle>GNU Free Documentation
+    License</citetitle></ulink>, Version 1.1 or any later version 
+    published by the Free Software Foundation with no Invariant Sections, 
+    no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
+    can be found <ulink type="help" url="gnome-help:fdl">here</ulink>.
+   </para>
+   <para>
+    Many of the names used by companies to distinguish their products and
+    services are claimed as trademarks. Where those names appear in any
+    GNOME documentation, and those trademarks are made aware to the members
+    of the GNOME Documentation Project, the names have been printed in caps
+    or initial caps.
+   </para>
+  </legalnotice>
+
+  <!-- Use this legal notice for documents which are placed on  -->
+  <!-- the web, shipped in any way other than online documents  -->
+  <!-- (eg. PS, PDF, or RTF), or which do not depend on the     -->
+  <!-- core GNOME distribution.                                 -->
+  <!--                                                          -->
+  <!-- If you use this version, you must place the following    -->
+  <!-- line in the document declaration at the top of your      -->
+  <!-- document:                                                -->
+  <!--   <!ENTITY FDL SYSTEM "fdl.sgml">                        -->
+  <!-- and the following line at the bottom of your document    -->
+  <!-- after the last </sect1>.                                 -->
+  <!--   &FDL;                                                  -->
+  <!--
+  <legalnotice id="legalnotice">
+   <para>
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <link linkend="fdl"><citetitle>GNU
+    Free Documentation License</citetitle></link>, Version 1.1 or any later
+    version published by the Free Software Foundation with no Invariant
+    Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the
+    license can be found in <xref linkend="fdl">.
+   </para>
+   <para>
+    Many of the names used by companies to distinguish their products and
+    services are claimed as trademarks. Where those names appear in any
+    GNOME documentation, and those trademarks are made aware to the members
+    of the GNOME Documentation Project, the names have been printed in caps
+    or initial caps.
+   </para>
+  </legalnotice>
+  -->
+
+  <!-- This is the manual version, not application version. --> 
+    <releaseinfo>
+       This is version 0.1 of EtherApe manual.
+    </releaseinfo>
+
+  </artheader>
+
+ <!-- ============= Document Body ============================= -->
+
+ <!-- ============= Introduction ============================== -->
+  <sect1 id="intro">
+    <title>Introduction</title>
+
+    <para>
+
+    <application>EtherApe</application> is a graphical network monitor
+      for Unix modeled after etherman. Featuring ether, ip and tcp
+      modes, it displays network activity graphically. Hosts and links
+      change in size with traffic. Protocols are color coded. It
+      supports ethernet, fddi, ppp and slip devices. It can filter
+      traffic to be shown, and can read traffic from a file as well as
+      live from the network.
+    </para>
+
+    <para>
+      To run <application>EtherApe</application>, select
+      <menuchoice>
+	<guisubmenu>Applications</guisubmenu>
+	<guimenuitem>EtherApe</guimenuitem>
+      </menuchoice>
+      from the <guimenu>Main Menu</guimenu>, or type
+      <command>MYGNOMEAPP</command> on the command line.
+  </para>
+
+<!--
+    <para>
+      <application>EtherApe</application> is included in the
+      <filename>GNOME-PACKAGE</filename> package, which is part of the
+      GNOME desktop environment. This document describes version
+      &version; of <application>EtherApe</application>.
+    </para>
+-->
+  </sect1>
+
+
+ <!-- ================ Usage ================================ -->
+ <!-- This section should describe basic usage of the application. -->
+
+  <sect1 id="usage">
+    <title>Using EtherApe</title>
+    <para>
+      <application>EtherApe</application> can be used to have an
+      overview of traffic conditions in your network. It is a great
+      tool to easily pinpoint who is consuming the most bandwith, or
+      to check which computers are actually talking to some others.
+    </para>
+
+    <!-- ========= Basic Usage =========================== -->
+    <sect2 id="mainwin">
+      <title>Basic usage</title>
+      <para>
+        Starting <application>EtherApe</application> opens the
+        <interface>Main window</interface>, shown in <xref
+        linkend="mainwindow-fig">. The window is at first empty.
+
+        <!-- ==== Figure ==== -->
+        <figure id="mainwindow-fig">
+	  <title>EtherApe Main Window</title>
+	  <screenshot>
+	    <screeninfo>EtherApe Main Window</screeninfo>
+	    <graphic fileref="SCREENSHOT" format="png" srccredit="ME">
+            </graphic>
+	  </screenshot>
+	</figure>
+    <!-- ==== End of Figure ==== -->
+      </para> 
+
+
+ <!-- For this app, one could put "proving" or "edit" (probably even
+      both of them) as sect2's seperate from the main window
+      section. Since they were both so closely involved with the main
+      window, I decided to have them as sect3's isntead. Judgement
+      call. -->
+
+      <sect3 id="proving">
+	<title>Proving a Theorem</title>
+	<para>
+          To get a proof of a theorem, select
+          <menuchoice>
+	    <guisubmenu>File</guisubmenu>
+	    <guimenuitem>New</guimenuitem> </menuchoice>, which will
+	    bring up the <interface>New Proof</interface> dialog box.
+	    Enter the statement of the theorem in the
+	    <guilabel>Theorem statement</guilabel> field, select your
+	    desired proof type from the drop-down menu, and and press
+	    <guibutton>Prove!</guibutton>.
+        </para>
+	<para>
+          If <application>EtherApe</application> cannot prove the
+          theorem by the method you have chosen, or if you have not
+          selected a proof type at all,
+          <application>EtherApe</application> will attempt to choose
+          the one that it thinks is most conclusive.  In order, it
+          will attempt to prove the theorem with the following
+          techniques:
+     
+                <variablelist>
+	    <varlistentry>
+	      <term>Deduction</term>
+	      <listitem>
+		<para>
+                  This is a proof method that is generally accepted
+                  for full credit by Logic professors.
+                </para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+            <term>Induction</term>
+	    <listitem>
+	      <para>
+                This logical style will also earn you full credit on
+                your homework.
+             </para>
+	    </listitem>
+            </varlistentry>
+	    <varlistentry>
+	      <term>Dialog</term>
+	      <listitem>
+	      <para>
+                This logical method is best for Philosophy classes,
+                and will probably only merit partial credit on Logic
+                or Mathematics homework.
+              </para>
+	    </listitem>
+            </varlistentry>
+            <varlistentry>
+	      <term>Confusion</term>
+	      <listitem>
+	      <para>
+                Suitable only for political debates, battles of wits
+                against the unarmed, and Philosophy classes focusing
+                on the works of Kant. Use with caution.
+              </para>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+          </para>
+
+   <!-- You might want to include a note, warning, or tip, e.g. -->
+	
+	<warning>
+	  <title>Proving Incorrect Theorms</title>
+	  <para>
+            <application>EtherApe</application> cannot prove
+            incorrect theorems. If the theorem you have entered is not
+            demonstrably true, you will get a message to that effect
+            in the main window.  To disprove a theorem, ask
+            <application>EtherApe</application> to prove its
+            logical inverse.
+          </para>
+	</warning>
+      </sect3>
+      <sect3 id="editing">
+	<title>Editing Proofs</title>
+	<para>
+          Once you have proven the theorem, it will be displayed in
+          the <interface>main window</interface>.  There, you can read
+          it over, choose text styles for different portions of it,
+          and make comments on it. This section will guide you through
+          that process.
+        </para>
+	<para>
+          To alter text styles, first select the statement you wish to
+          change by clicking on it once.  You can select several
+          statements by Then, choose the style you want to apply from
+          the <guisubmenu>Style</guisubmenu> submenu of the
+          <guimenu>Edit</guimenu> menu.
+          <application>EtherApe</application> will convert the
+          text to that style.
+        </para>
+        <para>
+          You can also enter comments on a statement by selecting that
+          statement, and then beginning to type.  Comments will appear
+          after the statement you have selected.
+        </para>
+
+	<note>
+	  <title>Altering The Proofs Themselves</title>
+          <para>
+            <application>EtherApe</application> does not allow you
+            to alter a proof it has produced itself.  You can, save
+            your proof as a plain text file (using the
+            <guimenuitem>Save as...</guimenuitem> menu), and alter it
+            that way.  Be aware, however, that
+            <application>EtherApe</application> uses its own file
+            format for saved proofs, and cannot re-open a file unless
+            it is in the .mga format.
+          </para>
+	</note>
+      </sect3>
+
+
+  <!-- If there are other functions performed from the main window,
+       they belong here.   -->
+
+    </sect2>
+ 
+    <!-- ========================================================= 
+      Additional Sect2's should describe additional windows, such as
+      larger dialog boxes, or functionality that differs significantly
+      from the most immediate functions of the application. Make the
+      structure logical.
+      =============================================================  -->
+
+
+    <sect2 id="toolbar">
+      <title>Toolbar</title>
+      <para>
+        The toolbar (shown in <xref linkend="figure-usage-toolbar">)
+        provides access to several commonly used routines.
+        <figure id="figure-usage-toolbar">
+	  <title>EtherApe Toolbar</title>
+	  <screenshot>
+	    <screeninfo>EtherApe Toolbar</screeninfo>
+	    <graphic fileref="usage-toolbar.png" format="png"></graphic>
+	  </screenshot>
+	</figure>
+        <variablelist>
+	  <varlistentry>
+	    <term>New</term>
+	    <listitem>
+	      <para>
+                Brings up the <interface>New Theorem</interface>
+                dialog.
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Open</term>
+	    <listitem>
+	      <para>
+                 Open an exisiting theorem you want to prove, or a
+                 completed proof you wish to print or format.
+               </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Save</term>
+	    <listitem>
+	      <para>
+	         Save the current theorem permanently in a
+	         file.
+               </para>
+	    </listitem> 
+	  </varlistentry>
+	</variablelist>
+       </para>
+    </sect2>
+    <!-- ========= Menus =========================== --> 
+
+    <sect2 id="menubar">
+
+       <!-- Describing the menubar ensures comprehensive feature
+       coverage. Nest itemizedlists inside variablelists so that each
+       menu is easily located by indexing software. Proper indentation
+       makes it easier! -->
+
+      <title>Menus</title>
+      <para>
+	The menu bar, located at the top of the <interface>Main
+	Window</interface>, contains the following menus:
+       </para>
+      <variablelist>
+	<varlistentry>
+	  <term><guimenu>File</guimenu></term>
+	  <listitem>
+	    <para>
+	       This menu contains:
+	       <itemizedlist>
+		<listitem>
+		  <para>
+	            <menuchoice>
+		      <shortcut>
+			<keycap>F3</keycap>
+		      </shortcut>
+		      <guimenuitem>Open</guimenuitem>
+		     </menuchoice>
+	             &mdash; This opens a file which is saved on your computer.
+	           </para>
+		</listitem>
+		<listitem>
+		  <para>
+	             <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>S</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Save</guimenuitem>
+		    </menuchoice>
+	            &mdash; This saves your file.
+	          </para>
+		</listitem>
+		<listitem>
+		  <para>
+	             <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>W</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Close</guimenuitem>
+		    </menuchoice>
+	            &mdash; This closes your file.
+	          </para>
+		</listitem>
+		<listitem>
+		  <para>
+	            <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>Q</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Exit</guimenuitem>
+		    </menuchoice>
+	            &mdash; This quits the application.
+	          </para>
+		</listitem>
+	      </itemizedlist>
+	  </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term><guimenu>Edit</guimenu></term>
+	  <listitem>
+	    <para>
+	   This menu contains:
+	   <itemizedlist>
+		<listitem>
+		  <para>
+	            <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>X</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Cut</guimenuitem>
+		    </menuchoice>
+	            &mdash; This removes any text or data which is selected and
+	            places it in the buffer.
+	          </para>
+		</listitem>
+		<listitem>
+		  <para>
+	            <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>C</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Copy</guimenuitem>
+		    </menuchoice>
+	            &mdash; This copies any text or data which is selected into
+	            the buffer.
+	          </para>
+		</listitem>
+		<listitem>
+		  <para>
+	           <menuchoice>
+		      <shortcut>
+			<keycombo><keycap>Ctrl</keycap><keycap>V</keycap></keycombo>
+		      </shortcut>
+		      <guimenuitem>Paste</guimenuitem>
+		    </menuchoice>
+	            &mdash; This pastes any text or data which is copied into
+	            the buffer.
+	        </para>
+		</listitem>
+		<listitem>
+		  <para>
+	             <guimenuitem>COMMAND1&hellip;</guimenuitem>
+	             &mdash; This opens the <interface>COMMAND1</interface>
+	             dialog, which is used to ....
+	          </para>
+		</listitem>
+		<listitem>
+		  <para>
+	            <guimenuitem>COMMAND2</guimenuitem>
+	            &mdash; This ....
+	          </para>
+		</listitem>
+	      </itemizedlist>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	
+
+	<varlistentry>
+	  <term><guimenu>Settings</guimenu></term>
+	  <listitem>
+	    <para>
+	   This menu contains:
+	   <itemizedlist>
+		<listitem>
+		  <para>
+	      <guimenuitem>Preferences&hellip;</guimenuitem>
+	       &mdash; This opens the <link
+	       linkend="prefs"><interface>Preferences
+	       Dialog</interface></link>, which allows you to configure
+	       many settings.
+	     </para>
+		</listitem>
+		<listitem>
+		  <para>
+	            <guimenuitem>COMMAND3</guimenuitem> &mdash;
+    	            This command does something.
+    	    	   </para>
+		</listitem>
+	      </itemizedlist>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term><guimenu>Help</guimenu></term>
+	  <listitem>
+	    <para>
+	      This menu contains:
+	       <itemizedlist>
+		<listitem>
+		  <para>
+	             <guimenuitem>Manual</guimenuitem> &mdash; This
+    	              opens the <application>GNOME Help
+    	              Browser</application> and displays this manual.
+	          </para>
+		</listitem>
+		
+		<listitem>
+		  <para>
+	            <guimenuitem>About</guimenuitem> &mdash; This
+    	            opens the <interface>About</interface> dialog
+    	            which shows basic information about
+    	            <application>EtherApe</application>, such as
+    	            the author's name, the application version number,
+    	            and the URL for the application's Web page if one
+    	            exists.
+	          </para>
+		</listitem>
+	      </itemizedlist>
+            </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+
+
+
+ <!-- ============= Customization ============================= -->
+
+ <sect1 id="prefs">
+  <title>Customization</title>
+  <para>
+   To change the application settings, select
+   <menuchoice>
+    <guimenu>Settings</guimenu>
+    <guimenuitem>Preferences...</guimenuitem>
+   </menuchoice>.  This opens the
+   <interface>Preferences</interface> dialog, shown in <xref
+   linkend="preferences-fig">.
+  </para>
+
+  <figure id="preferences-fig">
+   <title>Preferences Dialog</title>
+   <screenshot>
+    <screeninfo>Preferences Dialog</screeninfo>
+    <graphic fileref="SCREENSHOT" format="png"
+     srccredit="ME">
+    </graphic>
+   </screenshot>
+  </figure>
+
+  <para>
+   The properties in the <guilabel>PREFSTABNAME</guilabel> tab are:
+   
+   <!--many people use itemizedlists in cases like this. Variablelists
+   are more appropriate -->
+
+      <variablelist>
+	<varlistentry>
+	  <term> <guilabel>Default Text Style</guilabel></term>
+	  <listitem>
+	    <para>
+              Select the default text style for statements in your
+              proof.  You can still change the style for individual
+              proofs or sections of a proof at a later date.
+            </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>(Configuration Item Label)</term>
+	  <listitem>
+	    <para>
+             (Description of Configuration)
+             </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>(Configuration Item Label)</term>
+	  <listitem>
+	    <para>
+             (Description of Configuration)
+             </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+
+    <para>
+     The properties in the <guilabel>SECONDTABNAME</guilabel> tab are:
+       <variablelist>
+	<varlistentry>
+	  <term>(Configuration Item Label)</term>
+	  <listitem>
+	    <para>
+             (Description of Configuration)
+             </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>(Configuration Item Label)</term>
+	  <listitem>
+	    <para>
+             (Description of Configuration)
+             </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+
+  <para>
+    After you have made all the changes you want, click on
+    <guibutton>OK</guibutton> to apply the changes and close the
+    <interface>Properties</interface> dialog. To cancel the changes
+    and return to previous values, click the
+    <guibutton>Close</guibutton> button.
+  </para>
+
+ </sect1>
+
+
+ <!-- ============= Various Sections ============================= -->
+
+ <!-- Here you should add, if necessary, several more sect1's,
+ describing other windows (besides the main one), file formats,
+ preferences dialogs,  etc. as appropriate. Try not to make any of
+ these sections too long. -->
+
+
+ <!-- ============= Bugs ================================== -->
+ <!-- This section should describe known bugs and limitations of
+      the program if there are any - please be frank and list all
+      problems you know of. -->
+ <sect1 id="bugs">
+  <title>Known Bugs and Limitations</title>
+  <para>
+   This application has no known bugs.
+  </para>
+ </sect1>
+
+
+<!-- ============= Authors ================================ -->
+
+ <sect1 id="authors">
+  <title>Authors</title>
+  <para>
+   <application>EtherApe</application> was written by GNOME-HACKER
+   (<email>hacker@gnome.org</email>). To find more information about
+   <application>EtherApe</application>, please visit the <ulink
+   url="http://www.my-gnome-app.org" type="http">EtherApe Web
+   page</ulink>.  Please send all comments, suggestions, and bug
+   reports to the <ulink url="http://bugs.gnome.org" type="http">GNOME
+   bug tracking database</ulink>.  (Instructions for submitting bug
+   reports can be found <ulink
+   url="http://bugs.gnome.org/Reporting.html" type="http">
+   on-line</ulink>.)  You can also use <application>Bug Report
+   Tool</application> (<command>bug-buddy</command>), available in the
+   <guisubmenu>Utilities</guisubmenu> submenu of <guimenu>Main
+   Menu</guimenu>, for submitting bug reports.
+  </para>
+
+  <para>
+   This manual was written by ME
+   (<email>MYNAME@MYADDRESS</email>). Please send all comments and
+   suggestions regarding this manual to the <ulink type="http"
+   url="http://developer.gnome.org/projects/gdp">GNOME Documentation
+   Project</ulink> by sending an email to
+   <email>docs@gnome.org</email>. You can also add your comments
+   online by using the <ulink type="http"
+   url="http://developer.gnome.org/projects/gdp/doctable/">GNOME
+   Documentation Status Table</ulink>.
+  </para>
+
+  <!-- For translations: uncomment this:
+
+  <para>
+   Latin translation was done by ME
+   (<email>MYNAME@MYADDRESS</email>). Please send all  comments  and
+   suggestions regarding this translation to SOMEWHERE.
+  </para>
+
+  -->
+
+ </sect1>
+
+
+ <!-- ============= Application License ============================= -->
+
+ <sect1 id="license">
+  <title>License</title>
+  <para>
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the  <ulink type="help" url="gnome-help:gpl">
+    <citetitle>GNU General Public License</citetitle></ulink> as
+   published by the Free Software Foundation; 
+   either version 2 of the License, or (at your option) any later
+   version.
+  </para>
+  <para>
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   <citetitle>GNU General Public License</citetitle> for more details.
+  </para>
+  <para>
+   A copy of the <citetitle>GNU General Public License</citetitle> is
+   included as an appendix to the <citetitle>GNOME Users
+   Guide</citetitle>.  You may also obtain a copy of the
+   <citetitle>GNU General Public License</citetitle> from the Free
+   Software Foundation by visiting <ulink type="http"
+   url="http://www.fsf.org">their Web site</ulink> or by writing to
+   <address>
+    Free Software Foundation, Inc.
+    <street>59 Temple Place</street> - Suite 330
+    <city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>
+    <country>USA</country>
+   </address>
+  </para>
+ </sect1>
+</article>
+
+
+
+
+
+
+
+
+
