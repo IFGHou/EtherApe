@@ -1,4 +1,12 @@
 
+  Overview of changes in Etherape 0.2.1 (Monday 03-07-2000):
+  
+     * Added tcp support. Run with etherape -m tcp
+     * Added fix from Ted Wright to provide a more readable display in
+       crowded diagrams. Run with -o. Very useful for tcp.
+     * Cleaned up sources so that adding other modes should be trivial.
+       Please have a look at the source.
+       
   Overview of changes in Etherape 0.2.0 (Friday 03-03-2000):
   
      * RedHat 6.1 fix. Works around "featureful" redhat 6.1 libpcap.
