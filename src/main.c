@@ -23,6 +23,19 @@
 
 #include "globals.h"
 #include "main.h"
+#include "menus.h"
+
+static GnomeUIInfo help_submenu[] = {
+  GNOMEUIINFO_HELP ("etherape"),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_ABOUT_ITEM(on_about1_activate, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo help_menu[] = {
+  GNOMEUIINFO_MENU_HELP_TREE (help_submenu),
+  GNOMEUIINFO_END
+};
 
 int
 main (int argc, char *argv[])
@@ -218,15 +231,21 @@ main (int argc, char *argv[])
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
-#if 0
-  widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
-#endif
+
   widget = glade_xml_get_widget (xml, "canvas1");
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					refresh_period,
 					(GtkFunction) update_diagram,
 					widget,
 					(GDestroyNotify) destroying_timeout);
+
+  /* It seems libglade is not acknowledging the "Use gnome help" option in the 
+   * glade file and so it is not automatically adding the help items in the help
+   * menu. Thus I must add it manually here */
+
+  widget = glade_xml_get_widget (xml, "menubar1");
+  gnome_app_fill_menu ((GtkMenuShell *)widget, help_menu, gtk_accel_group_get_default (), TRUE, 2);
+
 
   /* MAIN LOOP */
   gtk_main ();
