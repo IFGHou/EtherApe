@@ -507,10 +507,10 @@ get_ipx ()
       prot = g_string_append (prot, "/IPX-ERROR");
       break;
     case IPX_PACKET_TYPE_SPX:
-      prot = g_string_append (prot, "/SPX");
+      prot = g_string_append (prot, "/IPX-SPX");
       break;
     case IPX_PACKET_TYPE_NCP:
-      prot = g_string_append (prot, "/NCP");
+      prot = g_string_append (prot, "/IPX-NCP");
       break;
     case IPX_PACKET_TYPE_WANBCAST:
       prot = g_string_append (prot, "/IPX-NetBIOS");
