@@ -1,8 +1,102 @@
-etherape (0.4.1-0unoff) unstable; urgency=low
+etherape (0.5.6-0unoff) unstable; urgency=low
 
-  * New upstream release. (unofficial package)
+  * (unofficial package, check the version number)
 
  -- Your Name <your.name@your.domain>  Sun, 26 Mar 2000 18:21:58 +0200
+
+etherape (0.5.6-2) unstable; urgency=low
+
+  * Applied rest of the patch of Tuomas Jormola (and more):
+  * debian/rules:
+    - Comment out several dh_* lines that aren't needed.
+    - Use dh_link instead of ln hack when creating the symlink
+      for interape manual page.
+    - Don't install ChangeLog with dh_installchangelogs since it'a
+      a 0 byte file
+    - Install NEWS as ChangeLog file since it is really a ChangeLog
+  * debian/dirs:
+    - Removed usr/bin which is (was) completely useless
+  * debian/docs:
+    - Removed an empty line
+  * debian/control:
+    - Upgrade to standards 3.1.1 since the package actually is
+      3.1.1 compatible.
+    - Added libglade-gnome0-dev to Build-Depends
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 10 May 2000 18:44:29 +0200
+
+etherape (0.5.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 19 Apr 2000 19:55:52 +0200
+
+etherape (0.5.0-2) unstable; urgency=low
+
+  * Fixed glade interface location. (report and fix by Tuomas Jormola
+    <tj@sgic.fi>) (closes: #62656)
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 19 Apr 2000 19:55:52 +0200
+
+etherape (0.5.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 17 Apr 2000 18:38:22 +0200
+
+etherape (0.4.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Sun,  9 Apr 2000 23:50:12 +0200
+
+etherape (0.4.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Sat,  8 Apr 2000 19:01:09 +0200
+
+etherape (0.4.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed,  5 Apr 2000 19:07:22 +0200
+
+etherape (0.4.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Tue,  4 Apr 2000 18:39:16 +0200
+
+etherape (0.3.7-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Sun, 26 Mar 2000 18:17:07 +0200
+
+etherape (0.3.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Fri, 24 Mar 2000 18:48:18 +0100
+
+etherape (0.3.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 20 Mar 2000 16:30:50 +0100
+
+etherape (0.2.10-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Sat, 18 Mar 2000 17:14:46 +0100
+
+etherape (0.2.9-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 16 Mar 2000 23:35:05 +0100
  
 Local variables:
 mode: debian-changelog
