@@ -1,3 +1,16 @@
+2003-02-25 22:09  bchiara
+
+	* glade/etherape.glade2, src/globals.h, src/info_windows.c,
+	src/info_windows.h, src/menus.c, src/preferences.c: 
+	Signal handling fixes
+
+2003-02-25 00:05  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,
+	src/globals.h, src/info_windows.c, src/main.c, src/menus.c,
+	src/preferences.c: 
+	More info-windows fixes.  Added canvas antialiasing
+
 2003-02-23 13:38  toledo
 
 	* configure.in, src/Makefile.am: Correctly use ETHERAPE_CFLAGS and
@@ -1105,20 +1118,8 @@
 
 	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
 	etherape/docbook.css, etherape/index.html, etherape/license.html,
-	etherape/ln7.html, etherape/prefs.html, etherape/usage.html,
-	etherape/stylesheet-images/caution.gif,
-	etherape/stylesheet-images/home.gif,
-	etherape/stylesheet-images/important.gif,
-	etherape/stylesheet-images/next.gif,
-	etherape/stylesheet-images/note.gif,
-	etherape/stylesheet-images/prev.gif,
-	etherape/stylesheet-images/tip.gif,
-	etherape/stylesheet-images/toc-blank.gif,
-	etherape/stylesheet-images/toc-minus.gif,
-	etherape/stylesheet-images/toc-plus.gif,
-	etherape/stylesheet-images/up.gif,
-	etherape/stylesheet-images/warning.gif: etherape directory needed
-	for people building from CVS
+	etherape/ln7.html, etherape/prefs.html, etherape/usage.html:
+	etherape directory needed for people building from CVS
 
 2001-04-20 08:19  toledo
 
