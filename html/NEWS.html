@@ -10,6 +10,33 @@
 
 <div id="date">$Date$</div>
 
+<h3>Overview of changes in Etherape 0.5.0 (Saturday 04-15-2000):</h3>
+
+<ul>
+<li>Fixed PPP and SLIP modes not showing any protocols nor names</li>
+
+<li>Moved code to libglade. This means:
+
+<ul>
+
+<li>You will need libglade to compile and run etherape</li>
+
+<li>No more GTK warnings</li>
+
+<li>The view menu is fixed. Check buttons work as expected</li>
+
+<li>You can change the interface by editing etherape.glade with
+glade without having to recompile</li>
+
+<li>All kinds of benefits for the developer. Now I can go back
+at dealing with the GUI</li>
+
+</ul>
+</li>
+
+<li>These are major changes. Please report any problems (see README.bugs)</li>
+
+</ul>
 <h3>Overview of changes in Etherape 0.4.7 (Friday 04-14-2000):</h3>
 
 <ul>
@@ -19,12 +46,11 @@ had been set up in the command line</li>
 <li>(Bill Barth) New, improved static mode</li>
 
 <li>Debug messages depend on the DEBUG environment variable. You
-can set it to DEBUG or INFO if you want to see them again. Added
--q option too, to get rid of WARNINGS as well</li>
+can set it to DEBUG or INFO if you want to see them again. Added -q
+option too, to get rid of WARNINGS as well</li>
 
 <li>Refresh period is finally working the intended way (I hope).
 Should free up CPU in many cases</li>
-
 </ul>
 
 <h3>Overview of changes in Etherape 0.4.6 (Monday 04-10-2000):</h3>

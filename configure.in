@@ -1,11 +1,19 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(etherape, 0.4.7)
+AM_INIT_AUTOMAKE(etherape, 0.5.0)
 AM_CONFIG_HEADER(config.h)
 
 dnl Pick up the Gnome macros.
 AM_ACLOCAL_INCLUDE(macros)
+
+
+
+GNOME_INIT
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
 
 dnl ******************************
 dnl LibGlade checking
@@ -22,12 +30,6 @@ else
     AC_MSG_ERROR(Did not find libGlade installed)
 fi
 
-
-GNOME_INIT
-AC_ISC_POSIX
-AC_PROG_CC
-AM_PROG_CC_STDC
-AC_HEADER_STDC
 
 GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS

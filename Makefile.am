@@ -55,6 +55,7 @@ EXTRA_DIST = \
 	debian/menu		\
 	debian/rules		\
 	src/maketcpudp.sh	\
+	src/glade-strings	\
 	$(glade_DATA)		\
 	$(man_MANS)
 

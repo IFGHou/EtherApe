@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-10 12:36+0200\n"
+"POT-Creation-Date: 2000-04-15 23:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,8 @@ msgstr ""
 # src/main.c:158
 # src/main.c:161
 # src/main.c:43
-#: src/main.c:43
+# src/main.c:38
+#: src/main.c:38
 msgid "mode of operation"
 msgstr "modo de operación"
 
@@ -34,7 +35,8 @@ msgstr "modo de operación"
 # src/main.c:158
 # src/main.c:161
 # src/main.c:43
-#: src/main.c:43
+# src/main.c:38
+#: src/main.c:38
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr ""
 
@@ -46,7 +48,8 @@ msgstr ""
 # src/main.c:161
 # src/main.c:164
 # src/main.c:45
-#: src/main.c:45
+# src/main.c:40
+#: src/main.c:40
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
@@ -58,7 +61,8 @@ msgstr "definir el interfaz a escuchar"
 # src/main.c:161
 # src/main.c:164
 # src/main.c:45
-#: src/main.c:45
+# src/main.c:40
+#: src/main.c:40
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
@@ -70,7 +74,8 @@ msgstr "<nombre del interfaz>"
 # src/main.c:164
 # src/main.c:167
 # src/main.c:47
-#: src/main.c:47
+# src/main.c:42
+#: src/main.c:42
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
@@ -82,7 +87,8 @@ msgstr "definir el filtro de captura"
 # src/main.c:164
 # src/main.c:167
 # src/main.c:47
-#: src/main.c:47
+# src/main.c:42
+#: src/main.c:42
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
@@ -94,7 +100,8 @@ msgstr "<filtro de captura>"
 # src/main.c:164
 # src/main.c:167
 # src/main.c:49
-#: src/main.c:49
+# src/main.c:44
+#: src/main.c:44
 msgid "set input file"
 msgstr "definir el fichero de entrada"
 
@@ -106,7 +113,8 @@ msgstr "definir el fichero de entrada"
 # src/main.c:161
 # src/main.c:164
 # src/main.c:49
-#: src/main.c:49
+# src/main.c:44
+#: src/main.c:44
 msgid "<file name>"
 msgstr "<nombre de archivo>"
 
@@ -118,7 +126,8 @@ msgstr "<nombre de archivo>"
 # src/main.c:152
 # src/main.c:155
 # src/main.c:51
-#: src/main.c:51
+# src/main.c:46
+#: src/main.c:46
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
@@ -130,7 +139,8 @@ msgstr "no convertir las direcciones en nombres"
 # src/main.c:155
 # src/main.c:158
 # src/main.c:53
-#: src/main.c:53
+# src/main.c:48
+#: src/main.c:48
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
@@ -142,13 +152,20 @@ msgstr "no mostrar ninguna identificación de texto del nodo"
 # src/main.c:167
 # src/main.c:170
 # src/main.c:55
-#: src/main.c:55
+# src/main.c:50
+#: src/main.c:50
 msgid "do not fade old links"
 msgstr "no desvanecer enlaces en desuso"
 
-#: src/main.c:57
+# src/main.c:52
+#: src/main.c:52
 msgid "don't move nodes around"
-msgstr ""
+msgstr "no mover los nodos"
+
+# src/main.c:54
+#: src/main.c:54
+msgid "Don't show warnings"
+msgstr "no mostrar mensajes de aviso"
 
 # src/main.c:76
 # src/main.c:76
@@ -158,7 +175,8 @@ msgstr ""
 # src/main.c:170
 # src/main.c:173
 # src/main.c:57
-#: src/main.c:59
+# src/main.c:56
+#: src/main.c:56
 msgid "set the node color"
 msgstr "fijar el color de los nodos"
 
@@ -170,7 +188,8 @@ msgstr "fijar el color de los nodos"
 # src/main.c:170 src/main.c:173 src/main.c:176
 # src/main.c:173 src/main.c:176 src/main.c:179
 # src/main.c:57 src/main.c:59 src/main.c:61
-#: src/main.c:59 src/main.c:61 src/main.c:63
+# src/main.c:56 src/main.c:58 src/main.c:60
+#: src/main.c:56 src/main.c:58 src/main.c:60
 msgid "color"
 msgstr "color"
 
@@ -182,7 +201,8 @@ msgstr "color"
 # src/main.c:173
 # src/main.c:176
 # src/main.c:59
-#: src/main.c:61
+# src/main.c:58
+#: src/main.c:58
 msgid "set the link color"
 msgstr "fijar el color de los enlaces"
 
@@ -194,7 +214,8 @@ msgstr "fijar el color de los enlaces"
 # src/main.c:176
 # src/main.c:179
 # src/main.c:61
-#: src/main.c:63
+# src/main.c:60
+#: src/main.c:60
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
@@ -206,10 +227,17 @@ msgstr "fijar el color del texto"
 # src/main.c:244
 # src/main.c:247
 # src/main.c:127
-#: src/main.c:129
+# src/main.c:128
+#: src/main.c:128
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
+
+# src/callbacks.c:159 src/main.c:182
+#: src/callbacks.c:159 src/main.c:183
+#, c-format
+msgid "We could not load the interface! (%s)"
+msgstr "No ha sido posible cargar el interfaz (%s)"
 
 # src/main.c:131
 # src/main.c:152
@@ -217,586 +245,10 @@ msgstr ""
 # src/main.c:138
 # src/main.c:141
 # src/main.c:267
-#: src/main.c:271
+# src/main.c:307
+#: src/main.c:308
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
-
-# src/interface.c:23
-# src/interface.c:22
-# src/interface.c:23
-# src/interface.c:23
-# src/interface.c:22
-# src/interface.c:22
-# src/interface.c:22
-# src/interface.c:21
-#: src/interface.c:21
-msgid "._New File"
-msgstr "_Archivo Nuevo"
-
-# src/interface.c:46
-# src/interface.c:45
-# src/interface.c:46
-# src/interface.c:46
-# src/interface.c:45
-# src/interface.c:45
-# src/interface.c:45
-# src/interface.c:43
-#: src/interface.c:43
-msgid "_Toolbar"
-msgstr "Barra de _herramientas"
-
-# src/interface.c:47
-# src/interface.c:47
-# src/interface.c:46
-# src/interface.c:46
-# src/interface.c:46
-# src/interface.c:44
-#: src/interface.c:44
-msgid "Show or hide the toolbar"
-msgstr "Muestra o oculta la barra de herramientas"
-
-# src/interface.c:53
-# src/interface.c:52
-# src/interface.c:53
-# src/interface.c:53
-# src/interface.c:52
-# src/interface.c:52
-# src/interface.c:52
-# src/interface.c:49
-#: src/interface.c:49
-msgid "_Legend"
-msgstr "_Leyenda"
-
-# src/interface.c:54
-# src/interface.c:54
-# src/interface.c:53
-# src/interface.c:53
-# src/interface.c:53
-# src/interface.c:50
-#: src/interface.c:50
-msgid "Show or hide the legend"
-msgstr "Muestra u oculta la leyenda"
-
-# src/interface.c:60
-# src/interface.c:59
-# src/interface.c:60
-# src/interface.c:60
-# src/interface.c:59
-# src/interface.c:59
-# src/interface.c:59
-# src/interface.c:55
-#: src/interface.c:55
-msgid "_Status Bar"
-msgstr "Barra de _estado"
-
-# src/interface.c:61
-# src/interface.c:61
-# src/interface.c:60
-# src/interface.c:60
-# src/interface.c:60
-# src/interface.c:56
-#: src/interface.c:56
-msgid "Show or hide the status bar"
-msgstr "Muestra u oculta la barra de estado"
-
-# src/interface.c:107
-# src/interface.c:106
-# src/interface.c:107
-# src/interface.c:107
-# src/interface.c:106
-# src/interface.c:106
-# src/interface.c:106
-# src/interface.c:101
-#: src/interface.c:101
-msgid "Etherape"
-msgstr "Etherape"
-
-# src/interface.c:246
-# src/interface.c:245
-# src/interface.c:246
-# src/interface.c:246
-# src/interface.c:245
-# src/interface.c:245
-# src/interface.c:245
-# src/interface.c:240
-#: src/interface.c:240
-msgid "New"
-msgstr "Nuevo"
-
-# src/interface.c:23
-# src/interface.c:246
-# src/interface.c:247
-# src/interface.c:247
-# src/interface.c:246
-# src/interface.c:246
-# src/interface.c:246
-# src/interface.c:241
-#: src/interface.c:241
-msgid "New File"
-msgstr "_Archivo Nuevo"
-
-# src/interface.c:258
-# src/interface.c:257
-# src/interface.c:258
-# src/interface.c:258
-# src/interface.c:257
-# src/interface.c:257
-# src/interface.c:257
-# src/interface.c:252
-#: src/interface.c:252
-msgid "Open"
-msgstr "Abrir"
-
-# src/interface.c:23
-# src/interface.c:258
-# src/interface.c:259
-# src/interface.c:259
-# src/interface.c:258
-# src/interface.c:258
-# src/interface.c:258
-# src/interface.c:253
-#: src/interface.c:253
-msgid "Open File"
-msgstr "_Archivo Nuevo"
-
-# src/interface.c:270
-# src/interface.c:269
-# src/interface.c:270 src/interface.c:800
-# src/interface.c:270 src/interface.c:800
-# src/interface.c:269 src/interface.c:840
-# src/interface.c:269 src/interface.c:840
-# src/interface.c:269 src/interface.c:890
-# src/interface.c:264 src/interface.c:1003
-#: src/interface.c:264 src/interface.c:1003
-msgid "Save"
-msgstr "Guardar"
-
-# src/interface.c:23
-# src/interface.c:270
-# src/interface.c:271
-# src/interface.c:271
-# src/interface.c:270
-# src/interface.c:270
-# src/interface.c:270
-# src/interface.c:265
-#: src/interface.c:265
-msgid "Save File"
-msgstr "_Archivo Nuevo"
-
-# src/interface.c:278
-# src/interface.c:277
-# src/interface.c:278
-# src/interface.c:278
-# src/interface.c:277
-# src/interface.c:277
-# src/interface.c:277
-# src/interface.c:282
-#: src/interface.c:282
-msgid "Protocols"
-msgstr "Protocolos"
-
-# src/interface.c:348
-# src/interface.c:347
-# src/interface.c:349
-# src/interface.c:349
-# src/interface.c:347
-# src/interface.c:347
-# src/interface.c:347
-# src/interface.c:373
-#: src/interface.c:373
-msgid "Copyright 2000 Juan Toledo"
-msgstr "Copyright 2000 Juan Toledo"
-
-# src/interface.c:350
-# src/interface.c:349
-# src/interface.c:351
-# src/interface.c:351
-# src/interface.c:349
-# src/interface.c:349
-# src/interface.c:349
-# src/interface.c:376
-#: src/interface.c:376
-msgid ""
-"A Graphical Network Browser.\n"
-"Web: http://etherape.sourceforge.net"
-msgstr ""
-"Un visualizador gráfico de red.\n"
-"Web: http://etherape.sourceforge.net"
-
-# src/interface.c:371
-# src/interface.c:370
-# src/interface.c:372
-# src/interface.c:372
-# src/interface.c:370
-# src/interface.c:370
-# src/interface.c:370
-# src/interface.c:397 src/interface.c:1117
-#: src/interface.c:397 src/interface.c:1117
-msgid "window1"
-msgstr ""
-
-# src/interface.c:391
-# src/interface.c:390
-# src/interface.c:392
-# src/interface.c:392
-# src/interface.c:390
-# src/interface.c:390
-# src/interface.c:390
-# src/interface.c:417
-#: src/interface.c:417
-msgid "name"
-msgstr "nombre"
-
-# src/interface.c:400
-# src/interface.c:399
-# src/interface.c:401
-# src/interface.c:401
-# src/interface.c:399
-# src/interface.c:399
-# src/interface.c:399
-# src/interface.c:426
-#: src/interface.c:426
-msgid "accumulated"
-msgstr "acumulado"
-
-# src/interface.c:409
-# src/interface.c:408
-# src/interface.c:410
-# src/interface.c:410
-# src/interface.c:408
-# src/interface.c:408
-# src/interface.c:408
-# src/interface.c:435
-#: src/interface.c:435
-msgid "average"
-msgstr "media"
-
-# src/interface.c:436
-# src/interface.c:435
-# src/interface.c:437
-# src/interface.c:437
-# src/interface.c:435
-# src/interface.c:435
-# src/interface.c:435
-# src/interface.c:463
-#: src/interface.c:463
-msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
-msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
-
-# src/interface.c:517
-# src/interface.c:517
-# src/interface.c:521
-# src/interface.c:555
-#: src/interface.c:555
-msgid "Etherape: Preferences"
-msgstr "Etherape: Preferencias"
-
-# src/interface.c:728
-# src/interface.c:760
-# src/interface.c:760
-# src/interface.c:770
-# src/interface.c:770
-# src/interface.c:556
-# src/interface.c:591
-#: src/interface.c:591
-msgid "Click to toggle"
-msgstr "Pulse para cambiar la selección"
-
-# src/interface.c:776
-# src/interface.c:776
-# src/interface.c:562
-# src/interface.c:599
-#: src/interface.c:599
-msgid "Toggle whether text is shown on the diagram"
-msgstr "Fijar si se muestra texto en el diagrama"
-
-# src/interface.c:767
-# src/interface.c:767
-# src/interface.c:778
-# src/interface.c:778
-# src/interface.c:564
-# src/interface.c:602
-#: src/interface.c:602
-msgid "No text"
-msgstr "Sin texto"
-
-# src/interface.c:596
-# src/interface.c:598
-# src/interface.c:606
-# src/interface.c:606
-# src/interface.c:614
-# src/interface.c:614
-# src/interface.c:590
-# src/interface.c:632
-#: src/interface.c:632
-msgid "Max. Node Radius"
-msgstr "Radio máx. de nodo"
-
-# src/interface.c:622
-# src/interface.c:624
-# src/interface.c:632
-# src/interface.c:632
-# src/interface.c:640
-# src/interface.c:640
-# src/interface.c:616
-# src/interface.c:662
-#: src/interface.c:662
-msgid "Max. Link Width"
-msgstr "Ancho máx. de enlace"
-
-# src/interface.c:639
-# src/interface.c:688
-#: src/interface.c:688
-msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
-msgstr ""
-"Determinar cómo se calculan el radio de los nodos y el ancho de los enlaces "
-"a partir del tráfico medio"
-
-# src/interface.c:698
-# src/interface.c:700
-# src/interface.c:708
-# src/interface.c:708
-# src/interface.c:718
-# src/interface.c:718
-# src/interface.c:641
-# src/interface.c:691
-#: src/interface.c:691
-msgid "Linear"
-msgstr "Lineal"
-
-# src/interface.c:701
-# src/interface.c:703
-# src/interface.c:711
-# src/interface.c:711
-# src/interface.c:721
-# src/interface.c:721
-# src/interface.c:644
-# src/interface.c:694
-#: src/interface.c:694
-msgid "Logarithmic"
-msgstr "Logarítmico"
-
-# src/interface.c:704
-# src/interface.c:706
-# src/interface.c:714
-# src/interface.c:714
-# src/interface.c:724
-# src/interface.c:724
-# src/interface.c:647
-# src/interface.c:697
-#: src/interface.c:697
-msgid "Square Root"
-msgstr "Raiz Cuadrada"
-
-# src/interface.c:709
-# src/interface.c:711
-# src/interface.c:719
-# src/interface.c:719
-# src/interface.c:729
-# src/interface.c:729
-# src/interface.c:652
-# src/interface.c:703
-#: src/interface.c:703
-msgid "Size Mode"
-msgstr "Ajuste de tamaño"
-
-# src/interface.c:675
-# src/interface.c:728
-#: src/interface.c:728
-msgid "Choose the font used to display text in the diagram"
-msgstr "Elegir el tipo de letra para mostrar texto en el diagrama"
-
-# src/interface.c:735
-# src/interface.c:743
-# src/interface.c:743
-# src/interface.c:753
-# src/interface.c:753
-# src/interface.c:677
-# src/interface.c:731
-#: src/interface.c:731
-msgid "Font"
-msgstr "Tipo de fuente"
-
-# src/interface.c:586
-# src/interface.c:586
-# src/interface.c:701
-# src/interface.c:758
-#: src/interface.c:758
-msgid "Refresh diagram every this many miliseconds"
-msgstr "Refrescar el diagrama cada estos milisegundos"
-
-# src/interface.c:570
-# src/interface.c:572
-# src/interface.c:580
-# src/interface.c:580
-# src/interface.c:588
-# src/interface.c:588
-# src/interface.c:703
-# src/interface.c:761
-#: src/interface.c:761
-msgid "Diagram refresh period (ms)"
-msgstr "Periodo de refresco (ms)"
-
-# src/interface.c:726
-# src/interface.c:787
-#: src/interface.c:787
-msgid "Set what level of the protocol stack is displayed in the legend"
-msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
-
-# src/interface.c:728
-# src/interface.c:790
-#: src/interface.c:790
-msgid "2"
-msgstr ""
-
-# src/interface.c:731
-# src/interface.c:793
-#: src/interface.c:793
-msgid "3"
-msgstr ""
-
-# src/interface.c:734
-# src/interface.c:796
-#: src/interface.c:796
-msgid "4"
-msgstr ""
-
-# src/interface.c:737
-# src/interface.c:799
-#: src/interface.c:799
-msgid "5"
-msgstr ""
-
-# src/interface.c:740
-# src/interface.c:802
-#: src/interface.c:802
-msgid "6"
-msgstr ""
-
-# src/interface.c:745
-# src/interface.c:808
-#: src/interface.c:808
-msgid "Protocol Stack Level"
-msgstr "Nivel de pila de protocolos"
-
-# src/interface.c:510
-# src/interface.c:512
-# src/interface.c:775
-# src/interface.c:775
-# src/interface.c:786
-# src/interface.c:786
-# src/interface.c:753
-# src/interface.c:832
-#: src/interface.c:832
-msgid "Diagram"
-msgstr "Diagrama"
-
-# src/main.c:70
-# src/main.c:70
-# src/main.c:157
-# src/main.c:178
-# src/interface.c:818
-# src/interface.c:818
-# src/interface.c:787
-# src/interface.c:876
-#: src/interface.c:876
-msgid "Capture filter"
-msgstr "Filtro de captura"
-
-# src/interface.c:559
-# src/interface.c:559
-# src/interface.c:811
-# src/interface.c:905
-#: src/interface.c:905
-msgid "Packet information is averaged for this amount of time"
-msgstr "Hacer media de la información durante este tiempo"
-
-# src/interface.c:545
-# src/interface.c:547
-# src/interface.c:555
-# src/interface.c:555
-# src/interface.c:562
-# src/interface.c:562
-# src/interface.c:814
-# src/interface.c:910
-#: src/interface.c:910
-msgid "Averaging Time (ms)"
-msgstr "Tiempo de medida (ms)"
-
-# src/interface.c:691
-# src/interface.c:691
-# src/interface.c:838
-# src/interface.c:938
-#: src/interface.c:938
-msgid "Delete this link after this much time. 0 means never timeout."
-msgstr ""
-"Borrar este enlace después de pasado este tiempo. 0 significa no borrar nunca"
-
-# src/interface.c:674
-# src/interface.c:676
-# src/interface.c:684
-# src/interface.c:684
-# src/interface.c:694
-# src/interface.c:694
-# src/interface.c:841
-# src/interface.c:943
-#: src/interface.c:943
-msgid "Link Timeout (ms)"
-msgstr "Timeout de enlaces (ms)"
-
-# src/interface.c:664
-# src/interface.c:664
-# src/interface.c:865
-# src/interface.c:971
-#: src/interface.c:971
-msgid "Delete this node after this much time. 0 means never timeout."
-msgstr ""
-"Borrar este nodo después de pasado este tiempo. 0 significa no borrar nunca"
-
-# src/interface.c:648
-# src/interface.c:650
-# src/interface.c:658
-# src/interface.c:658
-# src/interface.c:667
-# src/interface.c:667
-# src/interface.c:868
-# src/interface.c:976
-#: src/interface.c:976
-msgid "Node Timeout (ms)"
-msgstr "Timeout de nodo (ms)"
-
-# src/interface.c:786
-# src/interface.c:786
-# src/interface.c:826
-# src/interface.c:826
-# src/interface.c:876
-# src/interface.c:984
-#: src/interface.c:984
-msgid "Capture"
-msgstr "Captura"
-
-# src/interface.c:772
-# src/interface.c:840
-# src/interface.c:840
-# src/interface.c:907
-# src/interface.c:904
-# src/interface.c:954
-# src/interface.c:1068
-#: src/interface.c:1068
-msgid "Select Font"
-msgstr "Seleccione tipo de fuente"
-
-# src/interface.c:816
-# src/interface.c:816
-# src/interface.c:785
-# src/interface.c:1128
-#: src/interface.c:1128
-msgid "Filter what's captured. See the tcpdump man page for details"
-msgstr ""
-"Filtrar lo que se captura. Mire la página de manual de tcpdump para más "
-"detalles"
 
 # src/callbacks.c:195 src/callbacks.c:206
 # src/callbacks.c:200 src/callbacks.c:211
@@ -806,36 +258,11 @@ msgstr ""
 # src/callbacks.c:215 src/callbacks.c:226
 # src/callbacks.c:197 src/callbacks.c:208
 # src/callbacks.c:194 src/callbacks.c:205
-#: src/callbacks.c:194 src/callbacks.c:205
+# src/callbacks.c:199 src/callbacks.c:210
+#: src/callbacks.c:199 src/callbacks.c:210
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Valor del ajuste: %g. Multiplicador del radio %g"
-
-# src/support.c:98 src/support.c:136
-# src/support.c:97 src/support.c:135
-# src/support.c:98 src/support.c:136
-# src/support.c:98 src/support.c:136
-# src/support.c:97 src/support.c:135
-# src/support.c:97 src/support.c:135
-# src/support.c:97 src/support.c:135
-# src/support.c:94 src/support.c:132
-#: src/support.c:94 src/support.c:132
-#, c-format
-msgid "Couldn't find pixmap file: %s"
-msgstr "Imposible encontrar el archivo de pixmap: %s"
-
-# src/support.c:114
-# src/support.c:113
-# src/support.c:114
-# src/support.c:114
-# src/support.c:113
-# src/support.c:113
-# src/support.c:113
-# src/support.c:110
-#: src/support.c:110
-#, c-format
-msgid "Couldn't create pixmap from file: %s"
-msgstr "Impossible crear un pixmap del archivo: %s"
 
 # src/capture.c:922
 # src/capture.c:924
@@ -844,6 +271,7 @@ msgstr "Impossible crear un pixmap del archivo: %s"
 # src/capture.c:60
 # src/capture.c:60
 # src/capture.c:57
+# src/capture.c:58
 # src/capture.c:58
 #: src/capture.c:58
 #, c-format
@@ -858,6 +286,7 @@ msgstr "Error buscando dispositivo: %s"
 # src/capture.c:69
 # src/capture.c:66
 # src/capture.c:68 src/capture.c:80
+# src/capture.c:68 src/capture.c:80
 #: src/capture.c:68 src/capture.c:80
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
@@ -871,6 +300,7 @@ msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 # src/capture.c:127
 # src/capture.c:124
 # src/capture.c:121
+# src/capture.c:121
 #: src/capture.c:121
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
@@ -882,6 +312,7 @@ msgstr "Tipo de enlace aún no soportado"
 # src/capture.c:120
 # src/capture.c:120
 # src/capture.c:117
+# src/capture.c:126
 # src/capture.c:126
 #: src/capture.c:126
 msgid "Mode not available in this device"
@@ -895,6 +326,7 @@ msgstr "Modo no disponible para este interfaz"
 # src/capture.c:143
 # src/capture.c:140
 # src/capture.c:146
+# src/capture.c:146
 #: src/capture.c:146
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
@@ -906,6 +338,7 @@ msgstr "Modo aún no soportado"
 # src/capture.c:82 src/capture.c:179
 # src/capture.c:82 src/capture.c:179
 # src/capture.c:79 src/capture.c:183
+# src/capture.c:189
 # src/capture.c:189
 #: src/capture.c:189
 #, c-format
@@ -922,6 +355,7 @@ msgstr ""
 # src/capture.c:88 src/capture.c:185
 # src/capture.c:85 src/capture.c:189
 # src/capture.c:195
+# src/capture.c:195
 #: src/capture.c:195
 #, c-format
 msgid "Unable to parse filter string (%s)."
@@ -934,6 +368,7 @@ msgstr "Imposible analizar el filtro (%s)."
 # src/capture.c:94 src/capture.c:191
 # src/capture.c:94 src/capture.c:191
 # src/capture.c:91 src/capture.c:195
+# src/capture.c:200
 # src/capture.c:200
 #: src/capture.c:200
 #, c-format
@@ -948,6 +383,7 @@ msgstr "Imposible instalar el filtro (%s)."
 # src/capture.c:275
 # src/capture.c:279
 # src/capture.c:331
+# src/capture.c:331
 #. TODO Write proper assertion code here
 #: src/capture.c:331
 msgid "Reached default in get_node_id"
@@ -961,6 +397,7 @@ msgstr ""
 # src/capture.c:311
 # src/capture.c:315
 # src/capture.c:374
+# src/capture.c:374
 #: src/capture.c:374
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
@@ -973,6 +410,7 @@ msgstr "Modo no soportado en get_link_id"
 # src/capture.c:325
 # src/capture.c:430
 # src/capture.c:462
+# src/capture.c:465
 #: src/capture.c:465
 msgid "n/a"
 msgstr "n/d"
@@ -985,7 +423,8 @@ msgstr "n/d"
 # src/capture.c:346
 # src/capture.c:451
 # src/capture.c:490
-#: src/capture.c:496
+# src/capture.c:497
+#: src/capture.c:497
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
@@ -998,7 +437,8 @@ msgstr "Creando nodo: %s. Número de nodos: %d"
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:489
 # src/capture.c:528
-#: src/capture.c:534
+# src/capture.c:535
+#: src/capture.c:535
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
@@ -1011,8 +451,9 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:529
 # src/capture.c:638
 # src/capture.c:683
+# src/capture.c:690
 #. TODO Write proper assertion code here
-#: src/capture.c:689
+#: src/capture.c:690
 msgid "Reached default in fill_names"
 msgstr ""
 
@@ -1024,7 +465,8 @@ msgstr ""
 # src/capture.c:346
 # src/capture.c:708
 # src/capture.c:746
-#: src/capture.c:759
+# src/capture.c:760
+#: src/capture.c:760
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -1037,7 +479,8 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:375 src/capture.c:380
 # src/capture.c:769
 # src/capture.c:808
-#: src/capture.c:827
+# src/capture.c:828
+#: src/capture.c:828
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -1050,6 +493,605 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:730
 # src/capture.c:886
 # src/capture.c:939
-#: src/capture.c:1045
+# src/capture.c:1046
+#: src/capture.c:1046
 msgid "Null packet in check_packet"
 msgstr ""
+
+# src/interface.c:107
+# src/interface.c:106
+# src/interface.c:107
+# src/interface.c:107
+# src/interface.c:106
+# src/interface.c:106
+# src/interface.c:106
+# src/interface.c:101
+# src/glade-strings:7
+#. print_mem
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: src/glade-strings:7
+msgid "Etherape"
+msgstr "Etherape"
+
+# src/interface.c:23
+# src/interface.c:22
+# src/interface.c:23
+# src/interface.c:23
+# src/interface.c:22
+# src/interface.c:22
+# src/interface.c:22
+# src/interface.c:21
+# src/glade-strings:8
+#: src/glade-strings:8
+msgid "._New File"
+msgstr "_Archivo Nuevo"
+
+# src/interface.c:47
+# src/interface.c:47
+# src/interface.c:46
+# src/interface.c:46
+# src/interface.c:46
+# src/interface.c:44
+# src/glade-strings:9
+#: src/glade-strings:9
+msgid "Show or hide the toolbar"
+msgstr "Muestra o oculta la barra de herramientas"
+
+# src/interface.c:46
+# src/interface.c:45
+# src/interface.c:46
+# src/interface.c:46
+# src/interface.c:45
+# src/interface.c:45
+# src/interface.c:45
+# src/interface.c:43
+# src/glade-strings:10
+#: src/glade-strings:10
+msgid "_Toolbar"
+msgstr "Barra de _herramientas"
+
+# src/interface.c:54
+# src/interface.c:54
+# src/interface.c:53
+# src/interface.c:53
+# src/interface.c:53
+# src/interface.c:50
+# src/glade-strings:11
+#: src/glade-strings:11
+msgid "Show or hide the legend"
+msgstr "Muestra u oculta la leyenda"
+
+# src/interface.c:53
+# src/interface.c:52
+# src/interface.c:53
+# src/interface.c:53
+# src/interface.c:52
+# src/interface.c:52
+# src/interface.c:52
+# src/interface.c:49
+# src/glade-strings:12
+#: src/glade-strings:12
+msgid "_Legend"
+msgstr "_Leyenda"
+
+# src/interface.c:61
+# src/interface.c:61
+# src/interface.c:60
+# src/interface.c:60
+# src/interface.c:60
+# src/interface.c:56
+# src/glade-strings:13
+#: src/glade-strings:13
+msgid "Show or hide the status bar"
+msgstr "Muestra u oculta la barra de estado"
+
+# src/interface.c:60
+# src/interface.c:59
+# src/interface.c:60
+# src/interface.c:60
+# src/interface.c:59
+# src/interface.c:59
+# src/interface.c:59
+# src/interface.c:55
+# src/glade-strings:14
+#: src/glade-strings:14
+msgid "_Status Bar"
+msgstr "Barra de _estado"
+
+# src/interface.c:23
+# src/interface.c:246
+# src/interface.c:247
+# src/interface.c:247
+# src/interface.c:246
+# src/interface.c:246
+# src/interface.c:246
+# src/interface.c:241
+# src/glade-strings:15
+#: src/glade-strings:15
+msgid "New File"
+msgstr "_Archivo Nuevo"
+
+# src/interface.c:246
+# src/interface.c:245
+# src/interface.c:246
+# src/interface.c:246
+# src/interface.c:245
+# src/interface.c:245
+# src/interface.c:245
+# src/interface.c:240
+# src/glade-strings:16
+#: src/glade-strings:16
+msgid "New"
+msgstr "Nuevo"
+
+# src/interface.c:23
+# src/interface.c:258
+# src/interface.c:259
+# src/interface.c:259
+# src/interface.c:258
+# src/interface.c:258
+# src/interface.c:258
+# src/interface.c:253
+# src/glade-strings:17
+#: src/glade-strings:17
+msgid "Open File"
+msgstr "_Archivo Nuevo"
+
+# src/interface.c:258
+# src/interface.c:257
+# src/interface.c:258
+# src/interface.c:258
+# src/interface.c:257
+# src/interface.c:257
+# src/interface.c:257
+# src/interface.c:252
+# src/glade-strings:18
+#: src/glade-strings:18
+msgid "Open"
+msgstr "Abrir"
+
+# src/interface.c:23
+# src/interface.c:270
+# src/interface.c:271
+# src/interface.c:271
+# src/interface.c:270
+# src/interface.c:270
+# src/interface.c:270
+# src/interface.c:265
+# src/glade-strings:19
+#: src/glade-strings:19
+msgid "Save File"
+msgstr "_Archivo Nuevo"
+
+# src/interface.c:270
+# src/interface.c:269
+# src/interface.c:270 src/interface.c:800
+# src/interface.c:270 src/interface.c:800
+# src/interface.c:269 src/interface.c:840
+# src/interface.c:269 src/interface.c:840
+# src/interface.c:269 src/interface.c:890
+# src/interface.c:264 src/interface.c:1003
+# src/glade-strings:20 src/glade-strings:31
+#: src/glade-strings:20 src/glade-strings:31
+msgid "Save"
+msgstr "Guardar"
+
+# src/interface.c:278
+# src/interface.c:277
+# src/interface.c:278
+# src/interface.c:278
+# src/interface.c:277
+# src/interface.c:277
+# src/interface.c:277
+# src/interface.c:282
+# src/glade-strings:21
+#: src/glade-strings:21
+msgid "Protocols"
+msgstr "Protocolos"
+
+# src/interface.c:348
+# src/interface.c:347
+# src/interface.c:349
+# src/interface.c:349
+# src/interface.c:347
+# src/interface.c:347
+# src/interface.c:347
+# src/interface.c:373
+# src/glade-strings:22
+#: src/glade-strings:22
+msgid "Copyright 2000 Juan Toledo"
+msgstr "Copyright 2000 Juan Toledo"
+
+# src/interface.c:350
+# src/interface.c:349
+# src/interface.c:351
+# src/interface.c:351
+# src/interface.c:349
+# src/interface.c:349
+# src/interface.c:349
+# src/interface.c:376
+# src/glade-strings:23
+#: src/glade-strings:23
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+"Un visualizador gráfico de red.\n"
+"Web: http://etherape.sourceforge.net"
+
+# src/interface.c:371
+# src/interface.c:370
+# src/interface.c:372
+# src/interface.c:372
+# src/interface.c:370
+# src/interface.c:370
+# src/interface.c:370
+# src/interface.c:397 src/interface.c:1117
+# src/glade-strings:25
+#: src/glade-strings:25
+msgid "window1"
+msgstr ""
+
+# src/interface.c:391
+# src/interface.c:390
+# src/interface.c:392
+# src/interface.c:392
+# src/interface.c:390
+# src/interface.c:390
+# src/interface.c:390
+# src/interface.c:417
+# src/glade-strings:26
+#: src/glade-strings:26
+msgid "name"
+msgstr "nombre"
+
+# src/interface.c:400
+# src/interface.c:399
+# src/interface.c:401
+# src/interface.c:401
+# src/interface.c:399
+# src/interface.c:399
+# src/interface.c:399
+# src/interface.c:426
+# src/glade-strings:27
+#: src/glade-strings:27
+msgid "accumulated"
+msgstr "acumulado"
+
+# src/interface.c:409
+# src/interface.c:408
+# src/interface.c:410
+# src/interface.c:410
+# src/interface.c:408
+# src/interface.c:408
+# src/interface.c:408
+# src/interface.c:435
+# src/glade-strings:28
+#: src/glade-strings:28
+msgid "average"
+msgstr "media"
+
+# src/interface.c:436
+# src/interface.c:435
+# src/interface.c:437
+# src/interface.c:437
+# src/interface.c:435
+# src/interface.c:435
+# src/interface.c:435
+# src/interface.c:463
+# src/glade-strings:29
+#: src/glade-strings:29
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
+
+# src/interface.c:517
+# src/interface.c:517
+# src/interface.c:521
+# src/interface.c:555
+# src/glade-strings:30
+#: src/glade-strings:30
+msgid "Etherape: Preferences"
+msgstr "Etherape: Preferencias"
+
+# src/interface.c:776
+# src/interface.c:776
+# src/interface.c:562
+# src/interface.c:599
+# src/glade-strings:32
+#: src/glade-strings:32
+msgid "Toggle whether text is shown on the diagram"
+msgstr "Fijar si se muestra texto en el diagrama"
+
+# src/interface.c:728
+# src/interface.c:760
+# src/interface.c:760
+# src/interface.c:770
+# src/interface.c:770
+# src/interface.c:556
+# src/interface.c:591
+# src/glade-strings:33
+#: src/glade-strings:33
+msgid "Click to toggle"
+msgstr "Pulse para cambiar la selección"
+
+# src/interface.c:767
+# src/interface.c:767
+# src/interface.c:778
+# src/interface.c:778
+# src/interface.c:564
+# src/interface.c:602
+# src/glade-strings:34
+#: src/glade-strings:34
+msgid "No text"
+msgstr "Sin texto"
+
+# src/interface.c:596
+# src/interface.c:598
+# src/interface.c:606
+# src/interface.c:606
+# src/interface.c:614
+# src/interface.c:614
+# src/interface.c:590
+# src/interface.c:632
+# src/glade-strings:35
+#: src/glade-strings:35
+msgid "Max. Node Radius"
+msgstr "Radio máx. de nodo"
+
+# src/interface.c:622
+# src/interface.c:624
+# src/interface.c:632
+# src/interface.c:632
+# src/interface.c:640
+# src/interface.c:640
+# src/interface.c:616
+# src/interface.c:662
+# src/glade-strings:36
+#: src/glade-strings:36
+msgid "Max. Link Width"
+msgstr "Ancho máx. de enlace"
+
+# src/interface.c:639
+# src/interface.c:688
+# src/glade-strings:37
+#: src/glade-strings:37
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
+msgstr ""
+"Determinar cómo se calculan el radio de los nodos y el ancho de los enlaces "
+"a partir del tráfico medio"
+
+# src/glade-strings:38
+#: src/glade-strings:38
+msgid ""
+"Linear\n"
+"Logarithmic\n"
+"Square Root\n"
+msgstr ""
+"Lineal\n"
+"Logarítmico\n"
+"Raiz Cuadrada\n"
+
+# src/interface.c:709
+# src/interface.c:711
+# src/interface.c:719
+# src/interface.c:719
+# src/interface.c:729
+# src/interface.c:729
+# src/interface.c:652
+# src/interface.c:703
+# src/glade-strings:42
+#: src/glade-strings:42
+msgid "Size Mode"
+msgstr "Ajuste de tamaño"
+
+# src/interface.c:675
+# src/interface.c:728
+# src/glade-strings:43
+#: src/glade-strings:43
+msgid "Choose the font used to display text in the diagram"
+msgstr "Elegir el tipo de letra para mostrar texto en el diagrama"
+
+# src/interface.c:735
+# src/interface.c:743
+# src/interface.c:743
+# src/interface.c:753
+# src/interface.c:753
+# src/interface.c:677
+# src/interface.c:731
+# src/glade-strings:44
+#: src/glade-strings:44
+msgid "Font"
+msgstr "Tipo de fuente"
+
+# src/interface.c:586
+# src/interface.c:586
+# src/interface.c:701
+# src/interface.c:758
+# src/glade-strings:45
+#: src/glade-strings:45
+msgid "Refresh diagram every this many miliseconds"
+msgstr "Refrescar el diagrama cada estos milisegundos"
+
+# src/interface.c:570
+# src/interface.c:572
+# src/interface.c:580
+# src/interface.c:580
+# src/interface.c:588
+# src/interface.c:588
+# src/interface.c:703
+# src/interface.c:761
+# src/glade-strings:46
+#: src/glade-strings:46
+msgid "Diagram refresh period (ms)"
+msgstr "Periodo de refresco (ms)"
+
+# src/interface.c:726
+# src/interface.c:787
+# src/glade-strings:47
+#: src/glade-strings:47
+msgid "Set what level of the protocol stack is displayed in the legend"
+msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
+
+# src/glade-strings:48
+#: src/glade-strings:48
+msgid ""
+"2\n"
+"3\n"
+"4\n"
+"5\n"
+"6\n"
+msgstr ""
+
+# src/interface.c:745
+# src/interface.c:808
+# src/glade-strings:54
+#: src/glade-strings:54
+msgid "Protocol Stack Level"
+msgstr "Nivel de pila de protocolos"
+
+# src/interface.c:510
+# src/interface.c:512
+# src/interface.c:775
+# src/interface.c:775
+# src/interface.c:786
+# src/interface.c:786
+# src/interface.c:753
+# src/interface.c:832
+# src/glade-strings:55
+#: src/glade-strings:55
+msgid "Diagram"
+msgstr "Diagrama"
+
+# src/main.c:70
+# src/main.c:70
+# src/main.c:157
+# src/main.c:178
+# src/interface.c:818
+# src/interface.c:818
+# src/interface.c:787
+# src/interface.c:876
+# src/glade-strings:56
+#: src/glade-strings:56
+msgid "Capture filter"
+msgstr "Filtro de captura"
+
+# src/interface.c:559
+# src/interface.c:559
+# src/interface.c:811
+# src/interface.c:905
+# src/glade-strings:57
+#: src/glade-strings:57
+msgid "Packet information is averaged for this amount of time"
+msgstr "Hacer media de la información durante este tiempo"
+
+# src/interface.c:545
+# src/interface.c:547
+# src/interface.c:555
+# src/interface.c:555
+# src/interface.c:562
+# src/interface.c:562
+# src/interface.c:814
+# src/interface.c:910
+# src/glade-strings:58
+#: src/glade-strings:58
+msgid "Averaging Time (ms)"
+msgstr "Tiempo de medida (ms)"
+
+# src/interface.c:691
+# src/interface.c:691
+# src/interface.c:838
+# src/interface.c:938
+# src/glade-strings:59
+#: src/glade-strings:59
+msgid "Delete this link after this much time. 0 means never timeout."
+msgstr ""
+"Borrar este enlace después de pasado este tiempo. 0 significa no borrar nunca"
+
+# src/interface.c:674
+# src/interface.c:676
+# src/interface.c:684
+# src/interface.c:684
+# src/interface.c:694
+# src/interface.c:694
+# src/interface.c:841
+# src/interface.c:943
+# src/glade-strings:60
+#: src/glade-strings:60
+msgid "Link Timeout (ms)"
+msgstr "Timeout de enlaces (ms)"
+
+# src/interface.c:664
+# src/interface.c:664
+# src/interface.c:865
+# src/interface.c:971
+# src/glade-strings:61
+#: src/glade-strings:61
+msgid "Delete this node after this much time. 0 means never timeout."
+msgstr ""
+"Borrar este nodo después de pasado este tiempo. 0 significa no borrar nunca"
+
+# src/interface.c:648
+# src/interface.c:650
+# src/interface.c:658
+# src/interface.c:658
+# src/interface.c:667
+# src/interface.c:667
+# src/interface.c:868
+# src/interface.c:976
+# src/glade-strings:62
+#: src/glade-strings:62
+msgid "Node Timeout (ms)"
+msgstr "Timeout de nodo (ms)"
+
+# src/interface.c:786
+# src/interface.c:786
+# src/interface.c:826
+# src/interface.c:826
+# src/interface.c:876
+# src/interface.c:984
+# src/glade-strings:63
+#: src/glade-strings:63
+msgid "Capture"
+msgstr "Captura"
+
+# src/interface.c:772
+# src/interface.c:840
+# src/interface.c:840
+# src/interface.c:907
+# src/interface.c:904
+# src/interface.c:954
+# src/interface.c:1068
+# src/glade-strings:64
+#: src/glade-strings:64
+msgid "Select Font"
+msgstr "Seleccione tipo de fuente"
+
+# src/glade-strings:65
+#: src/glade-strings:65
+msgid "Aceptar"
+msgstr ""
+
+# src/glade-strings:66
+#: src/glade-strings:66
+msgid "Aplicar"
+msgstr ""
+
+# src/glade-strings:67
+#: src/glade-strings:67
+msgid "Cancelar"
+msgstr ""
+
+# src/interface.c:816
+# src/interface.c:816
+# src/interface.c:785
+# src/interface.c:1128
+#~ msgid "Filter what's captured. See the tcpdump man page for details"
+#~ msgstr ""
+#~ "Filtrar lo que se captura. Mire la página de manual de tcpdump para más "
+#~ "detalles"

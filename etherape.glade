@@ -10,6 +10,12 @@
   <language>C</language>
   <gnome_support>True</gnome_support>
   <gettext_support>True</gettext_support>
+  <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
+  <output_build_files>False</output_build_files>
+  <backup_source_files>False</backup_source_files>
+  <output_translatable_strings>True</output_translatable_strings>
+  <translatable_strings_file>src/glade-strings</translatable_strings_file>
 </project>
 
 <widget>
@@ -506,11 +512,23 @@ Web: http://etherape.sourceforge.net</comments>
   <class>GtkWindow</class>
   <name>node_popup</name>
   <visible>False</visible>
-  <events>GDK_POINTER_MOTION_MASK</events>
+  <can_focus>True</can_focus>
+  <has_focus>True</has_focus>
+  <events>GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK</events>
+  <signal>
+    <name>button_press_event</name>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Sat, 15 Apr 2000 20:53:37 GMT</last_modification_time>
+  </signal>
   <signal>
     <name>motion_notify_event</name>
-    <handler>on_node_popup_motion_notify_event</handler>
-    <last_modification_time>Mon, 13 Mar 2000 16:49:40 GMT</last_modification_time>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Sat, 15 Apr 2000 20:53:08 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>leave_notify_event</name>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Sat, 15 Apr 2000 21:00:05 GMT</last_modification_time>
   </signal>
   <title>window1</title>
   <type>GTK_WINDOW_POPUP</type>
@@ -1203,37 +1221,6 @@ Square Root
 	      <expand>False</expand>
 	      <fill>False</fill>
 	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GnomeEntry</class>
-	  <name>entry1</name>
-	  <max_saved>10</max_saved>
-	  <child>
-	    <left_attach>1</left_attach>
-	    <right_attach>2</right_attach>
-	    <top_attach>3</top_attach>
-	    <bottom_attach>4</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>False</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkEntry</class>
-	    <child_name>GnomeEntry:entry</child_name>
-	    <name>combo-entry1</name>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
 	  </widget>
 	</widget>
       </widget>

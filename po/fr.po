@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-04-10 12:36+0200\n"
+"POT-Creation-Date: 2000-04-15 23:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -15,376 +15,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:64
-#: src/main.c:43
+#: src/main.c:38
 msgid "mode of operation"
 msgstr "mode d'opération"
 
 # src/main.c:64
-#: src/main.c:43
+#: src/main.c:38
 #, fuzzy
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|ip|tcp|udp>"
 
 # src/main.c:67
-#: src/main.c:45
+#: src/main.c:40
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:45
+#: src/main.c:40
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:70
-#: src/main.c:47
+#: src/main.c:42
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:47
+#: src/main.c:42
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:70
-#: src/main.c:49
+#: src/main.c:44
 #, fuzzy
 msgid "set input file"
 msgstr "définir le filtre de capture"
 
 # src/main.c:67
-#: src/main.c:49
+#: src/main.c:44
 #, fuzzy
 msgid "<file name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:58
-#: src/main.c:51
+#: src/main.c:46
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
 # src/main.c:61
-#: src/main.c:53
+#: src/main.c:48
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
 # src/main.c:73
-#: src/main.c:55
+#: src/main.c:50
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
-#: src/main.c:57
+#: src/main.c:52
 msgid "don't move nodes around"
 msgstr ""
 
+#: src/main.c:54
+msgid "Don't show warnings"
+msgstr ""
+
 # src/main.c:76
-#: src/main.c:59
+#: src/main.c:56
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:59 src/main.c:61 src/main.c:63
+#: src/main.c:56 src/main.c:58 src/main.c:60
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:79
-#: src/main.c:61
+#: src/main.c:58
 msgid "set the link color"
 msgstr "définir la couleur des liaisons"
 
 # src/main.c:82
-#: src/main.c:63
+#: src/main.c:60
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
 # src/main.c:118
-#: src/main.c:129
+#: src/main.c:128
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:271
+#: src/callbacks.c:159 src/main.c:183
+#, c-format
+msgid "We could not load the interface! (%s)"
+msgstr ""
+
+#: src/main.c:308
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
-# src/interface.c:23
-#: src/interface.c:21
-msgid "._New File"
-msgstr "_Nouveau fichier"
-
-# src/interface.c:46
-#: src/interface.c:43
-msgid "_Toolbar"
-msgstr "Barre d'_outils"
-
-#: src/interface.c:44
-msgid "Show or hide the toolbar"
-msgstr "Affiche ou cache la barre d'outils"
-
-# src/interface.c:53
-#: src/interface.c:49
-msgid "_Legend"
-msgstr "_Légende"
-
-#: src/interface.c:50
-msgid "Show or hide the legend"
-msgstr "Affiche ou cache la légende"
-
-# src/interface.c:60
-#: src/interface.c:55
-msgid "_Status Bar"
-msgstr "Barre d'_état"
-
-#: src/interface.c:56
-msgid "Show or hide the status bar"
-msgstr "Affiche ou cache la barre d'état"
-
-# src/interface.c:107
-#: src/interface.c:101
-msgid "Etherape"
-msgstr "Etherape"
-
-# src/interface.c:246
-#: src/interface.c:240
-msgid "New"
-msgstr "Nouveau"
-
-# src/interface.c:23
-#: src/interface.c:241
-msgid "New File"
-msgstr "Nouveau fichier"
-
-# src/interface.c:258
-#: src/interface.c:252
-msgid "Open"
-msgstr "Ouvrir"
-
-# src/interface.c:23
-#: src/interface.c:253
-msgid "Open File"
-msgstr "Ouvrir fichier"
-
-# src/interface.c:270
-#: src/interface.c:264 src/interface.c:1003
-msgid "Save"
-msgstr "Enregistrer"
-
-# src/interface.c:23
-#: src/interface.c:265
-msgid "Save File"
-msgstr "Enregistrer fichier"
-
-# src/interface.c:278
-#: src/interface.c:282
-msgid "Protocols"
-msgstr "Protocoles"
-
-# src/interface.c:348
-#: src/interface.c:373
-msgid "Copyright 2000 Juan Toledo"
-msgstr "Copyright 2000 Juan Toledo"
-
-# src/interface.c:350
-#: src/interface.c:376
-msgid ""
-"A Graphical Network Browser.\n"
-"Web: http://etherape.sourceforge.net"
-msgstr ""
-"Un navigateur de réseau graphique.\n"
-"Web: http://etherape.sourceforge.net"
-
-# src/interface.c:371
-#: src/interface.c:397 src/interface.c:1117
-msgid "window1"
-msgstr ""
-
-# src/interface.c:391
-#: src/interface.c:417
-msgid "name"
-msgstr ""
-
-# src/interface.c:400
-#: src/interface.c:426
-msgid "accumulated"
-msgstr ""
-
-# src/interface.c:409
-#: src/interface.c:435
-msgid "average"
-msgstr ""
-
-# src/interface.c:436
-#: src/interface.c:463
-msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
-msgstr ""
-"Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
-
-#: src/interface.c:555
-msgid "Etherape: Preferences"
-msgstr "Etherape: Préférences"
-
-#: src/interface.c:591
-msgid "Click to toggle"
-msgstr "Cliquer pour sélectionner"
-
-#: src/interface.c:599
-msgid "Toggle whether text is shown on the diagram"
-msgstr "Défini si le texte est affiché sur le diagramme"
-
-#: src/interface.c:602
-msgid "No text"
-msgstr "Pas de texte"
-
-# src/interface.c:596
-#: src/interface.c:632
-msgid "Max. Node Radius"
-msgstr "Rayon de noeud maximal"
-
-# src/interface.c:622
-#: src/interface.c:662
-msgid "Max. Link Width"
-msgstr "Largeur de liaison maximale"
-
-#: src/interface.c:688
-msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
-msgstr ""
-"Défini comment le rayon des noeuds et la largeur des liaisons sont "
-"calculésen fonction du traffic moyen"
-
-# src/interface.c:698
-#: src/interface.c:691
-msgid "Linear"
-msgstr "Linéaire"
-
-# src/interface.c:701
-#: src/interface.c:694
-msgid "Logarithmic"
-msgstr "Lograrithmique"
-
-# src/interface.c:704
-#: src/interface.c:697
-msgid "Square Root"
-msgstr "Racine carrée"
-
-# src/interface.c:709
-#: src/interface.c:703
-msgid "Size Mode"
-msgstr "Mode de la taille"
-
-#: src/interface.c:728
-msgid "Choose the font used to display text in the diagram"
-msgstr "Défini la police utilisée pour afficher le texte dans le diagramme"
-
-#: src/interface.c:731
-msgid "Font"
-msgstr "Police"
-
-#: src/interface.c:758
-msgid "Refresh diagram every this many miliseconds"
-msgstr "Nombre de millisecondes entre les rafraîchissement du diagramme"
-
-# src/interface.c:570
-#: src/interface.c:761
-msgid "Diagram refresh period (ms)"
-msgstr "Période de rafraichissement (ms)"
-
-#: src/interface.c:787
-msgid "Set what level of the protocol stack is displayed in the legend"
-msgstr "Défini le niveau du protocole affiché dans la légende"
-
-#: src/interface.c:790
-msgid "2"
-msgstr "2"
-
-#: src/interface.c:793
-msgid "3"
-msgstr "3"
-
-#: src/interface.c:796
-msgid "4"
-msgstr "4"
-
-#: src/interface.c:799
-msgid "5"
-msgstr "5"
-
-#: src/interface.c:802
-msgid "6"
-msgstr "6"
-
-#: src/interface.c:808
-msgid "Protocol Stack Level"
-msgstr "Niveau du protocole"
-
-# src/interface.c:510
-#: src/interface.c:832
-msgid "Diagram"
-msgstr "Diagramme"
-
-# src/main.c:70
-#: src/interface.c:876
-msgid "Capture filter"
-msgstr "Filtre de capture"
-
-#: src/interface.c:905
-msgid "Packet information is averaged for this amount of time"
-msgstr ""
-"La moyenne sur les informations des paquets est effectuée pour cette "
-"quantité de temps"
-
-# src/interface.c:545
-#: src/interface.c:910
-msgid "Averaging Time (ms)"
-msgstr "Temps moyen (ms)"
-
-#: src/interface.c:938
-msgid "Delete this link after this much time. 0 means never timeout."
-msgstr ""
-
-# src/interface.c:674
-#: src/interface.c:943
-msgid "Link Timeout (ms)"
-msgstr "Timeout pour les liaisons (ms)"
-
-#: src/interface.c:971
-msgid "Delete this node after this much time. 0 means never timeout."
-msgstr "Supprime ce noeud après cette quantité de temps. 0 signifie jamais."
-
-# src/interface.c:648
-#: src/interface.c:976
-msgid "Node Timeout (ms)"
-msgstr "Timeout pour les noeuds (ms)"
-
-#: src/interface.c:984
-msgid "Capture"
-msgstr "Capture"
-
-#: src/interface.c:1068
-msgid "Select Font"
-msgstr "Choisir la police"
-
-#: src/interface.c:1128
-msgid "Filter what's captured. See the tcpdump man page for details"
-msgstr ""
-"Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
-
 # src/callbacks.c:195 src/callbacks.c:206
-#: src/callbacks.c:194 src/callbacks.c:205
+#: src/callbacks.c:199 src/callbacks.c:210
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."
-
-# src/support.c:98 src/support.c:136
-#: src/support.c:94 src/support.c:132
-#, c-format
-msgid "Couldn't find pixmap file: %s"
-msgstr "Impossible de trouver le fichier pixmap: %s"
-
-# src/support.c:114
-#: src/support.c:110
-#, c-format
-msgid "Couldn't create pixmap from file: %s"
-msgstr "Impossible de créer un pixmap à partir du fichier: %s"
 
 # src/capture.c:922
 #: src/capture.c:58
@@ -449,39 +183,335 @@ msgid "n/a"
 msgstr "n/a"
 
 # src/capture.c:409
-#: src/capture.c:496
+#: src/capture.c:497
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:534
+#: src/capture.c:535
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:375
 #. TODO Write proper assertion code here
-#: src/capture.c:689
+#: src/capture.c:690
 msgid "Reached default in fill_names"
 msgstr "Comportement par défaut atteint dans fill_names"
 
 # src/capture.c:409
-#: src/capture.c:759
+#: src/capture.c:760
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:827
+#: src/capture.c:828
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1045
+#: src/capture.c:1046
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
+
+# src/interface.c:107
+#. print_mem
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: src/glade-strings:7
+msgid "Etherape"
+msgstr "Etherape"
+
+# src/interface.c:23
+#: src/glade-strings:8
+msgid "._New File"
+msgstr "_Nouveau fichier"
+
+#: src/glade-strings:9
+msgid "Show or hide the toolbar"
+msgstr "Affiche ou cache la barre d'outils"
+
+# src/interface.c:46
+#: src/glade-strings:10
+msgid "_Toolbar"
+msgstr "Barre d'_outils"
+
+#: src/glade-strings:11
+msgid "Show or hide the legend"
+msgstr "Affiche ou cache la légende"
+
+# src/interface.c:53
+#: src/glade-strings:12
+msgid "_Legend"
+msgstr "_Légende"
+
+#: src/glade-strings:13
+msgid "Show or hide the status bar"
+msgstr "Affiche ou cache la barre d'état"
+
+# src/interface.c:60
+#: src/glade-strings:14
+msgid "_Status Bar"
+msgstr "Barre d'_état"
+
+# src/interface.c:23
+#: src/glade-strings:15
+msgid "New File"
+msgstr "Nouveau fichier"
+
+# src/interface.c:246
+#: src/glade-strings:16
+msgid "New"
+msgstr "Nouveau"
+
+# src/interface.c:23
+#: src/glade-strings:17
+msgid "Open File"
+msgstr "Ouvrir fichier"
+
+# src/interface.c:258
+#: src/glade-strings:18
+msgid "Open"
+msgstr "Ouvrir"
+
+# src/interface.c:23
+#: src/glade-strings:19
+msgid "Save File"
+msgstr "Enregistrer fichier"
+
+# src/interface.c:270
+#: src/glade-strings:20 src/glade-strings:31
+msgid "Save"
+msgstr "Enregistrer"
+
+# src/interface.c:278
+#: src/glade-strings:21
+msgid "Protocols"
+msgstr "Protocoles"
+
+# src/interface.c:348
+#: src/glade-strings:22
+msgid "Copyright 2000 Juan Toledo"
+msgstr "Copyright 2000 Juan Toledo"
+
+# src/interface.c:350
+#: src/glade-strings:23
+msgid ""
+"A Graphical Network Browser.\n"
+"Web: http://etherape.sourceforge.net"
+msgstr ""
+"Un navigateur de réseau graphique.\n"
+"Web: http://etherape.sourceforge.net"
+
+# src/interface.c:371
+#: src/glade-strings:25
+msgid "window1"
+msgstr ""
+
+# src/interface.c:391
+#: src/glade-strings:26
+msgid "name"
+msgstr ""
+
+# src/interface.c:400
+#: src/glade-strings:27
+msgid "accumulated"
+msgstr ""
+
+# src/interface.c:409
+#: src/glade-strings:28
+msgid "average"
+msgstr ""
+
+# src/interface.c:436
+#: src/glade-strings:29
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr ""
+"Cette fonction n'est pas encore présente. (Ne le dites à personne ;-) )"
+
+#: src/glade-strings:30
+msgid "Etherape: Preferences"
+msgstr "Etherape: Préférences"
+
+#: src/glade-strings:32
+msgid "Toggle whether text is shown on the diagram"
+msgstr "Défini si le texte est affiché sur le diagramme"
+
+#: src/glade-strings:33
+msgid "Click to toggle"
+msgstr "Cliquer pour sélectionner"
+
+#: src/glade-strings:34
+msgid "No text"
+msgstr "Pas de texte"
+
+# src/interface.c:596
+#: src/glade-strings:35
+msgid "Max. Node Radius"
+msgstr "Rayon de noeud maximal"
+
+# src/interface.c:622
+#: src/glade-strings:36
+msgid "Max. Link Width"
+msgstr "Largeur de liaison maximale"
+
+#: src/glade-strings:37
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
+msgstr ""
+"Défini comment le rayon des noeuds et la largeur des liaisons sont "
+"calculésen fonction du traffic moyen"
+
+#: src/glade-strings:38
+msgid ""
+"Linear\n"
+"Logarithmic\n"
+"Square Root\n"
+msgstr ""
+
+# src/interface.c:709
+#: src/glade-strings:42
+msgid "Size Mode"
+msgstr "Mode de la taille"
+
+#: src/glade-strings:43
+msgid "Choose the font used to display text in the diagram"
+msgstr "Défini la police utilisée pour afficher le texte dans le diagramme"
+
+#: src/glade-strings:44
+msgid "Font"
+msgstr "Police"
+
+#: src/glade-strings:45
+msgid "Refresh diagram every this many miliseconds"
+msgstr "Nombre de millisecondes entre les rafraîchissement du diagramme"
+
+# src/interface.c:570
+#: src/glade-strings:46
+msgid "Diagram refresh period (ms)"
+msgstr "Période de rafraichissement (ms)"
+
+#: src/glade-strings:47
+msgid "Set what level of the protocol stack is displayed in the legend"
+msgstr "Défini le niveau du protocole affiché dans la légende"
+
+#: src/glade-strings:48
+msgid ""
+"2\n"
+"3\n"
+"4\n"
+"5\n"
+"6\n"
+msgstr ""
+
+#: src/glade-strings:54
+msgid "Protocol Stack Level"
+msgstr "Niveau du protocole"
+
+# src/interface.c:510
+#: src/glade-strings:55
+msgid "Diagram"
+msgstr "Diagramme"
+
+# src/main.c:70
+#: src/glade-strings:56
+msgid "Capture filter"
+msgstr "Filtre de capture"
+
+#: src/glade-strings:57
+msgid "Packet information is averaged for this amount of time"
+msgstr ""
+"La moyenne sur les informations des paquets est effectuée pour cette "
+"quantité de temps"
+
+# src/interface.c:545
+#: src/glade-strings:58
+msgid "Averaging Time (ms)"
+msgstr "Temps moyen (ms)"
+
+#: src/glade-strings:59
+msgid "Delete this link after this much time. 0 means never timeout."
+msgstr ""
+
+# src/interface.c:674
+#: src/glade-strings:60
+msgid "Link Timeout (ms)"
+msgstr "Timeout pour les liaisons (ms)"
+
+#: src/glade-strings:61
+msgid "Delete this node after this much time. 0 means never timeout."
+msgstr "Supprime ce noeud après cette quantité de temps. 0 signifie jamais."
+
+# src/interface.c:648
+#: src/glade-strings:62
+msgid "Node Timeout (ms)"
+msgstr "Timeout pour les noeuds (ms)"
+
+#: src/glade-strings:63
+msgid "Capture"
+msgstr "Capture"
+
+#: src/glade-strings:64
+msgid "Select Font"
+msgstr "Choisir la police"
+
+#: src/glade-strings:65
+msgid "Aceptar"
+msgstr ""
+
+#: src/glade-strings:66
+msgid "Aplicar"
+msgstr ""
+
+#: src/glade-strings:67
+msgid "Cancelar"
+msgstr ""
+
+# src/interface.c:698
+#~ msgid "Linear"
+#~ msgstr "Linéaire"
+
+# src/interface.c:701
+#~ msgid "Logarithmic"
+#~ msgstr "Lograrithmique"
+
+# src/interface.c:704
+#~ msgid "Square Root"
+#~ msgstr "Racine carrée"
+
+#~ msgid "2"
+#~ msgstr "2"
+
+#~ msgid "3"
+#~ msgstr "3"
+
+#~ msgid "4"
+#~ msgstr "4"
+
+#~ msgid "5"
+#~ msgstr "5"
+
+#~ msgid "6"
+#~ msgstr "6"
+
+#~ msgid "Filter what's captured. See the tcpdump man page for details"
+#~ msgstr ""
+#~ "Filtre ce qui est capturé. Voyez la page de man de tcpdump pour les détails"
+
+# src/support.c:98 src/support.c:136
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "Impossible de trouver le fichier pixmap: %s"
+
+# src/support.c:114
+#~ msgid "Couldn't create pixmap from file: %s"
+#~ msgstr "Impossible de créer un pixmap à partir du fichier: %s"
 
 # src/interface.c:247
 #~ msgid "Nuevo archivo"
