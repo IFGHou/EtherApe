@@ -488,12 +488,12 @@
   <modal>True</modal>
   <copyright>Copyright 2000 Juan Toledo</copyright>
   <authors>Juan Toledo &lt;toledo@users.sourceforge.net&gt;
-Fabrice Bellet;
+Fabrice Bellet &lt;Fabrice.Bellet@creatis.insa-lyon.fr&gt;
 Laurent Deniel &lt;deniel@worldnet.fr&gt;
 Simon Kirby &lt;sim@neato.org&gt;
+Frederic Peters &lt;fpeters@debian.org&gt;
 Jasper Wallace &lt;jasper@pointless.net&gt;
 Ted Wright &lt;ted.wright@grc.nasa.gov&gt;
-Frederic Peters &lt;fpeters@debian.org&gt;
 </authors>
   <comments>A Graphical Network Browser.
 Web: http://etherape.sourceforge.net</comments>

@@ -153,7 +153,8 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint set_filter (gchar * filter, gchar * device)
+gint
+set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -188,7 +189,8 @@ gint set_filter (gchar * filter, gchar * device)
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
  * at which packets where coming */
-guint get_offline_packet (void)
+guint
+get_offline_packet (void)
 {
   static guint i = 100;
   static guint8 *packet = NULL;
@@ -250,11 +252,11 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 
 
   src_id = get_node_id (packet, SRC);
-  add_node_packet (packet, phdr, src_id);
+  add_node_packet (packet, phdr, src_id, OUTBOUND);
 
   /* Now we do the same with the destination node */
   dst_id = get_node_id (packet, DST);
-  add_node_packet (packet, phdr, dst_id);
+  add_node_packet (packet, phdr, dst_id, INBOUND);
 
   link_id = get_link_id (packet);
   /* And now we update link traffic information for this packet */
@@ -352,8 +354,9 @@ get_link_id (const guint8 * packet)
  * network. If the node the packet refers to is unknown, we
  * create it. */
 static void
-add_node_packet (const guint8 * packet, struct pcap_pkthdr phdr,
-		 const guint8 * node_id)
+add_node_packet (const guint8 * packet,
+		 struct pcap_pkthdr phdr,
+		 const guint8 * node_id, packet_direction direction)
 {
   node_t *node;
   packet_t *packet_info;
@@ -370,16 +373,16 @@ add_node_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   packet_info->parent = node;
   /* Right now we don't need protocol info for node packets. */
   packet_info->prot = NULL;
+  packet_info->direction = direction;	/* INBOUND or OUTBOUND */
   node->packets = g_list_prepend (node->packets, packet_info);
 
   /* We update node info */
   node->accumulated += phdr.len;
+  if (direction == INBOUND)
+    node->accumulated_in += phdr.len;
+  else
+    node->accumulated_out += phdr.len;
   node->last_time = now;
-  /* update_packet_list is now called in diagram.c
-   * I'm not too happy about it since I want to have a clear
-   * separation between data structures and presentation, but it
-   * is a fact that the proper moment for packet cleaning is right
-   * before presentation */
   node->n_packets++;
 
 }				/* add_node_packet */
@@ -413,7 +416,6 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   /* We update link info */
   link->accumulated += phdr.len;
   link->last_time = now;
-  /* update_packet_list is now called in diagram.c */
   link->n_packets++;
 
 }				/* add_link_packet */
@@ -439,9 +441,9 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node->numeric_ip = NULL;
   fill_names (node, node_id, packet);
 
-  node->average = 0;
+  node->average = node->average_in = node->average_out = 0;
   node->n_packets = 0;
-  node->accumulated = 0;
+  node->accumulated = node->accumulated_in = node->accumulated_out = 0;
 
   node->packets = NULL;
 
@@ -721,7 +723,7 @@ update_node (node_t * node)
       else
 	{
 	  node->packets = NULL;
-	  node->accumulated = 0;	/* TODO: do we really need this here anymore? */
+	  node->accumulated = node->accumulated_in = node_accumulated_out = 0;
 	}
     }
 
@@ -827,6 +829,10 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	{
 	  node->average = 8000000 * node->accumulated / usecs_from_oldest;
 	  fill_names (node, node->node_id, NULL);
+	  node->average_in =
+	    8000000 * node->accumulated_in / usecs_from_oldest;
+	  node->average_out =
+	    8000000 * node->accumulated_out / usecs_from_oldest;
 	}
       else
 	{
@@ -915,6 +921,10 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 	{
 	  /* Substract this packet's length to the accumulated */
 	  node->accumulated -= packet->size;
+	  if (packet->direction == INBOUND)
+	    node->accumulated_in -= packet->size;
+	  else
+	    node->accumulated_out -= packet->size;
 	  /* Decrease the number of packets */
 	  node->n_packets--;
 	  /* If it was the last packet in the queue, set
@@ -981,7 +991,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1010,7 +1021,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1037,7 +1049,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

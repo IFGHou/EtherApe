@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-29 15:00+0200\n"
+"POT-Creation-Date: 2000-03-29 16:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,97 +82,97 @@ msgstr ""
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/interface.c:21
+#: src/interface.c:22
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:43
+#: src/interface.c:45
 msgid "_Toolbar"
 msgstr ""
 
-#: src/interface.c:44
+#: src/interface.c:46
 msgid "Show or hide the toolbar"
 msgstr ""
 
-#: src/interface.c:49
+#: src/interface.c:52
 msgid "_Legend"
 msgstr ""
 
-#: src/interface.c:50
+#: src/interface.c:53
 msgid "Show or hide the legend"
 msgstr ""
 
-#: src/interface.c:55
+#: src/interface.c:59
 msgid "_Status Bar"
 msgstr ""
 
-#: src/interface.c:56
+#: src/interface.c:60
 msgid "Show or hide the status bar"
 msgstr ""
 
-#: src/interface.c:101
+#: src/interface.c:109
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:240
+#: src/interface.c:248
 msgid "New"
 msgstr ""
 
-#: src/interface.c:241
+#: src/interface.c:249
 msgid "New File"
 msgstr ""
 
-#: src/interface.c:252
+#: src/interface.c:260
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:253
+#: src/interface.c:261
 msgid "Open File"
 msgstr ""
 
-#: src/interface.c:264 src/interface.c:1001
+#: src/interface.c:272 src/interface.c:943
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:265
+#: src/interface.c:273
 msgid "Save File"
 msgstr ""
 
-#: src/interface.c:282
+#: src/interface.c:290
 msgid "Protocols"
 msgstr ""
 
-#: src/interface.c:371
+#: src/interface.c:377
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:374
+#: src/interface.c:379
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:395 src/interface.c:1115
+#: src/interface.c:400 src/interface.c:1052
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:415
+#: src/interface.c:420
 msgid "name"
 msgstr ""
 
-#: src/interface.c:424
+#: src/interface.c:429
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:433
+#: src/interface.c:438
 msgid "average"
 msgstr ""
 
-#: src/interface.c:461
+#: src/interface.c:465
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
-#: src/interface.c:553
+#: src/interface.c:554
 msgid "Etherape: Preferences"
 msgstr ""
 
@@ -180,129 +180,129 @@ msgstr ""
 msgid "Click to toggle"
 msgstr ""
 
-#: src/interface.c:597
+#: src/interface.c:595
 msgid "Toggle whether text is shown on the diagram"
 msgstr ""
 
-#: src/interface.c:600
+#: src/interface.c:597
 msgid "No text"
 msgstr ""
 
-#: src/interface.c:630
+#: src/interface.c:623
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:660
+#: src/interface.c:649
 msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:686
+#: src/interface.c:672
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
 msgstr ""
 
-#: src/interface.c:689
+#: src/interface.c:674
 msgid "Linear"
 msgstr ""
 
-#: src/interface.c:692
+#: src/interface.c:677
 msgid "Logarithmic"
 msgstr ""
 
-#: src/interface.c:695
+#: src/interface.c:680
 msgid "Square Root"
 msgstr ""
 
-#: src/interface.c:701
+#: src/interface.c:685
 msgid "Size Mode"
 msgstr ""
 
-#: src/interface.c:726
+#: src/interface.c:708
 msgid "Choose the font used to display text in the diagram"
 msgstr ""
 
-#: src/interface.c:729
+#: src/interface.c:710
 msgid "Font"
 msgstr ""
 
-#: src/interface.c:756
+#: src/interface.c:734
 msgid "Refresh diagram every this many miliseconds"
 msgstr ""
 
-#: src/interface.c:759
+#: src/interface.c:736
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:785
+#: src/interface.c:759
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr ""
 
-#: src/interface.c:788
+#: src/interface.c:761
 msgid "2"
 msgstr ""
 
-#: src/interface.c:791
+#: src/interface.c:764
 msgid "3"
 msgstr ""
 
-#: src/interface.c:794
+#: src/interface.c:767
 msgid "4"
 msgstr ""
 
-#: src/interface.c:797
+#: src/interface.c:770
 msgid "5"
 msgstr ""
 
-#: src/interface.c:800
+#: src/interface.c:773
 msgid "6"
 msgstr ""
 
-#: src/interface.c:806
+#: src/interface.c:778
 msgid "Protocol Stack Level"
 msgstr ""
 
-#: src/interface.c:830
+#: src/interface.c:801
 msgid "Diagram"
 msgstr ""
 
-#: src/interface.c:874
+#: src/interface.c:840
 msgid "Capture filter"
 msgstr ""
 
-#: src/interface.c:903
+#: src/interface.c:864
 msgid "Packet information is averaged for this amount of time"
 msgstr ""
 
-#: src/interface.c:908
+#: src/interface.c:867
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:936
+#: src/interface.c:891
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr ""
 
-#: src/interface.c:941
+#: src/interface.c:894
 msgid "Link Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:969
+#: src/interface.c:918
 msgid "Delete this node after this much time. 0 means never timeout."
 msgstr ""
 
-#: src/interface.c:974
+#: src/interface.c:921
 msgid "Node Timeout (ms)"
 msgstr ""
 
-#: src/interface.c:982
+#: src/interface.c:929
 msgid "Capture"
 msgstr ""
 
-#: src/interface.c:1066
+#: src/interface.c:1007
 msgid "Select Font"
 msgstr ""
 
-#: src/interface.c:1126
+#: src/interface.c:1060
 msgid "Filter what's captured. See the tcpdump man page for details"
 msgstr ""
 
@@ -311,12 +311,12 @@ msgstr ""
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/support.c:94 src/support.c:132
+#: src/support.c:97 src/support.c:135
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:110
+#: src/support.c:113
 #, c-format
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
@@ -367,35 +367,35 @@ msgstr ""
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:429
+#: src/capture.c:430
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:450
+#: src/capture.c:451
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:488
+#: src/capture.c:489
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:636
+#: src/capture.c:637
 msgid "Reached default in fill_names"
 msgstr ""
 
-#: src/capture.c:705
+#: src/capture.c:706
 #, c-format
 msgid "Removing node: %s. Number of node %d"
 msgstr ""
 
-#: src/capture.c:766
+#: src/capture.c:767
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:883
+#: src/capture.c:886
 msgid "Null packet in check_packet"
 msgstr ""

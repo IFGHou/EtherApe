@@ -358,11 +358,12 @@ create_about2 (void)
 {
   const gchar *authors[] = {
     "Juan Toledo <toledo@users.sourceforge.net>",
+    "Fabrice Bellet <Fabrice.Bellet@creatis.insa-lyon.fr>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "Simon Kirby <sim@neato.org>",
+    "Frederic Peters <fpeters@debian.org>",
     "Jasper Wallace <jasper@pointless.net>",
     "Ted Wright <ted.wright@grc.nasa.gov>",
-    "Frederic Peters <fpeters@debian.org>",
     NULL
   };
   GtkWidget *about2;

@@ -79,6 +79,14 @@ enum packet_belongs
   NODE = 0, LINK = 1
 };
 
+/* Flag used in node packets to indicate whether this packet was
+ * inbound or outbound for the parent node */
+typedef enum
+{
+  INBOUND = 0, OUTBOUND = 1
+}
+packet_direction;
+
 /* Structures definitions */
 
 /* Capture structures */
@@ -92,7 +100,11 @@ typedef struct
   guint32 ip_address;		/* Needed by the resolver */
   GString *numeric_ip;		/* Ugly hack for ethernet mode */
   gdouble average;		/* Average bytes in or out in the last x ms */
+  gdouble average_in;		/* Average bytes in in the last x ms */
+  gdouble average_out;		/* Average bytes out in the last x ms */
   gdouble accumulated;		/* Accumulated bytes in the last x ms */
+  gdouble accumulated_in;	/* Accumulated incoming bytes in the last x ms */
+  gdouble accumulated_out;	/* Accumulated outcoming bytes in the last x ms */
   guint n_packets;		/* Number of total packets received */
   struct timeval last_time;	/* Timestamp of the last packet to be added */
   GList *packets;		/* List of packets sizes in or out and
@@ -127,6 +139,8 @@ typedef struct
   GString *prot;		/* Protocol type the packet was carrying */
   gpointer parent;		/* Pointer to the link or node owner of the 
 				 * packet */
+  packet_direction direction;	/* For node packets, indicates whether 
+				 * this packet was inbound or outbound */
 }
 packet_t;
 

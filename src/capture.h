@@ -58,7 +58,9 @@ static void fill_names (node_t * node, const guint8 * node_id,
 			const guint8 * packet);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void add_node_packet (const guint8 * packet,
-			     struct pcap_pkthdr phdr, const guint8 * node_id);
+			     struct pcap_pkthdr phdr,
+			     const guint8 * node_id,
+			     packet_direction direction);
 static void add_link_packet (const guint8 * packet,
 			     struct pcap_pkthdr phdr, const guint8 * link_id);
 void add_protocol (GList ** protocols, gchar * stack,

@@ -44,7 +44,8 @@ struct popup_data
 
 
 
-guint popup_to (struct popup_data *pd)
+guint
+popup_to (struct popup_data *pd)
 {
 
   GtkLabel *label;
@@ -369,7 +370,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
     }
 
 
-  node_size = get_node_size (node->average);
+  /* TODO Make GUI to select among _in, _out and total. */
+  node_size = get_node_size (node->average_out);
 
   gnome_canvas_item_set (canvas_node->node_item,
 			 "x1", -node_size / 2,
@@ -391,7 +393,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint
+check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -451,7 +454,8 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint
+check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -591,7 +595,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
