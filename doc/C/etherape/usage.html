@@ -1,0 +1,769 @@
+<HTML
+><HEAD
+><TITLE
+>Using EtherApe</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.61
+"><LINK
+REL="HOME"
+TITLE="EtherApe Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="EtherApe Manual"
+HREF="index.html"><LINK
+REL="NEXT"
+TITLE="Customization"
+HREF="prefs.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>EtherApe Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="prefs.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USAGE"
+>Using EtherApe</A
+></H1
+><P
+>      <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> can be used to have an
+      overview of traffic conditions in your network. It is a great
+      tool to easily pinpoint who is consuming the most bandwith, or
+      to check which computers are actually talking to some others.
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MAINWIN"
+>Basic usage</A
+></H2
+><P
+>        Starting <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> opens the
+        <SPAN
+CLASS="INTERFACE"
+>Main window</SPAN
+>, shown in <A
+HREF="usage.html#MAINWINDOW-FIG"
+>Figure 1</A
+>. The window is at first empty.
+
+        
+        <DIV
+CLASS="FIGURE"
+><A
+NAME="MAINWINDOW-FIG"
+></A
+><P
+><IMG
+SRC="SCREENSHOT.png"></P
+><P
+><B
+>Figure 1. EtherApe Main Window</B
+></P
+></DIV
+>
+    
+      </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="PROVING"
+>Proving a Theorem</A
+></H3
+><P
+>          To get a proof of a theorem, select
+          <B
+CLASS="GUISUBMENU"
+>File</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>New</B
+>, which will
+	    bring up the <SPAN
+CLASS="INTERFACE"
+>New Proof</SPAN
+> dialog box.
+	    Enter the statement of the theorem in the
+	    <TT
+CLASS="GUILABEL"
+><B
+>Theorem statement</B
+></TT
+> field, select your
+	    desired proof type from the drop-down menu, and and press
+	    <B
+CLASS="GUIBUTTON"
+>Prove!</B
+>.
+        </P
+><P
+>          If <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> cannot prove the
+          theorem by the method you have chosen, or if you have not
+          selected a proof type at all,
+          <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> will attempt to choose
+          the one that it thinks is most conclusive.  In order, it
+          will attempt to prove the theorem with the following
+          techniques:
+     
+                <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Deduction</DT
+><DD
+><P
+>                  This is a proof method that is generally accepted
+                  for full credit by Logic professors.
+                </P
+></DD
+><DT
+>Induction</DT
+><DD
+><P
+>                This logical style will also earn you full credit on
+                your homework.
+             </P
+></DD
+><DT
+>Dialog</DT
+><DD
+><P
+>                This logical method is best for Philosophy classes,
+                and will probably only merit partial credit on Logic
+                or Mathematics homework.
+              </P
+></DD
+><DT
+>Confusion</DT
+><DD
+><P
+>                Suitable only for political debates, battles of wits
+                against the unarmed, and Philosophy classes focusing
+                on the works of Kant. Use with caution.
+              </P
+></DD
+></DL
+></DIV
+>
+          </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Proving Incorrect Theorms</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>            <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> cannot prove
+            incorrect theorems. If the theorem you have entered is not
+            demonstrably true, you will get a message to that effect
+            in the main window.  To disprove a theorem, ask
+            <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> to prove its
+            logical inverse.
+          </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EDITING"
+>Editing Proofs</A
+></H3
+><P
+>          Once you have proven the theorem, it will be displayed in
+          the <SPAN
+CLASS="INTERFACE"
+>main window</SPAN
+>.  There, you can read
+          it over, choose text styles for different portions of it,
+          and make comments on it. This section will guide you through
+          that process.
+        </P
+><P
+>          To alter text styles, first select the statement you wish to
+          change by clicking on it once.  You can select several
+          statements by Then, choose the style you want to apply from
+          the <B
+CLASS="GUISUBMENU"
+>Style</B
+> submenu of the
+          <B
+CLASS="GUIMENU"
+>Edit</B
+> menu.
+          <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> will convert the
+          text to that style.
+        </P
+><P
+>          You can also enter comments on a statement by selecting that
+          statement, and then beginning to type.  Comments will appear
+          after the statement you have selected.
+        </P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Altering The Proofs Themselves</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>            <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> does not allow you
+            to alter a proof it has produced itself.  You can, save
+            your proof as a plain text file (using the
+            <B
+CLASS="GUIMENUITEM"
+>Save as...</B
+> menu), and alter it
+            that way.  Be aware, however, that
+            <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+> uses its own file
+            format for saved proofs, and cannot re-open a file unless
+            it is in the .mga format.
+          </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TOOLBAR"
+>Toolbar</A
+></H2
+><P
+>        The toolbar (shown in <A
+HREF="usage.html#FIGURE-USAGE-TOOLBAR"
+>Figure 2</A
+>)
+        provides access to several commonly used routines.
+        <DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-USAGE-TOOLBAR"
+></A
+><P
+><IMG
+SRC="usage-toolbar.png"></P
+><P
+><B
+>Figure 2. EtherApe Toolbar</B
+></P
+></DIV
+>
+        <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>New</DT
+><DD
+><P
+>                Brings up the <SPAN
+CLASS="INTERFACE"
+>New Theorem</SPAN
+>
+                dialog.
+              </P
+></DD
+><DT
+>Open</DT
+><DD
+><P
+>                 Open an exisiting theorem you want to prove, or a
+                 completed proof you wish to print or format.
+               </P
+></DD
+><DT
+>Save</DT
+><DD
+><P
+>	         Save the current theorem permanently in a
+	         file.
+               </P
+></DD
+></DL
+></DIV
+>
+       </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENUBAR"
+>Menus</A
+></H2
+><P
+>	The menu bar, located at the top of the <SPAN
+CLASS="INTERFACE"
+>Main
+	Window</SPAN
+>, contains the following menus:
+       </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><B
+CLASS="GUIMENU"
+>File</B
+></DT
+><DD
+><P
+>	       This menu contains:
+	       <P
+></P
+><UL
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>Open</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>F3</B
+></B
+>)
+	             &#8212; This opens a file which is saved on your computer.
+	           </P
+></LI
+><LI
+><P
+>	             <B
+CLASS="GUIMENUITEM"
+>Save</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>S</B
+></B
+>)
+	            &#8212; This saves your file.
+	          </P
+></LI
+><LI
+><P
+>	             <B
+CLASS="GUIMENUITEM"
+>Close</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>W</B
+></B
+>)
+	            &#8212; This closes your file.
+	          </P
+></LI
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>Exit</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>Q</B
+></B
+>)
+	            &#8212; This quits the application.
+	          </P
+></LI
+></UL
+>
+	  </P
+></DD
+><DT
+><B
+CLASS="GUIMENU"
+>Edit</B
+></DT
+><DD
+><P
+>	   This menu contains:
+	   <P
+></P
+><UL
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>Cut</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>X</B
+></B
+>)
+	            &#8212; This removes any text or data which is selected and
+	            places it in the buffer.
+	          </P
+></LI
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>Copy</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>C</B
+></B
+>)
+	            &#8212; This copies any text or data which is selected into
+	            the buffer.
+	          </P
+></LI
+><LI
+><P
+>	           <B
+CLASS="GUIMENUITEM"
+>Paste</B
+> (<B
+CLASS="SHORTCUT"
+><B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>V</B
+></B
+>)
+	            &#8212; This pastes any text or data which is copied into
+	            the buffer.
+	        </P
+></LI
+><LI
+><P
+>	             <B
+CLASS="GUIMENUITEM"
+>COMMAND1&#8230;</B
+>
+	             &#8212; This opens the <SPAN
+CLASS="INTERFACE"
+>COMMAND1</SPAN
+>
+	             dialog, which is used to ....
+	          </P
+></LI
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>COMMAND2</B
+>
+	            &#8212; This ....
+	          </P
+></LI
+></UL
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="GUIMENU"
+>Settings</B
+></DT
+><DD
+><P
+>	   This menu contains:
+	   <P
+></P
+><UL
+><LI
+><P
+>	      <B
+CLASS="GUIMENUITEM"
+>Preferences&#8230;</B
+>
+	       &#8212; This opens the <A
+HREF="prefs.html"
+><SPAN
+CLASS="INTERFACE"
+>Preferences
+	       Dialog</SPAN
+></A
+>, which allows you to configure
+	       many settings.
+	     </P
+></LI
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>COMMAND3</B
+> &#8212;
+    	            This command does something.
+    	    	   </P
+></LI
+></UL
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="GUIMENU"
+>Help</B
+></DT
+><DD
+><P
+>	      This menu contains:
+	       <P
+></P
+><UL
+><LI
+><P
+>	             <B
+CLASS="GUIMENUITEM"
+>Manual</B
+> &#8212; This
+    	              opens the <TT
+CLASS="APPLICATION"
+>GNOME Help
+    	              Browser</TT
+> and displays this manual.
+	          </P
+></LI
+><LI
+><P
+>	            <B
+CLASS="GUIMENUITEM"
+>About</B
+> &#8212; This
+    	            opens the <SPAN
+CLASS="INTERFACE"
+>About</SPAN
+> dialog
+    	            which shows basic information about
+    	            <TT
+CLASS="APPLICATION"
+>EtherApe</TT
+>, such as
+    	            the author's name, the application version number,
+    	            and the URL for the application's Web page if one
+    	            exists.
+	          </P
+></LI
+></UL
+>
+            </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="prefs.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>EtherApe Manual</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Customization</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
