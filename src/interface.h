@@ -9,4 +9,3 @@ GtkWidget *create_node_popup (void);
 GtkWidget *create_messagebox1 (void);
 GtkWidget *create_diag_pref (void);
 GtkWidget *create_fontselectiondialog1 (void);
-GtkWidget *create_dialog2 (void);

@@ -468,28 +468,15 @@ create_diag_pref (void)
   GtkWidget *dialog_vbox2;
   GtkWidget *notebook1;
   GtkWidget *table2;
-  GtkWidget *vbox3;
-  GtkObject *averaging_spin_adj;
-  GtkWidget *averaging_spin;
-  GtkWidget *label6;
-  GtkWidget *vbox4;
-  GtkObject *refresh_spin_adj;
-  GtkWidget *refresh_spin;
-  GtkWidget *label7;
+  GtkWidget *vbox11;
+  GtkWidget *diagram_only_toggle;
+  GtkWidget *label30;
   GtkWidget *vbox5;
   GtkWidget *node_radius_slider;
   GtkWidget *label8;
   GtkWidget *vbox6;
   GtkWidget *link_width_slider;
   GtkWidget *label9;
-  GtkWidget *vbox7;
-  GtkObject *node_to_spin_adj;
-  GtkWidget *node_to_spin;
-  GtkWidget *label24;
-  GtkWidget *vbox8;
-  GtkObject *link_to_spin_adj;
-  GtkWidget *link_to_spin;
-  GtkWidget *label25;
   GtkWidget *vbox9;
   GtkWidget *size_mode_menu;
   GtkWidget *size_mode_menu_menu;
@@ -498,14 +485,31 @@ create_diag_pref (void)
   GtkWidget *vbox10;
   GtkWidget *font_button;
   GtkWidget *label27;
-  GtkWidget *vbox11;
-  GtkWidget *diagram_only_toggle;
-  GtkWidget *label30;
+  GtkWidget *vbox4;
+  GtkObject *refresh_spin_adj;
+  GtkWidget *refresh_spin;
+  GtkWidget *label7;
+  GtkWidget *vbox13;
+  GtkWidget *p_level_menu;
+  GtkWidget *p_level_menu_menu;
+  GtkWidget *label32;
   GtkWidget *label28;
   GtkWidget *table3;
   GtkWidget *vbox12;
   GtkWidget *filter_entry;
   GtkWidget *label31;
+  GtkWidget *vbox3;
+  GtkObject *averaging_spin_adj;
+  GtkWidget *averaging_spin;
+  GtkWidget *label6;
+  GtkWidget *vbox8;
+  GtkObject *link_to_spin_adj;
+  GtkWidget *link_to_spin;
+  GtkWidget *label25;
+  GtkWidget *vbox7;
+  GtkObject *node_to_spin_adj;
+  GtkWidget *node_to_spin;
+  GtkWidget *label24;
   GtkWidget *label29;
   GtkWidget *dialog_action_area2;
   GtkWidget *save_pref_button;
@@ -542,65 +546,37 @@ create_diag_pref (void)
   gtk_table_set_row_spacings (GTK_TABLE (table2), 5);
   gtk_table_set_col_spacings (GTK_TABLE (table2), 5);
 
-  vbox3 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox3);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox3", vbox3,
+  vbox11 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox11);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox11", vbox11,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox3);
-  gtk_table_attach (GTK_TABLE (table2), vbox3, 0, 1, 0, 1,
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-
-  averaging_spin_adj = gtk_adjustment_new (10000, 1, 3.6e+07, 100, 1000, 10000);
-  averaging_spin = gtk_spin_button_new (GTK_ADJUSTMENT (averaging_spin_adj), 1, 0);
-  gtk_widget_ref (averaging_spin);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "averaging_spin", averaging_spin,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (averaging_spin);
-  gtk_box_pack_start (GTK_BOX (vbox3), averaging_spin, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, averaging_spin, _ ("Packet information is averaged for this amount of time"), NULL);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (averaging_spin), GTK_UPDATE_IF_VALID);
-
-  label6 = gtk_label_new (_ ("Averaging Time (ms)"));
-  gtk_widget_ref (label6);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label6", label6,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label6);
-  gtk_box_pack_start (GTK_BOX (vbox3), label6, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (label6), GTK_JUSTIFY_LEFT);
-
-  vbox4 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox4);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox4", vbox4,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox4);
-  gtk_table_attach (GTK_TABLE (table2), vbox4, 0, 1, 1, 2,
+  gtk_widget_show (vbox11);
+  gtk_table_attach (GTK_TABLE (table2), vbox11, 1, 2, 0, 1,
 		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+		    (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-  refresh_spin_adj = gtk_adjustment_new (800, 50, 10000, 10, 100, 100);
-  refresh_spin = gtk_spin_button_new (GTK_ADJUSTMENT (refresh_spin_adj), 1, 0);
-  gtk_widget_ref (refresh_spin);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "refresh_spin", refresh_spin,
+  diagram_only_toggle = gtk_toggle_button_new_with_label (_ ("Click to toggle"));
+  gtk_widget_ref (diagram_only_toggle);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "diagram_only_toggle", diagram_only_toggle,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (refresh_spin);
-  gtk_box_pack_start (GTK_BOX (vbox4), refresh_spin, FALSE, FALSE, 2);
-  gtk_tooltips_set_tip (tooltips, refresh_spin, _ ("Refresh diagram every this many miliseconds"), NULL);
+  gtk_widget_show (diagram_only_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox11), diagram_only_toggle, FALSE, FALSE, 2);
+  gtk_tooltips_set_tip (tooltips, diagram_only_toggle, _ ("Toggle whether text is shown on the diagram"), NULL);
 
-  label7 = gtk_label_new (_ ("Diagram refresh period (ms)"));
-  gtk_widget_ref (label7);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label7", label7,
+  label30 = gtk_label_new (_ ("No text"));
+  gtk_widget_ref (label30);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label30", label30,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label7);
-  gtk_box_pack_start (GTK_BOX (vbox4), label7, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (label7), GTK_JUSTIFY_LEFT);
+  gtk_widget_show (label30);
+  gtk_box_pack_start (GTK_BOX (vbox11), label30, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label30), GTK_JUSTIFY_LEFT);
 
   vbox5 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox5);
   gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox5", vbox5,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox5);
-  gtk_table_attach (GTK_TABLE (table2), vbox5, 0, 1, 2, 3,
+  gtk_table_attach (GTK_TABLE (table2), vbox5, 0, 1, 1, 2,
 		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
@@ -626,9 +602,9 @@ create_diag_pref (void)
   gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox6", vbox6,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox6);
-  gtk_table_attach (GTK_TABLE (table2), vbox6, 0, 1, 3, 4,
+  gtk_table_attach (GTK_TABLE (table2), vbox6, 0, 1, 2, 3,
 		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+		    (GtkAttachOptions) (GTK_FILL), 0, 0);
 
   link_width_slider = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, -4, 1, 0.25, 1, 0)));
   gtk_widget_ref (link_width_slider);
@@ -647,66 +623,12 @@ create_diag_pref (void)
   gtk_box_pack_start (GTK_BOX (vbox6), label9, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label9), GTK_JUSTIFY_LEFT);
 
-  vbox7 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox7);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox7", vbox7,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox7);
-  gtk_table_attach (GTK_TABLE (table2), vbox7, 1, 2, 0, 1,
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  node_to_spin_adj = gtk_adjustment_new (10000, 0, 3.6e+07, 100, 1000, 10000);
-  node_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (node_to_spin_adj), 1, 0);
-  gtk_widget_ref (node_to_spin);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "node_to_spin", node_to_spin,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (node_to_spin);
-  gtk_box_pack_start (GTK_BOX (vbox7), node_to_spin, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, node_to_spin, _ ("Delete this node after this much time. 0 means never timeout."), NULL);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (node_to_spin), GTK_UPDATE_IF_VALID);
-
-  label24 = gtk_label_new (_ ("Node Timeout (ms)"));
-  gtk_widget_ref (label24);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label24", label24,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label24);
-  gtk_box_pack_start (GTK_BOX (vbox7), label24, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
-
-  vbox8 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox8);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox8", vbox8,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox8);
-  gtk_table_attach (GTK_TABLE (table2), vbox8, 1, 2, 1, 2,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  link_to_spin_adj = gtk_adjustment_new (2000, 0, 3.6e+07, 100, 1000, 10000);
-  link_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (link_to_spin_adj), 1, 0);
-  gtk_widget_ref (link_to_spin);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "link_to_spin", link_to_spin,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (link_to_spin);
-  gtk_box_pack_start (GTK_BOX (vbox8), link_to_spin, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, link_to_spin, _ ("Delete this link after this much time. 0 means never timeout."), NULL);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (link_to_spin), GTK_UPDATE_IF_VALID);
-
-  label25 = gtk_label_new (_ ("Link Timeout (ms)"));
-  gtk_widget_ref (label25);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label25", label25,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label25);
-  gtk_box_pack_start (GTK_BOX (vbox8), label25, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
-
   vbox9 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox9);
   gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox9", vbox9,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox9);
-  gtk_table_attach (GTK_TABLE (table2), vbox9, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table2), vbox9, 1, 2, 1, 2,
 		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -716,6 +638,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (size_mode_menu);
   gtk_box_pack_start (GTK_BOX (vbox9), size_mode_menu, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, size_mode_menu, _ ("Choose how node radius and link width are calculated as a function of average traffic"), NULL);
   size_mode_menu_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_ ("Linear"));
   gtk_widget_show (glade_menuitem);
@@ -741,7 +664,7 @@ create_diag_pref (void)
   gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox10", vbox10,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox10);
-  gtk_table_attach (GTK_TABLE (table2), vbox10, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table2), vbox10, 1, 2, 2, 3,
 		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -751,6 +674,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (font_button);
   gtk_box_pack_start (GTK_BOX (vbox10), font_button, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, font_button, _ ("Choose the font used to display text in the diagram"), NULL);
 
   label27 = gtk_label_new (_ ("Font"));
   gtk_widget_ref (label27);
@@ -760,30 +684,73 @@ create_diag_pref (void)
   gtk_box_pack_start (GTK_BOX (vbox10), label27, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label27), GTK_JUSTIFY_LEFT);
 
-  vbox11 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox11);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox11", vbox11,
+  vbox4 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox4);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox4", vbox4,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox11);
-  gtk_table_attach (GTK_TABLE (table2), vbox11, 0, 1, 4, 5,
+  gtk_widget_show (vbox4);
+  gtk_table_attach (GTK_TABLE (table2), vbox4, 0, 1, 0, 1,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+  refresh_spin_adj = gtk_adjustment_new (800, 50, 10000, 10, 100, 100);
+  refresh_spin = gtk_spin_button_new (GTK_ADJUSTMENT (refresh_spin_adj), 1, 0);
+  gtk_widget_ref (refresh_spin);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "refresh_spin", refresh_spin,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (refresh_spin);
+  gtk_box_pack_start (GTK_BOX (vbox4), refresh_spin, FALSE, FALSE, 2);
+  gtk_tooltips_set_tip (tooltips, refresh_spin, _ ("Refresh diagram every this many miliseconds"), NULL);
+
+  label7 = gtk_label_new (_ ("Diagram refresh period (ms)"));
+  gtk_widget_ref (label7);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label7", label7,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label7);
+  gtk_box_pack_start (GTK_BOX (vbox4), label7, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label7), GTK_JUSTIFY_LEFT);
+
+  vbox13 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox13);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox13", vbox13,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox13);
+  gtk_table_attach (GTK_TABLE (table2), vbox13, 0, 1, 3, 4,
 		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
-  diagram_only_toggle = gtk_toggle_button_new_with_label (_ ("Click to toggle"));
-  gtk_widget_ref (diagram_only_toggle);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "diagram_only_toggle", diagram_only_toggle,
+  p_level_menu = gtk_option_menu_new ();
+  gtk_widget_ref (p_level_menu);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "p_level_menu", p_level_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (diagram_only_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox11), diagram_only_toggle, FALSE, FALSE, 2);
-  gtk_tooltips_set_tip (tooltips, diagram_only_toggle, _ ("Toggle whether text is shown on the diagram"), NULL);
+  gtk_widget_show (p_level_menu);
+  gtk_box_pack_start (GTK_BOX (vbox13), p_level_menu, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, p_level_menu, _ ("Set what level of the protocol stack is displayed in the legend"), NULL);
+  p_level_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_ ("2"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_ ("3"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_ ("4"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_ ("5"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_ ("All"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (p_level_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (p_level_menu), p_level_menu_menu);
 
-  label30 = gtk_label_new (_ ("No text"));
-  gtk_widget_ref (label30);
-  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label30", label30,
+  label32 = gtk_label_new (_ ("Protocol Stack Level"));
+  gtk_widget_ref (label32);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label32", label32,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label30);
-  gtk_box_pack_start (GTK_BOX (vbox11), label30, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (label30), GTK_JUSTIFY_LEFT);
+  gtk_widget_show (label32);
+  gtk_box_pack_start (GTK_BOX (vbox13), label32, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label32), GTK_JUSTIFY_LEFT);
 
   label28 = gtk_label_new (_ ("Diagram"));
   gtk_widget_ref (label28);
@@ -792,13 +759,15 @@ create_diag_pref (void)
   gtk_widget_show (label28);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label28);
 
-  table3 = gtk_table_new (1, 1, FALSE);
+  table3 = gtk_table_new (2, 2, TRUE);
   gtk_widget_ref (table3);
   gtk_object_set_data_full (GTK_OBJECT (diag_pref), "table3", table3,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table3);
   gtk_container_add (GTK_CONTAINER (notebook1), table3);
   gtk_container_set_border_width (GTK_CONTAINER (table3), 6);
+  gtk_table_set_row_spacings (GTK_TABLE (table3), 5);
+  gtk_table_set_col_spacings (GTK_TABLE (table3), 5);
 
   vbox12 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox12);
@@ -806,7 +775,7 @@ create_diag_pref (void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox12);
   gtk_table_attach (GTK_TABLE (table3), vbox12, 0, 1, 0, 1,
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_FILL),
 		    (GtkAttachOptions) (0), 0, 0);
 
   filter_entry = gtk_entry_new ();
@@ -824,6 +793,87 @@ create_diag_pref (void)
   gtk_widget_show (label31);
   gtk_box_pack_start (GTK_BOX (vbox12), label31, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_LEFT);
+
+  vbox3 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox3);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox3", vbox3,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox3);
+  gtk_table_attach (GTK_TABLE (table3), vbox3, 0, 1, 1, 2,
+		    (GtkAttachOptions) (GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+
+  averaging_spin_adj = gtk_adjustment_new (10000, 1, 3.6e+07, 100, 1000, 10000);
+  averaging_spin = gtk_spin_button_new (GTK_ADJUSTMENT (averaging_spin_adj), 1, 0);
+  gtk_widget_ref (averaging_spin);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "averaging_spin", averaging_spin,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (averaging_spin);
+  gtk_box_pack_start (GTK_BOX (vbox3), averaging_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, averaging_spin, _ ("Packet information is averaged for this amount of time"), NULL);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (averaging_spin), GTK_UPDATE_IF_VALID);
+
+  label6 = gtk_label_new (_ ("Averaging Time (ms)"));
+  gtk_widget_ref (label6);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label6", label6,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label6);
+  gtk_box_pack_start (GTK_BOX (vbox3), label6, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label6), GTK_JUSTIFY_LEFT);
+
+  vbox8 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox8);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox8", vbox8,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox8);
+  gtk_table_attach (GTK_TABLE (table3), vbox8, 1, 2, 1, 2,
+		    (GtkAttachOptions) (GTK_FILL),
+		    (GtkAttachOptions) (0), 0, 0);
+
+  link_to_spin_adj = gtk_adjustment_new (2000, 0, 3.6e+07, 100, 1000, 10000);
+  link_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (link_to_spin_adj), 1, 0);
+  gtk_widget_ref (link_to_spin);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "link_to_spin", link_to_spin,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (link_to_spin);
+  gtk_box_pack_start (GTK_BOX (vbox8), link_to_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, link_to_spin, _ ("Delete this link after this much time. 0 means never timeout."), NULL);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (link_to_spin), GTK_UPDATE_IF_VALID);
+
+  label25 = gtk_label_new (_ ("Link Timeout (ms)"));
+  gtk_widget_ref (label25);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label25", label25,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label25);
+  gtk_box_pack_start (GTK_BOX (vbox8), label25, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
+
+  vbox7 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox7);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "vbox7", vbox7,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox7);
+  gtk_table_attach (GTK_TABLE (table3), vbox7, 1, 2, 0, 1,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (0), 0, 0);
+
+  node_to_spin_adj = gtk_adjustment_new (10000, 0, 3.6e+07, 100, 1000, 10000);
+  node_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (node_to_spin_adj), 1, 0);
+  gtk_widget_ref (node_to_spin);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "node_to_spin", node_to_spin,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (node_to_spin);
+  gtk_box_pack_start (GTK_BOX (vbox7), node_to_spin, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, node_to_spin, _ ("Delete this node after this much time. 0 means never timeout."), NULL);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (node_to_spin), GTK_UPDATE_IF_VALID);
+
+  label24 = gtk_label_new (_ ("Node Timeout (ms)"));
+  gtk_widget_ref (label24);
+  gtk_object_set_data_full (GTK_OBJECT (diag_pref), "label24", label24,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label24);
+  gtk_box_pack_start (GTK_BOX (vbox7), label24, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
 
   label29 = gtk_label_new (_ ("Capture"));
   gtk_widget_ref (label29);
@@ -871,11 +921,11 @@ create_diag_pref (void)
   gtk_widget_show (cancel_pref_button);
   GTK_WIDGET_SET_FLAGS (cancel_pref_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (font_button), "clicked",
-		      GTK_SIGNAL_FUNC (on_font_button_clicked),
-		      NULL);
   gtk_signal_connect (GTK_OBJECT (diagram_only_toggle), "toggled",
 		      GTK_SIGNAL_FUNC (on_diagram_only_toggle_toggled),
+		      NULL);
+  gtk_signal_connect (GTK_OBJECT (font_button), "clicked",
+		      GTK_SIGNAL_FUNC (on_font_button_clicked),
 		      NULL);
   gtk_signal_connect (GTK_OBJECT (save_pref_button), "clicked",
 		      GTK_SIGNAL_FUNC (on_save_pref_button_clicked),
@@ -935,55 +985,4 @@ create_fontselectiondialog1 (void)
 		      NULL);
 
   return fontselectiondialog1;
-}
-
-GtkWidget *
-create_dialog2 (void)
-{
-  GtkWidget *dialog2;
-  GtkWidget *dialog_vbox4;
-  GtkWidget *dialog_action_area4;
-  GtkWidget *button18;
-  GtkWidget *button19;
-  GtkWidget *button20;
-
-  dialog2 = gnome_dialog_new (NULL, NULL);
-  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog2", dialog2);
-  gtk_window_set_policy (GTK_WINDOW (dialog2), FALSE, FALSE, FALSE);
-
-  dialog_vbox4 = GNOME_DIALOG (dialog2)->vbox;
-  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog_vbox4", dialog_vbox4);
-  gtk_widget_show (dialog_vbox4);
-
-  dialog_action_area4 = GNOME_DIALOG (dialog2)->action_area;
-  gtk_object_set_data (GTK_OBJECT (dialog2), "dialog_action_area4", dialog_action_area4);
-  gtk_widget_show (dialog_action_area4);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area4), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (dialog_action_area4), 8);
-
-  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_OK);
-  button18 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
-  gtk_widget_ref (button18);
-  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button18", button18,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button18);
-  GTK_WIDGET_SET_FLAGS (button18, GTK_CAN_DEFAULT);
-
-  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_APPLY);
-  button19 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
-  gtk_widget_ref (button19);
-  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button19", button19,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button19);
-  GTK_WIDGET_SET_FLAGS (button19, GTK_CAN_DEFAULT);
-
-  gnome_dialog_append_button (GNOME_DIALOG (dialog2), GNOME_STOCK_BUTTON_CANCEL);
-  button20 = g_list_last (GNOME_DIALOG (dialog2)->buttons)->data;
-  gtk_widget_ref (button20);
-  gtk_object_set_data_full (GTK_OBJECT (dialog2), "button20", button20,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button20);
-  GTK_WIDGET_SET_FLAGS (button20, GTK_CAN_DEFAULT);
-
-  return dialog2;
 }

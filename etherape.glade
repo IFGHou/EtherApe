@@ -756,80 +756,18 @@ Web: http://etherape.sourceforge.net</comments>
 
 	<widget>
 	  <class>GtkVBox</class>
-	  <name>vbox3</name>
+	  <name>vbox11</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
 	    <top_attach>0</top_attach>
 	    <bottom_attach>1</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
-	    <yexpand>True</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkSpinButton</class>
-	    <name>averaging_spin</name>
-	    <tooltip>Packet information is averaged for this amount of time</tooltip>
-	    <can_focus>True</can_focus>
-	    <climb_rate>1</climb_rate>
-	    <digits>0</digits>
-	    <numeric>False</numeric>
-	    <update_policy>GTK_UPDATE_IF_VALID</update_policy>
-	    <snap>False</snap>
-	    <wrap>False</wrap>
-	    <value>10000</value>
-	    <lower>1</lower>
-	    <upper>3.6e+07</upper>
-	    <step>100</step>
-	    <page>1000</page>
-	    <page_size>10000</page_size>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label6</name>
-	    <label>Averaging Time (ms)</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox4</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
-	    <top_attach>1</top_attach>
-	    <bottom_attach>2</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
+	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
 	    <xfill>True</xfill>
@@ -837,22 +775,17 @@ Web: http://etherape.sourceforge.net</comments>
 	  </child>
 
 	  <widget>
-	    <class>GtkSpinButton</class>
-	    <name>refresh_spin</name>
-	    <tooltip>Refresh diagram every this many miliseconds</tooltip>
+	    <class>GtkToggleButton</class>
+	    <name>diagram_only_toggle</name>
+	    <tooltip>Toggle whether text is shown on the diagram</tooltip>
 	    <can_focus>True</can_focus>
-	    <climb_rate>1</climb_rate>
-	    <digits>0</digits>
-	    <numeric>False</numeric>
-	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
-	    <snap>False</snap>
-	    <wrap>False</wrap>
-	    <value>800</value>
-	    <lower>50</lower>
-	    <upper>10000</upper>
-	    <step>10</step>
-	    <page>100</page>
-	    <page_size>100</page_size>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>on_diagram_only_toggle_toggled</handler>
+	      <last_modification_time>Sat, 18 Mar 2000 15:17:38 GMT</last_modification_time>
+	    </signal>
+	    <label>Click to toggle</label>
+	    <active>False</active>
 	    <child>
 	      <padding>2</padding>
 	      <expand>False</expand>
@@ -862,8 +795,8 @@ Web: http://etherape.sourceforge.net</comments>
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label7</name>
-	    <label>Diagram refresh period (ms)</label>
+	    <name>label30</name>
+	    <label>No text</label>
 	    <justify>GTK_JUSTIFY_LEFT</justify>
 	    <wrap>False</wrap>
 	    <xalign>0.5</xalign>
@@ -886,8 +819,8 @@ Web: http://etherape.sourceforge.net</comments>
 	  <child>
 	    <left_attach>0</left_attach>
 	    <right_attach>1</right_attach>
-	    <top_attach>2</top_attach>
-	    <bottom_attach>3</bottom_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
@@ -945,12 +878,12 @@ Web: http://etherape.sourceforge.net</comments>
 	  <child>
 	    <left_attach>0</left_attach>
 	    <right_attach>1</right_attach>
-	    <top_attach>3</top_attach>
-	    <bottom_attach>4</bottom_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
+	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
 	    <xfill>True</xfill>
@@ -998,17 +931,17 @@ Web: http://etherape.sourceforge.net</comments>
 
 	<widget>
 	  <class>GtkVBox</class>
-	  <name>vbox7</name>
+	  <name>vbox9</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
-	    <top_attach>0</top_attach>
-	    <bottom_attach>1</bottom_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
+	    <xexpand>False</xexpand>
 	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
@@ -1017,9 +950,317 @@ Web: http://etherape.sourceforge.net</comments>
 	  </child>
 
 	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>size_mode_menu</name>
+	    <tooltip>Choose how node radius and link width are calculated as a function of average traffic</tooltip>
+	    <can_focus>True</can_focus>
+	    <items>Linear
+Logarithmic
+Square Root
+</items>
+	    <initial_choice>0</initial_choice>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label26</name>
+	    <label>Size Mode</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox10</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>font_button</name>
+	    <tooltip>Choose the font used to display text in the diagram</tooltip>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_font_button_clicked</handler>
+	      <last_modification_time>Thu, 16 Mar 2000 12:53:06 GMT</last_modification_time>
+	    </signal>
+	    <stock_button>GNOME_STOCK_BUTTON_FONT</stock_button>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label27</name>
+	    <label>Font</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox4</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>node_to_spin</name>
-	    <tooltip>Delete this node after this much time. 0 means never timeout.</tooltip>
+	    <name>refresh_spin</name>
+	    <tooltip>Refresh diagram every this many miliseconds</tooltip>
+	    <can_focus>True</can_focus>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>800</value>
+	    <lower>50</lower>
+	    <upper>10000</upper>
+	    <step>10</step>
+	    <page>100</page>
+	    <page_size>100</page_size>
+	    <child>
+	      <padding>2</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label7</name>
+	    <label>Diagram refresh period (ms)</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox13</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>p_level_menu</name>
+	    <tooltip>Set what level of the protocol stack is displayed in the legend</tooltip>
+	    <can_focus>True</can_focus>
+	    <items>2
+3
+4
+5
+All
+</items>
+	    <initial_choice>0</initial_choice>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label32</name>
+	    <label>Protocol Stack Level</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label28</name>
+	<label>Diagram</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkTable</class>
+	<name>table3</name>
+	<border_width>6</border_width>
+	<rows>2</rows>
+	<columns>2</columns>
+	<homogeneous>True</homogeneous>
+	<row_spacing>5</row_spacing>
+	<column_spacing>5</column_spacing>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox12</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkEntry</class>
+	    <name>filter_entry</name>
+	    <tooltip>Filter what's captured. See the tcpdump man page for details</tooltip>
+	    <can_focus>True</can_focus>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text></text>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label31</name>
+	    <label>Capture filter</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox3</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>averaging_spin</name>
+	    <tooltip>Packet information is averaged for this amount of time</tooltip>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -1028,7 +1269,7 @@ Web: http://etherape.sourceforge.net</comments>
 	    <snap>False</snap>
 	    <wrap>False</wrap>
 	    <value>10000</value>
-	    <lower>0</lower>
+	    <lower>1</lower>
 	    <upper>3.6e+07</upper>
 	    <step>100</step>
 	    <page>1000</page>
@@ -1042,8 +1283,8 @@ Web: http://etherape.sourceforge.net</comments>
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label24</name>
-	    <label>Node Timeout (ms)</label>
+	    <name>label6</name>
+	    <label>Averaging Time (ms)</label>
 	    <justify>GTK_JUSTIFY_LEFT</justify>
 	    <wrap>False</wrap>
 	    <xalign>0.5</xalign>
@@ -1075,7 +1316,7 @@ Web: http://etherape.sourceforge.net</comments>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
 	    <xfill>True</xfill>
-	    <yfill>True</yfill>
+	    <yfill>False</yfill>
 	  </child>
 
 	  <widget>
@@ -1122,202 +1363,12 @@ Web: http://etherape.sourceforge.net</comments>
 
 	<widget>
 	  <class>GtkVBox</class>
-	  <name>vbox9</name>
+	  <name>vbox7</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
-	    <top_attach>2</top_attach>
-	    <bottom_attach>3</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkOptionMenu</class>
-	    <name>size_mode_menu</name>
-	    <can_focus>True</can_focus>
-	    <items>Linear
-Logarithmic
-Square Root
-</items>
-	    <initial_choice>0</initial_choice>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label26</name>
-	    <label>Size Mode</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox10</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>1</left_attach>
-	    <right_attach>2</right_attach>
-	    <top_attach>3</top_attach>
-	    <bottom_attach>4</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>font_button</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_font_button_clicked</handler>
-	      <last_modification_time>Thu, 16 Mar 2000 12:53:06 GMT</last_modification_time>
-	    </signal>
-	    <stock_button>GNOME_STOCK_BUTTON_FONT</stock_button>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label27</name>
-	    <label>Font</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox11</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
-	    <top_attach>4</top_attach>
-	    <bottom_attach>5</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>True</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>True</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>diagram_only_toggle</name>
-	    <tooltip>Toggle whether text is shown on the diagram</tooltip>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_diagram_only_toggle_toggled</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 15:17:38 GMT</last_modification_time>
-	    </signal>
-	    <label>Click to toggle</label>
-	    <active>False</active>
-	    <child>
-	      <padding>2</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label30</name>
-	    <label>No text</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>Notebook:tab</child_name>
-	<name>label28</name>
-	<label>Diagram</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkTable</class>
-	<name>table3</name>
-	<border_width>6</border_width>
-	<rows>1</rows>
-	<columns>1</columns>
-	<homogeneous>False</homogeneous>
-	<row_spacing>0</row_spacing>
-	<column_spacing>0</column_spacing>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox12</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <left_attach>0</left_attach>
-	    <right_attach>1</right_attach>
 	    <top_attach>0</top_attach>
 	    <bottom_attach>1</bottom_attach>
 	    <xpad>0</xpad>
@@ -1331,14 +1382,22 @@ Square Root
 	  </child>
 
 	  <widget>
-	    <class>GtkEntry</class>
-	    <name>filter_entry</name>
-	    <tooltip>Filter what's captured. See the tcpdump man page for details</tooltip>
+	    <class>GtkSpinButton</class>
+	    <name>node_to_spin</name>
+	    <tooltip>Delete this node after this much time. 0 means never timeout.</tooltip>
 	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_IF_VALID</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>10000</value>
+	    <lower>0</lower>
+	    <upper>3.6e+07</upper>
+	    <step>100</step>
+	    <page>1000</page>
+	    <page_size>10000</page_size>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -1348,8 +1407,8 @@ Square Root
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label31</name>
-	    <label>Capture filter</label>
+	    <name>label24</name>
+	    <label>Node Timeout (ms)</label>
 	    <justify>GTK_JUSTIFY_LEFT</justify>
 	    <wrap>False</wrap>
 	    <xalign>0.5</xalign>
@@ -1433,78 +1492,6 @@ Square Root
       <last_modification_time>Thu, 16 Mar 2000 13:58:15 GMT</last_modification_time>
     </signal>
     <label>Cancelar</label>
-  </widget>
-</widget>
-
-<widget>
-  <class>GnomeDialog</class>
-  <name>dialog2</name>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-  <auto_close>False</auto_close>
-  <hide_on_close>False</hide_on_close>
-
-  <widget>
-    <class>GtkVBox</class>
-    <child_name>GnomeDialog:vbox</child_name>
-    <name>dialog-vbox4</name>
-    <homogeneous>False</homogeneous>
-    <spacing>8</spacing>
-    <child>
-      <padding>4</padding>
-      <expand>True</expand>
-      <fill>True</fill>
-    </child>
-
-    <widget>
-      <class>GtkHButtonBox</class>
-      <child_name>GnomeDialog:action_area</child_name>
-      <name>dialog-action_area4</name>
-      <layout_style>GTK_BUTTONBOX_END</layout_style>
-      <spacing>8</spacing>
-      <child_min_width>85</child_min_width>
-      <child_min_height>27</child_min_height>
-      <child_ipad_x>7</child_ipad_x>
-      <child_ipad_y>0</child_ipad_y>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
-
-      <widget>
-	<class>GtkButton</class>
-	<name>button18</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
-	<stock_button>GNOME_STOCK_BUTTON_OK</stock_button>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<name>button19</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
-	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<name>button20</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
-	<stock_button>GNOME_STOCK_BUTTON_CANCEL</stock_button>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>Placeholder</class>
-    </widget>
   </widget>
 </widget>
 

@@ -23,6 +23,9 @@
 #include <gnome.h>
 #include <sys/time.h>
 
+#define STACK_SIZE 9		/* How many protocol levels to keep
+				   * track of */
+
 /* Enumerations */
 
 typedef enum
@@ -82,10 +85,13 @@ typedef struct
     double average;
     double accumulated;
     guint n_packets;
-    gchar *main_prot;		/* Most common protocol for the link */
+    gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the link */
     struct timeval last_time;	/* Timestamp of the last packet added */
     GList *packets;		/* List of packets heard on this link */
-    GList *protocols;		/* List of protocols heard on this link */
+    GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
+					   * all protocols heard at that level */
+    /* TODO Ask around whether 10 is too bad
+     * a hard limit */
   }
 link_t;
 
@@ -144,7 +150,14 @@ struct timeval now;		/* Set both at each packet capture and
 				 * in each redraw of the diagram */
 GTree *nodes;			/* Has all the nodes heard on the network */
 GTree *links;			/* Has all links heard on the net */
-GList *protocols;		/* Has all protocols heard on the net */
+GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
+					 * all protocols heards at that level */
+				/* TODO Ask around whether 10 is too bad
+				 * a hard limit 
+				 * On the other hand, some other people have
+				 * said this kind of stuff before, and I'd
+				 * like to be quoted just like them:
+				 * "10 should be enough for everybody" :-) */
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
@@ -210,6 +223,9 @@ gint protocol_compare (gconstpointer a, gconstpointer b);
 gchar *ip_to_str (const guint8 * ad);
 gchar *ether_to_str (const guint8 * ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
+
+/* From protocols.c */
+gchar *get_packet_prot (const guint8 * packet);
 
 /* Macros */
 

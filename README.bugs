@@ -1,48 +1,58 @@
+
+Known bugs
+
+   For a list of known issues and bugs, point your browser to
+   [1]http://sourceforge.net/bugs/?group_id=2712
+   
 How to report a bug
--------------------
 
-Having users is great, not only because it is the purpose of
-creating this program in the first place, but because they stress
-your programs in many different ways and help you make your program
-more robust.
-
-If you do encounter a problem with this program, plase write a bug
-report in http://sourceforge.net/bugs/?group_id=2712
-
-When you write your report, I'd be thankful if you could follow 
-these guidelines, in order of importance.
-
-1. Things to include:
-  - Operating system and distribution
-  - Etherape version (etherape --version)
-  - pcap version (and package version as well)
-  - If possible, a backtrace (See below)
-  
-2. Read this link first
-  http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
-  It is really informative, and it will be really useful not 
-  only for etherape.
-  
-
+   Having users is great, not only because it is the purpose of creating
+   this program in the first place, but because they stress your program
+   in many different ways and help you make it more robust.
+   
+   If you do encounter a problem with this program, plase write a bug
+   report at [2]http://sourceforge.net/bugs/?group_id=2712
+   
+   When you write your report, I'd be thankful if you could follow these
+   guidelines, in order of importance.
+    1. Make sure that the most current version does have the bug. Not
+       only does this mean to download the latest version, but also
+       making sure that you are _running_ the latest version. Go to src
+       and run as ./etherape
+    2. Things to include:
+          + Operating system and distribution
+          + Etherape version (etherape --version, or check the about box)
+          + pcap version (and package version as well)
+          + gtk and gnome libs version (package version as well)
+          + If possible, a backtrace (See below)
+          + Please leave an email address or log in before posting your
+            bug, so that I can later get in contact with you.
+    3. Read this link first
+       [3]http://www.chiark.greenend.org.uk/~sgtatham/bugs.html It is
+       really informative, and it will be really useful not only for
+       etherape.
+       
+   Please understand that I _love_ to receive bug reports, because that
+   means that I will be improving the program, but the more info you
+   provide, the faster I'll be able to solve the problem.
+   
 How to provide a backtrace
---------------------------
-In cases in which etherape is crashing (not when it produces
-bad results), it is most useful if I can see what was doing the
-program when it crashed.
 
-It is actually simple, you just need to type three instructions.
+   In cases in which etherape is crashing (not when it produces bad
+   results), it is most useful if I can see what was the program doing
+   when it crashed.
+   
+   It is actually simple, you just need to type three instructions.
 
 # gdb etherape
 (gdb) run [options your were using]
 (gdb) backtrace
 
+   Here's an example of what it would look like. When you write your
+   report, you only need to send me from the "Program received signal
+   SIGSEGV" bit onwards.
 
-Here's an example of what it would look like. When you write
-your report, you only need to send me the output of the 
-backtrace.
-
-
-argos:~/etherape/src# gdb etherape
+argos:~/etherape/src# gdb ./etherape
 GNU gdb 19990928
 Copyright 1998 Free Software Foundation, Inc.
 GDB is free software, covered by the GNU General Public License, and you are
@@ -82,6 +92,15 @@ canvas_node=0x80e2ab0, canvas=0x80d0cb0) at diagram.c:333
 #10 0x403ed86c in g_main_run () from /usr/lib/libglib-1.2.so.0
 #11 0x401ced97 in gtk_main () from /usr/lib/libgtk-1.2.so.0
 #12 0x804e158 in main (argc=1, argv=0xbffffd34) at main.c:184
-    
---
-$Id$
+     _________________________________________________________________
+   
+   $Id$
+   
+   [4][sflogo.php?group_id=2712&amp;type=1] 
+
+References
+
+   1. http://sourceforge.net/bugs/?group_id=2712
+   2. http://sourceforge.net/bugs/?group_id=2712
+   3. http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
+   4. http://sourceforge.net/

@@ -13,8 +13,10 @@ NEWS: html/NEWS.html
 FAQ: html/FAQ.html
 	lynx --dump html/FAQ.html > FAQ
 
+README.bugs: html/bug-reporting.html
+	lynx --dump html/bug-reporting.html > README.bugs
 
-cvs : NEWS FAQ indent
+cvs : NEWS FAQ README.bugs indent
 	test `whoami` = toledo
 	cvs commit
 
@@ -33,6 +35,7 @@ EXTRA_DIST = \
 	etherape.glade		\
 	html/NEWS.html		\
 	html/FAQ.html		\
+	html/bug-reporting.html \
 	debian/README.debian	\
 	debian/changelog	\
 	debian/control		\
@@ -52,7 +55,7 @@ full-dist :
 	make dist
 	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
 	scp ${PACKAGE}-${VERSION}.tar.gz etherape:ftp
-	make full-cvs
+	cd ../www && make
 	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 	echo ${VERSION} > old.version
 

@@ -25,7 +25,6 @@
 #include "globals.h"
 #include "capture.h"
 #include "dns.h"
-#include "protocols.h"
 #include "eth_resolv.h"
 
 
@@ -44,6 +43,7 @@ init_capture (void)
 {
 
   gint pcap_fd, dns_fd;
+  guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
   link_type_t linktype;		/* Type of device we are listening to */
@@ -153,6 +153,11 @@ init_capture (void)
 
   nodes = g_tree_new (node_id_compare);
   links = g_tree_new (link_id_compare);
+  while (i)
+    {
+      protocols[i] = NULL;
+      i--;
+    }
 
 }				/* init_capture */
 
@@ -312,6 +317,109 @@ get_link_id (const guint8 * packet)
 }				/* get_link_id */
 
 
+/* We update node information for each new packet that arrives in the
+ * network. If the node the packet refers to is unknown, we
+ * create it. */
+static void
+update_node (const guint8 * packet, struct pcap_pkthdr phdr,
+	     const guint8 * node_id)
+{
+  node_t *node;
+  packet_t *packet_info;
+
+  node = g_tree_lookup (nodes, node_id);
+  if (node == NULL)
+    node = create_node (packet, node_id);
+
+  /* We add a packet to the list of packets to/from that host which we want
+   * to account for */
+  packet_info = g_malloc (sizeof (packet_t));
+  packet_info->size = phdr.len;
+  packet_info->timestamp = now;
+  packet_info->parent = node;
+  /* Right now we don't need protocol info for node packets. */
+  packet_info->prot = NULL;
+  node->packets = g_list_prepend (node->packets, packet_info);
+
+  /* We update node info */
+  node->accumulated += phdr.len;
+  node->last_time = now;
+  /* update_packet_list is now called in diagram.c
+   * I'm not too happy about it since I want to have a clear
+   * separation between data structures and presentation, but it
+   * is a fact that the proper moment for packet cleaning is right
+   * before presentation */
+  node->n_packets++;
+
+}				/* update_node */
+
+/* Save as above plus we update protocol aggregate information */
+static void
+update_link (const guint8 * packet, struct pcap_pkthdr phdr,
+	     const guint8 * link_id)
+{
+  link_t *link;
+  packet_t *packet_info;
+  GList *protocol_item;
+  protocol_t *protocol_info;
+
+  link = g_tree_lookup (links, link_id);
+  if (!link)
+    link = create_link (packet, link_id);
+
+  /* We create a new packet structure and add it to the lists of
+   * packet that this link has */
+  packet_info = g_malloc (sizeof (link_t));
+  packet_info->size = phdr.len;
+  packet_info->timestamp = now;
+  packet_info->parent = link;
+  packet_info->prot = g_string_new (get_packet_prot (packet));
+  link->packets = g_list_prepend (link->packets, packet_info);
+
+  /* Have we heard this protocol at all? */
+#if 0
+  if (!(protocol_item = g_list_find_custom (protocols[0],
+					    packet_info->prot->str,
+					    protocol_compare)))
+    {
+      protocol_info = g_malloc (sizeof (protocol_t));
+      protocol_info->name = g_strdup (packet_info->prot->str);
+      protocols[0] = g_list_prepend (protocols[0], protocol_info);
+    }
+#endif
+  add_protocol (protocols, packet_info->prot->str, phdr, FALSE);
+  add_protocol (link->protocols, packet_info->prot->str, phdr, TRUE);
+#if 0
+  /* Have we already heard this protocol on this link? */
+  if ((protocol_item = g_list_find_custom (link->protocols,
+					   packet_info->prot->str,
+					   protocol_compare)))
+    {
+      protocol_info = protocol_item->data;
+      protocol_info->accumulated += phdr.len;
+      protocol_info->n_packets++;
+      /*g_message (protocol_info->name); */
+    }
+  else
+    /* First time protocol. Will have to be created */
+    {
+      protocol_info = g_malloc (sizeof (protocol_t));
+      protocol_info->name = g_strdup (packet_info->prot->str);
+      /*g_message (protocol_info->name); */
+      protocol_info->accumulated = phdr.len;
+      protocol_info->n_packets = 1;
+      link->protocols = g_list_prepend (link->protocols, protocol_info);
+    }
+#endif
+
+  /* We update link info */
+  link->accumulated += phdr.len;
+  link->last_time = now;
+  /* update_packet_list is now called in diagram.c */
+  link->n_packets++;
+
+}				/* update_link */
+
 /* Allocates a new node structure, and adds it to the
  * global nodes binary tree */
 static node_t *
@@ -354,6 +462,7 @@ static link_t *
 create_link (const guint8 * packet, const guint8 * link_id)
 {
   link_t *link;
+  guint i = STACK_SIZE;
 
   link = g_malloc (sizeof (link_t));
 
@@ -361,9 +470,13 @@ create_link (const guint8 * packet, const guint8 * link_id)
   link->average = 0;
   link->n_packets = 0;
   link->accumulated = 0;
-  link->main_prot = NULL;
   link->packets = NULL;
-  link->protocols = NULL;
+  while (i)
+    {
+      link->protocols[i] = NULL;
+      link->main_prot[i] = NULL;
+      i--;
+    }
   g_tree_insert (links, link->link_id, link);
 
 /* TODO make proper debugging output */
@@ -382,6 +495,7 @@ create_link (const guint8 * packet, const guint8 * link_id)
 
   return link;
 }				/* create_link */
+
 
 /* Fills in the strings that characterize the node */
 static void
@@ -537,105 +651,48 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 }
 
 
-/* We update node information for each new packet that arrives in the
- * network. If the node the packet refers to is unknown, we
- * create it. */
-static void
-update_node (const guint8 * packet, struct pcap_pkthdr phdr,
-	     const guint8 * node_id)
+/* For a given protocol stack, it updates the both the global 
+ * protocols and specific link list */
+void
+add_protocol (GList ** protocols, gchar * stack, struct pcap_pkthdr phdr,
+	      gboolean is_link)
 {
-  node_t *node;
-  packet_t *packet_info;
-
-  node = g_tree_lookup (nodes, node_id);
-  if (node == NULL)
-    node = create_node (packet, node_id);
-
-  /* We add a packet to the list of packets to/from that host which we want
-   * to account for */
-  packet_info = g_malloc (sizeof (packet_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->parent = node;
-  /* Right now we don't need protocol info for node packets. */
-  packet_info->prot = NULL;
-  node->packets = g_list_prepend (node->packets, packet_info);
-
-  /* We update node info */
-  node->accumulated += phdr.len;
-  node->last_time = now;
-  /* update_packet_list is now called in diagram.c
-   * I'm not too happy about it since I want to have a clear
-   * separation between data structures and presentation, but it
-   * is a fact that the proper moment for packet cleaning is right
-   * before presentation */
-  node->n_packets++;
-
-}				/* update_node */
-
-/* Save as above plus we update protocol aggregate information */
-static void
-update_link (const guint8 * packet, struct pcap_pkthdr phdr,
-	     const guint8 * link_id)
-{
-  link_t *link;
-  packet_t *packet_info;
   GList *protocol_item;
   protocol_t *protocol_info;
-
-  link = g_tree_lookup (links, link_id);
-  if (!link)
-    link = create_link (packet, link_id);
-
-  /* We create a new packet structure and add it to the lists of
-   * packet that this link has */
-  packet_info = g_malloc (sizeof (link_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->parent = link;
-  packet_info->prot = g_string_new (get_packet_prot (packet));
-  link->packets = g_list_prepend (link->packets, packet_info);
-
-  /* Have we heard this protocol at all? */
-  if (!(protocol_item = g_list_find_custom (protocols,
-					    packet_info->prot->str,
-					    protocol_compare)))
+  gchar **tokens;
+  guint i = 0;
+  tokens = g_strsplit (stack, "/", 0);
+  while (tokens[i] != NULL)
     {
-      protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot->str);
-      protocols = g_list_prepend (protocols, protocol_info);
+      if ((protocol_item = g_list_find_custom (protocols[i],
+					       tokens[i],
+					       protocol_compare)))
+	{
+	  if (is_link)
+	    {
+	      protocol_info = protocol_item->data;
+	      protocol_info->accumulated += phdr.len;
+	      protocol_info->n_packets++;
+	    }
+	}
+      else
+	{
+	  protocol_info = g_malloc (sizeof (protocol_t));
+	  protocol_info->name = g_strdup (tokens[i]);
+	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
+	  if (is_link)
+	    {
+	      protocol_info->accumulated = phdr.len;
+	      protocol_info->n_packets = 1;
+	    }
+	}
+
+      i++;
+      if (i == 10)
+	g_error (_ ("Higher than 10 items protocols stacks are not supported"));
     }
-
-
-  /* Have we already heard this protocol on this link? */
-  if ((protocol_item = g_list_find_custom (link->protocols,
-					   packet_info->prot->str,
-					   protocol_compare)))
-    {
-      protocol_info = protocol_item->data;
-      protocol_info->accumulated += phdr.len;
-      protocol_info->n_packets++;
-      /*g_message (protocol_info->name); */
-    }
-  else
-    /* First time protocol. Will have to be created */
-    {
-      protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot->str);
-      /*g_message (protocol_info->name); */
-      protocol_info->accumulated = phdr.len;
-      protocol_info->n_packets = 1;
-      link->protocols = g_list_prepend (link->protocols, protocol_info);
-    }
-
-
-  /* We update link info */
-  link->accumulated += phdr.len;
-  link->last_time = now;
-  /* update_packet_list is now called in diagram.c */
-  link->n_packets++;
-
-}				/* update_link */
+  g_strfreev (tokens);
+}
 
 
 /* This function is called to discard packets from the list 
@@ -645,6 +702,7 @@ void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
   struct timeval difference;
+  guint i = STACK_SIZE;
   node_t *node;
   link_t *link;
   gdouble usecs_from_oldest;	/* usecs since the first valid packet */
@@ -681,9 +739,13 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	{
 	  link->average = 8000000 * link->accumulated / usecs_from_oldest;
 	  /* We look for the most used protocol for this link */
-	  if (link->main_prot)
-	    g_free (link->main_prot);
-	  link->main_prot = get_main_prot (packets, link);
+	  while (i)
+	    {
+	      if (link->main_prot[i])
+		g_free (link->main_prot[i]);
+	      link->main_prot[i] = get_main_prot (packets, link, i);
+	      i--;
+	    }
 	}
 
     }
@@ -700,10 +762,15 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 /* Finds the most commmon protocol of all the packets in a
  * given link (only link, by now) */
 static gchar *
-get_main_prot (GList * packets, link_t * link)
+get_main_prot (GList * packets, link_t * link, guint level)
 {
-  link->protocols = g_list_sort (link->protocols, prot_freq_compare);
-  return g_strdup (((protocol_t *) link->protocols->data)->name);
+  protocol_t *protocol;
+  if (!(link->protocols[level]))
+    return NULL;
+  link->protocols[level]
+    = g_list_sort (link->protocols[level], prot_freq_compare);
+  protocol = (protocol_t *) link->protocols[level]->data;
+  return g_strdup (protocol->name);
 }				/* get_main_prot */
 
 /* Make sure this particular packet in a list of packets beloging to 
@@ -715,6 +782,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
   struct timeval result;
   double time_comparison;
+  guint i = 0;
   node_t *node;
   link_t *link;
   GList *protocol_item;
@@ -772,24 +840,33 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
       else
 	/* belongs to LINK */
 	{
+	  gchar **tokens;
 	  /* See above for explanations */
 	  link->accumulated -= packet->size;
 	  link->n_packets--;
 	  if (!link->accumulated)
 	    link->average = 0;
+
 	  /* We remove protocol aggregate information */
-	  protocol_item = g_list_find_custom (link->protocols,
-					      packet->prot->str,
-					      protocol_compare);
-	  protocol_info = protocol_item->data;
-	  protocol_info->accumulated -= packet->size;
-	  if (!protocol_info->accumulated)
+	  tokens = g_strsplit (packet->prot->str, "/", 0);
+	  while ((i < STACK_SIZE) && tokens[i])
 	    {
-	      g_free (protocol_info->name);
-	      link->protocols =
-		g_list_remove_link (link->protocols, protocol_item);
-	      g_list_free (protocol_item);
+
+	      protocol_item = g_list_find_custom (link->protocols[i],
+						  tokens[i],
+						  protocol_compare);
+	      protocol_info = protocol_item->data;
+	      protocol_info->accumulated -= packet->size;
+	      if (!protocol_info->accumulated)
+		{
+		  g_free (protocol_info->name);
+		  link->protocols[i] =
+		    g_list_remove_link (link->protocols[i], protocol_item);
+		  g_list_free (protocol_item);
+		}
+	      i++;
 	    }
+	  g_strfreev (tokens);
 	}
 
       if (((packet_t *) (packets->data))->prot)

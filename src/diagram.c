@@ -128,7 +128,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
     case GDK_ENTER_NOTIFY:
       str = g_strdup_printf (_ ("Link main protocol: %s"),
-			     canvas_link->link->main_prot);
+			     canvas_link->link->main_prot[1]);
       gnome_appbar_push (appbar, str);
       g_free (str);
       break;
@@ -246,7 +246,8 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 {
   static gfloat angle = 0.0;
   static guint node_i = 0, n_nodes = 0;
-  gdouble x, y, xmin, ymin, xmax, ymax, rad_max, text_compensation = 50;
+  gdouble x, y, xmin, ymin, xmax, ymax, text_compensation = 50;
+  gdouble x_rad_max, y_rad_max;
   gdouble oddAngle = angle;
 
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
@@ -264,20 +265,20 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 				 * the node name is not lost
 				 * TODO: Need a function to calculate
 				 * text_compensation depending on font size */
-  rad_max = ((xmax - xmin) > (ymax - ymin)) ? 0.9 * (y = (ymax - ymin)) / 2 : 0.9 *
-    (x = (xmax - xmin)) / 2;
+  x_rad_max = 0.9 * (xmax - xmin) / 2;
+  y_rad_max = 0.9 * (ymax - ymin) / 2;
 
   if (n_nodes % 2 == 0)		/* spacing is better when n_nodes is odd and Y is linear */
     oddAngle = (angle * n_nodes) / (n_nodes + 1);
   if (n_nodes > 8)
     {
-      x = rad_max * cos (oddAngle);
-      y = rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+      x = x_rad_max * cos (oddAngle);
+      y = y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
     }
   else
     {
-      x = rad_max * cos (angle);
-      y = rad_max * sin (angle);
+      x = x_rad_max * cos (angle);
+      y = y_rad_max * sin (angle);
     }
 
   gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
@@ -374,8 +375,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 					 * but if we free the id then we will
 					 * not be able to find the link again 
 					 * to free it, thus the intermediate variable */
+#if 0				/* TODO Fix this once and for all */
 	  if (link->main_prot)
 	    g_free (link->main_prot);
+#endif
 	  g_free (link);
 	  g_tree_remove (links, link_id);
 	  g_free (link_id);
@@ -390,8 +393,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       link->accumulated = 0;
     }
 
-  if (link && link->main_prot)
-    gdk_color_parse (get_prot_color (link->main_prot), &canvas_link->color);
+  if (link && link->main_prot[1])
+    gdk_color_parse (get_prot_color (link->main_prot[1]), &canvas_link->color);
 
   args[0].name = "x";
   args[1].name = "y";
@@ -433,7 +436,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   if (nofade)
     gnome_canvas_item_set (canvas_link->link_item,
 			   "points", points,
-			   "fill_color", get_prot_color (link->main_prot),
+			   "fill_color", get_prot_color (link->main_prot[1]),
 			   "width_units", link_size,
 			   NULL);
   else
@@ -761,9 +764,9 @@ update_diagram (GtkWidget * canvas)
   gettimeofday (&now, NULL);
 
   /* We search for new protocols */
-  if (n_protocols != (n_protocols_new = g_list_length (protocols)))
+  if (n_protocols != (n_protocols_new = g_list_length (protocols[0])))
     {
-      g_list_foreach (protocols, (GFunc) check_new_protocol, canvas);
+      g_list_foreach (protocols[1], (GFunc) check_new_protocol, canvas);
       n_protocols = n_protocols_new;
     }
 

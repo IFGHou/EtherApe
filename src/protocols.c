@@ -22,11 +22,34 @@
 
 #include "globals.h"
 #include "etypes.h"
+#include "protocols.h"
 
-extern apemode_t mode;
 static GString *prot;
 
-void
+gchar *
+get_packet_prot (const guint8 * packet)
+{
+  if (prot)
+    g_string_free (prot, TRUE);
+  prot = NULL;
+
+  switch (mode)
+    {
+    case ETHERNET:
+      get_eth_type (packet);
+      break;
+    case IP:
+    case TCP:
+    default:
+      prot = g_string_new ("UNKNOWN");
+      break;
+    }
+
+  return prot->str;
+}				/* get_packet_prot */
+
+
+static void
 get_eth_type (const guint8 * packet)
 {
   etype_t etype;
@@ -78,85 +101,70 @@ get_eth_type (const guint8 * packet)
       return;
     }
 
+  /* Else, it's ETHERNET_II */
 
+  prot = g_string_new ("ETH_II");
+  get_eth_II (packet, etype);
+  return;
 
+}				/* get_eth_type */
 
-
+static void
+get_eth_II (const guint8 * packet, etype_t etype)
+{
   /* TODO We are just considering EthernetII here
    * I guess I'll have to do the Right Thing some day. :-) */
   switch (etype)
     {
     case ETHERTYPE_IP:
-      prot = g_string_new ("IP");
+      prot = g_string_append (prot, "/IP");
       break;
     case ETHERTYPE_ARP:
-      prot = g_string_new ("ARP");
+      prot = g_string_append (prot, "/ARP");
       break;
     case ETHERTYPE_IPv6:
-      prot = g_string_new ("IPv6");
+      prot = g_string_append (prot, "/IPv6");
       break;
     case ETHERTYPE_X25L3:
-      prot = g_string_new ("X25L3");
+      prot = g_string_append (prot, "/X25L3");
       break;
     case ETHERTYPE_REVARP:
-      prot = g_string_new ("REVARP");
+      prot = g_string_append (prot, "/REVARP");
       break;
     case ETHERTYPE_ATALK:
-      prot = g_string_new ("ATALK");
+      prot = g_string_append (prot, "/ATALK");
       break;
     case ETHERTYPE_AARP:
-      prot = g_string_new ("AARP");
+      prot = g_string_append (prot, "/AARP");
       break;
     case ETHERTYPE_IPX:
-      prot = g_string_new ("IPX");
+      prot = g_string_append (prot, "/IPX");
       break;
     case ETHERTYPE_VINES:
-      prot = g_string_new ("VINES");
+      prot = g_string_append (prot, "/VINES");
       break;
     case ETHERTYPE_TRAIN:
-      prot = g_string_new ("TRAIN");
+      prot = g_string_append (prot, "/TRAIN");
       break;
     case ETHERTYPE_LOOP:
-      prot = g_string_new ("LOOP");
+      prot = g_string_append (prot, "/LOOP");
       break;
     case ETHERTYPE_PPPOED:
-      prot = g_string_new ("PPPOED");
+      prot = g_string_append (prot, "/PPPOED");
       break;
     case ETHERTYPE_PPPOES:
-      prot = g_string_new ("PPPOES");
+      prot = g_string_append (prot, "/PPPOES");
       break;
     case ETHERTYPE_VLAN:
-      prot = g_string_new ("VLAN");
+      prot = g_string_append (prot, "/VLAN");
       break;
     case ETHERTYPE_SNMP:
-      prot = g_string_new ("SNMP");
+      prot = g_string_append (prot, "/SNMP");
       break;
     case ETHERTYPE_UNK:
     default:
-      prot = g_string_new ("ETH_UNKNOWN");
+      prot = g_string_append (prot, "/ETH_UNKNOWN");
     }
 
   return;
-}
-
-gchar *
-get_packet_prot (const guint8 * packet)
-{
-  if (prot)
-    g_string_free (prot, TRUE);
-  prot = NULL;
-
-  switch (mode)
-    {
-    case ETHERNET:
-      get_eth_type (packet);
-      break;
-    case IP:
-    case TCP:
-    default:
-      prot = g_string_new ("UNKNOWN");
-      break;
-    }
-
-  return prot->str;
-}
+}				/* get_eth_II */

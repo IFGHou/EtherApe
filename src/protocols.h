@@ -1,3 +1,4 @@
+
 /* Etherape
  * Copyright (C) 2000 Juan Toledo
  * $Id$
@@ -17,5 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Exported functions */
-gchar *get_packet_prot (const guint8 * packet);
+static void
+  get_eth_type (const guint8 * packet);
+static void
+  get_eth_II (const guint8 * packet, etype_t etype);
