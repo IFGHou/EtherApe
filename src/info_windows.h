@@ -36,18 +36,14 @@ typedef struct
 prot_info_window_t;
 
 
-static void update_prot_info_windows (void);
-
 gboolean on_prot_table_button_press_event (GtkWidget * widget,
 					   GdkEventButton * event,
 					   gpointer user_data);
-static void update_node_info_window (node_info_window_t * node_info_window);
-static void update_prot_info_window (prot_info_window_t * prot_info_window);
-static gint node_info_compare (gconstpointer a, gconstpointer b);
-static gint prot_info_compare (gconstpointer a, gconstpointer b);
 
 gboolean on_node_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
 gboolean on_prot_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
 void toggle_protocols_window (void);
 gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
-				  gpointer user_data);
+				  gpointer ud);
+gboolean on_delete_protocol_window (GtkWidget * wdg, GdkEvent * e,
+				    gpointer ud);

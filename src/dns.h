@@ -21,8 +21,8 @@
 
 /*  Prototypes for dns.c  */
 
-void dns_open ();
-int dns_waitfd ();
-void dns_ack ();
-unsigned int dns_tick ();	/* call this more or less every 10 secs */
-char *dns_lookup (int address, int fqdn);
+void dns_open (void);
+int dns_waitfd (void);
+void dns_ack (void);
+unsigned int dns_tick (void);	/* call this more or less every 10 secs */
+char *dns_lookup (unsigned int address, int fqdn);

@@ -16,6 +16,7 @@
   <property name="default_height">440</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="icon">etherape.png</property>
   <property name="enable_layout_config">True</property>
   <signal name="delete_event" handler="cleanup"/>
 
@@ -3228,12 +3229,21 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 
 		  <child>
 		    <widget class="GtkMenu" id="columns1_menu">
-		      <property name="visible">True</property>
+
+		      <child>
+			<widget class="GtkCheckMenuItem" id="prot_color_check">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">_Color</property>
+			  <property name="use_underline">True</property>
+			  <property name="active">True</property>
+			  <signal name="activate" handler="on_prot_color_column_activate" last_modification_time="Tue, 04 Mar 2003 21:57:35 GMT"/>
+			</widget>
+		      </child>
 
 		      <child>
 			<widget class="GtkCheckMenuItem" id="prot_protocol_check">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Protocol</property>
+			  <property name="label" translatable="yes">_Protocol</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_protocol_column_activate" last_modification_time="Sun, 23 Feb 2003 08:44:41 GMT"/>
@@ -3243,7 +3253,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <child>
 			<widget class="GtkCheckMenuItem" id="prot_inst_traffic_check">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Inst Traffic</property>
+			  <property name="label" translatable="yes">_Inst Traffic</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_instant_column_activate" last_modification_time="Sun, 23 Feb 2003 08:46:40 GMT"/>
@@ -3253,7 +3263,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <child>
 			<widget class="GtkCheckMenuItem" id="prot_accum_traffic_check">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Accum Traffic</property>
+			  <property name="label" translatable="yes">_Accum Traffic</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_accumulated_column_activate" last_modification_time="Sun, 23 Feb 2003 08:46:55 GMT"/>
@@ -3263,7 +3273,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <child>
 			<widget class="GtkCheckMenuItem" id="prot_last_heard_check">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Last Heard</property>
+			  <property name="label" translatable="yes">_Last Heard</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_heard_column_activate" last_modification_time="Sun, 23 Feb 2003 08:48:03 GMT"/>
@@ -3273,7 +3283,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <child>
 			<widget class="GtkCheckMenuItem" id="prot_packets_check">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Packets</property>
+			  <property name="label" translatable="yes">Pac_kets</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_packets_column_activate" last_modification_time="Sun, 23 Feb 2003 08:48:43 GMT"/>

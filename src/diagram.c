@@ -50,13 +50,13 @@ init_diagram ()
   widget = glade_xml_get_widget (xml, "node_radius_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (pref.node_radius_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-			   "changed");
+  g_signal_emit_by_name (G_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
   widget = glade_xml_get_widget (xml, "link_width_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (pref.link_width_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-			   "changed");
+  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
   gtk_spin_button_set_value (spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
@@ -94,54 +94,53 @@ init_diagram ()
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_radius_slider_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_radius_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_width_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_width_slider_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_width_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "averaging_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_averaging_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_averaging_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "refresh_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_refresh_spin_adjustment_changed),
-		      glade_xml_get_widget (xml, "canvas1"));
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_refresh_spin_adjustment_changed),
+		    glade_xml_get_widget (xml, "canvas1"));
   widget = glade_xml_get_widget (xml, "node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "gui_node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_gui_node_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_gui_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "size_mode_menu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
   widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected),
-		      NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected), NULL);
   widget = glade_xml_get_widget (xml, "stack_level_menu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
 
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
@@ -412,8 +411,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_ref (label);
   /* I'm not really sure what this exactly does. I just copied it from 
    * interface.c, but what I'm trying to do is set the name of the widget */
-  gtk_object_set_data_full (GTK_OBJECT (app1), protocol->name, label,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data_full (G_OBJECT (app1), protocol->name, label,
+			  (GtkDestroyNotify) gtk_widget_unref);
 
 
   gtk_widget_show (label);
@@ -439,7 +438,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   style = gtk_style_new ();
   style->fg[GTK_STATE_NORMAL] = protocol->color;
   gtk_widget_set_style (label, style);
-  gtk_style_unref (style);
+  g_object_unref (style);
 
   /* We create a legend protocol and add it to the list, to keep count */
   legend_protocol = g_malloc (sizeof (protocol_t));
@@ -478,7 +477,7 @@ delete_gui_protocols (void)
 
   prot_table = glade_xml_get_widget (xml, "prot_table");
 
-  item = gtk_container_children (GTK_CONTAINER (prot_table));
+  item = gtk_container_get_children (GTK_CONTAINER (prot_table));
 
   while (item)
     {
@@ -568,7 +567,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							 gnome_canvas_group_get_type
 							 (), "x", 100.0, "y",
 							 100.0, NULL));
-      gtk_object_ref (GTK_OBJECT (group));
+      g_object_ref (G_OBJECT (group));
 
       new_canvas_node->node_item
 	= gnome_canvas_item_new (group,
@@ -580,7 +579,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 				 "fill_color", pref.node_color,
 				 "outline_color", "black",
 				 "width_pixels", 0, NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
+      g_object_ref (G_OBJECT (new_canvas_node->node_item));
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
 			       "text", node->name->str,
@@ -589,13 +588,13 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			       "anchor", GTK_ANCHOR_CENTER,
 			       "font", pref.fontname,
 			       "fill_color", pref.text_color, NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_node->text_item));
+      g_object_ref (G_OBJECT (new_canvas_node->text_item));
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
-      gtk_signal_connect (GTK_OBJECT (new_canvas_node->group_item), "event",
-			  (GtkSignalFunc) node_item_event, new_canvas_node);
+      g_signal_connect (G_OBJECT (new_canvas_node->group_item), "event",
+			(GtkSignalFunc) node_item_event, new_canvas_node);
 
       g_tree_insert (canvas_nodes,
 		     new_canvas_node->canvas_node_id, new_canvas_node);
@@ -650,19 +649,19 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       if (canvas_node->group_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
+	  g_object_unref (G_OBJECT (canvas_node->group_item));
 	  canvas_node->group_item = NULL;
 	}
       if (canvas_node->node_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
+	  g_object_unref (G_OBJECT (canvas_node->node_item));
 	  canvas_node->node_item = NULL;
 	}
       if (canvas_node->text_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+	  g_object_unref (G_OBJECT (canvas_node->text_item));
 	  canvas_node->text_item = NULL;
 	}
 
@@ -1017,12 +1016,6 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
   GnomeCanvasPoints *points;
   guint i = 0;
 
-  GtkArg args[2];
-  args[0].name = "x";
-  args[1].name = "y";
-
-
-
   if (!g_tree_lookup (canvas_links, link_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
@@ -1042,7 +1035,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 	= gnome_canvas_item_new (group,
 				 gnome_canvas_polygon_get_type (),
 				 "points", points, "fill_color", "tan", NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_link->link_item));
+      g_object_ref (G_OBJECT (new_canvas_link->link_item));
 
 
       g_tree_insert (canvas_links,
@@ -1051,8 +1044,8 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
       gnome_canvas_points_unref (points);
 
-      gtk_signal_connect (GTK_OBJECT (new_canvas_link->link_item), "event",
-			  (GtkSignalFunc) link_item_event, new_canvas_link);
+      g_signal_connect (G_OBJECT (new_canvas_link->link_item), "event",
+			(GtkSignalFunc) link_item_event, new_canvas_link);
 
 
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
@@ -1093,7 +1086,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       if (canvas_link->link_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
+	  g_object_unref (G_OBJECT (canvas_link->link_item));
 	  canvas_link->link_item = NULL;
 	}
 

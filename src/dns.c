@@ -52,6 +52,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <dns.h>
 
 #ifdef NO_STRERROR
 extern int sys_nerr;
@@ -297,7 +298,7 @@ static unsigned long current_tick = 0;
    of 10secs, the counter will wrap every 1300 years or so of continuous running.
 */
 unsigned int
-dns_tick ()
+dns_tick (void)
 {
   ++current_tick;
   return 1;			/* returning true means "keep the timer running" */
@@ -421,14 +422,14 @@ longipstr (char *s)
 }
 
 int
-dns_waitfd ()
+dns_waitfd (void)
 {
   return resfd;
 }
 
 /* called to activate the resolver */
 void
-dns_open ()
+dns_open (void)
 {
   int option, i;
   res_init ();
@@ -466,7 +467,7 @@ dns_open ()
 }
 
 struct resolve *
-allocresolve ()
+allocresolve (void)
 {
   struct resolve *rp;
   rp = (struct resolve *) malloc (sizeof (struct resolve));

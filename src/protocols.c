@@ -1047,7 +1047,7 @@ load_services (void)
 	    g_strup (t1[0]);
 
 	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
-             ;
+	    ;
 
 	  if (!error && (str = t1[i]))
 	    if (!(t2 = g_strsplit (str, "/", 0)))
@@ -1057,7 +1057,8 @@ load_services (void)
 	    error = TRUE;
 
 	  /* TODO The h here is not portable */
-	  if (error || !sscanf (t2[0], "%hd", &port_number) || (port_number < 1))
+	  if (error || !sscanf (t2[0], "%hd", &port_number)
+	      || (port_number < 1))
 	    error = TRUE;
 
 	  if (error || !t2[1])

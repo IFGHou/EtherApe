@@ -23,6 +23,14 @@
 #include <gtk/gtkcontainer.h>
 #include "util.h"
 
+
+static GnomeUIInfo help_submenu[] = {
+  GNOMEUIINFO_HELP ("etherape"),
+  GNOMEUIINFO_END
+};
+
+static gboolean in_start_capture = FALSE;
+
 #if 0
 /* This is here just as an example in case I need it again */
 void
@@ -80,7 +88,7 @@ init_menus (void)
    * interface */
   item = gtk_radio_menu_item_new_with_label (group, "apedummy");
   group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-  gtk_menu_append (GTK_MENU (widget), item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
 
   /* Set up the real interfaces menu entries */
   while (interfaces)
@@ -89,12 +97,12 @@ init_menus (void)
 	gtk_radio_menu_item_new_with_label (group,
 					    (gchar *) (interfaces->data));
       group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-      gtk_menu_append (GTK_MENU (widget), item);
+      gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
       gtk_widget_show (item);
-      gtk_signal_connect_object (GTK_OBJECT (item), "activate",
-				 GTK_SIGNAL_FUNC
-				 (on_interface_radio_activate),
-				 (gpointer) g_strdup (interfaces->data));
+      g_signal_connect_swapped (G_OBJECT (item), "activate",
+				GTK_SIGNAL_FUNC
+				(on_interface_radio_activate),
+				(gpointer) g_strdup (interfaces->data));
       g_string_append (info_string, " ");
       g_string_append (info_string, (gchar *) (interfaces->data));
       interfaces = interfaces->next;
@@ -464,6 +472,7 @@ gui_start_capture (void)
       gtk_widget_set_sensitive (widget, TRUE);
       break;
     default:
+      g_critical (_("Invalid link type %d"), linktype);
       return;
     }
 
@@ -489,6 +498,9 @@ gui_start_capture (void)
     case UDP:
       widget = glade_xml_get_widget (xml, "udp_radio");
       break;
+    default:
+      g_critical (_("Invalid mode: %d"), pref.mode);
+      return;
     }
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
 
@@ -526,6 +538,9 @@ gui_start_capture (void)
     case UDP:
       g_string_append (status_string, _(" in UDP mode"));
       break;
+    default:
+      g_critical (_("Invalid mode: %d"), pref.mode);
+      return;
     }
 
   set_appbar_status (status_string->str);
@@ -662,13 +677,11 @@ fatal_error_dialog (const gchar * message)
 {
   GtkWidget *error_messagebox;
 
-  /* TODO I am not very sure I am not leaking with this, but this is 
-   * extraordinary and would hardly be noticeable */
-
-  error_messagebox = gnome_message_box_new (message,
-					    GNOME_MESSAGE_BOX_ERROR,
-					    GNOME_STOCK_BUTTON_OK, NULL);
-  gtk_widget_show (error_messagebox);
+  error_messagebox = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK, message);
+  gtk_dialog_run (GTK_DIALOG (error_messagebox));
+  gtk_widget_destroy (error_messagebox);
 
 }				/* fatal_error_dialog */
 

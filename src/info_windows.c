@@ -31,6 +31,13 @@ static GList *info_protocols = NULL;
 static GList *node_info_windows = NULL;
 static GList *prot_info_windows = NULL;
 
+/* private functions */
+static void update_prot_info_windows (void);
+static void update_node_info_window (node_info_window_t * node_info_window);
+static void update_prot_info_window (prot_info_window_t * prot_info_window);
+static gint node_info_compare (gconstpointer a, gconstpointer b);
+static gint prot_info_compare (gconstpointer a, gconstpointer b);
+
 /* 
   
   Helper functions 
@@ -127,21 +134,21 @@ create_prot_info_window (protocol_t * protocol)
       window = glade_xml_get_widget (xml_info_window, "prot_info");
       gtk_widget_show (window);
       widget = glade_xml_get_widget (xml_info_window, "prot_info_name_label");
-      gtk_object_set_data (GTK_OBJECT (window), "name_label", widget);
+      g_object_set_data (G_OBJECT (window), "name_label", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "prot_info_last_heard_label");
-      gtk_object_set_data (GTK_OBJECT (window), "last_heard_label", widget);
+      g_object_set_data (G_OBJECT (window), "last_heard_label", widget);
       widget = glade_xml_get_widget (xml_info_window, "prot_info_average");
-      gtk_object_set_data (GTK_OBJECT (window), "average", widget);
+      g_object_set_data (G_OBJECT (window), "average", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "prot_info_accumulated");
-      gtk_object_set_data (GTK_OBJECT (window), "accumulated", widget);
+      g_object_set_data (G_OBJECT (window), "accumulated", widget);
       g_object_unref (xml_info_window);
 
       prot_info_window = g_malloc (sizeof (prot_info_window_t));
       prot_info_window->prot_name = g_strdup (protocol->name);
-      gtk_object_set_data (GTK_OBJECT (window), "prot_name",
-			   prot_info_window->prot_name);
+      g_object_set_data (G_OBJECT (window), "prot_name",
+			 prot_info_window->prot_name);
       prot_info_window->window = window;
       prot_info_windows =
 	g_list_prepend (prot_info_windows, prot_info_window);
@@ -166,7 +173,7 @@ on_prot_info_delete_event (GtkWidget * prot_info, GdkEvent * evt,
   guint8 *prot_name = NULL;
   prot_info_window_t *prot_info_window = NULL;
 
-  prot_name = gtk_object_get_data (GTK_OBJECT (prot_info), "prot_name");
+  prot_name = g_object_get_data (G_OBJECT (prot_info), "prot_name");
   if (!prot_name)
     {
       g_my_critical (_("No prot_name in on_prot_info_delete_event"));
@@ -204,9 +211,9 @@ update_prot_info_window (prot_info_window_t * prot_info_window)
       (item =
        g_list_find_custom (info_protocols, prot_name, protocol_compare)))
     {
-      widget = gtk_object_get_data (GTK_OBJECT (window), "average");
+      widget = g_object_get_data (G_OBJECT (window), "average");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated");
+      widget = g_object_get_data (G_OBJECT (window), "accumulated");
       gtk_label_set_text (GTK_LABEL (widget), "X");
       gtk_widget_queue_resize (GTK_WIDGET (prot_info_window->window));
       return;
@@ -215,14 +222,14 @@ update_prot_info_window (prot_info_window_t * prot_info_window)
   prot = item->data;
 
   gtk_window_set_title (GTK_WINDOW (window), prot->name);
-  widget = gtk_object_get_data (GTK_OBJECT (window), "name_label");
+  widget = g_object_get_data (G_OBJECT (window), "name_label");
   gtk_label_set_text (GTK_LABEL (widget), prot->name);
-  widget = gtk_object_get_data (GTK_OBJECT (window), "last_heard_label");
+  widget = g_object_get_data (G_OBJECT (window), "last_heard_label");
   gtk_label_set_text (GTK_LABEL (widget), timeval_to_str (prot->last_heard));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "average");
+  widget = g_object_get_data (G_OBJECT (window), "average");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (prot->average, TRUE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated");
+  widget = g_object_get_data (G_OBJECT (window), "accumulated");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (prot->accumulated, FALSE));
   gtk_widget_queue_resize (GTK_WIDGET (prot_info_window->window));
@@ -265,6 +272,13 @@ update_prot_info_windows (void)
    General Protocol Info window functions (protocols_window) 
 
    ---------------------------------------------------------- */
+#define MAX_C(a,b) ((a) > (b) ? (a) : (b))
+#define MIN_C(a,b) ((a) > (b) ? (a) : (b))
+#define LUMINANCE(r,g,b) ((MAX_C( (double)(r)/0xFFFF, MAX_C( (double)(g)/0xFFFF, \
+                                  (double)(b)/0xFFFF)) + \
+                          MIN_C( (double)(r)/0xFFFF, MIN_C( (double)(g)/0xFFFF, \
+                                  (double)(b)/0xFFFF))) / 2.0)
+
 /* Comparison functions used to sort the clist */
 static gint
 prot_window_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
@@ -275,6 +289,7 @@ prot_window_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
   struct timeval time1, time2, diff;
   gint idcol;
   GtkSortType order;
+
 
   /* reads the proto ptr from 6th columns */
   protocol_t *prot1, *prot2;
@@ -332,6 +347,34 @@ prot_window_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
+    case 6:
+      /* compare color by luminosity first, then by rgb... */
+      if (LUMINANCE (prot1->color.red, prot1->color.green, prot1->color.blue)
+	  < LUMINANCE (prot2->color.red, prot2->color.green,
+		       prot2->color.blue))
+	ret = -1;
+      else
+	if (LUMINANCE
+	    (prot1->color.red, prot1->color.green,
+	     prot1->color.blue) > LUMINANCE (prot2->color.red,
+					     prot2->color.green,
+					     prot2->color.blue))
+	ret = +1;
+      else if (prot1->color.red < prot2->color.red)
+	ret = -1;
+      else if (prot1->color.red > prot2->color.red)
+	ret = +1;
+      else if (prot1->color.green < prot2->color.green)
+	ret = -1;
+      else if (prot1->color.green > prot2->color.green)
+	ret = +1;
+      if (prot1->color.blue < prot2->color.blue)
+	ret = -1;
+      else if (prot1->color.blue > prot2->color.blue)
+	ret = +1;
+      else
+	ret = 0;
+      break;
     }
 
   return ret;
@@ -351,12 +394,21 @@ create_protocols_list ()
   if (!gv)
     return;			/* error */
 
-  /* create the store  - it uses 6 values, five displayable, one ptr */
-  gs = gtk_list_store_new (6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
+  /* create the store  - it uses 7 values, five displayable, one ptr, and there
+     node color */
+  gs = gtk_list_store_new (7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER,
+			   GDK_TYPE_COLOR);
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (gs));
 
-  /* the view columns and cell renderers must be also created ... */
+  /* the view columns and cell renderers must be also created ... 
+     the first column is the proto color  */
+  gc = gtk_tree_view_column_new_with_attributes
+    (" ", gtk_cell_renderer_text_new (), "background-gdk", 6, NULL);
+  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
+  gtk_tree_view_column_set_sort_column_id (gc, 6);
+  gtk_tree_view_append_column (gv, gc);
+
   gc = gtk_tree_view_column_new_with_attributes
     ("Protocol", gtk_cell_renderer_text_new (), "text", 0, NULL);
   g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
@@ -398,6 +450,12 @@ create_protocols_list ()
 				   prot_window_compare, gs, NULL);
   gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 4,
 				   prot_window_compare, gs, NULL);
+  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 6,
+				   prot_window_compare, gs, NULL);
+
+  /* initial sort order is by protocol */
+  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs), 0,
+					GTK_SORT_ASCENDING);
 
   /* re-adds the current protocols */
   item = info_protocols;
@@ -448,9 +506,11 @@ update_protocols_window (void)
 	  nproto->name = g_strdup (protocol->name);
 	  nproto->last_heard.tv_sec = nproto->last_heard.tv_usec = 0;
 	  info_protocols = g_list_prepend (info_protocols, nproto);
+	  nproto->color = protocol->color;
 
 	  gtk_list_store_prepend (gs, &it);
-	  gtk_list_store_set (gs, &it, 0, nproto->name, 5, nproto, -1);
+	  gtk_list_store_set (gs, &it, 0, nproto->name, 5, nproto, 6,
+			      &nproto->color, -1);
 
 	}
       item = item->next;
@@ -512,9 +572,10 @@ update_protocols_window (void)
 	  nproto->accumulated = protocol->accumulated;
 	  nproto->last_heard = protocol->last_heard;
 	  nproto->n_packets = protocol->n_packets;
+	  nproto->color = protocol->color;
 
 	  str = traffic_to_str (protocol->accumulated, FALSE);
-	  gtk_list_store_set (gs, &it, 2, str, -1);
+	  gtk_list_store_set (gs, &it, 2, str, 6, &nproto->color, -1);
 
 	  str = g_strdup_printf ("%d", protocol->n_packets);
 	  gtk_list_store_set (gs, &it, 4, str, -1);
@@ -527,6 +588,7 @@ update_protocols_window (void)
       gtk_list_store_set (gs, &it, 1, str, -1);
       str = timeval_to_str (protocol->last_heard);
       gtk_list_store_set (gs, &it, 3, str, -1);
+
 
     }
 }				/* update_protocols_window */
@@ -581,34 +643,41 @@ activate_protocols_info_column (GtkMenuItem * gm, guint column)
 				    (GTK_CHECK_MENU_ITEM (gm)));
 }				/* on_prot_column_view_activate */
 
+
 void
-on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data)
+on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
   activate_protocols_info_column (gm, 0);
 }
 
 void
-on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data)
+on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
   activate_protocols_info_column (gm, 1);
 }
 
 void
-on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data)
+on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
   activate_protocols_info_column (gm, 2);
 }
 
 void
-on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data)
+on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
   activate_protocols_info_column (gm, 3);
 }
 
 void
-on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
+on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
   activate_protocols_info_column (gm, 4);
+}
+
+void
+on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, 5);
 }
 
 
@@ -715,33 +784,33 @@ create_node_info_window (canvas_node_t * canvas_node)
       window = glade_xml_get_widget (xml_info_window, "node_info");
       gtk_widget_show (window);
       widget = glade_xml_get_widget (xml_info_window, "node_info_name_label");
-      gtk_object_set_data (GTK_OBJECT (window), "name_label", widget);
+      g_object_set_data (G_OBJECT (window), "name_label", widget);
       widget =
 	glade_xml_get_widget (xml_info_window,
 			      "node_info_numeric_name_label");
-      gtk_object_set_data (GTK_OBJECT (window), "numeric_name_label", widget);
+      g_object_set_data (G_OBJECT (window), "numeric_name_label", widget);
       widget = glade_xml_get_widget (xml_info_window, "node_info_average");
-      gtk_object_set_data (GTK_OBJECT (window), "average", widget);
+      g_object_set_data (G_OBJECT (window), "average", widget);
       widget = glade_xml_get_widget (xml_info_window, "node_info_average_in");
-      gtk_object_set_data (GTK_OBJECT (window), "average_in", widget);
+      g_object_set_data (G_OBJECT (window), "average_in", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "node_info_average_out");
-      gtk_object_set_data (GTK_OBJECT (window), "average_out", widget);
+      g_object_set_data (G_OBJECT (window), "average_out", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "node_info_accumulated");
-      gtk_object_set_data (GTK_OBJECT (window), "accumulated", widget);
+      g_object_set_data (G_OBJECT (window), "accumulated", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "node_info_accumulated_in");
-      gtk_object_set_data (GTK_OBJECT (window), "accumulated_in", widget);
+      g_object_set_data (G_OBJECT (window), "accumulated_in", widget);
       widget =
 	glade_xml_get_widget (xml_info_window, "node_info_accumulated_out");
-      gtk_object_set_data (GTK_OBJECT (window), "accumulated_out", widget);
+      g_object_set_data (G_OBJECT (window), "accumulated_out", widget);
       g_object_unref (xml_info_window);
       node_info_window = g_malloc (sizeof (node_info_window_t));
       node_info_window->node_id =
 	g_memdup (canvas_node->canvas_node_id, node_id_length);
-      gtk_object_set_data (GTK_OBJECT (window), "node_id",
-			   node_info_window->node_id);
+      g_object_set_data (G_OBJECT (window), "node_id",
+			 node_info_window->node_id);
       node_info_window->window = window;
       node_info_windows =
 	g_list_prepend (node_info_windows, node_info_window);
@@ -807,18 +876,18 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
   GList *item = NULL;
   guint8 *node_id = NULL;
   node_info_window_t *node_info_window = NULL;
-  node_id = gtk_object_get_data (GTK_OBJECT (node_info), "node_id");
+  node_id = g_object_get_data (G_OBJECT (node_info), "node_id");
   if (!node_id)
     {
       g_my_critical (_("No node_id in on_node_info_delete_event"));
-      return TRUE; /* ignore signal */
+      return TRUE;		/* ignore signal */
     }
 
   if (!(item =
 	g_list_find_custom (node_info_windows, node_id, node_info_compare)))
     {
       g_my_critical (_("No node_info_window in on_node_info_delete_event"));
-      return TRUE; /* ignore signal */
+      return TRUE;		/* ignore signal */
     }
 
   node_info_window = item->data;
@@ -840,46 +909,45 @@ update_node_info_window (node_info_window_t * node_info_window)
   window = node_info_window->window;
   if (!(node = g_tree_lookup (nodes, node_id)))
     {
-      widget =
-	gtk_object_get_data (GTK_OBJECT (window), "numeric_name_label");
+      widget = g_object_get_data (G_OBJECT (window), "numeric_name_label");
       gtk_label_set_text (GTK_LABEL (widget), _("No info available"));
-      widget = gtk_object_get_data (GTK_OBJECT (window), "average");
+      widget = g_object_get_data (G_OBJECT (window), "average");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "average_in");
+      widget = g_object_get_data (G_OBJECT (window), "average_in");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "average_out");
+      widget = g_object_get_data (G_OBJECT (window), "average_out");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated");
+      widget = g_object_get_data (G_OBJECT (window), "accumulated");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated_in");
+      widget = g_object_get_data (G_OBJECT (window), "accumulated_in");
       gtk_label_set_text (GTK_LABEL (widget), "X");
-      widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated_out");
+      widget = g_object_get_data (G_OBJECT (window), "accumulated_out");
       gtk_label_set_text (GTK_LABEL (widget), "X");
       gtk_widget_queue_resize (GTK_WIDGET (node_info_window->window));
       return;
     }
 
   gtk_window_set_title (GTK_WINDOW (window), node->name->str);
-  widget = gtk_object_get_data (GTK_OBJECT (window), "name_label");
+  widget = g_object_get_data (G_OBJECT (window), "name_label");
   gtk_label_set_text (GTK_LABEL (widget), node->name->str);
-  widget = gtk_object_get_data (GTK_OBJECT (window), "numeric_name_label");
+  widget = g_object_get_data (G_OBJECT (window), "numeric_name_label");
   gtk_label_set_text (GTK_LABEL (widget), node->numeric_name->str);
-  widget = gtk_object_get_data (GTK_OBJECT (window), "average");
+  widget = g_object_get_data (G_OBJECT (window), "average");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->average, TRUE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "average_in");
+  widget = g_object_get_data (G_OBJECT (window), "average_in");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->average_in, TRUE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "average_out");
+  widget = g_object_get_data (G_OBJECT (window), "average_out");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->average_out, TRUE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated");
+  widget = g_object_get_data (G_OBJECT (window), "accumulated");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->accumulated, FALSE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated_in");
+  widget = g_object_get_data (G_OBJECT (window), "accumulated_in");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->accumulated_in, FALSE));
-  widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated_out");
+  widget = g_object_get_data (G_OBJECT (window), "accumulated_out");
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->accumulated_out, FALSE));
   gtk_widget_queue_resize (GTK_WIDGET (node_info_window->window));

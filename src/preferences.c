@@ -314,10 +314,8 @@ on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 void
 on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-
   pref.cycle = gtk_toggle_button_get_active (togglebutton);
   colors_changed = TRUE;
-
 }				/* on_cycle_toggle_toggled */
 
 
@@ -326,11 +324,10 @@ on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
  */
 
 
-void
-on_name_clist_select_row (GtkCList * clist,
-			  gint row,
-			  gint column, GdkEvent * event, gpointer user_data)
+gboolean
+on_name_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
 {
+  return TRUE;
 }				/* on_name_clist_select_row */
 
 void
@@ -442,9 +439,9 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
 
   /* get iterator from path  and removes from store */
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
-    return;  /* path not found */
-  
-#if GTK_CHECK_VERSION(2,2,0)  
+    return;			/* path not found */
+
+#if GTK_CHECK_VERSION(2,2,0)
   if (gtk_list_store_remove (ep.gs, &it))
     {
       /* iterator still valid, selects current pos */
@@ -453,9 +450,9 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
       gtk_tree_path_free (gpath);
     }
 #else
-    /* gtk < 2.2 had gtk_list_store_remove void */
-    gtk_list_store_remove (ep.gs, &it);
-#endif     
+  /* gtk < 2.2 had gtk_list_store_remove void */
+  gtk_list_store_remove (ep.gs, &it);
+#endif
 
   colors_changed = TRUE;
 }				/* on_color_remove_button_clicked */
@@ -464,7 +461,6 @@ void
 on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *colorsel, *colorseldiag;
-  gdouble colors[4];
   GdkColor gdk_color;
   gchar tmp[64];
   GtkTreePath *gpath = NULL;
@@ -491,11 +487,8 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   /* get the selected color */
   colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
   colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
-  gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
-
-  gdk_color.red = (guint16) (colors[0] * 65535.0);
-  gdk_color.green = (guint16) (colors[1] * 65535.0);
-  gdk_color.blue = (guint16) (colors[2] * 65535.0);
+  gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (colorsel),
+					 &gdk_color);
 
   /* Since we are only going to save 24bit precision, we might as well
    * make sure we don't display any more than that */

@@ -177,10 +177,10 @@ main (int argc, char *argv[])
 
   /* Session handling */
   client = gnome_master_client ();
-  gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
-		      GTK_SIGNAL_FUNC (save_session), argv[0]);
-  gtk_signal_connect (GTK_OBJECT (client), "die",
-		      GTK_SIGNAL_FUNC (session_die), NULL);
+  g_signal_connect (G_OBJECT (client), "save_yourself",
+		    GTK_SIGNAL_FUNC (save_session), argv[0]);
+  g_signal_connect (G_OBJECT (client), "die",
+		    GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (app1);
 
 
@@ -437,10 +437,10 @@ session_die (GnomeClient * client, gpointer client_data)
 }				/* session_die */
 
 /* the gnome session manager may call this function */
-static gint
+static gboolean
 save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gint is_shutdown, GnomeInteractStyle interact_style,
-	      gint is_fast, gpointer client_data)
+	      gboolean is_shutdown, GnomeInteractStyle interact_style,
+	      gboolean is_fast, gpointer client_data)
 {
   gchar **argv;
   guint argc;
