@@ -25,6 +25,7 @@
 #include "etypes.h"
 #endif
 #include "protocols.h"
+#include "tcpudp.h"
 
 static GString *prot;
 static const guint8 *packet;
