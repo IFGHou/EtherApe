@@ -348,16 +348,19 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
   GladeXML *xml_about;
+
   xml_about = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "about2");
-  about = glade_xml_get_widget (xml_about, "about2");
-  if (!xml)
+  if (!xml_about)
     {
       g_error (_("We could not load the interface! (%s)"),
 	       GLADEDIR "/" ETHERAPE_GLADE_FILE);
       return;
     }
+  about = glade_xml_get_widget (xml_about, "about2");
+  gtk_object_destroy (GTK_OBJECT (xml_about));
+
   gtk_widget_show (about);
-  gtk_object_unref (GTK_OBJECT (xml_about));
+
 }				/* on_about1_activate */
 
 
