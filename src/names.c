@@ -55,7 +55,7 @@ get_packet_names (GList ** protocols,
   g_strfreev (tokens);
 }				/* get_packet_names */
 
-void
+static void
 get_eth_name (void)
 {
 
@@ -78,7 +78,7 @@ get_eth_name (void)
 }				/* get_eth_name */
 
 
-void
+static void
 get_ip_name (void)
 {
 
@@ -99,15 +99,11 @@ get_ip_name (void)
 	add_name (ip_to_str (id), dns_lookup (pntohl (id), TRUE));
     }
 
-  /* This is specific for IP, since the resolver may not return a good
-   * value inmeditelly, we need to insist */
   /* TODO I don't like the fact that the gdk_input for dns.c is not
    * called in this function, because it means that it can't be used 
    * as a library */
 
-  if (name && (!numeric
-	       && !strcmp (name->name->str, name->numeric_name->str)))
-    g_string_assign (name->name, dns_lookup (pntohl (id), TRUE));
+  g_string_assign (name->name, dns_lookup (pntohl (id), TRUE));
 
   level++;
   offset += 20;
@@ -118,8 +114,61 @@ get_ip_name (void)
 
 }				/* get_ip_name */
 
+static void
+get_tcp_name (void)
+{
+  guint8 *id_buffer;
+  guint16 port;
+  GString *numeric_name, *resolved_name;
 
-void
+
+  id_length = 6;
+
+  id_buffer = g_malloc (id_length);
+
+  if (dir == OUTBOUND)
+    {
+      g_memmove (id_buffer, p + offset - 8, 4);
+      port = ntohs (*(guint16 *) (p + offset));
+      g_memmove (id_buffer + 4, &port, 2);
+    }
+  else
+    {
+      g_memmove (id_buffer, p + offset - 4, 4);
+      port = ntohs (*(guint16 *) (p + offset + 2));
+      g_memmove (id_buffer + 4, &port, 2);
+    }
+
+  numeric_name = g_string_new (ip_to_str (id_buffer));
+  numeric_name = g_string_append_c (numeric_name, ':');
+  numeric_name
+    = g_string_append (numeric_name,
+		       g_strdup_printf ("%d", *(guint16 *) (id_buffer + 4)));
+
+  resolved_name = g_string_new (dns_lookup (pntohl (id_buffer), TRUE));
+  resolved_name = g_string_append_c (resolved_name, ':');
+  resolved_name = g_string_append (resolved_name,
+				   get_tcp_port (*(guint16 *)
+						 (id_buffer + 4)));
+
+  id = id_buffer;
+  add_name (numeric_name->str, resolved_name->str);
+
+  g_free (id_buffer);
+  g_string_free (numeric_name, TRUE);
+  g_string_free (resolved_name, TRUE);
+
+  level++;
+  offset += 20;
+
+  next_func = g_tree_lookup (prot_functions, tokens[level]);
+  if (next_func)
+    next_func->function ();
+
+}				/* get_tcp_name */
+
+
+static void
 add_name (gchar * numeric_name, gchar * resolved_name)
 {
   /* Find the protocol entry */
@@ -139,21 +188,41 @@ add_name (gchar * numeric_name, gchar * resolved_name)
     {
       name = g_malloc (sizeof (name_t));
       name->node_id = g_memdup (id, id_length);
-      name->numeric_name = g_string_new (numeric_name);
-      if (numeric)
-	name->name = g_string_new (numeric_name);
-      else
-	name->name = g_string_new (resolved_name);
-      name->n_packets++;
-      name->accumulated += packet_size;
+      name->n_packets = 0;
+      name->accumulated = 0;
+      name->numeric_name = NULL;
+      name->name = NULL;
       protocol->node_names = g_list_prepend (protocol->node_names, name);
 
     }
 
+  if (!name->numeric_name)
+    name->numeric_name = g_string_new (numeric_name);
+  else
+    g_string_assign (name->numeric_name, numeric_name);
+
+  if (!name->name)
+    {
+      if (numeric)
+	name->name = g_string_new (numeric_name);
+      else
+	name->name = g_string_new (resolved_name);
+    }
+  else
+    {
+      if (numeric)
+	g_string_assign (name->name, numeric_name);
+      else
+	g_string_assign (name->name, resolved_name);
+    }
+
+  name->n_packets++;
+  name->accumulated += packet_size;
+
 }				/* add_name */
 
 /* Comparison function used to compare two node ids */
-gint
+static gint
 id_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);

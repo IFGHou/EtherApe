@@ -956,7 +956,7 @@ update_node_names (node_t * node)
       set_node_name (node, "IP,n");
       break;
     case TCP:
-      set_node_name (node, "IP,n");
+      set_node_name (node, "TCP,n");
       break;
     default:
       break;
