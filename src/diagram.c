@@ -18,16 +18,19 @@ double node_radius_multiplier = 1000;	/* used to calculate the radius of the
 					 * select with certain precision this
 					 * value, the GUI uses the log of the
 					 * multiplier in multiplier_control */
-double link_width_multiplier_control = 3; /* Same explanation as above */
+double link_width_multiplier_control = 3;	/* Same explanation as above */
 double link_width_multiplier = 1000;
 
 double averaging_time = 2000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
-double link_timeout_time = 5000000;	/* After this time
+double link_timeout_time = 2000000;	/* After this time
 					 * has passed with no traffic in a 
 					 * link, it disappears */
+double node_timeout_time = 10000000;	/* After this time has passed 
+					 * with no traffic in/out a 
+					 * node, it disappears */
 
-gchar *node_color="red", *link_color="tan", *text_color="black";
+gchar *node_color = "red", *link_color = "tan", *text_color = "black";
 
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
@@ -57,11 +60,11 @@ get_node_size (gdouble average)
 gdouble
 get_link_size (gdouble average)
 {
-  return (double) link_width_multiplier * average;
+  return (double) 1 + link_width_multiplier * average;
 }
 
 static gint
-node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t *canvas_node)
+node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canvas_node)
 {
 
   double item_x, item_y;
@@ -78,22 +81,22 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t *canvas
 
     case GDK_BUTTON_PRESS:
       node_popup = create_node_popup ();
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"name");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "name");
       gtk_label_set_text (label, canvas_node->node->name->str);
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ip_str");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_str");
       gtk_label_set_text (label, canvas_node->node->ip_str->str);
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ip_numeric_str");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_numeric_str");
       gtk_label_set_text (label, canvas_node->node->ip_numeric_str->str);
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ether_str");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_str");
       gtk_label_set_text (label, canvas_node->node->ether_str->str);
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"ether_numeric_str");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_numeric_str");
       gtk_label_set_text (label, canvas_node->node->ether_numeric_str->str);
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"accumulated");
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "accumulated");
       gtk_label_set_text (label,
-			  g_strdup_printf ("%g",canvas_node->node->accumulated));
-      label=(GtkLabel *)lookup_widget(GTK_WIDGET(node_popup),"average");
+		    g_strdup_printf ("%g", canvas_node->node->accumulated));
+      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "average");
       gtk_label_set_text (label,
-			  g_strdup_printf ("%g", canvas_node->node->average*1000000));
+	      g_strdup_printf ("%g", canvas_node->node->average * 1000000));
       gtk_widget_show (GTK_WIDGET (node_popup));
       break;
     case GDK_BUTTON_RELEASE:
@@ -177,42 +180,49 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* First we check whether the link has timed out */
 
-  update_packet_list (link->packets, LINK);
-
-  if (link->n_packets == 0)
-    {
-      gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-
-      g_tree_remove (canvas_links, link_id);
-
-      if (interape)
-	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		_ ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		ip_to_str (link_id),
-		ip_to_str (link_id+4),
-		g_tree_nnodes (canvas_links));
-      else
-	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		_ ("Removing link and canvas_link: %s-%s. Number of links %d"),
-		get_ether_name (link_id + 6),
-		get_ether_name (link_id),
-		g_tree_nnodes (canvas_links));
-       
-	 
-      link_id = link->link_id;			/* Since we are freeing the link
-						 * we must free its members as well 
-						 * but if we free the id then we will
-						 * not be able to find the link again 
-						 * to free it, thus the intermediate variable */
-      g_free (link);
-      g_tree_remove (links, link_id);
-      g_free (link_id);
-
-      return TRUE;		/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
-    }
-
+  if (link->packets) update_packet_list (link->packets, LINK);
+ 	
+   if (link->n_packets == 0)
+     {
+	if (link_timeout_time)
+	  {
+	     
+	     gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+	     
+	     g_tree_remove (canvas_links, link_id);
+	     
+	     if (interape)
+	       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		      _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		      ip_to_str (link_id),
+		      ip_to_str (link_id + 4),
+		      g_tree_nnodes (canvas_links));
+	     else
+	       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+		      _ ("Removing link and canvas_link: %s-%s. Number of links %d"),
+		      get_ether_name (link_id + 6),
+		      get_ether_name (link_id),
+		      g_tree_nnodes (canvas_links));
+	     
+	     
+	    link_id = link->link_id;	/* Since we are freeing the link
+					 * we must free its members as well 
+					 * but if we free the id then we will
+					 * not be able to find the link again 
+					 * to free it, thus the intermediate variable */
+	     g_free (link);
+	     g_tree_remove (links, link_id);
+	     g_free (link_id);
+	     
+	     return TRUE;		/* I've checked it's not safe to traverse 
+					 * while deleting, so we return TRUE to stop
+					 * the traversion (Does that word exist? :-) */
+	  }
+	else
+	  link->packets=NULL;
+	  link->accumulated=0;
+     }
+   
 
   args[0].name = "x";
   args[1].name = "y";
@@ -229,9 +239,9 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* And then for the destination node */
   if (interape)
-     canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
+    canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
   else
-     canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
+    canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
 
   gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		   2,
@@ -239,8 +249,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   points->coords[2] = args[0].d.double_data;
   points->coords[3] = args[1].d.double_data;
 
-  /* Average is measured in bps, thus 8* */ 
-  link->average = 8*link->accumulated/averaging_time; 
+  /* Average is measured in bps, thus 8* */
+  link->average = 8 * link->accumulated / averaging_time;
   link_size = get_link_size (link->average);
 
   gnome_canvas_item_set (canvas_link->link_item,
@@ -262,8 +272,8 @@ update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget
   gdouble node_size;
   node = canvas_node->node;
 
-   /* Average is measured in bps, thus 8* */ 
-  node->average = 8*node->accumulated/averaging_time;
+  /* Average is measured in bps, thus 8* */
+  node->average = 8 * node->accumulated / averaging_time;
   node_size = get_node_size (node->average);
 
 
@@ -317,25 +327,25 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       /* And then for the destination node */
       /* Depending on the mode we are running in, the desttionation
        * is 4 (ip) or 6 (ether) octects begind the src */
-      if (interape) 
-	 canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
+      if (interape)
+	canvas_node = g_tree_lookup (canvas_nodes, link_id + 4);
       else
-	 canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
-       
+	canvas_node = g_tree_lookup (canvas_nodes, link_id + 6);
+
       gtk_object_getv (GTK_OBJECT (canvas_node->group_item),
 		       2,
 		       args);
       points->coords[2] = args[0].d.double_data;
       points->coords[3] = args[1].d.double_data;
-       
-      link->average=link->accumulated/averaging_time,
-      link_size = get_link_size (link->average);
+
+      link->average = link->accumulated / averaging_time,
+	link_size = get_link_size (link->average);
 
       new_canvas_link->link_item = gnome_canvas_item_new (group,
-					   gnome_canvas_line_get_type (),
+					      gnome_canvas_line_get_type (),
 							  "points", points,
-						      "fill_color", link_color,
-					       "width_units", link_size,
+						   "fill_color", link_color,
+						   "width_units", link_size,
 							  NULL);
 
 
@@ -343,19 +353,19 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
-      
+
       if (interape)
-	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		_ ("Creating canvas_link: %s-%s. Number of links %d"),
-		ip_to_str ((new_canvas_link->canvas_link_id) + 4),
-		ip_to_str (new_canvas_link->canvas_link_id),
-		g_tree_nnodes (canvas_links));
-      else 
-	 g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		_ ("Creating canvas_link: %s-%s. Number of links %d"),
-		get_ether_name ((new_canvas_link->canvas_link_id) + 6),
-		get_ether_name (new_canvas_link->canvas_link_id),
-		g_tree_nnodes (canvas_links));
+	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	       _ ("Creating canvas_link: %s-%s. Number of links %d"),
+	       ip_to_str ((new_canvas_link->canvas_link_id) + 4),
+	       ip_to_str (new_canvas_link->canvas_link_id),
+	       g_tree_nnodes (canvas_links));
+      else
+	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	       _ ("Creating canvas_link: %s-%s. Number of links %d"),
+	       get_ether_name ((new_canvas_link->canvas_link_id) + 6),
+	       get_ether_name (new_canvas_link->canvas_link_id),
+	       g_tree_nnodes (canvas_links));
 
     }
 
@@ -366,7 +376,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
 gint
-check_new_node (guint8 *node_id, node_t * node, GtkWidget * canvas)
+check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -380,7 +390,7 @@ check_new_node (guint8 *node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->canvas_node_id = node_id;
       new_canvas_node->node = node;
-      node->average=node->accumulated/averaging_time;
+      node->average = node->accumulated / averaging_time;
       node_size = get_node_size (node->average);
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
@@ -392,10 +402,10 @@ check_new_node (guint8 *node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->node_item = gnome_canvas_item_new (group,
 						  GNOME_TYPE_CANVAS_ELLIPSE,
 							  "x1", 0.0,
-							"x2", node_size,
+							  "x2", node_size,
 							  "y1", 0.0,
-							"y2", node_size,
-							  "fill_color", node_color,
+							  "y2", node_size,
+						   "fill_color", node_color,
 						   "outline_color", "black",
 							  "width_pixels", 0,
 							  NULL);
@@ -405,8 +415,8 @@ check_new_node (guint8 *node_id, node_t * node, GtkWidget * canvas)
 							  ,"x", 0.0
 							  ,"y", 0.0
 						,"anchor", GTK_ANCHOR_CENTER
-		       ,"font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
-						      "fill_color", text_color,
+		      ,"font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+						   "fill_color", text_color,
 							  NULL);
       new_canvas_node->group_item = group;
 

@@ -32,12 +32,12 @@
 gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
-gboolean interape=0;
+gboolean interape = 0;
 gchar *interface = NULL;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
-gchar *filter=NULL;
+gchar *filter = NULL;
 
 int
 main (int argc, char *argv[])
@@ -66,15 +66,15 @@ main (int argc, char *argv[])
      _ ("set capture filter"), _ ("<capture filter>")
     },
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
-     _ ("sets the node color"), _("color")
+     _ ("sets the node color"), _ ("color")
     },
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
-     _ ("sets the link color"), _("color")
+     _ ("sets the link color"), _ ("color")
     },
     {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
-     _ ("sets the text color"), _("color")
+     _ ("sets the text color"), _ ("color")
     },
-     
+
     POPT_AUTOHELP
     {NULL, 0, 0, NULL, 0}
   };
@@ -87,8 +87,9 @@ main (int argc, char *argv[])
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
 
-  if (interape) filter = g_strconcat ("ip ", filter, NULL);
-   
+  if (interape)
+    filter = g_strconcat ("ip ", filter, NULL);
+
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
 				 * socket without having initialized gnome, so that 
 				 * eventually I'd safely set the effective id to match the
@@ -97,23 +98,31 @@ main (int argc, char *argv[])
   init_diagram ();
 
   app1 = create_app1 ();
-  hscale = lookup_widget (app1, "hscale6");
+  hscale = lookup_widget (app1, "node_radius_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-	   "value_changed", GTK_SIGNAL_FUNC (on_hscale6_adjustment_changed),
+		      "value_changed", GTK_SIGNAL_FUNC (on_node_radius_slider_adjustment_changed),
 		      NULL);
-  hscale = lookup_widget (app1, "hscale7");
+  hscale = lookup_widget (app1, "link_width_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
-	   "value_changed", GTK_SIGNAL_FUNC (on_hscale7_adjustment_changed),
+  "value_changed", GTK_SIGNAL_FUNC (on_link_width_slider_adjustment_changed),
 		      NULL);
-  hscale = lookup_widget (app1, "spinbutton1");
+  hscale = lookup_widget (app1, "averaging_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-	   "value_changed", GTK_SIGNAL_FUNC (on_spinbutton1_adjustment_changed),
+    "value_changed", GTK_SIGNAL_FUNC (on_averaging_spin_adjustment_changed),
 		      NULL);
-  hscale = lookup_widget (app1, "spinbutton2");
+  hscale = lookup_widget (app1, "refresh_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
-		      "value_changed", GTK_SIGNAL_FUNC (on_spinbutton2_adjustment_changed),
-		      lookup_widget(GTK_WIDGET(app1), "canvas1"));
-   
+      "value_changed", GTK_SIGNAL_FUNC (on_refresh_spin_adjustment_changed),
+		      lookup_widget (GTK_WIDGET (app1), "canvas1"));
+  hscale = lookup_widget (app1, "node_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
+      "value_changed", GTK_SIGNAL_FUNC (on_node_to_spin_adjustment_changed),
+		      NULL);
+  hscale = lookup_widget (app1, "link_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
+      "value_changed", GTK_SIGNAL_FUNC (on_link_to_spin_adjustment_changed),
+		      NULL);
+
   gtk_widget_show (app1);
 
   /* With this we force an update of the diagram every x ms 
@@ -124,8 +133,8 @@ main (int argc, char *argv[])
   /* TODO: Back up if CPU can't handle it */
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
 				     (GtkFunction) update_diagram,
-				     lookup_widget (GTK_WIDGET (app1), "canvas1"));
-   
+			      lookup_widget (GTK_WIDGET (app1), "canvas1"));
+
   gtk_main ();
   return 0;
 }

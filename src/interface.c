@@ -83,19 +83,27 @@ create_app1 (void)
   GtkWidget *frame1;
   GtkWidget *vbox2;
   GtkWidget *vbox3;
-  GtkObject *spinbutton1_adj;
-  GtkWidget *spinbutton1;
+  GtkObject *averaging_spin_adj;
+  GtkWidget *averaging_spin;
   GtkWidget *label6;
   GtkWidget *vbox4;
-  GtkObject *spinbutton2_adj;
-  GtkWidget *spinbutton2;
+  GtkObject *refresh_spin_adj;
+  GtkWidget *refresh_spin;
   GtkWidget *label7;
   GtkWidget *vbox5;
-  GtkWidget *hscale6;
+  GtkWidget *node_radius_slider;
   GtkWidget *label8;
   GtkWidget *vbox6;
-  GtkWidget *hscale7;
+  GtkWidget *link_width_slider;
   GtkWidget *label9;
+  GtkWidget *vbox7;
+  GtkObject *node_to_spin_adj;
+  GtkWidget *node_to_spin;
+  GtkWidget *label24;
+  GtkWidget *vbox8;
+  GtkObject *link_to_spin_adj;
+  GtkWidget *link_to_spin;
+  GtkWidget *label25;
   GtkWidget *label10;
   GtkWidget *appbar1;
 
@@ -311,15 +319,14 @@ create_app1 (void)
   gtk_widget_show (vbox3);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 2);
 
-  spinbutton1_adj = gtk_adjustment_new (2000, 1, 3.6e+06, 100, 1000, 10000);
-  spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
-  gtk_widget_ref (spinbutton1);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "spinbutton1", spinbutton1,
+  averaging_spin_adj = gtk_adjustment_new (2000, 1, 3.6e+07, 100, 1000, 10000);
+  averaging_spin = gtk_spin_button_new (GTK_ADJUSTMENT (averaging_spin_adj), 1, 0);
+  gtk_widget_ref (averaging_spin);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "averaging_spin", averaging_spin,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton1);
-  gtk_box_pack_start (GTK_BOX (vbox3), spinbutton1, FALSE, FALSE, 0);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (spinbutton1), GTK_UPDATE_IF_VALID);
-  gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinbutton1), TRUE);
+  gtk_widget_show (averaging_spin);
+  gtk_box_pack_start (GTK_BOX (vbox3), averaging_spin, FALSE, FALSE, 0);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (averaging_spin), GTK_UPDATE_IF_VALID);
 
   label6 = gtk_label_new (_("Averaging Time (ms)"));
   gtk_widget_ref (label6);
@@ -336,13 +343,13 @@ create_app1 (void)
   gtk_widget_show (vbox4);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox4, FALSE, FALSE, 0);
 
-  spinbutton2_adj = gtk_adjustment_new (800, 50, 10000, 10, 100, 100);
-  spinbutton2 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton2_adj), 1, 0);
-  gtk_widget_ref (spinbutton2);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "spinbutton2", spinbutton2,
+  refresh_spin_adj = gtk_adjustment_new (800, 50, 10000, 10, 100, 100);
+  refresh_spin = gtk_spin_button_new (GTK_ADJUSTMENT (refresh_spin_adj), 1, 0);
+  gtk_widget_ref (refresh_spin);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "refresh_spin", refresh_spin,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton2);
-  gtk_box_pack_start (GTK_BOX (vbox4), spinbutton2, FALSE, FALSE, 2);
+  gtk_widget_show (refresh_spin);
+  gtk_box_pack_start (GTK_BOX (vbox4), refresh_spin, FALSE, FALSE, 2);
 
   label7 = gtk_label_new (_("Diagram refresh period (ms)"));
   gtk_widget_ref (label7);
@@ -359,14 +366,14 @@ create_app1 (void)
   gtk_widget_show (vbox5);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox5, FALSE, FALSE, 0);
 
-  hscale6 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
-  gtk_widget_ref (hscale6);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "hscale6", hscale6,
+  node_radius_slider = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
+  gtk_widget_ref (node_radius_slider);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "node_radius_slider", node_radius_slider,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hscale6);
-  gtk_box_pack_start (GTK_BOX (vbox5), hscale6, FALSE, FALSE, 2);
-  gtk_scale_set_draw_value (GTK_SCALE (hscale6), FALSE);
-  gtk_range_set_update_policy (GTK_RANGE (hscale6), GTK_UPDATE_DISCONTINUOUS);
+  gtk_widget_show (node_radius_slider);
+  gtk_box_pack_start (GTK_BOX (vbox5), node_radius_slider, FALSE, FALSE, 2);
+  gtk_scale_set_draw_value (GTK_SCALE (node_radius_slider), FALSE);
+  gtk_range_set_update_policy (GTK_RANGE (node_radius_slider), GTK_UPDATE_DISCONTINUOUS);
 
   label8 = gtk_label_new (_("Max. Node Radius"));
   gtk_widget_ref (label8);
@@ -383,22 +390,70 @@ create_app1 (void)
   gtk_widget_show (vbox6);
   gtk_box_pack_start (GTK_BOX (vbox2), vbox6, FALSE, FALSE, 0);
 
-  hscale7 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
-  gtk_widget_ref (hscale7);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "hscale7", hscale7,
+  link_width_slider = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
+  gtk_widget_ref (link_width_slider);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "link_width_slider", link_width_slider,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hscale7);
-  gtk_box_pack_start (GTK_BOX (vbox6), hscale7, FALSE, FALSE, 2);
-  gtk_scale_set_draw_value (GTK_SCALE (hscale7), FALSE);
-  gtk_range_set_update_policy (GTK_RANGE (hscale7), GTK_UPDATE_DISCONTINUOUS);
+  gtk_widget_show (link_width_slider);
+  gtk_box_pack_start (GTK_BOX (vbox6), link_width_slider, FALSE, FALSE, 2);
+  gtk_scale_set_draw_value (GTK_SCALE (link_width_slider), FALSE);
+  gtk_range_set_update_policy (GTK_RANGE (link_width_slider), GTK_UPDATE_DISCONTINUOUS);
 
-  label9 = gtk_label_new (_("Max Link Radius"));
+  label9 = gtk_label_new (_("Max. Link Width"));
   gtk_widget_ref (label9);
   gtk_object_set_data_full (GTK_OBJECT (app1), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
   gtk_box_pack_start (GTK_BOX (vbox6), label9, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label9), GTK_JUSTIFY_LEFT);
+
+  vbox7 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox7);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "vbox7", vbox7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox7);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox7, TRUE, TRUE, 0);
+
+  node_to_spin_adj = gtk_adjustment_new (10000, 0, 3.6e+07, 500, 5000, 50000);
+  node_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (node_to_spin_adj), 1, 0);
+  gtk_widget_ref (node_to_spin);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "node_to_spin", node_to_spin,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (node_to_spin);
+  gtk_box_pack_start (GTK_BOX (vbox7), node_to_spin, FALSE, FALSE, 0);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (node_to_spin), GTK_UPDATE_IF_VALID);
+
+  label24 = gtk_label_new (_("Node Timeout (ms)"));
+  gtk_widget_ref (label24);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "label24", label24,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label24);
+  gtk_box_pack_start (GTK_BOX (vbox7), label24, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
+
+  vbox8 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox8);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "vbox8", vbox8,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox8);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox8, TRUE, TRUE, 0);
+
+  link_to_spin_adj = gtk_adjustment_new (2000, 0, 3.6e+07, 500, 5000, 50000);
+  link_to_spin = gtk_spin_button_new (GTK_ADJUSTMENT (link_to_spin_adj), 1, 0);
+  gtk_widget_ref (link_to_spin);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "link_to_spin", link_to_spin,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (link_to_spin);
+  gtk_box_pack_start (GTK_BOX (vbox8), link_to_spin, FALSE, FALSE, 0);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (link_to_spin), GTK_UPDATE_IF_VALID);
+
+  label25 = gtk_label_new (_("Link Timeout (ms)"));
+  gtk_widget_ref (label25);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "label25", label25,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label25);
+  gtk_box_pack_start (GTK_BOX (vbox8), label25, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
 
   label10 = gtk_label_new (_("Place Holder for The Color Coded Protocols display"));
   gtk_widget_ref (label10);
