@@ -220,16 +220,19 @@ update_diagram (GtkWidget * canvas)
   if (!appbar)
     appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (canvas), "appbar1"));
 
+  status_string = g_string_new (_("Number of nodes: "));
+  g_string_sprintfa (status_string, "%d", n_nodes_after);
+   
   if (need_reposition)
     {
       g_tree_traverse (canvas_nodes,
 		       (GTraverseFunc) reposition_canvas_nodes,
 		       G_IN_ORDER, canvas);
       need_reposition = 0;
+       gnome_appbar_pop (appbar);
+       gnome_appbar_push (appbar, status_string->str);
     }
 
-  status_string = g_string_new (_("Number of nodes: "));
-  g_string_sprintfa (status_string, "%d", n_nodes_after);
 
   /* Check if there are any new links */
   g_tree_traverse (links, (GTraverseFunc) check_new_link, G_IN_ORDER, canvas);
@@ -270,9 +273,7 @@ update_diagram (GtkWidget * canvas)
     status_string = g_string_append (status_string, _(". IDLE."));
   else
     status_string = g_string_append (status_string, _(". TIMEOUT."));
-  gnome_appbar_pop (appbar);
-  gnome_appbar_push (appbar, status_string->str);
-/*  g_message (status_string->str); */
+  g_my_debug (status_string->str);
   g_string_free (status_string, TRUE);
 
   if (!is_idle)
@@ -362,7 +363,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
 
   color_string = get_prot_color (protocol->name);
-  g_message ("%s in %s", protocol->name, color_string);
+  g_my_debug ("%s in %s", protocol->name, color_string);
   gdk_color_parse (color_string, &(protocol->color));
   gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &protocol->color,
 			    TRUE, TRUE);
