@@ -71,6 +71,8 @@ init_capture (void)
 
       status = STOP;
       data_initialized = TRUE;
+
+      n_packets = n_mem_packets = 0;
     }
 
   device = interface;
@@ -503,7 +505,8 @@ cap_t_o_destroy (gpointer data)
 static void
 packet_read (guint8 * packet, gint source, GdkInputCondition condition)
 {
-  guint8 *link_id = NULL;
+  guint8 *src_id = NULL, *dst_id = NULL, *link_id = NULL;
+  node_t *node = NULL;
   packet_t *packet_info = NULL;
   gchar *prot = NULL;
 
@@ -533,8 +536,22 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   packet_info->timestamp = now;
   packet_info->prot = g_strdup (prot);
   packet_info->ref_count = 3;
-  packet_info->src_id = g_memdup (get_node_id (packet, SRC), node_id_length);
-  packet_info->dst_id = g_memdup (get_node_id (packet, DST), node_id_length);
+
+  /* If there is no node with that id, create it. Otherwise 
+   * just use the one available */
+  if ((node = g_tree_lookup (nodes, get_node_id (packet, SRC))))
+    packet_info->src_id = node->node_id;
+  else
+    packet_info->src_id =
+      g_memdup (get_node_id (packet, SRC), node_id_length);
+  if ((node = g_tree_lookup (nodes, get_node_id (packet, DST))))
+    packet_info->dst_id = node->node_id;
+  else
+    packet_info->dst_id =
+      g_memdup (get_node_id (packet, DST), node_id_length);
+
+  n_packets++;
+  n_mem_packets++;
 
   add_protocol (protocols, prot, phdr, packet_info->src_id,
 		packet_info->dst_id);
@@ -758,7 +775,14 @@ create_node (const guint8 * packet, const guint8 * node_id)
 
   node = g_malloc (sizeof (node_t));
 
+  /* We have already allocated memory for the id when we created the
+   * packet. We will use that, and will free it when the node disappears
+   * and not with the packet */
+#if 0
   node->node_id = g_memdup (node_id, node_id_length);
+#endif
+  node->node_id = node_id;
+
   node->name = NULL;
   node->numeric_name = NULL;
   /* TODO remove these two, shouldn't be used anymore */
@@ -1566,11 +1590,21 @@ check_packet (GList * packets, GList ** packet_l_e,
 	    {
 	      g_free (packet->prot);
 	      packet->prot = NULL;
+
 	    }
+	  /* the pointers to the src_id
+	   * and dst_id are actually copies
+	   * of the ones held by the nodes,
+	   * and those will be freed with
+	   * the node */
+#if 0
 	  g_free (packet->src_id);
 	  g_free (packet->dst_id);
+#endif
 	  g_free (packet);
 	  packets->data = packet = NULL;
+
+	  n_mem_packets--;
 	}
 
       /* TODO I have to come back here and make sure I can't make
