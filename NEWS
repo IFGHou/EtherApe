@@ -1,10 +1,16 @@
 
+  Overview of changes in Etherape 0.2.0 (Friday 03-03-2000):
+  
+     * RedHat 6.1 fix. Works around "featureful" redhat 6.1 libpcap.
+     * Fixed node-in-the-center bug.
+     * Timeout=0 means never timeout.
+       
   Overview of changes in Etherape 0.1.9 (Thursday 03-02-2000):
   
      * Finally I'm properly calculating average traffic. (yeah, right :-)
      * Node and link timeout work as expected as well.
      * Should now compile cleanly in Solaris.
-     * Interape is a hardlink to etherape. Runs as interape when called
+     * Interape is a hardlinked to etherape. Runs as interape when called
        with that name.
      * Minor changes to the naming algorithm.
        

@@ -46,6 +46,9 @@ GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * that info on the nodes tree itself */
 GTree *canvas_links;		/* See above */
 
+gboolean need_reposition;	/* It is set when a canvas_node has been added 
+				 * or deleted */
+
 /* Extern global variables */
 
 extern double averaging_time;
@@ -204,7 +207,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
       gettimeofday (&now, NULL);
       diff = substract_times (now, link->last_time);
 
-      if ((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
+      if (((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
+	  && link_timeout_time)
 	{
 
 	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
@@ -319,7 +323,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
       gettimeofday (&now, NULL);
       diff = substract_times (now, node->last_time);
 
-      if ((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time)
+      if (((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time) 
+	  && node_timeout_time)
 	{
 
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
@@ -346,6 +351,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 	  g_free (node);
 	  g_tree_remove (nodes, node_id);
 	  g_free (node_id);
+	   
+	  need_reposition=1;
 
 	  return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
@@ -448,8 +455,8 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 					     gnome_canvas_group_get_type (),
-							 "x", 0.0,
-							 "y", 0.0,
+							 "x", 100.0,
+							 "y", 100.0,
 							 NULL));
 
       new_canvas_node->node_item = gnome_canvas_item_new (group,
@@ -483,6 +490,8 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 	     _ ("Creating canvas_node: %s. Number of nodes %d"), \
 	     new_canvas_node->node->name->str, \
 	     g_tree_nnodes (canvas_nodes));
+       
+      need_reposition=1;
 
     }
 
@@ -495,6 +504,7 @@ update_diagram (GtkWidget * canvas)
   static GnomeAppBar *appbar = NULL;
   static guint n_nodes = 0, n_nodes_new;
   guint n_links = 0, n_links_new = 1;
+   guint n_nodes_before=0, n_nodes_after = 1;
 
 /* Now we update the status bar with the number of present nodes 
  * TODO Find a nice use for the status bar. I can thik of very little */
@@ -512,15 +522,21 @@ update_diagram (GtkWidget * canvas)
   /* Update nodes look and delete outdated nodes */
   /* TODO: shouldn't we do the same thing we do with
    * the links down there, to go on until no nodes are delete? */
-  g_tree_traverse (canvas_nodes,
-		   (GTraverseFunc) update_canvas_nodes,
-		   G_IN_ORDER,
-		   canvas);
-
+  do
+    {
+       n_nodes_before = g_tree_nnodes (nodes);
+       g_tree_traverse (canvas_nodes,
+			(GTraverseFunc) update_canvas_nodes,
+			G_IN_ORDER,
+			canvas);
+       n_nodes_after = g_tree_nnodes (nodes);
+    }
+   while (n_nodes_before != n_nodes_after);
+   
   /* Reposition canvas_nodes and update status bar if a node has been
    * added or deleted */
 
-  if (n_nodes != (n_nodes_new = g_tree_nnodes (nodes)))
+  if (need_reposition)
     {
       g_tree_traverse (canvas_nodes,
 		       (GTraverseFunc) reposition_canvas_nodes,
@@ -531,9 +547,10 @@ update_diagram (GtkWidget * canvas)
       /* TODO: Am I leaking here with each call to g_strdup_printf?
        * How should I do this if so? */
       gnome_appbar_push (appbar, g_strconcat (_ ("Number of nodes: "),
-					g_strdup_printf ("%d", n_nodes_new),
+					      g_strdup_printf ("%d", n_nodes_after),
 					      NULL));
-      n_nodes = n_nodes_new;
+       
+      need_reposition=0;
     }
 
 

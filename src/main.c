@@ -31,13 +31,13 @@ gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
 gboolean interape = 0;
-gchar *interface = NULL;
+gchar *interface;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
 extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
   link_width_multiplier;
-gchar *filter = NULL;
+gchar *filter = "";
 
 int
 main (int argc, char *argv[])

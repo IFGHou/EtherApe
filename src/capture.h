@@ -1,4 +1,5 @@
 #define MAXSIZE 60
+#define PCAP_TIMEOUT 250
 #include <sys/time.h>
 
 GTree *nodes;

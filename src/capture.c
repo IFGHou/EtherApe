@@ -630,7 +630,7 @@ init_capture (void)
 	}
     }
 
-  if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
+  if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
     {
       g_error (_ ("Error opening %s : %s - perhaps you need to be root?"),
 	       device,
