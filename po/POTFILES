@@ -1,6 +1,0 @@
-	../src/main.c \
-	../src/callbacks.c \
-	../src/capture.c \
-	../src/menus.c \
-	../src/diagram.c \
-	../src/glade-strings

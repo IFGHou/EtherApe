@@ -1,4 +1,6 @@
 Makefile.in
 Makefile
 *.gmo
+cat-id-tbl.c
+POTFILES
 stamp-cat-id
