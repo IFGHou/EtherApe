@@ -357,7 +357,7 @@ get_ip (void)
 static void
 get_tcp (void)
 {
-  tcp_service_t *service;
+  tcp_service_t *src_service, *dst_service;
   tcp_type_t src_port, dst_port;
   guint8 th_off_x2;
   guint8 tcp_len;
@@ -376,15 +376,20 @@ get_tcp (void)
      return;			/* Continue only if there is room
 				 * for data in the packet */
    
-  if (!(service = g_tree_lookup (tcp_services, &src_port)))
-    service = g_tree_lookup (tcp_services, &dst_port);
-
-  if (!service)
+  src_service = g_tree_lookup (tcp_services, &src_port);
+  dst_service = g_tree_lookup (tcp_services, &dst_port);
+   
+  if (!src_service && !dst_service)
     {
       prot = g_string_append (prot, "/TCP_UNKNOWN");
       return;
     }
-  str = g_strdup_printf ("/%s", service->name);
+
+  /* In case both src and dst are known port numbers,
+   * we arbitrarely say the dst port marks the protocol */
+  if (!dst_service) dst_service=src_service;
+     
+  str = g_strdup_printf ("/%s", dst_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
   str = NULL;
