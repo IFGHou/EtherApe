@@ -107,7 +107,7 @@ cat >> $O_FILE <<-EOF
 	  gchar *name;
 	} tcp_service_t;
 	
-	tcp_service_t tcp_services_table [TCP_SERVICES+1] = {
+	static tcp_service_t tcp_services_table [TCP_SERVICES+1] = {
 EOF
 
 cat /tmp/tcp.h | \
@@ -125,7 +125,7 @@ cat >> $O_FILE <<-EOF
 	  gchar *name;
 	} udp_service_t;
 	
-	udp_service_t udp_services_table [UDP_SERVICES+1] = {
+	static udp_service_t udp_services_table [UDP_SERVICES+1] = {
 EOF
 
 cat /tmp/udp.h | \
