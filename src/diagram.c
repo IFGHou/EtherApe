@@ -152,7 +152,8 @@ init_diagram ()
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   GString *status_string = NULL;
@@ -482,6 +483,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   node_t *node;
   gdouble node_size;
   GtkArg args[1];
+  GList *protocol_item;
+  protocol_t *protocol = NULL;
 
   node = canvas_node->node;
 
@@ -505,14 +508,26 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 				 * the traversion (Does that word exist? :-) */
     }
 
+  if (node->main_prot[stack_level])
+    {
+      protocol_item = g_list_find_custom (protocols[stack_level],
+					  node->main_prot[stack_level],
+					  protocol_compare);
+      protocol = protocol_item->data;
+    }
 
   /* TODO Make GUI to select among _in, _out and total. */
   node_size = get_node_size (node->average_out);
 
+  if (protocol)
+    canvas_node->color = protocol->color;
+
   gnome_canvas_item_set (canvas_node->node_item,
 			 "x1", -node_size / 2,
 			 "x2", node_size / 2,
-			 "y1", -node_size / 2, "y2", node_size / 2, NULL);
+			 "y1", -node_size / 2,
+			 "y2", node_size / 2,
+			 "fill_color_gdk", &(canvas_node->color), NULL);
 
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
