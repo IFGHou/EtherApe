@@ -34,6 +34,7 @@ int
 main (int argc, char *argv[])
 {
   gchar *mode_string = NULL;
+  gchar *filter_string = NULL;
   GtkWidget *widget;
   GnomeClient *client;
   poptContext poptcon;
@@ -43,7 +44,7 @@ main (int argc, char *argv[])
      _("mode of operation"), _("<ethernet|fddi|ip|tcp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _("set interface to listen to"), _("<interface name>")},
-    {"filter", 'f', POPT_ARG_STRING, &filter, 0,
+    {"filter", 'f', POPT_ARG_STRING, &filter_string, 0,
      _("set capture filter"), _("<capture filter>")},
     {"infile", 'r', POPT_ARG_STRING, &input_file, 0,
      _("set input file"), _("<file name>")},
@@ -130,23 +131,41 @@ main (int argc, char *argv[])
     }
 
   /* Only ip traffic makes sense when used as interape */
+  /* TODO Shouldn't we free memory somwhere because of the strconcat? */
   switch (mode)
     {
     case IP:
-      filter = g_strconcat ("ip ", filter, NULL);
-      break;
-    case IPX:
-      filter = g_strconcat ("ipx ", filter, NULL);
+      if (!filter_string)
+	  filter = g_strconcat ("ip and ", filter_string, NULL);
+      else
+	  {
+	     g_free (filter);
+	     filter = g_strdup ("ip");
+	  }
       break;
     case TCP:
-      filter = g_strconcat ("tcp ", filter, NULL);
+      if (!filter_string)
+	  filter = g_strconcat ("tcp and ", filter_string, NULL);
+      else
+	  {
+	     g_free (filter);
+	     filter = g_strdup ("tcp");
+	  }
       break;
     case UDP:
-      filter = g_strconcat ("udp ", filter, NULL);
+      if (!filter_string)
+	  filter = g_strconcat ("udp and ", filter_string, NULL);
+      else
+	  {
+	     g_free (filter);
+	     filter = g_strdup ("udp");
+	  }
       break;
     case DEFAULT:
     case ETHERNET:
+    case IPX:
     case FDDI:
+       filter = g_strdup (filter_string);
       break;
     }
 
