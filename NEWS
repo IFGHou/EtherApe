@@ -3,6 +3,11 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.9 (Thursday 03-16-2000):
+  
+     * Fix for bug introduced in 0.2.8. Resetting the refresh rate
+       eventually broght a SIGSEGV.
+       
   Overview of changes in Etherape 0.2.8 (Wednesday 03-15-2000):
   
      * GUI enhancements suggested by mdf to save screen real state.

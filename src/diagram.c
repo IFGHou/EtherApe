@@ -887,7 +887,7 @@ init_diagram ()
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_refresh_spin_adjustment_changed),
-		      lookup_widget (GTK_WIDGET (diag_pref), "canvas1"));
+		      lookup_widget (GTK_WIDGET (app1), "canvas1"));
   widget = lookup_widget (diag_pref, "node_to_spin");
   gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
