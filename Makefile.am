@@ -2,7 +2,7 @@
 
 # $Id$
 
-SUBDIRS = intl po macros src doc glade
+SUBDIRS = intl m4  intl po macros src doc glade
 
 
 indent:
@@ -46,7 +46,7 @@ purge:
 	rm -f *~ *.bak *.tar.gz
 	cd src && make purge
 
-EXTRA_DIST = \
+EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.thanks 		\
 	README.help		\
 	README.bugs		\
@@ -117,3 +117,5 @@ dist-hook:
 	  done \
 	fi
 
+
+ACLOCAL_AMFLAGS = -I m4

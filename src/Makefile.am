@@ -10,7 +10,8 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
-	$(GNOME_INCLUDEDIR)
+	$(GNOME_INCLUDEDIR) \
+	$(LIBGLADE_CFLAGS)
 
 bin_PROGRAMS = etherape
 

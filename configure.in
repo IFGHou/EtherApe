@@ -31,6 +31,10 @@ else
     AC_MSG_ERROR(Did not find libGlade installed)
 fi
 
+LIBGLADE_CFLAGS=`gnome-config --cflags libglade`
+LIBGLADE_LIBS=`gnome-config --libs libglade`
+AC_SUBST(LIBGLADE_CFLAGS)
+AC_SUBST(LIBGLADE_LIBS)
 
 GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
@@ -116,7 +120,7 @@ AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(dlfcn.h)
 AC_CHECK_HEADERS(arpa/inet.h arpa/nameser.h)
 
-AC_OUTPUT([
+AC_OUTPUT([ intl/Makefile m4/Makefile 
 Makefile
 etherape.spec
 macros/Makefile
