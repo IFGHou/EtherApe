@@ -357,6 +357,9 @@ get_ip (void)
 static void
 get_tcp (void)
 {
+#define IS_PORT(p) ( (src_service && src_service->number==p) \
+		       || (dst_service && dst_service->number==p) )
+
   tcp_service_t *src_service, *dst_service;
   tcp_type_t src_port, dst_port;
   guint8 th_off_x2;
@@ -368,17 +371,24 @@ get_tcp (void)
 
   src_port = pntohs (packet + offset);
   dst_port = pntohs (packet + offset + 2);
-  th_off_x2 = *(guint8 *)(packet + offset + 12 );
-  tcp_len = hi_nibble(th_off_x2) * 4;  /* TCP header length, in bytes */
-   
+  th_off_x2 = *(guint8 *) (packet + offset + 12);
+  tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
+
   offset += tcp_len;
-  if ( offset >= capture_len )
-     return;			/* Continue only if there is room
+
+  if (offset >= capture_len)
+    return;			/* Continue only if there is room
 				 * for data in the packet */
-   
+
   src_service = g_tree_lookup (tcp_services, &src_port);
   dst_service = g_tree_lookup (tcp_services, &dst_port);
-   
+
+  if (IS_PORT (TCP_NETBIOS_SSN))
+    {
+      get_netbios_ssn ();
+      return;
+    }
+
   if (!src_service && !dst_service)
     {
       prot = g_string_append (prot, "/TCP_UNKNOWN");
@@ -387,8 +397,9 @@ get_tcp (void)
 
   /* In case both src and dst are known port numbers,
    * we arbitrarely say the dst port marks the protocol */
-  if (!dst_service) dst_service=src_service;
-     
+  if (!dst_service)
+    dst_service = src_service;
+
   str = g_strdup_printf ("/%s", dst_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
@@ -410,7 +421,7 @@ get_udp (void)
   dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
-   
+
   /* TODO We should check up the size of the packet the same
    * way it is done in TCP */
 
@@ -495,6 +506,21 @@ get_rpc (void)
     }
   return FALSE;
 }				/* get_rpc */
+
+void
+get_netbios_ssn (void)
+{
+#define SESSION_MESSAGE 0
+  guint8 mesg_type;
+
+  prot = g_string_append (prot, "/NBSS");
+  mesg_type = *(guint8 *) (packet + offset);
+
+  if (mesg_type == SESSION_MESSAGE)
+    prot = g_string_append (prot, "/SMB");
+
+  return;
+}				/* get_netbions_ssn */
 
 /* Comparison function to sort tcp services port number */
 static gint

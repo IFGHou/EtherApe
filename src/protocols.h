@@ -60,5 +60,6 @@ static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
 static void get_udp (void);
 static gint udp_compare (gconstpointer a, gconstpointer b);
+static void get_netbios_ssn (void);
 static gboolean get_rpc (void);
 static void load_services (void);

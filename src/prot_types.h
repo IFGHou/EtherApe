@@ -118,3 +118,5 @@ typedef struct
   gchar *name;
 }
 udp_service_t;
+
+#define TCP_NETBIOS_SSN 139

@@ -403,7 +403,8 @@ stop_capture (void)
 				 * created automatically */
 	  if (!g_source_remove (capture_source))
 	    {
-	      g_warning (_("Error while removing capture source in stop_capture"));
+	      g_warning (_
+			 ("Error while removing capture source in stop_capture"));
 	      return FALSE;
 	    }
 	}
@@ -420,7 +421,7 @@ stop_capture (void)
       g_free (filter);
       filter = NULL;
     }
-   
+
   pcap_close (pch);
 
   return TRUE;
