@@ -147,6 +147,29 @@ init_diagram ()
 }				/* init_diagram */
 
 
+void
+destroying_timeout (gpointer data)
+{
+/* g_message ("A timeout function has been destroyed"); */
+  diagram_timeout = g_idle_add_full (G_PRIORITY_DEFAULT,
+				     (GtkFunction) update_diagram,
+				     data, (GDestroyNotify) destroying_idle);
+  is_idle = TRUE;
+}
+
+void
+destroying_idle (gpointer data)
+{
+/*   g_message ("An idle function has been destroyed"); */
+  diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					refresh_period,
+					(GtkFunction) update_diagram,
+					data,
+					(GDestroyNotify) destroying_timeout);
+  is_idle = FALSE;
+}
+
+
 /* Refreshes the diagram. Called each refresh_period ms
  * 1. Checks for new protocols and displays them
  * 2. Updates nodes looks
@@ -161,7 +184,7 @@ update_diagram (GtkWidget * canvas)
   guint n_nodes_before = 0, n_nodes_after = 1;
   static guint n_protocols[STACK_SIZE + 1] = { 0 };
   static struct timeval last_time = { 0, 0 }, diff;
-  static gboolean is_idle = FALSE;
+  guint32 diff_msecs;
 
   g_mem_profile ();
 
@@ -236,47 +259,38 @@ update_diagram (GtkWidget * canvas)
   while (gtk_events_pending ())
     gtk_main_iteration ();
 
-#if 0
   gettimeofday (&now, NULL);
-#endif
-#if 1
   diff = substract_times (now, last_time);
+  diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+  last_time = now;
+
   g_string_sprintfa (status_string,
-		     _(". Refresh Period: %d"),
-		     (int) (diff.tv_sec * 1000 + diff.tv_usec / 1000));
+		     _(". Refresh Period: %d"), (int) diff_msecs);
   if (is_idle)
     status_string = g_string_append (status_string, _(". IDLE."));
   else
     status_string = g_string_append (status_string, _(". TIMEOUT."));
   gnome_appbar_pop (appbar);
   gnome_appbar_push (appbar, status_string->str);
+/*  g_message (status_string->str); */
   g_string_free (status_string, TRUE);
 
   if (!is_idle)
     {
-      if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) > refresh_period * 1.1)
+      if (diff_msecs > refresh_period * 1.2)
 	{
-#if 1
-	  diagram_timeout =
-	    gtk_idle_add ((GtkFunction) update_diagram, canvas);
-#endif
-	  is_idle = TRUE;
+/* 	  g_message ("Timeout about to be removed"); */
 	  return FALSE;		/* Removes the timeout */
 	}
     }
   else
     {
-      if ((diff.tv_sec * 1000 + diff.tv_usec / 1000) < refresh_period)
+      if (diff_msecs < refresh_period)
 	{
-	  diagram_timeout = gtk_timeout_add (refresh_period,
-					     (GtkFunction) update_diagram,
-					     canvas);
-	  is_idle = FALSE;
+/*	  g_message ("Idle about to be removed"); */
 	  return FALSE;		/* removes the idle */
 	}
     }
-#endif
-  last_time = now;
 
 
   return TRUE;			/* Keep on calling this function */

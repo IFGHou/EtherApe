@@ -216,10 +216,13 @@ on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 void
 on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 {
-  gtk_timeout_remove (diagram_timeout);
   refresh_period = adj->value;
-  diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
-				     (GtkFunction) update_diagram, canvas);
+  /* When removing the source (which could either be an idle or a timeout
+   * function, I'm also forcing the callback for the corresponding 
+   * destroying function, which in turn will install a timeout or idle
+   * function using the new refresh_period. It might take a while for it
+   * to settle down, but I think it works now */
+  g_source_remove (diagram_timeout);
 }
 
 void
