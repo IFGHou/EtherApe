@@ -30,13 +30,13 @@
 gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
-gboolean interape = 0;
 gchar *interface;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
 extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
   link_width_multiplier;
+extern apemode_t mode;
 gchar *filter = "";
 
 int
@@ -44,6 +44,7 @@ main (int argc, char *argv[])
 {
   GtkWidget *app1;
   GtkWidget *hscale;
+  gchar *mode_string;
 
   struct poptOption optionsTable[] =
   {
@@ -56,8 +57,8 @@ main (int argc, char *argv[])
     {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
      _ ("don't display any node text identification"), NULL
     },
-    {"interape", 'I', POPT_ARG_NONE, &interape, 0,
-     _ ("run in interape mode"), NULL
+    {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
+     _ ("mode of operation"), _("<ethernet|ip|tcp|udp>")
     },
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _ ("set interface to listen to"), _ ("<interface name>")
@@ -66,13 +67,13 @@ main (int argc, char *argv[])
      _ ("set capture filter"), _ ("<capture filter>")
     },
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
-     _ ("sets the node color"), _ ("color")
+     _ ("set the node color"), _ ("color")
     },
     {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
-     _ ("sets the link color"), _ ("color")
+     _ ("set the link color"), _ ("color")
     },
     {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
-     _ ("sets the text color"), _ ("color")
+     _ ("set the text color"), _ ("color")
     },
 
     POPT_AUTOHELP
@@ -89,11 +90,26 @@ main (int argc, char *argv[])
 
   /* If called as interape, act as interape */
   if (strstr (argv[0], "interape"))
-    interape = 1;
+     mode=IP;
 
 
-  /* Only ip traffic makes sense when used as interape */
-  if (interape)
+  /* Find mode of operation */
+   if (mode_string) 
+     {
+	if (strstr (mode_string, "ethernet"))
+	  mode=ETHERNET;
+	else if (strstr (mode_string, "ip"))
+	  mode=IP;
+	else if (strstr (mode_string, "tcp"))
+	  mode=TCP;
+	else if (strstr (mode_string, "udp"))
+	  mode=UDP;
+	else
+	  g_warning (_("Unrecognized mode. Do etherape --help for a list of modes"));
+     }
+
+   /* Only ip traffic makes sense when used as interape */
+   if (mode==IP)
     filter = g_strconcat ("ip ", filter, NULL);
 
   init_capture ();		/* TODO low priority: I'd like to be able to open the 
@@ -102,8 +118,11 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
+  if (!numeric)
+     gnome_dns_init(2);		/* Number of servers to spawn. 2 suggested by the API 
+				 * reference */
   app1 = create_app1 ();
-  if (interape)
+  if (mode==IP)
      gtk_window_set_title (GTK_WINDOW (app1), "Interape");
 
   /* Sets controls to the values of variables */

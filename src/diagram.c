@@ -55,6 +55,7 @@ extern double averaging_time;
 extern double link_timeout_time;
 extern double node_timeout_time;
 extern guint32 refresh_period;
+extern guint node_id_length;
 
 /* Extern functions declarations */
 
@@ -98,6 +99,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canva
       node_popup = create_node_popup ();
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "name");
       gtk_label_set_text (label, canvas_node->node->name->str);
+#if 0       
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_str");
       gtk_label_set_text (label, canvas_node->node->ip_str->str);
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_numeric_str");
@@ -106,6 +108,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canva
       gtk_label_set_text (label, canvas_node->node->ether_str->str);
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_numeric_str");
       gtk_label_set_text (label, canvas_node->node->ether_numeric_str->str);
+#endif       
       label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "accumulated");
       gtk_label_set_text (label,
 		    g_strdup_printf ("%g", canvas_node->node->accumulated));
@@ -192,6 +195,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   GtkArg args[2];
   gdouble link_size;
   struct timeval now, diff;
+  guint8 *node_id;
 
 
   link = canvas_link->link;
@@ -417,19 +421,16 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
+       
 
-      if (interape)
+/* TODO properly give link creating message */
+#if 0
 	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	       _ ("Creating canvas_link: %s-%s. Number of links %d"),
-	       ip_to_str ((new_canvas_link->canvas_link_id) + 4),
-	       ip_to_str (new_canvas_link->canvas_link_id),
+	       (node_t *)(g_tree_lookup(nodes,new_canvas_link->canvas_link_id))->name->str,
+	       (node_t *)(g_tree_lookup(nodes,(new_canvas_link->canvas_link_id)+node_id_length))->name->str,
 	       g_tree_nnodes (canvas_links));
-      else
-	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	       _ ("Creating canvas_link: %s-%s. Number of links %d"),
-	       get_ether_name ((new_canvas_link->canvas_link_id) + 6),
-	       get_ether_name (new_canvas_link->canvas_link_id),
-	       g_tree_nnodes (canvas_links));
+#endif       
 
     }
 
