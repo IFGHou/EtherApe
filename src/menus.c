@@ -275,6 +275,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
       if (new_mode == ETHERNET || (new_mode == FDDI))
 	return;
       break;
+    default:
+      return;
     }
   if (status != STOP)
     if (!gui_stop_capture ())
@@ -461,6 +463,8 @@ gui_start_capture (void)
       widget = glade_xml_get_widget (xml, "ieee802_radio");
       gtk_widget_set_sensitive (widget, TRUE);
       break;
+    default:
+      return;
     }
 
   /* Set active mode in GUI */

@@ -352,6 +352,7 @@ gboolean dns;			/* Negation of numeric. Is used by dns.c */
 
 /* From main.c */
 void cleanup (int signum);
+void save_config (char *prefix);
 
 /* From capture.c */
 gchar *init_capture (void);
@@ -406,7 +407,6 @@ void load_color_list (void);
 void display_protocols_window (void);
 void create_node_info_window (canvas_node_t * canvas_node);
 guint update_info_windows (void);
-void update_protocols_window (void);
 void update_node_info_windows (void);
 
 /* From conversations.c */

@@ -35,14 +35,6 @@ typedef struct
 }
 prot_info_window_t;
 
-GList *node_info_windows = NULL;
-GList *prot_info_windows = NULL;
-
-static GList *info_protocols = NULL;
-
-static guint prot_clist_sort_column = 0;
-static gboolean prot_clist_reverse_sort = FALSE;
-
 
 static void update_prot_info_windows (void);
 
@@ -54,7 +46,8 @@ static void update_prot_info_window (prot_info_window_t * prot_info_window);
 static gint node_info_compare (gconstpointer a, gconstpointer b);
 static gint prot_info_compare (gconstpointer a, gconstpointer b);
 
-void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);
-void on_prot_info_delete_event (GtkWidget * node_info, gpointer user_data);
-static void create_prot_info_window (protocol_t * protocol);
-static gchar *timeval_to_str (struct timeval tv);
+gboolean on_node_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
+gboolean on_prot_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
+void toggle_protocols_window (void);
+gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
+				  gpointer user_data);

@@ -26,23 +26,66 @@
 #include <math.h>
 #include <time.h>
 
-GtkWidget *
-get_or_construct_glade_widget (gchar * widget)
+/* private static vars */
+static GList *info_protocols = NULL;
+static GList *node_info_windows = NULL;
+static GList *prot_info_windows = NULL;
+
+/* 
+  
+  Helper functions 
+
+*/
+
+static gchar *
+timeval_to_str (struct timeval last_heard)
 {
-  GtkWidget *wdg = glade_xml_get_widget (xml, widget);
-  if (wdg)
-    return wdg;			/* already existing, return it */
+  static gchar *str = NULL;
+  struct timeval diff;
+  struct tm broken_time;
 
-  /* construct ... */
-  if (glade_xml_construct
-      (xml, GLADEDIR "/" ETHERAPE_GLADE_FILE, widget, NULL))
-    return glade_xml_get_widget (xml, widget);
+  if (str)
+    g_free (str);
 
-  return NULL;
-}
+  diff = substract_times (now, last_heard);
+  if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
+    {
+      g_my_critical ("Time conversion failed in timeval_to_str");
+      return NULL;
+    }
+
+  if (diff.tv_sec <= 60)
+    {
+      /* Meaning "n seconds" ago */
+      str = g_strdup_printf (_("%d\" ago"), (int) diff.tv_sec);
+    }
+  else if (diff.tv_sec < 600)
+    {
+      /* Meaning "m minutes, n seconds ago" */
+      str =
+	g_strdup_printf (_("%d'%d\" ago"),
+			 (int) floor ((double) diff.tv_sec / 60),
+			 (int) diff.tv_sec % 60);
+    }
+  else if (diff.tv_sec < 3600 * 24)
+    {
+      str =
+	g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
+    }
+  else
+    {
+      /* Watch out! The first is month, the second day of the month */
+      str = g_strdup_printf (_("%d/%d %d:%d"),
+			     broken_time.tm_mon, broken_time.tm_mday,
+			     broken_time.tm_hour, broken_time.tm_min);
+    }
 
 
 
+  return str;
+
+
+}				/* timeval_to_str */
 
 /* ----------------------------------------------------------
 
@@ -72,36 +115,6 @@ create_prot_info_window (protocol_t * protocol)
 	g_list_find_custom (prot_info_windows,
 			    protocol->name, prot_info_compare)))
     {
-/* r.g.       
-      if (!glade_xml_construct(xml, GLADEDIR "/" ETHERAPE_GLADE_FILE, "prot_info", NULL))
-	{
-	  g_error (_("We could not load the interface! (%s)"),
-		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
-	  return;
-	}
-      glade_xml_signal_autoconnect (xml);
-      window = glade_xml_get_widget (xml, "prot_info");
-      gtk_widget_show (window);
-      widget = glade_xml_get_widget (xml, "prot_info_name_label");
-      gtk_object_set_data (GTK_OBJECT (window), "name_label", widget);
-      widget =
-	glade_xml_get_widget (xml, "prot_info_last_heard_label");
-      gtk_object_set_data (GTK_OBJECT (window), "last_heard_label", widget);
-      widget = glade_xml_get_widget (xml, "prot_info_average");
-      gtk_object_set_data (GTK_OBJECT (window), "average", widget);
-      widget =
-	glade_xml_get_widget (xml, "prot_info_accumulated");
-      gtk_object_set_data (GTK_OBJECT (window), "accumulated", widget);
-//r.g.      gtk_object_destroy (GTK_OBJECT (xml));
-
-      prot_info_window = g_malloc (sizeof (prot_info_window_t));
-      prot_info_window->prot_name = g_strdup (protocol->name);
-      gtk_object_set_data (GTK_OBJECT (window), "prot_name",
-			   prot_info_window->prot_name);
-      prot_info_window->window = window;
-      prot_info_windows =
-	g_list_prepend (prot_info_windows, prot_info_window);
-*/
       xml_info_window =
 	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "prot_info", NULL);
       if (!xml_info_window)
@@ -145,8 +158,9 @@ create_prot_info_window (protocol_t * protocol)
 /* It's called when a prot info window is closed by the user 
  * It has to free memory and delete the window from the list
  * of windows */
-void
-on_prot_info_delete_event (GtkWidget * prot_info, gpointer user_data)
+gboolean
+on_prot_info_delete_event (GtkWidget * prot_info, GdkEvent * evt,
+			   gpointer user_data)
 {
   GList *item = NULL;
   guint8 *prot_name = NULL;
@@ -156,20 +170,22 @@ on_prot_info_delete_event (GtkWidget * prot_info, gpointer user_data)
   if (!prot_name)
     {
       g_my_critical (_("No prot_name in on_prot_info_delete_event"));
-      return;
+      return TRUE;		/* ignore event */
     }
 
   if (!(item =
 	g_list_find_custom (prot_info_windows, prot_name, prot_info_compare)))
     {
       g_my_critical (_("No prot_info_window in on_prot_info_delete_event"));
-      return;
+      return TRUE;		/* ignore event */
     }
 
   prot_info_window = item->data;
   g_free (prot_info_window->prot_name);
   gtk_widget_destroy (GTK_WIDGET (prot_info_window->window));
   prot_info_windows = g_list_remove_link (prot_info_windows, item);
+
+  return FALSE;
 }				/* on_prot_info_delete_event */
 
 /* updates a single proto detail window */
@@ -254,7 +270,6 @@ static gint
 prot_window_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 		     gpointer userdata)
 {
-  gchar *protoa, protob;
   gint ret = 0;
   gdouble t1, t2;
   struct timeval time1, time2, diff;
@@ -397,7 +412,7 @@ create_protocols_list ()
 }
 
 
-void
+static void
 update_protocols_window (void)
 {
   static gboolean inited = FALSE;
@@ -405,7 +420,6 @@ update_protocols_window (void)
   GList *item = NULL;
   protocol_t *protocol = NULL;
   struct timeval diff;
-  GtkWidget *widget = NULL;
   gchar *str = NULL;
   gboolean res;
   GtkTreeIter it;
@@ -520,14 +534,21 @@ toggle_protocols_window (void)
   gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
 }				/* toggle_protocols_window */
 
+gboolean
+on_delete_protocol_window (GtkWidget * wdg, GdkEvent * evt, gpointer ud)
+{
+  toggle_protocols_window ();
+  return TRUE;			/* ignore signal */
+}
+
 void
 on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *protocols_window =
-    get_or_construct_glade_widget ("protocols_window");
+    glade_xml_get_widget (xml, "protocols_window");
   if (!protocols_window)
     return;
-  if (!GTK_WIDGET_VISIBLE (protocols_window))
+  if (gtk_check_menu_item_get_active (menuitem))
     {
       gtk_widget_show (protocols_window);
       gdk_window_raise (protocols_window->window);
@@ -585,64 +606,13 @@ on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
 }
 
 
-static gchar *
-timeval_to_str (struct timeval last_heard)
-{
-  static gchar *str = NULL;
-  struct timeval diff;
-  struct tm broken_time;
-
-  if (str)
-    g_free (str);
-
-  diff = substract_times (now, last_heard);
-  if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
-    {
-      g_my_critical ("Time conversion failed in timeval_to_str");
-      return NULL;
-    }
-
-  if (diff.tv_sec <= 60)
-    {
-      /* Meaning "n seconds" ago */
-      str = g_strdup_printf (_("%d\" ago"), (int) diff.tv_sec);
-    }
-  else if (diff.tv_sec < 600)
-    {
-      /* Meaning "m minutes, n seconds ago" */
-      str =
-	g_strdup_printf (_("%d'%d\" ago"),
-			 (int) floor ((double) diff.tv_sec / 60),
-			 (int) diff.tv_sec % 60);
-    }
-  else if (diff.tv_sec < 3600 * 24)
-    {
-      str =
-	g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
-    }
-  else
-    {
-      /* Watch out! The first is month, the second day of the month */
-      str = g_strdup_printf (_("%d/%d %d:%d"),
-			     broken_time.tm_mon, broken_time.tm_mday,
-			     broken_time.tm_hour, broken_time.tm_min);
-    }
-
-
-
-  return str;
-
-
-}				/* timeval_to_str */
-
 /* Displays the protocols window when the legend is double clicked */
 gboolean
 on_prot_table_button_press_event (GtkWidget * widget,
 				  GdkEventButton * event, gpointer user_data)
 {
-  switch (event->type)
+  if (GDK_2BUTTON_PRESS == event->type)
     {
-    case GDK_2BUTTON_PRESS:
       toggle_protocols_window ();
       return TRUE;
     }
@@ -824,8 +794,9 @@ update_node_info_windows (void)
 /* It's called when a node info window is closed by the user 
  * It has to free memory and delete the window from the list
  * of windows */
-void
-on_node_info_delete_event (GtkWidget * node_info, gpointer user_data)
+gboolean
+on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
+			   gpointer user_data)
 {
   GList *item = NULL;
   guint8 *node_id = NULL;

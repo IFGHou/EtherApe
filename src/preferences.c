@@ -537,7 +537,6 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
   if (!gpath)
     return;			/* no row selected */
 
-  GtkTreeIter itsibling;
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;			/* path not found */
 
@@ -561,7 +560,6 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
   GtkWidget *protocol_entry = NULL;
-  int pos = 0;
   EATreePos ep;
   if (!get_color_store (&ep))
     return;
@@ -571,7 +569,6 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   if (!gpath)
     return;			/* no row selected */
 
-  GtkTreeIter itsibling;
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;			/* path not found */
 
