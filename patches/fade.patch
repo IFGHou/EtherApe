@@ -1,0 +1,92 @@
+--- ../src/diagram.c	Fri Mar 10 10:22:59 2000
++++ ../src/diagram.ted	Fri Mar 10 10:23:00 2000
+@@ -1,6 +1,6 @@
+ /* Etherape
+  * Copyright (C) 2000 Juan Toledo
+- * $Id$
++ * $Id$
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -31,12 +31,12 @@
+ 
+ /* Global application parameters */
+ 
+-double node_radius_multiplier = 100;	/* used to calculate the radius of the
++double node_radius_multiplier = 500;	/* used to calculate the radius of the
+ 					 * displayed nodes. So that the user can
+ 					 * select with certain precision this
+ 					 * value, the GUI uses the log10 of the
+ 					 * multiplier*/
+-double link_width_multiplier = 100;	/* Same explanation as above */
++double link_width_multiplier = 1000;	/* Same explanation as above */
+ 
+ gchar *node_color = "red", *link_color = "tan", *text_color = "black";
+ 
+@@ -206,6 +206,9 @@
+   GtkArg args[2];
+   gdouble link_size;
+   struct timeval now, diff;
++  unsigned int baseColor = 0xd0b080ff;
++  int looper = 0, r, g, b, av;
++  double age = 0.0;
+ 
+   link = canvas_link->link;
+ 
+@@ -219,7 +222,7 @@
+     {
+       gettimeofday (&now, NULL);
+       diff = substract_times (now, link->last_time);
+-
++      age = diff.tv_sec + diff.tv_usec / 1000000.0;
+       if (((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
+ 	  && link_timeout_time)
+ 	{
+@@ -303,11 +306,25 @@
+   /* If we got this far, the link can be shown. Make sure it is */
+   gnome_canvas_item_show (canvas_link->link_item);
+ 
+-  link_size = get_link_size (link->average);
++  link_size = (int) sqrt (get_link_size (link->average));
++  while (looper++ < age)
++    {				// fade color
++
++      r = (((unsigned char *) &baseColor)[3]);
++      g = (((unsigned char *) &baseColor)[2]);
++      b = (((unsigned char *) &baseColor)[1]);
++      av = (r + g + b + 224 * 2) / 5;	// 224 is background intensity
++
++      ((char *) &baseColor)[3] = (char) (0.9 * r + 0.1 * av);
++      ((char *) &baseColor)[2] = (char) (0.9 * g + 0.1 * av);
++      ((char *) &baseColor)[1] = (char) (0.9 * b + 0.1 * av);
++    }
++
++
+ 
+   gnome_canvas_item_set (canvas_link->link_item,
+ 			 "points", points,
+-			 "fill_color", link_color,
++			 "fill_color_rgba", baseColor,
+ 			 "width_units", link_size,
+ 			 NULL);
+ 
+@@ -382,13 +399,14 @@
+     }
+ 
+ 
+-  node_size = get_node_size (node->average);
++  node_size = (int) sqrt (get_node_size (node->average));
++
+ 
+   gnome_canvas_item_set (canvas_node->node_item,
+-			 "x1", -node_size / 2,
+-			 "x2", node_size / 2,
+-			 "y1", -node_size / 2,
+-			 "y2", node_size / 2,
++			 "x1", -node_size,
++			 "x2", node_size,
++			 "y1", -node_size,
++			 "y2", node_size,
+ 			 NULL);
+ 
+   /* We check the name of the node, and update the canvas node name
