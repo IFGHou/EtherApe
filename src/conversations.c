@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
 #include <netinet/in.h>
 #include "globals.h"
 #include "conversations.h"
