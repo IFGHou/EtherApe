@@ -1,0 +1,7 @@
+# Automatically added by dh_installdocs
+if [ "$1" = "configure" ]; then
+	if [ -d /usr/doc -a ! -e /usr/doc/etherape -a -d /usr/share/doc/etherape ]; then
+		ln -sf ../share/doc/etherape /usr/doc/etherape
+	fi
+fi
+# End automatically added section

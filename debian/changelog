@@ -1,0 +1,16 @@
+etherape (0.1.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Juan Toledo <toledo@users.sourceforge.net>  Tue, 29 Feb 2000 22:41:53 +0100
+
+etherape (0.0.8-1) unstable; urgency=low
+
+  * Initial Release.
+  * This is my first Debian package. Beware. :-)
+
+ -- Juan Toledo <toledo@users.sourceforge.net>  Tue, 29 Feb 2000 20:56:17 +0100
+
+Local variables:
+mode: debian-changelog
+End:

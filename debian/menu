@@ -1,0 +1,2 @@
+?package(etherape):needs=X11 section=Apps/Net\
+  title="Etherape" command="/usr/sbin/etherape"

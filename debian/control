@@ -1,0 +1,14 @@
+Source: etherape
+Section: net
+Priority: optional
+Maintainer: Juan Toledo <toledo@users.sourceforge.net>
+Standards-Version: 3.0.1
+
+Package: etherape
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Graphical network monitor modeled after etherman.
+ Etherape is an etherman clone. It displays network activity
+ graphically. Active hosts are shown as circles of varying size,
+ and traffic among them is shown as lines of varying width. It´s 
+ Gnome and libpcap based.
