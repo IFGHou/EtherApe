@@ -1,8 +1,8 @@
-etherape (0.2.9-1) unstable; urgency=low
+etherape (0.3.2-0unoff) unstable; urgency=low
 
-  * Initial Release.
+  * New upstream release. (unofficial package)
 
- -- Frederic Peters <fpeters@debian.org>  Thu, 16 Mar 2000 23:35:05 +0100
+ -- Your Name <your.name@your.domain>  Tue, 21 Mar 2000 18:33:00 +0100
  
 Local variables:
 mode: debian-changelog
