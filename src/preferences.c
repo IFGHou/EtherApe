@@ -245,9 +245,10 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   widget = glade_xml_get_widget (xml, "");
 
   /* add proto name to history */
-  gnome_entry_append_history(GNOME_ENTRY(glade_xml_get_widget (xml, "filter_gnome_entry")),
-                             FALSE,
-                             pref.filter);
+  gnome_entry_append_history (GNOME_ENTRY
+			      (glade_xml_get_widget
+			       (xml, "filter_gnome_entry")), FALSE,
+			      pref.filter);
 
   if (colors_changed)
     {
@@ -267,7 +268,7 @@ on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 void
 on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  on_apply_pref_button_clicked (button, user_data); /* to save we simulate apply */
+  on_apply_pref_button_clicked (button, user_data);	/* to save we simulate apply */
   save_config ("/Etherape/");
 }				/* on_save_pref_button_clicked */
 
@@ -563,16 +564,18 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
 
 
   protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
-  proto_string = gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
+  proto_string =
+    gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
   proto_string = g_utf8_strup (proto_string, -1);
 
   gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
 
   /* add proto name to history */
-  gnome_entry_append_history(GNOME_ENTRY(glade_xml_get_widget (xml, "protocol_gnome_entry")),
-                             FALSE,
-                             proto_string);
-  
+  gnome_entry_append_history (GNOME_ENTRY
+			      (glade_xml_get_widget
+			       (xml, "protocol_gnome_entry")), FALSE,
+			      proto_string);
+
   g_free (proto_string);
 
   colors_changed = TRUE;

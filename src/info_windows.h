@@ -58,4 +58,3 @@ void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);
 void on_prot_info_delete_event (GtkWidget * node_info, gpointer user_data);
 static void create_prot_info_window (protocol_t * protocol);
 static gchar *timeval_to_str (struct timeval tv);
-

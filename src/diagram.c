@@ -376,7 +376,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   guint n_rows = 1, n_columns = 1;
   static gboolean first = TRUE;
 
-   /* First, we check whether the diagram already knows about this protocol,
+  /* First, we check whether the diagram already knows about this protocol,
    * checking whether it is shown on the legend. */
   /*  g_message ("Looking for %s", protocol->name); */
   if ((protocol_item = g_list_find_custom (legend_protocols,
@@ -1146,7 +1146,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       return FALSE;
     }
 
-    g_object_get (G_OBJECT (canvas_node->group_item), "x", &dx, "y", &dy, NULL);
+  g_object_get (G_OBJECT (canvas_node->group_item), "x", &dx, "y", &dy, NULL);
   versorx = -(points->coords[1] - dy);
   versory = points->coords[0] - dx;
 

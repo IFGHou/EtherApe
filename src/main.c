@@ -58,8 +58,6 @@ main (int argc, char *argv[])
      N_("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &(pref.node_color), 0,
      N_("set the node color"), N_("color")},
-//r.g.    {"link-color", 'L', POPT_ARG_STRING, &(pref.link_color), 0,
-//r.g.     N_("set the link color"), N_("color")},
     {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
      N_("set the text color"), N_("color")},
 
@@ -97,13 +95,9 @@ main (int argc, char *argv[])
   pref.refresh_period = 800;	/* ms */
 
   /* TODO Besides the fact that this probably makes little sense nowadays
-   * (at least for node and link color) it probably leads to a segfault
+   * (at least for node color) it probably leads to a segfault
    * See how it is done for filter, for instance */
   pref.node_color = g_strdup ("brown");
-//r.g.  pref.link_color = g_strdup ("tan");	
-                                            /* TODO I think link_color is
-					 * actually never used anymore,
-					 * is it? */
   pref.text_color = g_strdup ("yellow");
   pref.node_limit = -1;
 
@@ -114,7 +108,8 @@ main (int argc, char *argv[])
   load_config ("/Etherape/");
 
   /* Command line */
-  poptcon = poptGetContext ("Etherape", argc, (const char **)argv, optionsTable, 0);
+  poptcon =
+    poptGetContext ("Etherape", argc, (const char **) argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
   if (cl_filter)
@@ -386,7 +381,8 @@ save_config (char *prefix)
   gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
   gnome_config_set_string ("Diagram/fontname", pref.fontname);
 
-  gnome_config_set_vector ("Diagram/colors", pref.n_colors, (const gchar * const *)pref.colors);
+  gnome_config_set_vector ("Diagram/colors", pref.n_colors,
+			   (const gchar * const *) pref.colors);
 
   gnome_config_set_string ("General/version", VERSION);
 

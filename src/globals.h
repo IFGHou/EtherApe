@@ -316,7 +316,6 @@ struct
   node_size_variable_t node_size_variable;	/* Default variable that sets the node
 						 * size */
   gchar *node_color, *text_color;	/* Default colors */
-//r.g.  gchar *link_color;	/* Default link color * TODO do we need link_color anymore? */
   gchar *fontname;		/* Font to be used for text display */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
@@ -390,7 +389,7 @@ void destroying_idle (gpointer data);
 void set_appbar_status (gchar * str);
 void delete_gui_protocols (void);
 gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
- 
+
 /* From menus.c */
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);

@@ -3267,8 +3267,8 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>
 	      <property name="rules_hint">False</property>
-	      <property name="reorderable">True</property>
-	      <property name="enable_search">True</property>
+	      <property name="reorderable">False</property>
+	      <property name="enable_search">False</property>
 	      <signal name="select_cursor_row" handler="on_prot_clist_select_row" last_modification_time="Fri, 21 Feb 2003 19:59:18 GMT"/>
 	    </widget>
 	  </child>

@@ -167,12 +167,11 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
   if (str)
     g_free (str);
 
-  gnome_entry_append_history(
-                        GNOME_ENTRY(gnome_file_entry_gnome_entry(
-                                      GNOME_FILE_ENTRY(glade_xml_get_widget(
-                                                   xml, "fileentry")))),
-                             TRUE,
-                             pref.input_file);
+  gnome_entry_append_history (GNOME_ENTRY
+			      (gnome_file_entry_gnome_entry
+			       (GNOME_FILE_ENTRY
+				(glade_xml_get_widget (xml, "fileentry")))),
+			      TRUE, pref.input_file);
 
   gui_start_capture ();
 
@@ -318,19 +317,19 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
- /* R.G. - FIXME - convert to bonobo docking
-  GnomeDock *dock;
-  GtkWidget *widget;
+  /* R.G. - FIXME - convert to bonobo docking
+     GnomeDock *dock;
+     GtkWidget *widget;
 
-  dock = GNOME_DOCK (glade_xml_get_widget (xml, "dock1"));
-  widget = glade_xml_get_widget (xml, "dock_toolbar");
-  if (menuitem->active)
-    gtk_widget_show (widget);
-  else
-    gtk_widget_hide (widget);
+     dock = GNOME_DOCK (glade_xml_get_widget (xml, "dock1"));
+     widget = glade_xml_get_widget (xml, "dock_toolbar");
+     if (menuitem->active)
+     gtk_widget_show (widget);
+     else
+     gtk_widget_hide (widget);
 
- gtk_widget_queue_resize (GTK_WIDGET (dock));
-*/
+     gtk_widget_queue_resize (GTK_WIDGET (dock));
+   */
 }				/* on_toolbar_check_activate */
 
 void
