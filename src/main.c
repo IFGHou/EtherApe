@@ -36,6 +36,7 @@ gchar *interface = NULL;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
+gchar *filter=NULL;
 
 int
 main (int argc, char *argv[])
@@ -55,7 +56,10 @@ main (int argc, char *argv[])
      _ ("don't display any node text identification"), NULL
     },
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
-     _ ("set interface to listen to"), _ ("interface name")
+     _ ("set interface to listen to"), _ ("<interface name>")
+    },
+    {"filter", 'f', POPT_ARG_STRING, &filter, 0,
+     _ ("set capture filter"), _ ("<capture filter>")
     },
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
      _ ("sets the node color"), _("color")

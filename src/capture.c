@@ -15,6 +15,7 @@ extern double link_timeout_time;
 extern gboolean numeric;
 extern gboolean dns;
 extern gchar *interface;
+extern gchar *filter;
 
 /* Next three functions copied directly from ethereal packet.c
  * by Gerald Combs */
@@ -405,6 +406,8 @@ packet_read (pcap_t * pch,
   link_t *link;
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
+   
+  if (!pcap_packet) return;
 
   src = pcap_packet + 6;
   dst = pcap_packet;
@@ -473,6 +476,8 @@ init_capture (void)
   pcap_t *pch;
   gchar *device;
   gchar ebuf[300];
+  static bpf_u_int32 netnum, netmask; 
+  static struct bpf_program fp;
 
   device = interface;
   if (!device)
@@ -480,19 +485,34 @@ init_capture (void)
       device = pcap_lookupdev (ebuf);
       if (device == NULL)
 	{
-	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-		 _ ("Error getting device: %s"), ebuf);
-	  exit (1);
+	   g_error (_ ("Error getting device: %s"), ebuf);
+	   exit (1);
 	}
     }
 
-  if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
-    {
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	     _ ("Error opening %s : %s - perhaps you need to be root?"),
-	     device,
-	     ebuf);
-    }
+   if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
+     {
+	g_error (_ ("Error opening %s : %s - perhaps you need to be root?"),
+		 device,
+		ebuf);
+     }
+  if (filter) {
+     gboolean ok=1;
+     /* A capture filter was specified; set it up. */
+     if (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0) {
+	g_warning (_("Can't use filter:  Couldn't obtain netmask info (%s)."), ebuf);
+	ok=0;
+     }
+     if ( ok && (pcap_compile(pch, &fp, filter, 1, netmask) < 0) ) {
+	g_warning (_("Unable to parse filter string (%s)."),
+		 pcap_geterr(pch));
+	ok=0;
+     }
+     if (ok && (pcap_setfilter(pch, &fp) < 0) ) {
+	g_warning (_("Can't install filter (%s)."),
+		 pcap_geterr(pch));
+     }
+  }
 
   pcap_fd = pcap_fileno (pch);
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);

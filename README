@@ -14,10 +14,20 @@ name resolution with the -r option, but beware of very long
 DNS timeout times.
 
 Etherape has been compiled in at least:
-* Linux: Debian 2.2, RedHat 6.1, Slackware 7.0
+* Linux: Debian 2.2, Slackware 7.0
 * NetBSD 1.4T (i386)
 
-It should probably compile and run in other unix-like OS. If
+There has been many reports saying that RedHat 6.1 won't show
+any traffic. It turns out RedHat patched their version of the 
+library and software using it has had to work around it (!?),
+as ethereal did.
+
+I still haven't figured how they managed, but a user suggests
+compiling your own version of libpcap to solve your problems.
+If you are an RedHat 6.1 user, keep an eye on 
+http://sourceforge.net/bugs/?func=detailbug&bug_id=102377&group_id=2712
+
+Etherape should probably compile and run in other unix-like OS. If
 you manage to compile it in a configuration other than the ones
 listed, please post it to the mailing list
 <etherape-users@lists.sourceforge.net> No need to subscribe.
@@ -44,10 +54,14 @@ http://etherape.sourceforge.net/
 Subscribe to the etherape mailing list. To subscribe, point your 
 browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
 To post a message, mail to 'etherape-users@lists.sourceforge.net'
+Be advised that emails sent to me will always be replied cc'ed
+to the list, as an attempt to minimize the number of times I have
+to answer a question. Being so you might as well write to the
+list directly. :-)
 
 To receive a message whenever a new version of Etherape is 
 available, go to http://sourceforge.net/project/?group_id=2712 and
-click on the "Monitor this module link".
+click on the "Monitor this module" link.
 
 Bug reports and feature requests should be sent in order 
 of preference:
