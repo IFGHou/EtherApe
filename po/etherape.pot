@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-11 12:06+0200\n"
+"POT-Creation-Date: 2001-05-14 02:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,19 +94,19 @@ msgstr ""
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/info_windows.c:220 src/info_windows.c:521 src/main.c:162 src/menus.c:34
-#: src/menus.c:367
+#: src/info_windows.c:220 src/info_windows.c:541 src/main.c:162 src/menus.c:34
+#: src/menus.c:375
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:269
+#: src/main.c:271
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:357
+#: src/main.c:360
 msgid "Preferences saved"
 msgstr ""
 
@@ -190,75 +190,75 @@ msgstr ""
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:332
+#: src/capture.c:336
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:339
+#: src/capture.c:343
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:356
+#: src/capture.c:359
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:360
+#: src/capture.c:369
 msgid "Pausing live capture"
 msgstr ""
 
-#: src/capture.c:366
+#: src/capture.c:376
 msgid "Pausing offline capture"
 msgstr ""
 
-#: src/capture.c:373
+#: src/capture.c:381
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:392
+#: src/capture.c:400
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:398
+#: src/capture.c:406
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:404
+#: src/capture.c:412
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:412
+#: src/capture.c:418
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#: src/capture.c:637
+#: src/capture.c:643
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:689
+#: src/capture.c:695
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:822
+#: src/capture.c:828
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:860
+#: src/capture.c:866
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:996
+#: src/capture.c:1011
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:1201
+#: src/capture.c:1216
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr ""
 
-#: src/capture.c:1518
+#: src/capture.c:1534
 msgid "Null packet in check_packet"
 msgstr ""
 
@@ -275,147 +275,147 @@ msgstr ""
 msgid "Capture interface set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:274
+#: src/menus.c:282
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:441
+#: src/menus.c:452
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:535
+#: src/menus.c:546
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:542 src/menus.c:668
+#: src/menus.c:553 src/menus.c:685
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:547
+#: src/menus.c:558
 msgid " in Token Ring mode"
 msgstr ""
 
-#: src/menus.c:550
+#: src/menus.c:561
 msgid " in FDDI mode"
 msgstr ""
 
-#: src/menus.c:553
+#: src/menus.c:564
 msgid " in Ethernet mode"
 msgstr ""
 
-#: src/menus.c:556
+#: src/menus.c:567
 msgid " in IP mode"
 msgstr ""
 
-#: src/menus.c:559
+#: src/menus.c:570
 msgid " in TCP mode"
 msgstr ""
 
-#: src/menus.c:562
+#: src/menus.c:573
 msgid " in UDP mode"
 msgstr ""
 
-#: src/menus.c:572
+#: src/menus.c:583
 msgid "Diagram started"
 msgstr ""
 
-#: src/menus.c:585
+#: src/menus.c:596
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:608
+#: src/menus.c:625
 msgid "Paused"
 msgstr ""
 
-#: src/menus.c:613
+#: src/menus.c:630
 msgid "Diagram paused"
 msgstr ""
 
-#: src/menus.c:627
+#: src/menus.c:644
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 #. Sets the appbar
-#: src/menus.c:661
+#: src/menus.c:678
 msgid "Ready to capture from "
 msgstr ""
 
-#: src/menus.c:673
+#: src/menus.c:690
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:313
+#: src/diagram.c:318
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:317
+#: src/diagram.c:322
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:323
+#: src/diagram.c:328
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:325
+#: src/diagram.c:330
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:562
+#: src/diagram.c:567
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:639
+#: src/diagram.c:644
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:664
+#: src/diagram.c:669
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:998
+#: src/diagram.c:1003
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1064
+#: src/diagram.c:1069
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1210
+#: src/diagram.c:1215
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1213
+#: src/diagram.c:1218
 msgid "Link main protocol unknown"
 msgstr ""
 
-#: src/protocols.c:771
+#: src/protocols.c:995
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr ""
 
-#: src/protocols.c:777
+#: src/protocols.c:1001
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr ""
 
-#: src/protocols.c:822
+#: src/protocols.c:1046
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr ""
 
-#: src/protocols.c:846
+#: src/protocols.c:1070
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr ""
 
-#. choose_port
+#. append_etype_prot
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -587,7 +587,7 @@ msgstr ""
 msgid "window1"
 msgstr ""
 
-#: src/glade-strings:52 src/glade-strings:131
+#: src/glade-strings:52 src/glade-strings:137
 msgid "name"
 msgstr ""
 
@@ -616,127 +616,133 @@ msgid "Save"
 msgstr ""
 
 #: src/glade-strings:59
-msgid "Toggle whether text is shown on the diagram"
-msgstr ""
-
-#: src/glade-strings:60
-msgid "Click to toggle"
-msgstr ""
-
-#: src/glade-strings:61
-msgid "No text"
-msgstr ""
-
-#: src/glade-strings:62
-msgid "Max. Node Radius"
-msgstr ""
-
-#: src/glade-strings:63
-msgid "Max. Link Width"
-msgstr ""
-
-#: src/glade-strings:64
-msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
-msgstr ""
-
-#: src/glade-strings:65
-msgid "Linear"
-msgstr ""
-
-#: src/glade-strings:66
-msgid "Logarithmic"
-msgstr ""
-
-#: src/glade-strings:67
-msgid "Square Root"
-msgstr ""
-
-#: src/glade-strings:68
-msgid "Size Mode"
-msgstr ""
-
-#: src/glade-strings:69
-msgid "Choose the font used to display text in the diagram"
-msgstr ""
-
-#: src/glade-strings:70
 msgid "Font"
 msgstr ""
 
-#: src/glade-strings:71
-msgid "Refresh diagram every this many miliseconds"
+#: src/glade-strings:60
+msgid "Choose the font used to display text in the diagram"
 msgstr ""
 
-#: src/glade-strings:72
-msgid "Diagram refresh period (ms)"
-msgstr ""
-
-#: src/glade-strings:73 src/glade-strings:80
-msgid "Set what level of the protocol stack is displayed in the legend"
-msgstr ""
-
-#: src/glade-strings:74
-msgid "Topmost recognized protocol"
-msgstr ""
-
-#: src/glade-strings:75
-msgid "Level 2 (Eg: ETH_II)"
-msgstr ""
-
-#: src/glade-strings:76
-msgid "Level 3 (Eg: IP)"
-msgstr ""
-
-#: src/glade-strings:77
-msgid "Level 4 (Eg: TCP)"
-msgstr ""
-
-#: src/glade-strings:78
-msgid "Level 5 (Eg: HTTP)"
-msgstr ""
-
-#: src/glade-strings:79
+#: src/glade-strings:61
 msgid "Protocol Stack Level"
 msgstr ""
 
-#: src/glade-strings:81
-msgid "Instantaneous traffic (In+Out)"
+#: src/glade-strings:62
+msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr ""
 
-#: src/glade-strings:82
-msgid "Instantaneous traffic (Inbound)"
+#: src/glade-strings:63
+msgid "Topmost recognized protocol"
 msgstr ""
 
-#: src/glade-strings:83
-msgid "Instantaneous traffic (Outbound)"
+#: src/glade-strings:64
+msgid "Level 2 (Eg: ETH_II)"
 msgstr ""
 
-#: src/glade-strings:84
-msgid "Accumulated traffic (In+Out)"
+#: src/glade-strings:65
+msgid "Level 3 (Eg: IP)"
 msgstr ""
 
-#: src/glade-strings:85
-msgid "Accumulated traffic (Inbound)"
+#: src/glade-strings:66
+msgid "Level 4 (Eg: TCP)"
 msgstr ""
 
-#: src/glade-strings:86
-msgid "Accumulated traffic (Outbound)"
+#: src/glade-strings:67
+msgid "Level 5 (Eg: HTTP)"
 msgstr ""
 
-#: src/glade-strings:87
+#: src/glade-strings:68
 msgid "Node size variable"
 msgstr ""
 
-#: src/glade-strings:88
+#: src/glade-strings:69
+msgid ""
+"Set the kind of instantenous or accumulated traffic that the node radius "
+"indicates"
+msgstr ""
+
+#: src/glade-strings:70
+msgid "Instant. traffic (In+Out)"
+msgstr ""
+
+#: src/glade-strings:71
+msgid "Instant. traffic (Inbound)"
+msgstr ""
+
+#: src/glade-strings:72
+msgid "Instant. traffic (Outbound)"
+msgstr ""
+
+#: src/glade-strings:73
+msgid "Accum. traffic (In+Out)"
+msgstr ""
+
+#: src/glade-strings:74
+msgid "Accum. traffic (Inbound)"
+msgstr ""
+
+#: src/glade-strings:75
+msgid "Accum. traffic (Outbound)"
+msgstr ""
+
+#: src/glade-strings:76
+msgid "Diagram refresh period (ms)"
+msgstr ""
+
+#: src/glade-strings:77
+msgid "Refresh diagram every this many miliseconds"
+msgstr ""
+
+#: src/glade-strings:78
+msgid "Diagram Node Timeout (ms)"
+msgstr ""
+
+#: src/glade-strings:79
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
 msgstr ""
 
+#: src/glade-strings:80
+msgid "Max. Link Width"
+msgstr ""
+
+#: src/glade-strings:81
+msgid "Max. Node Radius"
+msgstr ""
+
+#: src/glade-strings:82
+msgid "Size Mode"
+msgstr ""
+
+#: src/glade-strings:83
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
+msgstr ""
+
+#: src/glade-strings:84
+msgid "Linear"
+msgstr ""
+
+#: src/glade-strings:85
+msgid "Logarithmic"
+msgstr ""
+
+#: src/glade-strings:86
+msgid "Square Root"
+msgstr ""
+
+#: src/glade-strings:87
+msgid "Toggle whether the node names are displayed on top of the nodes"
+msgstr ""
+
+#: src/glade-strings:88
+msgid "Hide node names"
+msgstr ""
+
 #: src/glade-strings:89
-msgid "Diagram Node Timeout (ms)"
+msgid "Group unknown ports"
 msgstr ""
 
 #: src/glade-strings:90
@@ -828,17 +834,17 @@ msgstr ""
 msgid "Show protocols"
 msgstr ""
 
-#: src/glade-strings:113 src/glade-strings:134
+#: src/glade-strings:113 src/glade-strings:140
 msgid "Instantaneous"
 msgstr ""
 
 #: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
 #: src/glade-strings:120 src/glade-strings:122 src/glade-strings:124
-#: src/glade-strings:135 src/glade-strings:137
+#: src/glade-strings:141 src/glade-strings:143
 msgid "test label"
 msgstr ""
 
-#: src/glade-strings:115 src/glade-strings:136
+#: src/glade-strings:115 src/glade-strings:142
 msgid "Accumulated"
 msgstr ""
 
@@ -863,34 +869,38 @@ msgid "EtherApe: Protocols"
 msgstr ""
 
 #: src/glade-strings:126
+msgid "Columns"
+msgstr ""
+
+#: src/glade-strings:127 src/glade-strings:132
 msgid "Protocol"
 msgstr ""
 
-#: src/glade-strings:127
+#: src/glade-strings:128 src/glade-strings:133
 msgid "Inst Traffic"
 msgstr ""
 
-#: src/glade-strings:128
+#: src/glade-strings:129 src/glade-strings:134
 msgid "Accum Traffic"
 msgstr ""
 
-#: src/glade-strings:129
+#: src/glade-strings:130 src/glade-strings:135
 msgid "Last Heard"
 msgstr ""
 
-#: src/glade-strings:130
+#: src/glade-strings:131 src/glade-strings:136
 msgid "Packets"
 msgstr ""
 
-#: src/glade-strings:132
+#: src/glade-strings:138
 msgid "Last Heard: "
 msgstr ""
 
-#: src/glade-strings:133
+#: src/glade-strings:139
 msgid "label73"
 msgstr ""
 
-#: src/glade-strings:138
+#: src/glade-strings:144
 msgid "Nodes"
 msgstr ""
 
@@ -915,18 +925,18 @@ msgid "No info available"
 msgstr ""
 
 #. Meaning "n seconds" ago
-#: src/info_windows.c:733
+#: src/info_windows.c:753
 #, c-format
 msgid "%d\" ago"
 msgstr ""
 
-#: src/info_windows.c:739
+#: src/info_windows.c:759
 #, c-format
 msgid "%d'%d\" ago"
 msgstr ""
 
 #. Watch out! The first is month, the second day of the month
-#: src/info_windows.c:751
+#: src/info_windows.c:771
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr ""
