@@ -1,9 +1,9 @@
 User visible features:
 ----------------------
 
-  * Color coded protocol display. It's been on the drawing board
-    from day 1. That's what the "Place holder for the color coded
-    protocol display" means. ;-)
+  * Extend the protocols known further than just IP.
+  
+  * Make protocol colors user-selectable.
   
   * Autosaving of preferences..
   

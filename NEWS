@@ -3,6 +3,13 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.6 (Saturday 03-11-2000):
+  
+     * Ethernet protocols are recognized and presented in different
+       colors.
+     * Links not in use are slowly faded out (patch by Ted Wright)
+     * Finally found a way to set the diagram background to black.
+       
   Overview of changes in Etherape 0.2.5 (Friday 03-10-2000):
   
      * Initial support for color coded protocols display

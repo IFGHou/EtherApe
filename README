@@ -24,6 +24,10 @@ it was forwarding traffic from when it was first heard.
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
+If you are not running on a high-color or better display, you
+will probably want to use the --no-fade option.
+
+
 Installation:
 -------------
 Please read the INSTALL file for installation instructions.

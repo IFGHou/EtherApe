@@ -1,6 +1,16 @@
                           Help Wanted
                           -----------
 
+-------------------------------------------------------------------
+PLEASE! :-)
+
+I need somebody to point me to a document explaining how do you
+really use gtk styles or -better yet- to provide a patch by which
+the protocols table cell's background is set to the protocol
+color.
+-------------------------------------------------------------------
+
+
 If you like etherape, you could contribute to its advancement by
 giving me a hand in some tasks. I need help in
 
@@ -17,8 +27,11 @@ giving me a hand in some tasks. I need help in
 * To provide translations.
   
 * To code further modes. It's actually pretty easy. Anybody for
-  udp?
-  
+  udp? Just look for "mode" in capture.c
+
+* To recognize further protocols. This one is easy as well.
+  Have a look at protocols.c
+
 If you feel you can help with any of these issues, please drop me
 a note at toledo@users.sourceforge.net
 

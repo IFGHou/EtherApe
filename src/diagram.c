@@ -52,13 +52,14 @@ gboolean need_reposition;	/* It is set when a canvas_node has been added
 
 /* Extern global variables */
 
-extern double averaging_time;
-extern double link_timeout_time;
-extern double node_timeout_time;
+extern gdouble averaging_time;
+extern gdouble link_timeout_time;
+extern gdouble node_timeout_time;
 extern struct timeval now;
 extern guint32 refresh_period;
 extern guint node_id_length;
 extern gboolean fix_overlap;
+extern gboolean nofade;
 
 /* Extern functions declarations */
 
@@ -129,7 +130,7 @@ static gint
 node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canvas_node)
 {
 
-  double item_x, item_y;
+  gdouble item_x, item_y;
   static GtkWidget *node_popup;
   GtkLabel *label;
 
@@ -178,8 +179,8 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWi
 {
   static gfloat angle = 0.0;
   static guint node_i = 0, n_nodes = 0;
-  double x, y, xmin, ymin, xmax, ymax, rad_max, text_compensation = 50;
-  double oddAngle = angle;
+  gdouble x, y, xmin, ymin, xmax, ymax, rad_max, text_compensation = 50;
+  gdouble oddAngle = angle;
 
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &xmin,
@@ -252,6 +253,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   GtkArg args[2];
   gdouble link_size;
   struct timeval diff;
+  GdkColor color;
+  guint32 baseColor;
+  guint looper = 0, r, g, b, av;
+  gdouble age = 0.0;
 
   link = canvas_link->link;
 
@@ -261,11 +266,18 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   if (link->packets)
     update_packet_list (link->packets, LINK);
 
+  gdk_color_parse (get_prot_color (link->main_prot), &color);
+  baseColor = ((color.red & 0xFF00) << 16) |
+    ((color.green & 0xFF00) << 8) |
+    (color.blue & 0xFF00) |
+    0xFF;
+
   if (link->n_packets == 0)
     {
       diff = substract_times (now, link->last_time);
+      age = diff.tv_sec + diff.tv_usec / 1000000.0;
 
-      if (((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
+      if (((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
 	  && link_timeout_time)
 	{
 
@@ -347,14 +359,36 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
+  while (looper++ < age)
+    {				// fade color
+
+      r = (((unsigned char *) &baseColor)[3]);
+      g = (((unsigned char *) &baseColor)[2]);
+      b = (((unsigned char *) &baseColor)[1]);
+      av = (r + g + b * 2) / 5;
+      ((char *) &baseColor)[3] = (char) (0.9 * r + 0.1 * av);
+      ((char *) &baseColor)[2] = (char) (0.9 * g + 0.1 * av);
+      ((char *) &baseColor)[1] = (char) (0.9 * b + 0.1 * av);
+
+    }
+
+
+
 
   link_size = get_link_size (link->average);
 
-  gnome_canvas_item_set (canvas_link->link_item,
-			 "points", points,
-			 "fill_color", get_prot_color (link->main_prot),
-			 "width_units", link_size,
-			 NULL);
+  if (nofade)
+    gnome_canvas_item_set (canvas_link->link_item,
+			   "points", points,
+			   "fill_color", get_prot_color (link->main_prot),
+			   "width_units", link_size,
+			   NULL);
+  else
+    gnome_canvas_item_set (canvas_link->link_item,
+			   "points", points,
+			   "fill_color_rgba", baseColor,
+			   "width_units", link_size,
+			   NULL);
 
   gnome_canvas_points_unref (points);
 
@@ -381,7 +415,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
     {
       diff = substract_times (now, node->last_time);
 
-      if (((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time)
+      if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
 	  && node_timeout_time)
 	{
 
@@ -735,6 +769,14 @@ init_diagram (GtkWidget * app1)
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
+
+  node_timeout_time = 60000000.0;
+
+  if (nofade)
+    link_timeout_time = 5000000.0;
+  else
+    link_timeout_time = 60000000.0;
+
 
   /* Updates controls from values of variables */
   scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));

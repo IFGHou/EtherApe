@@ -33,6 +33,7 @@ gboolean numeric = 0;
 gboolean dns = 1;
 gboolean diagram_only = 0;
 gboolean fix_overlap = 0;
+gboolean nofade = 0;
 gchar *interface;
 guint32 refresh_period = 800;
 gint diagram_timeout;
@@ -70,6 +71,9 @@ main (int argc, char *argv[])
     },
     {"no-overlap", 'o', POPT_ARG_NONE, &fix_overlap, 0,
      _ ("makes diagram more readable when it is crowded"), NULL
+    },
+    {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
+     _ ("do not fade old links"), NULL
     },
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
      _ ("set the node color"), _ ("color")
