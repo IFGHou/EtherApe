@@ -1,6 +1,9 @@
 Juan Toledo	<toledo@users.sourceforge.net>
   Original Author
 
+Vincent van Adrighem	<vincent@dirck.mine.nu>
+  Dutch translation
+
 Bill Barth	<bbarth@users.sourceforge.net>
   Code for static mode
 
@@ -25,6 +28,13 @@ Jasper Wallace	<jasper@pointless.net>
 Ted Wright	<ted.wright@grc.nasa.gov>
   non-overlapping display mode, link fading
 
-  
+UNKNOWN	
+  EtherApe icon (Anybody knows who the author is?)
+
+
+If you have contributed in any way to the development
+of EtherApe and you are not properly credited, please
+tell me so that I can fix my mistake.
+
 --
 $Id$
