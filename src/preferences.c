@@ -310,11 +310,69 @@ void
 on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data)
 {
   static GtkWidget *protocol_edit_dialog = NULL;
+  static GtkWidget *color_clist = NULL;
+  static GtkWidget *protocol_entry = NULL;
+  gint row_number;
+  gchar *protocol_string;
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+
+  /* Return if no row was selected */
+  if (!
+      (row_number =
+       GPOINTER_TO_INT (gtk_object_get_data
+			(GTK_OBJECT (color_clist), "row"))))
+    return;
+
+  if (!gtk_clist_get_text
+      (GTK_CLIST (color_clist), row_number - 1, 1, &protocol_string))
+    {
+      g_warning (_("Couldn't read text from color list!"));
+      return;
+    }
+
   if (!protocol_edit_dialog)
     protocol_edit_dialog = glade_xml_get_widget (xml, "protocol_edit_dialog");
+  if (!protocol_entry)
+    protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
+
+  gtk_editable_delete_text (GTK_EDITABLE (protocol_entry), 0, -1);
+  gtk_editable_insert_text (GTK_EDITABLE (protocol_entry), protocol_string,
+			    strlen (protocol_string), &row_number);
+
   gtk_widget_show (protocol_edit_dialog);
 }				/* on_protocol_edit_button_clicked */
 
+void
+on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
+{
+  static GtkWidget *color_clist = NULL;
+  static GtkWidget *protocol_entry = NULL;
+  GtkWidget *widget;
+  gint row_number;
+  gchar *protocol_string;
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+  if (!protocol_entry)
+    protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
+
+  row_number =
+    GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
+
+  protocol_string =
+    gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
+
+  gtk_clist_set_text (GTK_CLIST (color_clist), row_number - 1, 1,
+		      protocol_string);
+
+  widget = glade_xml_get_widget (xml, "protodol_gnome_entry");
+  update_history (GNOME_ENTRY (widget), protocol_string, FALSE);
+
+  g_free (protocol_string);
+
+}				/* on_protocol_edit_ok_clicked */
 
 void
 on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
@@ -381,6 +439,7 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
       gtk_clist_set_cell_style (GTK_CLIST (color_clist), 0, 0, style);
     }
 
+  gtk_widget_hide (colorseldiag);
 }
 
 void
