@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,10 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
   entry = GTK_EDITABLE (glade_xml_get_widget (xml, "filter_entry"));
   gtk_editable_delete_text (entry, 0, -1);
-  gtk_editable_insert_text (entry, filter, strlen (filter), &position);
+  if (filter)
+    gtk_editable_insert_text (entry, filter, strlen (filter), &position);
+  else
+    gtk_editable_insert_text (entry, "", 0, &position);
   gtk_widget_show (diag_pref);
   gdk_window_raise (diag_pref->window);
 }
@@ -124,7 +127,7 @@ on_cancel_button1_clicked (GtkButton * button, gpointer user_data)
   GtkWidget *fontsel;
   fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
   gtk_widget_hide (fontsel);
-}
+}				/* on_cancel_button1_clicked */
 
 
 void
@@ -145,7 +148,7 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
       g_free (str);
       need_reposition = TRUE;
     }
-}
+}				/* on_apply_button1_clicked */
 
 void
 on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
@@ -157,7 +160,7 @@ on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
    * must much the enumaration values */
   size_mode = g_list_index (menu_shell->children, active_item);
 
-}
+}				/* on_size_mode_menu_selected */
 
 void
 on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
@@ -167,13 +170,13 @@ on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
   active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
   stack_level = g_list_index (menu_shell->children, active_item);
 
-}
+}				/* on_stack_level_menu_selected */
 
 void
 on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   save_config ("/Etherape/");
-}
+}				/* on_save_pref_button_clicked */
 
 
 void
@@ -184,7 +187,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
   diagram_only = gtk_toggle_button_get_active (togglebutton);
   need_reposition = TRUE;
 
-}
+}				/* on_diagram_only_toggle_toggled */
 
 
 void
@@ -193,28 +196,27 @@ on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
   on_apply_pref_button_clicked (button, NULL);
   gtk_widget_hide (diag_pref);
 
-}
+}				/* on_ok_pref_button_clicked */
 
 void
 on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  GtkWidget *widget;
+  GtkWidget *widget = NULL;
+
   widget = glade_xml_get_widget (xml, "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
-  /* TODO should only be done if the filter is not already
-   * in the history */
-  gnome_entry_prepend_history (GNOME_ENTRY (widget), TRUE, filter);
-  gnome_entry_save_history (GNOME_ENTRY (widget));
 
-}
+  update_history (GNOME_ENTRY (widget), filter, FALSE);
+
+}				/* on_apply_pref_button_clicked */
 
 void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   gtk_widget_hide (diag_pref);
 
-}
+}				/* on_cancel_pref_button_clicked */
 
 /* Makes a new filter */
 void
@@ -231,4 +233,4 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
   /* TODO We should look at the error code from set_filter and pop
    * up a window accordingly */
   set_filter (filter, NULL);
-}
+}				/* on_filter_entry_changed */
