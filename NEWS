@@ -1,3 +1,9 @@
+Overview of changes in Ethereal 0.0.7:
+* First version showing links among nodes
+* Aborts gracefully if run by non-root.
+* http://etherape.sourceforge.net has a screenshot.
+* Expect proper node size and link width calculation in 0.0.8
+
 Overview of changes in Ethereal 0.0.6:
 * Copied proper libpcap autoconfigure detection function from ethereal
 * Added ethernet address resolution functions from ethereal
