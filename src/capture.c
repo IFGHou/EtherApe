@@ -341,7 +341,6 @@ start_capture (void)
   else
     {
       g_my_debug (_("Starting offline capture"));
-      end_of_file = FALSE;
       capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					   1,
 					   (GtkFunction) get_offline_packet,
@@ -377,8 +376,6 @@ pause_capture (void)
       g_my_debug (_("Pausing offline capture"));
       if (!end_of_file)
 	{
-	  end_of_file = TRUE;	/* Otherwise a new timeout would be
-				 * created automatically */
 	  if (!g_source_remove (capture_source))
 	    {
 	      g_warning (_("Error while trying to pause capture"));
@@ -415,8 +412,6 @@ stop_capture (void)
       g_my_debug (_("Stopping offline capture"));
       if (!end_of_file)
 	{
-	  end_of_file = TRUE;	/* Otherwise a new timeout would be
-				 * created automatically */
 	  if (!g_source_remove (capture_source))
 	    {
 	      g_warning (_
@@ -506,7 +501,7 @@ static void
 cap_t_o_destroy (gpointer data)
 {
 
-  if (!end_of_file)
+  if ((status == PLAY) && !end_of_file)
     capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					 ms_to_next,
 					 (GtkFunction) get_offline_packet,

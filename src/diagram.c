@@ -202,26 +202,29 @@ update_diagram (GtkWidget * canvas)
   guint32 diff_msecs;
   node_t *new_node = NULL;
   static gboolean already_updating = FALSE;
+   
+  if (status == PAUSE)
+    return FALSE;
 
+  if (end_of_file && status != STOP)
+    gui_pause_capture ();
 
-  /* It could happen that during an intensive calculation, in order
+  /* 
+   * It could happen that during an intensive calculation, in order
    * to update the GUI and make the application responsive gtk_main_iteration
    * is called. But that could also trigger this very function's timeout.
    * If we let it run twice many problems could come up. Thus,
-   * we are preventing it with the already_updating variable */
+   * we are preventing it with the already_updating variable
+   */
 
   if (already_updating)
     {
       g_my_debug ("update_diagram called while already updating");
       return FALSE;
     }
-  if (status == PAUSE)
-    return FALSE;
-
+   
   already_updating = TRUE;
 
-  if (end_of_file && status != STOP)
-    gui_pause_capture ();
 
   gettimeofday (&now, NULL);
 
