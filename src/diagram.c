@@ -179,8 +179,6 @@ update_diagram (GtkWidget * canvas)
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
 
-  g_mem_profile ();
-
   gettimeofday (&now, NULL);
 
   /* We search for new protocols */
@@ -208,6 +206,7 @@ update_diagram (GtkWidget * canvas)
     }
   while (n_nodes_before != n_nodes_after);
 
+#if 1
   /* Limit the number of nodes displayed, if a limit has been set */
   limit_nodes ();
 
@@ -254,7 +253,7 @@ update_diagram (GtkWidget * canvas)
   if ((last_time.tv_sec == 0) && (last_time.tv_usec == 0))
     last_time = now;
 
-  /* TODO I'm trying to force canvas redraw with this. Is it working? */
+  /* Force redraw */
   while (gtk_events_pending ())
     gtk_main_iteration ();
 
@@ -271,6 +270,7 @@ update_diagram (GtkWidget * canvas)
     status_string = g_string_append (status_string, _(". TIMEOUT."));
   g_my_debug (status_string->str);
   g_string_free (status_string, TRUE);
+  status_string = NULL;
 
   if (!is_idle)
     {
@@ -288,8 +288,7 @@ update_diagram (GtkWidget * canvas)
 	  return FALSE;		/* removes the idle */
 	}
     }
-
-
+#endif
   return TRUE;			/* Keep on calling this function */
 
 }				/* update_diagram */
@@ -326,7 +325,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
       return;
     }
 
-  /* g_message ("Not found. Creating item"); */
+  g_my_debug ("Not found. Creating item");
 
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
@@ -338,10 +337,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
    * I feel this is ugly, but it's late and I don't feel like
    * cleaning this up :-) */
   if (!first)
-    {
-      /*gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1); */
-      n_rows++;
-    }
+    n_rows++;
+
   first = FALSE;
 
   /* Then we add the new label widgets */
@@ -513,7 +510,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   node = canvas_node->node;
 
   /* First we check whether the link has timed out */
+#if 1
   node = update_node (node);
+#endif
 
   /* If the node has timed out, we delete the canvas_node */
   if (!node)
