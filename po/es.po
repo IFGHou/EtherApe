@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-04-20 00:54+0200\n"
+"POT-Creation-Date: 2001-04-21 04:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -372,7 +372,8 @@ msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 #: src/capture.c:114
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
-msgstr ""
+msgstr "No se pueden abrir a la vez %s y el dispositivo %s. Por favor, "
+"escoja uno."
 
 # src/capture.c:922
 # src/capture.c:924
@@ -509,7 +510,7 @@ msgstr "Imposible instalar el filtro (%s)."
 
 #: src/capture.c:322
 msgid "Status not PAUSE or STOP at start_capture"
-msgstr ""
+msgstr "Status no es PAUSE ni STOP en start_capture"
 
 # src/interface.c:786
 # src/interface.c:786
@@ -543,7 +544,7 @@ msgstr "Comenzar captura"
 
 #: src/capture.c:352
 msgid "Status not PLAY at pause_capture"
-msgstr ""
+msgstr "Status no es PLAY en pause_capture"
 
 # src/interface.c:786
 # src/interface.c:786
@@ -584,7 +585,7 @@ msgstr "Error al intentar parar la captura"
 
 #: src/capture.c:387
 msgid "Status not PLAY or PAUSE at stop_capture"
-msgstr ""
+msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
 # src/interface.c:786
 # src/interface.c:786
@@ -638,7 +639,7 @@ msgstr "Error al intentar parar la captura"
 #. TODO Write proper assertion code here
 #: src/capture.c:575
 msgid "Reached default in get_node_id"
-msgstr ""
+msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:749
 # src/capture.c:751
@@ -702,7 +703,7 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:777
 # src/capture.c:813
 # src/capture.c:832
-#: src/capture.c:861
+#: src/capture.c:855
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
@@ -719,7 +720,7 @@ msgstr "Borrando nodo: %s. Número de nodos: %d"
 # src/capture.c:846
 # src/capture.c:882
 # src/capture.c:901
-#: src/capture.c:990
+#: src/capture.c:984
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
@@ -736,9 +737,9 @@ msgstr "Borrando enlace: %s-%s. Número de enlaces: %d"
 # src/capture.c:1064
 # src/capture.c:1101
 # src/capture.c:1120
-#: src/capture.c:1230
+#: src/capture.c:1216
 msgid "Null packet in check_packet"
-msgstr ""
+msgstr "Paquete nulo en check_packet"
 
 # src/interface.c:107
 # src/interface.c:106
@@ -780,11 +781,11 @@ msgstr "Captura"
 
 #: src/glade-strings:9
 msgid "_Mode"
-msgstr ""
+msgstr "_Modo"
 
 #: src/glade-strings:10
 msgid "Set FDDI mode"
-msgstr ""
+msgstr "Activar modo FDDI"
 
 #: src/glade-strings:11
 msgid "_FDDI"
@@ -792,7 +793,7 @@ msgstr ""
 
 #: src/glade-strings:12
 msgid "Set Ethernet mode"
-msgstr ""
+msgstr "Activar modo Ethernet"
 
 # src/interface.c:107
 # src/interface.c:106
@@ -834,7 +835,7 @@ msgstr ""
 
 #: src/glade-strings:16
 msgid "Set TCP mode"
-msgstr ""
+msgstr "Activar modo TCP"
 
 #: src/glade-strings:17
 msgid "_TCP"
@@ -842,7 +843,7 @@ msgstr ""
 
 #: src/glade-strings:18
 msgid "Set UDP mode"
-msgstr ""
+msgstr "Activar modo UDP"
 
 #: src/glade-strings:19
 msgid "_UDP"
@@ -850,7 +851,7 @@ msgstr ""
 
 #: src/glade-strings:20
 msgid "_Interfaces"
-msgstr ""
+msgstr "_Interfaces"
 
 #: src/glade-strings:21
 msgid "dummy-interface"
@@ -895,7 +896,7 @@ msgstr "Comenzar captura"
 
 #: src/glade-strings:25
 msgid "_Pause"
-msgstr ""
+msgstr "_Pausa"
 
 # src/interface.c:786
 # src/interface.c:786
@@ -1018,7 +1019,7 @@ msgstr "Comenzar"
 
 #: src/glade-strings:37
 msgid "Pause"
-msgstr ""
+msgstr "Pausa"
 
 # src/glade-strings:11 src/glade-strings:21
 # src/glade-strings:11 src/glade-strings:21
@@ -1183,7 +1184,7 @@ msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
 
 #: src/glade-strings:51
 msgid "Information"
-msgstr ""
+msgstr "Información"
 
 # src/interface.c:517
 # src/interface.c:517
@@ -1303,15 +1304,15 @@ msgstr ""
 
 #: src/glade-strings:60
 msgid "Linear"
-msgstr ""
+msgstr "Lineal"
 
 #: src/glade-strings:61
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logarítmico"
 
 #: src/glade-strings:62
 msgid "Square Root"
-msgstr ""
+msgstr "Raiz Cuadrada"
 
 # src/interface.c:709
 # src/interface.c:711
@@ -1394,23 +1395,23 @@ msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
 
 #: src/glade-strings:69
 msgid "Topmost recognized protocol"
-msgstr ""
+msgstr "Protocolo más alto reconocido"
 
 #: src/glade-strings:70
 msgid "Level 2 (Eg: ETH_II)"
-msgstr ""
+msgstr "Nivel 2 (ej. ETH_II)"
 
 #: src/glade-strings:71
 msgid "Level 3 (Eg: IP)"
-msgstr ""
+msgstr "Nivel 3 (ej. IP)"
 
 #: src/glade-strings:72
 msgid "Level 4 (Eg: TCP)"
-msgstr ""
+msgstr "Nivel 4 (ej. TCP)"
 
 #: src/glade-strings:73
 msgid "Level 5 (Eg: HTTP)"
-msgstr ""
+msgstr "Nivel 5 (ej. HTTP)"
 
 # src/interface.c:745
 # src/interface.c:808
@@ -1571,7 +1572,7 @@ msgstr "Seleccione tipo de fuente"
 
 #: src/glade-strings:85
 msgid "EtherApe: Open Capture File"
-msgstr ""
+msgstr "EtherApe: Abrir archivo de captura"
 
 # src/main.c:70
 # src/main.c:70
@@ -1653,7 +1654,7 @@ msgstr "_Archivo Nuevo"
 
 #: src/glade-strings:91
 msgid "Filter:"
-msgstr ""
+msgstr "Filtro:"
 
 # src/glade-strings:38
 # src/glade-strings:41
