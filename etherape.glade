@@ -232,7 +232,7 @@
 		<last_modification_time>Wed, 15 Mar 2000 20:59:38 GMT</last_modification_time>
 	      </signal>
 	      <label>_Toolbar</label>
-	      <active>True</active>
+	      <active>False</active>
 	      <always_show_toggle>False</always_show_toggle>
 	    </widget>
 
@@ -321,6 +321,7 @@
       <class>GnomeDockItem</class>
       <name>dock_toolbar</name>
       <border_width>1</border_width>
+      <visible>False</visible>
       <placement>GNOME_DOCK_TOP</placement>
       <band>1</band>
       <position>0</position>
