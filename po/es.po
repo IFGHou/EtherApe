@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-14 02:20+0200\n"
+"POT-Creation-Date: 2001-06-22 10:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,8 +157,8 @@ msgstr ""
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
-#: src/info_windows.c:220 src/info_windows.c:541 src/main.c:162 src/menus.c:34
-#: src/menus.c:375
+#: src/info_windows.c:221 src/info_windows.c:542 src/main.c:162 src/menus.c:34
+#: src/menus.c:379
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -545,7 +545,7 @@ msgstr "Dispositivos de captura disponibles:"
 # src/menus.c:211
 # src/menus.c:211
 # src/menus.c:211
-#: src/menus.c:211
+#: src/menus.c:213
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Interfaz de captura fijado a %s en el GUI"
@@ -553,7 +553,7 @@ msgstr "Interfaz de captura fijado a %s en el GUI"
 # src/menus.c:262
 # src/menus.c:262
 # src/menus.c:262
-#: src/menus.c:282
+#: src/menus.c:285
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modo fijado en %s en el GUI"
@@ -563,7 +563,7 @@ msgstr "Modo fijado en %s en el GUI"
 # src/menus.c:429
 # src/menus.c:429
 # src/menus.c:429
-#: src/menus.c:452
+#: src/menus.c:457
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
@@ -571,14 +571,14 @@ msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 # src/menus.c:523
 # src/menus.c:523
 #. Sets the appbar
-#: src/menus.c:546
+#: src/menus.c:551
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
 # src/menus.c:530 src/menus.c:648
-#: src/menus.c:553 src/menus.c:685
+#: src/menus.c:558 src/menus.c:702
 msgid "default interface"
 msgstr "interfaz por defecto"
 
@@ -587,7 +587,7 @@ msgstr "interfaz por defecto"
 # src/glade-strings:10
 # src/glade-strings:10
 # src/glade-strings:10
-#: src/menus.c:558
+#: src/menus.c:563
 msgid " in Token Ring mode"
 msgstr " en modo Token Ring"
 
@@ -596,7 +596,7 @@ msgstr " en modo Token Ring"
 # src/menus.c:535
 # src/menus.c:535
 # src/menus.c:535
-#: src/menus.c:561
+#: src/menus.c:566
 msgid " in FDDI mode"
 msgstr " en modo FDDI"
 
@@ -605,7 +605,7 @@ msgstr " en modo FDDI"
 # src/menus.c:538
 # src/menus.c:538
 # src/menus.c:538
-#: src/menus.c:564
+#: src/menus.c:569
 msgid " in Ethernet mode"
 msgstr " en modo Ethernet"
 
@@ -626,7 +626,7 @@ msgstr " en modo Ethernet"
 # src/menus.c:541
 # src/menus.c:541
 # src/menus.c:541
-#: src/menus.c:567
+#: src/menus.c:572
 msgid " in IP mode"
 msgstr " en modo IP"
 
@@ -635,7 +635,7 @@ msgstr " en modo IP"
 # src/menus.c:544
 # src/menus.c:544
 # src/menus.c:544
-#: src/menus.c:570
+#: src/menus.c:575
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
@@ -644,7 +644,7 @@ msgstr " en modo TCP"
 # src/menus.c:547
 # src/menus.c:547
 # src/menus.c:547
-#: src/menus.c:573
+#: src/menus.c:578
 msgid " in UDP mode"
 msgstr " en modo UDP"
 
@@ -665,7 +665,7 @@ msgstr " en modo UDP"
 # src/menus.c:557
 # src/menus.c:557
 # src/menus.c:557
-#: src/menus.c:583
+#: src/menus.c:588
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
@@ -674,7 +674,7 @@ msgstr "Diagrama iniciado"
 # src/menus.c:570
 # src/menus.c:570
 # src/menus.c:570
-#: src/menus.c:596
+#: src/menus.c:601
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
@@ -684,7 +684,7 @@ msgstr "Status no es PLAY en gui_pause_capture"
 # src/menus.c:593
 # src/menus.c:593
 #. Sets the appbar
-#: src/menus.c:625
+#: src/menus.c:630
 msgid "Paused"
 msgstr "Pausado"
 
@@ -705,7 +705,7 @@ msgstr "Pausado"
 # src/menus.c:598
 # src/menus.c:598
 # src/menus.c:598
-#: src/menus.c:630
+#: src/menus.c:635
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
@@ -714,7 +714,7 @@ msgstr "Diagrama pausado"
 # src/menus.c:612
 # src/menus.c:612
 # src/menus.c:612
-#: src/menus.c:644
+#: src/menus.c:661
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 
@@ -736,7 +736,7 @@ msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 # src/menus.c:641
 # src/menus.c:641
 #. Sets the appbar
-#: src/menus.c:678
+#: src/menus.c:695
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
 
@@ -757,7 +757,7 @@ msgstr "Listo para capturar de "
 # src/menus.c:653
 # src/menus.c:653
 # src/menus.c:653
-#: src/menus.c:690
+#: src/menus.c:707
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
@@ -769,14 +769,14 @@ msgstr "Diagrama parado"
 # src/diagram.c:288
 # src/diagram.c:288
 # src/diagram.c:299
-#: src/diagram.c:318
+#: src/diagram.c:309
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
 # src/diagram.c:292
 # src/diagram.c:292
 # src/diagram.c:303
-#: src/diagram.c:322
+#: src/diagram.c:313
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
@@ -784,14 +784,14 @@ msgstr ". Periodo de refresco: %d"
 # src/diagram.c:294
 # src/diagram.c:294
 # src/diagram.c:305
-#: src/diagram.c:328
+#: src/diagram.c:319
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
 # src/diagram.c:296
 # src/diagram.c:296
 # src/diagram.c:307
-#: src/diagram.c:330
+#: src/diagram.c:321
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
@@ -812,20 +812,20 @@ msgstr ". TIMEOUT."
 # src/diagram.c:481
 # src/diagram.c:481
 # src/diagram.c:495
-#: src/diagram.c:567
+#: src/diagram.c:559
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:557
-#: src/diagram.c:644
+#: src/diagram.c:636
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
 # src/diagram.c:566
 # src/diagram.c:566
 # src/diagram.c:582
-#: src/diagram.c:669
+#: src/diagram.c:661
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
@@ -846,20 +846,20 @@ msgstr "Valor desconocido en node_size_variable"
 # src/diagram.c:881
 # src/diagram.c:881
 # src/diagram.c:902
-#: src/diagram.c:1003
+#: src/diagram.c:995
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:963
-#: src/diagram.c:1069
+#: src/diagram.c:1061
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
 # src/diagram.c:1217
 # src/diagram.c:1217
 # src/diagram.c:1240
-#: src/diagram.c:1215
+#: src/diagram.c:1207
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
@@ -867,7 +867,7 @@ msgstr "Protocolo principal del enlace: %s"
 # src/diagram.c:1220
 # src/diagram.c:1220
 # src/diagram.c:1243
-#: src/diagram.c:1218
+#: src/diagram.c:1210
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -2566,28 +2566,28 @@ msgstr "Nodos"
 # src/diagram.c:1118
 # src/diagram.c:1118
 # src/diagram.c:1141
-#: src/info_windows.c:322
+#: src/info_windows.c:323
 msgid "No node_id in on_node_info_delete_event"
 msgstr "No node_id en on_node_info_delete_event"
 
 # src/diagram.c:1125
 # src/diagram.c:1125
 # src/diagram.c:1148
-#: src/info_windows.c:329
+#: src/info_windows.c:330
 msgid "No node_info_window in on_node_info_delete_event"
 msgstr "No node_info_window en on_node_info_delete_event"
 
 # src/diagram.c:1118
 # src/diagram.c:1118
 # src/diagram.c:1141
-#: src/info_windows.c:351
+#: src/info_windows.c:352
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "No prot_name en on_prot_info_delete_event"
 
 # src/diagram.c:1125
 # src/diagram.c:1125
 # src/diagram.c:1148
-#: src/info_windows.c:358
+#: src/info_windows.c:359
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "No prot_info_window en on_prot_info_delete_event"
 
@@ -2595,23 +2595,23 @@ msgstr "No prot_info_window en on_prot_info_delete_event"
 # src/diagram.c:1150
 # src/diagram.c:1150
 # src/diagram.c:1173
-#: src/info_windows.c:381
+#: src/info_windows.c:382
 msgid "No info available"
 msgstr "No hay información disponible"
 
 #. Meaning "n seconds" ago
-#: src/info_windows.c:753
+#: src/info_windows.c:754
 #, c-format
 msgid "%d\" ago"
 msgstr "hace %d\""
 
-#: src/info_windows.c:759
+#: src/info_windows.c:760
 #, c-format
 msgid "%d'%d\" ago"
 msgstr "hace %d'%d\""
 
 #. Watch out! The first is month, the second day of the month
-#: src/info_windows.c:771
+#: src/info_windows.c:772
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"

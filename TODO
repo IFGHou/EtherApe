@@ -14,6 +14,9 @@ User visible features:
 
 Issues in the source code
 -------------------------
+
+  * gui_start_capture and gui_pause_capture should return an
+    error code that should be handled (as with gui_stop_capture)
  
   * Generalize a way to return error messages from capture.c
   
