@@ -86,14 +86,11 @@ init_diagram ()
   widget = glade_xml_get_widget (xml, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
-  gnome_entry_load_history (GNOME_ENTRY (widget));
   widget = glade_xml_get_widget (xml, "file_filter_entry");
-  gnome_entry_load_history (GNOME_ENTRY (widget));
   widget = glade_xml_get_widget (xml, "fileentry");
   widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
-  gnome_entry_load_history (GNOME_ENTRY (widget));
 
-  load_color_clist ();		/* Updates the color preferences table with pref.colors */
+  load_color_list ();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
@@ -374,16 +371,12 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   protocol_t *legend_protocol = NULL;
   GtkWidget *prot_table;
   GtkWidget *label;
-  GtkArg args[2];
   GtkStyle *style;
   gchar *color_string;
-  guint n_rows, n_columns;
+  guint n_rows = 1, n_columns = 1;
   static gboolean first = TRUE;
 
-  args[0].name = "n_rows";
-  args[1].name = "n_columns";
-
-  /* First, we check whether the diagram already knows about this protocol,
+   /* First, we check whether the diagram already knows about this protocol,
    * checking whether it is shown on the legend. */
   /*  g_message ("Looking for %s", protocol->name); */
   if ((protocol_item = g_list_find_custom (legend_protocols,
@@ -401,9 +394,9 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
   prot_table = glade_xml_get_widget (xml, "prot_table");
-  gtk_object_getv (GTK_OBJECT (prot_table), 2, args);
-  n_rows = args[0].d.int_data;
-  n_columns = args[0].d.int_data;
+  g_object_get (G_OBJECT (prot_table), "n_rows", &n_rows, "n_columns",
+		&n_columns, NULL);
+
   /* Glade won't let me define a 0 row table
    * I feel this is ugly, but it's late and I don't feel like
    * cleaning this up :-) */
@@ -428,7 +421,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
   gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1);
-  gtk_container_queue_resize (GTK_CONTAINER (app1));
+  gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 
   color_string = get_prot_color (protocol->name);
@@ -504,7 +497,6 @@ get_prot_color (gchar * name)
   static gchar *color = NULL;
   static gchar *protocol = NULL;
   gint i = 0;
-
 
   /* Default is to assign the next color in cycle as long
    * as cycling assigned protocols is set.
@@ -583,14 +575,13 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 				 "x2", 0.0,
 				 "y1", 0.0,
 				 "y2", 0.0,
-				 "fill_color",
-				 pref.node_color,
-				 "outline_color",
-				 "black", "width_pixels", 0, NULL);
+				 "fill_color", pref.node_color,
+				 "outline_color", "black",
+				 "width_pixels", 0, NULL);
       gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
       new_canvas_node->text_item =
-	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT, "text",
-			       node->name->str,
+	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
+			       "text", node->name->str,
 			       "x", 0.0,
 			       "y", 0.0,
 			       "anchor", GTK_ANCHOR_CENTER,
@@ -634,12 +625,12 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  GtkArg args[1];
   GList *protocol_item;
   protocol_t *protocol = NULL;
   static clock_t start = 0;
   clock_t end;
   gdouble cpu_time_used;
+  char *nametmp = NULL;
 
   /* We don't need this anymore since now update_nodes is called in update_diagram */
 #if 0
@@ -748,9 +739,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   /*TODO why is it exactly that sometimes it is NULL? */
   if (canvas_node->text_item)
     {
-      args[0].name = "text";
-      gtk_object_getv (GTK_OBJECT (canvas_node->text_item), 1, args);
-      if (strcmp (args[0].d.string_data, node->name->str))
+      g_object_get (G_OBJECT (canvas_node->text_item), "text", &nametmp,
+		    NULL);
+      if (strcmp (nametmp, node->name->str))
 	{
 	  gnome_canvas_item_set (canvas_node->text_item,
 				 "text", node->name->str, NULL);
@@ -758,7 +749,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 	}
 
       /* Memprof is telling us that we have to free the string */
-      g_free (args[0].d.string_data);
+      g_free (nametmp);
     }
 
   /* Processor time check. If too much time has passed, update the GUI */
@@ -1084,11 +1075,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   canvas_node_t *canvas_node;
   GList *protocol_item;
   protocol_t *protocol = NULL;
-  GtkArg args[2];
   gdouble link_size, versorx, versory, modulus;
   struct timeval diff;
   guint32 scaledColor;
   gdouble scale;
+  double dx, dy;		/* temporary */
 
 /* We used to run update_link here, but that was a major performance penalty, and now it is done in update_diagram */
   link = g_tree_lookup (links, link_id);
@@ -1127,8 +1118,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
 
-  args[0].name = "x";
-  args[1].name = "y";
 
   points = gnome_canvas_points_new (3);
 
@@ -1145,9 +1134,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       gnome_canvas_points_unref (points);
       return FALSE;
     }
-  gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
-  points->coords[0] = args[0].d.double_data;
-  points->coords[1] = args[1].d.double_data;
+  g_object_get (G_OBJECT (canvas_node->group_item), "x", &points->coords[0],
+		"y", &points->coords[1], NULL);
 
   /* We get coords from source node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id);
@@ -1157,17 +1145,18 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       gnome_canvas_points_unref (points);
       return FALSE;
     }
-  gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
 
-  versorx = -(points->coords[1] - args[1].d.double_data);
-  versory = points->coords[0] - args[0].d.double_data;
+    g_object_get (G_OBJECT (canvas_node->group_item), "x", &dx, "y", &dy, NULL);
+  versorx = -(points->coords[1] - dy);
+  versory = points->coords[0] - dx;
+
   modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
   link_size = get_link_size (link->average) / 2;
 
-  points->coords[2] = args[0].d.double_data + (versorx / modulus) * link_size;
-  points->coords[3] = args[1].d.double_data + (versory / modulus) * link_size;
-  points->coords[4] = args[0].d.double_data - (versorx / modulus) * link_size;
-  points->coords[5] = args[1].d.double_data - (versory / modulus) * link_size;
+  points->coords[2] = dx + (versorx / modulus) * link_size;
+  points->coords[3] = dy + (versory / modulus) * link_size;
+  points->coords[4] = dx - (versorx / modulus) * link_size;
+  points->coords[5] = dy - (versory / modulus) * link_size;
 
   /* TODO What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
@@ -1376,7 +1365,8 @@ popup_to (struct popup_data *pd)
   GtkLabel *label;
   gchar *str;
 
-  xml_popup = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_popup");
+  xml_popup =
+    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_popup", NULL);
   glade_xml_signal_autoconnect (xml);
   pd->node_popup = glade_xml_get_widget (xml_popup, "node_popup");
 

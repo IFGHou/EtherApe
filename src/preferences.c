@@ -196,13 +196,6 @@ on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
 }				/* on_stack_level_menu_selected */
 
 void
-on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
-{
-  save_config ("/Etherape/");
-}				/* on_save_pref_button_clicked */
-
-
-void
 on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
@@ -249,13 +242,16 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
 
   widget = glade_xml_get_widget (xml, "filter_entry");
   on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = glade_xml_get_widget (xml, "filter_gnome_entry");
+  widget = glade_xml_get_widget (xml, "");
 
-  update_history (GNOME_ENTRY (widget), pref.filter, FALSE);
+  /* add proto name to history */
+  gnome_entry_append_history(GNOME_ENTRY(glade_xml_get_widget (xml, "filter_gnome_entry")),
+                             FALSE,
+                             pref.filter);
 
   if (colors_changed)
     {
-      color_clist_to_pref ();
+      color_list_to_pref ();
       delete_gui_protocols ();
       colors_changed = FALSE;
     }
@@ -267,6 +263,14 @@ on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
   gtk_widget_hide (diag_pref);
 
 }				/* on_cancel_pref_button_clicked */
+
+void
+on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
+{
+  on_apply_pref_button_clicked (button, user_data); /* to save we simulate apply */
+  save_config ("/Etherape/");
+}				/* on_save_pref_button_clicked */
+
 
 /* Makes a new filter */
 void
@@ -284,287 +288,6 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
    * up a window accordingly */
   set_filter (pref.filter, NULL);
 }				/* on_filter_entry_changed */
-
-void
-on_color_add_button_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *colorseldiag = NULL;
-  if (!colorseldiag)
-    colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
-  gtk_widget_show (colorseldiag);
-}				/* on_color_add_button_clicked */
-
-void
-on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *color_clist = NULL;
-  gint row_number;
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-
-  if (!
-      (row_number =
-       GPOINTER_TO_INT (gtk_object_get_data
-			(GTK_OBJECT (color_clist), "row"))))
-    return;
-
-  gtk_clist_remove (GTK_CLIST (color_clist), row_number - 1);
-
-  /*
-   * We have removed the selected row. We'll make sure a new row has to be selected
-   * before more are deleted
-   */
-  gtk_object_set_data (GTK_OBJECT (color_clist), "row", GINT_TO_POINTER (0));
-
-  colors_changed = TRUE;
-
-}				/* on_color_remove_button_clicked */
-
-void
-on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *protocol_edit_dialog = NULL;
-  static GtkWidget *color_clist = NULL;
-  static GtkWidget *protocol_entry = NULL;
-  gint row_number;
-  gchar *protocol_string;
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-
-  /* Return if no row was selected */
-  if (!
-      (row_number =
-       GPOINTER_TO_INT (gtk_object_get_data
-			(GTK_OBJECT (color_clist), "row"))))
-    return;
-
-  if (!gtk_clist_get_text
-      (GTK_CLIST (color_clist), row_number - 1, 1, &protocol_string))
-    {
-      g_warning (_("Couldn't read text from color list!"));
-      return;
-    }
-
-  if (!protocol_edit_dialog)
-    protocol_edit_dialog = glade_xml_get_widget (xml, "protocol_edit_dialog");
-  if (!protocol_entry)
-    protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
-
-  gtk_editable_delete_text (GTK_EDITABLE (protocol_entry), 0, -1);
-  gtk_editable_insert_text (GTK_EDITABLE (protocol_entry), protocol_string,
-			    strlen (protocol_string), &row_number);
-
-  gtk_widget_show (protocol_edit_dialog);
-}				/* on_protocol_edit_button_clicked */
-
-void
-on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *color_clist = NULL;
-  static GtkWidget *protocol_entry = NULL;
-  GtkWidget *widget;
-  gint row_number;
-  gchar *protocol_string;
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-  if (!protocol_entry)
-    protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
-
-  row_number =
-    GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
-
-  protocol_string =
-    gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
-
-  gtk_clist_set_text (GTK_CLIST (color_clist), row_number - 1, 1,
-		      protocol_string);
-
-  widget = glade_xml_get_widget (xml, "protocol_gnome_entry");
-  update_history (GNOME_ENTRY (widget), protocol_string, FALSE);
-
-  g_free (protocol_string);
-
-  colors_changed = TRUE;
-
-}				/* on_protocol_edit_ok_clicked */
-
-
-void
-on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *colorseldiag = NULL;
-  static GtkWidget *color_clist = NULL;
-  gchar *row[2] = { NULL, NULL };
-  gint row_number;
-  GtkWidget *colorsel;
-  gdouble colors[4];
-  GdkColor gdk_color;
-  GtkStyle *style;
-
-  if (!colorseldiag)
-    colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
-
-  colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
-  gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-
-  /*
-   * We save row_number + 1, so we have to remove one here
-   * if row_number == -1, no row was selected.
-   */
-  row_number =
-    GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row")) -
-    1;
-
-  gdk_color.red = (guint16) (colors[0] * 65535.0);
-  gdk_color.green = (guint16) (colors[1] * 65535.0);
-  gdk_color.blue = (guint16) (colors[2] * 65535.0);
-
-  /* Since we are only going to save 24bit precision, we might as well
-   * make sure we don't display any more than that */
-  gdk_color.red = (gdk_color.red >> 8) << 8;
-  gdk_color.green = (gdk_color.green >> 8) << 8;
-  gdk_color.blue = (gdk_color.blue >> 8) << 8;
-
-  gdk_colormap_alloc_color (gdk_colormap_get_system (), &gdk_color, FALSE,
-			    TRUE);
-
-  style = gtk_style_new ();
-  style->base[GTK_STATE_NORMAL] = gdk_color;
-
-  row[0] =
-    g_strdup_printf ("#%02x%02x%02x", gdk_color.red >> 8,
-		     gdk_color.green >> 8, gdk_color.blue >> 8);
-  row[1] = "";
-
-  /*
-   * If an insertion point was defined, then
-   */
-  if (row_number >= 0)
-    {
-      gtk_clist_insert (GTK_CLIST (color_clist), row_number, row);
-      gtk_clist_set_cell_style (GTK_CLIST (color_clist), row_number, 0,
-				style);
-      /*
-       * Since we have added a row, the selected row has been pushed one step down
-       * Then we add one more to distinguish non-existance from row number zero.
-       */
-      gtk_object_set_data (GTK_OBJECT (color_clist), "row",
-			   GINT_TO_POINTER (row_number + 1 + 1));
-    }
-  else
-    {
-      gtk_clist_insert (GTK_CLIST (color_clist), 0, row);
-      gtk_clist_set_cell_style (GTK_CLIST (color_clist), 0, 0, style);
-    }
-
-  gtk_style_unref (style);
-  gtk_widget_hide (colorseldiag);
-
-  g_free (row[0]);
-
-  colors_changed = TRUE;
-}				/* on_colordiag_ok_clicked */
-
-
-void
-on_color_clist_select_row (GtkCList * clist,
-			   gint row,
-			   gint column, GdkEvent * event, gpointer user_data)
-{
-  /*
-   * To distinguish non-existance from row number zero, we save the row
-   * number plus one
-   */
-  gtk_object_set_data (GTK_OBJECT (clist), "row", GINT_TO_POINTER (row + 1));
-}
-
-void
-load_color_clist (void)
-{
-  gint i;
-  static GtkWidget *color_clist = NULL;
-  gchar *row[2] = { NULL, NULL };
-  GdkColor gdk_color;
-  GtkStyle *style = NULL;
-  gchar **colors_protocols = NULL;
-  gchar *color = NULL, *protocol = NULL;
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-
-  gtk_clist_clear (GTK_CLIST (color_clist));
-
-  for (i = 0; i < pref.n_colors; i++)
-    {
-      colors_protocols = g_strsplit (pref.colors[i], ";", 0);
-
-      color = colors_protocols[0];
-      protocol = colors_protocols[1];
-
-      gdk_color_parse (color, &gdk_color);
-      gdk_colormap_alloc_color (gdk_colormap_get_system (), &gdk_color, FALSE,
-				TRUE);
-
-      style = gtk_style_new ();
-      style->base[GTK_STATE_NORMAL] = gdk_color;
-
-      row[0] =
-	g_strdup_printf ("#%02x%02x%02x", gdk_color.red >> 8,
-			 gdk_color.green >> 8, gdk_color.blue >> 8);
-
-      if (!protocol)
-	protocol = "";
-      row[1] = protocol;
-
-      gtk_clist_append (GTK_CLIST (color_clist), row);
-      gtk_clist_set_cell_style (GTK_CLIST (color_clist), i, 0, style);
-      g_strfreev (colors_protocols);
-      gtk_style_unref (style);
-      g_free (row[0]);
-    }
-
-}
-
-/* Called whenever preferences are applied or OKed. Copied whatever there is
- * in the color table to the color preferences in memory */
-void
-color_clist_to_pref (void)
-{
-  gint i;
-  static GtkWidget *color_clist = NULL;
-  gchar *color = NULL, *protocol = NULL;
-
-  while (pref.n_colors)
-    {
-      g_free (pref.colors[pref.n_colors - 1]);
-      pref.n_colors--;
-    }
-  g_free (pref.colors);
-  pref.colors = NULL;
-
-  if (!color_clist)
-    color_clist = glade_xml_get_widget (xml, "color_clist");
-
-  pref.n_colors = GTK_CLIST (color_clist)->rows;
-  pref.colors = g_malloc (sizeof (gchar *) * pref.n_colors);
-
-  for (i = 0; i < pref.n_colors; i++)
-    {
-      gtk_clist_get_text (GTK_CLIST (color_clist), i, 0, &color);
-      gtk_clist_get_text (GTK_CLIST (color_clist), i, 1, &protocol);
-
-      if (strcmp ("", protocol))
-	pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
-      else
-	pref.colors[i] = g_strdup (color);
-    }
-}				/* color_clist_to_pref */
 
 void
 on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
@@ -626,3 +349,318 @@ void
 on_protocol_move_down_clicked (GtkButton * button, gpointer user_data)
 {
 }				/* on_protocol_move_down_clicked */
+
+/* ----------------------------------------------------------
+
+   Color-proto preferences handling
+
+   ---------------------------------------------------------- */
+
+/* helper struct used to move around trees data ... */
+typedef struct _EATreePos
+{
+  GtkTreeView *gv;
+  GtkListStore *gs;
+} EATreePos;
+
+
+/* fill ep with the listore for the color treeview, creating it if necessary
+   Returns FALSE if something goes wrong
+*/
+static gboolean
+get_color_store (EATreePos * ep)
+{
+  /* initializes the view ptr */
+  ep->gs = NULL;
+  ep->gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "color_list"));
+  if (!ep->gv)
+    return FALSE;		/* error */
+
+  /* retrieve the model (store) */
+  ep->gs = GTK_LIST_STORE (gtk_tree_view_get_model (ep->gv));
+  if (ep->gs)
+    return TRUE;		/* model already initialized, finished */
+
+  /* store not found, must be created  - it uses 3 values: 
+     First the color string, then the gdk color, lastly the protocol */
+  ep->gs =
+    gtk_list_store_new (3, G_TYPE_STRING, GDK_TYPE_COLOR, G_TYPE_STRING);
+  gtk_tree_view_set_model (ep->gv, GTK_TREE_MODEL (ep->gs));
+
+  /* the view columns and cell renderers must be also created ... 
+     Note: the bkg color is linked to the second column of store
+   */
+  gtk_tree_view_append_column (ep->gv,
+			       gtk_tree_view_column_new_with_attributes
+			       ("Color", gtk_cell_renderer_text_new (),
+				"text", 0, "background-gdk", 1, NULL));
+  gtk_tree_view_append_column (ep->gv,
+			       gtk_tree_view_column_new_with_attributes
+			       ("Protocol", gtk_cell_renderer_text_new (),
+				"text", 2, NULL));
+
+  return TRUE;
+}
+
+
+void
+on_color_add_button_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkWidget *colorseldiag =
+    glade_xml_get_widget (xml, "colorselectiondialog");
+  gtk_widget_show (colorseldiag);
+}				/* on_color_add_button_clicked */
+
+void
+on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkTreePath *gpath = NULL;
+  GtkTreeViewColumn *gcol = NULL;
+  GtkTreeIter it;
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
+  if (!gpath)
+    return;			/* no row selected */
+
+  /* get iterator from path  and removes from store */
+  if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
+    return;			/* path not found */
+  if (gtk_list_store_remove (ep.gs, &it))
+    {
+      /* iterator still valid, selects current pos */
+      gpath = gtk_tree_model_get_path (GTK_TREE_MODEL (ep.gs), &it);
+      gtk_tree_view_set_cursor (ep.gv, gpath, NULL, 0);
+      gtk_tree_path_free (gpath);
+    }
+
+  colors_changed = TRUE;
+}				/* on_color_remove_button_clicked */
+
+void
+on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkWidget *colorsel, *colorseldiag;
+  gdouble colors[4];
+  GdkColor gdk_color;
+  gchar tmp[64];
+  GtkTreePath *gpath = NULL;
+  GtkTreeViewColumn *gcol = NULL;
+  GtkTreeIter it;
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
+  if (gpath)
+    {
+      /* row sel, add before */
+      GtkTreeIter itsibling;
+      if (!gtk_tree_model_get_iter
+	  (GTK_TREE_MODEL (ep.gs), &itsibling, gpath))
+	return;			/* path not found */
+      gtk_list_store_insert_before (ep.gs, &it, &itsibling);
+    }
+  else
+    gtk_list_store_append (ep.gs, &it);	/* no row selected, append */
+
+  /* get the selected color */
+  colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
+  colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
+  gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
+
+  gdk_color.red = (guint16) (colors[0] * 65535.0);
+  gdk_color.green = (guint16) (colors[1] * 65535.0);
+  gdk_color.blue = (guint16) (colors[2] * 65535.0);
+
+  /* Since we are only going to save 24bit precision, we might as well
+   * make sure we don't display any more than that */
+  gdk_color.red = (gdk_color.red >> 8) << 8;
+  gdk_color.green = (gdk_color.green >> 8) << 8;
+  gdk_color.blue = (gdk_color.blue >> 8) << 8;
+
+  /* converting color */
+  g_snprintf (tmp, sizeof (tmp), "#%02x%02x%02x", gdk_color.red >> 8,
+	      gdk_color.green >> 8, gdk_color.blue >> 8);
+
+  /* fill data */
+  gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, "", -1);
+
+  gtk_widget_hide (colorseldiag);
+
+  colors_changed = TRUE;
+}				/* on_colordiag_ok_clicked */
+
+
+
+void
+on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkWidget *protocol_edit_dialog = NULL;
+  protocol_edit_dialog = glade_xml_get_widget (xml, "protocol_edit_dialog");
+  gtk_widget_show (protocol_edit_dialog);
+}				/* on_protocol_edit_button_clicked */
+
+void
+on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
+{
+  gchar *protocol_string;
+  GtkTreePath *gpath = NULL;
+  GtkTreeViewColumn *gcol = NULL;
+  GtkTreeIter it;
+  GtkWidget *protocol_entry = NULL;
+  int pos = 0;
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
+  if (!gpath)
+    return;			/* no row selected */
+
+  GtkTreeIter itsibling;
+  if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
+    return;			/* path not found */
+
+  gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 2, &protocol_string, -1);
+
+  protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
+
+  gtk_editable_delete_text (GTK_EDITABLE (protocol_entry), 0, -1);
+  gtk_editable_insert_text (GTK_EDITABLE (protocol_entry), protocol_string,
+			    strlen (protocol_string), &pos);
+
+  g_free (protocol_string);
+}
+
+
+void
+on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
+{
+  gchar *proto_string;
+  GtkTreePath *gpath = NULL;
+  GtkTreeViewColumn *gcol = NULL;
+  GtkTreeIter it;
+  GtkWidget *protocol_entry = NULL;
+  int pos = 0;
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
+  if (!gpath)
+    return;			/* no row selected */
+
+  GtkTreeIter itsibling;
+  if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
+    return;			/* path not found */
+
+
+  protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
+  proto_string = gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
+  proto_string = g_utf8_strup (proto_string, -1);
+
+  gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
+
+  /* add proto name to history */
+  gnome_entry_append_history(GNOME_ENTRY(glade_xml_get_widget (xml, "protocol_gnome_entry")),
+                             FALSE,
+                             proto_string);
+  
+  g_free (proto_string);
+
+  colors_changed = TRUE;
+  gtk_widget_hide (glade_xml_get_widget (xml, "protocol_edit_dialog"));
+}				/* on_protocol_edit_ok_clicked */
+
+
+
+void
+load_color_list (void)
+{
+  gint i;
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  /* clear list */
+  gtk_list_store_clear (ep.gs);
+
+  for (i = 0; i < pref.n_colors; i++)
+    {
+      GdkColor gdk_color;
+      gchar **colors_protocols = NULL;
+      gchar *protocol = NULL;
+      gchar tmp[64];
+      GtkTreeIter it;
+
+      colors_protocols = g_strsplit (pref.colors[i], ";", 0);
+
+      /* converting color */
+      gdk_color_parse (colors_protocols[0], &gdk_color);
+      g_snprintf (tmp, sizeof (tmp), "#%02x%02x%02x", gdk_color.red >> 8,
+		  gdk_color.green >> 8, gdk_color.blue >> 8);
+
+      /* converting proto name */
+      if (!colors_protocols[1])
+	protocol = "";
+      else
+	protocol = colors_protocols[1];
+
+      /* adds a new row */
+      gtk_list_store_append (ep.gs, &it);
+      gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, protocol, -1);
+    }
+
+}
+
+/* Called whenever preferences are applied or OKed. Copied whatever there is
+ * in the color table to the color preferences in memory */
+void
+color_list_to_pref (void)
+{
+  gint i;
+  GtkTreeIter it;
+
+  EATreePos ep;
+  if (!get_color_store (&ep))
+    return;
+
+  while (pref.colors && pref.n_colors)
+    {
+      g_free (pref.colors[pref.n_colors - 1]);
+      pref.n_colors--;
+    }
+  g_free (pref.colors);
+  pref.colors = NULL;
+
+  pref.n_colors =
+    gtk_tree_model_iter_n_children (GTK_TREE_MODEL (ep.gs), NULL);
+  pref.colors = g_malloc (sizeof (gchar *) * pref.n_colors);
+
+  gtk_tree_model_get_iter_first (GTK_TREE_MODEL (ep.gs), &it);
+  for (i = 0; i < pref.n_colors; i++)
+    {
+      gchar *color, *protocol;
+
+      /* reads the list */
+      gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it,
+			  0, &color, 2, &protocol, -1);
+
+      if (strcmp ("", protocol))
+	pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
+      else
+	pref.colors[i] = g_strdup (color);
+
+      g_free (color);
+      g_free (protocol);
+
+      gtk_tree_model_iter_next (GTK_TREE_MODEL (ep.gs), &it);
+    }
+}				/* color_clist_to_pref */

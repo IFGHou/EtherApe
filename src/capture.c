@@ -825,7 +825,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   /* We have already allocated memory for the id when we created the
    * packet. We will use that, and will free it when the node disappears
    * and not with the packet */
-  node->node_id = node_id;
+  node->node_id = (guint8 *) node_id; /* cast away const */
 
   node->name = NULL;
   node->numeric_name = NULL;

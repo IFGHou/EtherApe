@@ -17,6 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkclist.h>
+#include <gtk/gtkcheckmenuitem.h>
+
 typedef struct
 {
   guint8 *node_id;
@@ -52,10 +56,6 @@ static gint prot_info_compare (gconstpointer a, gconstpointer b);
 
 void on_node_info_delete_event (GtkWidget * node_info, gpointer user_data);
 void on_prot_info_delete_event (GtkWidget * node_info, gpointer user_data);
-static void prot_clist_button_clicked (GtkButton * button,
-				       gpointer func_data);
-static gint prot_window_compare (GtkCList * clist, gconstpointer p1,
-				 gconstpointer p2);
 static void create_prot_info_window (protocol_t * protocol);
-
 static gchar *timeval_to_str (struct timeval tv);
+

@@ -1,99 +1,45 @@
-dnl Process this file with autoconf to produce a configure script.
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(etherape, 0.8.2)
-AM_CONFIG_HEADER(config.h)
+AC_PREREQ(2.57)
+AC_INIT(etherape, 0.9.0)
+AC_CONFIG_SRCDIR(acconfig.h)
+AC_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE
 
-dnl Pick up the Gnome macros.
-AM_ACLOCAL_INCLUDE(macros)
-
-
-
-GNOME_INIT
-AC_ISC_POSIX
+# Checks for programs.
+AC_PROG_CXX
 AC_PROG_CC
-AM_PROG_CC_STDC
-AM_PROG_LIBTOOL
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+# Checks for libraries.
+#PKG_CHECK_MODULES(etherape, libgnome-2.0 libgnomecanvas-2.0 libglade-2.0 glib-2.0 libgnomeui-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(etherape, libglade-2.0 libgnomeui-2.0)
+AC_SUBST(ETHERAPE_CFLAGS)
+AC_SUBST(ETHERAPE_LIBS)
+
+# Checks for header files.
 AC_HEADER_STDC
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h net/if.h])
 
-dnl ******************************
-dnl LibGlade checking
-dnl ******************************
-AC_MSG_CHECKING(for Glade libraries >= 0.11)
-if gnome-config --libs libglade > /dev/null 2>&1; then 
-    vers=`gnome-config --modversion libglade | awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-    if test "$vers" -ge 11; then
-        AC_MSG_RESULT(found)
-    else
-        AC_MSG_ERROR(You need at least libglade 0.11 for this version of Gnumeric)
-    fi
-else
-    AC_MSG_ERROR(Did not find libGlade installed)
-fi
-
-LIBGLADE_CFLAGS=`gnome-config --cflags libglade`
-LIBGLADE_LIBS=`gnome-config --libs libglade`
-AC_SUBST(LIBGLADE_CFLAGS)
-AC_SUBST(LIBGLADE_LIBS)
-
+# gnome checks
 GNOME_COMPILE_WARNINGS
-GNOME_X_CHECKS
 
-dnl Add the languages which your application supports here.
-ALL_LINGUAS="es fr nl tr"
-AM_GNU_GETTEXT
-
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
-fi
-
-dnl Subst PACKAGE_PIXMAPS_DIR.
-PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
-AC_SUBST(PACKAGE_PIXMAPS_DIR)
-
-dnl ANSI C (and POSIX.1)'s math.h guarantees:
-dnl acos, asin, atan2, atan, ceil, cos, cosh, exp, fabs, floor, fmod, frexp,
-dnl ldexp, log10, log, modf, pow, sin, sinh, sqrt, tan, tanh
-
-
-dnl Checks for "gethostbyname()" - and "-lnsl", if we need it to get
-dnl "gethostbyname()".
-AC_ETHEREAL_GETHOSTBY_LIB_CHECK
-
-dnl Checks for "connect()", used as a proxy for "socket()" - and
-dnl "-lsocket", if we need it to get "connect()".
-AC_ETHEREAL_SOCKET_LIB_CHECK
-
-# Check for the pcap library.
-
-AC_ARG_ENABLE(static-pcap,
-  [  --enable-static-pcap    Used to build the rpm within Debian. ],
-  STATIC_PCAP=yes)
-AC_ETHEREAL_PCAP_CHECK
-
-# Create DATAFILE_DIR #define for config.h
-DATAFILE_DIR=$sysconfdir
-# The following statement was in ethereal
-# but it breaks in some machines and I still don't know
-# what is for... JTC :-)
-#DATAFILE_DIR=(
-#    test "x$prefix" = xNONE && prefix=$ac_default_prefix
-#    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
-#    eval echo "$DATAFILE_DIR"
-#    )
-
-AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
-AC_SUBST(DATAFILE_DIR)
-
-dnl Set PIXMAPS_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps")
-else
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps")
-fi
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_MODE_T
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+AC_C_VOLATILE
+AC_CHECK_TYPES(u_int, ,AC_DEFINE(u_int, unsigned int, [define u_int]))
+AC_CHECK_TYPES(u_short, ,AC_DEFINE(u_short, unsigned short, [define u_short]))
+AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
+AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
 # Copied from mtr to support dns.c
 # After some kind of change in libc, it seems it is
@@ -109,26 +55,63 @@ AC_CHECK_FUNC(res_mkquery, ,
   AC_CHECK_LIB(bind, res_mkquery, , 
    AC_CHECK_LIB(resolv, res_mkquery, , AC_MSG_ERROR(No resolver library found))))
 
+# Check for the pcap library.
+AC_ARG_ENABLE(static-pcap,
+  [  --enable-static-pcap    Used to build the rpm within Debian. ],
+  STATIC_PCAP=yes)
+AC_ETHEREAL_PCAP_CHECK
 
-dnl Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h stdarg.h netdb.h dirent.h)
-AC_CHECK_HEADERS(sys/stat.h sys/sockio.h sys/types.h sys/socket.h)
-AC_CHECK_HEADERS(sys/wait.h sys/param.h)
-AC_CHECK_HEADERS(netinet/in.h net/if.h)
-AC_CHECK_HEADERS(stddef.h)
-AC_CHECK_HEADERS(dlfcn.h)
-AC_CHECK_HEADERS(arpa/inet.h arpa/nameser.h)
+# Checks for library functions.
+#AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS([alarm floor gethostbyaddr gethostbyname gettimeofday inet_ntoa localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr])
 
-AC_OUTPUT([ intl/Makefile m4/Makefile 
-Makefile
-etherape.spec
-macros/Makefile
-src/Makefile
-doc/Makefile
-doc/C/Makefile
-glade/Makefile
-intl/Makefile
-po/Makefile.in
-])
+# Create DATAFILE_DIR #define for config.h
+DATAFILE_DIR=$sysconfdir
+# The following statement was in ethereal
+# but it breaks in some machines and I still don't know
+# what is for... JTC :-)
+#DATAFILE_DIR=(
+#    test "x$prefix" = xNONE && prefix=$ac_default_prefix
+#    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
+#    eval echo "$DATAFILE_DIR"
+#    )
+AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
+AC_SUBST(DATAFILE_DIR)
 
+
+dnl Add the languages which your application supports here.
+ALL_LINGUAS="es fr nl tr"
+AM_GLIB_GNU_GETTEXT
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+fi
+
+dnl Set PIXMAPS_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps")
+else
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps")
+fi
+
+
+
+
+
+AC_CONFIG_FILES([Makefile
+                 doc/C/Makefile
+                 etherape.spec
+                 doc/Makefile
+                 glade/Makefile
+                 src/Makefile
+		 m4/Makefile
+		 po/Makefile.in])
+
+
+AC_OUTPUT

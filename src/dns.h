@@ -24,8 +24,5 @@
 void dns_open ();
 int dns_waitfd ();
 void dns_ack ();
-void dns_events (double *sinterval);
+unsigned int dns_tick ();	/* call this more or less every 10 secs */
 char *dns_lookup (int address, int fqdn);
-char *dns_lookup2 (int address);
-int dns_forward (char *name);
-char *strlongip (int address);

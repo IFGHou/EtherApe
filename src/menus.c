@@ -18,6 +18,10 @@
  */
 
 #include "menus.h"
+#include <string.h>
+#include <libgnomeui/gnome-file-entry.h>
+#include <gtk/gtkcontainer.h>
+#include "util.h"
 
 #if 0
 /* This is here just as an example in case I need it again */
@@ -27,7 +31,7 @@ on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkWidget *messagebox;
   GladeXML *xml_messagebox;
   xml_messagebox =
-    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "messagebox1");
+    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "messagebox1", NULL);
   messagebox = glade_xml_get_widget (xml_messagebox, "messagebox1");
   if (!xml)
     {
@@ -53,11 +57,11 @@ init_menus (void)
   /* It seems libglade is not acknowledging the "Use gnome help" option in the 
    * glade file and so it is not automatically adding the help items in the help
    * menu. Thus I must add it manually here */
-
+/* R.G.
   widget = glade_xml_get_widget (xml, "help1_menu");
   gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
 		       gtk_accel_group_get_default (), TRUE, 1);
-
+*/
   interface_list = get_interface_list (&err, err_str);
 
   interfaces = interface_list;
@@ -163,10 +167,12 @@ on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
   if (str)
     g_free (str);
 
-  widget = glade_xml_get_widget (xml, "fileentry");
-  update_history (GNOME_ENTRY
-		  (gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget))),
-		  pref.input_file, TRUE);
+  gnome_entry_append_history(
+                        GNOME_ENTRY(gnome_file_entry_gnome_entry(
+                                      GNOME_FILE_ENTRY(glade_xml_get_widget(
+                                                   xml, "fileentry")))),
+                             TRUE,
+                             pref.input_file);
 
   gui_start_capture ();
 
@@ -210,12 +216,14 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   apemode_t new_mode = DEFAULT;
 
-  g_assert (user_data != NULL);
 
   if (in_start_capture)
     return;			/* Disregard when called because
 				 * of interface look change from
 				 * start_capture */
+
+
+  g_assert (user_data != NULL);
 
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) user_data);
@@ -268,7 +276,6 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
       if (new_mode == ETHERNET || (new_mode == FDDI))
 	return;
       break;
-    default:
     }
   if (status != STOP)
     if (!gui_stop_capture ())
@@ -311,6 +318,7 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
+ /* R.G. - FIXME - convert to bonobo docking
   GnomeDock *dock;
   GtkWidget *widget;
 
@@ -321,12 +329,14 @@ on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide (widget);
 
-  gtk_container_queue_resize (GTK_CONTAINER (dock));
+ gtk_widget_queue_resize (GTK_WIDGET (dock));
+*/
 }				/* on_toolbar_check_activate */
 
 void
 on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
+/* R.G. - FIXME - convert to bonobo docking	
   GnomeDock *dock;
   GtkWidget *widget;
 
@@ -337,13 +347,14 @@ on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide (widget);
 
-  gtk_container_queue_resize (GTK_CONTAINER (dock));
-
+ gtk_widget_queue_resize (GTK_WIDGET (dock));
+*/
 }				/* on_legend_check_activate */
 
 void
 on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
+/* R.G. - FIXME - convert to bonobo docking
   GtkWidget *widget;
   widget = glade_xml_get_widget (xml, "appbar1");
   if (menuitem->active)
@@ -351,7 +362,8 @@ on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide (widget);
 
-  gtk_container_queue_resize (GTK_CONTAINER (app1));
+ gtk_widget_queue_resize (GTK_WIDGET (appl));
+*/
 }				/* on_status_bar_check_activate */
 
 
@@ -366,7 +378,8 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkWidget *about;
   GladeXML *xml_about;
 
-  xml_about = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "about2");
+  xml_about =
+    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "about2", NULL);
   if (!xml_about)
     {
       g_error (_("We could not load the interface! (%s)"),
@@ -383,48 +396,6 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 
 /* Helper functions */
-
-
-
-/* Saves the history of a gnome_entry making sure there are no duplicates */
-void
-update_history (GnomeEntry * gentry, const gchar * str, gboolean is_fileentry)
-{
-  GList *entry_items = NULL;
-  gboolean is_new = TRUE, normal_case = TRUE;
-
-  /* The combo fills up even if there are duplicate values. I think
-   * this is a bug in gnome and might be fixed in the future, but
-   * right now I'll just make sure the history is fine and reload that*/
-
-  /* TODO There really should be a better way of getting all values from
-   * the drop down list than this casting mess :-( */
-
-  /* The file entry introduces a copy of the file name at the end of the
-   * list if the browse button has been used. There goes another hack to
-   * work around it */
-  entry_items = GTK_LIST (GTK_COMBO (gentry)->list)->children;
-  while (entry_items)
-    {
-      gchar *history_value;
-      history_value = GTK_LABEL (GTK_BIN (entry_items->data)->child)->label;
-      if (!strcmp (history_value, str) && !is_fileentry
-	  && (entry_items->next != NULL))
-	is_new = FALSE;
-      normal_case = !(is_fileentry && !(entry_items->next));
-      entry_items = g_list_next (entry_items);
-    }
-
-  if (is_new)
-    {
-      g_my_info ("New entry history item: %s", str);
-      if (normal_case)
-	gnome_entry_prepend_history (gentry, TRUE, str);
-      gnome_entry_save_history (gentry);
-    }
-
-  gnome_entry_load_history (gentry);
-}				/* update_history */
 
 /* Sets up the GUI to reflect changes and calls start_capture() */
 void
@@ -507,7 +478,6 @@ gui_start_capture (void)
       widget = glade_xml_get_widget (xml, "ieee802_radio");
       gtk_widget_set_sensitive (widget, TRUE);
       break;
-    default:
     }
 
   /* Set active mode in GUI */
@@ -532,7 +502,6 @@ gui_start_capture (void)
     case UDP:
       widget = glade_xml_get_widget (xml, "udp_radio");
       break;
-    default:
     }
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
 
@@ -570,7 +539,6 @@ gui_start_capture (void)
     case UDP:
       g_string_append (status_string, _(" in UDP mode"));
       break;
-    default:
     }
 
   set_appbar_status (status_string->str);

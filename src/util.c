@@ -27,6 +27,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -92,9 +93,6 @@ typedef int mode_t;		/* for win32 */
 #include <sys/sockio.h>
 #endif
 
-#if 0				/* JTC */
-#include "globals.h"
-#endif /* JTC */
 
 #include <pcap.h> /*JTC*/
 #endif

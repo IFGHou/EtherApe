@@ -19,6 +19,7 @@
 
 
 #include <signal.h>
+#include <libgnomeui/gnome-client.h>
 
 static GLogLevelFlags debug_mask;
 static void (*oldhandler) (int);

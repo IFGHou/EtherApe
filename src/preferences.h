@@ -52,5 +52,6 @@ void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
 void on_apply_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data);
 
-void color_clist_to_pref (void);
+void color_list_to_pref (void);
