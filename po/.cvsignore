@@ -3,3 +3,4 @@ Makefile
 *.gmo
 POTFILES
 stamp-cat-id
+Makevars.template
