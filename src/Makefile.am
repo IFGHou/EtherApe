@@ -18,7 +18,9 @@ etherape_SOURCES = \
 	main.c main.h globals.h\
 	diagram.c diagram.h \
 	capture.c capture.h \
-	protocols.c protocols.h tcpudp.h\
+	names.c names.h \
+	protocols.c protocols.h \
+	prot_types.h tcpudp.h\
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
