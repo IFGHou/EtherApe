@@ -92,7 +92,7 @@ apemode_t;
 /* TODO This has to go, it should be a packet property */
 enum packet_belongs
 {
-  NODE = 0, LINK = 1
+  NODE = 0, LINK = 1, PROTOCOL = 2
 };
 
 /* Flag used in node packets to indicate whether this packet was
@@ -191,6 +191,7 @@ typedef struct
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
   guint n_packets;		/* Number of packets containing this protocol */
+  GList *packets;		/* List of packets that used this protocol */
   GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
