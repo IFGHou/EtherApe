@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(etherape, 0.5.6)
+AM_INIT_AUTOMAKE(etherape, 0.5.7)
 AM_CONFIG_HEADER(config.h)
 
 dnl Pick up the Gnome macros.
@@ -77,10 +77,14 @@ AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR")
 AC_SUBST(DATAFILE_DIR)
 
 # Copied from mtr to support dns.c
+# After some kind of change in libc, it seems it is
+# required to #include <resolv.h> for the test to succeed.
+# To go around it I included the test for __res_init
 
 AC_CHECK_FUNC(res_init, , 
   AC_CHECK_LIB(bind, res_init, , 
-   AC_CHECK_LIB(resolv, res_init, , AC_MSG_ERROR(No resolver library found))))
+   AC_CHECK_LIB(resolv, res_init, ,
+    AC_CHECK_LIB(c, __res_init, , AC_MSG_ERROR(No resolver library found)))))
 
 AC_CHECK_FUNC(res_mkquery, , 
   AC_CHECK_LIB(bind, res_mkquery, , 
