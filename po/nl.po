@@ -362,7 +362,7 @@ msgstr ". IDLE ."
 
 #: src/diagram.c:330
 msgid ". TIMEOUT."
-msgstr ". TIMEOUT ."
+msgstr ". TIMEOUT."
 
 #: src/diagram.c:567
 #, c-format
@@ -371,9 +371,7 @@ msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
 #: src/diagram.c:644
 msgid "Main node protocol not found in update_canvas_nodes"
-msgstr ""
-"Hoofdprotocol van het knooppunt niet gevonden bij de functie "
-"update_canvas_nodes"
+msgstr "Hoofdprotocol van het knooppunt niet gevonden bij de functie update_canvas_nodes"
 
 #: src/diagram.c:669
 msgid "Unknown value or node_size_variable"
@@ -386,8 +384,7 @@ msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
 #: src/diagram.c:1069
 msgid "Main link protocol not found in update_canvas_links"
-msgstr ""
-"Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
+msgstr "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
 #: src/diagram.c:1215
 #, c-format
@@ -566,7 +563,7 @@ msgstr "Voorkeuren"
 
 #: src/glade-strings:45
 msgid "Display the protocols window"
-msgstr ""
+msgstr "Toon protocollenvenster"
 
 #: src/glade-strings:46
 msgid "Prot."
@@ -585,7 +582,7 @@ msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
-"Een netwerkanalyseprogramma die de informatie\n"
+"Een netwerkanalyseprogramma dat de informatie\n"
 "intuïtief en overzichtelijk grafisch weergeeft.\n"
 "Web: http://etherape.sourceforge.net"
 
@@ -666,34 +663,29 @@ msgid ""
 "Set the kind of instantenous or accumulated traffic that the node radius "
 "indicates"
 msgstr ""
+"Kies het type verkeer wat de grootte van het knoopunt bepaalt"
 
 #: src/glade-strings:70
-#, fuzzy
 msgid "Instant. traffic (In+Out)"
 msgstr "Direct verkeer (in+uit)"
 
 #: src/glade-strings:71
-#, fuzzy
 msgid "Instant. traffic (Inbound)"
 msgstr "Direct verkeer (in)"
 
 #: src/glade-strings:72
-#, fuzzy
 msgid "Instant. traffic (Outbound)"
 msgstr "Direct verkeer (uit)"
 
 #: src/glade-strings:73
-#, fuzzy
 msgid "Accum. traffic (In+Out)"
 msgstr "Totaal verkeer (in+uit)"
 
 #: src/glade-strings:74
-#, fuzzy
 msgid "Accum. traffic (Inbound)"
 msgstr "Totaal verkeer (in)"
 
 #: src/glade-strings:75
-#, fuzzy
 msgid "Accum. traffic (Outbound)"
 msgstr "Totaal verkeer (uit)"
 
@@ -749,16 +741,15 @@ msgstr "Wortel"
 
 #: src/glade-strings:87
 msgid "Toggle whether the node names are displayed on top of the nodes"
-msgstr ""
+msgstr "Schakel tekstweergave in het diagram aan/uit."
 
 #: src/glade-strings:88
-#, fuzzy
 msgid "Hide node names"
-msgstr "Dit is een testnaam"
+msgstr "Verberg knooppuntsnamen"
 
 #: src/glade-strings:89
 msgid "Group unknown ports"
-msgstr ""
+msgstr "Groepeer onbekende poorten"
 
 #: src/glade-strings:90
 msgid "Diagram"
