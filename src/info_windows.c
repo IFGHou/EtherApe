@@ -32,6 +32,9 @@ update_info_windows (void)
   if (!protocols_window)
     protocols_window = glade_xml_get_widget (xml, "protocols_window");
 
+  if (status == PAUSE)
+    return TRUE;
+
   gettimeofday (&now, NULL);
 
   /* Update the protocols window if it is being displayed */
@@ -146,13 +149,9 @@ update_protocols_window (void)
 	substract_times (info_protocol->last_heard, protocol->last_heard);
       if ((diff.tv_usec < 0) || (diff.tv_sec < 0))
 	{
-	  info_protocol->average = protocol->average;
 	  info_protocol->accumulated = protocol->accumulated;
 	  info_protocol->last_heard = protocol->last_heard;
 	  info_protocol->n_packets = protocol->n_packets;
-
-	  str = traffic_to_str (protocol->average, TRUE);
-	  gtk_clist_set_text (GTK_CLIST (prot_clist), i, 1, str);
 
 	  str = traffic_to_str (protocol->accumulated, FALSE);
 	  gtk_clist_set_text (GTK_CLIST (prot_clist), i, 2, str);
@@ -163,6 +162,9 @@ update_protocols_window (void)
 
 	}
       /*str = ctime (&(protocol->last_heard.tv_sec)); */
+      info_protocol->average = protocol->average;
+      str = traffic_to_str (protocol->average, TRUE);
+      gtk_clist_set_text (GTK_CLIST (prot_clist), i, 1, str);
       str = timeval_to_str (protocol->last_heard);
       gtk_clist_set_text (GTK_CLIST (prot_clist), i, 3, str);
 
