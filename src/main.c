@@ -23,7 +23,6 @@
 
 #include "globals.h"
 #include "main.h"
-#include "menus.h"
 
 
 int
@@ -31,6 +30,7 @@ main (int argc, char *argv[])
 {
   gchar *mode_string = NULL;
   gchar *filter_string = NULL;
+  gchar *errorbuf = NULL;
   GtkWidget *widget;
   GnomeClient *client;
   poptContext poptcon;
@@ -87,7 +87,7 @@ main (int argc, char *argv[])
 
   /* Absolute defaults */
   numeric = 0;
-  mode = ETHERNET;
+  mode = IP;
   dns = 1;
   filter = g_strdup ("");
   refresh_period = 800;		/* ms */
@@ -182,11 +182,18 @@ main (int argc, char *argv[])
       break;
     }
 
-  init_capture ();		/* TODO low priority: I'd like to be able to open the 
-				 * socket without having initialized gnome, so that 
-				 * eventually I'd safely set the effective id to match the
-				 * user id and make a safer suid exec. See the source of
-				 * mtr for reference */
+  /* Initialize capture. If we get back any kind of string, there has been some
+   * problem, and so we stop */
+  if ((errorbuf = init_capture ()) != NULL)
+    {
+      fatal_error_dialog (errorbuf);
+    }
+  /* TODO low priority: I'd like to be able to open the
+   * socket without having initialized gnome, so that 
+   * eventually I'd safely set the effective id to match the
+   * user id and make a safer suid exec. See the source of
+   * mtr for reference */
+
 
   /* Glade */
 
@@ -233,7 +240,8 @@ main (int argc, char *argv[])
    * menu. Thus I must add it manually here */
 
   widget = glade_xml_get_widget (xml, "help1_menu");
-  gnome_app_fill_menu ((GtkMenuShell *)widget, help_submenu, gtk_accel_group_get_default (), TRUE, 1);
+  gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
+		       gtk_accel_group_get_default (), TRUE, 1);
 
 
   /* MAIN LOOP */
@@ -457,3 +465,17 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 
   return TRUE;
 }				/* save_session */
+
+/* this has not its place here but... */
+void
+fatal_error_dialog (const gchar * message)
+{
+  GtkWidget *dlg;
+
+  g_my_debug ("About to die with error %s", message);
+  dlg = gnome_error_dialog (message);
+  gtk_signal_connect (GTK_OBJECT (dlg), "clicked", gtk_main_quit, NULL);
+  gtk_widget_show (dlg);
+  gtk_main ();
+  exit (1);
+}
