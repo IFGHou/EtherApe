@@ -198,6 +198,7 @@ typedef struct
 				 * protocol (used in node protocols) */
   GList *node_ids;		/* Has a list of all the nodes that have used this
 				 * protocol (used in the global protocols list) */
+  struct timeval last_heard;	/* The last at which this protocol carried traffic */
 }
 protocol_t;
 

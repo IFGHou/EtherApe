@@ -858,6 +858,7 @@ add_protocol (GList ** protocols, const gchar * stack,
 	  protocol_info->accumulated += phdr.len;
 	  protocol_info->aver_accu += phdr.len;
 	  protocol_info->n_packets++;
+	  protocol_info->last_heard = now;
 	}
       else
 	{
