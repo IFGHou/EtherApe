@@ -210,11 +210,11 @@ update_diagram (GtkWidget * canvas)
   /* Update nodes look and delete outdated nodes */
   do
     {
-      n_nodes_before = g_tree_nnodes (nodes);
+      n_nodes_before = g_tree_nnodes (canvas_nodes);
       g_tree_traverse (canvas_nodes,
 		       (GTraverseFunc) update_canvas_nodes,
 		       G_IN_ORDER, canvas);
-      n_nodes_after = g_tree_nnodes (nodes);
+      n_nodes_after = g_tree_nnodes (canvas_nodes);
     }
   while (n_nodes_before != n_nodes_after);
 
