@@ -88,7 +88,8 @@ get_prot_color (gchar * name)
 #endif
 }				/* get_prot_color */
 
-gdouble get_node_size (gdouble average)
+gdouble
+get_node_size (gdouble average)
 {
   gdouble result = 0.0;
   switch (size_mode)
@@ -106,7 +107,8 @@ gdouble get_node_size (gdouble average)
   return (double) (5 + node_radius_multiplier * result);
 }
 
-gdouble get_link_size (gdouble average)
+gdouble
+get_link_size (gdouble average)
 {
   gdouble result = 0.0;
   switch (size_mode)
@@ -153,7 +155,8 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
   return FALSE;
 }
 
-guint popup_to (struct popup_data * pd)
+guint
+popup_to (struct popup_data * pd)
 {
 
   GtkLabel *label;
@@ -546,7 +549,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
 }				/* update_canvas_nodes */
 
-gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+gint
+check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -605,7 +609,8 @@ gint check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-gint check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+gint
+check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
@@ -721,6 +726,9 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 		    0, 1, n_rows - 1, n_rows,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1);
+  gtk_container_queue_resize (GTK_CONTAINER (app1));
+
 
   color_string = get_prot_color (protocol->name);
   g_message ("%s in %s", protocol->name, color_string);
@@ -739,7 +747,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram (GtkWidget * canvas)
+guint
+update_diagram (GtkWidget * canvas)
 {
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];

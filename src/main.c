@@ -153,16 +153,18 @@ main (int argc, char *argv[])
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
-    {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
-     _("don't convert addresses to names"), NULL},
-    {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
-     _("don't display any node text identification"), NULL},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
      _("mode of operation"), _("<ethernet|ip|tcp|udp>")},
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _("set interface to listen to"), _("<interface name>")},
     {"filter", 'f', POPT_ARG_STRING, &filter, 0,
      _("set capture filter"), _("<capture filter>")},
+    {"infile", 'r', POPT_ARG_STRING, &input_file, 0,
+     _("set input file"), _("<file name>")},
+    {"numeric", 'n', POPT_ARG_NONE, &numeric, 0,
+     _("don't convert addresses to names"), NULL},
+    {"diagram-only", 'd', POPT_ARG_NONE, &diagram_only, 0,
+     _("don't display any node text identification"), NULL},
     {"no-fade", 'F', POPT_ARG_NONE, &nofade, 0,
      _("do not fade old links"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,

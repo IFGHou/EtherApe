@@ -58,14 +58,29 @@ init_capture (void)
 	  exit (1);
 	}
     }
-
-  if (!
-      ((pcap_t *) pch =
-       pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
+  if (!input_file)
     {
-      g_error (_("Error opening %s : %s - perhaps you need to be root?"),
-	       device, ebuf);
+      if (!
+	  ((pcap_t *) pch =
+	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
+	{
+	  g_error (_("Error opening %s : %s - perhaps you need to be root?"),
+		   device, ebuf);
+	}
+      pcap_fd = pcap_fileno (pch);
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
+      gdk_input_add (pcap_fd,
+		     GDK_INPUT_READ, (GdkInputFunction) packet_read, pch);
     }
+  else
+    {
+      if (!((pcap_t *) pch = pcap_open_offline ("/tmp/tracefile", ebuf)))
+	{
+	  g_error (_("Error opening %s : %s - perhaps you need to be root?"),
+		   device, ebuf);
+	}
+    }
+
 
   if (filter)
     set_filter (filter, device);
@@ -92,11 +107,6 @@ init_capture (void)
       }
   }
 #endif
-
-  pcap_fd = pcap_fileno (pch);
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
-  gdk_input_add (pcap_fd,
-		 GDK_INPUT_READ, (GdkInputFunction) packet_read, pch);
 
   linktype = pcap_datalink (pch);
 
@@ -162,7 +172,8 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint set_filter (gchar * filter, gchar * device)
+gint
+set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -980,7 +991,8 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint node_id_compare (gconstpointer a, gconstpointer b)
+gint
+node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1009,7 +1021,8 @@ gint node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint link_id_compare (gconstpointer a, gconstpointer b)
+gint
+link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1036,7 +1049,8 @@ gint link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint protocol_compare (gconstpointer a, gconstpointer b)
+gint
+protocol_compare (gconstpointer a, gconstpointer b)
 {
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
 }

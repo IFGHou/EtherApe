@@ -198,6 +198,7 @@ guint l3_offset;		/* Offset to the level 3 protocol data
 
 /* Genereral settings */
 
+gchar *input_file;		/* Capture file to read from */
 gboolean numeric;		/* Whether dns lookups are performed */
 gboolean dns;			/* Negation of the above. Is used by dns.c */
 gint diagram_timeout;		/* Descriptor of the diagram timeout function
