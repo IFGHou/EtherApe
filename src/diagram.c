@@ -176,7 +176,6 @@ destroying_idle (gpointer data)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  static GnomeAppBar *appbar = NULL;
   GString *status_string = NULL;
   guint n_links = 0, n_links_new = 1, n_protocols_new[STACK_SIZE + 1];
   guint n_nodes_before = 0, n_nodes_after = 1;
@@ -223,13 +222,8 @@ update_diagram (GtkWidget * canvas)
   /* Limit the number of nodes displayed, if a limit has been set */
   limit_nodes ();
 
-  /* Reposition canvas_nodes and update status bar if a node has been
-   * added or deleted */
-  if (!appbar)
-    appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
+  /* Reposition canvas_nodes */
 
-  status_string = g_string_new (_("Number of nodes: "));
-  g_string_sprintfa (status_string, "%d", n_nodes_after);
 
   if (need_reposition)
     {
@@ -237,8 +231,6 @@ update_diagram (GtkWidget * canvas)
 		       (GTraverseFunc) reposition_canvas_nodes,
 		       G_IN_ORDER, canvas);
       need_reposition = 0;
-      gnome_appbar_pop (appbar);
-      gnome_appbar_push (appbar, status_string->str);
     }
 
 
@@ -275,6 +267,9 @@ update_diagram (GtkWidget * canvas)
   diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
   last_time = now;
 
+  status_string = g_string_new (_("Number of nodes: "));
+  g_string_sprintfa (status_string, "%d", n_nodes_after);
+   
   g_string_sprintfa (status_string,
 		     _(". Refresh Period: %d"), (int) diff_msecs);
   if (is_idle)
@@ -1199,3 +1194,24 @@ popup_to (struct popup_data *pd)
   return FALSE;			/* Only called once */
 
 }				/* popup_to */
+
+
+/* Pushes a string into the appbar status area */
+
+void set_appbar_status (gchar * str)
+{
+  static GnomeAppBar *appbar = NULL;
+  static gchar *status_string=NULL;
+  
+  if (status_string)
+     g_free (status_string);
+   
+  status_string = g_strdup (str);
+   
+  if (!appbar)
+    appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
+
+   gnome_appbar_pop (appbar);
+   gnome_appbar_push (appbar, status_string);
+
+}				/* set_appbar_status */
