@@ -339,7 +339,7 @@ start_capture (void)
 				      GDK_INPUT_READ,
 				      (GdkInputFunction) packet_read, NULL);
     }
-  else
+  else if (!interface)
     {
       g_my_debug (_("Starting offline capture"));
       capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
