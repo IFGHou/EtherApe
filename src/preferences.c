@@ -282,18 +282,88 @@ on_color_add_button_clicked (GtkButton * button, gpointer user_data)
 }				/* on_color_add_button_clicked */
 
 void
+on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
+{
+  static GtkWidget *color_clist = NULL;
+  gint row_number;
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+
+  if (gtk_object_get_data (GTK_OBJECT (color_clist), "row") != NULL)
+    row_number =
+      GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
+  else
+    return;
+
+  gtk_clist_remove (GTK_CLIST (color_clist), row_number);
+
+
+}				/* on_color_remove_button_clicked */
+
+void
+on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data)
+{
+}				/* on_protocol_edit_button_clicked */
+
+
+void
 on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 {
   static GtkWidget *colorseldiag = NULL;
+  static GtkWidget *color_clist = NULL;
+  gchar *row[2] = { NULL, NULL };
+  gint row_number;
   GtkWidget *colorsel;
   gdouble colors[4];
+  GdkColor gdk_color;
+  GdkColormap *colormap;
+  GtkStyle *style;
 
   if (!colorseldiag)
     colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
 
   colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
-
   gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
 
   g_warning ("%f %f %f", colors[0], colors[1], colors[2]);
+
+  if (!color_clist)
+    color_clist = glade_xml_get_widget (xml, "color_clist");
+
+  if (gtk_object_get_data (GTK_OBJECT (color_clist), "row") != NULL)
+    row_number =
+      GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row"));
+  else
+    row_number = 0;
+
+  row[0] = "hola";
+  row[1] = "adios";
+
+  gtk_clist_insert (GTK_CLIST (color_clist), row_number, row);
+  colormap = gtk_widget_get_colormap (color_clist);
+
+  gdk_color.red = (guint16) (colors[0] * 65535.0);
+  gdk_color.green = (guint16) (colors[1] * 65535.0);
+  gdk_color.blue = (guint16) (colors[2] * 65535.0);
+
+  gdk_color_alloc (colormap, &gdk_color);
+
+  style = gtk_style_new ();
+  style->base[GTK_STATE_NORMAL] = gdk_color;
+
+  gtk_clist_set_cell_style (GTK_CLIST (color_clist), row_number, 0, style);
+
+  /* Since we have added a row, the selected row has been pushed one step down */
+  gtk_object_set_data (GTK_OBJECT (color_clist), "row",
+		       GINT_TO_POINTER (row_number + 1));
+
+}
+
+void
+on_color_clist_select_row (GtkCList * clist,
+			   gint row,
+			   gint column, GdkEvent * event, gpointer user_data)
+{
+  gtk_object_set_data (GTK_OBJECT (clist), "row", GINT_TO_POINTER (row));
 }
