@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
 "POT-Creation-Date: 2001-04-26 18:37+0200\n"
-"PO-Revision-Date: 2001-03-24 17:39+0100\n"
+"PO-Revision-Date: 2001-05-01 17:35+0200\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -123,7 +123,7 @@ msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
 #: src/capture.c:113
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
-msgstr ""
+msgstr "Kan niet beide apparaten openen: %s, %s. Kies er één."
 
 #: src/capture.c:119
 #, c-format
@@ -131,37 +131,37 @@ msgid "Error opening %s : %s"
 msgstr "Fout bij het openen van %s : %s"
 
 #: src/capture.c:122
-#, fuzzy, c-format
+#, c-format
 msgid "%s opened for offline capture"
-msgstr "Offline luisteren wordt gestopt"
+msgstr "%s is geopend voor offline luisteren"
 
 #: src/capture.c:134
 msgid "Link type is Ethernet"
-msgstr ""
+msgstr "Verbindingstype is Ethernet"
 
 #. The case for PPP or SLIP, for instance
 #: src/capture.c:142
 msgid "Link type is RAW"
-msgstr ""
+msgstr "Verbindingstype is RAW"
 
 #. We are assuming LLC async frames only
 #: src/capture.c:150
 msgid "Link type is FDDI"
-msgstr ""
+msgstr "Verbindingstype is FDDI"
 
 #. As far as I know IEEE802 is Token Ring
 #: src/capture.c:159
 msgid "Link type is Token Ring"
-msgstr ""
+msgstr "Verbindingstype is Token Ring"
 
 #. Loopback
 #: src/capture.c:167
 msgid "Link type is NULL"
-msgstr ""
+msgstr "Verbindingstype is NULL"
 
 #: src/capture.c:175
 msgid "Link type not yet supported"
-msgstr "Lijntype nog niet beschikbaar"
+msgstr "Linktype nog niet beschikbaar"
 
 #: src/capture.c:228
 msgid "Mode not available in this device"
@@ -188,7 +188,7 @@ msgstr "Kan filter niet gebruiken (%s)."
 
 #: src/capture.c:324
 msgid "Status not PAUSE or STOP at start_capture"
-msgstr ""
+msgstr "Status is geen PAUSE of STOP bij het starten van de capture"
 
 #: src/capture.c:330
 msgid "Starting live capture"
@@ -200,26 +200,23 @@ msgstr "Offline luisteren wordt gestart"
 
 #: src/capture.c:354
 msgid "Status not PLAY at pause_capture"
-msgstr ""
+msgstr "Status is geen PLAY bij het pauzeren"
 
 #: src/capture.c:358
-#, fuzzy
 msgid "Pausing live capture"
-msgstr "Live luisteren wordt gestart"
+msgstr "Live luisteren wordt gepauzeerd"
 
 #: src/capture.c:364
-#, fuzzy
 msgid "Pausing offline capture"
-msgstr "Offline luisteren wordt gestart"
+msgstr "Offline luisteren wordt gepauzeerd"
 
 #: src/capture.c:371
-#, fuzzy
 msgid "Error while trying to pause capture"
-msgstr "Fout bij het stoppen van het luisteren"
+msgstr "Fout bij het pauzeren van het luisteren"
 
 #: src/capture.c:389
 msgid "Status not PLAY or PAUSE at stop_capture"
-msgstr ""
+msgstr "Status is geen PLAY of PAUZE bij het stoppen van de capture"
 
 #: src/capture.c:395
 msgid "Stopping live capture"
@@ -230,7 +227,6 @@ msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
 #: src/capture.c:409
-#, fuzzy
 msgid "Error while removing capture source in stop_capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
@@ -254,7 +250,7 @@ msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
 #: src/capture.c:895
-#, fuzzy, c-format
+#, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
@@ -274,100 +270,92 @@ msgstr "(null)-pakket in check_packet"
 #. * DO NOT compile it as part of your application.
 #.
 #: src/glade-strings:7
-#, fuzzy
 msgid "EtherApe"
-msgstr "Etherape"
+msgstr "EtherApe"
 
 #: src/glade-strings:8
-#, fuzzy
 msgid "_Capture"
-msgstr "Luisteren"
+msgstr "_Luisteren"
 
 #: src/glade-strings:9
 msgid "_Mode"
-msgstr ""
+msgstr "_Modus"
 
 #: src/glade-strings:10
-#, fuzzy
 msgid "Set Token Ring mode"
-msgstr "Grootte berekenen"
+msgstr "Kies Token Ring modus"
 
 #: src/glade-strings:11
 msgid "Token _Ring"
-msgstr ""
+msgstr "Token _Ring"
 
 #: src/glade-strings:12
 msgid "Set FDDI mode"
-msgstr ""
+msgstr "Kies FDDI modus"
 
 #: src/glade-strings:13
 msgid "_FDDI"
-msgstr ""
+msgstr "_FDDI"
 
 #: src/glade-strings:14
 msgid "Set Ethernet mode"
-msgstr ""
+msgstr "Kies Ethernet modus"
 
 #: src/glade-strings:15
-#, fuzzy
 msgid "_Ethernet"
-msgstr "Etherape"
+msgstr "_Ethernet"
 
 #: src/glade-strings:16
-#, fuzzy
 msgid "Set IP mode"
-msgstr "Grootte berekenen"
+msgstr "Kies IP modus"
 
 #: src/glade-strings:17
 msgid "_IP"
-msgstr ""
+msgstr "_IP"
 
 #: src/glade-strings:18
 msgid "Set TCP mode"
-msgstr ""
+msgstr "Kies TCP modus"
 
 #: src/glade-strings:19
 msgid "_TCP"
-msgstr ""
+msgstr "_TCP"
 
 #: src/glade-strings:20
 msgid "Set UDP mode"
-msgstr ""
+msgstr "Kies UDP modus"
 
 #: src/glade-strings:21
 msgid "_UDP"
-msgstr ""
+msgstr "_UDP"
 
 #: src/glade-strings:22
 msgid "_Interfaces"
-msgstr ""
+msgstr "_Interfaces"
 
 #: src/glade-strings:23 src/glade-strings:35
 msgid "Start capture"
 msgstr "Start het luisteren"
 
 #: src/glade-strings:24
-#, fuzzy
 msgid "_Start"
-msgstr "Start"
+msgstr "_Start"
 
 #: src/glade-strings:25 src/glade-strings:37
-#, fuzzy
 msgid "Pause capture"
-msgstr "Start het luisteren"
+msgstr "Pauzeer het luisteren"
 
 #: src/glade-strings:26
 msgid "_Pause"
-msgstr ""
+msgstr "_Pauze"
 
 #: src/glade-strings:27 src/glade-strings:39
 msgid "Stop capture"
 msgstr "Stop het luisteren"
 
 #: src/glade-strings:28
-#, fuzzy
 msgid "St_op"
-msgstr "Stop"
+msgstr "St_op"
 
 #: src/glade-strings:29
 msgid "Show or hide the toolbar"
@@ -399,7 +387,7 @@ msgstr "Start"
 
 #: src/glade-strings:38
 msgid "Pause"
-msgstr ""
+msgstr "Pauze"
 
 #: src/glade-strings:40
 msgid "Stop"
@@ -418,9 +406,8 @@ msgid "Protocols"
 msgstr "Protocollen"
 
 #: src/glade-strings:44
-#, fuzzy
 msgid "Copyright 2001 Juan Toledo"
-msgstr "Copyright 2000 Juan Toledo"
+msgstr "Copyright 2001 Juan Toledo"
 
 #: src/glade-strings:45
 msgid ""
@@ -452,12 +439,11 @@ msgstr "Dit bericht bestaat nu nog niet. (Niemand vertellen hoor. ;-) )"
 
 #: src/glade-strings:52
 msgid "Information"
-msgstr ""
+msgstr "Informatie"
 
 #: src/glade-strings:53
-#, fuzzy
 msgid "EtherApe: Preferences"
-msgstr "Etherape: Voorkeuren"
+msgstr "EtherApe: Voorkeuren"
 
 #: src/glade-strings:54
 msgid "Save"
@@ -485,25 +471,25 @@ msgstr "Maximale lijnbreedte"
 
 #: src/glade-strings:60
 msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
+"Choose how node radius and link width are calculated as a function of average "
+"traffic"
 msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
 
 #: src/glade-strings:61
 msgid "Linear"
-msgstr ""
+msgstr "Lineair"
 
 #: src/glade-strings:62
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logaritmisch"
 
 #: src/glade-strings:63
 msgid "Square Root"
-msgstr ""
+msgstr "Wortel"
 
 #: src/glade-strings:64
 msgid "Size Mode"
-msgstr "Grootte berekenen"
+msgstr "lijnbreedte"
 
 #: src/glade-strings:65
 msgid "Choose the font used to display text in the diagram"
@@ -527,23 +513,23 @@ msgstr "Protocolniveau wat weergegeven moet worden in de legenda"
 
 #: src/glade-strings:70
 msgid "Topmost recognized protocol"
-msgstr ""
+msgstr "Hoogste niveau"
 
 #: src/glade-strings:71
 msgid "Level 2 (Eg: ETH_II)"
-msgstr ""
+msgstr "Niveau 2 (Bv: ETH_II)"
 
 #: src/glade-strings:72
 msgid "Level 3 (Eg: IP)"
-msgstr ""
+msgstr "Niveau 3 (Bv: IP)"
 
 #: src/glade-strings:73
 msgid "Level 4 (Eg: TCP)"
-msgstr ""
+msgstr "Niveau 4 (Bv: TCP)"
 
 #: src/glade-strings:74
 msgid "Level 5 (Eg: HTTP)"
-msgstr ""
+msgstr "Niveau 5 (Bv: HTTP)"
 
 #: src/glade-strings:75
 msgid "Protocol Stack Level"
@@ -551,31 +537,31 @@ msgstr "Herkenningsniveau protocol"
 
 #: src/glade-strings:77
 msgid "Instantaneous traffic (In+Out)"
-msgstr ""
+msgstr "Instantaan verkeer (in+uit)"
 
 #: src/glade-strings:78
 msgid "Instantaneous traffic (Inbound)"
-msgstr ""
+msgstr "Instantaan verkeer (in)"
 
 #: src/glade-strings:79
 msgid "Instantaneous traffic (Outbound)"
-msgstr ""
+msgstr "Instantaan verkeer (uit)"
 
 #: src/glade-strings:80
 msgid "Accumulated traffic (In+Out)"
-msgstr ""
+msgstr "Geaccumuleerd verkeer (in+uit)"
 
 #: src/glade-strings:81
 msgid "Accumulated traffic (Inbound)"
-msgstr ""
+msgstr "Geaccumuleerd verkeer (in)"
 
 #: src/glade-strings:82
 msgid "Accumulated traffic (Outbound)"
-msgstr ""
+msgstr "Geaccumuleerd verkeer (uit)"
 
 #: src/glade-strings:83
 msgid "Node size variable"
-msgstr ""
+msgstr "knooppuntsgrootte"
 
 #: src/glade-strings:84
 msgid "Diagram"
@@ -620,118 +606,78 @@ msgstr "Selecteer Lettertype"
 
 #: src/glade-strings:94
 msgid "EtherApe: Open Capture File"
-msgstr ""
+msgstr "Etherape: Open capture-bestand"
 
 #: src/glade-strings:95
-#, fuzzy
 msgid "EtherApe: Select capture file"
-msgstr "weergavefilter"
+msgstr "EtherApe: Selecteer capture bestand"
 
 #: src/glade-strings:96
-#, fuzzy
 msgid "EtherApe: Select Capture File"
-msgstr "Etherape: Voorkeuren"
+msgstr "EtherApe: Selecteer capture bestand"
 
 #: src/glade-strings:97
-#, fuzzy
 msgid "Select capture file"
-msgstr "weergavefilter"
+msgstr "Selecteer capture bestand"
 
 #: src/glade-strings:98
-#, fuzzy
 msgid "Optionally, set a capture filter"
-msgstr "weergavefilter"
+msgstr "Kiez een capture filter (optioneel)"
 
 #: src/glade-strings:99
 msgid "File:"
-msgstr ""
+msgstr "Bestand:"
 
 #: src/glade-strings:100
 msgid "Filter:"
-msgstr ""
+msgstr "Filter:"
 
 #: src/glade-strings:101
-#, fuzzy
 msgid "Name:"
-msgstr "naam"
+msgstr "Naam:"
 
 #: src/glade-strings:102 src/glade-strings:104
 msgid "This is a test node name"
-msgstr ""
+msgstr "Dit is een testnaam"
 
 #: src/glade-strings:103
 msgid "Numeric Name:"
-msgstr ""
+msgstr "Numerieke naam:"
 
 #: src/glade-strings:105
 msgid "Show traffic"
-msgstr ""
+msgstr "Laat verkeer zien"
 
 #: src/glade-strings:106
-#, fuzzy
 msgid "Show protocols"
 msgstr "Protocollen"
 
 #: src/glade-strings:107
 msgid "Instantaneous"
-msgstr ""
+msgstr "Instantaan"
 
 #: src/glade-strings:108 src/glade-strings:110 src/glade-strings:112
 #: src/glade-strings:114 src/glade-strings:116 src/glade-strings:118
 msgid "test label"
-msgstr ""
+msgstr "test label"
 
 #: src/glade-strings:109
-#, fuzzy
 msgid "Accumulated"
-msgstr "opgeteld"
+msgstr "Geaccumuleerd"
 
 #: src/glade-strings:111
 msgid "Inst. Inbound"
-msgstr ""
+msgstr "Inst. in"
 
 #: src/glade-strings:113
 msgid "Accu. Outbound"
-msgstr ""
+msgstr "Geacc. uit"
 
 #: src/glade-strings:115
 msgid "Accu. Inbound"
-msgstr ""
+msgstr "Geacc. in"
 
 #: src/glade-strings:117
 msgid "Inst. Outbound"
-msgstr ""
+msgstr "Inst. uit"
 
-#~ msgid "Reached default in fill_names"
-#~ msgstr "Default bereikt in fill_names"
-
-#~ msgid "Aceptar"
-#~ msgstr "OK"
-
-#~ msgid "Aplicar"
-#~ msgstr "Toepassen"
-
-#~ msgid "Cancelar"
-#~ msgstr "Annuleren"
-
-#~ msgid ""
-#~ "Linear\n"
-#~ "Logarithmic\n"
-#~ "Square Root\n"
-#~ msgstr ""
-#~ "Lineair\n"
-#~ "Logaritmisch\n"
-#~ "Wortel\n"
-
-#~ msgid ""
-#~ "Topmost recognized protocol\n"
-#~ "Level 2 (Eg: ETH_II)\n"
-#~ "Level 3 (Eg: IP)\n"
-#~ "Level 4 (Eg: TCP)\n"
-#~ "Level 5 (Eg: HTTP)\n"
-#~ msgstr ""
-#~ "Hoogste herkende niveau\n"
-#~ "Niveau 2 (Bijv: ETH_II)\n"
-#~ "Niveau 3 (Bijv: IP)\n"
-#~ "Niveau 4 (Bijv: TCP)\n"
-#~ "Niveau 5 (Bijv: HTTP)\n"
