@@ -196,7 +196,10 @@ add_name (gchar * numeric_name, gchar * resolved_name)
   /* Have we heard this address before? */
   name_item = g_list_find_custom (name_item, id, id_compare);
   if (name_item)
-    name = name_item->data;
+    {
+      name = name_item->data;
+      g_my_debug ("Dirección conocida en add_name");
+    }
   else
     name = NULL;
 
