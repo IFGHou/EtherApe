@@ -1,14 +1,13 @@
-# Etherape.
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>, 2001.
+# Vincent van Adrighem &lt;V.vanAdrighem@ITS.TUDelft.nl&gt;, 2001.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
 "POT-Creation-Date: 2001-05-06 21:32+0200\n"
 "PO-Revision-Date: 2001-05-07 11:05+0100\n"
-"Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"Last-Translator: Vincent van Adrighem &lt;V.vanAdrighem@ITS.TUDelft.nl&gt;"
+"Language-Team: Dutch &lt;nl@li.org&gt;"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,32 +17,32 @@ msgid "mode of operation"
 msgstr "luister-modus"
 
 #: src/main.c:39
-msgid "<ethernet|fddi|ip|tcp>"
-msgstr "<ethernet|fddi|ip|tcp>"
+msgid "&lt;ethernet|fddi|ip|tcp&gt;"
+msgstr "&lt;ethernet|fddi|ip|tcp&gt;"
 
 #: src/main.c:41
 msgid "set interface to listen to"
 msgstr "luister naar deze interface"
 
 #: src/main.c:41
-msgid "<interface name>"
-msgstr "<interface naam>"
+msgid "&lt;interface name&gt;"
+msgstr "&lt;interface naam&gt;"
 
 #: src/main.c:43
 msgid "set capture filter"
 msgstr "weergavefilter"
 
 #: src/main.c:43
-msgid "<capture filter>"
-msgstr "<filter>"
+msgid "&lt;capture filter&gt;"
+msgstr "&lt;filter&gt;"
 
 #: src/main.c:45
 msgid "set input file"
 msgstr "selecteer invoerbestand"
 
 #: src/main.c:45
-msgid "<file name>"
-msgstr "<bestand>"
+msgid "&lt;file name&gt;"
+msgstr "&lt;bestand&gt;"
 
 #: src/main.c:47
 msgid "don't convert addresses to names"
@@ -66,8 +65,8 @@ msgid "limits nodes displayed"
 msgstr "beperk aantal weergegeven knooppunten"
 
 #: src/main.c:55
-msgid "<number of nodes>"
-msgstr "<aantal knooppunten>"
+msgid "&lt;number of nodes&gt;"
+msgstr "&lt;aantal knooppunten&gt;"
 
 #: src/main.c:57
 msgid "Don't show warnings"
@@ -291,7 +290,7 @@ msgstr "Status is geen PLAY of PAUZE bij gui_start_capture"
 #. Sets the appbar
 #: src/menus.c:535
 msgid "Reading data from "
-msgstr "Data wordt ingelezen vanuit"
+msgstr "Data wordt ingelezen vanuit "
 
 #: src/menus.c:542
 #: src/menus.c:665
@@ -300,27 +299,27 @@ msgstr "standaardinterface"
 
 #: src/menus.c:547
 msgid " in Token Ring mode"
-msgstr "in Token Ring modus"
+msgstr " in Token Ring modus"
 
 #: src/menus.c:550
 msgid " in FDDI mode"
-msgstr "in FDDI modus"
+msgstr " in FDDI modus"
 
 #: src/menus.c:553
 msgid " in Ethernet mode"
-msgstr "in Ethernet modus"
+msgstr " in Ethernet modus"
 
 #: src/menus.c:556
 msgid " in IP mode"
-msgstr "in IP modus"
+msgstr " in IP modus"
 
 #: src/menus.c:559
 msgid " in TCP mode"
-msgstr "in TCP modus"
+msgstr " in TCP modus"
 
 #: src/menus.c:562
 msgid " in UDP mode"
-msgstr "in UDP modus"
+msgstr " in UDP modus"
 
 #: src/menus.c:572
 msgid "Diagram started"
@@ -571,7 +570,7 @@ msgstr "Voorkeuren (Ctrl-P)"
 
 #: src/glade-strings:42
 msgid "Pref."
-msgstr "Voork."
+msgstr "Voorkeuren"
 
 #: src/glade-strings:43
 msgid "Protocols"
@@ -863,4 +862,3 @@ msgstr "Opgeteld in"
 #: src/glade-strings:119
 msgid "Inst. Outbound"
 msgstr "Direct uit"
-
