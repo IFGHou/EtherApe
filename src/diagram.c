@@ -1122,6 +1122,8 @@ update_node_info_window (node_info_window_t * node_info_window)
       gtk_label_set_text (GTK_LABEL (widget), "X");
       widget = gtk_object_get_data (GTK_OBJECT (window), "accumulated_out");
       gtk_label_set_text (GTK_LABEL (widget), "X");
+
+      gtk_container_queue_resize (GTK_CONTAINER (node_info_window->window));
       return;
     }
 
@@ -1151,6 +1153,7 @@ update_node_info_window (node_info_window_t * node_info_window)
   gtk_label_set_text (GTK_LABEL (widget),
 		      traffic_to_str (node->accumulated_out, FALSE));
 
+  gtk_container_queue_resize (GTK_CONTAINER (node_info_window->window));
 }				/* update_node_info_window */
 
 
@@ -1308,7 +1311,11 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
       update_node_info_window (node_info_window);
 
       if (canvas_node && canvas_node->node)
+	{
+	  g_my_info ("Nodes: %d. Canvas nodes: %d", g_tree_nnodes (nodes),
+		     g_tree_nnodes (canvas_nodes));
 	  dump_node_info (canvas_node->node);
+	}
 
       break;
     default:
@@ -1427,7 +1434,7 @@ traffic_to_str (gdouble traffic, gboolean is_speed)
       else if (traffic > 1000)
 	str = g_strdup_printf ("%.3f Kbps", traffic / 1000);
       else
-	str = g_strdup_printf ("%.3f bps", traffic);
+	str = g_strdup_printf ("%.0f bps", traffic);
     }
   else
     {
