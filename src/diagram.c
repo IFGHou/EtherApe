@@ -40,6 +40,9 @@ double node_radius_multiplier = 100;	/* used to calculate the radius of the
 					 * multiplier*/
 double link_width_multiplier = 100;	/* Same explanation as above */
 
+size_mode_t size_mode = LINEAR;	/* Default mode for node size and
+				 * link width calculation */
+
 gchar *node_color = "brown", *link_color = "tan", *text_color = "yellow";
 
 
@@ -115,13 +118,39 @@ get_prot_color (gchar * name)
 gdouble
 get_node_size (gdouble average)
 {
-  return (double) 5 + node_radius_multiplier * average;
+  gdouble result = 0;
+  switch (size_mode)
+    {
+    case LINEAR:
+      result = average;
+      break;
+    case SQRT:
+      result = sqrt (average);
+      break;
+    case LOG:
+      result = log (average);
+      break;
+    }
+  return (double) 5 + node_radius_multiplier * result;
 }
 
 gdouble
 get_link_size (gdouble average)
 {
-  return (double) 1 + link_width_multiplier * average;
+  gdouble result = 0;
+  switch (size_mode)
+    {
+    case LINEAR:
+      result = average;
+      break;
+    case SQRT:
+      result = sqrt (average);
+      break;
+    case LOG:
+      result = log (average);
+      break;
+    }
+  return (double) 1 + link_width_multiplier * result;
 }
 
 static gint
@@ -645,12 +674,13 @@ void
 check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 {
   GtkWidget *prot_table;
-  GtkWidget *label, *app1;
+  GtkWidget *label;
   GtkArg args[2];
   GdkColor prot_color;
   GtkStyle *style;
   gchar *color_string;
   guint n_rows, n_columns;
+  static gboolean first = TRUE;
 
   args[0].name = "n_rows";
   args[1].name = "n_columns";
@@ -666,25 +696,31 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_object_getv (GTK_OBJECT (prot_table), 2, args);
   n_rows = args[0].d.int_data;
   n_columns = args[0].d.int_data;
-  if (n_rows>1)			/* Glade won't let me define a 0 row
-				 * table */
-     gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
+  /* Glade won't let me define a 0 row table
+   * I feel this is ugly, but it's late and I don't feel like
+   * cleaning this up :-) */
+  if (!first)
+    {
+      gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns);
+      n_rows++;
+    }
+  first = FALSE;
 
   /* Then we add the new label widgets */
   label = gtk_label_new (protocol->name);
   gtk_widget_ref (label);
   /* I'm not really sure what this exactly does. I just copied it from 
    * interface.c, but what I'm trying to do is set the name of the widget */
-  app1 = lookup_widget (GTK_WIDGET (canvas), "app1");
   gtk_object_set_data_full (GTK_OBJECT (app1), protocol->name, label,
 			    (GtkDestroyNotify) gtk_widget_unref);
 
 
   gtk_widget_show (label);
+  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_CENTER);
   gtk_table_attach (GTK_TABLE (prot_table), label,
 		    1, 2, n_rows - 1, n_rows,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
   color_string = get_prot_color (protocol->name);
   gdk_color_parse (color_string, &prot_color);
@@ -786,7 +822,7 @@ update_diagram (GtkWidget * canvas)
 void
 init_diagram ()
 {
-  GtkScale *scale;
+  GtkWidget *widget;
   GtkSpinButton *spin;
   GtkStyle *style;
   GtkWidget *canvas;
@@ -809,15 +845,15 @@ init_diagram ()
     refresh_period = 3000;
 
   /* Updates controls from values of variables */
-  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (diag_pref), "node_radius_slider"));
-  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
+  widget = lookup_widget (GTK_WIDGET (diag_pref), "node_radius_slider");
+  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (node_radius_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
-  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (diag_pref), "link_width_slider"));
-  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment,
+  widget = lookup_widget (GTK_WIDGET (diag_pref), "link_width_slider");
+  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (link_width_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
   spin =
     GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "averaging_spin"));
@@ -829,36 +865,36 @@ init_diagram ()
   spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (diag_pref), "link_to_spin"));
   gtk_spin_button_set_value (spin, link_timeout_time / 1000);
 
-   
+
   /* Connects signals */
-  scale = lookup_widget (diag_pref, "node_radius_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "node_radius_slider");
+  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_node_radius_slider_adjustment_changed), NULL);
-  scale = lookup_widget (diag_pref, "link_width_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "link_width_slider");
+  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_link_width_slider_adjustment_changed), NULL);
-  scale = lookup_widget (diag_pref, "averaging_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "averaging_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_averaging_spin_adjustment_changed), NULL);
-  scale = lookup_widget (diag_pref, "refresh_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "refresh_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_refresh_spin_adjustment_changed),
 		      lookup_widget (GTK_WIDGET (diag_pref), "canvas1"));
-  scale = lookup_widget (diag_pref, "node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "node_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_node_to_spin_adjustment_changed), NULL);
-  scale = lookup_widget (diag_pref, "link_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (scale)->adjustment),
+  widget = lookup_widget (diag_pref, "link_to_spin");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		      "value_changed",
 		      GTK_SIGNAL_FUNC
 		      (on_link_to_spin_adjustment_changed), NULL);

@@ -38,6 +38,7 @@ extern double node_timeout_time;
 extern guint32 refresh_period;
 extern gint diagram_timeout;
 extern GtkWidget *diag_pref;
+extern GtkWidget *app1;
 void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -191,7 +192,7 @@ on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
 
   node_radius_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Adjustment value: %g. Radius multiplier %g"),
+	 _ ("Adjustment value: %g. Radius multiplier %g"),
 	 adj->value, node_radius_multiplier);
 
 }
@@ -202,7 +203,7 @@ on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 
   link_width_multiplier = exp ((double) adj->value * log (10));
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Adjustment value: %g. Radius multiplier %g"),
+	 _ ("Adjustment value: %g. Radius multiplier %g"),
 	 adj->value, link_width_multiplier);
 
 }
@@ -236,7 +237,7 @@ on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 
 gboolean
 on_node_popup_motion_notify_event (GtkWidget * widget,
-				   GdkEventMotion * event, gpointer user_data)
+				 GdkEventMotion * event, gpointer user_data)
 {
 
   gtk_widget_destroy (widget);
@@ -251,4 +252,106 @@ on_name_motion_notify_event (GtkWidget * widget,
 
   g_message ("Motion in name label");
   return FALSE;
+}
+
+void
+on_toolbar_check_activate (GtkMenuItem * menuitem,
+			   gpointer user_data)
+{
+  static gboolean active = TRUE;
+  GnomeDock *dock;
+  GnomeDockItem *dock_item;
+  guint num_band_return, band_position_return, offset_return;
+  GnomeDockPlacement placement_return;
+
+  dock = GNOME_DOCK (lookup_widget (GTK_WIDGET (app1), "dock1"));
+  if (active)
+    {
+      dock_item = gnome_dock_get_item_by_name (dock,
+					       "toolbar",
+					       &placement_return,
+					       &num_band_return,
+					       &band_position_return,
+					       &offset_return);
+      gtk_widget_hide (GTK_WIDGET (dock_item));
+      gtk_container_queue_resize (GTK_CONTAINER (dock));
+      active = FALSE;
+    }
+  else
+    {
+      dock_item = gnome_dock_get_item_by_name (dock,
+					       "toolbar",
+					       &placement_return,
+					       &num_band_return,
+					       &band_position_return,
+					       &offset_return);
+      gtk_widget_show (GTK_WIDGET (dock_item));
+      active = TRUE;
+    }
+}
+
+void
+on_legend_check_activate (GtkMenuItem * menuitem,
+			  gpointer user_data)
+{
+  static gboolean active = TRUE;
+  GnomeDock *dock;
+  GnomeDockItem *dock_item;
+  guint num_band_return, band_position_return, offset_return;
+  GnomeDockPlacement placement_return;
+
+  dock = GNOME_DOCK (lookup_widget (GTK_WIDGET (app1), "dock1"));
+  if (active)
+    {
+      dock_item = gnome_dock_get_item_by_name (dock,
+					       "legend_frame",
+					       &placement_return,
+					       &num_band_return,
+					       &band_position_return,
+					       &offset_return);
+      gtk_widget_hide (GTK_WIDGET (dock_item));
+      gtk_container_queue_resize (GTK_CONTAINER (dock));
+      active = FALSE;
+    }
+  else
+    {
+      dock_item = gnome_dock_get_item_by_name (dock,
+					       "legend_frame",
+					       &placement_return,
+					       &num_band_return,
+					       &band_position_return,
+					       &offset_return);
+      gtk_widget_show (GTK_WIDGET (dock_item));
+      active = TRUE;
+    }
+
+}
+
+
+void
+on_status_bar_check_activate (GtkMenuItem * menuitem,
+			      gpointer user_data)
+{
+  static gboolean active = TRUE;
+  GtkWidget *widget;
+  widget = lookup_widget (app1, "appbar1");
+  if (active)
+    {
+      gtk_widget_hide (widget);
+      gtk_container_queue_resize (GTK_CONTAINER (app1));
+      active = FALSE;
+    }
+  else
+    {
+      gtk_widget_show (widget);
+      active = TRUE;
+    }
+}
+
+
+void
+on_size_mode_menu_released (GtkButton * button,
+			    gpointer user_data)
+{
+  g_message ("So, here I am");
 }

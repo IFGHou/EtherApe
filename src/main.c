@@ -50,6 +50,7 @@ int
 main (int argc, char *argv[])
 {
   gchar *mode_string = NULL;
+  GtkWidget *widget;
 
   struct poptOption optionsTable[] =
   {
@@ -91,7 +92,7 @@ main (int argc, char *argv[])
 #endif
 
 
-  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 
+  gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable,
 			      0, NULL);
 
   /* dns is used in dns.c as opposite of numeric */
@@ -114,7 +115,7 @@ main (int argc, char *argv[])
       else if (strstr (mode_string, "udp"))
 	mode = UDP;
       else
-	g_warning (_("Unrecognized mode. Do etherape --help for a list of modes"));
+	g_warning (_ ("Unrecognized mode. Do etherape --help for a list of modes"));
     }
 
   /* Only ip traffic makes sense when used as interape */
@@ -139,13 +140,13 @@ main (int argc, char *argv[])
 				 * mtr for reference */
 
   app1 = create_app1 ();
-  diag_pref =  create_diag_pref ();
+  diag_pref = create_diag_pref ();
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
 
   gtk_widget_show (app1);
-   
+
 
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when
@@ -153,10 +154,10 @@ main (int argc, char *argv[])
    * update_diagram will be stacked with no gtk idle time, thus freezing
    * the display */
   /* TODO: Back up if CPU can't handle it */
+  widget = lookup_widget (GTK_WIDGET (app1), "canvas1");
   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
 				     (GtkFunction) update_diagram,
-				     lookup_widget (GTK_WIDGET (app1),
-						    "canvas1"));
+				     widget);
 
   /* MAIN LOOP */
   gtk_main ();

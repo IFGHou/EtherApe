@@ -81,21 +81,21 @@ typedef unsigned int ip_t;
 /* Structures */
 
 struct resolve
-{
-  struct resolve *next;
-  struct resolve *previous;
-  struct resolve *nextid;
-  struct resolve *previousid;
-  struct resolve *nextip;
-  struct resolve *previousip;
-  struct resolve *nexthost;
-  struct resolve *previoushost;
-  float expiretime;		/* Fucking HPUX has a problem with "double" here. */
-  char *hostname;
-  ip_t ip;
-  word id;
-  byte state;
-};
+  {
+    struct resolve *next;
+    struct resolve *previous;
+    struct resolve *nextid;
+    struct resolve *previousid;
+    struct resolve *nextip;
+    struct resolve *previousip;
+    struct resolve *nexthost;
+    struct resolve *previoushost;
+    float expiretime;		/* Fucking HPUX has a problem with "double" here. */
+    char *hostname;
+    ip_t ip;
+    word id;
+    byte state;
+  };
 
 /* Non-blocking nameserver interface routines */
 
@@ -103,7 +103,8 @@ struct resolve
 #define DomainLength (MAXDNAME)
 
 #define OpcodeCount 3
-char *opcodes[OpcodeCount + 1] = {
+char *opcodes[OpcodeCount + 1] =
+{
   "standard query",
   "inverse query",
   "server status request",
@@ -111,7 +112,8 @@ char *opcodes[OpcodeCount + 1] = {
 };
 
 #define ResponsecodeCount 6
-char *responsecodes[ResponsecodeCount + 1] = {
+char *responsecodes[ResponsecodeCount + 1] =
+{
   "no error",
   "format error in query",
   "server failure",
@@ -122,7 +124,8 @@ char *responsecodes[ResponsecodeCount + 1] = {
 };
 
 #define ResourcetypeCount 17
-char *resourcetypes[ResourcetypeCount + 1] = {
+char *resourcetypes[ResourcetypeCount + 1] =
+{
   "unknown type",
   "A: host address",
   "NS: authoritative name server",
@@ -144,7 +147,8 @@ char *resourcetypes[ResourcetypeCount + 1] = {
 };
 
 #define ClasstypeCount 5
-char *classtypes[ClasstypeCount + 1] = {
+char *classtypes[ClasstypeCount + 1] =
+{
   "unknown class",
   "IN: the Internet",
   "CS: CSNET (OBSOLETE)",
@@ -153,7 +157,8 @@ char *classtypes[ClasstypeCount + 1] = {
   "unknown class"
 };
 
-char *rrtypes[] = {
+char *rrtypes[] =
+{
   "Unknown",
   "Query",
   "Answer",
@@ -162,35 +167,35 @@ char *rrtypes[] = {
 };
 
 enum
-{
-  RR_UNKNOWN,
-  RR_QUERY,
-  RR_ANSWER,
-  RR_AUTHORITY,
-  RR_RESOURCE,
-};
+  {
+    RR_UNKNOWN,
+    RR_QUERY,
+    RR_ANSWER,
+    RR_AUTHORITY,
+    RR_RESOURCE,
+  };
 
 typedef struct
-{
-  word id;			/* Packet id */
-  byte databyte_a;
-  /* rd:1           recursion desired
-   * tc:1           truncated message
-   * aa:1           authoritive answer
-   * opcode:4       purpose of message
-   * qr:1           response flag
-   */
-  byte databyte_b;
-  /* rcode:4        response code
-   * unassigned:2   unassigned bits
-   * pr:1           primary server required (non standard)
-   * ra:1           recursion available
-   */
-  word qdcount;			/* Query record count */
-  word ancount;			/* Answer record count */
-  word nscount;			/* Authority reference record count */
-  word arcount;			/* Resource reference record count */
-}
+  {
+    word id;			/* Packet id */
+    byte databyte_a;
+    /* rd:1           recursion desired
+     * tc:1           truncated message
+     * aa:1           authoritive answer
+     * opcode:4       purpose of message
+     * qr:1           response flag
+     */
+    byte databyte_b;
+    /* rcode:4        response code
+     * unassigned:2   unassigned bits
+     * pr:1           primary server required (non standard)
+     * ra:1           recursion available
+     */
+    word qdcount;		/* Query record count */
+    word ancount;		/* Answer record count */
+    word nscount;		/* Authority reference record count */
+    word arcount;		/* Resource reference record count */
+  }
 packetheader;
 
 #ifndef HFIXEDSZ
@@ -230,13 +235,13 @@ packetheader;
 #endif
 
 enum
-{
-  STATE_FINISHED,
-  STATE_FAILED,
-  STATE_PTRREQ1,
-  STATE_PTRREQ2,
-  STATE_PTRREQ3,
-};
+  {
+    STATE_FINISHED,
+    STATE_FAILED,
+    STATE_PTRREQ1,
+    STATE_PTRREQ2,
+    STATE_PTRREQ3,
+  };
 
 #define Is_PTR(x) ((x->state == STATE_PTRREQ1) || (x->state == STATE_PTRREQ2) || (x->state == STATE_PTRREQ3))
 
@@ -358,21 +363,21 @@ statfree (void *p)
 	    }
 #ifdef CorruptCheck
 	  if (
-	      (*(byte *)
-	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 0) !=
-	       0xde)
-	      ||
-	      (*(byte *)
-	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 1) !=
-	       0xad)
-	      ||
-	      (*(byte *)
-	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 2) !=
-	       0xbe)
-	      ||
-	      (*(byte *)
-	       ((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 3) !=
-	       0xef))
+	       (*(byte *)
+		((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 0) !=
+		0xde)
+	       ||
+	       (*(byte *)
+		((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 1) !=
+		0xad)
+	       ||
+	       (*(byte *)
+		((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 2) !=
+		0xbe)
+	       ||
+	       (*(byte *)
+		((char *) p + (*((dword *) p - 1)) + sizeof (byte) * 3) !=
+		0xef))
 	    {
 	      fprintf (stderr, "ERROR: Corrupted free() buffer. (footer)\n");
 	      *(int *) 0 = 0;
@@ -451,7 +456,8 @@ strlongip (ip_t ip)
   return inet_ntoa (a);
 }
 
-ip_t longipstr (char *s)
+ip_t 
+longipstr (char *s)
 {
   return inet_addr (s);
 }
@@ -489,7 +495,7 @@ dns_open ()
   if (resfd == -1)
     {
       fprintf (stderr,
-	       "Unable to allocate socket for nameserver communication: %s\n",
+	     "Unable to allocate socket for nameserver communication: %s\n",
 	       strerror (errno));
       exit (-1);
     }
@@ -498,7 +504,7 @@ dns_open ()
       (resfd, SOL_SOCKET, SO_BROADCAST, (char *) &option, sizeof (option)))
     {
       fprintf (stderr,
-	       "Unable to setsockopt() on nameserver communication socket: %s\n",
+	  "Unable to setsockopt() on nameserver communication socket: %s\n",
 	       strerror (errno));
       exit (-1);
     }
@@ -525,17 +531,20 @@ allocresolve ()
   return rp;
 }
 
-dword getidbash (word id)
+dword 
+getidbash (word id)
 {
   return (dword) BashModulo (id);
 }
 
-dword getipbash (ip_t ip)
+dword 
+getipbash (ip_t ip)
 {
   return (dword) BashModulo (ip);
 }
 
-dword gethostbash (char *host)
+dword 
+gethostbash (char *host)
 {
   dword bashvalue = 0;
   for (; *host; host++)
@@ -918,7 +927,7 @@ resendrequest (struct resolve *rp, int type)
       if (debug)
 	{
 	  sprintf (tempstring,
-		   "Resolver: Sent reverse authentication request for \"%s\".",
+		"Resolver: Sent reverse authentication request for \"%s\".",
 		   rp->hostname);
 	  restell (tempstring);
 	}
@@ -1104,7 +1113,7 @@ parserespacket (byte * s, int l)
 	  if (qclass != C_IN)
 	    {
 	      sprintf (tempstring,
-		       "Resolver error: Received unsupported query class: %u (%s)",
+		"Resolver error: Received unsupported query class: %u (%s)",
 		       qclass,
 		       qclass <
 		       ClasstypeCount ? classtypes[qclass] :
@@ -1124,7 +1133,7 @@ parserespacket (byte * s, int l)
 	      break;
 	    default:
 	      sprintf (tempstring,
-		       "Resolver error: Received unimplemented query type: %u (%s)",
+	       "Resolver error: Received unimplemented query type: %u (%s)",
 		       qdatatype,
 		       qdatatype <
 		       ResourcetypeCount ? resourcetypes[qdatatype] :
@@ -1282,7 +1291,7 @@ parserespacket (byte * s, int l)
 				 "Resolver error: Received unimplemented data type: %u (%s)",
 				 datatype,
 				 datatype <
-				 ResourcetypeCount ? resourcetypes[datatype] :
+			       ResourcetypeCount ? resourcetypes[datatype] :
 				 resourcetypes[ResourcetypeCount]);
 			restell (tempstring);
 		      }

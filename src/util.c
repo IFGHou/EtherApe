@@ -109,10 +109,10 @@ typedef int mode_t;		/* for win32 */
  */
 
 struct search_user_data
-{
-  char *name;
-  int found;
-};
+  {
+    char *name;
+    int found;
+  };
 
 static void search_for_if_cb (gpointer data, gpointer user_data);
 

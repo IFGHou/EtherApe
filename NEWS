@@ -3,6 +3,16 @@
                                        
    $Date$
    
+  Overview of changes in Etherape 0.2.8 (Wednesday 03-15-2000):
+  
+     * GUI enhancements suggested by mdf to save screen real state.
+          + Diagram settings is a dialog under the preferences menu
+          + Legend becomes a dockable item
+          + Toolbar, legend and appbar may be hidden using the view menu.
+     * GUI for two more sizing algorithms: log and sqrt. I'm afraid I
+       still don't know how to get the menu item from an option_menu,
+       though. Patch, anyone? :-)
+       
   Overview of changes in Etherape 0.2.7 (Monday 03-13-2000):
   
      * Node info is now a popup.

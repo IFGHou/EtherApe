@@ -1,3 +1,4 @@
+
 #include <gtk/gtk.h>
 
 
@@ -36,8 +37,8 @@ on_app1_delete_event (GtkWidget * widget,
 		      GdkEvent * event, gpointer user_data);
 
 void
-on_canvas1_size_allocate (GtkWidget * widget,
-			  GtkAllocation * allocation, gpointer user_data);
+  on_canvas1_size_allocate (GtkWidget * widget,
+			    GtkAllocation * allocation, gpointer user_data);
 
 void on_averaging_spin_adjustment_changed (GtkAdjustment * adj);
 void on_refresh_spin_adjustment_changed (GtkAdjustment * adj,
@@ -74,3 +75,19 @@ on_node_popup_motion_notify_event (GtkWidget * widget,
 gboolean
 on_name_motion_notify_event (GtkWidget * widget,
 			     GdkEventMotion * event, gpointer user_data);
+
+void
+  on_toolbar_check_activate (GtkMenuItem * menuitem,
+			     gpointer user_data);
+
+void
+  on_legend_check_activate (GtkMenuItem * menuitem,
+			    gpointer user_data);
+
+void
+  on_status_bar_check_activate (GtkMenuItem * menuitem,
+				gpointer user_data);
+
+void
+  on_size_mode_menu_released (GtkButton * button,
+			      gpointer user_data);
