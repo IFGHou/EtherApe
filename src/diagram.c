@@ -581,37 +581,31 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
     {
       if (canvas_node->is_new)
 	{
-	  static guint count = 0, a_count = 1, b_count = 0, expon;
-	  static gdouble a, b, c;
-	  guint mod;
+	  static guint count = 0, base = 1;
+	  gdouble angle = 0;
 
-	  expon = exp (a_count * log (2));
-	  a = M_PI / 2 / expon;
-	  b = b_count * 2 * a;
+	  if (count == 0)
+	    {
+	      angle = M_PI * 2.0f;
+	      count++;
+	    }
+	  else
+	    {
 
-	  mod = count % 4;
-	  c = M_PI / 2 * mod;
-
-	  x = x_rad_max * cos (a + b + c);
-	  y = y_rad_max * sin (a + b + c);
-	  count++;
-
+	      if (count > 2 * base)
+		{
+		  base *= 2;
+		  count = 1;
+		}
+	      angle = M_PI * (gdouble) count / ((gdouble) base);
+	      count += 2;
+	    }
+	  x = x_rad_max * cos (angle);
+	  y = y_rad_max * sin (angle);
 #if 0
-	  g_message ("count %d, a %d, b %d", count, a_count, b_count);
-	  g_message ("a=%d b=%d c=%d", (int) (a * 180 / M_PI),
-		     (int) (b * 180 / M_PI), (int) (c * 180 / M_PI));
+	  g_message ("angle = %f", angle);
 #endif
 
-	  if (mod == 3)
-	    {
-	      if (b_count == (exp ((a_count - 1) * log (2)) - 1))
-		{
-		  a_count++;
-		  b_count = 0;
-		}
-	      else
-		b_count++;
-	    }
 	}
 
     }
