@@ -83,10 +83,12 @@ create_app1 (void)
   GtkWidget *frame1;
   GtkWidget *vbox2;
   GtkWidget *vbox3;
-  GtkWidget *hscale4;
+  GtkObject *spinbutton1_adj;
+  GtkWidget *spinbutton1;
   GtkWidget *label6;
   GtkWidget *vbox4;
-  GtkWidget *hscale5;
+  GtkObject *spinbutton2_adj;
+  GtkWidget *spinbutton2;
   GtkWidget *label7;
   GtkWidget *vbox5;
   GtkWidget *hscale6;
@@ -295,7 +297,7 @@ create_app1 (void)
   gtk_widget_show (frame1);
   gtk_box_pack_start (GTK_BOX (vbox1), frame1, FALSE, TRUE, 0);
 
-  vbox2 = gtk_vbox_new (TRUE, 0);
+  vbox2 = gtk_vbox_new (FALSE, 10);
   gtk_widget_ref (vbox2);
   gtk_object_set_data_full (GTK_OBJECT (app1), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -307,18 +309,19 @@ create_app1 (void)
   gtk_object_set_data_full (GTK_OBJECT (app1), "vbox3", vbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox3);
-  gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, TRUE, 2);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 2);
 
-  hscale4 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
-  gtk_widget_ref (hscale4);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "hscale4", hscale4,
+  spinbutton1_adj = gtk_adjustment_new (2000, 1, 3.6e+06, 100, 1000, 10000);
+  spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
+  gtk_widget_ref (spinbutton1);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "spinbutton1", spinbutton1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hscale4);
-  gtk_box_pack_start (GTK_BOX (vbox3), hscale4, TRUE, TRUE, 0);
-  gtk_scale_set_draw_value (GTK_SCALE (hscale4), FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (hscale4), GTK_POS_RIGHT);
+  gtk_widget_show (spinbutton1);
+  gtk_box_pack_start (GTK_BOX (vbox3), spinbutton1, FALSE, FALSE, 0);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (spinbutton1), GTK_UPDATE_IF_VALID);
+  gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinbutton1), TRUE);
 
-  label6 = gtk_label_new (_("Averaging Time"));
+  label6 = gtk_label_new (_("Averaging Time (ms)"));
   gtk_widget_ref (label6);
   gtk_object_set_data_full (GTK_OBJECT (app1), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -331,17 +334,17 @@ create_app1 (void)
   gtk_object_set_data_full (GTK_OBJECT (app1), "vbox4", vbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox4);
-  gtk_box_pack_start (GTK_BOX (vbox2), vbox4, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox4, FALSE, FALSE, 0);
 
-  hscale5 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
-  gtk_widget_ref (hscale5);
-  gtk_object_set_data_full (GTK_OBJECT (app1), "hscale5", hscale5,
+  spinbutton2_adj = gtk_adjustment_new (800, 50, 10000, 10, 100, 100);
+  spinbutton2 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton2_adj), 1, 0);
+  gtk_widget_ref (spinbutton2);
+  gtk_object_set_data_full (GTK_OBJECT (app1), "spinbutton2", spinbutton2,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hscale5);
-  gtk_box_pack_start (GTK_BOX (vbox4), hscale5, FALSE, TRUE, 2);
-  gtk_scale_set_draw_value (GTK_SCALE (hscale5), FALSE);
+  gtk_widget_show (spinbutton2);
+  gtk_box_pack_start (GTK_BOX (vbox4), spinbutton2, FALSE, FALSE, 2);
 
-  label7 = gtk_label_new (_("Diagram refresh period"));
+  label7 = gtk_label_new (_("Diagram refresh period (ms)"));
   gtk_widget_ref (label7);
   gtk_object_set_data_full (GTK_OBJECT (app1), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -354,14 +357,14 @@ create_app1 (void)
   gtk_object_set_data_full (GTK_OBJECT (app1), "vbox5", vbox5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox5);
-  gtk_box_pack_start (GTK_BOX (vbox2), vbox5, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox5, FALSE, FALSE, 0);
 
-  hscale6 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (2.8, 0, 5, 0.25, 1, 0)));
+  hscale6 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
   gtk_widget_ref (hscale6);
   gtk_object_set_data_full (GTK_OBJECT (app1), "hscale6", hscale6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hscale6);
-  gtk_box_pack_start (GTK_BOX (vbox5), hscale6, FALSE, TRUE, 2);
+  gtk_box_pack_start (GTK_BOX (vbox5), hscale6, FALSE, FALSE, 2);
   gtk_scale_set_draw_value (GTK_SCALE (hscale6), FALSE);
   gtk_range_set_update_policy (GTK_RANGE (hscale6), GTK_UPDATE_DISCONTINUOUS);
 
@@ -378,15 +381,16 @@ create_app1 (void)
   gtk_object_set_data_full (GTK_OBJECT (app1), "vbox6", vbox6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox6);
-  gtk_box_pack_start (GTK_BOX (vbox2), vbox6, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox2), vbox6, FALSE, FALSE, 0);
 
-  hscale7 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
+  hscale7 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (3, 0, 5, 0.25, 1, 0)));
   gtk_widget_ref (hscale7);
   gtk_object_set_data_full (GTK_OBJECT (app1), "hscale7", hscale7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hscale7);
   gtk_box_pack_start (GTK_BOX (vbox6), hscale7, FALSE, FALSE, 2);
   gtk_scale_set_draw_value (GTK_SCALE (hscale7), FALSE);
+  gtk_range_set_update_policy (GTK_RANGE (hscale7), GTK_UPDATE_DISCONTINUOUS);
 
   label9 = gtk_label_new (_("Max Link Radius"));
   gtk_widget_ref (label9);
@@ -621,5 +625,40 @@ create_node_popup (void)
                     (GtkAttachOptions) (0), 0, 0);
 
   return node_popup;
+}
+
+GtkWidget*
+create_messagebox1 (void)
+{
+  GtkWidget *messagebox1;
+  GtkWidget *dialog_vbox1;
+  GtkWidget *button4;
+  GtkWidget *dialog_action_area1;
+
+  messagebox1 = gnome_message_box_new (_("This message is not here yet. (Don´t tell anybody you saw it ;-) )"),
+                              GNOME_MESSAGE_BOX_QUESTION, NULL);
+  gtk_object_set_data (GTK_OBJECT (messagebox1), "messagebox1", messagebox1);
+  gtk_window_set_modal (GTK_WINDOW (messagebox1), TRUE);
+  gtk_window_set_policy (GTK_WINDOW (messagebox1), FALSE, FALSE, FALSE);
+  gnome_dialog_set_close (GNOME_DIALOG (messagebox1), TRUE);
+
+  dialog_vbox1 = GNOME_DIALOG (messagebox1)->vbox;
+  gtk_object_set_data (GTK_OBJECT (messagebox1), "dialog_vbox1", dialog_vbox1);
+  gtk_widget_show (dialog_vbox1);
+
+  gnome_dialog_append_button (GNOME_DIALOG (messagebox1), GNOME_STOCK_BUTTON_OK);
+  button4 = g_list_last (GNOME_DIALOG (messagebox1)->buttons)->data;
+  gtk_widget_ref (button4);
+  gtk_object_set_data_full (GTK_OBJECT (messagebox1), "button4", button4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button4);
+  GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
+
+  dialog_action_area1 = GNOME_DIALOG (messagebox1)->action_area;
+  gtk_widget_ref (dialog_action_area1);
+  gtk_object_set_data_full (GTK_OBJECT (messagebox1), "dialog_action_area1", dialog_action_area1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  return messagebox1;
 }
 

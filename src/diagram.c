@@ -18,12 +18,17 @@ double node_radius_multiplier = 1000;	/* used to calculate the radius of the
 					 * select with certain precision this
 					 * value, the GUI uses the log of the
 					 * multiplier in multiplier_control */
+double link_width_multiplier_control = 3; /* Same explanation as above */
+double link_width_multiplier = 1000;
 
 double averaging_time = 2000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
 double link_timeout_time = 5000000;	/* After this time
 					 * has passed with no traffic in a 
 					 * link, it disappears */
+
+gchar *node_color="red", *link_color="tan", *text_color="black";
+
 
 GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
@@ -51,7 +56,7 @@ get_node_size (gdouble average)
 gdouble
 get_link_size (gdouble average)
 {
-  return (double) 1000 * average;
+  return (double) link_width_multiplier * average;
 }
 
 static gint
@@ -218,13 +223,13 @@ update_canvas_links (guint8 * ether_link, canvas_link_t * canvas_link, GtkWidget
   points->coords[2] = args[0].d.double_data;
   points->coords[3] = args[1].d.double_data;
 
-  link->average = link->accumulated/averaging_time; 
+  /* Average is measured in bps, thus 8* */ 
+  link->average = 8*link->accumulated/averaging_time; 
   link_size = get_link_size (link->average);
 
   gnome_canvas_item_set (canvas_link->link_item,
 			 "points", points,
-			 "fill_color", "tan",
-			 "outline_color", "black",
+			 "fill_color", link_color,
 			 "width_units", link_size,
 			 NULL);
 
@@ -241,7 +246,8 @@ update_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node, GtkWidget
   gdouble node_size;
   node = canvas_node->node;
 
-  node->average = node->accumulated/averaging_time;
+   /* Average is measured in bps, thus 8* */ 
+  node->average = 8*node->accumulated/averaging_time;
   node_size = get_node_size (node->average);
 
 
@@ -302,10 +308,9 @@ check_new_link (guint8 * ether_link, link_t * link, GtkWidget * canvas)
       link_size = get_link_size (link->average);
 
       new_canvas_link->link_item = gnome_canvas_item_new (group,
-					   gnome_canvas_polygon_get_type (),
+					   gnome_canvas_line_get_type (),
 							  "points", points,
-						      "fill_color", "green",
-						   "outline_color", "green",
+						      "fill_color", link_color,
 					       "width_units", link_size,
 							  NULL);
 
@@ -358,7 +363,7 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
 							"x2", node_size,
 							  "y1", 0.0,
 							"y2", node_size,
-					      "fill_color_rgba", 0xFF0000FF,
+							  "fill_color", node_color,
 						   "outline_color", "black",
 							  "width_pixels", 0,
 							  NULL);
@@ -368,9 +373,9 @@ check_new_node (guint8 * ether_addr, node_t * node, GtkWidget * canvas)
 							  ,"x", 0.0
 							  ,"y", 0.0
 						,"anchor", GTK_ANCHOR_CENTER
-		       ,"font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*"
-						      ,"fill_color", "black"
-							  ,NULL);
+		       ,"font", "-misc-fixed-medium-r-*-*-*-140-*-*-*-*-*-*",
+						      "fill_color", text_color,
+							  NULL);
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM (new_canvas_node->text_item));

@@ -68,4 +68,7 @@ void
 			    GtkAllocation * allocation,
 			    gpointer user_data);
 
+void on_spinbutton1_adjustment_changed (GtkAdjustment *adj);
+void on_spinbutton2_adjustment_changed (GtkAdjustment *adj, GtkWidget *canvas);
 void on_hscale6_adjustment_changed (GtkAdjustment *adj);
+void on_hscale7_adjustment_changed (GtkAdjustment *adj);

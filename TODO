@@ -1,1 +1,7 @@
-Make pcap.h and maths.h be set by autoheader.
+Update controls with variable data at init time.
+
+Add incoming and outcoming traffic into a single canvas_link,
+and not put them one underneath the other. Funny no one has
+noticed. :-)
+
+Make math.h be set by autoheader.

@@ -33,6 +33,9 @@ gboolean numeric = 0;
 gboolean dns = 0;
 gboolean diagram_only = 0;
 gchar *interface = NULL;
+guint32 refresh_period = 800;
+gint diagram_timeout;
+extern gchar *node_color, *link_color, *text_color;
 
 int
 main (int argc, char *argv[])
@@ -54,6 +57,16 @@ main (int argc, char *argv[])
     {"interface", 'i', POPT_ARG_STRING, &interface, 0,
      _ ("set interface to listen to"), _ ("interface name")
     },
+    {"node-color", 'N', POPT_ARG_STRING, &node_color, 0,
+     _ ("sets the node color"), _("color")
+    },
+    {"link-color", 'L', POPT_ARG_STRING, &link_color, 0,
+     _ ("sets the link color"), _("color")
+    },
+    {"text-color", 'T', POPT_ARG_STRING, &text_color, 0,
+     _ ("sets the text color"), _("color")
+    },
+     
     POPT_AUTOHELP
     {NULL, 0, 0, NULL, 0}
   };
@@ -77,6 +90,19 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
 	   "value_changed", GTK_SIGNAL_FUNC (on_hscale6_adjustment_changed),
 		      NULL);
+  hscale = lookup_widget (app1, "hscale7");
+  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
+	   "value_changed", GTK_SIGNAL_FUNC (on_hscale7_adjustment_changed),
+		      NULL);
+  hscale = lookup_widget (app1, "spinbutton1");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
+	   "value_changed", GTK_SIGNAL_FUNC (on_spinbutton1_adjustment_changed),
+		      NULL);
+  hscale = lookup_widget (app1, "spinbutton2");
+  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (hscale)->adjustment),
+		      "value_changed", GTK_SIGNAL_FUNC (on_spinbutton2_adjustment_changed),
+		      lookup_widget(GTK_WIDGET(app1), "canvas1"));
+   
   gtk_widget_show (app1);
 
   /* With this we force an update of the diagram every x ms 
@@ -84,11 +110,11 @@ main (int argc, char *argv[])
    * the gtk loop is idle. If the diagram is too complicated, calls to
    * update_diagram will be stacked with no gtk idle time, thus freezing
    * the display */
-  /* TODO: Make this time configurable and back up if CPU can't handle it */
-  gtk_timeout_add (800 /* ms */ ,
-		   (GtkFunction) update_diagram,
-		   lookup_widget (GTK_WIDGET (app1), "canvas1"));
-
+  /* TODO: Back up if CPU can't handle it */
+  diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
+				     (GtkFunction) update_diagram,
+				     lookup_widget (GTK_WIDGET (app1), "canvas1"));
+   
   gtk_main ();
   return 0;
 }

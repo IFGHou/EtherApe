@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-27 18:25+0100\n"
+"POT-Creation-Date: 2000-02-28 19:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,153 +14,173 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:46
+#: src/main.c:49
 msgid "don't convert addresses to names"
 msgstr ""
 
-#: src/main.c:49
+#: src/main.c:52
 msgid "use IP name resolving. Caution! Long timeouts!"
 msgstr ""
 
-#: src/main.c:52
+#: src/main.c:55
 msgid "don't display any node text identification"
 msgstr ""
 
-#: src/main.c:55
+#: src/main.c:58
 msgid "set interface to listen to"
 msgstr ""
 
-#: src/main.c:55
+#: src/main.c:58
 msgid "interface name"
+msgstr ""
+
+#: src/main.c:61
+msgid "sets the node color"
+msgstr ""
+
+#: src/main.c:61 src/main.c:64 src/main.c:67
+msgid "color"
+msgstr ""
+
+#: src/main.c:64
+msgid "sets the link color"
+msgstr ""
+
+#: src/main.c:67
+msgid "sets the text color"
 msgstr ""
 
 #: src/interface.c:22
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:100
+#: src/interface.c:102
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:224
+#: src/interface.c:226
 msgid "New"
 msgstr ""
 
-#: src/interface.c:225
+#: src/interface.c:227
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:236
+#: src/interface.c:238
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:237
+#: src/interface.c:239
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:248
+#: src/interface.c:250
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:249
+#: src/interface.c:251
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:291
+#: src/interface.c:293
 msgid "Diagram settings"
 msgstr ""
 
-#: src/interface.c:321
-msgid "Averaging Time"
+#: src/interface.c:324
+msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:344
-msgid "Diagram refresh period"
+#: src/interface.c:347
+msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:368
+#: src/interface.c:371
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:391
+#: src/interface.c:395
 msgid "Max Link Radius"
 msgstr ""
 
-#: src/interface.c:399
+#: src/interface.c:403
 msgid "Place Holder for The Color Coded Protocols display"
 msgstr ""
 
-#: src/interface.c:437
+#: src/interface.c:441
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:439
+#: src/interface.c:443
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:470
+#: src/interface.c:474
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:490
+#: src/interface.c:494
 msgid "Name"
 msgstr ""
 
-#: src/interface.c:500
+#: src/interface.c:504
 msgid "IP Name"
 msgstr ""
 
-#: src/interface.c:510
+#: src/interface.c:514
 msgid "IP Address"
 msgstr ""
 
-#: src/interface.c:520
+#: src/interface.c:524
 msgid "Ether Name"
 msgstr ""
 
-#: src/interface.c:530
+#: src/interface.c:534
 msgid "Ether Address"
 msgstr ""
 
-#: src/interface.c:540
+#: src/interface.c:544
 msgid "Accum. bytes"
 msgstr ""
 
-#: src/interface.c:550
+#: src/interface.c:554
 msgid "Average bps"
 msgstr ""
 
-#: src/interface.c:560
+#: src/interface.c:564
 msgid "average"
 msgstr ""
 
-#: src/interface.c:569
+#: src/interface.c:573
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:578
+#: src/interface.c:582
 msgid "ether address"
 msgstr ""
 
-#: src/interface.c:587
+#: src/interface.c:591
 msgid "ether name"
 msgstr ""
 
-#: src/interface.c:596
+#: src/interface.c:600
 msgid "ip address"
 msgstr ""
 
-#: src/interface.c:605
+#: src/interface.c:609
 msgid "ip host name"
 msgstr ""
 
-#: src/interface.c:614
+#: src/interface.c:618
 msgid "name"
 msgstr ""
 
-#: src/callbacks.c:160
+#: src/interface.c:638
+msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
+msgstr ""
+
+#: src/callbacks.c:194 src/callbacks.c:205
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""

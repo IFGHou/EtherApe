@@ -11,14 +11,21 @@
 #include "math.h"
 
 extern GTree *canvas_nodes;	/* Defined in diagram.c */
+extern double averaging_time;
 extern double node_radius_multiplier;
 extern double node_radius_multiplier_control;
+extern double link_width_multiplier;
+extern double link_width_multiplier_control;
+extern guint32 refresh_period;
+extern gint diagram_timeout;
 
 void
 on_file1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
-
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 }
 
 
@@ -26,7 +33,9 @@ void
 on_new_file1_activate (GtkMenuItem * menuitem,
 		       gpointer user_data)
 {
-
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 }
 
 
@@ -34,7 +43,9 @@ void
 on_open1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
-
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 }
 
 
@@ -42,7 +53,9 @@ void
 on_save1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
-
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 }
 
 
@@ -50,7 +63,9 @@ void
 on_save_as1_activate (GtkMenuItem * menuitem,
 		      gpointer user_data)
 {
-
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 }
 
 
@@ -58,7 +73,8 @@ void
 on_exit1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
-
+   gtk_exit (0);
+   return FALSE;
 }
 
 
@@ -66,6 +82,9 @@ void
 on_cut1_activate (GtkMenuItem * menuitem,
 		  gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -74,6 +93,9 @@ void
 on_copy1_activate (GtkMenuItem * menuitem,
 		   gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -82,6 +104,9 @@ void
 on_paste1_activate (GtkMenuItem * menuitem,
 		    gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -90,6 +115,9 @@ void
 on_clear1_activate (GtkMenuItem * menuitem,
 		    gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -98,6 +126,9 @@ void
 on_properties1_activate (GtkMenuItem * menuitem,
 			 gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -106,6 +137,9 @@ void
 on_preferences1_activate (GtkMenuItem * menuitem,
 			  gpointer user_data)
 {
+GtkWidget *messagebox;
+messagebox=create_messagebox1();
+gtk_widget_show (messagebox);
 
 }
 
@@ -161,4 +195,27 @@ on_hscale6_adjustment_changed (GtkAdjustment * adj)
 	 adj->value,
 	 node_radius_multiplier);
 
+}
+void 
+on_hscale7_adjustment_changed (GtkAdjustment * adj)
+{
+  link_width_multiplier_control = adj->value;
+  link_width_multiplier = exp ((double) adj->value * log (10));
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	 _ ("Adjustment value: %g. Radius multiplier %g"),
+	 adj->value,
+	 link_width_multiplier);
+
+}
+void on_spinbutton1_adjustment_changed (GtkAdjustment *adj)
+{
+   averaging_time = adj->value*1000; /* Control in ms, value in us */
+}
+void on_spinbutton2_adjustment_changed (GtkAdjustment *adj, GtkWidget *canvas)
+{
+   gtk_timeout_remove( diagram_timeout );
+   refresh_period = adj->value;
+   diagram_timeout = gtk_timeout_add (refresh_period /* ms */ ,
+				     (GtkFunction) update_diagram,
+				      canvas);
 }
