@@ -361,6 +361,7 @@ create_about2 (void)
     "Fabrice Bellet <Fabrice.Bellet@creatis.insa-lyon.fr>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "Simon Kirby <sim@neato.org>",
+    "Eran Mann <eran@nbase.co.il>",
     "Frederic Peters <fpeters@debian.org>",
     "Jasper Wallace <jasper@pointless.net>",
     "Ted Wright <ted.wright@grc.nasa.gov>",

@@ -10,6 +10,9 @@ Laurent Deniel	<deniel@worldnet.fr>
 Simon Kirby	<sim@neato.org>
   dns.c
 
+Eran Mann	<eran@nbase.co.il>
+  RedHat package
+  
 Frederic Peters	<fpeters@debian.org>
   Debian package, french translation, man page
   
