@@ -1,5 +1,5 @@
 /* EtherApe
- * Copyright (C) 2000 Juan Toledo
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,18 +29,17 @@ int
 main (int argc, char *argv[])
 {
   gchar *mode_string = NULL;
-  gchar *filter_string = NULL;
-  gchar *errorbuf = NULL;
   GtkWidget *widget;
   GnomeClient *client;
+  gchar *cl_filter = NULL, *cl_interface = NULL;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
      N_("mode of operation"), N_("<ethernet|fddi|ip|tcp>")},
-    {"interface", 'i', POPT_ARG_STRING, &interface, 0,
+    {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
      N_("set interface to listen to"), N_("<interface name>")},
-    {"filter", 'f', POPT_ARG_STRING, &filter_string, 0,
+    {"filter", 'f', POPT_ARG_STRING, &cl_filter, 0,
      N_("set capture filter"), N_("<capture filter>")},
     {"infile", 'r', POPT_ARG_STRING, &input_file, 0,
      N_("set input file"), N_("<file name>")},
@@ -66,16 +65,18 @@ main (int argc, char *argv[])
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
 
+
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain (PACKAGE);
 #endif
 
-
-  /* We initiate the application and read command line options */
-  /* But first we set the window icon to use */
+  /* We set the window icon to use */
   if (!getenv ("GNOME_DESKTOP_ICON"))
     putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
+
+
+  /* We initiate the application and read command line options */
   gnome_init_with_popt_table ("EtherApe", VERSION, argc, argv, optionsTable,
 			      0, NULL);
 
@@ -89,7 +90,8 @@ main (int argc, char *argv[])
   numeric = 0;
   mode = IP;
   dns = 1;
-  filter = g_strdup ("");
+  filter = NULL;
+  status = STOP;
   refresh_period = 800;		/* ms */
   node_color = g_strdup ("brown");
   link_color = g_strdup ("tan");	/* TODO I think link_color is
@@ -108,13 +110,20 @@ main (int argc, char *argv[])
   poptcon = poptGetContext ("Etherape", argc, argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
-#if 0
-  /* As far as I know this is not useful since the load_config is _ALWAYS_ 
-   * providing with a default */
-  if (!fontname)
-    fontname =
-      g_strdup ("-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-koi8-r");
-#endif
+  if (cl_filter)
+    {
+      if (filter)
+	g_free (filter);
+      filter = g_strdup (cl_filter);
+    }
+
+  if (cl_interface)
+    {
+      if (interface)
+	g_free (interface);
+      interface = g_strdup (cl_interface);
+    }
+
 
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
@@ -141,59 +150,6 @@ main (int argc, char *argv[])
 	g_warning (_
 		   ("Unrecognized mode. Do etherape --help for a list of modes"));
     }
-
-  /* Only ip traffic makes sense when used as interape */
-  /* TODO Shouldn't we free memory somwhere because of the strconcat? */
-  switch (mode)
-    {
-    case IP:
-      if (filter_string)
-	filter = g_strconcat ("ip and ", filter_string, NULL);
-      else
-	{
-	  g_free (filter);
-	  filter = g_strdup ("ip");
-	}
-      break;
-    case TCP:
-      if (filter_string)
-	filter = g_strconcat ("tcp and ", filter_string, NULL);
-      else
-	{
-	  g_free (filter);
-	  filter = g_strdup ("tcp");
-	}
-      break;
-    case UDP:
-      if (filter_string)
-	filter = g_strconcat ("udp and ", filter_string, NULL);
-      else
-	{
-	  g_free (filter);
-	  filter = g_strdup ("udp");
-	}
-      break;
-    case DEFAULT:
-    case ETHERNET:
-    case IPX:
-    case FDDI:
-      if (filter_string)
-	filter = g_strdup (filter_string);
-      break;
-    }
-
-  /* Initialize capture. If we get back any kind of string, there has been some
-   * problem, and so we stop */
-  if ((errorbuf = init_capture ()) != NULL)
-    {
-      fatal_error_dialog (errorbuf);
-    }
-  /* TODO low priority: I'd like to be able to open the
-   * socket without having initialized gnome, so that 
-   * eventually I'd safely set the effective id to match the
-   * user id and make a safer suid exec. See the source of
-   * mtr for reference */
-
 
   /* Glade */
 
@@ -242,6 +198,10 @@ main (int argc, char *argv[])
   widget = glade_xml_get_widget (xml, "help1_menu");
   gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
 		       gtk_accel_group_get_default (), TRUE, 1);
+
+
+
+  gui_start_capture ();
 
 
   /* MAIN LOOP */
@@ -465,17 +425,3 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 
   return TRUE;
 }				/* save_session */
-
-/* this has not its place here but... */
-void
-fatal_error_dialog (const gchar * message)
-{
-  GtkWidget *dlg;
-
-  g_my_debug ("About to die with error %s", message);
-  dlg = gnome_error_dialog (message);
-  gtk_signal_connect (GTK_OBJECT (dlg), "clicked", gtk_main_quit, NULL);
-  gtk_widget_show (dlg);
-  gtk_main ();
-  exit (1);
-}

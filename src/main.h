@@ -37,9 +37,6 @@ static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
 
-void fatal_error_dialog (const gchar * message);
-
-
 static GnomeUIInfo help_submenu[] = {
   GNOMEUIINFO_HELP ("etherape"),
   GNOMEUIINFO_END
