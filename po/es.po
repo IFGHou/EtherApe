@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-06 21:32+0200\n"
+"POT-Creation-Date: 2001-05-08 00:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,7 +157,7 @@ msgstr ""
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1300 src/main.c:155 src/menus.c:34 src/menus.c:355
 # src/diagram.c:1323 src/main.c:155 src/menus.c:34 src/menus.c:355
-#: src/diagram.c:1379 src/main.c:155 src/menus.c:34 src/menus.c:367
+#: src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -165,7 +165,7 @@ msgstr "No ha sido posible cargar el interfaz (%s)"
 # src/main.c:256
 # src/main.c:256
 # src/main.c:259
-#: src/main.c:259
+#: src/main.c:262
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -177,7 +177,7 @@ msgstr ""
 # src/main.c:342
 # src/main.c:342
 # src/main.c:347
-#: src/main.c:347
+#: src/main.c:350
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
@@ -768,14 +768,14 @@ msgstr "Diagrama parado"
 # src/diagram.c:288
 # src/diagram.c:288
 # src/diagram.c:299
-#: src/diagram.c:311
+#: src/diagram.c:296
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
 # src/diagram.c:292
 # src/diagram.c:292
 # src/diagram.c:303
-#: src/diagram.c:315
+#: src/diagram.c:300
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
@@ -783,14 +783,14 @@ msgstr ". Periodo de refresco: %d"
 # src/diagram.c:294
 # src/diagram.c:294
 # src/diagram.c:305
-#: src/diagram.c:317
+#: src/diagram.c:302
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
 # src/diagram.c:296
 # src/diagram.c:296
 # src/diagram.c:307
-#: src/diagram.c:319
+#: src/diagram.c:304
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
@@ -811,20 +811,20 @@ msgstr ". TIMEOUT."
 # src/diagram.c:481
 # src/diagram.c:481
 # src/diagram.c:495
-#: src/diagram.c:549
+#: src/diagram.c:534
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:557
-#: src/diagram.c:611
+#: src/diagram.c:596
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
 # src/diagram.c:566
 # src/diagram.c:566
 # src/diagram.c:582
-#: src/diagram.c:636
+#: src/diagram.c:621
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
@@ -845,42 +845,20 @@ msgstr "Valor desconocido en node_size_variable"
 # src/diagram.c:881
 # src/diagram.c:881
 # src/diagram.c:902
-#: src/diagram.c:956
+#: src/diagram.c:940
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:963
-#: src/diagram.c:1019
+#: src/diagram.c:1003
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
-
-# src/diagram.c:1118
-# src/diagram.c:1118
-# src/diagram.c:1141
-#: src/diagram.c:1197
-msgid "No node_id in on_node_info_delete_event"
-msgstr "No node_id en on_node_info_delete_event"
-
-# src/diagram.c:1125
-# src/diagram.c:1125
-# src/diagram.c:1148
-#: src/diagram.c:1204
-msgid "No node_info_window in on_node_info_delete_event"
-msgstr "No node_info_window en on_node_info_delete_event"
-
-# src/glade-strings:83
-# src/diagram.c:1150
-# src/diagram.c:1150
-# src/diagram.c:1173
-#: src/diagram.c:1229
-msgid "No info available"
-msgstr "No hay información disponible"
 
 # src/diagram.c:1217
 # src/diagram.c:1217
 # src/diagram.c:1240
-#: src/diagram.c:1296
+#: src/diagram.c:1149
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
@@ -888,7 +866,7 @@ msgstr "Protocolo principal del enlace: %s"
 # src/diagram.c:1220
 # src/diagram.c:1220
 # src/diagram.c:1243
-#: src/diagram.c:1299
+#: src/diagram.c:1152
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -2475,6 +2453,71 @@ msgstr "Entrada acum."
 #: src/glade-strings:119
 msgid "Inst. Outbound"
 msgstr "Salida Inst"
+
+# src/interface.c:517
+# src/interface.c:517
+# src/interface.c:521
+# src/interface.c:555
+# src/glade-strings:30
+# src/glade-strings:33
+# src/glade-strings:33
+# src/glade-strings:33
+# src/glade-strings:52
+# src/glade-strings:53
+# src/glade-strings:53
+# src/glade-strings:53
+# src/glade-strings:53
+#: src/glade-strings:121
+msgid "EtherApe: Protocols"
+msgstr "EtherApe: Protocolos"
+
+# src/interface.c:278
+# src/interface.c:277
+# src/interface.c:278
+# src/interface.c:278
+# src/interface.c:277
+# src/interface.c:277
+# src/interface.c:277
+# src/interface.c:282
+# src/glade-strings:21
+# src/glade-strings:24
+# src/glade-strings:24
+# src/glade-strings:24
+# src/glade-strings:42
+# src/glade-strings:43
+# src/glade-strings:43
+# src/glade-strings:43
+# src/glade-strings:43
+#: src/glade-strings:122
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: src/glade-strings:123
+msgid "Inst Traffic"
+msgstr "Tráfico Instant."
+
+#: src/glade-strings:124
+msgid "Accum Traffic"
+msgstr "Tráfico Acumul."
+
+# src/diagram.c:1118
+# src/diagram.c:1118
+# src/diagram.c:1141
+#~ msgid "No node_id in on_node_info_delete_event"
+#~ msgstr "No node_id en on_node_info_delete_event"
+
+# src/diagram.c:1125
+# src/diagram.c:1125
+# src/diagram.c:1148
+#~ msgid "No node_info_window in on_node_info_delete_event"
+#~ msgstr "No node_info_window en on_node_info_delete_event"
+
+# src/glade-strings:83
+# src/diagram.c:1150
+# src/diagram.c:1150
+# src/diagram.c:1173
+#~ msgid "No info available"
+#~ msgstr "No hay información disponible"
 
 # src/capture.c:409
 # src/capture.c:408

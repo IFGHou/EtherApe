@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-06 21:32+0200\n"
+"POT-Creation-Date: 2001-05-08 00:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,18 +94,18 @@ msgstr ""
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 
-#: src/diagram.c:1379 src/main.c:155 src/menus.c:34 src/menus.c:367
+#: src/main.c:155 src/menus.c:34 src/menus.c:367
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:259
+#: src/main.c:262
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:347
+#: src/main.c:350
 msgid "Preferences saved"
 msgstr ""
 
@@ -346,63 +346,51 @@ msgstr ""
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:311
+#: src/diagram.c:296
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:315
+#: src/diagram.c:300
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:317
+#: src/diagram.c:302
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:319
+#: src/diagram.c:304
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:549
+#: src/diagram.c:534
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:611
+#: src/diagram.c:596
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:636
+#: src/diagram.c:621
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:956
+#: src/diagram.c:940
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1019
+#: src/diagram.c:1003
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1197
-msgid "No node_id in on_node_info_delete_event"
-msgstr ""
-
-#: src/diagram.c:1204
-msgid "No node_info_window in on_node_info_delete_event"
-msgstr ""
-
-#: src/diagram.c:1229
-msgid "No info available"
-msgstr ""
-
-#: src/diagram.c:1296
+#: src/diagram.c:1149
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1299
+#: src/diagram.c:1152
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -850,4 +838,20 @@ msgstr ""
 
 #: src/glade-strings:119
 msgid "Inst. Outbound"
+msgstr ""
+
+#: src/glade-strings:121
+msgid "EtherApe: Protocols"
+msgstr ""
+
+#: src/glade-strings:122
+msgid "Protocol"
+msgstr ""
+
+#: src/glade-strings:123
+msgid "Inst Traffic"
+msgstr ""
+
+#: src/glade-strings:124
+msgid "Accum Traffic"
 msgstr ""
