@@ -14,7 +14,7 @@ build-stamp:
 
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 	# Add here commands to compile the package.
-	$(MAKE)
+	#$(MAKE)
 
 	touch build-stamp
 

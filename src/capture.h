@@ -43,8 +43,11 @@ static struct pcap_pkthdr phdr;
 static guint32 ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
-static gboolean end_of_file = FALSE;	/* Marks that the end of the offline file
-					   * has been reached */
+gint pcap_fd;			/* The file descriptor used by libpcap */
+gint capture_source;		/* It's the input tag or the timeout tag,
+				 * in online or offline mode */
+gboolean end_of_file = FALSE;	/* Marks that the end of the offline file
+				 * has been reached */
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);

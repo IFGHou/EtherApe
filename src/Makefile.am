@@ -17,6 +17,8 @@ etherape_SOURCES = \
 	util.c util.h \
 	dns.c dns.h \
 	callbacks.c callbacks.h \
+	menus.c menus.h \
+	preferences.c preferences.h \
 	main.c main.h globals.h\
 	diagram.c diagram.h \
 	capture.c capture.h \

@@ -91,8 +91,6 @@ typedef enum
 }
 packet_direction;
 
-/* Structures definitions */
-
 /* Capture structures */
 
 typedef struct
@@ -252,6 +250,8 @@ gchar *filter;			/* Pcap filter to be used */
 
 /* From capture.c */
 void init_capture (void);
+gboolean start_capture (void);
+gboolean stop_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 node_t *update_node (node_t * node);
 link_t *update_link (link_t *);

@@ -42,7 +42,7 @@ void
 init_capture (void)
 {
 
-  gint pcap_fd, dns_fd;
+  gint dns_fd;
   guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
@@ -59,6 +59,8 @@ init_capture (void)
 	  exit (1);
 	}
     }
+
+  end_of_file = FALSE;
   if (!input_file)
     {
       if (!
@@ -70,29 +72,17 @@ init_capture (void)
 	}
       pcap_fd = pcap_fileno (pch);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "pcap_fd: %d", pcap_fd);
-      gdk_input_add (pcap_fd,
-		     GDK_INPUT_READ, (GdkInputFunction) packet_read, NULL);
     }
   else
     {
       if (!((pcap_t *) pch = pcap_open_offline (input_file, ebuf)))
 	{
-	  g_error (_("Error opening %s : %s - perhaps you need to be root?"),
-		   device, ebuf);
+	  g_error (_("Error opening %s : %s"), input_file, ebuf);
 	}
-      /* This function will be calle right after gtk_main */
-#if 0
-      capture_timeout = gtk_timeout_add (1,
-					 (GtkFunction) get_offline_packet,
-					 NULL);
-#endif
-      g_timeout_add_full (G_PRIORITY_DEFAULT,
-			  1,
-			  (GtkFunction) get_offline_packet,
-			  NULL, (GDestroyNotify) cap_t_o_destroy);
 
     }
 
+  start_capture ();		/* Sets up the appropriate input or idle function */
 
   if (filter)
     set_filter (filter, device);
@@ -175,8 +165,7 @@ init_capture (void)
 
 /* TODO make it return an error value and act accordingly */
 /* Installs a filter in the pcap structure */
-gint
-set_filter (gchar * filter, gchar * device)
+gint set_filter (gchar * filter, gchar * device)
 {
   gchar ebuf[300];
   static bpf_u_int32 netnum, netmask;
@@ -208,6 +197,52 @@ set_filter (gchar * filter, gchar * device)
       g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
     }
 }
+
+gboolean start_capture (void)
+{
+  if (interface)
+    {
+      g_my_debug (_("Starting live capture"));
+      capture_source = gdk_input_add (pcap_fd,
+				      GDK_INPUT_READ,
+				      (GdkInputFunction) packet_read, NULL);
+    }
+  else
+    {
+      g_my_debug (_("Starting offline capture"));
+      end_of_file = FALSE;
+      capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					   1,
+					   (GtkFunction) get_offline_packet,
+					   NULL,
+					   (GDestroyNotify) cap_t_o_destroy);
+    }
+
+  return TRUE;
+}				/* start_capture */
+
+gboolean stop_capture (void)
+{
+  if (interface)
+    {
+      g_my_debug (_("Stopping live capture"));
+      gdk_input_remove (capture_source);	/* gdk_input_remove does not
+						 * return an error code */
+    }
+  else
+    {
+      g_my_debug (_("Stopping offline capture"));
+      end_of_file = TRUE;	/* Otherwise a new timeout would be
+				 * created automatically */
+      if (!g_source_remove (capture_source))
+	{
+	  g_warning (_("Error while trying to stop capture"));
+	  return FALSE;
+	}
+    }
+  return TRUE;
+}				/* stop_capture */
+
 
 /* This is a timeout function used when reading from capture files 
  * It forces a waiting time so that it reproduces the rate
@@ -249,10 +284,11 @@ cap_t_o_destroy (gpointer data)
 {
 
   if (!end_of_file)
-    g_timeout_add_full (G_PRIORITY_DEFAULT,
-			ms_to_next,
-			(GtkFunction) get_offline_packet,
-			data, (GDestroyNotify) cap_t_o_destroy);
+    capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					 ms_to_next,
+					 (GtkFunction) get_offline_packet,
+					 data,
+					 (GDestroyNotify) cap_t_o_destroy);
 
 }				/* capture_t_o_destroy */
 
@@ -1196,8 +1232,7 @@ check_packet (GList * packets, enum packet_belongs belongs_to)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
+gint node_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1223,8 +1258,7 @@ node_id_compare (gconstpointer a, gconstpointer b)
 
 /* Comparison function used to order the (GTree *) links
  * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
+gint link_id_compare (gconstpointer a, gconstpointer b)
 {
   int i;
 
@@ -1251,8 +1285,7 @@ link_id_compare (gconstpointer a, gconstpointer b)
 }				/* link_id_compare */
 
 /* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
+gint protocol_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);

@@ -5,19 +5,22 @@
  */
 
 gchar *s = N_("Etherape");
-gchar *s = N_("._New File");
+gchar *s = N_("Start capture");
+gchar *s = N_("Start");
+gchar *s = N_("Stop capture");
+gchar *s = N_("Stop");
 gchar *s = N_("Show or hide the toolbar");
 gchar *s = N_("_Toolbar");
 gchar *s = N_("Show or hide the legend");
 gchar *s = N_("_Legend");
 gchar *s = N_("Show or hide the status bar");
 gchar *s = N_("_Status Bar");
-gchar *s = N_("New File");
-gchar *s = N_("New");
-gchar *s = N_("Open File");
-gchar *s = N_("Open");
-gchar *s = N_("Save File");
-gchar *s = N_("Save");
+gchar *s = N_("Start capture");
+gchar *s = N_("Start");
+gchar *s = N_("Stop capture");
+gchar *s = N_("Stop");
+gchar *s = N_("Preferences (Ctrl-P)");
+gchar *s = N_("Pref.");
 gchar *s = N_("Protocols");
 gchar *s = N_("Copyright 2000 Juan Toledo");
 gchar *s = N_("A Graphical Network Browser.\n"

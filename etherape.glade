@@ -79,52 +79,53 @@
 
 	    <widget>
 	      <class>GtkPixmapMenuItem</class>
-	      <name>new_file1</name>
+	      <name>start_menuitem</name>
+	      <sensitive>False</sensitive>
+	      <tooltip>Start capture</tooltip>
 	      <signal>
 		<name>activate</name>
-		<handler>on_new_file1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:22 GMT</last_modification_time>
+		<handler>on_start_menuitem_activate</handler>
+		<last_modification_time>Fri, 21 Apr 2000 11:43:08 GMT</last_modification_time>
 	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_NEW_ITEM</stock_item>
-	      <label>._New File</label>
+	      <label>Start</label>
+	      <right_justify>False</right_justify>
+	      <stock_icon>GNOME_STOCK_MENU_FORWARD</stock_icon>
 	    </widget>
 
 	    <widget>
 	      <class>GtkPixmapMenuItem</class>
-	      <name>open1</name>
+	      <name>stop_menuitem</name>
+	      <tooltip>Stop capture</tooltip>
 	      <signal>
 		<name>activate</name>
-		<handler>on_open1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:22 GMT</last_modification_time>
+		<handler>on_stop_menuitem_activate</handler>
+		<last_modification_time>Fri, 21 Apr 2000 11:44:04 GMT</last_modification_time>
 	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_OPEN_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>save1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_save1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_SAVE_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>save_as1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_save_as1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_SAVE_AS_ITEM</stock_item>
+	      <label>Stop</label>
+	      <right_justify>False</right_justify>
+	      <stock_icon>GNOME_STOCK_MENU_STOP</stock_icon>
 	    </widget>
 
 	    <widget>
 	      <class>GtkMenuItem</class>
-	      <name>separator1</name>
+	      <name>separador1</name>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPixmapMenuItem</class>
+	      <name>preferences1</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_preferences1_activate</handler>
+		<last_modification_time>Fri, 21 Apr 2000 11:54:13 GMT</last_modification_time>
+	      </signal>
+	      <stock_item>GNOMEUIINFO_MENU_PREFERENCES_ITEM</stock_item>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
+	      <name>separador2</name>
 	      <right_justify>False</right_justify>
 	    </widget>
 
@@ -137,78 +138,6 @@
 		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
 	      </signal>
 	      <stock_item>GNOMEUIINFO_MENU_EXIT_ITEM</stock_item>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkMenuItem</class>
-	  <name>edit1</name>
-	  <stock_item>GNOMEUIINFO_MENU_EDIT_TREE</stock_item>
-
-	  <widget>
-	    <class>GtkMenu</class>
-	    <name>edit1_menu</name>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>cut1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_cut1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_CUT_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>copy1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_copy1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_COPY_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>paste1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_paste1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_PASTE_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>clear1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_clear1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_CLEAR_ITEM</stock_item>
-	    </widget>
-
-	    <widget>
-	      <class>GtkMenuItem</class>
-	      <name>separator2</name>
-	      <right_justify>False</right_justify>
-	    </widget>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>properties1</name>
-	      <signal>
-		<name>activate</name>
-		<handler>on_properties1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_PROPERTIES_ITEM</stock_item>
 	    </widget>
 	  </widget>
 	</widget>
@@ -232,7 +161,7 @@
 		<last_modification_time>Wed, 15 Mar 2000 20:59:38 GMT</last_modification_time>
 	      </signal>
 	      <label>_Toolbar</label>
-	      <active>False</active>
+	      <active>True</active>
 	      <always_show_toggle>False</always_show_toggle>
 	    </widget>
 
@@ -268,33 +197,6 @@
 
 	<widget>
 	  <class>GtkMenuItem</class>
-	  <name>settings1</name>
-	  <stock_item>GNOMEUIINFO_MENU_SETTINGS_TREE</stock_item>
-
-	  <widget>
-	    <class>GtkMenu</class>
-	    <name>settings1_menu</name>
-
-	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>preferences1</name>
-	      <accelerator>
-		<modifiers>GDK_CONTROL_MASK</modifiers>
-		<key>GDK_P</key>
-		<signal>activate</signal>
-	      </accelerator>
-	      <signal>
-		<name>activate</name>
-		<handler>on_preferences1_activate</handler>
-		<last_modification_time>Sat, 19 Feb 2000 20:46:23 GMT</last_modification_time>
-	      </signal>
-	      <stock_item>GNOMEUIINFO_MENU_PREFERENCES_ITEM</stock_item>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkMenuItem</class>
 	  <name>help1</name>
 	  <stock_item>GNOMEUIINFO_MENU_HELP_TREE</stock_item>
 
@@ -321,7 +223,6 @@
       <class>GnomeDockItem</class>
       <name>dock_toolbar</name>
       <border_width>1</border_width>
-      <visible>False</visible>
       <placement>GNOME_DOCK_TOP</placement>
       <band>1</band>
       <position>0</position>
@@ -338,7 +239,7 @@
 	<name>toolbar</name>
 	<border_width>1</border_width>
 	<orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-	<type>GTK_TOOLBAR_BOTH</type>
+	<type>GTK_TOOLBAR_ICONS</type>
 	<space_size>16</space_size>
 	<space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
 	<relief>GTK_RELIEF_NONE</relief>
@@ -347,28 +248,52 @@
 	<widget>
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
-	  <name>button1</name>
-	  <tooltip>New File</tooltip>
-	  <label>New</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_NEW</stock_pixmap>
+	  <name>start_button</name>
+	  <sensitive>False</sensitive>
+	  <tooltip>Start capture</tooltip>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_start_menuitem_activate</handler>
+	    <last_modification_time>Fri, 21 Apr 2000 16:04:32 GMT</last_modification_time>
+	  </signal>
+	  <label>Start</label>
+	  <stock_pixmap>GNOME_STOCK_PIXMAP_FORWARD</stock_pixmap>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
-	  <name>button2</name>
-	  <tooltip>Open File</tooltip>
-	  <label>Open</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_OPEN</stock_pixmap>
+	  <name>stop_button</name>
+	  <tooltip>Stop capture</tooltip>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_stop_menuitem_activate</handler>
+	    <last_modification_time>Fri, 21 Apr 2000 16:04:47 GMT</last_modification_time>
+	  </signal>
+	  <label>Stop</label>
+	  <stock_pixmap>GNOME_STOCK_PIXMAP_STOP</stock_pixmap>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
-	  <name>button3</name>
-	  <tooltip>Save File</tooltip>
-	  <label>Save</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_SAVE</stock_pixmap>
+	  <name>preferences_toolbar_button</name>
+	  <tooltip>Preferences (Ctrl-P)</tooltip>
+	  <accelerator>
+	    <modifiers>GDK_CONTROL_MASK</modifiers>
+	    <key>GDK_P</key>
+	    <signal>clicked</signal>
+	  </accelerator>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_preferences1_activate</handler>
+	    <last_modification_time>Fri, 21 Apr 2000 12:05:47 GMT</last_modification_time>
+	  </signal>
+	  <label>Pref.</label>
+	  <stock_pixmap>GNOME_STOCK_PIXMAP_PREFERENCES</stock_pixmap>
+	  <child>
+	    <new_group>True</new_group>
+	  </child>
 	</widget>
       </widget>
     </widget>
