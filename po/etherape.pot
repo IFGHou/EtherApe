@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-02-25 18:25+0100\n"
+"POT-Creation-Date: 2000-02-26 09:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,11 +70,11 @@ msgstr ""
 msgid "Place Holder for The Color Coded Protocols display"
 msgstr ""
 
-#: src/interface.c:436
+#: src/interface.c:437
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:438
+#: src/interface.c:439
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
@@ -95,16 +95,22 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:157
+#: src/capture.c:222
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:180
+#: src/capture.c:245
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:339
-msgid "You need to be root to run this program"
+#: src/capture.c:406
+#, c-format
+msgid "Error getting device: %s"
+msgstr ""
+
+#: src/capture.c:414
+#, c-format
+msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""

@@ -39,6 +39,6 @@ packet_t;
 
 void init_capture (void);
 
-
+gchar *ip_to_str(const guint8 *ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
 gchar *ether_to_str (const guint8 * ad);

@@ -135,11 +135,11 @@ typedef struct _ipxnet
 ipxnet_t;
 
 #if 0				/* JTC */
-static hashname_t *host_table[HASHHOSTSIZE];
 static hashname_t *udp_port_table[HASHPORTSIZE];
 static hashname_t *tcp_port_table[HASHPORTSIZE];
 static hashipxnet_t *ipxnet_table[HASHIPXNETSIZE];
 #endif /* JTC */
+static hashname_t *host_table[HASHHOSTSIZE];
 static hashmanuf_t *manuf_table[HASHMANUFSIZE];
 static hashether_t *eth_table[HASHETHSIZE];
 
@@ -237,6 +237,8 @@ serv_name_lookup (u_int port, u_int proto)
 
 }				/* serv_name_lookup */
 
+#endif /* JTC */
+
 #ifdef AVOID_DNS_TIMEOUT
 
 #define DNS_TIMEOUT 	2	/* max sec per call */
@@ -318,6 +320,7 @@ host_name_lookup (u_int addr)
 
 }				/* host_name_lookup */
 
+#if 0 /* JTC */
 static u_char *
 host_name_lookup6 (struct e_in6_addr *addr)
 {
@@ -354,7 +357,7 @@ host_name_lookup6 (struct e_in6_addr *addr)
   return (name);
 }
 
-#endif /* JTC */
+#endif
 
 /*
  *  Miscellaneous functions
@@ -1130,7 +1133,6 @@ ipxnet_addr_lookup (u_char * name, gboolean * success)
 }				/* ipxnet_addr_lookup */
 
 #endif /* JTC */
-#if 0				/* JTC */
 
 /* 
  *  External Functions
@@ -1145,6 +1147,7 @@ get_hostname (u_int addr)
   return host_name_lookup (addr);
 }
 
+#if 0 /*JTC*/
 extern gchar *
 get_hostname6 (struct e_in6_addr *addr)
 {
@@ -1156,6 +1159,7 @@ get_hostname6 (struct e_in6_addr *addr)
 #endif
   return host_name_lookup6 (addr);
 }
+#endif
 
 extern void 
 add_host_name (u_int addr, u_char * name)
@@ -1192,6 +1196,7 @@ add_host_name (u_int addr, u_char * name)
 
 }				/* add_host_name */
 
+#if 0 /* JTC */
 extern u_char *
 get_udp_port (u_int port)
 {

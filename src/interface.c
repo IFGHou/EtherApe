@@ -428,6 +428,7 @@ create_about2 (void)
     "Juan Toledo <toledo@users.sourceforge.net>",
     "Laurent Deniel <deniel@worldnet.fr>",
     "    -> Routines for network object lookup",
+    "Jasper Wallace",
     NULL
   };
   GtkWidget *about2;

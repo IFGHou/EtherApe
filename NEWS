@@ -1,3 +1,9 @@
+Overview of changes in Etherape 0.1.2
+* James Wallace provided code to automatically
+  detect proper network interface. It now compiles in NetBSD.
+* IP number displayed if no /etc/ethers is available.
+  IP host name will be there in the Saturday Night edition. :-)
+
 Overview of changes in Etherape 0.1.1
 * First look at GUI side of things
 * Now you can dinamically reset the node radius using a slider

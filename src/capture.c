@@ -10,21 +10,69 @@
 
 
 extern guint averaging_time;
+
 enum packet_belongs
   {
     NODE = 0, LINK = 1
   };
 
-/* Places char punct in the string as the hex-digit separator.
- * If punct is '\0', no punctuation is applied (and thus
- * the resulting string is 5 bytes shorter)
- */
+enum create_node_type
+{
+   SRC = 0,
+   DST = 1
+};
+
+
+/* Next three functions copied directly from ethereal packet.c
+ * by Gerald Combs */
+
+gchar *
+ip_to_str(const guint8 *ad) {
+  static gchar  str[3][16];
+  static gchar *cur;
+  gchar        *p;
+  int           i;
+  guint32       octet;
+  guint32       digit;
+
+  if (cur == &str[0][0]) {
+    cur = &str[1][0];
+  } else if (cur == &str[1][0]) {  
+    cur = &str[2][0];
+  } else {  
+    cur = &str[0][0];
+  }
+  p = &cur[16];
+  *--p = '\0';
+  i = 3;
+  for (;;) {
+    octet = ad[i];
+    *--p = (octet%10) + '0';
+    octet /= 10;
+    digit = octet%10;
+    octet /= 10;
+    if (digit != 0 || octet != 0)
+      *--p = digit + '0';
+    if (octet != 0)
+      *--p = octet + '0';
+    if (i == 0)
+      break;
+    *--p = '.';
+    i--;
+  }
+  return p;
+}
 
 /* (toledo) This function I copied from capture.c of ethereal it was
  * without comments, but I believe it keeps three different
  * strings conversions in memory so as to try to make sure that
  * the conversions made will be valid in memory for a longer
  * period of time */
+
+/* Places char punct in the string as the hex-digit separator.
+ * If punct is '\0', no punctuation is applied (and thus
+ * the resulting string is 5 bytes shorter)
+ */
 
 gchar *
 ether_to_str_punct (const guint8 * ad, char punct)
@@ -140,16 +188,33 @@ link_compare (gconstpointer a, gconstpointer b)
 /* Allocates a new node structure, and adds it to the
  * global nodes binary tree */
 node_t *
-create_node (const guint8 * ether_addr)
+create_node (const guint8 * packet, enum create_node_type node_type)
 {
   node_t *node;
-
+  guint8 *ether_addr;
+   
+  if (node_type==SRC) ether_addr=packet;
+  else ether_addr=packet+6;
+  
   node = g_malloc (sizeof (node_t));
   node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
   node->accumulated = 0;
-  node->name = g_string_new (get_ether_name (ether_addr));
+  
+  /* If there is no proper definition in /etc/ethers, we try to get
+   * the IP name of the host. Note this is inherently wrong and I feel
+   * uneasy about leaving it by default, but let's make users happy by now.
+   * We also make sure that it is an IP packet */
+
+   if ((!strcmp(get_ether_name (ether_addr), ether_to_str (ether_addr)))
+      && (packet[12]==0x08) && (packet[13]==0x00))
+     {
+	if (node_type==SRC) node->name = g_string_new (ip_to_str(packet+26));
+	else node->name = g_string_new (ip_to_str(packet+30));
+     }
+   else node->name = g_string_new (get_ether_name (ether_addr));
+   
   node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
@@ -274,7 +339,7 @@ packet_read (pcap_t * pch,
 
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
-    node = create_node (src);
+    node = create_node (pcap_packet, SRC);
 
   /* We add a packet to the list of packets to/from that host which we want
    * to account for */
@@ -292,7 +357,7 @@ packet_read (pcap_t * pch,
 
   node = g_tree_lookup (nodes, dst);
   if (node == NULL)
-    node = create_node (dst);
+    node = create_node (pcap_packet, DST);
 
   /* We add a packet to the list of packets to/from that host which we want
    * to account for */
@@ -331,12 +396,24 @@ init_capture (void)
 
   gint pcap_fd;
   pcap_t *pch;
+  gchar *device;
+  gchar ebuf[300];
 
-  char ebuf[100];
-  if (!((pcap_t *) pch = pcap_open_live ("eth0", MAXSIZE, TRUE, 100, ebuf)))
+  device = pcap_lookupdev(ebuf);
+  if (device == NULL)
+     {
+	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
+	       _ ("Error getting device: %s"), ebuf);
+	exit(1);
+     }
+   
+   
+  if (!((pcap_t *) pch = pcap_open_live (device, MAXSIZE, TRUE, 100, ebuf)))
     {
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR,
-	     _ ("You need to be root to run this program"));
+	     _ ("Error opening %s : %s - perhaps you need to be root?"), 
+	     device, 
+	     ebuf);
     }
 
   pcap_fd = pcap_fileno (pch);

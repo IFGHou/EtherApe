@@ -31,7 +31,8 @@ Web: http://etherape.sourceforge.net", 17},
   {"Couldn't create pixmap from file: %s", 20},
   {"Creating node: %s. Number of nodes %d", 21},
   {"Creating link: %s-%s. Number of links %d", 22},
-  {"You need to be root to run this program", 23},
+  {"Error getting device: %s", 23},
+  {"Error opening %s : %s - perhaps you need to be root?", 24},
 };
 
-int _msg_tbl_length = 23;
+int _msg_tbl_length = 24;

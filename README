@@ -7,6 +7,9 @@ libpcap, a packet capture and filtering library.
 
 It should compile on a linux machine with the proper developping
 environment, and maybe even on other Unix operating systems.
+There's been a report of successful compilation on NetBSD,
+but right now you have to change the name of the capturing
+device, hardcoded in capture.c.
 
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
@@ -47,3 +50,5 @@ Please read the INSTALL file for installation instructions.  Brief summary:
         # make
 
 Executable is etherape, in the src directory
+
+
