@@ -441,16 +441,16 @@ load_services (void)
 
   tcp_type_t port_number;	/* udp and tcp are the same */
 
-  strcpy(filename, CONFDIR "/services");
+  strcpy (filename, CONFDIR "/services");
   if (!(services = fopen (filename, "r")))
     {
-      strcpy(filename, "/etc/services");
+      strcpy (filename, "/etc/services");
       if (!(services = fopen (filename, "r")))
-        {
-          g_my_critical (_
-		     ("Failed to open %s. No TCP or UDP services will be recognized"),
-filename);
-      return;
+	{
+	  g_my_critical (_
+			 ("Failed to open %s. No TCP or UDP services will be recognized"),
+			 filename);
+	  return;
 	}
     }
 
@@ -499,8 +499,8 @@ filename);
 	    error = TRUE;
 
 	  if (error
-	      || (g_strcasecmp ("udp", t2[1])
-		  && g_strcasecmp ("tcp", t2[1]))) error = TRUE;
+	      || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1])))
+	    error = TRUE;
 
 	  if (error)
 	    g_warning ("Unable to  parse line %s", line);
