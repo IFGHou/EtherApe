@@ -183,7 +183,7 @@ get_eth_802_3 (ethhdrtype_t ethhdr_type)
       get_llc ();
       break;
     case ETHERNET_802_3:
-      prot = g_string_append (prot, "/IPX");
+      get_ipx ();
       break;
     default:
     }
@@ -224,6 +224,8 @@ get_eth_II (etype_t etype)
 
   if (etype == ETHERTYPE_IP)
     get_ip ();
+  if (etype == ETHERTYPE_IPX)
+    get_ipx ();
 
   return;
 }				/* get_eth_II */
@@ -321,7 +323,6 @@ get_llc (void)
       prot = g_string_append (prot, "/VINES2");
       break;
     case SAP_NETWARE:
-      prot = g_string_append (prot, "/IPX");
       get_ipx ();
       break;
     case SAP_NETBIOS:
@@ -475,6 +476,109 @@ get_ip (void)
 static void
 get_ipx ()
 {
+  ipx_socket_t ipx_dsocket, ipx_ssocket;
+  guint16 ipx_length;
+  ipx_type_t ipx_type;
+
+  /* Make sure this is an IPX packet */
+  if ((offset + 30 > capture_len) || *(guint16 *) (packet + offset) != 0xffff)
+    return;
+
+  prot = g_string_append (prot, "/IPX");
+
+  ipx_dsocket = pntohs (packet + offset + 16);
+  ipx_ssocket = pntohs (packet + offset + 28);
+  ipx_type = *(guint8 *) (packet + offset + 5);
+  ipx_length = pntohs (packet + offset + 2);
+
+  switch (ipx_type)
+    {
+      /* Look at the socket with these two types */
+    case IPX_PACKET_TYPE_PEP:
+    case IPX_PACKET_TYPE_IPX:
+      break;
+    case IPX_PACKET_TYPE_RIP:
+      prot = g_string_append (prot, "/IPX-RIP");
+      break;
+    case IPX_PACKET_TYPE_ECHO:
+      prot = g_string_append (prot, "/IPX-ECHO");
+      break;
+    case IPX_PACKET_TYPE_ERROR:
+      prot = g_string_append (prot, "/IPX-ERROR");
+      break;
+    case IPX_PACKET_TYPE_SPX:
+      prot = g_string_append (prot, "/SPX");
+      break;
+    case IPX_PACKET_TYPE_NCP:
+      prot = g_string_append (prot, "/NCP");
+      break;
+    case IPX_PACKET_TYPE_WANBCAST:
+      prot = g_string_append (prot, "/IPX-NetBIOS");
+      break;
+    }
+
+  if ((ipx_type != IPX_PACKET_TYPE_IPX) && (ipx_type != IPX_PACKET_TYPE_PEP)
+      && (ipx_type != IPX_PACKET_TYPE_WANBCAST))
+    return;
+
+  if ((ipx_dsocket == IPX_SOCKET_SAP) || (ipx_ssocket == IPX_SOCKET_SAP))
+    prot = g_string_append (prot, "/IPX-SAP");
+  else if ((ipx_dsocket == IPX_SOCKET_ATTACHMATE_GW)
+	   || (ipx_ssocket == IPX_SOCKET_ATTACHMATE_GW))
+    prot = g_string_append (prot, "/ATTACHMATE-GW");
+  else if ((ipx_dsocket == IPX_SOCKET_PING_NOVELL)
+	   || (ipx_ssocket == IPX_SOCKET_PING_NOVELL))
+    prot = g_string_append (prot, "/PING-NOVELL");
+  else if ((ipx_dsocket == IPX_SOCKET_NCP) || (ipx_ssocket == IPX_SOCKET_NCP))
+    prot = g_string_append (prot, "/IPX-NCP");
+  else if ((ipx_dsocket == IPX_SOCKET_IPXRIP)
+	   || (ipx_ssocket == IPX_SOCKET_IPXRIP))
+    prot = g_string_append (prot, "/IPX-RIP");
+  else if ((ipx_dsocket == IPX_SOCKET_NETBIOS)
+	   || (ipx_ssocket == IPX_SOCKET_NETBIOS))
+    prot = g_string_append (prot, "/IPX-NetBIOS");
+  else if ((ipx_dsocket == IPX_SOCKET_DIAGNOSTIC)
+	   || (ipx_ssocket == IPX_SOCKET_DIAGNOSTIC))
+    prot = g_string_append (prot, "/IPX-DIAG");
+  else if ((ipx_dsocket == IPX_SOCKET_SERIALIZATION)
+	   || (ipx_ssocket == IPX_SOCKET_SERIALIZATION))
+    prot = g_string_append (prot, "/IPX-SERIAL.");
+  else if ((ipx_dsocket == IPX_SOCKET_ADSM)
+	   || (ipx_ssocket == IPX_SOCKET_ADSM))
+    prot = g_string_append (prot, "/IPX-ADSM");
+  else if ((ipx_dsocket == IPX_SOCKET_EIGRP)
+	   || (ipx_ssocket == IPX_SOCKET_EIGRP))
+    prot = g_string_append (prot, "/EIGRP");
+  else if ((ipx_dsocket == IPX_SOCKET_WIDE_AREA_ROUTER)
+	   || (ipx_ssocket == IPX_SOCKET_WIDE_AREA_ROUTER))
+    prot = g_string_append (prot, "/IPX W.A. ROUTER");
+  else if ((ipx_dsocket == IPX_SOCKET_TCP_TUNNEL)
+	   || (ipx_ssocket == IPX_SOCKET_TCP_TUNNEL))
+    prot = g_string_append (prot, "/IPX-TCP-TUNNEL");
+  else if ((ipx_dsocket == IPX_SOCKET_UDP_TUNNEL)
+	   || (ipx_ssocket == IPX_SOCKET_UDP_TUNNEL))
+    prot = g_string_append (prot, "/IPX-UDP-TUNNEL");
+  else if ((ipx_dsocket == IPX_SOCKET_NWLINK_SMB_SERVER)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_SERVER)
+	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_NAMEQUERY)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_NAMEQUERY)
+	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_REDIR)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_REDIR)
+	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_MAILSLOT)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_MAILSLOT)
+	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_MESSENGER)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_MESSENGER)
+	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_BROWSE)
+	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_BROWSE))
+    prot = g_string_append (prot, "/IPX-SMB");
+  else if ((ipx_dsocket == IPX_SOCKET_SNMP_AGENT)
+	   || (ipx_ssocket == IPX_SOCKET_SNMP_AGENT)
+	   || (ipx_dsocket == IPX_SOCKET_SNMP_SINK)
+	   || (ipx_ssocket == IPX_SOCKET_SNMP_SINK))
+    prot = g_string_append (prot, "/SNMP");
+  else
+    g_my_debug ("Unknown IPX ports %d, %d", ipx_dsocket, ipx_ssocket);
+
 }				/* get_ipx */
 
 static void
@@ -1028,7 +1132,6 @@ append_etype_prot (etype_t etype)
       prot = g_string_append (prot, "/AARP");
       break;
     case ETHERTYPE_IPX:
-      prot = g_string_append (prot, "/IPX");
       break;
     case ETHERTYPE_VINES:
       prot = g_string_append (prot, "/VINES");
