@@ -62,6 +62,16 @@ extern gint link_compare (gconstpointer a, gconstpointer b);
 GdkFont *fixed_font;
 
 
+double get_node_size (glong accumulated)
+{
+  return (double) 5 + accumulated / 10 /averaging_time;
+}
+
+double get_link_size (glong accumulated) 
+{
+   return (double) accumulated / averaging_time;
+}
+
 gint 
 reposition_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *canvas)
 {
@@ -97,7 +107,7 @@ reposition_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidg
      }
    
    return FALSE;
-}
+} /* reposition_canvas_nodes */
 
 
 gint 
@@ -130,13 +140,13 @@ update_canvas_links (guint8 *ether_link, canvas_link_t *canvas_link, GtkWidget *
    points->coords[2]=args[0].d.double_data;
    points->coords[3]=args[1].d.double_data;
    
-   link->average = link->accumulated * 1000 / averaging_time;
+   link->average=get_link_size(link->accumulated);
    
    gnome_canvas_item_set (canvas_link->link_item,
 			  "points", points,
 			  "fill_color", "tan",
 			  "outline_color", "black",
-			  "width_units", (double) link->average,
+			  "width_units", link->average,
 			  NULL);
    
    gnome_canvas_points_unref (points);
@@ -151,14 +161,14 @@ update_canvas_nodes (guint8 *ether_addr, canvas_node_t *canvas_node, GtkWidget *
    node_t *node;
    node=canvas_node->node;
    
-   node->average = node->accumulated * 1000000 / averaging_time;
+   node->average = get_node_size (node->accumulated);
 
 
    gnome_canvas_item_set (canvas_node->node_item,
-			  "x1", -(double)node->average/2,
-			  "x2", (double) node->average/2,
-			  "y1", -(double)node->average/2,
-			  "y2", (double) node->average/2,
+			  "x1", -node->average/2,
+			  "x2", node->average/2,
+			  "y1", -node->average/2,
+			  "y2", node->average/2,
 			  NULL);
    
    return FALSE;
@@ -207,14 +217,14 @@ check_new_link (guint8 *ether_link, link_t *link, GtkWidget *canvas)
        points->coords[2]=args[0].d.double_data;
        points->coords[3]=args[1].d.double_data;
        
-       link->average = link->accumulated * 100000 / averaging_time;
+       link->average = get_link_size(link->accumulated);
        
        new_canvas_link->link_item = gnome_canvas_item_new (group,
 							   gnome_canvas_polygon_get_type (),
 							   "points", points,
-							   "fill_color", "tan",
+							   "fill_color", "green",
 							   "outline_color", "green",
-							   "width_units", (double) link->average,
+							   "width_units", link->average,
 							   NULL);
        
        
@@ -250,7 +260,7 @@ check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->ether_addr = ether_addr;
       new_canvas_node->node = node;
-      node->average = node->accumulated * 1000000 / averaging_time;
+      node->average = get_node_size(node->accumulated);
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 							  gnome_canvas_group_get_type (),
@@ -261,9 +271,9 @@ check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
       new_canvas_node->node_item = gnome_canvas_item_new (group, 
 							    GNOME_TYPE_CANVAS_ELLIPSE,
 							    "x1", 0.0,
-							    "x2", (double) node->average,
+							    "x2", node->average,
 							    "y1", 0.0,
-							    "y2", (double) node->average,
+							    "y2", node->average,
 							    "fill_color_rgba", 0xFF0000FF,
 							    "outline_color", "black",
 							    "width_pixels", 0,
@@ -278,6 +288,8 @@ check_new_node (guint8 *ether_addr, node_t * node, GtkWidget * canvas)
 							  "fill_color", "black",
 							  NULL);
       new_canvas_node->group_item=group;
+      
+      gnome_canvas_item_raise_to_top (new_canvas_node->text_item);
 
       g_tree_insert (canvas_nodes, ether_addr, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, \

@@ -8,7 +8,7 @@ typedef struct
   {
     guint8 *ether_addr;		/* pointer to the hardware address of the node */
     GString *name;		/* String with a readable name of the node */
-    glong average;		/* Average bytes in or out in the last x ms */
+    double average;		/* Average bytes in or out in the last x ms */
     glong accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */
     GList *packets;		/* List of packets sizes in or out and
@@ -22,7 +22,7 @@ typedef struct
 {
    guint8 *ether_link;		/* pointer to guint8[12] containing src and
 				 * destination hardware addresses of the link */
-   glong average;
+   double average;
    glong accumulated;
    guint n_packets;
    GList *packets;
