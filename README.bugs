@@ -1,0 +1,87 @@
+How to report a bug
+-------------------
+
+Having users is great, not only because it is the purpose of
+creating this program in the first place, but because they stress
+your programs in many different ways and help you make your program
+more robust.
+
+If you do encounter a problem with this program, plase write a bug
+report in http://sourceforge.net/bugs/?group_id=2712
+
+When you write your report, I'd be thankful if you could follow 
+these guidelines, in order of importance.
+
+1. Things to include:
+  - Operating system and distribution
+  - Etherape version (etherape --version)
+  - pcap version (and package version as well)
+  - If possible, a backtrace (See below)
+  
+2. Read this link first
+  http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
+  It is really informative, and it will be really useful not 
+  only for etherape.
+  
+
+How to provide a backtrace
+--------------------------
+In cases in which etherape is crashing (not when it produces
+bad results), it is most useful if I can see what was doing the
+program when it crashed.
+
+It is actually simple, you just need to type three instructions.
+
+# gdb etherape
+(gdb) run [options your were using]
+(gdb) backtrace
+
+
+Here's an example of what it would look like. When you write
+your report, you only need to send me the output of the 
+backtrace.
+
+
+argos:~/etherape/src# gdb etherape
+GNU gdb 19990928
+Copyright 1998 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i686-pc-linux-gnu"...
+(gdb) run
+Starting program: /home/toledo/etherape/src/etherape
+DEBUG: pcap_fd: 6
+DEBUG: Creating node: ARGOS. Number of nodes 1
+DEBUG: Creating node: NEBAJ. Number of nodes 2
+DEBUG: Creating node: 0.0.0.0. Number of nodes 3
+DEBUG: Creating canvas_node: 0.0.0.0. Number of nodes 1
+DEBUG: Creating canvas_node: NEBAJ. Number of nodes 2
+DEBUG: Creating canvas_node: ARGOS. Number of nodes 3
+
+Program received signal SIGSEGV, Segmentation fault.
+0x804f566 in fill_names (node=0x80e12f8, node_id=0x80e1330 "", packet=0x0)
+at capture.c:243
+243               if (!strcmp (ether_to_str (node_id), get_ether_name
+(node_id)) &&
+(gdb) backtrace
+#0  0x804f566 in fill_names (node=0x80e12f8, node_id=0x80e1330 "",
+packet=0x0) at capture.c:243
+#1  0x804fb8b in update_packet_list (packets=0x80e1230,
+belongs_to=NODE) at capture.c:553
+#2  0x804e799 in update_canvas_nodes (node_id=0x80e1330 "",
+canvas_node=0x80e2ab0, canvas=0x80d0cb0) at diagram.c:333
+#3  0x403f9052 in g_tree_nnodes () from /usr/lib/libglib-1.2.so.0
+#4  0x403f903c in g_tree_nnodes () from /usr/lib/libglib-1.2.so.0
+#5  0x403f892c in g_tree_traverse () from /usr/lib/libglib-1.2.so.0
+#6  0x804ed63 in update_diagram (canvas=0x80d0cb0) at diagram.c:553
+#7  0x403edfea in g_main_set_poll_func () from /usr/lib/libglib-1.2.so.0
+#8  0x403ed0c9 in g_get_current_time () from /usr/lib/libglib-1.2.so.0
+#9  0x403ed6d3 in g_get_current_time () from /usr/lib/libglib-1.2.so.0
+#10 0x403ed86c in g_main_run () from /usr/lib/libglib-1.2.so.0
+#11 0x401ced97 in gtk_main () from /usr/lib/libgtk-1.2.so.0
+#12 0x804e158 in main (argc=1, argv=0xbffffd34) at main.c:184
+    
+--
+$Id$
