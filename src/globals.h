@@ -25,7 +25,7 @@
 #include <pcap.h>
 
 #define STACK_SIZE 4		/* How many protocol levels to keep
-				   * track of */
+				 * track of (+1) */
 
 /* Enumerations */
 
@@ -116,8 +116,6 @@ typedef struct
 					 * all protocols heard at that level */
   gchar *src_name;
   gchar *dst_name;
-  /* TODO Ask around whether 10 is too bad
-   * a hard limit */
 }
 link_t;
 

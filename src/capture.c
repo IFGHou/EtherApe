@@ -392,41 +392,10 @@ add_link_packet (const guint8 * packet, struct pcap_pkthdr phdr,
   packet_info->prot = g_string_new (get_packet_prot (packet));
   link->packets = g_list_prepend (link->packets, packet_info);
 
-  /* Have we heard this protocol at all? */
-#if 0
-  if (!(protocol_item = g_list_find_custom (protocols[0],
-					    packet_info->prot->str,
-					    protocol_compare)))
-    {
-      protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot->str);
-      protocols[0] = g_list_prepend (protocols[0], protocol_info);
-    }
-#endif
+  /* We update both the global protocols stack and this particular
+   * link's stack with the protocol information this packet is bearing */
   add_protocol (protocols, packet_info->prot->str, phdr, FALSE);
   add_protocol (link->protocols, packet_info->prot->str, phdr, TRUE);
-#if 0
-  /* Have we already heard this protocol on this link? */
-  if ((protocol_item = g_list_find_custom (link->protocols,
-					   packet_info->prot->str,
-					   protocol_compare)))
-    {
-      protocol_info = protocol_item->data;
-      protocol_info->accumulated += phdr.len;
-      protocol_info->n_packets++;
-      /*g_message (protocol_info->name); */
-    }
-  else
-    /* First time protocol. Will have to be created */
-    {
-      protocol_info = g_malloc (sizeof (protocol_t));
-      protocol_info->name = g_strdup (packet_info->prot->str);
-      /*g_message (protocol_info->name); */
-      protocol_info->accumulated = phdr.len;
-      protocol_info->n_packets = 1;
-      link->protocols = g_list_prepend (link->protocols, protocol_info);
-    }
-#endif
 
   /* We update link info */
   link->accumulated += phdr.len;
@@ -675,7 +644,7 @@ add_protocol (GList ** protocols, gchar * stack, struct pcap_pkthdr phdr,
   gchar **tokens;
   guint i = 0;
   tokens = g_strsplit (stack, "/", 0);
-  /* while (tokens[i] != NULL) */
+
   for (i = 0; i <= STACK_SIZE; i++)
     {
       if ((protocol_item = g_list_find_custom (protocols[i],
