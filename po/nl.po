@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
-"POT-Creation-Date: 2001-04-03 21:43+0200\n"
+"POT-Creation-Date: 2001-04-05 17:31+0200\n"
 "PO-Revision-Date: 2001-03-24 17:39+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -89,16 +89,16 @@ msgstr "kies de lijnkleur"
 msgid "set the text color"
 msgstr "kies de tekstkleur"
 
-#: src/main.c:131
+#: src/main.c:133
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Modus niet herkend. Type etherape --help voor een lijst."
 
-#: src/main.c:186
+#: src/main.c:188
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "We konden de interface niet laden! (%s)"
 
-#: src/main.c:284
+#: src/main.c:286
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -106,7 +106,7 @@ msgstr ""
 "Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de "
 "voorkeuren of dit echt is wat je wilt."
 
-#: src/main.c:369
+#: src/main.c:371
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
@@ -217,7 +217,8 @@ msgstr "(null)-pakket in check_packet"
 #. * DO NOT compile it as part of your application.
 #.
 #: src/glade-strings:7
-msgid "Etherape"
+#, fuzzy
+msgid "EtherApe"
 msgstr "Etherape"
 
 #: src/glade-strings:8 src/glade-strings:18
@@ -305,48 +306,55 @@ msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr "Dit bericht bestaat nu nog niet. (Niemand vertellen hoor. ;-) )"
 
 #: src/glade-strings:33
-msgid "Etherape: Preferences"
-msgstr "Etherape: Voorkeuren"
+msgid "Information"
+msgstr ""
 
 #: src/glade-strings:34
+#, fuzzy
+msgid "EtherApe: Preferences"
+msgstr "Etherape: Voorkeuren"
+
+#: src/glade-strings:35
 msgid "Save"
 msgstr "Opslaan"
 
-#: src/glade-strings:35
+#: src/glade-strings:36
 msgid "Toggle whether text is shown on the diagram"
 msgstr "Schakel tekstweergave in het diagram aan/uit."
 
-#: src/glade-strings:36
+#: src/glade-strings:37
 msgid "Click to toggle"
 msgstr "Klik om om te schakelen."
 
-#: src/glade-strings:37
+#: src/glade-strings:38
 msgid "No text"
 msgstr "Geen tekst weergeven"
 
-#: src/glade-strings:38
+#: src/glade-strings:39
 msgid "Max. Node Radius"
 msgstr "Maximale knooppuntsgrootte"
 
-#: src/glade-strings:39
+#: src/glade-strings:40
 msgid "Max. Link Width"
 msgstr "Maximale lijnbreedte"
 
-#: src/glade-strings:40
+#: src/glade-strings:41
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
 msgstr "Kies de manier waarop lijnbreedte en knooppuntsgrootte worden berekend"
 
-#: src/glade-strings:41
-msgid ""
-"Linear\n"
-"Logarithmic\n"
-"Square Root\n"
+#: src/glade-strings:42
+msgid "Linear"
 msgstr ""
-"Lineair\n"
-"Logaritmisch\n"
-"Wortel\n"
+
+#: src/glade-strings:43
+msgid "Logarithmic"
+msgstr ""
+
+#: src/glade-strings:44
+msgid "Square Root"
+msgstr ""
 
 #: src/glade-strings:45
 msgid "Size Mode"
@@ -373,72 +381,100 @@ msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Protocolniveau wat weergegeven moet worden in de legenda"
 
 #: src/glade-strings:51
-msgid ""
-"Topmost recognized protocol\n"
-"Level 2 (Eg: ETH_II)\n"
-"Level 3 (Eg: IP)\n"
-"Level 4 (Eg: TCP)\n"
-"Level 5 (Eg: HTTP)\n"
+msgid "Topmost recognized protocol"
 msgstr ""
-"Hoogste herkende niveau\n"
-"Niveau 2 (Bijv: ETH_II)\n"
-"Niveau 3 (Bijv: IP)\n"
-"Niveau 4 (Bijv: TCP)\n"
-"Niveau 5 (Bijv: HTTP)\n"
 
-#: src/glade-strings:57
+#: src/glade-strings:52
+msgid "Level 2 (Eg: ETH_II)"
+msgstr ""
+
+#: src/glade-strings:53
+msgid "Level 3 (Eg: IP)"
+msgstr ""
+
+#: src/glade-strings:54
+msgid "Level 4 (Eg: TCP)"
+msgstr ""
+
+#: src/glade-strings:55
+msgid "Level 5 (Eg: HTTP)"
+msgstr ""
+
+#: src/glade-strings:56
 msgid "Protocol Stack Level"
 msgstr "Herkenningsniveau protocol"
 
-#: src/glade-strings:58
+#: src/glade-strings:57
 msgid "Diagram"
 msgstr "Diagram"
 
-#: src/glade-strings:59
+#: src/glade-strings:58
 msgid "Capture filter"
 msgstr "Weergavefilter"
 
-#: src/glade-strings:60
+#: src/glade-strings:59
 msgid "Packet information is averaged for this amount of time"
 msgstr "De informatie wordt uitgemiddeld over zo veel tijd"
 
-#: src/glade-strings:61
+#: src/glade-strings:60
 msgid "Averaging Time (ms)"
 msgstr "Uitmiddel tijd (ms)"
 
-#: src/glade-strings:62
+#: src/glade-strings:61
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr "Verwijder een lijn nadat deze zo lang niets heeft gedaan. 0 = nooit"
 
-#: src/glade-strings:63
+#: src/glade-strings:62
 msgid "Link Timeout (ms)"
 msgstr "Lijn timeout (ms)"
 
-#: src/glade-strings:64
+#: src/glade-strings:63
 msgid "Delete this node after this much time. 0 means never timeout."
 msgstr ""
 "Verwijder dit knooppunt nadat deze zo lang niets heeft gedaan. 0 = nooit"
 
-#: src/glade-strings:65
+#: src/glade-strings:64
 msgid "Node Timeout (ms)"
 msgstr "Knooppunt timeout (ms)"
 
-#: src/glade-strings:66
+#: src/glade-strings:65
 msgid "Capture"
 msgstr "Luisteren"
 
-#: src/glade-strings:67
+#: src/glade-strings:66
 msgid "Select Font"
 msgstr "Selecteer Lettertype"
 
-#: src/glade-strings:68
+#: src/glade-strings:67
 msgid "Aceptar"
 msgstr "OK"
 
-#: src/glade-strings:69
+#: src/glade-strings:68
 msgid "Aplicar"
 msgstr "Toepassen"
 
-#: src/glade-strings:70
+#: src/glade-strings:69
 msgid "Cancelar"
 msgstr "Annuleren"
+
+#~ msgid ""
+#~ "Linear\n"
+#~ "Logarithmic\n"
+#~ "Square Root\n"
+#~ msgstr ""
+#~ "Lineair\n"
+#~ "Logaritmisch\n"
+#~ "Wortel\n"
+
+#~ msgid ""
+#~ "Topmost recognized protocol\n"
+#~ "Level 2 (Eg: ETH_II)\n"
+#~ "Level 3 (Eg: IP)\n"
+#~ "Level 4 (Eg: TCP)\n"
+#~ "Level 5 (Eg: HTTP)\n"
+#~ msgstr ""
+#~ "Hoogste herkende niveau\n"
+#~ "Niveau 2 (Bijv: ETH_II)\n"
+#~ "Niveau 3 (Bijv: IP)\n"
+#~ "Niveau 4 (Bijv: TCP)\n"
+#~ "Niveau 5 (Bijv: HTTP)\n"

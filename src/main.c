@@ -72,8 +72,8 @@ main (int argc, char *argv[])
 
   /* We initiate the application and read command line options */
   /* But first we set the window icon to use */
-  if (!getenv("GNOME_DESKTOP_ICON"))
-      putenv ("GNOME_DESKTOP_ICON="PIXMAPS_DIR"/etherape.png");
+  if (!getenv ("GNOME_DESKTOP_ICON"))
+    putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
   gnome_init_with_popt_table ("EtherApe", VERSION, argc, argv, optionsTable,
 			      0, NULL);
 
@@ -96,9 +96,9 @@ main (int argc, char *argv[])
   text_color = g_strdup ("yellow");
   node_limit = -1;
 
-   
-  set_debug_level();
-   
+
+  set_debug_level ();
+
   /* Config file */
   load_config ("/Etherape/");
 
@@ -110,9 +110,10 @@ main (int argc, char *argv[])
   /* As far as I know this is not useful since the load_config is _ALWAYS_ 
    * providing with a default */
   if (!fontname)
-    fontname = g_strdup ("-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-koi8-r");
-#endif   
-  
+    fontname =
+      g_strdup ("-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-koi8-r");
+#endif
+
   /* dns is used in dns.c as opposite of numeric */
   dns = !numeric;
 

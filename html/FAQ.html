@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 
 <html>
   <head>
@@ -13,13 +13,21 @@
 
     <ol>
       <li>Why is one computer constantly changing names?<br>
-       You are running in ethernet mode. Try <br>
+       You are running in ethernet mode. Try<br>
        <tt>etherape -m ip</tt> or <tt>interape</tt> instead.</li>
+
       <li>Why can I only see computers on my own network?<br>
        See question above</li>
-      <li>I can't see any text, just little squares. What gives?<br>
+
+      <li>The rpm package says it requires libdb2.so.2. Where can I
+      find that file?<br>
+       Install the db2-devel package</li>
+
+      <li>I can't see any text, just little squares. What
+      gives?<br>
        Go to preferences and change the text font. Make sure you
-       save your changes</li>
+      save your changes</li>
+
       <li>What's the format for /etc/ethers?<br>
        Just pairs of Ethernet addresses and names, like<br>
        <tt>00:40:33:35:80:5F LAZARO<br>
@@ -57,16 +65,14 @@
       do?<br>
        Set node timeout to 0.</li>
 
-      <li>How may I avoid all those DEBUG messages?<br>
-       I still haven't found how to set the default debug level in
-      glib. Right now you may redirect them using<br>
-       <tt># etherape &gt;/dev/null</tt></li>
+      <li>How may see/not see DEBUG messages?<br>
+       Set the the environment value DEBUG to DEBUG to see all
+      debug messages. Unset it to see none.</li>
     </ol>
     <hr>
     <i>$Id$</i> 
 
-    <p><a href="http://sourceforge.net"> <img alt="sourceforge"
-    src=
+    <p><a href="http://sourceforge.net"><img alt="sourceforge" src=
     "http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1"
     width="88" height="31" border="0"></a></p>
   </body>
