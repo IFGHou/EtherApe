@@ -1063,8 +1063,13 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
     {
 
     case GDK_ENTER_NOTIFY:
-      str = g_strdup_printf (_("Link main protocol: %s"),
-			     canvas_link->link->main_prot[stack_level]);
+      if (canvas_link && canvas_link->link
+	  && canvas_link->link->main_prot[stack_level])
+	str =
+	  g_strdup_printf (_("Link main protocol: %s"),
+			   canvas_link->link->main_prot[stack_level]);
+      else
+	str = g_strdup_printf (_("Link main protocol unknown"));
       gnome_appbar_push (appbar, str);
       g_free (str);
       break;
