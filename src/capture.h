@@ -73,6 +73,8 @@ static void add_link_packet (const guint8 * packet,
 void add_protocol (GList ** protocols, const gchar * stack,
 		   struct pcap_pkthdr phdr, packet_t * packet_info);
 
+static gint update_node_packets (guint8 * node_id, node_t * node,
+				 gpointer pointer);
 static gint update_node (guint8 * node_id, node_t * node, gpointer pointer);
 static gint update_link (guint8 * link_id, link_t * link, gpointer pointer);
 static gboolean update_protocol (protocol_t * protocol);

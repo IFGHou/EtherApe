@@ -997,6 +997,13 @@ update_nodes (void)
 {
   guint n_nodes_before, n_nodes_after;
 
+  /* We have to make sure that all packets have been processed before
+   * updating the nodes itself, because packets rely on the nodes
+   * node_id, and if a node were deleted, subsequent packet list
+   * updating could be corrupt */
+  g_tree_traverse (nodes, (GTraverseFunc) update_node_packets, G_IN_ORDER,
+		   NULL);
+
   do
     {
       n_nodes_before = g_tree_nnodes (nodes);
@@ -1007,6 +1014,16 @@ update_nodes (void)
 
 }				/* update_nodes */
 
+/* Removes old packets from a node */
+static gint
+update_node_packets (guint8 * node_id, node_t * node, gpointer pointer)
+{
+
+  if (node->packets)
+    update_packet_list (node->packets, (gpointer) node, NODE);
+}				/* update_node_packets */
+
+
 /* Deletes all data from a node, and possibly the node itself */
 static gint
 update_node (guint8 * node_id, node_t * node, gpointer pointer)
@@ -1015,10 +1032,6 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
   GList *protocol_item = NULL;
   protocol_t *protocol_info = NULL;
   guint i = STACK_SIZE;
-
-  if (node->packets)
-    update_packet_list (node->packets, (gpointer) node, NODE);
-
 
   if (node->n_packets == 0)
     {
