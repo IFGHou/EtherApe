@@ -213,11 +213,10 @@ update_diagram (GtkWidget * canvas)
       g_my_debug ("update_diagram called while already updating");
       return FALSE;
     }
-  else
-    already_updating = TRUE;
-
   if (status == PAUSE)
     return FALSE;
+
+  already_updating = TRUE;
 
   if (end_of_file && status != STOP)
     gui_pause_capture ();
@@ -293,6 +292,9 @@ update_diagram (GtkWidget * canvas)
     }
   while (n_links != n_links_new);
 
+  /* Update protocol information */
+  update_protocols ();
+
   /* With this we make sure that we don't overload the
    * CPU with redraws */
 
@@ -313,6 +315,10 @@ update_diagram (GtkWidget * canvas)
 
   g_string_sprintfa (status_string,
 		     _(". Refresh Period: %d"), (int) diff_msecs);
+
+  g_string_sprintfa (status_string,
+		     ". Total Packets %g, packets in memory: %g", n_packets,
+		     n_mem_packets);
   if (is_idle)
     status_string = g_string_append (status_string, _(". IDLE."));
   else
