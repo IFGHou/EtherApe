@@ -886,8 +886,8 @@ update_node (guint8 * node_id, node_t * node, gpointer pointer)
 #endif
 #if 0
 	/* Remove node if node is too old or if capture is stopped */
-	if ((((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
-	     && node_timeout_time) || (status == STOP))
+	if ((IS_OLDER (diff, node_timeout_time) && node_timeout_time)
+	    || (status == STOP))
 #endif
 	  {
 
@@ -993,8 +993,8 @@ update_link (link_t * link)
       if (status == STOP)
 #if 0
 	/* Remove link if it is too old or if capture is stopped */
-	if ((((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
-	     && link_timeout_time) || (status == STOP))
+	if ((IS_OLDER (diff, link_timeout_time) && link_timeout_time)
+	    || (status == STOP))
 #endif
 	  {
 	    link_id = link->link_id;	/* Since we are freeing the link
@@ -1275,8 +1275,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 
   /* If this packet is too old, we discard it */
   /* We also delete all packets if capture is stopped */
-  if (((result.tv_sec * 1000000 + result.tv_usec) > time_comparison) ||
-      (status == STOP))
+  if (IS_OLDER (result, time_comparison) || (status == STOP))
     {
 
       if (belongs_to == NODE)

@@ -57,13 +57,13 @@ init_diagram ()
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			   "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
-  gtk_spin_button_set_value (spin, averaging_time / 1000);
+  gtk_spin_button_set_value (spin, averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
-  gtk_spin_button_set_value (spin, node_timeout_time / 1000);
+  gtk_spin_button_set_value (spin, node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
-  gtk_spin_button_set_value (spin, link_timeout_time / 1000);
+  gtk_spin_button_set_value (spin, link_timeout_time);
 
   widget = glade_xml_get_widget (xml, "diagram_only_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), diagram_only);
@@ -216,7 +216,7 @@ update_diagram (GtkWidget * canvas)
   /* Check if there are any new nodes */
   g_tree_traverse (nodes, (GTraverseFunc) check_new_node, G_IN_ORDER, canvas);
 
-  /* Update nodes look and delete outdated nodes */
+  /* Update nodes look and delete outdated canvas_nodes */
   do
     {
       n_nodes_before = g_tree_nnodes (canvas_nodes);
@@ -228,6 +228,8 @@ update_diagram (GtkWidget * canvas)
   while (n_nodes_before != n_nodes_after);
 
   /* Limit the number of nodes displayed, if a limit has been set */
+  /* TODO check whether this is the right function to use, now that we have a more
+   * general display_node called in update_canvas_nodes */
   limit_nodes ();
 
   /* Reposition canvas_nodes */
@@ -473,6 +475,10 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
       need_reposition = TRUE;
+#if 1
+      new_canvas_node->debug = FALSE;
+#endif
+
     }
 
   return FALSE;			/* False to keep on traversing */
@@ -489,6 +495,11 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   GtkArg args[1];
   GList *protocol_item;
   protocol_t *protocol = NULL;
+
+#if 1
+  if (canvas_node->debug)
+    g_my_debug ("Debug is true");
+#endif
 
   /* We don't need this anymore since now update_nodes is called in update_diagram */
 #if 0
@@ -596,13 +607,12 @@ display_node (node_t * node)
 
   diff = substract_times (now, node->last_time);
 
-  /* Remove node if node is too old or if capture is stopped */
-  if (((diff.tv_sec * 1000000 + diff.tv_usec) > node_timeout_time)
-      && node_timeout_time)
+  /* Remove canvas_node if node is too old */
+  if (IS_OLDER (diff, node_timeout_time) && node_timeout_time)
     return FALSE;
 
 #if 1
-  if ((node_timeout_time == 1000) && !node->n_packets)
+  if ((node_timeout_time == 1) && !node->n_packets)
     g_my_critical ("Impossible situation in display node");
 #endif
 
@@ -991,13 +1001,13 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       /* scale color down to 10% at link timeout */
       scale =
 	pow (0.10,
-	     (diff.tv_sec * 1000000.0 + diff.tv_usec) / link_timeout_time);
+	     (diff.tv_sec * 1000.0 +
+	      diff.tv_usec / 1000) / link_timeout_time);
       scaledColor =
 	(((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
 	(((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
 	((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
-      gnome_canvas_item_set (canvas_link->link_item,
-			     "points", points,
+      gnome_canvas_item_set (canvas_link->link_item, "points", points,
 			     "fill_color_rgba", scaledColor, NULL);
     }
 
@@ -1135,7 +1145,13 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
       break;
     case GDK_2BUTTON_PRESS:
       if (canvas_node && canvas_node->node)
-	dump_node_info (canvas_node->node);
+	{
+	  dump_node_info (canvas_node->node);
+#if 1
+	  canvas_node->debug = TRUE;
+#endif
+	}
+
       break;
     default:
       break;

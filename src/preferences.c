@@ -60,7 +60,7 @@ on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 void
 on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  averaging_time = adj->value * 1000;	/* Control in ms, value in us */
+  averaging_time = adj->value;	/* Control and value in ms */
 }
 
 void
@@ -78,13 +78,13 @@ on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 void
 on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  node_timeout_time = adj->value * 1000;	/* Control in ms, value in us */
+  node_timeout_time = adj->value;	/* Control and value in ms */
 }
 
 void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  link_timeout_time = adj->value * 1000;	/* Control in ms, value in us */
+  link_timeout_time = adj->value;	/* Control and value in ms */
 }
 
 void

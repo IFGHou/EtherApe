@@ -221,18 +221,17 @@ load_config (char *prefix)
    */
   node_timeout_time =
     gnome_config_get_float_with_default
-    ("Diagram/node_timeout_time=60000000.0", &u);
+    ("Diagram/node_timeout_time=60000.0", &u);
   if (nofade)
     link_timeout_time =
       gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=5000000.0", &u);
+      ("Diagram/link_timeout_time=5000.0", &u);
   else
     link_timeout_time =
       gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=20000000.0", &u);
+      ("Diagram/link_timeout_time=20000.0", &u);
   averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=3000000.0",
-					 &u);
+    gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
   node_radius_multiplier =
     gnome_config_get_float_with_default
     ("Diagram/node_radius_multiplier=0.0005", &u);
