@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-01 16:20+0100\n"
+"POT-Creation-Date: 2000-03-01 22:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,133 +66,141 @@ msgstr ""
 msgid "._New File"
 msgstr ""
 
-#: src/interface.c:102
+#: src/interface.c:110
 msgid "Etherape"
 msgstr ""
 
-#: src/interface.c:226
+#: src/interface.c:234
 msgid "New"
 msgstr ""
 
-#: src/interface.c:227
+#: src/interface.c:235
 msgid "Nuevo archivo"
 msgstr ""
 
-#: src/interface.c:238
+#: src/interface.c:246
 msgid "Open"
 msgstr ""
 
-#: src/interface.c:239
+#: src/interface.c:247
 msgid "Abrir archivo"
 msgstr ""
 
-#: src/interface.c:250
+#: src/interface.c:258
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:251
+#: src/interface.c:259
 msgid "Guardar archivo"
 msgstr ""
 
-#: src/interface.c:293
+#: src/interface.c:301
 msgid "Diagram settings"
 msgstr ""
 
-#: src/interface.c:324
+#: src/interface.c:331
 msgid "Averaging Time (ms)"
 msgstr ""
 
-#: src/interface.c:347
+#: src/interface.c:354
 msgid "Diagram refresh period (ms)"
 msgstr ""
 
-#: src/interface.c:371
+#: src/interface.c:378
 msgid "Max. Node Radius"
 msgstr ""
 
-#: src/interface.c:395
-msgid "Max Link Radius"
+#: src/interface.c:402
+msgid "Max. Link Width"
 msgstr ""
 
-#: src/interface.c:403
+#: src/interface.c:426
+msgid "Node Timeout (ms)"
+msgstr ""
+
+#: src/interface.c:450
+msgid "Link Timeout (ms)"
+msgstr ""
+
+#: src/interface.c:458
 msgid "Place Holder for The Color Coded Protocols display"
 msgstr ""
 
-#: src/interface.c:441
+#: src/interface.c:496
 msgid "Copyright 2000 Juan Toledo"
 msgstr ""
 
-#: src/interface.c:443
+#: src/interface.c:498
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
 msgstr ""
 
-#: src/interface.c:474
+#: src/interface.c:529
 msgid "window1"
 msgstr ""
 
-#: src/interface.c:494
+#: src/interface.c:549
 msgid "Name"
 msgstr ""
 
-#: src/interface.c:504
+#: src/interface.c:559
 msgid "IP Name"
 msgstr ""
 
-#: src/interface.c:514
+#: src/interface.c:569
 msgid "IP Address"
 msgstr ""
 
-#: src/interface.c:524
+#: src/interface.c:579
 msgid "Ether Name"
 msgstr ""
 
-#: src/interface.c:534
+#: src/interface.c:589
 msgid "Ether Address"
 msgstr ""
 
-#: src/interface.c:544
+#: src/interface.c:599
 msgid "Accum. bytes"
 msgstr ""
 
-#: src/interface.c:554
+#: src/interface.c:609
 msgid "Average bps"
 msgstr ""
 
-#: src/interface.c:564
+#: src/interface.c:619
 msgid "average"
 msgstr ""
 
-#: src/interface.c:573
+#: src/interface.c:628
 msgid "accumulated"
 msgstr ""
 
-#: src/interface.c:582
+#: src/interface.c:637
 msgid "ether address"
 msgstr ""
 
-#: src/interface.c:591
+#: src/interface.c:646
 msgid "ether name"
 msgstr ""
 
-#: src/interface.c:600
+#: src/interface.c:655
 msgid "ip address"
 msgstr ""
 
-#: src/interface.c:609
+#: src/interface.c:664
 msgid "ip host name"
 msgstr ""
 
-#: src/interface.c:618
+#: src/interface.c:673
 msgid "name"
 msgstr ""
 
-#: src/interface.c:638
+#: src/interface.c:693
 msgid "This message is not here yet. (Don´t tell anybody you saw it ;-) )"
 msgstr ""
 
-#: src/callbacks.c:194 src/callbacks.c:205
+#: src/callbacks.c:195 src/callbacks.c:206
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
@@ -207,41 +215,41 @@ msgstr ""
 msgid "Couldn't create pixmap from file: %s"
 msgstr ""
 
-#: src/capture.c:207
+#: src/capture.c:208
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:288
+#: src/capture.c:293
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:319 src/capture.c:324
+#: src/capture.c:324 src/capture.c:329
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:524
+#: src/capture.c:543
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:531
+#: src/capture.c:550
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:539
+#: src/capture.c:560
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:543
+#: src/capture.c:565
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:548
+#: src/capture.c:571
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
