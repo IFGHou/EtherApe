@@ -109,7 +109,7 @@ create_app1 (void)
 
   app1 = gnome_app_new ("Etherape", _("Etherape"));
   gtk_object_set_data (GTK_OBJECT (app1), "app1", app1);
-  gtk_window_set_default_size (GTK_WINDOW (app1), 800, 600);
+  gtk_window_set_default_size (GTK_WINDOW (app1), 780, 560);
 
   dock1 = GNOME_APP (app1)->dock;
   gtk_widget_ref (dock1);

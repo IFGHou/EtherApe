@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-02 17:14+0100\n"
+"POT-Creation-Date: 2000-03-02 21:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -219,37 +219,37 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
-#: src/capture.c:312
+#: src/capture.c:333
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:343 src/capture.c:348
+#: src/capture.c:364 src/capture.c:369
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/capture.c:602
+#: src/capture.c:628
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:609
+#: src/capture.c:635
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:619
+#: src/capture.c:645
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:624
+#: src/capture.c:650
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:630
+#: src/capture.c:656
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""

@@ -19,3 +19,8 @@ etherape_SOURCES = \
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
 
+install-exec-local:
+	ln -f $(sbindir)/etherape $(sbindir)/interape
+
+uninstall-local:
+	rm -f $(sbindir)/interape

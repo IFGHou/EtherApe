@@ -30,6 +30,7 @@ typedef struct
     double average;		/* Average bytes in or out in the last x ms */
     double accumulated;		/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */
+    struct timeval last_time;	/* Timestamp of the last packet to be added*/
     GList *packets;		/* List of packets sizes in or out and
 				   * its sizes. Used to calculate average
 				   * traffic */
@@ -44,6 +45,7 @@ typedef struct
     double average;
     double accumulated;
     guint n_packets;
+    struct timeval last_time;	/* Timestamp of the last packet to be added*/
     GList *packets;
   }
 link_t;
@@ -63,3 +65,4 @@ gchar *ip_to_str(const guint8 *ad);
 gchar *ether_to_str_punct (const guint8 * ad, char punct);
 gchar *ether_to_str (const guint8 * ad);
 void update_packet_list (GList * packets, enum packet_belongs belongs_to);
+struct timeval substract_times (struct timeval a, struct timeval b);

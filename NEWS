@@ -1,17 +1,20 @@
 
-  Overview of changes Etherape 0.1.9 (Thursday 03-02-2000):
+  Overview of changes in Etherape 0.1.9 (Thursday 03-02-2000):
   
      * Finally I'm properly calculating average traffic. (yeah, right :-)
-       Now I just have to find time to explain how averaging_time and
-       node and link timeout affect each other.
+     * Node and link timeout work as expected as well.
+     * Should now compile cleanly in Solaris.
+     * Interape is a hardlink to etherape. Runs as interape when called
+       with that name.
+     * Minor changes to the naming algorithm.
        
-  Overview of changes Etherape 0.1.8 (Wednesday 03-01-2000):
+  Overview of changes in Etherape 0.1.8 (Wednesday 03-01-2000):
   
      * First version of interape. Run as etherape -I. I guess I'll have
        to change the name to netape now. :-)
      * Added node and link timeouts controls.
        
-  Overview of changes Etherape 0.1.7 (Tuesday 02-29-2000):
+  Overview of changes in Etherape 0.1.7 (Tuesday 02-29-2000):
   
      * Pcap filtering added. Now you can use tcpdump style filtering
        (enclosed in quotes) with the -f option.

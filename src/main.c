@@ -35,8 +35,8 @@ gchar *interface = NULL;
 guint32 refresh_period = 800;
 gint diagram_timeout;
 extern gchar *node_color, *link_color, *text_color;
-extern double node_timeout_time, link_timeout_time, averaging_time,
-  node_radius_multiplier, link_width_multiplier;
+extern double node_timeout_time, link_timeout_time, averaging_time, node_radius_multiplier,
+  link_width_multiplier;
 gchar *filter = NULL;
 
 int
@@ -87,6 +87,11 @@ main (int argc, char *argv[])
 
   gnome_init_with_popt_table ("etherape", VERSION, argc, argv, optionsTable, 0, NULL);
 
+  /* If called as interape, act as interape */
+  if (strstr (argv[0], "interape"))
+    interape = 1;
+
+
   /* Only ip traffic makes sense when used as interape */
   if (interape)
     filter = g_strconcat ("ip ", filter, NULL);
@@ -98,10 +103,12 @@ main (int argc, char *argv[])
 				 * mtr for reference */
 
   app1 = create_app1 ();
-   
+  if (interape)
+     gtk_window_set_title (GTK_WINDOW (app1), "Interape");
+
   /* Sets controls to the values of variables */
   init_diagram (app1);
-  
+
   hscale = lookup_widget (app1, "node_radius_slider");
   gtk_signal_connect (GTK_OBJECT (GTK_RANGE (hscale)->adjustment),
 		      "value_changed", GTK_SIGNAL_FUNC (on_node_radius_slider_adjustment_changed),

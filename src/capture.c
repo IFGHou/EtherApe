@@ -250,6 +250,9 @@ create_node (const guint8 * packet, enum create_node_type node_type)
   node->ether_addr = g_memdup (ether_addr, 6);
   node->ether_numeric_str = g_string_new (ether_to_str (ether_addr));
 
+
+  /* Fill in the IP part of the identification */
+
   if ((packet[12] == 0x08) && (packet[13] == 0x00))
     {
       node->ip_addr = ip_addr;
@@ -257,7 +260,7 @@ create_node (const guint8 * packet, enum create_node_type node_type)
       if (dns)
 	node->ip_str = g_string_new (get_hostname (ip_addr));
       else
-	node->ip_str = g_string_new (ip_to_str ((guint8 *) (&ip_addr)));
+	node->ip_str = g_string_new (na);
     }
   else
     {
@@ -266,9 +269,8 @@ create_node (const guint8 * packet, enum create_node_type node_type)
       node->ip_str = g_string_new (na);
     }
 
-  node->average = 0;
-  node->n_packets = 0;
-  node->accumulated = 0;
+  /* Fill in the ethernet part of the identification */
+  /* TODO: this is a BAD mess. Clean it up and generalize it */
 
   if (!numeric)
     {
@@ -296,14 +298,33 @@ create_node (const guint8 * packet, enum create_node_type node_type)
 	}
       else
 	{
-	  node->name = g_string_new (get_ether_name (ether_addr));
+	  if (interape)
+	    {
+	      if (dns)
+		{
+		  node->name = g_string_new (get_hostname (ip_addr));
+		}
+	      else
+		{
+		  node->name = g_string_new (ip_to_str ((guint8 *) (&ip_addr)));
+		}
+	    }
+	  else
+	    node->name = g_string_new (get_ether_name (ether_addr));
 	}
     }
   else
     {
       node->ether_str = g_string_new (na);
-      node->name = g_string_new (ether_to_str (ether_addr));
+      if (interape)
+	node->name = g_string_new (ip_to_str ((guint8 *) (&ip_addr)));
+      else
+	node->name = g_string_new (ether_to_str (ether_addr));
     }
+
+  node->average = 0;
+  node->n_packets = 0;
+  node->accumulated = 0;
 
   node->packets = NULL;
 
@@ -459,7 +480,6 @@ void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
   struct timeval now, difference;
-  gdouble real_averaging_time;
   gdouble usecs_from_oldest;	/* usecs since the first valid packet */
   GList *packet_l_e;		/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
@@ -505,6 +525,7 @@ packet_read (pcap_t * pch,
   node_t *node;
   packet_t *packet_info;
   link_t *link;
+  struct timeval now;
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
@@ -522,6 +543,8 @@ packet_read (pcap_t * pch,
       dst = pcap_packet;
     }
 
+  gettimeofday (&now, NULL);
+
   node = g_tree_lookup (nodes, src);
   if (node == NULL)
     node = create_node (pcap_packet, SRC);
@@ -534,6 +557,7 @@ packet_read (pcap_t * pch,
   packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
+  node->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (node->packets, NODE);
   node->n_packets++;
@@ -552,6 +576,7 @@ packet_read (pcap_t * pch,
   packet_info->parent = node;
   node->packets = g_list_prepend (node->packets, packet_info);
   node->accumulated += phdr.len;
+  node->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (node->packets, NODE);
   node->n_packets++;
@@ -575,6 +600,7 @@ packet_read (pcap_t * pch,
   packet_info->parent = link;
   link->packets = g_list_prepend (link->packets, packet_info);
   link->accumulated += phdr.len;
+  link->last_time = now;
   /* Now we clean all packets we don't care for anymore */
   update_packet_list (link->packets, LINK);
   link->n_packets++;

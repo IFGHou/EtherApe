@@ -188,6 +188,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   canvas_node_t *canvas_node;
   GtkArg args[2];
   gdouble link_size;
+  struct timeval now, diff;
+
 
   link = canvas_link->link;
 
@@ -199,7 +201,10 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   if (link->n_packets == 0)
     {
-      if (link_timeout_time)
+      gettimeofday (&now, NULL);
+      diff = substract_times (now, link->last_time);
+
+      if ((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
 	{
 
 	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
@@ -300,6 +305,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 {
   node_t *node;
   gdouble node_size;
+  struct timeval now, diff;
+
   node = canvas_node->node;
 
   /* First we check whether the link has timed out */
@@ -309,7 +316,10 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 
   if (node->n_packets == 0)
     {
-      if (node_timeout_time)
+      gettimeofday (&now, NULL);
+      diff = substract_times (now, node->last_time);
+
+      if ((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time)
 	{
 
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
@@ -342,8 +352,10 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 				 * the traversion (Does that word exist? :-) */
 	}
       else
-	node->packets = NULL;
-      node->accumulated = 0;
+	{
+	  node->packets = NULL;
+	  node->accumulated = 0;	/* TODO: do we really need this here anymore? */
+	}
     }
 
 
@@ -480,15 +492,16 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  static GnomeAppBar *appbar=NULL;
+  static GnomeAppBar *appbar = NULL;
   static guint n_nodes = 0, n_nodes_new;
   guint n_links = 0, n_links_new = 1;
 
 /* Now we update the status bar with the number of present nodes 
  * TODO Find a nice use for the status bar. I can thik of very little */
-  if (!appbar) appbar = GNOME_APPBAR(lookup_widget (GTK_WIDGET(canvas), "appbar1"));
-  
-   
+  if (!appbar)
+    appbar = GNOME_APPBAR (lookup_widget (GTK_WIDGET (canvas), "appbar1"));
+
+
   /* Check if there are any new nodes */
   g_tree_traverse (nodes,
 		   (GTraverseFunc) check_new_node,
@@ -496,7 +509,7 @@ update_diagram (GtkWidget * canvas)
 		   canvas);
 
 
-  /* Update nodes look and delete outdated nodes*/
+  /* Update nodes look and delete outdated nodes */
   /* TODO: shouldn't we do the same thing we do with
    * the links down there, to go on until no nodes are delete? */
   g_tree_traverse (canvas_nodes,
@@ -509,18 +522,18 @@ update_diagram (GtkWidget * canvas)
 
   if (n_nodes != (n_nodes_new = g_tree_nnodes (nodes)))
     {
-       g_tree_traverse (canvas_nodes,
-			(GTraverseFunc) reposition_canvas_nodes,
-			G_IN_ORDER,
-			canvas);
-       gnome_appbar_pop (appbar);
+      g_tree_traverse (canvas_nodes,
+		       (GTraverseFunc) reposition_canvas_nodes,
+		       G_IN_ORDER,
+		       canvas);
+      gnome_appbar_pop (appbar);
 
-       /* TODO: Am I leaking here with each call to g_strdup_printf?
-	* How should I do this if so? */
-       gnome_appbar_push (appbar,  g_strconcat (_("Number of nodes: "),
-						g_strdup_printf ("%d", n_nodes_new),
-						NULL));
-       n_nodes = n_nodes_new;
+      /* TODO: Am I leaking here with each call to g_strdup_printf?
+       * How should I do this if so? */
+      gnome_appbar_push (appbar, g_strconcat (_ ("Number of nodes: "),
+					g_strdup_printf ("%d", n_nodes_new),
+					      NULL));
+      n_nodes = n_nodes_new;
     }
 
 
@@ -533,7 +546,7 @@ update_diagram (GtkWidget * canvas)
   /* Update links look 
    * We also delete timedout links, and when we do that we stop
    * traversing, so we need to go on until we have finished updating */
-   
+
   do
     {
       n_links = g_tree_nnodes (links);
@@ -551,35 +564,35 @@ update_diagram (GtkWidget * canvas)
 }				/* update_diagram */
 
 void
-init_diagram (GtkWidget *app1)
+init_diagram (GtkWidget * app1)
 {
   GtkScale *scale;
   GtkSpinButton *spin;
-   
+
   /* Creates trees */
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
-   
+
   /* Updates controls from values of variables */
-  scale = GTK_SCALE(lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));
-  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log(node_radius_multiplier)/log(10));
+  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "node_radius_slider"));
+  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log (node_radius_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment), "changed");
 
-  scale = GTK_SCALE(lookup_widget (GTK_WIDGET (app1), "link_width_slider"));
-  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log(link_width_multiplier)/log(10));
+  scale = GTK_SCALE (lookup_widget (GTK_WIDGET (app1), "link_width_slider"));
+  gtk_adjustment_set_value (GTK_RANGE (scale)->adjustment, log (link_width_multiplier) / log (10));
   gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (scale)->adjustment), "changed");
 
-  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "averaging_spin"));
-  gtk_spin_button_set_value (spin, averaging_time/1000);
-  
-  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "refresh_spin"));
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "averaging_spin"));
+  gtk_spin_button_set_value (spin, averaging_time / 1000);
+
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "refresh_spin"));
   gtk_spin_button_set_value (spin, refresh_period);
-  
-  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "node_to_spin"));
-  gtk_spin_button_set_value (spin, node_timeout_time/1000);
-  
-  spin = GTK_SPIN_BUTTON(lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
-  gtk_spin_button_set_value (spin, link_timeout_time/1000);
-  
+
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "node_to_spin"));
+  gtk_spin_button_set_value (spin, node_timeout_time / 1000);
+
+  spin = GTK_SPIN_BUTTON (lookup_widget (GTK_WIDGET (app1), "link_to_spin"));
+  gtk_spin_button_set_value (spin, link_timeout_time / 1000);
+
 
 }

@@ -12,6 +12,7 @@ cvs : NEWS
 
 EXTRA_DIST = \
 	README.thanks 		\
+	README.help		\
 	NEWS.html		\
 	debian/README.debian	\
 	debian/changelog	\
