@@ -48,11 +48,11 @@ gchar *s = N_("Font");
 gchar *s = N_("Refresh diagram every this many miliseconds");
 gchar *s = N_("Diagram refresh period (ms)");
 gchar *s = N_("Set what level of the protocol stack is displayed in the legend");
-gchar *s = N_("2\n"
-              "3\n"
-              "4\n"
-              "5\n"
-              "6\n"
+gchar *s = N_("Topmost recognized protocol\n"
+              "Level 2 (Eg: ETH_II)\n"
+              "Level 3 (Eg: IP)\n"
+              "Level 4 (Eg: TCP)\n"
+              "Level 5 (Eg: HTTP)\n"
               "");
 gchar *s = N_("Protocol Stack Level");
 gchar *s = N_("Diagram");

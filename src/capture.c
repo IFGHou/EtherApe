@@ -1032,7 +1032,8 @@ set_node_name (node_t * node, gchar * preferences)
   prots = g_strsplit (preferences, ";", 0);
   for (; prots[i] && cont; i++)
     {
-      for (j = STACK_SIZE; j + 1 && cont; j--)
+      for (j = STACK_SIZE; j && cont; j--) /* We don't do level 0,
+					    * which has the topmost prot */
 	{
 	  tokens = g_strsplit (prots[i], ",", 0);
 	  protocol_item = g_list_find_custom (node->protocols[j],

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2000-04-21 19:49+0200\n"
+"POT-Creation-Date: 2000-04-22 20:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -118,7 +118,13 @@ msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 msgid "We could not load the interface! (%s)"
 msgstr ""
 
-#: src/main.c:311
+#: src/main.c:284
+msgid ""
+"Stack Level is not set to Topmost Recognized Protocol. Please check in the "
+"preferences dialog that this is what you really want"
+msgstr ""
+
+#: src/main.c:364
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
@@ -240,7 +246,7 @@ msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1100
+#: src/capture.c:1101
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
@@ -428,11 +434,11 @@ msgstr "Défini le niveau du protocole affiché dans la légende"
 
 #: src/glade-strings:51
 msgid ""
-"2\n"
-"3\n"
-"4\n"
-"5\n"
-"6\n"
+"Topmost recognized protocol\n"
+"Level 2 (Eg: ETH_II)\n"
+"Level 3 (Eg: IP)\n"
+"Level 4 (Eg: TCP)\n"
+"Level 5 (Eg: HTTP)\n"
 msgstr ""
 
 #: src/glade-strings:57

@@ -32,6 +32,9 @@ gchar *
 get_packet_prot (const guint8 * p)
 {
   gchar **tokens = NULL;
+  gchar *top_prot=NULL;
+  gchar *str;
+   
   guint i = 0;
 
   g_assert (p != NULL);
@@ -74,6 +77,16 @@ get_packet_prot (const guint8 * p)
     }
   for (; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
+   
+   tokens = g_strsplit (prot->str, "/", 0);
+   for (i=0; strcmp (tokens[i], "UNKNOWN"); i++)
+     top_prot=tokens[i];
+
+   g_assert (top_prot!=NULL);
+   str=g_strdup_printf ("%s/", top_prot);
+   prot = g_string_prepend (prot, str);
+   g_free (str);
+   g_strfreev (tokens);
 
   /* g_message ("Protocol stack is %s", prot->str); */
   return prot->str;
