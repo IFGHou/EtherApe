@@ -14,7 +14,8 @@ features. It can run in "interape" mode with -m ip, and in
 Etherape will use /etc/ethers if there is one. If not, it will 
 display dotted quad ip addresses. 
 
-Check the NEWS file for the latest options and advances.
+Check the NEWS file for the latest developments, and 
+etherape --help for the current set of options.
 
 IMPORTANT! It is particularly important when running etherape
 to have the ethernet address of your router in /etc/ethers.
@@ -45,8 +46,8 @@ You may uninstall later by running
 Porting:
 --------
 Etherape has been compiled in at least:
-* Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1
-* linuxppc
+* Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1,
+  modified linuxppc 1999
 * NetBSD 1.4T (i386)
 * Sparc Solaris 7 with gcc 2.95.2
 

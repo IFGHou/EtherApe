@@ -25,7 +25,7 @@ void dns_open ();
 int dns_waitfd ();
 void dns_ack ();
 void dns_events (double *sinterval);
-char *dns_lookup (int address);
+char *dns_lookup (int address, int fqdn);
 char *dns_lookup2 (int address);
 int dns_forward (char *name);
 char *strlongip (int address);

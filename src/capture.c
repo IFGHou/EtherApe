@@ -20,6 +20,7 @@
 #include <gnome.h>
 #include <ctype.h>
 #include <netinet/in.h>
+#include <net/if.h>
 
 #include "capture.h"
 #include "eth_resolv.h"
@@ -234,11 +235,35 @@ protocol_compare (gconstpointer a, gconstpointer b)
 void
 fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 {
+
+  gboolean fqdn;
+
   switch (mode)
     {
     case ETHERNET:
+
+      fqdn = FALSE;
+
+      if (!node->ip_address && packet && (packet[12] == 0x08) && (packet[13] == 0x00))
+	{
+	  const guint8 *ip_address;
+	  /* We do not know whether this was a source or destination
+	   * node, so we have to check it out */
+	  if (!node_id_compare (node_id, packet + 6))
+	    ip_address = packet + 26;	/* SRC packet */
+	  else
+	    ip_address = packet + 30;
+	  node->ip_address = ntohl (*(guint32 *) ip_address);
+	}
+
       if (!node->numeric_name)
 	node->numeric_name = g_string_new (ether_to_str (node_id));
+      if (!node->numeric_ip && node->ip_address)
+	{
+	  guint32 net_ip_address;
+	  net_ip_address = htonl (node->ip_address);
+	  node->numeric_ip = g_string_new (ip_to_str ((guint8 *) (&net_ip_address)));
+	}
       if (numeric)
 	{
 	  if (!node->name)
@@ -257,21 +282,10 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	      )
 	    )
 	    {
-	      if (!node->ip_address && packet)
-		{
-		  const guint8 *ip_address;
-		  /* We do not know whether this was a source or destination
-		   * node, so we have to check it out */
-		  if (!node_id_compare (node_id, packet + 6))
-		    ip_address = packet + 26;	/* SRC packet */
-		  else
-		    ip_address = packet + 30;
-		  node->ip_address = ntohl (*(guint32 *) ip_address);
-		}
 	      if (!node->name)
-		node->name = g_string_new (dns_lookup (node->ip_address));
+		node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
 	      else
-		g_string_assign (node->name, dns_lookup (node->ip_address));
+		g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
 	    }
 	  else
 	    node->name = g_string_new (get_ether_name (node_id));
@@ -279,6 +293,9 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
       break;
 
     case IP:
+
+      fqdn = TRUE;
+
       if (!node->ip_address)
 	node->ip_address = ntohl (*(guint32 *) node_id);
 
@@ -293,13 +310,16 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
       else
 	{
 	  if (!node->name)
-	    node->name = g_string_new (dns_lookup (node->ip_address));
+	    node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
 	  else
-	    g_string_assign (node->name, dns_lookup (node->ip_address));
+	    g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
 	}
       break;
 
     case TCP:
+
+      fqdn = TRUE;
+
       if (!node->ip_address)
 	node->ip_address = ntohl (*(guint32 *) node_id);
 
@@ -327,14 +347,14 @@ fill_names (node_t * node, const guint8 * node_id, const guint8 * packet)
 	{
 	  if (!node->name)
 	    {
-	      node->name = g_string_new (dns_lookup (node->ip_address));
+	      node->name = g_string_new (dns_lookup (node->ip_address, fqdn));
 	      node->name = g_string_append_c (node->name, ':');
 	      node->name = g_string_append (node->name,
 				 get_tcp_port (*(guint16 *) (node_id + 4)));
 	    }
 	  else
 	    {
-	      g_string_assign (node->name, dns_lookup (node->ip_address));
+	      g_string_assign (node->name, dns_lookup (node->ip_address, fqdn));
 	      node->name = g_string_append_c (node->name, ':');
 	      node->name = g_string_append (node->name,
 				 get_tcp_port (*(guint16 *) (node_id + 4)));
@@ -367,6 +387,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   /* We initialize the ip_address, although it won't be
    * used in many cases */
   node->ip_address = 0;
+  node->numeric_ip = NULL;
   fill_names (node, node_id, packet);
 
   node->average = 0;

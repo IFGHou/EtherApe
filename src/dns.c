@@ -1412,12 +1412,23 @@ dns_lookup2 (ip_t ip)
 
 
 char *
-dns_lookup (ip_t ip)
+dns_lookup (ip_t ip, int fqdn)
 {
   char *t;
+  char *u;
 
   if (!dns)
     return strlongip (ip);
   t = dns_lookup2 (ip);
-  return t ? t : strlongip (ip);
+
+  if (!t)
+    return strlongip (ip);
+
+  if (fqdn)
+    return t;
+
+  u = strpbrk (t, ".");
+  if (u)
+    *u = '\0';
+  return t;
 }

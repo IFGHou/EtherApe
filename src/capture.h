@@ -87,6 +87,7 @@ typedef struct
     GString *name;		/* String with a readable default name of the node */
     GString *numeric_name;	/* String with a numeric representation of the id */
     guint32 ip_address;		/* Needed by the resolver */
+    GString *numeric_ip;	/* Ugly hack for ethernet mode */
     gdouble average;		/* Average bytes in or out in the last x ms */
     gdouble accumulated;	/* Accumulated bytes in the last x ms */
     guint n_packets;		/* Number of total packets received */

@@ -519,20 +519,9 @@ create_node_popup (void)
   GtkWidget *node_popup;
   GtkWidget *frame2;
   GtkWidget *table1;
-  GtkWidget *node_name_label;
-  GtkWidget *ip_host_name_label;
-  GtkWidget *ip_address_label;
-  GtkWidget *label17;
-  GtkWidget *label19;
-  GtkWidget *label21;
-  GtkWidget *label23;
-  GtkWidget *average;
-  GtkWidget *accumulated;
-  GtkWidget *ether_numeric_str;
-  GtkWidget *ether_str;
-  GtkWidget *ip_numeric_str;
-  GtkWidget *ip_str;
   GtkWidget *name;
+  GtkWidget *accumulated;
+  GtkWidget *average;
 
   node_popup = gtk_window_new (GTK_WINDOW_POPUP);
   gtk_object_set_data (GTK_OBJECT (node_popup), "node_popup", node_popup);
@@ -547,7 +536,7 @@ create_node_popup (void)
   gtk_widget_show (frame2);
   gtk_container_add (GTK_CONTAINER (node_popup), frame2);
 
-  table1 = gtk_table_new (7, 2, TRUE);
+  table1 = gtk_table_new (3, 1, TRUE);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (node_popup), "table1", table1,
 			    (GtkDestroyNotify) gtk_widget_unref);
@@ -556,138 +545,36 @@ create_node_popup (void)
   gtk_container_set_border_width (GTK_CONTAINER (table1), 3);
   gtk_table_set_col_spacings (GTK_TABLE (table1), 5);
 
-  node_name_label = gtk_label_new (_ ("Name"));
-  gtk_widget_ref (node_name_label);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "node_name_label", node_name_label,
+  name = gtk_label_new (_ ("name"));
+  gtk_widget_ref (name);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "name", name,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (node_name_label);
-  gtk_table_attach (GTK_TABLE (table1), node_name_label, 0, 1, 0, 1,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (node_name_label), GTK_JUSTIFY_LEFT);
-
-  ip_host_name_label = gtk_label_new (_ ("IP Name"));
-  gtk_widget_ref (ip_host_name_label);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ip_host_name_label", ip_host_name_label,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ip_host_name_label);
-  gtk_table_attach (GTK_TABLE (table1), ip_host_name_label, 0, 1, 1, 2,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (ip_host_name_label), GTK_JUSTIFY_LEFT);
-
-  ip_address_label = gtk_label_new (_ ("IP Address"));
-  gtk_widget_ref (ip_address_label);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ip_address_label", ip_address_label,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ip_address_label);
-  gtk_table_attach (GTK_TABLE (table1), ip_address_label, 0, 1, 2, 3,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (ip_address_label), GTK_JUSTIFY_LEFT);
-
-  label17 = gtk_label_new (_ ("Ether Name"));
-  gtk_widget_ref (label17);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "label17", label17,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label17);
-  gtk_table_attach (GTK_TABLE (table1), label17, 0, 1, 3, 4,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label17), GTK_JUSTIFY_LEFT);
-
-  label19 = gtk_label_new (_ ("Ether Address"));
-  gtk_widget_ref (label19);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "label19", label19,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label19);
-  gtk_table_attach (GTK_TABLE (table1), label19, 0, 1, 4, 5,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label19), GTK_JUSTIFY_LEFT);
-
-  label21 = gtk_label_new (_ ("Accum. bytes"));
-  gtk_widget_ref (label21);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "label21", label21,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label21);
-  gtk_table_attach (GTK_TABLE (table1), label21, 0, 1, 5, 6,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label21), GTK_JUSTIFY_LEFT);
-
-  label23 = gtk_label_new (_ ("Average bps"));
-  gtk_widget_ref (label23);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "label23", label23,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label23);
-  gtk_table_attach (GTK_TABLE (table1), label23, 0, 1, 6, 7,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label23), GTK_JUSTIFY_LEFT);
-
-  average = gtk_label_new (_ ("average"));
-  gtk_widget_ref (average);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "average", average,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (average);
-  gtk_table_attach (GTK_TABLE (table1), average, 1, 2, 6, 7,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_show (name);
+  gtk_table_attach (GTK_TABLE (table1), name, 0, 1, 0, 1,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
   accumulated = gtk_label_new (_ ("accumulated"));
   gtk_widget_ref (accumulated);
   gtk_object_set_data_full (GTK_OBJECT (node_popup), "accumulated", accumulated,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (accumulated);
-  gtk_table_attach (GTK_TABLE (table1), accumulated, 1, 2, 5, 6,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table1), accumulated, 0, 1, 1, 2,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
-  ether_numeric_str = gtk_label_new (_ ("ether address"));
-  gtk_widget_ref (ether_numeric_str);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ether_numeric_str", ether_numeric_str,
+  average = gtk_label_new (_ ("average"));
+  gtk_widget_ref (average);
+  gtk_object_set_data_full (GTK_OBJECT (node_popup), "average", average,
 			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ether_numeric_str);
-  gtk_table_attach (GTK_TABLE (table1), ether_numeric_str, 1, 2, 4, 5,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_show (average);
+  gtk_table_attach (GTK_TABLE (table1), average, 0, 1, 2, 3,
+		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
 
-  ether_str = gtk_label_new (_ ("ether name"));
-  gtk_widget_ref (ether_str);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ether_str", ether_str,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ether_str);
-  gtk_table_attach (GTK_TABLE (table1), ether_str, 1, 2, 3, 4,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-
-  ip_numeric_str = gtk_label_new (_ ("ip address"));
-  gtk_widget_ref (ip_numeric_str);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ip_numeric_str", ip_numeric_str,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ip_numeric_str);
-  gtk_table_attach (GTK_TABLE (table1), ip_numeric_str, 1, 2, 2, 3,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-
-  ip_str = gtk_label_new (_ ("ip host name"));
-  gtk_widget_ref (ip_str);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "ip_str", ip_str,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ip_str);
-  gtk_table_attach (GTK_TABLE (table1), ip_str, 1, 2, 1, 2,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
-
-  name = gtk_label_new (_ ("name"));
-  gtk_widget_ref (name);
-  gtk_object_set_data_full (GTK_OBJECT (node_popup), "name", name,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (name);
-  gtk_table_attach (GTK_TABLE (table1), name, 1, 2, 0, 1,
-		    (GtkAttachOptions) (GTK_FILL),
-		    (GtkAttachOptions) (0), 0, 0);
+  gtk_signal_connect (GTK_OBJECT (node_popup), "motion_notify_event",
+		      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+		      NULL);
 
   return node_popup;
 }

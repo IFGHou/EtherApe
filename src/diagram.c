@@ -29,6 +29,7 @@
 #include "eth_resolv.h"
 #include "diagram.h"
 
+
 /* Global application parameters */
 
 double node_radius_multiplier = 100;	/* used to calculate the radius of the
@@ -50,6 +51,12 @@ GTree *canvas_links;		/* See above */
 gboolean need_reposition;	/* It is set when a canvas_node has been added 
 				 * or deleted */
 
+struct popup_data
+  {
+    GtkWidget *node_popup;
+    canvas_node_t *canvas_node;
+  };
+
 /* Extern global variables */
 
 extern gdouble averaging_time;
@@ -60,12 +67,13 @@ extern guint32 refresh_period;
 extern guint node_id_length;
 extern gboolean fix_overlap;
 extern gboolean nofade;
+extern gboolean diagram_only;
+extern apemode_t mode;
 
 /* Extern functions declarations */
 
 extern gint node_id_compare (gconstpointer a, gconstpointer b);
 extern gint link_id_compare (gconstpointer a, gconstpointer b);
-extern gboolean diagram_only;
 
 /* Local functions definitions */
 
@@ -126,15 +134,53 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_link_t * canva
   return FALSE;
 }
 
+guint
+popup_to (struct popup_data * pd)
+{
+
+  GtkLabel *label;
+
+  g_message ("In popup");
+
+  pd->node_popup = create_node_popup ();
+  label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "name");
+
+  if (mode == ETHERNET && pd->canvas_node->node->ip_address)
+    gtk_label_set_text (label,
+			g_strdup_printf ("%s (%s, %s)",
+					 pd->canvas_node->node->name->str,
+				     pd->canvas_node->node->numeric_ip->str,
+				 pd->canvas_node->node->numeric_name->str));
+  else
+    gtk_label_set_text (label,
+			g_strdup_printf ("%s (%s)",
+					 pd->canvas_node->node->name->str,
+				 pd->canvas_node->node->numeric_name->str));
+
+  label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "accumulated");
+  gtk_label_set_text (label,
+		      g_strdup_printf ("Acummulated bytes: %g", pd->canvas_node->node->accumulated));
+  label = (GtkLabel *) lookup_widget (GTK_WIDGET (pd->node_popup), "average");
+  gtk_label_set_text (label,
+		      g_strdup_printf ("Average bps: %g", pd->canvas_node->node->average * 1000000));
+
+//   gtk_widget_show (GTK_WIDGET (pd->node_popup));
+  gtk_widget_popup (GTK_WIDGET (pd->node_popup), 10, 20);
+
+  return FALSE;			/* Only called once */
+
+}
+
 static gint
 node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canvas_node)
 {
 
   gdouble item_x, item_y;
-  static GtkWidget *node_popup;
-  GtkLabel *label;
+  static struct popup_data pd =
+  {NULL, NULL};
+  static gint popup = 0;
 
-
+  /* This is not used yet, but it will be. */
   item_x = event->button.x;
   item_y = event->button.y;
   gnome_canvas_item_w2i (item->parent, &item_x, &item_y);
@@ -142,32 +188,24 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event, canvas_node_t * canva
   switch (event->type)
     {
 
-    case GDK_BUTTON_PRESS:
-      node_popup = create_node_popup ();
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "name");
-      gtk_label_set_text (label, canvas_node->node->name->str);
-#if 0
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_str");
-      gtk_label_set_text (label, canvas_node->node->ip_str->str);
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ip_numeric_str");
-      gtk_label_set_text (label, canvas_node->node->ip_numeric_str->str);
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_str");
-      gtk_label_set_text (label, canvas_node->node->ether_str->str);
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "ether_numeric_str");
-      gtk_label_set_text (label, canvas_node->node->ether_numeric_str->str);
-#endif
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "accumulated");
-      gtk_label_set_text (label,
-		    g_strdup_printf ("%g", canvas_node->node->accumulated));
-      label = (GtkLabel *) lookup_widget (GTK_WIDGET (node_popup), "average");
-      gtk_label_set_text (label,
-	      g_strdup_printf ("%g", canvas_node->node->average * 1000000));
-      gtk_widget_show (GTK_WIDGET (node_popup));
+    case GDK_ENTER_NOTIFY:
+      pd.canvas_node = canvas_node;
+      popup = gtk_timeout_add (1000, (GtkFunction) popup_to, &pd);
+      g_message ("Event Enter");
       break;
-    case GDK_BUTTON_RELEASE:
-      gtk_widget_destroy (GTK_WIDGET (node_popup));
+    case GDK_LEAVE_NOTIFY:
+      if (popup)
+	{
+	  if (pd.node_popup)
+//            gtk_widget_destroy (GTK_WIDGET (pd.node_popup));
+	    g_message ("Event Leave");
+	  gtk_timeout_remove (popup);
+	  popup = 0;
+	  pd.canvas_node = NULL;
+	  pd.node_popup = NULL;
+	}
+      break;
     default:
-      break;
     }
 
   return FALSE;
@@ -272,10 +310,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
     (color.blue & 0xFF00) |
     0xFF;
 
+  diff = substract_times (now, link->last_time);
+  age = diff.tv_sec + diff.tv_usec / 1000000.0;
+
   if (link->n_packets == 0)
     {
-      diff = substract_times (now, link->last_time);
-      age = diff.tv_sec + diff.tv_usec / 1000000.0;
 
       if (((diff.tv_sec * 1000000 + diff.tv_usec) > link_timeout_time)
 	  && link_timeout_time)
@@ -770,12 +809,13 @@ init_diagram (GtkWidget * app1)
   canvas_nodes = g_tree_new (node_id_compare);
   canvas_links = g_tree_new (link_id_compare);
 
+  averaging_time = 3000000.0;
   node_timeout_time = 60000000.0;
 
   if (nofade)
     link_timeout_time = 5000000.0;
   else
-    link_timeout_time = 60000000.0;
+    link_timeout_time = 20000000.0;
 
 
   /* Updates controls from values of variables */
