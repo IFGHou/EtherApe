@@ -60,6 +60,9 @@ GList *node_info_windows = NULL;
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
 
+static guint prot_color_index = 0;
+static guint known_protocols[STACK_SIZE + 1];
+
 struct popup_data
 {
   GtkWidget *node_popup;

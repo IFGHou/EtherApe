@@ -644,6 +644,8 @@ gui_stop_capture (void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
+  /* Delete and free protocol information */
+  delete_gui_protocols ();
 
   /* By calling update_diagram, we are forcing node_update
    * and link_update, thus deleting all nodes and links since

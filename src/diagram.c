@@ -146,6 +146,9 @@ init_diagram ()
 
   gtk_style_set_background (canvas->style, canvas->window, GTK_STATE_NORMAL);
 
+  /* Initialize the known_protocols table */
+  delete_gui_protocols ();
+
   /* Since glade doesn't do it, we'll have to do it manually 
    * TODO Remove when glade is fixed */
 
@@ -209,6 +212,12 @@ update_diagram (GtkWidget * canvas)
 
 
   /* We search for new protocols */
+  while (known_protocols[stack_level] !=
+	 g_list_length (protocols[stack_level]))
+    g_list_foreach (protocols[stack_level], check_new_protocol, canvas);
+
+
+#if 0
   if (n_protocols[stack_level]
       != (n_protocols_new[stack_level] =
 	  g_list_length (protocols[stack_level])))
@@ -217,6 +226,7 @@ update_diagram (GtkWidget * canvas)
 		      canvas);
       n_protocols[stack_level] = n_protocols_new[stack_level];
     }
+#endif
 
   /* Deletes all nodes and updates traffic values */
   /* TODO To reduce CPU usage, I could just as well update each specific
@@ -231,8 +241,6 @@ update_diagram (GtkWidget * canvas)
 #endif
   while ((new_node = ape_get_new_node ()))
     check_new_node (new_node->node_id, new_node, canvas);
-
-
 
   /* Update nodes look and delete outdated canvas_nodes */
   do
@@ -261,8 +269,12 @@ update_diagram (GtkWidget * canvas)
     }
 
 
+  /* Delete old capture links and update capture link variables */
+  update_links ();
+
   /* Check if there are any new links */
   g_tree_traverse (links, (GTraverseFunc) check_new_link, G_IN_ORDER, canvas);
+
 
   /* Update links look 
    * We also delete timedout links, and when we do that we stop
@@ -413,8 +425,47 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   legend_protocol->name = g_strdup (protocol->name);
   legend_protocol->color = protocol->color;
   legend_protocols = g_list_prepend (legend_protocols, legend_protocol);
+
+  known_protocols[stack_level]++;
+
 }				/* check_new_protocol */
 
+/* Frees the legend_protocols list and empties the table of protocols */
+void
+delete_gui_protocols (void)
+{
+  GList *item = NULL;
+  protocol_t *protocol = NULL;
+  GtkWidget *prot_table = NULL;
+  guint i = 0;
+
+  item = legend_protocols;
+
+  while (item)
+    {
+      protocol = item->data;
+      g_free (protocol->name);
+      g_free (protocol);
+      item = item->next;
+    }
+
+  legend_protocols = NULL;
+  prot_color_index = 0;
+  for (; i <= STACK_SIZE; i++)
+    known_protocols[i] = 0;
+
+  prot_table = glade_xml_get_widget (xml, "prot_table");
+
+  item = gtk_container_children (GTK_CONTAINER (prot_table));
+
+  while (item)
+    {
+      gtk_container_remove (GTK_CONTAINER (prot_table),
+			    (GtkWidget *) item->data);
+      item = item->next;
+    }
+
+}				/* delete_gui_protocols */
 
 /* For a given protocol, returns the color string that should be used
  * Right now it's just assigning colors from a list until it runs
@@ -423,16 +474,19 @@ static gchar *
 get_prot_color (gchar * name)
 {
   gchar *colors[] = { "red", "blue", "yellow", "white", "orange", "green",
-    "white", "cyan", "orange", "brown", "purple"
+    "pink", "cyan", "brown", "purple", "tan"
   };
-  static gint i = -1;
 
-  i++;
+  gchar *color = NULL;
 
-  if (i <= 10)
-    return colors[i];
+  color = colors[prot_color_index];
 
-  return "tan";
+  prot_color_index++;
+  if (prot_color_index == 11)
+    prot_color_index = 0;
+
+  return color;
+
 }				/* get_prot_color */
 
 
@@ -928,9 +982,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   link = canvas_link->link;
 
-
+#if 0
   /* First we check whether the link has timed out */
   link = update_link (link);
+#endif
+  link = g_tree_lookup (links, link_id);
 
   if (!link)
     {

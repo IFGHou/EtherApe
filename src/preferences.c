@@ -188,6 +188,8 @@ on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
   active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
   stack_level = g_list_index (menu_shell->children, active_item);
 
+  delete_gui_protocols ();
+
 }				/* on_stack_level_menu_selected */
 
 void
