@@ -341,7 +341,7 @@ msgstr "Status is geen PLAY of PAUZE bij gui_stop_capture"
 #. Sets the appbar
 #: src/menus.c:678
 msgid "Ready to capture from "
-msgstr "Klaar om te luisteren naar"
+msgstr "Klaar om te luisteren naar "
 
 #: src/menus.c:690
 msgid "Diagram stopped"
@@ -878,7 +878,7 @@ msgstr "EtherApe: Protocollen"
 
 #: src/glade-strings:126
 msgid "Columns"
-msgstr ""
+msgstr "Kolommen"
 
 #: src/glade-strings:127 src/glade-strings:132
 msgid "Protocol"
@@ -894,19 +894,19 @@ msgstr "Totaal verkeer"
 
 #: src/glade-strings:130 src/glade-strings:135
 msgid "Last Heard"
-msgstr ""
+msgstr "Laatst gehoord"
 
 #: src/glade-strings:131 src/glade-strings:136
 msgid "Packets"
-msgstr ""
+msgstr "Pakketten"
 
 #: src/glade-strings:138
 msgid "Last Heard: "
-msgstr ""
+msgstr "Laatst gehoord: "
 
 #: src/glade-strings:139
 msgid "label73"
-msgstr ""
+msgstr "label73"
 
 #: src/glade-strings:144
 msgid "Nodes"
