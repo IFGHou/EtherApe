@@ -214,7 +214,8 @@ update_diagram (GtkWidget * canvas)
   /* We search for new protocols */
   while (known_protocols[stack_level] !=
 	 g_list_length (protocols[stack_level]))
-    g_list_foreach (protocols[stack_level], check_new_protocol, canvas);
+    g_list_foreach (protocols[stack_level], (GFunc) check_new_protocol,
+		    canvas);
 
 
 #if 0
@@ -282,11 +283,11 @@ update_diagram (GtkWidget * canvas)
 
   do
     {
-      n_links = g_tree_nnodes (links);
+      n_links = g_tree_nnodes (canvas_links);
       g_tree_traverse (canvas_links,
 		       (GTraverseFunc) update_canvas_links,
 		       G_IN_ORDER, canvas);
-      n_links_new = g_tree_nnodes (links);
+      n_links_new = g_tree_nnodes (canvas_links);
     }
   while (n_links != n_links_new);
 
