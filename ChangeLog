@@ -1,3 +1,54 @@
+2004-08-10 21:15  bchiara
+
+	* .cvsignore, INSTALL, acinclude.m4, autogen.sh, config.guess,
+	config.h.in, config.sub, configure.in, etherape.spec.in,
+	mkinstalldirs, glade/etherape.glade2, m4/Makefile.in,
+	po/Makefile.in.in, po/POTFILES.in, po/es.po, po/etherape.pot,
+	po/fr.po, po/nl.po, po/tr.po, src/diagram.c: 
+	color-coded protocol window, tweaks to build on newer systems
+
+2004-03-04 16:32  toledo
+
+	* configure.in, m4/Makefile.in, po/Makefile.in.in: Changed
+	AC_CONFIG_HEADER for AM_CONFIG_HEADER
+
+2003-04-06 13:45  bchiara
+
+	* ChangeLog, Makefile.am, acconfig.h, autogen.sh, config.h.in,
+	configure.in, etherape.spec.in, glade/Makefile.am,
+	glade/etherape.glade, glade/etherape.glade2, intl/ChangeLog,
+	intl/Makefile, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
+	intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
+	intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
+	intl/eval-plural.h, intl/explodename.c, intl/finddomain.c,
+	intl/gettext.c, intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
+	intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
+	intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
+	intl/locale.alias, intl/localealias.c, intl/localename.c,
+	intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c,
+	intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y,
+	intl/ref-add.sin, intl/ref-del.sin, intl/textdomain.c,
+	m4/.cvsignore, m4/Makefile, m4/Makefile.am, m4/Makefile.in,
+	m4/compiler-flags.m4, macros/.cvsignore, macros/Makefile.am,
+	macros/aclocal-include.m4, macros/autogen.sh,
+	macros/compiler-flags.m4, macros/curses.m4,
+	macros/gnome-bonobo-check.m4, macros/gnome-common.m4,
+	macros/gnome-fileutils.m4, macros/gnome-gettext.m4,
+	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
+	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
+	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
+	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
+	macros/gnome-support.m4, macros/gnome-undelfs.m4,
+	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
+	macros/gnome-xml-check.m4, macros/gnome.m4, macros/linger.m4,
+	macros/need-declaration.m4, po/Makefile.in.in, src/Makefile.am,
+	src/capture.c, src/datastructs.c, src/datastructs.h, src/diagram.c,
+	src/dns.c, src/dns.h, src/globals.h, src/gnomesupport.h,
+	src/info_windows.c, src/info_windows.h, src/main.c, src/main.h,
+	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
+	src/protocols.c, src/util.c: 
+	Branch gnome2 merged back into main trunk
+
 2003-04-06 07:08  bchiara
 
 	* glade/etherape.glade2, src/Makefile.am, src/datastructs.c,
@@ -1224,22 +1275,8 @@
 
 2001-04-20 15:04  toledo
 
-	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
-	etherape/docbook.css, etherape/index.html, etherape/license.html,
-	etherape/ln7.html, etherape/prefs.html, etherape/usage.html,
-	etherape/stylesheet-images/caution.gif,
-	etherape/stylesheet-images/home.gif,
-	etherape/stylesheet-images/important.gif,
-	etherape/stylesheet-images/next.gif,
-	etherape/stylesheet-images/note.gif,
-	etherape/stylesheet-images/prev.gif,
-	etherape/stylesheet-images/tip.gif,
-	etherape/stylesheet-images/toc-blank.gif,
-	etherape/stylesheet-images/toc-minus.gif,
-	etherape/stylesheet-images/toc-plus.gif,
-	etherape/stylesheet-images/up.gif,
-	etherape/stylesheet-images/warning.gif: etherape directory needed
-	for people building from CVS
+	* doc/C/Makefile.am: etherape directory needed for people building
+	from CVS
 
 2001-04-20 08:19  toledo
 
@@ -3061,11 +3098,6 @@
 	src/support.c, src/util.c: 
 	Diagram resizes with window
 
-2000-02-25 13:17  toledo
-
-	* src/.deps/: callbacks.P, capture.P, interface.P, main.P,
-	resolv.P, support.P, util.P: [no log message]
-
 2000-02-25 13:09  toledo
 
 	* intl/: ChangeLog, Makefile, Makefile.in, VERSION, bindtextdom.c,
@@ -3095,9 +3127,7 @@
 
 2000-02-24 16:53  toledo
 
-	* src/: Makefile, main.c, .deps/callbacks.P, .deps/capture.P,
-	.deps/interface.P, .deps/main.P, .deps/resolv.P, .deps/support.P,
-	.deps/util.P: [no log message]
+	* src/: Makefile, main.c: [no log message]
 
 2000-02-24 07:52  toledo
 
@@ -3121,8 +3151,8 @@
 
 2000-02-23 17:54  toledo
 
-	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h,
-	src/.deps/resolv.P, src/.deps/util.P: 
+	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h:
+	
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3133,7 +3163,7 @@
 	configure, configure.in, etherape.glade, intl/Makefile,
 	macros/Makefile, macros/Makefile.in, po/Makefile, po/Makefile.in,
 	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
-	src/capture.c, src/interface.c, src/.deps/capture.P: 
+	src/capture.c, src/interface.c: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3147,7 +3177,7 @@
 
 2000-02-23 12:19  toledo
 
-	* src/: Makefile, capture.c, interface.c, main.c, .deps/capture.P: 
+	* src/: Makefile, capture.c, interface.c, main.c: 
 	
 	First gnome_canvas version
 
@@ -3178,14 +3208,14 @@
 2000-02-21 23:22  toledo
 
 	* README, po/etherape.pot, src/callbacks.h, src/capture.c,
-	src/capture.h, src/main.c, src/.deps/main.P: 
+	src/capture.h, src/main.c: 
 	
 	Node sizes as average traffic in the last 10 seconds
 
 2000-02-21 14:16  toledo
 
 	* src/: Makefile, callbacks.c, callbacks.h, capture.c, capture.h,
-	interface.c, main.c, support.c, .deps/main.P: 
+	interface.c, main.c, support.c: 
 	Added gnome support. Correctly displays ether addresses.
 
 2000-02-21 14:13  toledo
@@ -3229,8 +3259,7 @@
 	configure, configure.in, etherape.glade, src/Makefile,
 	src/Makefile.am, src/Makefile.in, src/callbacks.c, src/callbacks.h,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: 
+	src/support.h: 
 	
 	Added gnome support in order to use the gnome_canvas.
 
@@ -3256,13 +3285,12 @@
 2000-02-18 19:56  toledo
 
 	* src/: Makefile, Makefile.am, Makefile.in, callbacks.h, capture.c,
-	interface.h, main.c, support.h, .deps/capture.P, .deps/main.P: [no
-	log message]
+	interface.h, main.c, support.h: [no log message]
 
 2000-02-18 12:23  toledo
 
-	* Makefile, README, config.h, config.status, src/Makefile,
-	src/.deps/capture.P: [no log message]
+	* Makefile, README, config.h, config.status, src/Makefile: [no log
+	message]
 
 2000-02-18 11:48  toledo
 
@@ -3276,9 +3304,7 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: [no
-	log message]
+	src/support.h: [no log message]
 
 2000-02-18 11:31  toledo
 
@@ -3288,7 +3314,5 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P:
-	Initial revision
+	src/support.h: Initial revision
 

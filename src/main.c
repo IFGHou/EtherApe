@@ -77,8 +77,7 @@ main (int argc, char *argv[])
 
   /* We initiate the application and read command line options */
   gnome_program_init ("EtherApe", VERSION, LIBGNOMEUI_MODULE, argc, argv,
-		      GNOME_PARAM_POPT_TABLE, optionsTable, 0, NULL);
-//r.g.                           GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
+		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
 
 
   /* We obtain application parameters 

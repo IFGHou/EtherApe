@@ -65,11 +65,6 @@ init_menus (void)
   /* It seems libglade is not acknowledging the "Use gnome help" option in the 
    * glade file and so it is not automatically adding the help items in the help
    * menu. Thus I must add it manually here */
-/* R.G.
-  widget = glade_xml_get_widget (xml, "help1_menu");
-  gnome_app_fill_menu ((GtkMenuShell *) widget, help_submenu,
-		       gtk_accel_group_get_default (), TRUE, 1);
-*/
   interface_list = get_interface_list (&err, err_str);
 
   interfaces = interface_list;
