@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-09 15:25+0100\n"
+"POT-Creation-Date: 2000-03-10 10:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,47 +247,47 @@ msgid "Null packet in check_packet"
 msgstr ""
 
 #. TODO Write proper assertion code here
-#: src/capture.c:603
+#: src/capture.c:605
 msgid "Reached default in get_node_id"
 msgstr ""
 
-#: src/capture.c:637
+#: src/capture.c:641
 msgid "Unsopported ape mode in get_link_id"
 msgstr ""
 
-#: src/capture.c:757
+#: src/capture.c:761
 #, c-format
 msgid "Error getting device: %s"
 msgstr ""
 
-#: src/capture.c:764
+#: src/capture.c:768
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr ""
 
-#: src/capture.c:775
+#: src/capture.c:779
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 
-#: src/capture.c:780
+#: src/capture.c:784
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:786
+#: src/capture.c:790
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:814
+#: src/capture.c:818
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:821
+#: src/capture.c:825
 msgid "Link type not yet supported"
 msgstr ""
 
-#: src/capture.c:840
+#: src/capture.c:844
 msgid "Ape mode not yet supported"
 msgstr ""

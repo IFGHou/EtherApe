@@ -55,6 +55,7 @@ gboolean need_reposition;	/* It is set when a canvas_node has been added
 extern double averaging_time;
 extern double link_timeout_time;
 extern double node_timeout_time;
+extern struct timeval now;
 extern guint32 refresh_period;
 extern guint node_id_length;
 extern gboolean fix_overlap;
@@ -205,7 +206,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
   canvas_node_t *canvas_node;
   GtkArg args[2];
   gdouble link_size;
-  struct timeval now, diff;
+  struct timeval diff;
 
   link = canvas_link->link;
 
@@ -217,7 +218,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link, GtkWidget * 
 
   if (link->n_packets == 0)
     {
-      gettimeofday (&now, NULL);
       diff = substract_times (now, link->last_time);
 
       if (((diff.tv_sec * 1000000 + diff.tv_sec) > link_timeout_time)
@@ -322,7 +322,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 {
   node_t *node;
   gdouble node_size;
-  struct timeval now, diff;
+  struct timeval diff;
   GtkArg args[1];
 
   node = canvas_node->node;
@@ -334,7 +334,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node, GtkWidget * 
 
   if (node->n_packets == 0)
     {
-      gettimeofday (&now, NULL);
       diff = substract_times (now, node->last_time);
 
       if (((diff.tv_sec * 1000000 + diff.tv_sec) > node_timeout_time)
@@ -532,6 +531,8 @@ update_diagram (GtkWidget * canvas)
   static GnomeAppBar *appbar = NULL;
   guint n_links = 0, n_links_new = 1;
   guint n_nodes_before = 0, n_nodes_after = 1;
+   
+  gettimeofday (&now, NULL);
 
 /* Now we update the status bar with the number of present nodes 
  * TODO Find a nice use for the status bar. I can thik of very little */

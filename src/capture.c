@@ -26,6 +26,7 @@
 #include "dns.h"
 
 
+/* Exported global variables */
 double averaging_time = 10000000;	/* Microseconds of time we consider to
 					 * calculate traffic averages */
 double link_timeout_time = 2000000;	/* After this time
@@ -34,6 +35,9 @@ double link_timeout_time = 2000000;	/* After this time
 double node_timeout_time = 10000000;	/* After this time has passed 
 					 * with no traffic in/out a 
 					 * node, it disappears */
+struct timeval now;
+
+/* Global variables */
 guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
 apemode_t mode = DEFAULT;	/* Mode of operation. Can be
@@ -93,7 +97,7 @@ ip_to_str (const guint8 * ad)
       i--;
     }
   return p;
-}
+}			/* ip_to_str */
 
 /* (toledo) This function I copied from capture.c of ethereal it was
  * without comments, but I believe it keeps three different
@@ -144,7 +148,7 @@ ether_to_str_punct (const guint8 * ad, char punct)
       i--;
     }
   return p;
-}
+}			/* ether_to_str_punct */
 
 
 
@@ -155,7 +159,7 @@ gchar *
 ether_to_str (const guint8 * ad)
 {
   return ether_to_str_punct (ad, ':');
-}
+}		/* ether_to_str */
 
 
 
@@ -440,7 +444,7 @@ substract_times (struct timeval a, struct timeval b)
  * either o link or a node is young enough to be relevant. Else
  * remove it from the list */
 GList *
-check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_to)
+check_packet (GList * packets, enum packet_belongs belongs_to)
 {
 
   struct timeval result;
@@ -519,18 +523,17 @@ check_packet (GList * packets, struct timeval now, enum packet_belongs belongs_t
 void
 update_packet_list (GList * packets, enum packet_belongs belongs_to)
 {
-  struct timeval now, difference;
+  struct timeval difference;
   gdouble usecs_from_oldest;	/* usecs since the first valid packet */
   GList *packet_l_e;		/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
 				 * list element */
   packet_t *packet;
 
-  gettimeofday (&now, NULL);
   packet_l_e = g_list_last (packets);
 
   /* Going from oldest to newer, delete all irrelevant packets */
-  while ((packet_l_e = check_packet (packet_l_e, now, belongs_to)));
+  while ((packet_l_e = check_packet (packet_l_e, belongs_to)));
 
   /* Get oldest relevant packet */
   packet_l_e = g_list_last (packets);
@@ -557,8 +560,10 @@ update_packet_list (GList * packets, enum packet_belongs belongs_to)
 	  ((link_t *) (packet->parent))->accumulated / usecs_from_oldest;
 
     }
-}
+}		/* update_packet_list */
 
+/* Returns a pointer to a set of octects that define a link for the
+ * current mode in this particular packet */
 guint8 *
 get_node_id (const guint8 * packet, enum create_node_type node_type)
 {
@@ -604,8 +609,10 @@ get_node_id (const guint8 * packet, enum create_node_type node_type)
     }
 
   return node_id;
-}
+}		/* get_node_id */
 
+/* Returns a pointer to a set of octects that define a link for the
+ * current mode in this particular packet */
 guint8 *
 get_link_id (const guint8 * packet)
 {
@@ -637,7 +644,69 @@ get_link_id (const guint8 * packet)
       g_error (_ ("Unsopported ape mode in get_link_id"));
     }
   return link_id;
-}
+}		/* get_link_id */
+
+
+/* We update node information for each new packet that arrives in the
+ * network. If the node the packet refers to is unknown, we
+ * create it. */
+void
+update_node (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *node_id)
+{
+  node_t *node;
+  packet_t *packet_info;
+  
+  node = g_tree_lookup (nodes, node_id);
+  if (node == NULL)
+    node = create_node (packet, node_id);
+
+  /* We add a packet to the list of packets to/from that host which we want
+   * to account for */
+  packet_info = g_malloc (sizeof (packet_t));
+  packet_info->size = phdr.len;
+  packet_info->timestamp = now;
+  packet_info->parent = node;
+  node->packets = g_list_prepend (node->packets, packet_info);
+
+  /* We update node info */ 
+  node->accumulated += phdr.len;
+  node->last_time = now;
+  /* Packet cleaning is now done in diagram.c
+   * I'm not too happy about it since I want to have a clear
+   * separation between data structures and presentation, but it
+   * is a fact that the proper moment for packet cleaning is right
+   * before presentation */
+  node->n_packets++;
+   
+}			/* update_node */
+
+void
+update_link (const guint8 *packet, struct pcap_pkthdr phdr, const guint8 *link_id)
+{
+  link_t *link;
+  packet_t *packet_info;
+   
+  link = g_tree_lookup (links, link_id);
+  if (!link)
+    link = create_link (packet, link_id);
+
+  /* We create a new packet structure and add it to the lists of
+   * packet that this link has */
+  packet_info = g_malloc (sizeof (link_t));
+  packet_info->size = phdr.len;
+  packet_info->timestamp = now;
+  packet_info->parent = link;
+
+  link->packets = g_list_prepend (link->packets, packet_info);
+   
+  /* We update link info */
+  link->accumulated += phdr.len;
+  link->last_time = now;
+  /* Packet cleaning is now done in diagram.c */
+  link->n_packets++;
+
+}			/* update_link */
+
 
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information
@@ -655,7 +724,9 @@ packet_read (pcap_t * pch,
   /* I have to love how RedHat messes with libraries.
    * I'm forced to use my own timestamp since the phdr is
    * different in RedHat6.1 >:-( */
-  struct timeval now;
+  /* TODO Check again the redhat version and see how/where is the
+   * timestamp defined there, so that I can use it and save lots of
+   * OS calls */
 
   pcap_packet = (guint8 *) pcap_next (pch, &phdr);
 
@@ -667,7 +738,10 @@ packet_read (pcap_t * pch,
   src_id = get_node_id (pcap_packet, SRC);
 
   node = g_tree_lookup (nodes, src_id);
-  if (node == NULL)
+  update_node (pcap_packet, phdr, src_id);
+  /* TODO clean up these #if 0 when made sure they are not needed */
+#if 0
+   if (node == NULL)
     node = create_node (pcap_packet, src_id);
 
   /* We add a packet to the list of packets to/from that host which we want
@@ -685,11 +759,14 @@ packet_read (pcap_t * pch,
    * is a fact that the proper moment for packet cleaning is right
    * before presentation */
   node->n_packets++;
+#endif   
 
   /* Now we do the same with the destination node */
 
   dst_id = get_node_id (pcap_packet, DST);
-  node = g_tree_lookup (nodes, dst_id);
+  update_node (pcap_packet, phdr, dst_id);
+#if 0
+   node = g_tree_lookup (nodes, dst_id);
   if (node == NULL)
     node = create_node (pcap_packet, dst_id);
 
@@ -704,6 +781,7 @@ packet_read (pcap_t * pch,
   node->last_time = now;
   /* Packet cleaning is now done in diagram.c */
   node->n_packets++;
+#endif   
 
 
   link_id = get_link_id (pcap_packet);

@@ -16,6 +16,7 @@ typedef enum
   }
 apemode_t;
 
+
 /* Since gdb does understand enums and not defines, and as 
  * way to make an easier transition to a non-pcap etherape,
  * I define my own enum for link type codes */
