@@ -270,3 +270,29 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
    * up a window accordingly */
   set_filter (filter, NULL);
 }				/* on_filter_entry_changed */
+
+void
+on_color_add_button_clicked (GtkButton * button, gpointer user_data)
+{
+  static GtkWidget *colorseldiag = NULL;
+  if (!colorseldiag)
+    colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
+  gtk_widget_show (colorseldiag);
+}				/* on_color_add_button_clicked */
+
+void
+on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
+{
+  static GtkWidget *colorseldiag = NULL;
+  GtkWidget *colorsel;
+  gdouble colors[4];
+
+  if (!colorseldiag)
+    colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
+
+  colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
+
+  gtk_color_selection_get_color (GTK_COLOR_SELECTION (colorsel), colors);
+
+  g_warning ("%f %f %f", colors[0], colors[1], colors[2]);
+}
