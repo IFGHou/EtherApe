@@ -469,6 +469,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   node->node_id = g_memdup (node_id, node_id_length);
   node->name = NULL;
   node->numeric_name = NULL;
+  /* TODO remove these two, shouldn't be used anymore */
   /* We initialize the ip_address, although it won't be
    * used in many cases */
   node->ip_address = 0;
