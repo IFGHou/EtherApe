@@ -79,4 +79,7 @@ configure:3669: checking for dcgettext
 configure:3724: checking for gmsgfmt
 configure:3760: checking for xgettext
 configure:3800: gcc -o conftest -g -O2 -Wall -Wunused   -I/usr/lib/glib/include -I/usr/X11R6/include  conftest.c  1>&5
-configure:4377: checking for pcap_open_live in -lpcap
+configure:4380: checking for extraneous pcap header directories
+configure:4400: checking for net/bpf.h
+configure:4434: checking for pcap.h
+configure:4471: checking for pcap_open_live in -lpcap

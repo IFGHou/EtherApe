@@ -48,7 +48,7 @@ s%@CXXFLAGS@%%g
 s%@FFLAGS@%%g
 s%@DEFS@%-DHAVE_CONFIG_H%g
 s%@LDFLAGS@%%g
-s%@LIBS@%-lpcap %g
+s%@LIBS@%%g
 s%@exec_prefix@%${prefix}%g
 s%@prefix@%/usr/local%g
 s%@program_transform_name@%s,x,x,%g
@@ -68,12 +68,12 @@ s%@INSTALL_PROGRAM@%${INSTALL}%g
 s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
 s%@PACKAGE@%etherape%g
-s%@VERSION@%0.0.5%g
+s%@VERSION@%0.0.6%g
 s%@ACLOCAL@%aclocal -I macros%g
 s%@AUTOCONF@%autoconf%g
 s%@AUTOMAKE@%automake%g
 s%@AUTOHEADER@%autoheader%g
-s%@MAKEINFO@%/home/toledo/etherape/missing makeinfo%g
+s%@MAKEINFO@%/usr/local/src/etherape/missing makeinfo%g
 s%@SET_MAKE@%%g
 s%@INSIDE_GNOME_COMMON_TRUE@%#%g
 s%@INSIDE_GNOME_COMMON_FALSE@%%g
@@ -129,6 +129,8 @@ s%@GT_YES@%#YES#%g
 s%@MKINSTALLDIRS@%./mkinstalldirs%g
 s%@l@%%g
 s%@PACKAGE_PIXMAPS_DIR@%/usr/share/pixmaps/etherape%g
+s%@PCAP_LIBS@%-lpcap%g
+s%@DATAFILE_DIR@%%g
 
 CEOF
 
@@ -266,9 +268,9 @@ for ac_file in .. $CONFIG_HEADERS; do if test "x$ac_file" != x..; then
 ${ac_dA}PACKAGE${ac_dB}PACKAGE${ac_dC}"etherape"${ac_dD}
 ${ac_uA}PACKAGE${ac_uB}PACKAGE${ac_uC}"etherape"${ac_uD}
 ${ac_eA}PACKAGE${ac_eB}PACKAGE${ac_eC}"etherape"${ac_eD}
-${ac_dA}VERSION${ac_dB}VERSION${ac_dC}"0.0.5"${ac_dD}
-${ac_uA}VERSION${ac_uB}VERSION${ac_uC}"0.0.5"${ac_uD}
-${ac_eA}VERSION${ac_eB}VERSION${ac_eC}"0.0.5"${ac_eD}
+${ac_dA}VERSION${ac_dB}VERSION${ac_dC}"0.0.6"${ac_dD}
+${ac_uA}VERSION${ac_uB}VERSION${ac_uC}"0.0.6"${ac_uD}
+${ac_eA}VERSION${ac_eB}VERSION${ac_eC}"0.0.6"${ac_eD}
 ${ac_dA}STDC_HEADERS${ac_dB}STDC_HEADERS${ac_dC}1${ac_dD}
 ${ac_uA}STDC_HEADERS${ac_uB}STDC_HEADERS${ac_uC}1${ac_uD}
 ${ac_eA}STDC_HEADERS${ac_eB}STDC_HEADERS${ac_eC}1${ac_eD}
@@ -425,6 +427,9 @@ CEOF
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}DATAFILE_DIR${ac_dB}DATAFILE_DIR${ac_dC}""${ac_dD}
+${ac_uA}DATAFILE_DIR${ac_uB}DATAFILE_DIR${ac_uC}""${ac_uD}
+${ac_eA}DATAFILE_DIR${ac_eB}DATAFILE_DIR${ac_eC}""${ac_eD}
 s%^[ 	]*#[ 	]*undef[ 	][ 	]*[a-zA-Z_][a-zA-Z_0-9]*%/* & */%
 CEOF
   sed -f conftest.frag conftest.in > conftest.out

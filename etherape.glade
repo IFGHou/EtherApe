@@ -406,8 +406,8 @@
   <modal>True</modal>
   <copyright>Copyright 2000 Juan Toledo</copyright>
   <authors>Juan Toledo &lt;toledo@users.sourceforge.net&gt;
-Code snippets from ethereal authors
-http://ethereal.zing.org
+Laurent Deniel &lt;deniel@worldnet.fr&gt;
+    -&gt; Routines for network object lookup
 </authors>
   <comments>A Graphical Network Browser.
 Web: http://etherape.sourceforge.net</comments>

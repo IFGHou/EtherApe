@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 
 #include "capture.h"
+#include "resolv.h"
 
 #include <ctype.h>
 
@@ -64,8 +65,8 @@ ether_to_str_punct (const guint8 * ad, char punct)
 
 
 /* Wrapper for the most common case of asking
- *  * for a string using a colon as the hex-digit separator.
- *  */
+ * for a string using a colon as the hex-digit separator.
+ */
 gchar *
 ether_to_str (const guint8 * ad)
 {
@@ -98,7 +99,7 @@ ether_compare (gconstpointer a, gconstpointer b)
     }
 
   return 0;
-}
+} /* ether_compare */
 
 
 void
@@ -116,7 +117,7 @@ create_node (const guint8 * ether_addr)
   node->ether_addr = g_memdup (ether_addr, 6);
   node->average = 0;
   node->n_packets = 0;
-  node->name = g_string_new (ether_to_str (ether_addr));
+  node->name = g_string_new (get_ether_name(ether_addr));
   node->packets = NULL;
 
   g_tree_insert (nodes, node->ether_addr, node);
@@ -126,7 +127,7 @@ create_node (const guint8 * ether_addr)
 	 g_tree_nnodes (nodes));
 
   return node;
-}
+} /* create_node */
 
 GList *
 check_packet (GList * packets, struct timeval now)
@@ -169,7 +170,7 @@ check_packet (GList * packets, struct timeval now)
     }
 
   return NULL;
-}
+} /* check_packet */
 
 void
 update_packet_list (GList * packets)
@@ -242,7 +243,7 @@ packet_read (pcap_t * pch,
   node->n_packets++;
 
 
-}
+} /* packet_read */
 
 
 void

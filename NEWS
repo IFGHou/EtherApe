@@ -1,7 +1,22 @@
+Overview of changes in Ethereal 0.0.6:
+* Copied proper libpcap autoconfigure detection function from ethereal
+* Added ethernet address resolution functions from ethereal
+
 Overview of changes in Ethereal 0.0.5:
 * Now uses gnome_canvas to display the diagram
+
+Overview of changes in Ethereal 0.0.4:
+* Node size is now an average of the last ten seconds traffic.
+* Proper distribution file.
 
 Overview of changes in Etherape 0.0.3:
 * Added gnome support.
 * Substituted hash table for binary tree to store nodes
 * Correctly display hardware addresses.
+
+Overview of changes in Etherape 0.0.2:
+* Displays circles representing nodes and text which will
+  identify it eventually.
+  
+Overview of Etherape 0.0.1:
+* Initial version. Don't even expect it to run.

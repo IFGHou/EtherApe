@@ -9,10 +9,12 @@ bin_PROGRAMS = etherape
 etherape_SOURCES = \
 	main.c \
 	capture.c capture.h \
+	resolv.c resolv.h \
+	util.c util.h \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
 	gnomesupport.h
 
-etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
 

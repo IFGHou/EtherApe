@@ -54,6 +54,9 @@
 /* #undef PACKAGE_DATA_DIR */
 /* #undef PACKAGE_SOURCE_DIR */
 
+#define DATAFILE_DIR ""
+#define HAVE_LIBPCAP 1
+
 /* Define if you have the __argz_count function.  */
 #define HAVE___ARGZ_COUNT 1
 
@@ -126,12 +129,9 @@
 /* Define if you have the i library (-li).  */
 /* #undef HAVE_LIBI */
 
-/* Define if you have the pcap library (-lpcap).  */
-#define HAVE_LIBPCAP 1
-
 /* Name of package */
 #define PACKAGE "etherape"
 
 /* Version number of package */
-#define VERSION "0.0.5"
+#define VERSION "0.0.6"
 

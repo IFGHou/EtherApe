@@ -713,7 +713,7 @@ fi
 
 PACKAGE=etherape
 
-VERSION=0.0.5
+VERSION=0.0.6
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -4372,16 +4372,110 @@ fi
 PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
 
 
-echo $ac_n "checking for pcap_open_live in -lpcap""... $ac_c" 1>&6
-echo "configure:4377: checking for pcap_open_live in -lpcap" >&5
+# Check for the pcap library.
+
+	# Evidently, some systems have pcap.h, etc. in */include/pcap
+	echo $ac_n "checking for extraneous pcap header directories""... $ac_c" 1>&6
+echo "configure:4380: checking for extraneous pcap header directories" >&5
+	found_pcap_dir=""
+	for pcap_dir in /usr/include/pcap /usr/local/include/pcap $prefix/include
+	do
+	  if test -d $pcap_dir ; then
+	    CFLAGS="$CFLAGS -I$pcap_dir"
+	    CPPFLAGS="$CPPFLAGS -I$pcap_dir"
+	    found_pcap_dir=" $found_pcap_dir -I$pcap_dir"
+	  fi
+	done
+
+	if test "$found_pcap_dir" != "" ; then
+	  echo "$ac_t""found --$found_pcap_dir added to CFLAGS" 1>&6
+	else
+	  echo "$ac_t""not found" 1>&6
+	fi
+
+	# Pcap header checks
+	ac_safe=`echo "net/bpf.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for net/bpf.h""... $ac_c" 1>&6
+echo "configure:4400: checking for net/bpf.h" >&5
+if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 4405 "configure"
+#include "confdefs.h"
+#include <net/bpf.h>
+EOF
+ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+{ (eval echo configure:4410: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+if test -z "$ac_err"; then
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=yes"
+else
+  echo "$ac_err" >&5
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  :
+else
+  echo "$ac_t""no" 1>&6
+{ echo "configure: error: Header file net/bpf.h not found; if you installed libpcap from source, did you also do \"make install-incl\"?" 1>&2; exit 1; }
+fi
+
+	ac_safe=`echo "pcap.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for pcap.h""... $ac_c" 1>&6
+echo "configure:4434: checking for pcap.h" >&5
+if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 4439 "configure"
+#include "confdefs.h"
+#include <pcap.h>
+EOF
+ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+{ (eval echo configure:4444: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+if test -z "$ac_err"; then
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=yes"
+else
+  echo "$ac_err" >&5
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  :
+else
+  echo "$ac_t""no" 1>&6
+{ echo "configure: error: Header file pcap.h not found." 1>&2; exit 1; }
+fi
+
+
+	#
+	# Check to see if we find "pcap_open_live" in "-lpcap".
+	#
+	echo $ac_n "checking for pcap_open_live in -lpcap""... $ac_c" 1>&6
+echo "configure:4471: checking for pcap_open_live in -lpcap" >&5
 ac_lib_var=`echo pcap'_'pcap_open_live | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lpcap  $LIBS"
+LIBS="-lpcap $SOCKET_LIBS $NSL_LIBS $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 4385 "configure"
+#line 4479 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -4392,7 +4486,7 @@ int main() {
 pcap_open_live()
 ; return 0; }
 EOF
-if { (eval echo configure:4396: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:4490: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -4407,18 +4501,34 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo pcap | sed -e 's/[^a-zA-Z0-9_]/_/g' \
-    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_lib 1
+  
+	    PCAP_LIBS=-lpcap
+	    cat >> confdefs.h <<\EOF
+#define HAVE_LIBPCAP 1
 EOF
 
-  LIBS="-lpcap $LIBS"
-
+	  
 else
   echo "$ac_t""no" 1>&6
+{ echo "configure: error: Library libpcap not found." 1>&2; exit 1; }
 fi
 
+	
+
+
+# Create DATAFILE_DIR #define for config.h
+DATAFILE_DIR=$sysconfdir
+DATAFILE_DIR=(
+    test "x$prefix" = xNONE && prefix=$ac_default_prefix
+    test "x$exec_prefix" = xNONE && exec_prefix=${prefix}
+    eval echo "$DATAFILE_DIR"
+    )
+cat >> confdefs.h <<EOF
+#define DATAFILE_DIR "$DATAFILE_DIR"
+EOF
+
+
+	    
 
 trap '' 1 2 15
 cat > confcache <<\EOF
@@ -4624,6 +4734,8 @@ s%@GT_YES@%$GT_YES%g
 s%@MKINSTALLDIRS@%$MKINSTALLDIRS%g
 s%@l@%$l%g
 s%@PACKAGE_PIXMAPS_DIR@%$PACKAGE_PIXMAPS_DIR%g
+s%@PCAP_LIBS@%$PCAP_LIBS%g
+s%@DATAFILE_DIR@%$DATAFILE_DIR%g
 
 CEOF
 EOF

@@ -292,8 +292,8 @@ create_about2 (void)
 {
   const gchar *authors[] = {
     "Juan Toledo <toledo@users.sourceforge.net>",
-    "Code snippets from ethereal authors",
-    "http://ethereal.zing.org",
+    "Laurent Deniel <deniel@worldnet.fr>",
+    "    -> Routines for network object lookup",
     NULL
   };
   GtkWidget *about2;

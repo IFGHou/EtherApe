@@ -61,6 +61,7 @@ CATALOGS =
 CATOBJEXT = .gmo
 CC = gcc
 DATADIRNAME = share
+DATAFILE_DIR = 
 GENCAT = 
 GMOFILES = 
 GMSGFMT = /usr/bin/msgfmt
@@ -85,7 +86,7 @@ INSTOBJEXT = .mo
 INTLDEPS = 
 INTLLIBS = 
 INTLOBJS = 
-MAKEINFO = /home/toledo/etherape/missing makeinfo
+MAKEINFO = /usr/local/src/etherape/missing makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 ORBIT_CFLAGS = -I/usr/lib/glib/include -I/usr/include
@@ -94,13 +95,14 @@ ORBIT_IDL = /usr/bin/orbit-idl
 ORBIT_LIBS = -L/usr/lib -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = etherape
 PACKAGE_PIXMAPS_DIR = /usr/share/pixmaps/etherape
+PCAP_LIBS = -lpcap
 POFILES = 
 POSUB = po
 PTHREAD_LIB = -lpthread
 RANLIB = ranlib
 USE_INCLUDED_LIBINTL = no
 USE_NLS = yes
-VERSION = 0.0.5
+VERSION = 0.0.6
 XPM_LIBS = 
 ZVT_LIBS = -rdynamic -lzvt -lutil -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 cflags_set = yes
@@ -113,8 +115,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
-config.h.in configure configure.in install-sh missing mkinstalldirs
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 \
+aclocal.m4 config.h.in configure configure.in install-sh missing \
+mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -130,7 +133,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in 
+$(ACLOCAL_M4):  configure.in  acinclude.m4
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)

@@ -61,6 +61,7 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
+DATAFILE_DIR = @DATAFILE_DIR@
 GENCAT = @GENCAT@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -94,6 +95,7 @@ ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_PIXMAPS_DIR = @PACKAGE_PIXMAPS_DIR@
+PCAP_LIBS = @PCAP_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -112,10 +114,10 @@ INCLUDES =  	-I$(top_srcdir)/intl 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = etherape
 
-etherape_SOURCES =  	main.c 	capture.c capture.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
+etherape_SOURCES =  	main.c 	capture.c capture.h 	resolv.c resolv.h 	util.c util.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
 
 
-etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -126,7 +128,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-etherape_OBJECTS =  main.o capture.o support.o interface.o callbacks.o
+etherape_OBJECTS =  main.o capture.o resolv.o util.o support.o \
+interface.o callbacks.o
 etherape_DEPENDENCIES = 
 etherape_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -141,7 +144,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/callbacks.P .deps/capture.P .deps/interface.P \
-.deps/main.P .deps/support.P
+.deps/main.P .deps/resolv.P .deps/support.P .deps/util.P
 SOURCES = $(etherape_SOURCES)
 OBJECTS = $(etherape_OBJECTS)
 

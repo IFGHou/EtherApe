@@ -37,14 +37,15 @@ ac_cv_header_libintl_h=${ac_cv_header_libintl_h=yes}
 ac_cv_header_limits_h=${ac_cv_header_limits_h=yes}
 ac_cv_header_locale_h=${ac_cv_header_locale_h=yes}
 ac_cv_header_malloc_h=${ac_cv_header_malloc_h=yes}
+ac_cv_header_net_bpf_h=${ac_cv_header_net_bpf_h=yes}
 ac_cv_header_nl_types_h=${ac_cv_header_nl_types_h=yes}
+ac_cv_header_pcap_h=${ac_cv_header_pcap_h=yes}
 ac_cv_header_stdc=${ac_cv_header_stdc=yes}
 ac_cv_header_string_h=${ac_cv_header_string_h=yes}
 ac_cv_header_sys_param_h=${ac_cv_header_sys_param_h=yes}
 ac_cv_header_unistd_h=${ac_cv_header_unistd_h=yes}
 ac_cv_lib_SM_SmcSaveYourselfDone=${ac_cv_lib_SM_SmcSaveYourselfDone=yes}
 ac_cv_lib_Xpm_XpmFreeXpmImage=${ac_cv_lib_Xpm_XpmFreeXpmImage=no}
-ac_cv_lib__=${ac_cv_lib__=no}
 ac_cv_lib_pcap_pcap_open_live=${ac_cv_lib_pcap_pcap_open_live=yes}
 ac_cv_lib_pthread_pthread_create=${ac_cv_lib_pthread_pthread_create=yes}
 ac_cv_path_GMSGFMT=${ac_cv_path_GMSGFMT=/usr/bin/msgfmt}

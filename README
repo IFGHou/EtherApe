@@ -1,7 +1,24 @@
-Run ./autogen.sh to be able to compile.
+General Information
+------- -----------
 
-You will need gnome, GTK1.2, pcap, autoconf and automake to be able to 
-compile this. And even then you might not see anything yet. :-)
+Etherape is a network traffic browser. It displays network activity
+graphically. It uses GNOME libraries as it's user interface, and 
+libpcap, a packet capture and filtering library.
 
-And whenever this becomes useful, you will want to run it as root.
-But do it at your own risk! :-)
+It should compile on a linux machine with the proper developping
+environment, and maybe even on other Unix operating systems.
+I have yet to receive a single failed compilation report on any
+machine, but that may probably be because I have not yet received
+any kind of compilation success report. :-) (Hint!)
+
+You will have to have superuser privileges in order to use this
+program, as is the case with any libpcap based application.
+
+
+Installation:
+-------------
+Please read the INSTALL file for installation instructions.  Brief summary:
+
+        # ./configure
+        # make
+        # make install

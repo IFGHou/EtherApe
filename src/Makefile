@@ -61,6 +61,7 @@ CATALOGS =
 CATOBJEXT = .gmo
 CC = gcc
 DATADIRNAME = share
+DATAFILE_DIR = 
 GENCAT = 
 GMOFILES = 
 GMSGFMT = /usr/bin/msgfmt
@@ -85,7 +86,7 @@ INSTOBJEXT = .mo
 INTLDEPS = 
 INTLLIBS = 
 INTLOBJS = 
-MAKEINFO = /home/toledo/etherape/missing makeinfo
+MAKEINFO = /usr/local/src/etherape/missing makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 ORBIT_CFLAGS = -I/usr/lib/glib/include -I/usr/include
@@ -94,13 +95,14 @@ ORBIT_IDL = /usr/bin/orbit-idl
 ORBIT_LIBS = -L/usr/lib -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = etherape
 PACKAGE_PIXMAPS_DIR = /usr/share/pixmaps/etherape
+PCAP_LIBS = -lpcap
 POFILES = 
 POSUB = po
 PTHREAD_LIB = -lpthread
 RANLIB = ranlib
 USE_INCLUDED_LIBINTL = no
 USE_NLS = yes
-VERSION = 0.0.5
+VERSION = 0.0.6
 XPM_LIBS = 
 ZVT_LIBS = -rdynamic -lzvt -lutil -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 cflags_set = yes
@@ -112,10 +114,10 @@ INCLUDES =  	-I$(top_srcdir)/intl 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = etherape
 
-etherape_SOURCES =  	main.c 	capture.c capture.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
+etherape_SOURCES =  	main.c 	capture.c capture.h 	resolv.c resolv.h 	util.c util.h 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	gnomesupport.h
 
 
-etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -125,8 +127,9 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I..
 CPPFLAGS =  -I/usr/lib/glib/include -I/usr/X11R6/include
 LDFLAGS = 
-LIBS = -lpcap 
-etherape_OBJECTS =  main.o capture.o support.o interface.o callbacks.o
+LIBS = 
+etherape_OBJECTS =  main.o capture.o resolv.o util.o support.o \
+interface.o callbacks.o
 etherape_DEPENDENCIES = 
 etherape_LDFLAGS = 
 CFLAGS = -g -O2 -Wall -Wunused 
@@ -141,7 +144,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/callbacks.P .deps/capture.P .deps/interface.P \
-.deps/main.P .deps/support.P
+.deps/main.P .deps/resolv.P .deps/support.P .deps/util.P
 SOURCES = $(etherape_SOURCES)
 OBJECTS = $(etherape_OBJECTS)
 
