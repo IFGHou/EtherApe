@@ -4,6 +4,8 @@
 
 SUBDIRS = intl po macros src
 
+gladedir   = $(datadir)/etherape/glade
+
 indent:
 	cd src && make indent
 	
@@ -26,6 +28,9 @@ man_MANS = etherape.8
 full-cvs : cvs
 	cd ../www && make
 
+glade_DATA = 				\
+	etherape.glade
+
 purge:
 	rm -f *~ *.bak
 	cd src && make purge
@@ -36,7 +41,6 @@ EXTRA_DIST = \
 	README.bugs		\
 	FAQ			\
 	OVERVIEW		\
-	etherape.glade		\
 	etherape.spec		\
 	etherape.spec.in	\
 	html/NEWS.html		\
@@ -51,7 +55,9 @@ EXTRA_DIST = \
 	debian/menu		\
 	debian/rules		\
 	src/maketcpudp.sh	\
+	$(glade_DATA)		\
 	$(man_MANS)
+
 
 full-dist :
 	test `whoami` = toledo

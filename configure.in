@@ -7,6 +7,22 @@ AM_CONFIG_HEADER(config.h)
 dnl Pick up the Gnome macros.
 AM_ACLOCAL_INCLUDE(macros)
 
+dnl ******************************
+dnl LibGlade checking
+dnl ******************************
+AC_MSG_CHECKING(for Glade libraries >= 0.11)
+if gnome-config --libs libglade > /dev/null 2>&1; then 
+    vers=`gnome-config --modversion libglade | awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
+    if test "$vers" -ge 11; then
+        AC_MSG_RESULT(found)
+    else
+        AC_MSG_ERROR(You need at least libglade 0.11 for this version of Gnumeric)
+    fi
+else
+    AC_MSG_ERROR(Did not find libGlade installed)
+fi
+
+
 GNOME_INIT
 AC_ISC_POSIX
 AC_PROG_CC

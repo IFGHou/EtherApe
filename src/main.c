@@ -174,30 +174,18 @@ main (int argc, char *argv[])
 				 * user id and make a safer suid exec. See the source of
 				 * mtr for reference */
 
-   /* initialize glade for gnome */
-   glade_gnome_init();
+   /* Glade */
 
-   /* TODO Do we really need to XML objects? */
-   /* load the main window (which is named app1) */
-   xml = glade_xml_new(ETHERAPE_GLADE_FILE, NULL);
-   /* in case we can't load the interface, bail */
+   glade_gnome_init();
+   xml = glade_xml_new(GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL);
    if(!xml) {
-      g_error(_("We could not load the interface!"));
+      g_error(_("We could not load the interface! (%s)"),
+	      GLADEDIR "/" ETHERAPE_GLADE_FILE);
       return 1;
    }
-
-   /* autoconnect any signals */
    glade_xml_signal_autoconnect(xml);
    
    
-#if 0   
-  /* We create main windows */
-  app1 = create_app1 ();
-  diag_pref = create_diag_pref ();
-#endif
-
-   /* setup our global app pointer to point to the main GnomeApp,
-    *         which is named 'app1' */
    app1 = glade_xml_get_widget(xml, "app1");
    diag_pref = glade_xml_get_widget(xml, "diag_pref");
 

@@ -153,7 +153,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
   GladeXML *xml_about;
-  xml_about = glade_xml_new (ETHERAPE_GLADE_FILE, "about2");
+  xml_about = glade_xml_new (GLADEDIR ETHERAPE_GLADE_FILE, "about2");
   about = glade_xml_get_widget(xml_about, "about2");
   gtk_widget_show (about);
   gtk_object_unref(GTK_OBJECT(xml_about));

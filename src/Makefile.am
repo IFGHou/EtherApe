@@ -2,8 +2,12 @@
 
 # $Id$
 
+
+gladedir   = $(datadir)/etherape/glade
+
 INCLUDES = \
 	-I$(top_srcdir)/intl \
+	-DGLADEDIR=\""$(gladedir)"\"           \
 	$(GNOME_INCLUDEDIR)
 
 sbin_PROGRAMS = etherape
