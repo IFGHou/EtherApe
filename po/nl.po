@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
-"POT-Creation-Date: 2001-08-06 17:22+0200\n"
+"POT-Creation-Date: 2001-08-10 12:20+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -166,115 +166,115 @@ msgstr "Verbindingstype is NULL"
 
 #. Linux cooked sockets (I believe this
 #. * is used for ISDN on linux)
-#: src/capture.c:182
+#: src/capture.c:183
 #, fuzzy
 msgid "Link type is Linux cooked sockets"
 msgstr "Verbindingstype is Token Ring"
 
-#: src/capture.c:191
+#: src/capture.c:193
 msgid "Link type not yet supported"
 msgstr "Linktype nog niet beschikbaar"
 
-#: src/capture.c:244
+#: src/capture.c:246
 msgid "Mode not available in this device"
 msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 
-#: src/capture.c:266
+#: src/capture.c:268
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:292 src/capture.c:318
+#: src/capture.c:294 src/capture.c:320
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
-#: src/capture.c:298 src/capture.c:324
+#: src/capture.c:300 src/capture.c:326
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:303 src/capture.c:329
+#: src/capture.c:305 src/capture.c:331
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
 
-#: src/capture.c:340
+#: src/capture.c:342
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status is geen PAUSE of STOP bij het starten van de capture"
 
-#: src/capture.c:350
+#: src/capture.c:352
 msgid "Starting live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:357
+#: src/capture.c:359
 msgid "Starting offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:373
+#: src/capture.c:375
 msgid "Status not PLAY at pause_capture"
 msgstr "Status is geen PLAY bij het pauzeren"
 
-#: src/capture.c:383
+#: src/capture.c:385
 msgid "Pausing live capture"
 msgstr "Live luisteren wordt gepauzeerd"
 
-#: src/capture.c:390
+#: src/capture.c:392
 msgid "Pausing offline capture"
 msgstr "Offline luisteren wordt gepauzeerd"
 
-#: src/capture.c:395
+#: src/capture.c:397
 msgid "Error while trying to pause capture"
 msgstr "Fout bij het pauzeren van het luisteren"
 
-#: src/capture.c:414
+#: src/capture.c:416
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status is geen PLAY of PAUZE bij het stoppen van de capture"
 
-#: src/capture.c:420
+#: src/capture.c:422
 msgid "Stopping live capture"
 msgstr "Live luisteren wordt gestopt"
 
-#: src/capture.c:426
+#: src/capture.c:428
 msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
-#: src/capture.c:432
+#: src/capture.c:434
 msgid "Error while removing capture source in stop_capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
-#: src/capture.c:468
+#: src/capture.c:470
 msgid "Capture device stopped or file closed"
 msgstr "Apparaat gestopt of bestand gesloten"
 
-#: src/capture.c:669
+#: src/capture.c:671
 msgid "Reached default in get_node_id"
 msgstr "Default bereikt in get_node_id"
 
-#: src/capture.c:721
+#: src/capture.c:723
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/capture.c:854
+#: src/capture.c:856
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 
-#: src/capture.c:892
+#: src/capture.c:894
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/capture.c:1037
+#: src/capture.c:1039
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
-#: src/capture.c:1242
+#: src/capture.c:1244
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Lijn verwijderd. Aantal lijnen %d"
 
-#: src/capture.c:1560
+#: src/capture.c:1562
 msgid "Null packet in check_packet"
 msgstr "(null)-pakket in check_packet"
 
@@ -424,31 +424,31 @@ msgstr "Hoofdprotocol van deze lijn: %s"
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 
-#: src/protocols.c:1018
+#: src/protocols.c:1020
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr "Kon %s niet openen. UDP en TCP typen zullen niet worden herkend"
 
-#: src/protocols.c:1024
+#: src/protocols.c:1026
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr "TCP en UDP wordt ingelezen vanuit %s"
 
-#: src/protocols.c:1069
+#: src/protocols.c:1071
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr "Ik begrijp deze regel niet (%s)."
 
-#: src/protocols.c:1093
+#: src/protocols.c:1095
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "DDP protocollen werken niet in %s"
 
 #. append_etype_prot
 #.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
+#. * Archivo de cadenas traducibles generado por Glade.
+#. * Añada este archivo a su POTFILES.in de su proyecto.
+#. * NO lo compile como parte de su aplicación.
 #.
 #: src/glade-strings:7
 msgid "EtherApe"
@@ -619,7 +619,7 @@ msgstr ""
 msgid "window1"
 msgstr "window1"
 
-#: src/glade-strings:52 src/glade-strings:148
+#: src/glade-strings:52 src/glade-strings:171
 msgid "name"
 msgstr "naam"
 
@@ -787,7 +787,8 @@ msgstr "Diagram"
 msgid "Color"
 msgstr "Kleur"
 
-#: src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
+#: src/glade-strings:92 src/glade-strings:108 src/glade-strings:161
+#: src/glade-strings:166
 msgid "Protocol"
 msgstr "Protocol"
 
@@ -830,184 +831,286 @@ msgid "Colors"
 msgstr "Kleuren"
 
 #: src/glade-strings:102
+#, fuzzy
+msgid "Mode"
+msgstr "_Modus"
+
+#: src/glade-strings:103
+#, fuzzy
+msgid "Token Ring"
+msgstr "Token _Ring"
+
+#: src/glade-strings:104
+#, fuzzy
+msgid "FDDI"
+msgstr "_FDDI"
+
+#: src/glade-strings:105
+#, fuzzy
+msgid "Ethernet"
+msgstr "_Ethernet"
+
+#: src/glade-strings:106
+#, fuzzy
+msgid "IP"
+msgstr "_IP"
+
+#: src/glade-strings:107
+#, fuzzy
+msgid "TCP"
+msgstr "_TCP"
+
+#: src/glade-strings:109
+#, fuzzy
+msgid "Solved"
+msgstr "Opslaan"
+
+#: src/glade-strings:110
+#, fuzzy
+msgid "Add a new protocol to the list of protocols to choose a name from"
+msgstr "Voeg een nieuwe kleur toe aan de kleurenlijst voor protocolweergave"
+
+#: src/glade-strings:111
+#, fuzzy
+msgid "Add protocol"
+msgstr "Protocollen bewerken"
+
+#: src/glade-strings:112
+#, fuzzy
+msgid "Remove selected protocol"
+msgstr "Hoogste niveau"
+
+#: src/glade-strings:113
+#, fuzzy
+msgid "Remove protocol"
+msgstr "Kleur verwijderen"
+
+#: src/glade-strings:114
+#, fuzzy
+msgid ""
+"Toggle whether the selected protocol name has to be solved in order to use it"
+msgstr "Schakel tekstweergave in het diagram aan/uit."
+
+#: src/glade-strings:115
+msgid "Toggle solved"
+msgstr ""
+
+#: src/glade-strings:116
+msgid "Move selected protocol up one item"
+msgstr ""
+
+#: src/glade-strings:117
+msgid "Move up"
+msgstr ""
+
+#: src/glade-strings:118
+msgid "Move selected protocol down one item"
+msgstr ""
+
+#: src/glade-strings:119
+msgid "Move down"
+msgstr ""
+
+#: src/glade-strings:120
+msgid "Don't try to resolve any name. Always present in numeric form."
+msgstr ""
+
+#: src/glade-strings:121
+msgid "Force numeric"
+msgstr ""
+
+#: src/glade-strings:122
+msgid "Make DNS queries to resolve IP addresses"
+msgstr ""
+
+#: src/glade-strings:123
+msgid "DNS resolution"
+msgstr ""
+
+#: src/glade-strings:124
+#, fuzzy
+msgid "Names"
+msgstr "Naam:"
+
+#: src/glade-strings:125
 msgid "Capture filter"
 msgstr "Weergavefilter"
 
-#: src/glade-strings:103
+#: src/glade-strings:126
 msgid "Packet information is averaged for this amount of time"
 msgstr "De informatie wordt uitgemiddeld over zo veel tijd"
 
-#: src/glade-strings:104
+#: src/glade-strings:127
 msgid "Averaging Time (ms)"
 msgstr "Uitmiddeltijd (ms)"
 
-#: src/glade-strings:105
+#: src/glade-strings:128
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr "Verwijder een lijn nadat deze zo lang niets heeft gedaan. 0 = nooit"
 
-#: src/glade-strings:106
+#: src/glade-strings:129
 msgid "Link Timeout (ms)"
 msgstr "Lijn timeout (ms)"
 
-#: src/glade-strings:107
+#: src/glade-strings:130
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
 "Verwijder dit knooppunt uit het geheugen nadat deze zo lang niets heeft "
 "gedaan. 0 = nooit"
 
-#: src/glade-strings:108
+#: src/glade-strings:131
 msgid "Node Timeout (ms)"
 msgstr "Knooppunt timeout (ms)"
 
-#: src/glade-strings:109
+#: src/glade-strings:132
 msgid "Capture"
 msgstr "Fijnafstelling"
 
-#: src/glade-strings:110
+#: src/glade-strings:133
 msgid "Select Font"
 msgstr "Selecteer Lettertype"
 
-#: src/glade-strings:111
+#: src/glade-strings:134
 msgid "EtherApe: Open Capture File"
 msgstr "Etherape: Open capture-bestand"
 
-#: src/glade-strings:112
+#: src/glade-strings:135
 msgid "EtherApe: Select capture file"
 msgstr "EtherApe: Selecteer capture bestand"
 
-#: src/glade-strings:113
+#: src/glade-strings:136
 msgid "EtherApe: Select Capture File"
 msgstr "EtherApe: Selecteer capture bestand"
 
-#: src/glade-strings:114
+#: src/glade-strings:137
 msgid "Select capture file"
 msgstr "Selecteer capture bestand"
 
-#: src/glade-strings:115
+#: src/glade-strings:138
 msgid "Optionally, set a capture filter"
 msgstr "Kies een capture filter (optioneel)"
 
-#: src/glade-strings:116
+#: src/glade-strings:139
 msgid "File:"
 msgstr "Bestand:"
 
-#: src/glade-strings:117
+#: src/glade-strings:140
 msgid "Filter:"
 msgstr "Filter:"
 
-#: src/glade-strings:118
+#: src/glade-strings:141
 msgid "Name:"
 msgstr "Naam:"
 
-#: src/glade-strings:119 src/glade-strings:121
+#: src/glade-strings:142 src/glade-strings:144
 msgid "This is a test node name"
 msgstr "Dit is een testnaam"
 
-#: src/glade-strings:120
+#: src/glade-strings:143
 msgid "Numeric Name:"
 msgstr "Adres:"
 
-#: src/glade-strings:122
+#: src/glade-strings:145
 msgid "Show traffic"
 msgstr "Laat verkeer zien"
 
-#: src/glade-strings:123
+#: src/glade-strings:146
 msgid "Show protocols"
 msgstr "Laat protocollen zien"
 
-#: src/glade-strings:124 src/glade-strings:151
+#: src/glade-strings:147 src/glade-strings:174
 msgid "Instantaneous"
 msgstr "Direct"
 
-#: src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
-#: src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
-#: src/glade-strings:152 src/glade-strings:154
+#: src/glade-strings:148 src/glade-strings:150 src/glade-strings:152
+#: src/glade-strings:154 src/glade-strings:156 src/glade-strings:158
+#: src/glade-strings:175 src/glade-strings:177
 msgid "test label"
 msgstr "test label"
 
-#: src/glade-strings:126 src/glade-strings:153
+#: src/glade-strings:149 src/glade-strings:176
 msgid "Accumulated"
 msgstr "Totaal"
 
-#: src/glade-strings:128
+#: src/glade-strings:151
 msgid "Inst. Inbound"
 msgstr "Direct in"
 
-#: src/glade-strings:130
+#: src/glade-strings:153
 msgid "Accu. Outbound"
 msgstr "Totaal uit"
 
-#: src/glade-strings:132
+#: src/glade-strings:155
 msgid "Accu. Inbound"
 msgstr "Totaal in"
 
-#: src/glade-strings:134
+#: src/glade-strings:157
 msgid "Inst. Outbound"
 msgstr "Direct uit"
 
-#: src/glade-strings:136
+#: src/glade-strings:159
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Protocollen"
 
-#: src/glade-strings:137
+#: src/glade-strings:160
 msgid "Columns"
 msgstr "Kolommen"
 
-#: src/glade-strings:139 src/glade-strings:144
+#: src/glade-strings:162 src/glade-strings:167
 msgid "Inst Traffic"
 msgstr "Direct verkeer"
 
-#: src/glade-strings:140 src/glade-strings:145
+#: src/glade-strings:163 src/glade-strings:168
 msgid "Accum Traffic"
 msgstr "Totaal verkeer"
 
-#: src/glade-strings:141 src/glade-strings:146
+#: src/glade-strings:164 src/glade-strings:169
 msgid "Last Heard"
 msgstr "Laatst gehoord"
 
-#: src/glade-strings:142 src/glade-strings:147
+#: src/glade-strings:165 src/glade-strings:170
 msgid "Packets"
 msgstr "Pakketten"
 
-#: src/glade-strings:149
+#: src/glade-strings:172
 msgid "Last Heard: "
 msgstr "Laatst gehoord: "
 
-#: src/glade-strings:150
+#: src/glade-strings:173
 msgid "label73"
 msgstr "label73"
 
-#: src/glade-strings:155
+#: src/glade-strings:178
 msgid "Nodes"
 msgstr "_Knooppunten"
 
-#: src/glade-strings:156
+#: src/glade-strings:179
 msgid "Select color"
 msgstr "Selecteer Kleur"
 
-#: src/glade-strings:157
+#: src/glade-strings:180
 msgid "ok_button2"
 msgstr "ok_button2"
 
-#: src/glade-strings:158
+#: src/glade-strings:181
 msgid "cancel_button2"
 msgstr "cancel_button2"
 
-#: src/glade-strings:159
+#: src/glade-strings:182
 msgid "help_button1"
 msgstr "help_button1"
 
-#: src/glade-strings:160
+#: src/glade-strings:183
 #, fuzzy
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: Protocollen"
 
-#: src/glade-strings:161
+#: src/glade-strings:184
 msgid "Type protocol name..."
 msgstr ""
 
-#: src/glade-strings:162
+#: src/glade-strings:185
 msgid ""
 "Type the name of the protocol that will be assigned to the selected color"
 msgstr ""

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
-"POT-Creation-Date: 2001-08-06 17:22+0200\n"
-"PO-Revision-Date: 2001-08-06 17:23+02:00\n"
+"POT-Creation-Date: 2001-08-10 12:20+0200\n"
+"PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -206,27 +206,27 @@ msgstr "Tipo de enlace es NULL"
 # src/capture.c:164
 #. Linux cooked sockets (I believe this
 #. * is used for ISDN on linux)
-#: src/capture.c:182
+#: src/capture.c:183
 msgid "Link type is Linux cooked sockets"
 msgstr "Tipo de enlace es \"Linux cooked sockets\""
 
 # src/capture.c:181
-#: src/capture.c:191
+#: src/capture.c:193
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:234
-#: src/capture.c:244
+#: src/capture.c:246
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
 # src/capture.c:256
-#: src/capture.c:266
+#: src/capture.c:268
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
 # src/capture.c:282 src/capture.c:308
-#: src/capture.c:292 src/capture.c:318
+#: src/capture.c:294 src/capture.c:320
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -234,113 +234,113 @@ msgstr ""
 "(%s)."
 
 # src/capture.c:288 src/capture.c:314
-#: src/capture.c:298 src/capture.c:324
+#: src/capture.c:300 src/capture.c:326
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
 # src/capture.c:293 src/capture.c:319
-#: src/capture.c:303 src/capture.c:329
+#: src/capture.c:305 src/capture.c:331
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
 # src/capture.c:330
-#: src/capture.c:340
+#: src/capture.c:342
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
 # src/capture.c:340
-#: src/capture.c:350
+#: src/capture.c:352
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:347
-#: src/capture.c:357
+#: src/capture.c:359
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:363
-#: src/capture.c:373
+#: src/capture.c:375
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
 # src/capture.c:373
-#: src/capture.c:383
+#: src/capture.c:385
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
 # src/capture.c:380
-#: src/capture.c:390
+#: src/capture.c:392
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:385
-#: src/capture.c:395
+#: src/capture.c:397
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:404
-#: src/capture.c:414
+#: src/capture.c:416
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
 # src/capture.c:410
-#: src/capture.c:420
+#: src/capture.c:422
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:416
-#: src/capture.c:426
+#: src/capture.c:428
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:422
-#: src/capture.c:432
+#: src/capture.c:434
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
 
 # src/capture.c:458
-#: src/capture.c:468
+#: src/capture.c:470
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
 # src/capture.c:659
-#: src/capture.c:669
+#: src/capture.c:671
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:711
-#: src/capture.c:721
+#: src/capture.c:723
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
 # src/capture.c:844
-#: src/capture.c:854
+#: src/capture.c:856
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:882
-#: src/capture.c:892
+#: src/capture.c:894
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 
 # src/capture.c:1027
-#: src/capture.c:1037
+#: src/capture.c:1039
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:1232
-#: src/capture.c:1242
+#: src/capture.c:1244
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace. Número de enlaces: %d"
 
 # src/capture.c:1550
-#: src/capture.c:1560
+#: src/capture.c:1562
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
@@ -521,26 +521,26 @@ msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
 # src/protocols.c:995
-#: src/protocols.c:1018
+#: src/protocols.c:1020
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr ""
 "No se ha podido abrir %s. Los servicios TCP o UDP no podrán ser reconocidos"
 
 # src/protocols.c:1001
-#: src/protocols.c:1024
+#: src/protocols.c:1026
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr "Leyendo servicios TCP y UDP de %s"
 
 # src/protocols.c:1046
-#: src/protocols.c:1069
+#: src/protocols.c:1071
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr "Imposible analizar la línea %s"
 
 # src/protocols.c:1070
-#: src/protocols.c:1093
+#: src/protocols.c:1095
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
@@ -548,9 +548,9 @@ msgstr "Protocolos DDP no soportados en %s"
 # src/glade-strings:7
 #. append_etype_prot
 #.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
+#. * Archivo de cadenas traducibles generado por Glade.
+#. * Añada este archivo a su POTFILES.in de su proyecto.
+#. * NO lo compile como parte de su aplicación.
 #.
 #: src/glade-strings:7
 msgid "EtherApe"
@@ -761,7 +761,7 @@ msgid "window1"
 msgstr "window1"
 
 # src/glade-strings:52 src/glade-strings:148
-#: src/glade-strings:52 src/glade-strings:148
+#: src/glade-strings:52 src/glade-strings:171
 msgid "name"
 msgstr "nombre"
 
@@ -972,7 +972,8 @@ msgid "Color"
 msgstr "Color"
 
 # src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
-#: src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
+#: src/glade-strings:92 src/glade-strings:108 src/glade-strings:161
+#: src/glade-strings:166
 msgid "Protocol"
 msgstr "Protocolo"
 
@@ -1026,35 +1027,137 @@ msgstr "Reutilizar colores asignados"
 msgid "Colors"
 msgstr "Colores"
 
-# src/glade-strings:102
+# src/glade-strings:9
 #: src/glade-strings:102
+msgid "Mode"
+msgstr "Modo"
+
+# src/glade-strings:11
+#: src/glade-strings:103
+msgid "Token Ring"
+msgstr "Token Ring"
+
+# src/glade-strings:13
+#: src/glade-strings:104
+msgid "FDDI"
+msgstr "FDDI"
+
+# src/glade-strings:15
+#: src/glade-strings:105
+msgid "Ethernet"
+msgstr "Ethernet"
+
+# src/glade-strings:17
+#: src/glade-strings:106
+msgid "IP"
+msgstr "IP"
+
+# src/glade-strings:19
+#: src/glade-strings:107
+msgid "TCP"
+msgstr "TCP"
+
+# src/glade-strings:58
+#: src/glade-strings:109
+msgid "Solved"
+msgstr "Resuelto"
+
+# src/glade-strings:93
+#: src/glade-strings:110
+msgid "Add a new protocol to the list of protocols to choose a name from"
+msgstr "Añadir un nuevo protocolo a la lista de protocolos de entre los que se elige el nombre"
+
+# src/glade-strings:96
+#: src/glade-strings:111
+msgid "Add protocol"
+msgstr "Añadir protocolo"
+
+# src/glade-strings:63
+#: src/glade-strings:112
+msgid "Remove selected protocol"
+msgstr "Quitar protocolo seleccionado"
+
+# src/glade-strings:95
+#: src/glade-strings:113
+msgid "Remove protocol"
+msgstr "Quitar protocolo"
+
+# src/glade-strings:87
+#: src/glade-strings:114
+msgid ""
+"Toggle whether the selected protocol name has to be solved in order to use it"
+msgstr "Cambia si el protocolo seleccionado ha de estar resuelto para ser usado"
+
+#: src/glade-strings:115
+msgid "Toggle solved"
+msgstr "Cambiar resuelto"
+
+#: src/glade-strings:116
+msgid "Move selected protocol up one item"
+msgstr "Mover protocolo seleccionado un lugar hacia arriba"
+
+#: src/glade-strings:117
+msgid "Move up"
+msgstr "Mover arriba"
+
+#: src/glade-strings:118
+msgid "Move selected protocol down one item"
+msgstr "Mover protocolo seleccionado un lugar hacia abajo"
+
+#: src/glade-strings:119
+msgid "Move down"
+msgstr "Mover abajo"
+
+#: src/glade-strings:120
+msgid "Don't try to resolve any name. Always present in numeric form."
+msgstr "No intentar resolver ningún nombre. Presentar siempre en forma numérica"
+
+#: src/glade-strings:121
+msgid "Force numeric"
+msgstr "Forzar numérico"
+
+#: src/glade-strings:122
+msgid "Make DNS queries to resolve IP addresses"
+msgstr "Hacer consultas DNS para resolver direcciones IP"
+
+#: src/glade-strings:123
+msgid "DNS resolution"
+msgstr "Resolución DNS"
+
+# src/glade-strings:118
+#: src/glade-strings:124
+msgid "Names"
+msgstr "Nombres"
+
+# src/glade-strings:102
+#: src/glade-strings:125
 msgid "Capture filter"
 msgstr "Filtro de captura"
 
 # src/glade-strings:103
-#: src/glade-strings:103
+#: src/glade-strings:126
 msgid "Packet information is averaged for this amount of time"
 msgstr "Hacer media de la información durante este tiempo"
 
 # src/glade-strings:104
-#: src/glade-strings:104
+#: src/glade-strings:127
 msgid "Averaging Time (ms)"
 msgstr "Tiempo de medida (ms)"
 
 # src/glade-strings:105
-#: src/glade-strings:105
+#: src/glade-strings:128
 msgid "Delete this link after this much time. 0 means never timeout."
 msgstr ""
 "Borrar este enlace después de pasado este tiempo. 0 significa no expirar "
 "nunca"
 
 # src/glade-strings:106
-#: src/glade-strings:106
+#: src/glade-strings:129
 msgid "Link Timeout (ms)"
 msgstr "Expiración de enlaces (ms)"
 
 # src/glade-strings:107
-#: src/glade-strings:107
+#: src/glade-strings:130
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
@@ -1062,196 +1165,196 @@ msgstr ""
 "expirar nunca"
 
 # src/glade-strings:108
-#: src/glade-strings:108
+#: src/glade-strings:131
 msgid "Node Timeout (ms)"
 msgstr "Expiración de nodo de captura (ms)"
 
 # src/glade-strings:109
-#: src/glade-strings:109
+#: src/glade-strings:132
 msgid "Capture"
 msgstr "Captura"
 
 # src/glade-strings:110
-#: src/glade-strings:110
+#: src/glade-strings:133
 msgid "Select Font"
 msgstr "Seleccione tipo de fuente"
 
 # src/glade-strings:111
-#: src/glade-strings:111
+#: src/glade-strings:134
 msgid "EtherApe: Open Capture File"
 msgstr "EtherApe: Abrir archivo de captura"
 
 # src/glade-strings:112
-#: src/glade-strings:112
+#: src/glade-strings:135
 msgid "EtherApe: Select capture file"
 msgstr "EtherApe: Seleccione archivo de captura"
 
 # src/glade-strings:113
-#: src/glade-strings:113
+#: src/glade-strings:136
 msgid "EtherApe: Select Capture File"
 msgstr "EtherApe: Seleccione archivo de captura"
 
 # src/glade-strings:114
-#: src/glade-strings:114
+#: src/glade-strings:137
 msgid "Select capture file"
 msgstr "Seleccione archivo de captura"
 
 # src/glade-strings:115
-#: src/glade-strings:115
+#: src/glade-strings:138
 msgid "Optionally, set a capture filter"
 msgstr "Opcionalmente, defina un filtro de captura"
 
 # src/glade-strings:116
-#: src/glade-strings:116
+#: src/glade-strings:139
 msgid "File:"
 msgstr "Archivo:"
 
 # src/glade-strings:117
-#: src/glade-strings:117
+#: src/glade-strings:140
 msgid "Filter:"
 msgstr "Filtro:"
 
 # src/glade-strings:118
-#: src/glade-strings:118
+#: src/glade-strings:141
 msgid "Name:"
 msgstr "Nombre:"
 
 # src/glade-strings:119 src/glade-strings:121
-#: src/glade-strings:119 src/glade-strings:121
+#: src/glade-strings:142 src/glade-strings:144
 msgid "This is a test node name"
 msgstr "Este es un nombre de nodo de prueba"
 
 # src/glade-strings:120
-#: src/glade-strings:120
+#: src/glade-strings:143
 msgid "Numeric Name:"
 msgstr "Nombre numérico"
 
 # src/glade-strings:122
-#: src/glade-strings:122
+#: src/glade-strings:145
 msgid "Show traffic"
 msgstr "Mostrar tráfico"
 
 # src/glade-strings:123
-#: src/glade-strings:123
+#: src/glade-strings:146
 msgid "Show protocols"
 msgstr "Mostrar protocolos"
 
 # src/glade-strings:124 src/glade-strings:151
-#: src/glade-strings:124 src/glade-strings:151
+#: src/glade-strings:147 src/glade-strings:174
 msgid "Instantaneous"
 msgstr "Instantáneo"
 
 # src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
 # src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
 # src/glade-strings:152 src/glade-strings:154
-#: src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
-#: src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
-#: src/glade-strings:152 src/glade-strings:154
+#: src/glade-strings:148 src/glade-strings:150 src/glade-strings:152
+#: src/glade-strings:154 src/glade-strings:156 src/glade-strings:158
+#: src/glade-strings:175 src/glade-strings:177
 msgid "test label"
 msgstr "etiqueta de prueba"
 
 # src/glade-strings:126 src/glade-strings:153
-#: src/glade-strings:126 src/glade-strings:153
+#: src/glade-strings:149 src/glade-strings:176
 msgid "Accumulated"
 msgstr "Acumulado"
 
 # src/glade-strings:128
-#: src/glade-strings:128
+#: src/glade-strings:151
 msgid "Inst. Inbound"
 msgstr "Entrada Inst."
 
 # src/glade-strings:130
-#: src/glade-strings:130
+#: src/glade-strings:153
 msgid "Accu. Outbound"
 msgstr "Salida Acum."
 
 # src/glade-strings:132
-#: src/glade-strings:132
+#: src/glade-strings:155
 msgid "Accu. Inbound"
 msgstr "Entrada acum."
 
 # src/glade-strings:134
-#: src/glade-strings:134
+#: src/glade-strings:157
 msgid "Inst. Outbound"
 msgstr "Salida Inst"
 
 # src/glade-strings:136
-#: src/glade-strings:136
+#: src/glade-strings:159
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Protocolos"
 
 # src/glade-strings:137
-#: src/glade-strings:137
+#: src/glade-strings:160
 msgid "Columns"
 msgstr "Columnas"
 
 # src/glade-strings:139 src/glade-strings:144
-#: src/glade-strings:139 src/glade-strings:144
+#: src/glade-strings:162 src/glade-strings:167
 msgid "Inst Traffic"
 msgstr "Tráfico Instant."
 
 # src/glade-strings:140 src/glade-strings:145
-#: src/glade-strings:140 src/glade-strings:145
+#: src/glade-strings:163 src/glade-strings:168
 msgid "Accum Traffic"
 msgstr "Tráfico Acumul."
 
 # src/glade-strings:141 src/glade-strings:146
-#: src/glade-strings:141 src/glade-strings:146
+#: src/glade-strings:164 src/glade-strings:169
 msgid "Last Heard"
 msgstr "Última vez"
 
 # src/glade-strings:142 src/glade-strings:147
-#: src/glade-strings:142 src/glade-strings:147
+#: src/glade-strings:165 src/glade-strings:170
 msgid "Packets"
 msgstr "Paquetes"
 
 # src/glade-strings:149
-#: src/glade-strings:149
+#: src/glade-strings:172
 msgid "Last Heard: "
 msgstr "Última vez:"
 
 # src/glade-strings:150
-#: src/glade-strings:150
+#: src/glade-strings:173
 msgid "label73"
 msgstr "label73"
 
 # src/glade-strings:155
-#: src/glade-strings:155
+#: src/glade-strings:178
 msgid "Nodes"
 msgstr "Nodos"
 
 # src/glade-strings:156
-#: src/glade-strings:156
+#: src/glade-strings:179
 msgid "Select color"
 msgstr "Seleccione un color"
 
 # src/glade-strings:157
-#: src/glade-strings:157
+#: src/glade-strings:180
 msgid "ok_button2"
 msgstr "ok_button2"
 
 # src/glade-strings:158
-#: src/glade-strings:158
+#: src/glade-strings:181
 msgid "cancel_button2"
 msgstr "cancel_button2"
 
 # src/glade-strings:159
-#: src/glade-strings:159
+#: src/glade-strings:182
 msgid "help_button1"
 msgstr "help_button1"
 
 # src/glade-strings:160
-#: src/glade-strings:160
+#: src/glade-strings:183
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: asignar protocolos"
 
 # src/glade-strings:161
-#: src/glade-strings:161
+#: src/glade-strings:184
 msgid "Type protocol name..."
 msgstr "Escriba el nombre del protocolo..."
 
 # src/glade-strings:162
-#: src/glade-strings:162
+#: src/glade-strings:185
 msgid ""
 "Type the name of the protocol that will be assigned to the selected color"
 msgstr ""
