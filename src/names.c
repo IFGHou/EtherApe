@@ -157,11 +157,10 @@ get_tcp_name (void)
 
   numeric_name = g_string_new (ip_to_str (id_buffer));
   numeric_name = g_string_append_c (numeric_name, ':');
-  str = g_strdup_printf ("%d", *(guint16 *) (id_buffer + 4));
-  numeric_name 
-    = g_string_append (numeric_name, str);
+  str =  g_strdup_printf ("%d", *(guint16 *) (id_buffer + 4));
+  numeric_name = g_string_append (numeric_name, str);
   g_free (str);
-
+   
   resolved_name = g_string_new (dns_lookup (pntohl (id_buffer), TRUE));
   resolved_name = g_string_append_c (resolved_name, ':');
   resolved_name = g_string_append (resolved_name,

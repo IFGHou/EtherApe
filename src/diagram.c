@@ -516,11 +516,16 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
       gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
       gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
+      gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
+      gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
+      gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+
       g_tree_remove (canvas_nodes, node_id);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _("Removing canvas_node. Number of node %d"),
 	     g_tree_nnodes (canvas_nodes));
       g_free (node_id);
+      g_free (canvas_node);
       need_reposition = 1;
       return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
@@ -559,6 +564,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       gnome_canvas_item_request_update (canvas_node->text_item);
     }
 
+  /* Memprof is telling us that we have to free the string */
+  g_free (args[0].d.string_data);
   return FALSE;			/* False means keep on calling the function */
 
 }				/* update_canvas_nodes */
@@ -766,11 +773,14 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   if (!link)
     {
       gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+      gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
+
       g_tree_remove (canvas_links, link_id);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _("Removing canvas link. Number of links %d"),
 	     g_tree_nnodes (canvas_links));
       g_free (link_id);
+      g_free (canvas_link);
       return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
 				 * the traversion (Does that word exist? :-) */
