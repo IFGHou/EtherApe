@@ -1,5 +1,0 @@
-Version 0.0.3
--------------
-* Added gnome support.
-* Substituted hash table for binary tree to store nodes
-* Correctly display hardware addresses.

@@ -20,6 +20,7 @@ full-dist :
 	cvs tag `echo rel-${VERSION} | tr . - `
 	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 	ncftpput download.sourceforge.net /incoming/ ${PACKAGE}-${VERSION}.tar.gz
+	scp ${PACKAGE}-${VERSION}.tar.gz etherape:ftp
 	echo ${VERSION} > old.version
 
 
