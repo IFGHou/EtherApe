@@ -2,7 +2,7 @@
 
 # $Id$
 
-SUBDIRS = intl po macros src doc
+SUBDIRS = intl po macros src doc glade
 
 
 indent:
@@ -31,9 +31,7 @@ confdir = $(sysconfdir)/etherape
 conf_DATA =					\
 	services
 
-gladedir   = $(datadir)/etherape/glade
-glade_DATA = 				\
-	etherape.glade
+	
 	
 Developmentdir = $(datadir)/gnome/apps/Applications
 Development_DATA =			\
@@ -69,7 +67,6 @@ EXTRA_DIST = \
 	debian/rules		\
 	src/glade-strings	\
 	$(conf_DATA)		\
-	$(glade_DATA)		\
 	$(Development_DATA)	\
 	$(pixmaps_DATA)		\
 	$(man_MANS)
@@ -96,16 +93,6 @@ full-dist :
 #	cd ../www && make
 #	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-	  for pixmap in $(srcdir)/pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-	    fi \
-	  done \
-	fi
 
 dist-hook:
 	if test -d pixmaps; then \
