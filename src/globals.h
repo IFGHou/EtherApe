@@ -243,6 +243,8 @@ GTree *nodes;			/* Has all the nodes heard on the network */
 GTree *links;			/* Has all links heard on the net */
 GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
 					 * all protocols heards at that level */
+gdouble n_packets;		/* Number of total packets received */
+gdouble n_mem_packets;		/* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
 guint node_id_length;		/* Length of the node_id key. Depends
