@@ -402,36 +402,6 @@ get_prot_color (gchar * name)
     return colors[i];
 
   return "tan";
-#if 0
-  /* TODO This is all hardwired now. This should read preferences
-     * and whatnot */
-
-  if (!strcmp (name, "IP"))
-    return "red";
-  if (!strcmp (name, "ARP"))
-    return "blue";
-  if (!strcmp (name, "ATALK"))
-    return "yellow";
-  if (!strcmp (name, "IPX"))
-    return "white";
-  if (!strcmp (name, "VINES"))
-    return "orange";
-  if (!strcmp (name, "X25L3"))
-    return "green";
-  if (!strcmp (name, "IPv6"))
-    return "white";
-  if (!strcmp (name, "VLAN"))
-    return "cyan";
-  if (!strcmp (name, "SNMP"))
-    return "orange";
-  if (!strcmp (name, "802.3"))
-    return "brown";
-  if (!strcmp (name, "802.2"))
-    return "purple";
-
-  /* UNKNOWN */
-  return "tan";
-#endif
 }				/* get_prot_color */
 
 
@@ -646,9 +616,7 @@ check_ordered_node (gdouble * traffic, canvas_node_t * node, guint * count)
 static gint
 traffic_compare (gconstpointer a, gconstpointer b)
 {
-#if 1
   node_t *node_a, *node_b;
-#endif
 
   g_assert (a != NULL);
   g_assert (b != NULL);
@@ -666,14 +634,6 @@ traffic_compare (gconstpointer a, gconstpointer b)
 
   return (node_id_compare (node_a->node_id, node_b->node_id));
 
-#if 0
-  if (*(gdouble *) a < *(gdouble *) b)
-    return 1;
-  if (*(gdouble *) a > *(gdouble *) b)
-    return -1;
-#endif
-
-  return 0;
 }				/* traffic_compare */
 
 
@@ -702,10 +662,6 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 				  &xmin, &ymin, &xmax, &ymax);
   if (!n_nodes)
     {
-
-#if 0
-      n_nodes = node_i = g_tree_nnodes (canvas_nodes);
-#endif
       n_nodes = node_i = displayed_nodes;
       g_my_debug ("Displayed nodes = %d", displayed_nodes);
     }
@@ -745,10 +701,6 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 	    }
 	  x = x_rad_max * cos (angle);
 	  y = y_rad_max * sin (angle);
-#if 0
-	  g_message ("angle = %f", angle);
-#endif
-
 	}
 
     }
