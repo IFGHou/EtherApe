@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
-"POT-Creation-Date: 2001-08-10 12:20+0200\n"
+"POT-Creation-Date: 2001-08-12 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -457,30 +457,30 @@ msgstr ""
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:687
+#: src/diagram.c:695
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:712
+#: src/diagram.c:720
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
 # src/capture.c:438 src/capture.c:443
-#: src/diagram.c:1046
+#: src/diagram.c:1054
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
-#: src/diagram.c:1112
+#: src/diagram.c:1120
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1258
+#: src/diagram.c:1266
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1261
+#: src/diagram.c:1269
 msgid "Link main protocol unknown"
 msgstr ""
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
-"POT-Creation-Date: 2001-08-10 12:20+0200\n"
+"POT-Creation-Date: 2001-08-12 16:37+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -489,34 +489,34 @@ msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:656
-#: src/diagram.c:687
+#: src/diagram.c:695
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
 # src/diagram.c:681
-#: src/diagram.c:712
+#: src/diagram.c:720
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:1015
-#: src/diagram.c:1046
+#: src/diagram.c:1054
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:1081
-#: src/diagram.c:1112
+#: src/diagram.c:1120
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
 # src/diagram.c:1227
-#: src/diagram.c:1258
+#: src/diagram.c:1266
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1261
+#: src/diagram.c:1269
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -1065,7 +1065,9 @@ msgstr "Resuelto"
 # src/glade-strings:93
 #: src/glade-strings:110
 msgid "Add a new protocol to the list of protocols to choose a name from"
-msgstr "Añadir un nuevo protocolo a la lista de protocolos de entre los que se elige el nombre"
+msgstr ""
+"Añadir un nuevo protocolo a la lista de protocolos de entre los que se elige "
+"el nombre"
 
 # src/glade-strings:96
 #: src/glade-strings:111
@@ -1086,7 +1088,8 @@ msgstr "Quitar protocolo"
 #: src/glade-strings:114
 msgid ""
 "Toggle whether the selected protocol name has to be solved in order to use it"
-msgstr "Cambia si el protocolo seleccionado ha de estar resuelto para ser usado"
+msgstr ""
+"Cambia si el protocolo seleccionado ha de estar resuelto para ser usado"
 
 #: src/glade-strings:115
 msgid "Toggle solved"
@@ -1110,7 +1113,8 @@ msgstr "Mover abajo"
 
 #: src/glade-strings:120
 msgid "Don't try to resolve any name. Always present in numeric form."
-msgstr "No intentar resolver ningún nombre. Presentar siempre en forma numérica"
+msgstr ""
+"No intentar resolver ningún nombre. Presentar siempre en forma numérica"
 
 #: src/glade-strings:121
 msgid "Force numeric"

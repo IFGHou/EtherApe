@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
-"POT-Creation-Date: 2001-08-10 12:20+0200\n"
+"POT-Creation-Date: 2001-08-12 16:37+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -395,32 +395,32 @@ msgstr ""
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:687
+#: src/diagram.c:695
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 "Hoofdprotocol van het knooppunt niet gevonden bij de functie "
 "update_canvas_nodes"
 
-#: src/diagram.c:712
+#: src/diagram.c:720
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:1046
+#: src/diagram.c:1054
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1112
+#: src/diagram.c:1120
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
-#: src/diagram.c:1258
+#: src/diagram.c:1266
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1261
+#: src/diagram.c:1269
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-08-10 12:20+0200\n"
+"POT-Creation-Date: 2001-08-12 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -394,29 +394,29 @@ msgstr ""
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:687
+#: src/diagram.c:695
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:712
+#: src/diagram.c:720
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1046
+#: src/diagram.c:1054
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1112
+#: src/diagram.c:1120
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1258
+#: src/diagram.c:1266
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1261
+#: src/diagram.c:1269
 msgid "Link main protocol unknown"
 msgstr ""
 
