@@ -144,28 +144,28 @@ msgstr ""
 msgid "Link type is Ethernet"
 msgstr ""
 
-#. The case for PPP or SLIP, for instance
+#  The case for PPP or SLIP, for instance
 #: src/capture.c:146
 msgid "Link type is RAW"
 msgstr ""
 
-#. We are assuming LLC async frames only
+#  We are assuming LLC async frames only
 #: src/capture.c:155
 msgid "Link type is FDDI"
 msgstr ""
 
-#. As far as I know IEEE802 is Token Ring
+#  As far as I know IEEE802 is Token Ring
 #: src/capture.c:164
 msgid "Link type is Token Ring"
 msgstr ""
 
-#. Loopback
+#  Loopback
 #: src/capture.c:172
 msgid "Link type is NULL"
 msgstr ""
 
-#. Linux cooked sockets (I believe this
-#. * is used for ISDN on linux)
+#  Linux cooked sockets (I believe this
+#  * is used for ISDN on linux)
 #: src/capture.c:183
 msgid "Link type is Linux cooked sockets"
 msgstr ""
@@ -299,7 +299,7 @@ msgstr ""
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:544
 msgid "Reading data from "
 msgstr ""
@@ -340,7 +340,7 @@ msgstr ""
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:623
 msgid "Paused"
 msgstr ""
@@ -353,7 +353,7 @@ msgstr ""
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
-#. Sets the appbar
+#  Sets the appbar
 #: src/menus.c:688
 msgid "Ready to capture from "
 msgstr ""
@@ -440,12 +440,12 @@ msgstr ""
 msgid "DDP protocols not supported in %s"
 msgstr ""
 
-#. append_etype_prot
-#.
-#. * Archivo de cadenas traducibles generado por Glade.
-#. * Añada este archivo a su POTFILES.in de su proyecto.
-#. * NO lo compile como parte de su aplicación.
-#.
+#  append_etype_prot
+# 
+#  * Archivo de cadenas traducibles generado por Glade.
+#  * Añada este archivo a su POTFILES.in de su proyecto.
+#  * NO lo compile como parte de su aplicación.
+# 
 #: src/glade-strings:7
 msgid "EtherApe"
 msgstr ""
@@ -1109,7 +1109,7 @@ msgstr ""
 msgid "No info available"
 msgstr ""
 
-#. Meaning "n seconds" ago
+#  Meaning "n seconds" ago
 #: src/info_windows.c:754
 #, c-format
 msgid "%d\" ago"
@@ -1120,7 +1120,7 @@ msgstr ""
 msgid "%d'%d\" ago"
 msgstr ""
 
-#. Watch out! The first is month, the second day of the month
+#  Watch out! The first is month, the second day of the month
 #: src/info_windows.c:772
 #, c-format
 msgid "%d/%d %d:%d"
