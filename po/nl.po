@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
-"POT-Creation-Date: 2001-08-02 15:11+0200\n"
+"POT-Creation-Date: 2001-08-03 14:24+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -106,7 +106,7 @@ msgstr ""
 "Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de "
 "voorkeuren of dit echt is wat je wilt."
 
-#: src/main.c:383
+#: src/main.c:395
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
@@ -356,54 +356,64 @@ msgstr "Klaar om te luisteren naar "
 msgid "Diagram stopped"
 msgstr "Diagram gestopt"
 
-#: src/diagram.c:314
+#: src/diagram.c:322
 msgid "Number of nodes: "
 msgstr "Aantal knooppunten:"
 
-#: src/diagram.c:318
+#: src/diagram.c:326
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Verversingsperiode: %d"
 
-#: src/diagram.c:324
+#: src/diagram.c:332
 msgid ". IDLE."
 msgstr ". IDLE ."
 
-#: src/diagram.c:326
+#: src/diagram.c:334
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
-#: src/diagram.c:564
+#: src/diagram.c:437
+#, fuzzy, c-format
+msgid "Unable to parse color string %s for new protocol %s"
+msgstr "Ik begrijp het filter niet (%s)."
+
+#: src/diagram.c:441
+#, c-format
+msgid "Unable to allocate color for new protocol %s"
+msgstr ""
+
+#: src/diagram.c:610
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:641
+#: src/diagram.c:687
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 "Hoofdprotocol van het knooppunt niet gevonden bij de functie "
 "update_canvas_nodes"
 
-#: src/diagram.c:666
+#: src/diagram.c:712
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:1000
+#: src/diagram.c:1046
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1066
+#: src/diagram.c:1112
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
-#: src/diagram.c:1212
+#: src/diagram.c:1258
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1215
+#: src/diagram.c:1261
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 
@@ -800,7 +810,8 @@ msgid "Fade colors"
 msgstr "Vervaag kleuren"
 
 #: src/glade-strings:99
-msgid "Whether or not to use assigned colors for unassigned protocolos"
+#, fuzzy
+msgid "Whether or not to use assigned colors for unassigned protocols"
 msgstr "Hergebruik kleuren voor nieuwe protocollen"
 
 #: src/glade-strings:100
