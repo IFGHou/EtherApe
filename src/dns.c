@@ -1481,7 +1481,8 @@ char *
 dns_lookup (ip_t ip, int fqdn)
 {
   char *t;
-  char *u;
+  static char *u = NULL;
+  char *v;
 
   if (!dns)
     return strlongip (ip);
@@ -1493,8 +1494,13 @@ dns_lookup (ip_t ip, int fqdn)
   if (fqdn)
     return t;
 
-  u = strpbrk (t, ".");
   if (u)
-    *u = '\0';
-  return t;
+    free (u);
+
+  u = malloc (strlen (t) + 1);
+  strcpy (u, t);
+  v = strpbrk (u, ".");
+  if (v)
+    *v = '\0';
+  return u;
 }

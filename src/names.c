@@ -1,5 +1,5 @@
-/* Etherape
- * Copyright (C) 2000 Juan Toledo
+/* EtherApe
+ * Copyright (C) 2001 Juan Toledo
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -152,8 +152,6 @@ get_ip_name (void)
   /* TODO I don't like the fact that the gdk_input for dns.c is not
    * called in this function, because it means that it can't be used 
    * as a library */
-
-  g_string_assign (name->name, dns_lookup (pntohl (id), TRUE));
 
   level++;
   offset += 20;

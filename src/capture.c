@@ -845,11 +845,9 @@ update_node (node_t * node)
 	   && node_timeout_time) || (status == STOP))
 	{
 
-	  /* TODO remove all names information */
-
 	  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		 _("Removing node: %s. Number of node %d"),
-		 node->name->str, g_tree_nnodes (nodes));
+		 _("Removing node: %s. Number of nodes %d"),
+		 node->name->str, g_tree_nnodes (nodes) - 1);
 	  node_id = node->node_id;	/* Since we are freeing the node
 					 * we must free its members as well 
 					 * but if we free the id then we will
