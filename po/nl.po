@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etherape\n"
-"POT-Creation-Date: 2001-04-24 22:35+0200\n"
+"POT-Creation-Date: 2001-04-25 00:49+0200\n"
 "PO-Revision-Date: 2001-03-24 17:39+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@ITS.TUDelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -135,111 +135,135 @@ msgstr "Fout bij het openen van %s : %s"
 msgid "%s opened for offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
+#: src/capture.c:134
+msgid "Link type is Ethernet"
+msgstr ""
+
+#. The case for PPP or SLIP, for instance
+#: src/capture.c:142
+msgid "Link type is RAW"
+msgstr ""
+
+#. We are assuming LLC async frames only
+#: src/capture.c:150
+msgid "Link type is FDDI"
+msgstr ""
+
+#. As far as I know IEEE802 is Token Ring
+#: src/capture.c:159
+msgid "Link type is Token Ring"
+msgstr ""
+
+#. Loopback
+#: src/capture.c:167
+msgid "Link type is NULL"
+msgstr ""
+
 #: src/capture.c:175
 msgid "Link type not yet supported"
 msgstr "Lijntype nog niet beschikbaar"
 
-#: src/capture.c:227
+#: src/capture.c:228
 msgid "Mode not available in this device"
 msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 
-#: src/capture.c:246
+#: src/capture.c:250
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:272 src/capture.c:298
+#: src/capture.c:276 src/capture.c:302
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
-#: src/capture.c:278 src/capture.c:304
+#: src/capture.c:282 src/capture.c:308
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:283 src/capture.c:309
+#: src/capture.c:287 src/capture.c:313
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
 
-#: src/capture.c:320
+#: src/capture.c:324
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:326
+#: src/capture.c:330
 msgid "Starting live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:333
+#: src/capture.c:337
 msgid "Starting offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:350
+#: src/capture.c:354
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:354
+#: src/capture.c:358
 #, fuzzy
 msgid "Pausing live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:360
+#: src/capture.c:364
 #, fuzzy
 msgid "Pausing offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:367
+#: src/capture.c:371
 #, fuzzy
 msgid "Error while trying to pause capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
-#: src/capture.c:385
+#: src/capture.c:389
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:391
+#: src/capture.c:395
 msgid "Stopping live capture"
 msgstr "Live luisteren wordt gestopt"
 
-#: src/capture.c:397
+#: src/capture.c:401
 msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
-#: src/capture.c:405
+#: src/capture.c:409
 #, fuzzy
 msgid "Error while removing capture source in stop_capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
 #. TODO Write proper assertion code here
-#: src/capture.c:577
+#: src/capture.c:581
 msgid "Reached default in get_node_id"
 msgstr "Default bereikt in get_node_id"
 
-#: src/capture.c:624
+#: src/capture.c:628
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/capture.c:754
+#: src/capture.c:758
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 
-#: src/capture.c:792
+#: src/capture.c:796
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/capture.c:891
+#: src/capture.c:895
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
-#: src/capture.c:1014
+#: src/capture.c:1018
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Lijn verwijderd. Aantal lijnen %d"
 
-#: src/capture.c:1245
+#: src/capture.c:1249
 msgid "Null packet in check_packet"
 msgstr "(null)-pakket in check_packet"
 

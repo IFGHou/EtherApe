@@ -31,6 +31,8 @@ etherape_SOURCES = \
 	gnomesupport.h
 
 etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
+etherape_LDFLAGS = -export-dynamic
+etherape_LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 .indent: $(etherape_SOURCES)
 	indent $? 

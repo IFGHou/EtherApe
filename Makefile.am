@@ -90,7 +90,7 @@ full-dist :
 	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}.tar.gz
 	scp /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm etherape.sourceforge.net:ftp
 	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.i386.rpm		
-	scp /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.src.rpm etherape.sourceforge.net:ftp
+	scp /usr/src/redhat/SRPMS/${PACKAGE}-${VERSION}-1.src.rpm etherape.sourceforge.net:ftp
 	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.src.rpm
 	
 	echo ${VERSION} > old.version

@@ -12,6 +12,11 @@ configure
 install-sh
 missing
 mkinstalldirs
+libtool
+ltconfig
+ltmain.sh
+config.sub
+config.guess
 intl
 build-stamp
 stamp-h
