@@ -1,3 +1,6 @@
+/* This is pretty messy because it is pretty much copied as is from 
+ * ethereal. I should probably clean it up some day */
+
 
 /* util.c
  * Utility routines
@@ -93,26 +96,17 @@ typedef int mode_t;		/* for win32 */
 #include "globals.h"
 #endif /* JTC */
 
+#include <pcap.h> /*JTC*/
 #endif
-
 #ifdef HAVE_LIBPCAP
-
-
-#if 0				/* JTC I may use these later */
-/*
- * If the ability to capture packets is added to Wiretap, these
- * routines should be moved to the Wiretap source (with
- * "get_interface_list()" and "free_interface_list()" renamed to
- * "wtap_get_interface_list()" and "wtap_free_interface_list()",
- * and modified to use Wiretap routines to attempt to open the
- * interface.
- */
-
-struct search_user_data
+/* JTC This define I copied from a different file from ethereal */
+#define MIN_PACKET_SIZE 68	/* minimum amount of packet data we can read */
+  struct search_user_data
 {
   char *name;
   int found;
 };
+
 
 static void search_for_if_cb (gpointer data, gpointer user_data);
 
@@ -260,6 +254,7 @@ fail:
   return NULL;
 }
 
+
 static void
 search_for_if_cb (gpointer data, gpointer user_data)
 {
@@ -287,7 +282,6 @@ free_interface_list (GList * if_list)
 
 #endif /* HAVE_LIBPCAP */
 
-#endif /* JTC */
 
 const char *
 get_home_dir (void)
