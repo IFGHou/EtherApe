@@ -256,8 +256,7 @@ on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
   if (colors_changed)
     {
       color_clist_to_pref ();
-      gui_stop_capture ();
-      gui_start_capture ();
+      delete_gui_protocols ();
       colors_changed = FALSE;
     }
 }				/* on_apply_pref_button_clicked */
@@ -403,7 +402,6 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   GtkWidget *colorsel;
   gdouble colors[4];
   GdkColor gdk_color;
-  GdkColormap *colormap;
   GtkStyle *style;
 
   if (!colorseldiag)
@@ -423,9 +421,6 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
     GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (color_clist), "row")) -
     1;
 
-
-  colormap = gtk_widget_get_colormap (color_clist);
-
   gdk_color.red = (guint16) (colors[0] * 65535.0);
   gdk_color.green = (guint16) (colors[1] * 65535.0);
   gdk_color.blue = (guint16) (colors[2] * 65535.0);
@@ -438,14 +433,15 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 
   g_warning ("%4x:%4x:%4x", gdk_color.red, gdk_color.green, gdk_color.blue);
 
-  gdk_color_alloc (colormap, &gdk_color);
+  gdk_colormap_alloc_color (gdk_colormap_get_system (), &gdk_color, FALSE,
+			    TRUE);
 
   style = gtk_style_new ();
   style->base[GTK_STATE_NORMAL] = gdk_color;
 
   row[0] =
-    g_strdup_printf ("%02x%02x%02x", gdk_color.red >> 8, gdk_color.green >> 8,
-		     gdk_color.blue >> 8);
+    g_strdup_printf ("#%02x%02x%02x", gdk_color.red >> 8,
+		     gdk_color.green >> 8, gdk_color.blue >> 8);
   row[1] = g_strdup_printf ("row_number %d", row_number);
 
   /*
@@ -495,7 +491,6 @@ load_color_clist (void)
   static GtkWidget *color_clist = NULL;
   gchar *row[2] = { NULL, NULL };
   GdkColor gdk_color;
-  GdkColormap *colormap = NULL;
   GtkStyle *style = NULL;
   gchar **colors_protocols = NULL;
   gchar *color = NULL, *protocol = NULL;
@@ -505,8 +500,6 @@ load_color_clist (void)
 
   gtk_clist_clear (GTK_CLIST (color_clist));
 
-  colormap = gtk_widget_get_colormap (color_clist);
-
   for (i = 0; i < pref.n_colors; i++)
     {
       colors_protocols = g_strsplit (pref.colors[i], ";", 0);
@@ -515,13 +508,14 @@ load_color_clist (void)
       protocol = colors_protocols[1];
 
       gdk_color_parse (color, &gdk_color);
-      gdk_color_alloc (colormap, &gdk_color);
+      gdk_colormap_alloc_color (gdk_colormap_get_system (), &gdk_color, FALSE,
+				TRUE);
 
       style = gtk_style_new ();
       style->base[GTK_STATE_NORMAL] = gdk_color;
 
       row[0] =
-	g_strdup_printf ("%02x%02x%02x", gdk_color.red >> 8,
+	g_strdup_printf ("#%02x%02x%02x", gdk_color.red >> 8,
 			 gdk_color.green >> 8, gdk_color.blue >> 8);
 
       if (!protocol)

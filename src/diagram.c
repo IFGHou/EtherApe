@@ -145,7 +145,7 @@ init_diagram ()
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
   gdk_color_parse ("black", &black_color);
-  gdk_colormap_alloc_color (gtk_widget_get_colormap (canvas), &black_color,
+  gdk_colormap_alloc_color (gdk_colormap_get_system (), &black_color,
 			    TRUE, TRUE);
   style = gtk_style_new ();
   style->bg[GTK_STATE_NORMAL] = black_color;
@@ -429,9 +429,13 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
   color_string = get_prot_color (protocol->name);
   g_my_debug ("Protocol %s in color %s", protocol->name, color_string);
-  gdk_color_parse (color_string, &(protocol->color));
-  gdk_colormap_alloc_color (gtk_widget_get_colormap (label), &protocol->color,
-			    TRUE, TRUE);
+  if (!gdk_color_parse (color_string, &(protocol->color)))
+    g_warning (_("Unable to parse color string %s for new protocol %s"),
+	       color_string, protocol->name);
+  if (!gdk_colormap_alloc_color
+      (gdk_colormap_get_system (), &protocol->color, FALSE, TRUE))
+    g_warning (_("Unable to allocate color for new protocol %s"),
+	       protocol->name);
 
   style = gtk_style_new ();
   style->fg[GTK_STATE_NORMAL] = protocol->color;
