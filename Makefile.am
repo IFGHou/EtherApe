@@ -20,7 +20,7 @@ cvs : NEWS FAQ README.bugs indent
 	test `whoami` = toledo
 	cvs commit
 
-man_MANS = etherape.1
+man_MANS = etherape.8
 
 full-cvs : cvs
 	cd ../www && make
