@@ -1,3 +1,31 @@
+2005-08-13 18:50  bchiara
+
+	* INSTALL, NEWS, acconfig.h, acinclude.m4, autogen.sh,
+	config.guess, config.h.in, config.rpath, config.sub, configure.in,
+	ltconfig, ltmain.sh, mkinstalldirs, doc/C/Makefile.am,
+	doc/C/etherape.sgml, html/NEWS.html, m4/Makefile, m4/Makefile.am,
+	m4/Makefile.in, m4/codeset.m4, m4/gettext.m4, m4/glibc21.m4,
+	m4/iconv.m4, m4/intdiv0.m4, m4/inttypes-pri.m4, m4/inttypes.m4,
+	m4/inttypes_h.m4, m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4,
+	m4/lib-link.m4, m4/lib-prefix.m4, m4/progtest.m4, m4/stdint_h.m4,
+	m4/uintmax_t.m4, m4/ulonglong.m4, po/POTFILES.in, po/es.po,
+	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po, src/Makefile.am,
+	src/capture.c, src/capture.h, src/datastructs.c, src/datastructs.h,
+	src/direct_resolve.c, src/direct_resolve.h, src/dns.c, src/dns.h,
+	src/ip-cache.c, src/ip-cache.h, src/main.c, src/thread_resolve.c,
+	src/thread_resolve.h: 
+	Release 0.9.2 
+	New multithreaded resolver, fixes for gcc4
+
+2004-08-12 05:46  bchiara
+
+	* ChangeLog, src/diagram.c, src/main.c, src/menus.c: 
+	small corrections to compile on AMD64
+
+2004-08-10 22:10  bchiara
+
+	* NEWS, html/NEWS.html: [no log message]
+
 2004-08-10 21:15  bchiara
 
 	* .cvsignore, INSTALL, acinclude.m4, autogen.sh, config.guess,
