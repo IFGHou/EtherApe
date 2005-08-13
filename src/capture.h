@@ -37,8 +37,6 @@ typedef enum
 }
 create_node_type_t;
 
-static pcap_t *pch;		/* pcap structure */
-static struct pcap_pkthdr phdr;
 
 static guint32 ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between

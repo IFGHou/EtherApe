@@ -4,9 +4,7 @@ etherape_helpdir = $(datadir)/gnome/help/etherape/C
 SGML_FILES = \
 	etherape.sgml
 
-HTML_FILES = \
-	authors.html bugs.html index.html license.html \
-	ln7.html prefs.html usage.html
+HTML_FILES = index.html
 
 EXTRA_DIST = \
 	topic.dat etherape $(SGML_FILES)
@@ -24,7 +22,7 @@ etherape_help_DATA = ${HTML_FILES} topic.dat
 #
 ${HTML_FILES} : $(SGML_FILES)
 	if [ ! -d etherape ] ; then cd $(srcdir) && db2html etherape.sgml ; fi
-	-cd $(srcdir) && cp etherape/$@ .
+	-cd $(srcdir) && cp etherape/*.html .
 	if [ -d etherape.junk ] ; then cd $(srcdir) && rm -rf etherape.junk ; fi
 
 dist-hook:
@@ -39,7 +37,7 @@ dist-hook:
 distclean-generic:
 	-rm -f Makefile
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	-rm -f $(HTML_FILES)
+	-rm -f *.html
 	-rm -rf etherape
 
 install-data-local: index.html
@@ -56,5 +54,7 @@ install-data-local: index.html
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(etherape_helpdir)/stylesheet-images/$$basefile; \
 	done
 
-
+uninstall-local:
+	echo "rm -rf $(DESTDIR)$(etherape_helpdir)"
+	-rm -rf $(DESTDIR)$(etherape_helpdir)	
 

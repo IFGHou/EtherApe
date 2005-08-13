@@ -37,7 +37,6 @@ GdkColor * protohash_get(gchar *protoname);
 gboolean protohash_read_prefvect(gchar **colors, gint n_colors);
 
 /* fills the pref vector from the hash */
-gboolean protohash_write_prefvect();
+gboolean protohash_write_prefvect(void);
 
-#endif 
-
+#endif

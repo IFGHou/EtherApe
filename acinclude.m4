@@ -61,7 +61,7 @@ dnl paste :-) )
 # GNU Autoconf 2.13; the comment came from there.
 # Done by Guy Harris <guy@alum.mit.edu> on 2000-01-14. 
 #
-AC_DEFUN(AC_ETHEREAL_GETHOSTBY_LIB_CHECK,
+AC_DEFUN([AC_ETHEREAL_GETHOSTBY_LIB_CHECK],
 [
     # msh@cis.ufl.edu says -lnsl (and -lsocket) are needed for his 386/AT,
     # to get the SysV transport functions.
@@ -90,7 +90,7 @@ AC_DEFUN(AC_ETHEREAL_GETHOSTBY_LIB_CHECK,
 #
 # We use "connect" because that's what AC_PATH_XTRA did.
 #
-AC_DEFUN(AC_ETHEREAL_SOCKET_LIB_CHECK,
+AC_DEFUN([AC_ETHEREAL_SOCKET_LIB_CHECK],
 [
     # lieder@skyler.mavd.honeywell.com says without -lsocket,
     # socket/setsockopt and other routines are undefined under SCO ODT
@@ -110,7 +110,7 @@ AC_DEFUN(AC_ETHEREAL_SOCKET_LIB_CHECK,
 #
 # AC_ETHEREAL_PCAP_CHECK
 #
-AC_DEFUN(AC_ETHEREAL_PCAP_CHECK,
+AC_DEFUN([AC_ETHEREAL_PCAP_CHECK],
 [
 	# Evidently, some systems have pcap.h, etc. in */include/pcap
 	AC_MSG_CHECKING(for extraneous pcap header directories)

@@ -1,8 +1,5 @@
-<!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
-        <!-- if not using PNG graphic, replace reference above with
-             .....PUBLIC "-//OASIS//DTD DocBook V3.1//EN"[
-         -->
-<!ENTITY version "0.5.7"> <!-- replace with application version -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+   <!ENTITY version "0.9.1"> <!-- replace with application version -->
 ]>
 
 
@@ -32,7 +29,7 @@
 
 <article id="index"> <!-- please do not change the id -->
 
-  <artheader>
+  <articleinfo>
     <title>EtherApe Manual</title>
     <copyright>
       <year>2001</year>
@@ -109,7 +106,7 @@
        This is version 0.1 of EtherApe manual.
     </releaseinfo>
 
-  </artheader>
+  </articleinfo>
 
  <!-- ============= Document Body ============================= -->
 
@@ -145,7 +142,7 @@
 	<guimenuitem>EtherApe</guimenuitem>
       </menuchoice>
       from the <guimenu>Main Menu</guimenu>, or type
-      <command>MYGNOMEAPP</command> on the command line.
+      <command>etherape</command> on the command line.
   </para>
 
 <!--
@@ -188,9 +185,8 @@
         <figure id="mainwindow-fig">
 	  <title>EtherApe Main Window</title>
 	  <screenshot>
-	    <screeninfo>EtherApe Main Window</screeninfo>
-	    <graphic fileref="main-window" format="png" srccredit="Juan Toledo">
-            </graphic>
+		  <screeninfo>EtherApe Main Window</screeninfo>
+		  <graphic fileref="../../etherape.png" >
 	  </screenshot>
 	</figure> <!-- ==== End of Figure ==== -->
       </para> 
@@ -255,7 +251,7 @@
 	  <title>EtherApe Toolbar</title>
 	  <screenshot>
 	    <screeninfo>EtherApe Toolbar</screeninfo>
-	    <graphic fileref="usage-toolbar.png" format="png"></graphic>
+		  <graphic fileref="../../etherape.png" >
 	  </screenshot>
 	</figure>
         <variablelist>
@@ -501,9 +497,7 @@
    <title>Preferences Dialog</title>
    <screenshot>
     <screeninfo>Preferences Dialog</screeninfo>
-    <graphic fileref="SCREENSHOT" format="png"
-     srccredit="ME">
-    </graphic>
+		  <graphic fileref="../../etherape.png" >
    </screenshot>
   </figure>
 
@@ -609,31 +603,14 @@ ethernet mode (-m ethernet)
  <sect1 id="authors">
   <title>Authors</title>
   <para>
-   <application>EtherApe</application> was written by GNOME-HACKER
-   (<email>hacker@gnome.org</email>). To find more information about
+   <application>EtherApe</application> was written by Juan Toled
+   (<email>toledo@sourceforge.net</email>). To find more information about
    <application>EtherApe</application>, please visit the <ulink
-   url="http://www.my-gnome-app.org" type="http">EtherApe Web
-   page</ulink>.  Please send all comments, suggestions, and bug
-   reports to the <ulink url="http://bugs.gnome.org" type="http">GNOME
-   bug tracking database</ulink>.  (Instructions for submitting bug
-   reports can be found <ulink
-   url="http://bugs.gnome.org/Reporting.html" type="http">
-   on-line</ulink>.)  You can also use <application>Bug Report
-   Tool</application> (<command>bug-buddy</command>), available in the
-   <guisubmenu>Utilities</guisubmenu> submenu of <guimenu>Main
-   Menu</guimenu>, for submitting bug reports.
-  </para>
-
-  <para>
-   This manual was written by ME
-   (<email>MYNAME@MYADDRESS</email>). Please send all comments and
-   suggestions regarding this manual to the <ulink type="http"
-   url="http://developer.gnome.org/projects/gdp">GNOME Documentation
-   Project</ulink> by sending an email to
-   <email>docs@gnome.org</email>. You can also add your comments
-   online by using the <ulink type="http"
-   url="http://developer.gnome.org/projects/gdp/doctable/">GNOME
-   Documentation Status Table</ulink>.
+   url="http://etherape.sourceforge.net" type="http">EtherApe Web
+   page</ulink>.  
+   Instructions for submitting bug reports can be found <ulink
+	   url="http://etherape.sourceforge.net/bug-reporting.html" type="http">
+	   on-line</ulink>.
   </para>
 
   <!-- For translations: uncomment this:

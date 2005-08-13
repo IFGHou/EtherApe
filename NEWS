@@ -1,6 +1,12 @@
                             Changelog for EtherApe
 
-   $Date$
+   $Date 2005/08/13 16:43:12 $
+
+  Overview of changes in EtherApe 0.9.2 (Saturday 8-13-2005):
+
+     * New multithreaded name resolution using the standard resolver api.
+       Works with dns, /etc/host, ...
+     * Small fixes for gcc 4
 
   Overview of changes in EtherApe 0.9.1 (Wednesday 8-11-2004):
 

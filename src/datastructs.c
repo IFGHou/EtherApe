@@ -41,7 +41,7 @@ protohash_item_to_prefvect(gpointer key,
    gint *i = (gint *)user_data;
    g_assert( proto && color && i);
    
-   pref.colors[*i] = g_strdup_printf ("#%02x%02x%02x%s%s", *color, 
+   pref.colors[*i] = g_strdup_printf ("#%02x%02x%02x%s%s",  
                 color->red >> 8, color->green >> 8, color->blue >> 8, 
                 (*proto) ? ":" :"", proto);
 }
@@ -138,7 +138,7 @@ protohash_read_prefvect(gchar **colors, gint n_colors)
 
 /* fills the pref vector from the hash */
 gboolean 
-protohash_write_prefvect()
+protohash_write_prefvect(void)
 {
   gint i;
 
@@ -160,4 +160,4 @@ protohash_write_prefvect()
   g_hash_table_foreach(protohash, protohash_item_to_prefvect, &i); 
 
   return TRUE;   
-}		
+}

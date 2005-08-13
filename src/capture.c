@@ -27,6 +27,9 @@
 #include "dns.h"
 #include "eth_resolv.h"
 
+static pcap_t *pch_struct;		/* pcap structure */
+static struct pcap_pkthdr phdr;
+
 /* 
  * FUNCTION DEFINITIONS
  */
@@ -61,10 +64,13 @@ init_capture (void)
       if (!pref.numeric)
 	{
 	  dns_open ();
-	  dns_fd = dns_waitfd ();
-	  g_my_debug ("File descriptor for DNS is %d", dns_fd);
-	  gdk_input_add (dns_fd,
-			 GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
+          if (dns_hasfd())
+             {
+                dns_fd = dns_waitfd ();
+                g_my_debug ("File descriptor for DNS is %d", dns_fd);
+                gdk_input_add (dns_fd,
+                               GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
+             }
 	}
       else
 	dns_fd = 0;
@@ -96,7 +102,7 @@ init_capture (void)
   if (!pref.input_file)
     {
       if (!
-	  ((pcap_t *) pch =
+	  (pch_struct = 
 	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
 	{
 	  sprintf (errorbuf,
@@ -104,7 +110,7 @@ init_capture (void)
 		   device, ebuf);
 	  return errorbuf;
 	}
-      pcap_fd = pcap_fileno (pch);
+      pcap_fd = pcap_fileno (pch_struct);
       g_my_info (_("Live device %s opened for capture. pcap_fd: %d"), device,
 		 pcap_fd);
     }
@@ -117,7 +123,7 @@ init_capture (void)
 		   pref.input_file, device);
 	  return errorbuf;
 	}
-      if (!((pcap_t *) pch = pcap_open_offline (pref.input_file, ebuf)))
+      if (!(pch_struct = pcap_open_offline (pref.input_file, ebuf)))
 	{
 	  sprintf (errorbuf, _("Error opening %s : %s"), pref.input_file,
 		   ebuf);
@@ -128,7 +134,7 @@ init_capture (void)
     }
 
 
-  linktype = pcap_datalink (pch);
+  linktype = pcap_datalink (pch_struct);
 
   /* l3_offset is equal to the size of the link layer header */
 
@@ -288,7 +294,7 @@ set_filter (gchar * filter_string, gchar * device)
   gboolean ok = 1;
 
 
-  if (!pch)
+  if (!pch_struct)
     return 1;
 
   /* A capture filter was specified; set it up. */
@@ -299,14 +305,14 @@ set_filter (gchar * filter_string, gchar * device)
 		 ebuf);
       ok = 0;
     }
-  if (ok && (pcap_compile (pch, &fp, filter_string, 1, netmask) < 0))
+  if (ok && (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0))
     {
-      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
+      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
       ok = 0;
     }
-  if (ok && (pcap_setfilter (pch, &fp) < 0))
+  if (ok && (pcap_setfilter (pch_struct, &fp) < 0))
     {
-      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
+      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
     }
 
   return 0;
@@ -325,14 +331,14 @@ set_filter (gchar * filter_string, gchar * device)
 		 ebuf);
       ok = 0;
     }
-  if (ok && (pcap_compile (pch, &fp, filter_string, 1, netmask) < 0))
+  if (ok && (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0))
     {
-      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch));
+      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
       ok = 0;
     }
-  if (ok && (pcap_setfilter (pch, &fp) < 0))
+  if (ok && (pcap_setfilter (pch_struct, &fp) < 0))
     {
-      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch));
+      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
     }
 #endif
 }				/* set_filter */
@@ -472,11 +478,11 @@ stop_capture (void)
     get_offline_packet ();
 
   /* Close the capture */
-  pcap_stats (pch, &ps);
+  pcap_stats (pch_struct, &ps);
   g_my_debug ("libpcap received %d packets, dropped %d. EtherApe saw %g",
 	      ps.ps_recv, ps.ps_drop, n_packets);
   n_packets = 0;
-  pcap_close (pch);
+  pcap_close (pch_struct);
   g_my_info (_("Capture device stopped or file closed"));
 
   return TRUE;
@@ -491,6 +497,7 @@ cleanup_capture (void)
 {
   if (status != STOP)
     stop_capture ();
+  dns_close(); /* closes the dns resolver, if opened */
 }
 
 
@@ -513,7 +520,7 @@ get_offline_packet (void)
   if (packet)
     packet_read (packet, 0, GDK_INPUT_READ);
 
-  packet = (guint8 *) pcap_next (pch, &phdr);
+  packet = (guint8 *) pcap_next (pch_struct, &phdr);
   if (!packet)
     end_of_file = TRUE;
 
@@ -567,7 +574,7 @@ packet_read (guint8 * packet, gint source, GdkInputCondition condition)
   /* Get next packet only if in live mode */
   if (source)
     {
-      packet = (guint8 *) pcap_next (pch, &phdr);
+      packet = (guint8 *) pcap_next (pch_struct, &phdr);
       now.tv_sec = phdr.ts.tv_sec;
       now.tv_usec = phdr.ts.tv_usec;
     }
@@ -1577,7 +1584,7 @@ check_packet (GList * packets, GList ** packet_l_e,
   protocol_t *protocol_info = NULL;
   gchar **tokens = NULL;
   packet_t *packet = NULL;
-  packet_direction direction;
+  packet_direction direction = INBOUND;
   static packet_direction last_lo_direction = INBOUND;
   gchar *protocol_name = NULL;
 

@@ -19,6 +19,8 @@ etherape_SOURCES = \
 	resolv.c eth_resolv.h \
 	util.c util.h \
 	dns.c dns.h \
+	direct_resolve.c direct_resolve.h \
+	thread_resolve.c thread_resolve.h \
 	callbacks.c callbacks.h \
 	menus.c menus.h \
 	preferences.c preferences.h \
@@ -30,6 +32,7 @@ etherape_SOURCES = \
 	protocols.c protocols.h \
 	prot_types.h \
 	info_windows.c info_windows.h \
+	ip-cache.c ip-cache.h \
 	conversations.c conversations.h \
 	datastructs.c datastructs.h
 

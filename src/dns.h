@@ -1,8 +1,6 @@
 /*
    Etherape
-   * 
-   *  File copied from mtr. (www.bitwizard.nl/mtr) 
-   *  Copyright (C) 1997,1998  Matt Kimball
+   Copyright (C) 2000 Juan Toledo
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,12 +15,27 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+   
+   ----------------------------------------------------------------
+   
+   dns wrapper routines
+*/
 
-/*  Prototypes for dns.c  */
-
+/* initialize dns interface */
 void dns_open (void);
+
+/* close dns interface */
+void dns_close(void);
+
+/* returns 1 if the current dns implementation has a socket wich needs a select() */
+int dns_hasfd(void);
+
+/* returns the file descriptor associated with dns socket */
 int dns_waitfd (void);
+
+/* called when the dns_waitfd socket has available data */
 void dns_ack (void);
-unsigned int dns_tick (void);	/* call this more or less every 10 secs */
-char *dns_lookup (unsigned int address, int fqdn);
+
+/* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
+   or just the hostname (if fqdn is zero) */
+char *dns_lookup (uint32_t address, int fqdn);

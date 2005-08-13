@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-02 17:13+0200\n"
+"POT-Creation-Date: 2005-08-13 12:55+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -16,91 +16,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:64
-#: src/main.c:40
+#: src/main.c:41
 msgid "mode of operation"
 msgstr "mode d'opération"
 
 # src/main.c:64
-#: src/main.c:40
+#: src/main.c:41
 #, fuzzy
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|ip|tcp|udp>"
 
 # src/main.c:67
-#: src/main.c:42
+#: src/main.c:43
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:42
+#: src/main.c:43
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:70
-#: src/main.c:44
+#: src/main.c:45
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:44
+#: src/main.c:45
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:70
-#: src/main.c:46
+#: src/main.c:47
 #, fuzzy
 msgid "set input file"
 msgstr "définir le filtre de capture"
 
 # src/main.c:67
-#: src/main.c:46
+#: src/main.c:47
 #, fuzzy
 msgid "<file name>"
 msgstr "<nom de l'interface>"
 
 # src/main.c:58
-#: src/main.c:48
+#: src/main.c:49
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
 # src/main.c:61
-#: src/main.c:50
+#: src/main.c:51
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
 # src/main.c:73
-#: src/main.c:52
+#: src/main.c:53
 msgid "do not fade old links"
 msgstr "ne pas assombrir les anciennes liaisons"
 
-#: src/main.c:54
+#: src/main.c:55
 msgid "don't move nodes around"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "limits nodes displayed"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "<number of nodes>"
 msgstr ""
 
-#: src/main.c:58
+#: src/main.c:59
 msgid "Don't show warnings"
 msgstr ""
 
 # src/main.c:76
-#: src/main.c:60
+#: src/main.c:61
 msgid "set the node color"
 msgstr "définir la couleur des noeuds"
 
 # src/main.c:76 src/main.c:79 src/main.c:82
-#: src/main.c:60 src/main.c:62
+#: src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "couleur"
 
 # src/main.c:82
-#: src/main.c:62
+#: src/main.c:63
 msgid "set the text color"
 msgstr "définir la couleur du texte"
 
@@ -109,7 +109,7 @@ msgstr "définir la couleur du texte"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:165 src/menus.c:46 src/menus.c:378 src/info_windows.c:129
+#: src/main.c:165 src/menus.c:46 src/menus.c:373 src/info_windows.c:129
 #: src/info_windows.c:779
 #, c-format
 msgid "We could not load the interface! (%s)"
@@ -126,370 +126,370 @@ msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
 # src/capture.c:922
-#: src/capture.c:84
+#: src/capture.c:90
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Erreur au périphérique: %s"
 
 # src/capture.c:931
-#: src/capture.c:103
+#: src/capture.c:109
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Erreur à l'ouverture de %s : %s (vous devriez peut-être être root?)"
 
-#: src/capture.c:108
+#: src/capture.c:114
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr ""
 
-#: src/capture.c:116
+#: src/capture.c:122
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 
 # src/capture.c:922
-#: src/capture.c:122
+#: src/capture.c:128
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Erreur au périphérique: %s"
 
-#: src/capture.c:126
+#: src/capture.c:132
 #, fuzzy, c-format
 msgid "%s opened for offline capture"
 msgstr "Capture"
 
-#: src/capture.c:138
+#: src/capture.c:144
 msgid "Link type is Ethernet"
 msgstr ""
 
 #  The case for PPP or SLIP, for instance
-#: src/capture.c:146
+#: src/capture.c:152
 msgid "Link type is RAW"
 msgstr ""
 
 #  We are assuming LLC async frames only
-#: src/capture.c:155
+#: src/capture.c:161
 msgid "Link type is FDDI"
 msgstr ""
 
 #  As far as I know IEEE802 is Token Ring
-#: src/capture.c:164
+#: src/capture.c:170
 msgid "Link type is Token Ring"
 msgstr ""
 
 #  Loopback
-#: src/capture.c:172
+#: src/capture.c:178
 msgid "Link type is NULL"
 msgstr ""
 
 #  Linux cooked sockets (I believe this
 #  * is used for ISDN on linux)
-#: src/capture.c:183
+#: src/capture.c:189
 msgid "Link type is Linux cooked sockets"
 msgstr ""
 
 # src/capture.c:986
-#: src/capture.c:193
+#: src/capture.c:199
 #, c-format
 msgid "Link type not yet supported"
 msgstr "Type de liaison pas encore supporté"
 
 # src/capture.c:979
-#: src/capture.c:250
+#: src/capture.c:256
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Mode non disponible pour ce périphérique."
 
 # src/capture.c:1005
-#: src/capture.c:272
+#: src/capture.c:278
 #, c-format
 msgid "Ape mode not yet supported"
 msgstr "Mode ape pas encore supporté"
 
 # src/capture.c:942
-#: src/capture.c:298 src/capture.c:324
+#: src/capture.c:304 src/capture.c:330
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
 "Impossible d'utiliser le filtre: impossible d'obtenir l'info de netmask (%s)."
 
 # src/capture.c:948
-#: src/capture.c:304 src/capture.c:330
+#: src/capture.c:310 src/capture.c:336
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Impossible d'analyser le filtre (%s)."
 
 # src/capture.c:954
-#: src/capture.c:309 src/capture.c:335
+#: src/capture.c:315 src/capture.c:341
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Impossible d'installer le filtre (%s)."
 
-#: src/capture.c:347
+#: src/capture.c:353
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:357
+#: src/capture.c:363
 #, fuzzy
 msgid "Starting live capture"
 msgstr "Capture"
 
-#: src/capture.c:364
+#: src/capture.c:370
 #, fuzzy
 msgid "Starting offline capture"
 msgstr "Capture"
 
-#: src/capture.c:385
+#: src/capture.c:391
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:395
+#: src/capture.c:401
 #, fuzzy
 msgid "Pausing live capture"
 msgstr "Capture"
 
-#: src/capture.c:402
+#: src/capture.c:408
 #, fuzzy
 msgid "Pausing offline capture"
 msgstr "Capture"
 
-#: src/capture.c:407
+#: src/capture.c:413
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:426
+#: src/capture.c:432
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:432
+#: src/capture.c:438
 #, fuzzy
 msgid "Stopping live capture"
 msgstr "Capture"
 
-#: src/capture.c:438
+#: src/capture.c:444
 #, fuzzy
 msgid "Stopping offline capture"
 msgstr "Capture"
 
-#: src/capture.c:444
+#: src/capture.c:450
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#: src/capture.c:480
+#: src/capture.c:486
 msgid "Capture device stopped or file closed"
 msgstr ""
 
 # src/capture.c:713
-#: src/capture.c:681
+#: src/capture.c:688
 msgid "Reached default in get_node_id"
 msgstr "Comportement par défaut atteint dans get_node_id"
 
 # src/capture.c:749
-#: src/capture.c:733
+#: src/capture.c:740
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/capture.c:863
+#: src/capture.c:870
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:901
+#: src/capture.c:908
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
 # src/capture.c:409
-#: src/capture.c:1061
+#: src/capture.c:1068
 #, fuzzy, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Suppression du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:438 src/capture.c:443
-#: src/capture.c:1270
+#: src/capture.c:1277
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Suppression de la liaison. Nombre de liaisons: %d"
 
 # src/capture.c:499
-#: src/capture.c:1588
+#: src/capture.c:1595
 msgid "Null packet in check_packet"
 msgstr "Paquet NULL dans check_packet"
 
-#: src/menus.c:79
+#: src/menus.c:74
 msgid "No suitables interfaces for capture have been found"
 msgstr ""
 
-#: src/menus.c:85
+#: src/menus.c:80
 msgid "Available interfaces for capture:"
 msgstr ""
 
 # src/main.c:67
-#: src/menus.c:218
+#: src/menus.c:213
 #, fuzzy, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "définir l'interface sur laquelle écouter"
 
-#: src/menus.c:293
+#: src/menus.c:288
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:414
+#: src/menus.c:409
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr ""
 
-#: src/menus.c:475
+#: src/menus.c:470
 #, c-format
 msgid "Invalid link type %d"
 msgstr ""
 
-#: src/menus.c:502 src/menus.c:542
+#: src/menus.c:497 src/menus.c:537
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 #  Sets the appbar
-#: src/menus.c:512
+#: src/menus.c:507
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:519 src/menus.c:665
+#: src/menus.c:514 src/menus.c:660
 msgid "default interface"
 msgstr ""
 
 # src/interface.c:709
-#: src/menus.c:524
+#: src/menus.c:519
 #, fuzzy
 msgid " in Token Ring mode"
 msgstr "Mode de la taille"
 
-#: src/menus.c:527
+#: src/menus.c:522
 msgid " in FDDI mode"
 msgstr ""
 
 # src/interface.c:107
-#: src/menus.c:530
+#: src/menus.c:525
 #, fuzzy
 msgid " in Ethernet mode"
 msgstr "Etherape"
 
 # src/interface.c:709
-#: src/menus.c:533
+#: src/menus.c:528
 #, fuzzy
 msgid " in IP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:536
+#: src/menus.c:531
 #, fuzzy
 msgid " in TCP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:539
+#: src/menus.c:534
 #, fuzzy
 msgid " in UDP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:510
-#: src/menus.c:551
+#: src/menus.c:546
 #, fuzzy
 msgid "Diagram started"
 msgstr "Diagramme"
 
-#: src/menus.c:564
+#: src/menus.c:559
 msgid "Status not PLAY at gui_pause_capture"
 msgstr ""
 
 #  Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:588
 msgid "Paused"
 msgstr ""
 
 # src/interface.c:510
-#: src/menus.c:598
+#: src/menus.c:593
 #, fuzzy
 msgid "Diagram paused"
 msgstr "Diagramme"
 
-#: src/menus.c:624
+#: src/menus.c:619
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr ""
 
 # src/main.c:70
 #  Sets the appbar
-#: src/menus.c:658
+#: src/menus.c:653
 #, fuzzy
 msgid "Ready to capture from "
 msgstr "définir le filtre de capture"
 
 # src/interface.c:510
-#: src/menus.c:670
+#: src/menus.c:665
 #, fuzzy
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:320
+#: src/diagram.c:319
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:324
+#: src/diagram.c:323
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:330
+#: src/diagram.c:329
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:332
+#: src/diagram.c:331
 msgid ". TIMEOUT."
 msgstr ""
 
 # src/capture.c:948
-#: src/diagram.c:431
+#: src/diagram.c:430
 #, fuzzy, c-format
 msgid "Unable to parse color string %s for new protocol %s"
 msgstr "Impossible d'analyser le filtre (%s)."
 
-#: src/diagram.c:435
+#: src/diagram.c:434
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:602
+#: src/diagram.c:601
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:687
+#: src/diagram.c:686
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:712
+#: src/diagram.c:711
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
 # src/capture.c:438 src/capture.c:443
-#: src/diagram.c:1052
+#: src/diagram.c:1051
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Création de la liaison: %s-%s. Nombre de liaisons: %d"
 
-#: src/diagram.c:1113
+#: src/diagram.c:1112
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1271
+#: src/diagram.c:1270
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1274
+#: src/diagram.c:1273
 msgid "Link main protocol unknown"
 msgstr ""
 

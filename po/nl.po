@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-02 17:13+0200\n"
+"POT-Creation-Date: 2005-08-13 12:55+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -13,75 +13,75 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:40
+#: src/main.c:41
 msgid "mode of operation"
 msgstr "luister-modus"
 
-#: src/main.c:40
+#: src/main.c:41
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "&lt;ethernet|fddi|ip|tcp&gt;"
 
-#: src/main.c:42
+#: src/main.c:43
 msgid "set interface to listen to"
 msgstr "luister naar deze interface"
 
-#: src/main.c:42
+#: src/main.c:43
 msgid "<interface name>"
 msgstr "&lt;interface naam&gt;"
 
-#: src/main.c:44
+#: src/main.c:45
 msgid "set capture filter"
 msgstr "weergavefilter"
 
-#: src/main.c:44
+#: src/main.c:45
 msgid "<capture filter>"
 msgstr "&lt;weergavefilter&gt;"
 
-#: src/main.c:46
+#: src/main.c:47
 msgid "set input file"
 msgstr "selecteer invoerbestand"
 
-#: src/main.c:46
+#: src/main.c:47
 msgid "<file name>"
 msgstr "&lt;bestand&gt;"
 
-#: src/main.c:48
+#: src/main.c:49
 msgid "don't convert addresses to names"
 msgstr "converteer adressen niet naar namen"
 
-#: src/main.c:50
+#: src/main.c:51
 msgid "don't display any node text identification"
 msgstr "geef geen enkele identificatie van de knooppunten weer"
 
-#: src/main.c:52
+#: src/main.c:53
 msgid "do not fade old links"
 msgstr "laat oude lijnen niet vervagen"
 
-#: src/main.c:54
+#: src/main.c:55
 msgid "don't move nodes around"
 msgstr "verschuif de knooppunten niet"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "limits nodes displayed"
 msgstr "beperk aantal weergegeven knooppunten"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "<number of nodes>"
 msgstr "&lt;aantal knooppunten&gt;"
 
-#: src/main.c:58
+#: src/main.c:59
 msgid "Don't show warnings"
 msgstr "laat geen waarschuwingen zien"
 
-#: src/main.c:60
+#: src/main.c:61
 msgid "set the node color"
 msgstr "kies de knooppuntskleur"
 
-#: src/main.c:60 src/main.c:62
+#: src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "kleur"
 
-#: src/main.c:62
+#: src/main.c:63
 msgid "set the text color"
 msgstr "kies de tekstkleur"
 
@@ -89,7 +89,7 @@ msgstr "kies de tekstkleur"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Modus niet herkend. Type etherape --help voor een lijst."
 
-#: src/main.c:165 src/menus.c:46 src/menus.c:378 src/info_windows.c:129
+#: src/main.c:165 src/menus.c:46 src/menus.c:373 src/info_windows.c:129
 #: src/info_windows.c:779
 #, c-format
 msgid "We could not load the interface! (%s)"
@@ -107,330 +107,330 @@ msgstr ""
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
-#: src/capture.c:84
+#: src/capture.c:90
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Fout bij het openen van het apparaat: %s"
 
-#: src/capture.c:103
+#: src/capture.c:109
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
 
-#: src/capture.c:108
+#: src/capture.c:114
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr "Live apparaat %s geopend voor luisteren. pcap_fd: %d"
 
-#: src/capture.c:116
+#: src/capture.c:122
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr "Kan niet beide apparaten openen: %s, %s. Kies er één."
 
-#: src/capture.c:122
+#: src/capture.c:128
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Fout bij het openen van %s : %s"
 
-#: src/capture.c:126
+#: src/capture.c:132
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s is geopend voor offline luisteren"
 
-#: src/capture.c:138
+#: src/capture.c:144
 msgid "Link type is Ethernet"
 msgstr "Verbindingstype is Ethernet"
 
 #  The case for PPP or SLIP, for instance
-#: src/capture.c:146
+#: src/capture.c:152
 msgid "Link type is RAW"
 msgstr "Verbindingstype is RAW"
 
 #  We are assuming LLC async frames only
-#: src/capture.c:155
+#: src/capture.c:161
 msgid "Link type is FDDI"
 msgstr "Verbindingstype is FDDI"
 
 #  As far as I know IEEE802 is Token Ring
-#: src/capture.c:164
+#: src/capture.c:170
 msgid "Link type is Token Ring"
 msgstr "Verbindingstype is Token Ring"
 
 #  Loopback
-#: src/capture.c:172
+#: src/capture.c:178
 msgid "Link type is NULL"
 msgstr "Verbindingstype is NULL"
 
 #  Linux cooked sockets (I believe this
 #  * is used for ISDN on linux)
-#: src/capture.c:183
+#: src/capture.c:189
 #, fuzzy
 msgid "Link type is Linux cooked sockets"
 msgstr "Verbindingstype is Token Ring"
 
-#: src/capture.c:193
+#: src/capture.c:199
 #, c-format
 msgid "Link type not yet supported"
 msgstr "Linktype nog niet beschikbaar"
 
-#: src/capture.c:250
+#: src/capture.c:256
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 
-#: src/capture.c:272
+#: src/capture.c:278
 #, c-format
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:298 src/capture.c:324
+#: src/capture.c:304 src/capture.c:330
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
-#: src/capture.c:304 src/capture.c:330
+#: src/capture.c:310 src/capture.c:336
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:309 src/capture.c:335
+#: src/capture.c:315 src/capture.c:341
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
 
-#: src/capture.c:347
+#: src/capture.c:353
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status is geen PAUSE of STOP bij het starten van de capture"
 
-#: src/capture.c:357
+#: src/capture.c:363
 msgid "Starting live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:364
+#: src/capture.c:370
 msgid "Starting offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:385
+#: src/capture.c:391
 msgid "Status not PLAY at pause_capture"
 msgstr "Status is geen PLAY bij het pauzeren"
 
-#: src/capture.c:395
+#: src/capture.c:401
 msgid "Pausing live capture"
 msgstr "Live luisteren wordt gepauzeerd"
 
-#: src/capture.c:402
+#: src/capture.c:408
 msgid "Pausing offline capture"
 msgstr "Offline luisteren wordt gepauzeerd"
 
-#: src/capture.c:407
+#: src/capture.c:413
 msgid "Error while trying to pause capture"
 msgstr "Fout bij het pauzeren van het luisteren"
 
-#: src/capture.c:426
+#: src/capture.c:432
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status is geen PLAY of PAUZE bij het stoppen van de capture"
 
-#: src/capture.c:432
+#: src/capture.c:438
 msgid "Stopping live capture"
 msgstr "Live luisteren wordt gestopt"
 
-#: src/capture.c:438
+#: src/capture.c:444
 msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
-#: src/capture.c:444
+#: src/capture.c:450
 msgid "Error while removing capture source in stop_capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
-#: src/capture.c:480
+#: src/capture.c:486
 msgid "Capture device stopped or file closed"
 msgstr "Apparaat gestopt of bestand gesloten"
 
-#: src/capture.c:681
+#: src/capture.c:688
 msgid "Reached default in get_node_id"
 msgstr "Default bereikt in get_node_id"
 
-#: src/capture.c:733
+#: src/capture.c:740
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/capture.c:863
+#: src/capture.c:870
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 
-#: src/capture.c:901
+#: src/capture.c:908
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/capture.c:1061
+#: src/capture.c:1068
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"
 
-#: src/capture.c:1270
+#: src/capture.c:1277
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Lijn verwijderd. Aantal lijnen %d"
 
-#: src/capture.c:1588
+#: src/capture.c:1595
 msgid "Null packet in check_packet"
 msgstr "(null)-pakket in check_packet"
 
-#: src/menus.c:79
+#: src/menus.c:74
 msgid "No suitables interfaces for capture have been found"
 msgstr "Er zijn geen interfaces gevonden om naar te luisteren"
 
-#: src/menus.c:85
+#: src/menus.c:80
 msgid "Available interfaces for capture:"
 msgstr "Beschikbare interfaces om naar te luisteren:"
 
-#: src/menus.c:218
+#: src/menus.c:213
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Er wordt geluisterd naar de interface %s in de GUI"
 
-#: src/menus.c:293
+#: src/menus.c:288
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "%s-modus ingeschakeld in de GUI"
 
-#: src/menus.c:414
+#: src/menus.c:409
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status is geen PLAY of PAUZE bij gui_start_capture"
 
-#: src/menus.c:475
+#: src/menus.c:470
 #, c-format
 msgid "Invalid link type %d"
 msgstr ""
 
-#: src/menus.c:502 src/menus.c:542
+#: src/menus.c:497 src/menus.c:537
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 #  Sets the appbar
-#: src/menus.c:512
+#: src/menus.c:507
 msgid "Reading data from "
 msgstr "Data wordt ingelezen vanuit "
 
-#: src/menus.c:519 src/menus.c:665
+#: src/menus.c:514 src/menus.c:660
 msgid "default interface"
 msgstr "standaardinterface"
 
-#: src/menus.c:524
+#: src/menus.c:519
 msgid " in Token Ring mode"
 msgstr " in Token Ring modus"
 
-#: src/menus.c:527
+#: src/menus.c:522
 msgid " in FDDI mode"
 msgstr " in FDDI modus"
 
-#: src/menus.c:530
+#: src/menus.c:525
 msgid " in Ethernet mode"
 msgstr " in Ethernet modus"
 
-#: src/menus.c:533
+#: src/menus.c:528
 msgid " in IP mode"
 msgstr " in IP modus"
 
-#: src/menus.c:536
+#: src/menus.c:531
 msgid " in TCP mode"
 msgstr " in TCP modus"
 
-#: src/menus.c:539
+#: src/menus.c:534
 msgid " in UDP mode"
 msgstr " in UDP modus"
 
-#: src/menus.c:551
+#: src/menus.c:546
 msgid "Diagram started"
 msgstr "Diagram gestart"
 
-#: src/menus.c:564
+#: src/menus.c:559
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status is geen PLAY bij gui_pause_capture"
 
 #  Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:588
 msgid "Paused"
 msgstr "Gepauzeerd"
 
-#: src/menus.c:598
+#: src/menus.c:593
 msgid "Diagram paused"
 msgstr "Diagram gepauzeerd"
 
-#: src/menus.c:624
+#: src/menus.c:619
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status is geen PLAY of PAUZE bij gui_stop_capture"
 
 #  Sets the appbar
-#: src/menus.c:658
+#: src/menus.c:653
 msgid "Ready to capture from "
 msgstr "Klaar om te luisteren naar "
 
-#: src/menus.c:670
+#: src/menus.c:665
 msgid "Diagram stopped"
 msgstr "Diagram gestopt"
 
-#: src/diagram.c:320
+#: src/diagram.c:319
 msgid "Number of nodes: "
 msgstr "Aantal knooppunten:"
 
-#: src/diagram.c:324
+#: src/diagram.c:323
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Verversingsperiode: %d"
 
-#: src/diagram.c:330
+#: src/diagram.c:329
 msgid ". IDLE."
 msgstr ". IDLE ."
 
-#: src/diagram.c:332
+#: src/diagram.c:331
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
-#: src/diagram.c:431
+#: src/diagram.c:430
 #, fuzzy, c-format
 msgid "Unable to parse color string %s for new protocol %s"
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/diagram.c:435
+#: src/diagram.c:434
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:602
+#: src/diagram.c:601
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:687
+#: src/diagram.c:686
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 "Hoofdprotocol van het knooppunt niet gevonden bij de functie "
 "update_canvas_nodes"
 
-#: src/diagram.c:712
+#: src/diagram.c:711
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:1052
+#: src/diagram.c:1051
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1113
+#: src/diagram.c:1112
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 "Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
 
-#: src/diagram.c:1271
+#: src/diagram.c:1270
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1274
+#: src/diagram.c:1273
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 

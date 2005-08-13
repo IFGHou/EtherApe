@@ -8,5 +8,3 @@ src/protocols.c
 #src/glade-strings
 src/conversations.c
 src/info_windows.c
-# files added by intltool-prepare
-etherape.desktop.in

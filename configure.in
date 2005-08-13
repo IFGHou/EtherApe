@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.1])
+AC_INIT([etherape],[0.9.2])
 AC_CONFIG_SRCDIR(README)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -64,11 +64,11 @@ AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 AC_CHECK_FUNC(res_init, , 
   AC_CHECK_LIB(bind, res_init, , 
    AC_CHECK_LIB(resolv, res_init, ,
-    AC_CHECK_LIB(c, __res_init, , AC_MSG_ERROR(No resolver library found)))))
+    AC_CHECK_LIB(c, __res_init, , [AC_MSG_ERROR([No resolver library found])] ))))
 
 AC_CHECK_FUNC(res_mkquery, , 
   AC_CHECK_LIB(bind, res_mkquery, , 
-   AC_CHECK_LIB(resolv, res_mkquery, , AC_MSG_ERROR(No resolver library found))))
+   AC_CHECK_LIB(resolv, res_mkquery, , [AC_MSG_ERROR([No resolver library found])] )))
 
 # Check for the pcap library.
 AC_ARG_ENABLE(static-pcap,
@@ -118,6 +118,15 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
 fi
 
+AC_ARG_ENABLE(thread-resolver,
+  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes).])],
+  [use_multithread=$enableval], [use_multithread=yes])
+
+if test $use_multithread = no; then
+  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver.])
+fi
+
+
 AC_CONFIG_FILES([Makefile
 	   po/Makefile.in
            etherape.spec
@@ -127,4 +136,3 @@ AC_CONFIG_FILES([Makefile
            doc/Makefile
  	   doc/C/Makefile])
 AC_OUTPUT
-

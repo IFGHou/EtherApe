@@ -21,8 +21,9 @@
 #include <config.h>
 #endif
 
+#include <netinet/in.h>
 #include "globals.h"
-#include "dns.h"
+#include "ip-cache.h"
 #include "main.h"
 
 
@@ -213,8 +214,8 @@ main (int argc, char *argv[])
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
 
-  /* another timeout to handle DNS time */
-  g_timeout_add (10000, (GtkFunction) dns_tick, NULL);
+  /* another timeout to handle IP-cache timeouts */
+  g_timeout_add (10000, (GtkFunction) ipcache_tick, NULL);
 
   init_menus ();
 

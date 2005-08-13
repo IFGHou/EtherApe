@@ -14,3 +14,4 @@ PKG_NAME="etherape"
 
 autoreconf -fvis
 #intltoolize  --automake
+autoconf -v

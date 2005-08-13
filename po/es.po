@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-02 17:13+0200\n"
+"POT-Creation-Date: 2005-08-13 12:55+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -15,92 +15,92 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:39
-#: src/main.c:40
+#: src/main.c:41
 msgid "mode of operation"
 msgstr "modo de operación"
 
 # src/main.c:39
-#: src/main.c:40
+#: src/main.c:41
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|fddi|ip|tcp>"
 
 # src/main.c:41
-#: src/main.c:42
+#: src/main.c:43
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
 # src/main.c:41
-#: src/main.c:42
+#: src/main.c:43
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
 # src/main.c:43
-#: src/main.c:44
+#: src/main.c:45
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
 # src/main.c:43
-#: src/main.c:44
+#: src/main.c:45
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
 # src/main.c:45
-#: src/main.c:46
+#: src/main.c:47
 msgid "set input file"
 msgstr "definir el fichero de entrada"
 
 # src/main.c:45
-#: src/main.c:46
+#: src/main.c:47
 msgid "<file name>"
 msgstr "<nombre de archivo>"
 
 # src/main.c:47
-#: src/main.c:48
+#: src/main.c:49
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
 # src/main.c:49
-#: src/main.c:50
+#: src/main.c:51
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
 # src/main.c:51
-#: src/main.c:52
+#: src/main.c:53
 msgid "do not fade old links"
 msgstr "no desvanecer enlaces en desuso"
 
 # src/main.c:53
-#: src/main.c:54
+#: src/main.c:55
 msgid "don't move nodes around"
 msgstr "no mover los nodos"
 
 # src/main.c:55
-#: src/main.c:56
+#: src/main.c:57
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
 # src/main.c:55
-#: src/main.c:56
+#: src/main.c:57
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
 # src/main.c:57
-#: src/main.c:58
+#: src/main.c:59
 msgid "Don't show warnings"
 msgstr "no mostrar mensajes de aviso"
 
 # src/main.c:59
-#: src/main.c:60
+#: src/main.c:61
 msgid "set the node color"
 msgstr "fijar el color de los nodos"
 
 # src/main.c:59 src/main.c:61 src/main.c:63
-#: src/main.c:60 src/main.c:62
+#: src/main.c:61 src/main.c:63
 msgid "color"
 msgstr "color"
 
 # src/main.c:63
-#: src/main.c:62
+#: src/main.c:63
 msgid "set the text color"
 msgstr "fijar el color del texto"
 
@@ -112,7 +112,7 @@ msgstr ""
 
 # src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 # src/menus.c:372
-#: src/main.c:165 src/menus.c:46 src/menus.c:378 src/info_windows.c:129
+#: src/main.c:165 src/menus.c:46 src/menus.c:373 src/info_windows.c:129
 #: src/info_windows.c:779
 #, c-format
 msgid "We could not load the interface! (%s)"
@@ -134,98 +134,98 @@ msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
 # src/capture.c:84
-#: src/capture.c:84
+#: src/capture.c:90
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Error buscando dispositivo: %s"
 
 # src/capture.c:103
-#: src/capture.c:103
+#: src/capture.c:109
 #, c-format
 msgid "Error opening %s : %s - perhaps you need to be root?"
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
 # src/capture.c:108
-#: src/capture.c:108
+#: src/capture.c:114
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr "Dispositivo de captura \"en vivo\" %s abierto. pcap_fd: %d"
 
 # src/capture.c:116
-#: src/capture.c:116
+#: src/capture.c:122
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 "No se pueden abrir a la vez %s y el dispositivo %s. Por favor, escoja uno."
 
 # src/capture.c:122
-#: src/capture.c:122
+#: src/capture.c:128
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
 
 # src/capture.c:126
-#: src/capture.c:126
+#: src/capture.c:132
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
 
 # src/capture.c:138
-#: src/capture.c:138
+#: src/capture.c:144
 msgid "Link type is Ethernet"
 msgstr "Tipo de enlace es Ethernet"
 
 # src/capture.c:146
 #  The case for PPP or SLIP, for instance
-#: src/capture.c:146
+#: src/capture.c:152
 msgid "Link type is RAW"
 msgstr "Tipo de enlace es RAW"
 
 # src/capture.c:155
 #  We are assuming LLC async frames only
-#: src/capture.c:155
+#: src/capture.c:161
 msgid "Link type is FDDI"
 msgstr "Tipo de enlace es FDDI"
 
 # src/capture.c:164
 #  As far as I know IEEE802 is Token Ring
-#: src/capture.c:164
+#: src/capture.c:170
 msgid "Link type is Token Ring"
 msgstr "Tipo de enlace es Token Ring"
 
 # src/capture.c:172
 #  Loopback
-#: src/capture.c:172
+#: src/capture.c:178
 msgid "Link type is NULL"
 msgstr "Tipo de enlace es NULL"
 
 # src/capture.c:164
 #  Linux cooked sockets (I believe this
 #  * is used for ISDN on linux)
-#: src/capture.c:183
+#: src/capture.c:189
 msgid "Link type is Linux cooked sockets"
 msgstr "Tipo de enlace es \"Linux cooked sockets\""
 
 # src/capture.c:181
-#: src/capture.c:193
+#: src/capture.c:199
 #, c-format
 msgid "Link type not yet supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:234
-#: src/capture.c:250
+#: src/capture.c:256
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
 # src/capture.c:256
-#: src/capture.c:272
+#: src/capture.c:278
 #, c-format
 msgid "Ape mode not yet supported"
 msgstr "Modo aún no soportado"
 
 # src/capture.c:282 src/capture.c:308
-#: src/capture.c:298 src/capture.c:324
+#: src/capture.c:304 src/capture.c:330
 #, c-format
 msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
 msgstr ""
@@ -233,299 +233,299 @@ msgstr ""
 "s)."
 
 # src/capture.c:288 src/capture.c:314
-#: src/capture.c:304 src/capture.c:330
+#: src/capture.c:310 src/capture.c:336
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
 # src/capture.c:293 src/capture.c:319
-#: src/capture.c:309 src/capture.c:335
+#: src/capture.c:315 src/capture.c:341
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
 # src/capture.c:330
-#: src/capture.c:347
+#: src/capture.c:353
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status no es PAUSE ni STOP en start_capture"
 
 # src/capture.c:340
-#: src/capture.c:357
+#: src/capture.c:363
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:347
-#: src/capture.c:364
+#: src/capture.c:370
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:363
-#: src/capture.c:385
+#: src/capture.c:391
 msgid "Status not PLAY at pause_capture"
 msgstr "Status no es PLAY en pause_capture"
 
 # src/capture.c:373
-#: src/capture.c:395
+#: src/capture.c:401
 msgid "Pausing live capture"
 msgstr "Pausando captura en vivo"
 
 # src/capture.c:380
-#: src/capture.c:402
+#: src/capture.c:408
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:385
-#: src/capture.c:407
+#: src/capture.c:413
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:404
-#: src/capture.c:426
+#: src/capture.c:432
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status no es PLAY ni PAUSE en stop_capture"
 
 # src/capture.c:410
-#: src/capture.c:432
+#: src/capture.c:438
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:416
-#: src/capture.c:438
+#: src/capture.c:444
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:422
-#: src/capture.c:444
+#: src/capture.c:450
 msgid "Error while removing capture source in stop_capture"
 msgstr "Error al intentar quitar capture source en stop_capture"
 
 # src/capture.c:458
-#: src/capture.c:480
+#: src/capture.c:486
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
 # src/capture.c:659
-#: src/capture.c:681
+#: src/capture.c:688
 msgid "Reached default in get_node_id"
 msgstr "Se ha alcanzado el por defecto en get_node_id"
 
 # src/capture.c:711
-#: src/capture.c:733
+#: src/capture.c:740
 msgid "Unsopported ape mode in get_link_id"
 msgstr "Modo no soportado en get_link_id"
 
 # src/capture.c:844
-#: src/capture.c:863
+#: src/capture.c:870
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:882
-#: src/capture.c:901
+#: src/capture.c:908
 #, c-format
 msgid "Creating link: %s-%s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 
 # src/capture.c:1027
-#: src/capture.c:1061
+#: src/capture.c:1068
 #, c-format
 msgid "Removing node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:1232
-#: src/capture.c:1270
+#: src/capture.c:1277
 #, c-format
 msgid "Removing link. Number of links %d"
 msgstr "Borrando enlace. Número de enlaces: %d"
 
 # src/capture.c:1550
-#: src/capture.c:1588
+#: src/capture.c:1595
 msgid "Null packet in check_packet"
 msgstr "Paquete nulo en check_packet"
 
 # src/menus.c:67
-#: src/menus.c:79
+#: src/menus.c:74
 msgid "No suitables interfaces for capture have been found"
 msgstr "No se han encontrado interfaces adecuados para capturar"
 
 # src/menus.c:73
-#: src/menus.c:85
+#: src/menus.c:80
 msgid "Available interfaces for capture:"
 msgstr "Dispositivos de captura disponibles:"
 
 # src/menus.c:205
-#: src/menus.c:218
+#: src/menus.c:213
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Interfaz de captura fijado a %s en el GUI"
 
 # src/menus.c:277
-#: src/menus.c:293
+#: src/menus.c:288
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modo fijado en %s en el GUI"
 
 # src/menus.c:450
-#: src/menus.c:414
+#: src/menus.c:409
 msgid "Status not STOP or PAUSE at gui_start_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
 
-#: src/menus.c:475
+#: src/menus.c:470
 #, c-format
 msgid "Invalid link type %d"
 msgstr ""
 
-#: src/menus.c:502 src/menus.c:542
+#: src/menus.c:497 src/menus.c:537
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 # src/menus.c:544
 #  Sets the appbar
-#: src/menus.c:512
+#: src/menus.c:507
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
 # src/menus.c:551 src/menus.c:695
-#: src/menus.c:519 src/menus.c:665
+#: src/menus.c:514 src/menus.c:660
 msgid "default interface"
 msgstr "interfaz por defecto"
 
 # src/menus.c:556
-#: src/menus.c:524
+#: src/menus.c:519
 msgid " in Token Ring mode"
 msgstr " en modo Token Ring"
 
 # src/menus.c:559
-#: src/menus.c:527
+#: src/menus.c:522
 msgid " in FDDI mode"
 msgstr " en modo FDDI"
 
 # src/menus.c:562
-#: src/menus.c:530
+#: src/menus.c:525
 msgid " in Ethernet mode"
 msgstr " en modo Ethernet"
 
 # src/menus.c:565
-#: src/menus.c:533
+#: src/menus.c:528
 msgid " in IP mode"
 msgstr " en modo IP"
 
 # src/menus.c:568
-#: src/menus.c:536
+#: src/menus.c:531
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
 # src/menus.c:571
-#: src/menus.c:539
+#: src/menus.c:534
 msgid " in UDP mode"
 msgstr " en modo UDP"
 
 # src/menus.c:581
-#: src/menus.c:551
+#: src/menus.c:546
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
 # src/menus.c:594
-#: src/menus.c:564
+#: src/menus.c:559
 msgid "Status not PLAY at gui_pause_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
 # src/menus.c:623
 #  Sets the appbar
-#: src/menus.c:593
+#: src/menus.c:588
 msgid "Paused"
 msgstr "Pausado"
 
 # src/menus.c:628
-#: src/menus.c:598
+#: src/menus.c:593
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
 # src/menus.c:654
-#: src/menus.c:624
+#: src/menus.c:619
 msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status no es PLAY ni PAUSE en gui_stop_capture"
 
 # src/menus.c:688
 #  Sets the appbar
-#: src/menus.c:658
+#: src/menus.c:653
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
 
 # src/menus.c:700
-#: src/menus.c:670
+#: src/menus.c:665
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
 # src/diagram.c:318
-#: src/diagram.c:320
+#: src/diagram.c:319
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
 # src/diagram.c:322
-#: src/diagram.c:324
+#: src/diagram.c:323
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
 
 # src/diagram.c:328
-#: src/diagram.c:330
+#: src/diagram.c:329
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
 # src/diagram.c:330
-#: src/diagram.c:332
+#: src/diagram.c:331
 msgid ". TIMEOUT."
 msgstr ". EXPIRACIÓN."
 
 # src/diagram.c:433
-#: src/diagram.c:431
+#: src/diagram.c:430
 #, c-format
 msgid "Unable to parse color string %s for new protocol %s"
 msgstr "Falló el análisis del color %s para el nuevo protocolo %s"
 
 # src/diagram.c:437
-#: src/diagram.c:435
+#: src/diagram.c:434
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "No ha sido posible reservar un color para el nuevo protocolo %s"
 
 # src/diagram.c:579
-#: src/diagram.c:602
+#: src/diagram.c:601
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:656
-#: src/diagram.c:687
+#: src/diagram.c:686
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
 
 # src/diagram.c:681
-#: src/diagram.c:712
+#: src/diagram.c:711
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:1015
-#: src/diagram.c:1052
+#: src/diagram.c:1051
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:1081
-#: src/diagram.c:1113
+#: src/diagram.c:1112
 msgid "Main link protocol not found in update_canvas_links"
 msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
 
 # src/diagram.c:1227
-#: src/diagram.c:1271
+#: src/diagram.c:1270
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1274
+#: src/diagram.c:1273
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
