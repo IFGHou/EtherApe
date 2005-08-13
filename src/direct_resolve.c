@@ -42,7 +42,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#if defined(__MACH__) && defined(__APPLE__)
+#include <arpa/nameser_compat.h>
+#else
 #include <arpa/nameser.h>
+#endif
 #include <netdb.h>
 #include <resolv.h>
 #include <unistd.h>
