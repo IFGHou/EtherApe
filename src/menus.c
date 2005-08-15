@@ -435,6 +435,9 @@ gui_start_capture (void)
     {
     case L_NULL:
     case L_RAW:
+#ifdef DLT_LINUX_SLL
+    case L_LINUX_SLL:
+#endif
       widget = glade_xml_get_widget (xml, "ieee802_radio");
       gtk_widget_set_sensitive (widget, FALSE);
       widget = glade_xml_get_widget (xml, "fddi_radio");
@@ -451,6 +454,9 @@ gui_start_capture (void)
       gtk_widget_set_sensitive (widget, FALSE);
       break;
     case L_EN10MB:
+#ifdef DLT_IEEE802_11
+    case L_IEEE802_11:
+#endif
       widget = glade_xml_get_widget (xml, "fddi_radio");
       gtk_widget_set_sensitive (widget, FALSE);
       widget = glade_xml_get_widget (xml, "ethernet_radio");
@@ -467,7 +473,7 @@ gui_start_capture (void)
       gtk_widget_set_sensitive (widget, TRUE);
       break;
     default:
-      g_critical (_("Invalid link type %d"), linktype);
+      g_warning (_("Invalid link type %d"), linktype);
       return;
     }
 
@@ -494,7 +500,7 @@ gui_start_capture (void)
       widget = glade_xml_get_widget (xml, "udp_radio");
       break;
     default:
-      g_critical (_("Invalid mode: %d"), pref.mode);
+      g_warning (_("Invalid mode: %d"), pref.mode);
       return;
     }
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);

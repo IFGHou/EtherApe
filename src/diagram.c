@@ -457,6 +457,7 @@ delete_gui_protocols (void)
   protocol_t *protocol = NULL;
   GtkWidget *prot_table = NULL;
   guint i = 0;
+  guint n_rows = 1, n_columns = 1;
 
   item = legend_protocols;
 
@@ -485,6 +486,10 @@ delete_gui_protocols (void)
       item = item->next;
     }
 
+  g_object_get (G_OBJECT (prot_table), "n_rows", &n_rows, "n_columns",
+		&n_columns, NULL);
+  gtk_table_resize (GTK_TABLE (prot_table), 1, n_columns );
+  gtk_widget_queue_resize (GTK_WIDGET (app1));
 }				/* delete_gui_protocols */
 
 /* 

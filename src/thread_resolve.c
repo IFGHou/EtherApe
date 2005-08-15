@@ -114,6 +114,13 @@ thread_pool_routine(void *dt)
    while (!request_stop_thread)
    {
       pthread_mutex_lock(&resolvemtx);
+      if (request_stop_thread)
+      {
+         /* must exit */
+         pthread_mutex_unlock(&resolvemtx);
+         break;
+      }
+     
       if (!resolveListHead)
       {
          /* list empty, wait on condition releasing mutex */
@@ -181,8 +188,10 @@ start_threads()
 static void
 stop_threads()
 {
+   pthread_mutex_lock(&resolvemtx);
    request_stop_thread = 1;
    pthread_cond_broadcast(&resolvecond); /* wake all threads */
+   pthread_mutex_unlock(&resolvemtx);
 }
 
 /* creates a request, placing in the queue 

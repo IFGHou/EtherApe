@@ -56,11 +56,22 @@ AC_CHECK_TYPES(u_short, ,AC_DEFINE(u_short, unsigned short, [define u_short]))
 AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
 AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
+AC_ARG_ENABLE(thread-resolver,
+  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes).])],
+  [use_multithread=$enableval], [use_multithread=yes])
+
+if test $use_multithread = no; then
+  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver.])
+fi
+
+# res_init and friends are used only on direct resolver. Otherwhise we need
+# gethostbyaddr_r() 
+if test $use_multithread = no; then
+
 # Copied from mtr to support dns.c
 # After some kind of change in libc, it seems it is
 # required to #include <resolv.h> for the test to succeed.
 # To go around it I included the test for __res_init
-
 AC_CHECK_FUNC(res_init, , 
   AC_CHECK_LIB(bind, res_init, , 
    AC_CHECK_LIB(resolv, res_init, ,
@@ -69,6 +80,12 @@ AC_CHECK_FUNC(res_init, ,
 AC_CHECK_FUNC(res_mkquery, , 
   AC_CHECK_LIB(bind, res_mkquery, , 
    AC_CHECK_LIB(resolv, res_mkquery, , [AC_MSG_ERROR([No resolver library found])] )))
+else
+AC_CHECK_FUNC(gethostbyaddr_r, , 
+  AC_CHECK_LIB(bind, gethostbyaddr_r, , 
+   AC_CHECK_LIB(resolv, gethostbyaddr_r, , [AC_MSG_ERROR([No resolver library found or missing gethostbyaddr_r])] )))
+
+fi
 
 # Check for the pcap library.
 AC_ARG_ENABLE(static-pcap,
@@ -116,14 +133,6 @@ if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
 else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
-fi
-
-AC_ARG_ENABLE(thread-resolver,
-  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes).])],
-  [use_multithread=$enableval], [use_multithread=yes])
-
-if test $use_multithread = no; then
-  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver.])
 fi
 
 
