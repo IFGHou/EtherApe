@@ -301,6 +301,15 @@ load_config (char *prefix)
     ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
      &(pref.n_colors), &(pref.colors), &u);
 
+  if (!pref.n_colors || !pref.colors || !strlen(pref.colors[0]))
+  {
+     /* color array defined in prefs, but empty */
+     pref.n_colors = 1;
+     g_free(pref.colors[0]);
+     pref.colors[0] = g_strdup("#7f7f7f");
+  }
+
+  
   g_free (config_file_version);
   gnome_config_pop_prefix ();
 }				/* load_config */

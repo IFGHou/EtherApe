@@ -507,6 +507,13 @@ get_prot_color (gchar * name)
    * as cycling assigned protocols is set.
    * If it's not, then search for a not assigned color. */
 
+  if (pref.n_colors<1)
+  {
+     /* no colors defined, forcing grey */
+     color = g_strdup("#7f7f7f");
+     return color;
+  }
+  
   do
     {
       if (color)
@@ -524,6 +531,9 @@ get_prot_color (gchar * name)
     }
   while ((!pref.cycle) && protocol && strcmp (protocol, "")
 	 && (i < pref.n_colors));
+
+  if (protocol)
+     g_free (protocol);
 
   /* But if we find that a particular protocol has a particular color
    * assigned, we override the default */
