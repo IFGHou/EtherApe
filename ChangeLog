@@ -1,3 +1,13 @@
+2005-08-18 19:41  bchiara
+
+	* .cvsignore, NEWS, autogen.sh, html/NEWS.html, po/es.po,
+	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po, src/diagram.c: Small
+	correction, updated NEWS
+
+2005-08-17 21:21  bchiara
+
+	* ChangeLog: Changelog
+
 2005-08-17 21:20  bchiara
 
 	* configure.in, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
