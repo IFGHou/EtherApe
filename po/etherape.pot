@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-17 22:53+0200\n"
+"POT-Creation-Date: 2005-08-18 21:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgid ""
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/main.c:395
+#: src/main.c:404
 msgid "Preferences saved"
 msgstr ""
 
@@ -391,34 +391,34 @@ msgstr ""
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:606
+#: src/diagram.c:622
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:691
+#: src/diagram.c:707
 msgid "Main node protocol not found in update_canvas_nodes"
 msgstr ""
 
-#: src/diagram.c:716
+#: src/diagram.c:732
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1056
+#: src/diagram.c:1072
 #, c-format
 msgid "Creating canvas_link: %s-%s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1117
+#: src/diagram.c:1133
 msgid "Main link protocol not found in update_canvas_links"
 msgstr ""
 
-#: src/diagram.c:1275
+#: src/diagram.c:1291
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1278
+#: src/diagram.c:1294
 msgid "Link main protocol unknown"
 msgstr ""
 

@@ -519,7 +519,10 @@ get_prot_color (gchar * name)
       if (color)
 	g_free (color);
       if (protocol)
-	g_free (protocol);
+        {
+          g_free (protocol);
+          protocol=NULL;
+        }
       color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
       color = g_strdup (color_protocol[0]);
       protocol = g_strdup (color_protocol[1]);
@@ -533,7 +536,10 @@ get_prot_color (gchar * name)
 	 && (i < pref.n_colors));
 
   if (protocol)
-     g_free (protocol);
+  {
+    g_free (protocol);
+    protocol=NULL;
+  }
 
   /* But if we find that a particular protocol has a particular color
    * assigned, we override the default */
