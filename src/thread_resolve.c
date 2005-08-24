@@ -23,6 +23,9 @@
 
 
 #include <config.h>
+
+#ifndef USE_DIRECTDNS
+
 #include <sys/types.h>
 #include <time.h>
 #include <sys/time.h>
@@ -292,3 +295,5 @@ thread_lookup (uint32_t ip, int fqdn)
   pthread_mutex_unlock(&resolvemtx);
   return ipname;
 }
+
+#endif /* !USE_DIRECTDNS */

@@ -33,6 +33,10 @@
 
 
 #include <config.h>
+
+#ifdef USE_DIRECTDNS
+
+
 #include <sys/types.h>
 #include <time.h>
 #include <sys/time.h>
@@ -58,6 +62,8 @@
 #include <errno.h>
 #include <ip-cache.h>
 #include <direct_resolve.h>
+
+
 
 #ifdef NO_STRERROR
 extern int sys_nerr;
@@ -787,3 +793,5 @@ direct_lookup (uint32_t ip, int fqdn)
     
   return ipname;
 }
+
+#endif /* USE_DIRECTDNS*/
