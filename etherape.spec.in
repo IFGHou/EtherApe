@@ -9,7 +9,7 @@ Summary: Graphical network viewer modeled after etherman.
 Name: etherape
 Version: %ver
 Release: %rel
-Copyright: GPL
+License: GPL
 Group: Applications/Networking
 Source: http://download.sourceforge.net/etherape/etherape-%{ver}.tar.gz
 # Source1: ee-stdimg-new.xpm
