@@ -1,12 +1,28 @@
+2005-11-01 08:26  bchiara
+
+	* etherape.spec.in: Aligned spec file to newer syntax Thanks to
+	J.French for signaling.
+
+2005-08-24 18:07  bchiara
+
+	* configure.in: Changed checks for OSX compatibility. Thanks to
+	Eric Stewart for the patch.
+
+2005-08-24 18:00  bchiara
+
+	* NEWS, html/NEWS.html, src/direct_resolve.c, src/thread_resolve.c:
+	Minor changes and a fix for a silly mistake: forgetting the #ifdefs
+	around the tresolvers.	Thanks to Eric Stewart for signaling.
+
+2005-08-18 19:45  bchiara
+
+	* ChangeLog: Changelog aligned to 0.9.3
+
 2005-08-18 19:41  bchiara
 
 	* .cvsignore, NEWS, autogen.sh, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po, src/diagram.c: Small
 	correction, updated NEWS
-
-2005-08-17 21:21  bchiara
-
-	* ChangeLog: Changelog
 
 2005-08-17 21:20  bchiara
 
@@ -1340,8 +1356,22 @@
 
 2001-04-20 15:04  toledo
 
-	* doc/C/Makefile.am: etherape directory needed for people building
-	from CVS
+	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
+	etherape/docbook.css, etherape/index.html, etherape/license.html,
+	etherape/ln7.html, etherape/prefs.html, etherape/usage.html,
+	etherape/stylesheet-images/caution.gif,
+	etherape/stylesheet-images/home.gif,
+	etherape/stylesheet-images/important.gif,
+	etherape/stylesheet-images/next.gif,
+	etherape/stylesheet-images/note.gif,
+	etherape/stylesheet-images/prev.gif,
+	etherape/stylesheet-images/tip.gif,
+	etherape/stylesheet-images/toc-blank.gif,
+	etherape/stylesheet-images/toc-minus.gif,
+	etherape/stylesheet-images/toc-plus.gif,
+	etherape/stylesheet-images/up.gif,
+	etherape/stylesheet-images/warning.gif: etherape directory needed
+	for people building from CVS
 
 2001-04-20 08:19  toledo
 
@@ -3163,6 +3193,11 @@
 	src/support.c, src/util.c: 
 	Diagram resizes with window
 
+2000-02-25 13:17  toledo
+
+	* src/.deps/: callbacks.P, capture.P, interface.P, main.P,
+	resolv.P, support.P, util.P: [no log message]
+
 2000-02-25 13:09  toledo
 
 	* intl/: ChangeLog, Makefile, Makefile.in, VERSION, bindtextdom.c,
@@ -3192,7 +3227,9 @@
 
 2000-02-24 16:53  toledo
 
-	* src/: Makefile, main.c: [no log message]
+	* src/: Makefile, main.c, .deps/callbacks.P, .deps/capture.P,
+	.deps/interface.P, .deps/main.P, .deps/resolv.P, .deps/support.P,
+	.deps/util.P: [no log message]
 
 2000-02-24 07:52  toledo
 
@@ -3216,8 +3253,8 @@
 
 2000-02-23 17:54  toledo
 
-	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h:
-	
+	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h,
+	src/.deps/resolv.P, src/.deps/util.P: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3228,7 +3265,7 @@
 	configure, configure.in, etherape.glade, intl/Makefile,
 	macros/Makefile, macros/Makefile.in, po/Makefile, po/Makefile.in,
 	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
-	src/capture.c, src/interface.c: 
+	src/capture.c, src/interface.c, src/.deps/capture.P: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3242,7 +3279,7 @@
 
 2000-02-23 12:19  toledo
 
-	* src/: Makefile, capture.c, interface.c, main.c: 
+	* src/: Makefile, capture.c, interface.c, main.c, .deps/capture.P: 
 	
 	First gnome_canvas version
 
@@ -3273,14 +3310,14 @@
 2000-02-21 23:22  toledo
 
 	* README, po/etherape.pot, src/callbacks.h, src/capture.c,
-	src/capture.h, src/main.c: 
+	src/capture.h, src/main.c, src/.deps/main.P: 
 	
 	Node sizes as average traffic in the last 10 seconds
 
 2000-02-21 14:16  toledo
 
 	* src/: Makefile, callbacks.c, callbacks.h, capture.c, capture.h,
-	interface.c, main.c, support.c: 
+	interface.c, main.c, support.c, .deps/main.P: 
 	Added gnome support. Correctly displays ether addresses.
 
 2000-02-21 14:13  toledo
@@ -3324,7 +3361,8 @@
 	configure, configure.in, etherape.glade, src/Makefile,
 	src/Makefile.am, src/Makefile.in, src/callbacks.c, src/callbacks.h,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: 
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: 
 	
 	Added gnome support in order to use the gnome_canvas.
 
@@ -3350,12 +3388,13 @@
 2000-02-18 19:56  toledo
 
 	* src/: Makefile, Makefile.am, Makefile.in, callbacks.h, capture.c,
-	interface.h, main.c, support.h: [no log message]
+	interface.h, main.c, support.h, .deps/capture.P, .deps/main.P: [no
+	log message]
 
 2000-02-18 12:23  toledo
 
-	* Makefile, README, config.h, config.status, src/Makefile: [no log
-	message]
+	* Makefile, README, config.h, config.status, src/Makefile,
+	src/.deps/capture.P: [no log message]
 
 2000-02-18 11:48  toledo
 
@@ -3369,7 +3408,9 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: [no log message]
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: [no
+	log message]
 
 2000-02-18 11:31  toledo
 
@@ -3379,5 +3420,7 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h: Initial revision
+	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
+	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P:
+	Initial revision
 
