@@ -67,6 +67,8 @@ init_menus (void)
    * menu. Thus I must add it manually here */
   interface_list = get_interface_list (&err, err_str);
 
+  g_my_info (_("get_interface result: %d (msg: '%s')"), err, err_str);
+
   interfaces = interface_list;
 
   if (!interfaces)

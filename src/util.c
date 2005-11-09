@@ -33,6 +33,7 @@
 #endif
 
 #include <glib.h>
+#include <gnome.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -68,6 +69,7 @@
 #include "mkstemp.h"
 #endif
 
+#include "globals.h"
 #include "util.h"
 
 #ifdef HAVE_IO_H
@@ -122,6 +124,9 @@ get_interface_list (int *err, char *err_str)
   struct search_user_data user_data;
   pcap_t *pch;
 
+  *err = 0;
+  *err_str = '\0';
+  
   if (sock < 0)
     {
       sprintf (err_str, "Error opening socket: %s", strerror (errno));
@@ -153,7 +158,10 @@ get_interface_list (int *err, char *err_str)
        */
       if (strncmp (ifr->ifr_name, "dummy", 5) == 0 ||
 	  strchr (ifr->ifr_name, ':') != NULL)
-	goto next;
+        {
+	  g_my_debug(_("skipping dummy/virtual interface %s"), ifr->ifr_name);
+	  goto next;
+        }
 
       /*
        * If we already have this interface name on the list,
@@ -166,7 +174,10 @@ get_interface_list (int *err, char *err_str)
       user_data.found = FALSE;
       g_list_foreach (il, search_for_if_cb, &user_data);
       if (user_data.found)
-	goto next;
+        {
+	  g_my_debug(_("skipping already listed interface %s"), ifr->ifr_name);
+	  goto next;
+        }
 
       /*
        * Get the interface flags.
@@ -176,7 +187,10 @@ get_interface_list (int *err, char *err_str)
       if (ioctl (sock, SIOCGIFFLAGS, (char *) &ifrflags) < 0)
 	{
 	  if (errno == ENXIO)
-	    goto next;
+            {
+	      g_my_debug(_("skipping interface %s: got ENXIO"), ifr->ifr_name);
+	      goto next;
+            }
 	  sprintf (err_str,
 		   "SIOCGIFFLAGS error getting flags for interface %s: %s",
 		   ifr->ifr_name, strerror (errno));
@@ -187,7 +201,10 @@ get_interface_list (int *err, char *err_str)
        * Skip interfaces that aren't up.
        */
       if (!(ifrflags.ifr_flags & IFF_UP))
-	goto next;
+        {
+	  g_my_debug(_("skipping interface %s: is down"), ifr->ifr_name);
+	  goto next;
+        }
 
       /*
        * Skip interfaces that we can't open with "libpcap".
@@ -197,7 +214,10 @@ get_interface_list (int *err, char *err_str)
        */
       pch = pcap_open_live (ifr->ifr_name, MIN_PACKET_SIZE, 0, 0, err_str);
       if (pch == NULL)
-	goto next;
+        {
+	  g_my_debug(_("skipping interface %s: can't be opened with libpcap (error %s)\n"), ifr->ifr_name, err_str);
+	  goto next;
+        }
       pcap_close (pch);
 
       /*
