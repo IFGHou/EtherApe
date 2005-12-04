@@ -24,15 +24,152 @@
 
 #include "globals.h"
 #include "capture.h"
+#include "names.h"
+#include "node.h"
+#include "conversations.h"
 #include "dns.h"
-#include "eth_resolv.h"
+#include "protocols.h"
+
+#define MAXSIZE 200
+#define PCAP_TIMEOUT 250
+
+#include "globals.h"
+
+/* Used on some functions to indicate how to operate on the node info
+ * depending on what side of the comm the node was at */
+typedef enum
+{
+  SRC = 0,
+  DST = 1
+}
+create_node_type_t;
+
+
+
+
 
 static pcap_t *pch_struct;		/* pcap structure */
 static struct pcap_pkthdr phdr;
+static gint pcap_fd;			/* The file descriptor used by libpcap */
+static gint capture_source;		/* It's the input tag or the timeout tag,
+				 * in online or offline mode */
+static guint32 ms_to_next;	/* Used for offline mode to store the amount
+				 * of time that we have to wait between
+				 * one packet and the next */
+static GList *new_nodes = NULL;	/* List that contains every new node not yet
+				 * acknowledged by the main app with
+				 * ape_get_new_node */
+
+
+/* Local funtions declarations */
+static guint get_offline_packet (void);
+static void cap_t_o_destroy (gpointer data);
+static void read_packet_live(gpointer dummy, gint source,
+			 GdkInputCondition condition);
+static void packet_acquired(guint8 * packet);
+
+static node_t *create_node (const guint8 * packet, const node_id_t * node_id);
+
+static void add_node_packet (const guint8 * packet,
+			     packet_t * packet_info,
+			     packet_direction direction);
+static void add_link_packet (const link_id_t *link_id, packet_t * packet_info);
+static void add_protocol (GList ** protocols, const gchar * stack,
+		   guint pkt_size, packet_t * packet_info);
+
+static gint update_node(node_id_t * node_id, node_t * node, gpointer delete_list_ptr);
+static gboolean update_protocol (protocol_t * protocol);
+
+
+static void update_node_names (node_t * node);
+static void set_node_name (node_t * node, gchar * preferences);
+
+static gboolean check_packet (packet_t * packet,
+			      gpointer parent,
+			      enum packet_belongs belongs_to);
+
+static gint prot_freq_compare (gconstpointer a, gconstpointer b);
+static GString *print_mem (const node_id_t *node_id);
+static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
+
 
 /* 
  * FUNCTION DEFINITIONS
  */
+
+/* Returns a pointer to a set of octects that define a link for the
+ * current mode in this particular packet */
+static node_id_t 
+get_node_id (const guint8 * packet, create_node_type_t node_type)
+{
+  node_id_t node_id;
+  memset( &node_id, 0, sizeof(node_id));
+  node_id.node_type = pref.mode;
+
+  switch (pref.mode)
+    {
+    case ETHERNET:
+      if (node_type == SRC)
+	g_memmove(node_id.addr.eth, packet + 6, sizeof(node_id.addr.eth));
+      else
+	g_memmove(node_id.addr.eth, packet, sizeof(node_id.addr.eth));
+      break;
+    case FDDI:
+      if (node_type == SRC)
+	g_memmove(node_id.addr.fddi, packet + 7, sizeof(node_id.addr.fddi));
+      else
+	g_memmove(node_id.addr.fddi, packet + 1, sizeof(node_id.addr.fddi));
+      break;
+    case IEEE802:
+      if (node_type == SRC)
+	g_memmove(node_id.addr.i802, packet + 8, sizeof(node_id.addr.i802));
+      else
+	g_memmove(node_id.addr.i802, packet + 2, sizeof(node_id.addr.i802));
+      break;
+    case IP:
+      if (node_type == SRC)
+	g_memmove(node_id.addr.ip4, packet + l3_offset + 12, sizeof(node_id.addr.ip4));
+      else
+	g_memmove(node_id.addr.ip4, packet + l3_offset + 16, sizeof(node_id.addr.ip4));
+      break;
+    case TCP:
+      if (node_type == SRC)
+	{
+	  guint16 port;
+	  g_memmove (node_id.addr.tcp4.host, packet + l3_offset + 12, 4);
+	  port = ntohs (*(guint16 *) (packet + l3_offset + 20));
+	  g_memmove (node_id.addr.tcp4.port, &port, 2);
+	}
+      else
+	{
+	  guint16 port;
+	  g_memmove (node_id.addr.tcp4.host, packet + l3_offset + 16, 4);
+	  port = ntohs (*(guint16 *) (packet + l3_offset + 22));
+	  g_memmove (node_id.addr.tcp4.port, &port, 2);
+	}
+      break;
+    default:
+      g_error (_("Reached default in get_node_id"));
+    }
+
+  return node_id;
+}				/* get_node_id */
+
+/* Returns a set of octects that define a link for the
+ * current mode in this particular packet 
+ * Is always formed by two node_ids */
+static link_id_t
+get_link_id (const guint8 * packet)
+{
+  link_id_t link_id;
+  memset( &link_id, 0, sizeof(link_id));
+
+  link_id.src = get_node_id(packet, SRC);
+  link_id.dst = get_node_id(packet, DST);
+
+  return link_id;
+}				/* get_link_id */
+
 
 /* Sets up the pcap device
  * Sets up the mode and related variables
@@ -54,11 +191,12 @@ init_capture (void)
 
   if (!data_initialized)
     {
-      nodes = g_tree_new (node_id_compare);
-      links = g_tree_new (link_id_compare);
+      nodes_catalog_open();
+      links_catalog_open();
+
       while (i + 1)
 	{
-	  protocols[i] = NULL;
+	  all_protocols[i] = NULL;
 	  i--;
 	}
       if (!pref.numeric)
@@ -66,14 +204,11 @@ init_capture (void)
 	  dns_open ();
           if (dns_hasfd())
              {
-                dns_fd = dns_waitfd ();
-                g_my_debug ("File descriptor for DNS is %d", dns_fd);
-                gdk_input_add (dns_fd,
+                g_my_debug ("File descriptor for DNS is %d", dns_waitfd ());
+                gdk_input_add (dns_waitfd (),
                                GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
              }
 	}
-      else
-	dns_fd = 0;
 
       status = STOP;
       data_initialized = TRUE;
@@ -363,7 +498,7 @@ start_capture (void)
       g_my_debug (_("Starting live capture"));
       capture_source = gdk_input_add (pcap_fd,
 				      GDK_INPUT_READ,
-				      (GdkInputFunction) packet_read, NULL);
+				      (GdkInputFunction) read_packet_live, NULL);
     }
   else if (!pref.interface)
     {
@@ -458,7 +593,7 @@ stop_capture (void)
   /* With status in STOP, all protocols, nodes and links will be deleted */
   update_protocols ();
   update_nodes ();
-  update_links ();
+  links_catalog_update_all();
 
   /* Free conversations */
   delete_conversations ();
@@ -518,7 +653,10 @@ get_offline_packet (void)
     }
 
   if (packet)
-    packet_read (packet, 0, GDK_INPUT_READ);
+  {
+    gettimeofday (&now, NULL);
+    packet_acquired(packet);
+  }
 
   packet = (guint8 *) pcap_next (pch_struct, &phdr);
   if (!packet)
@@ -556,191 +694,70 @@ cap_t_o_destroy (gpointer data)
 }				/* capture_t_o_destroy */
 
 
+/* This function is the gdk callback called when the capture socket holds data */
+static void
+read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
+{
+  guint8 * packet = NULL;
+
+  /* Get next packet */
+  packet = (guint8 *) pcap_next (pch_struct, &phdr);
+
+  /* Redhat's phdr.ts is not a timeval, so I can't
+   * just copy the structures */
+  now.tv_sec = phdr.ts.tv_sec;
+  now.tv_usec = phdr.ts.tv_usec;
+
+  if (packet)
+    packet_acquired(packet);
+
+}				/* packet_read */
+
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information
  * for the appropriate nodes and links */
 static void
-packet_read (guint8 * packet, gint source, GdkInputCondition condition)
+packet_acquired(guint8 * packet)
 {
-  guint8 *link_id = NULL;
-  node_t *node = NULL;
   packet_t *packet_info = NULL;
-  gchar *prot = NULL;
-
-  /* Redhat's phdr.ts is not a timeval, so I can't
-   * just copy the structures */
-
-
-  /* Get next packet only if in live mode */
-  if (source)
-    {
-      packet = (guint8 *) pcap_next (pch_struct, &phdr);
-      now.tv_sec = phdr.ts.tv_sec;
-      now.tv_usec = phdr.ts.tv_usec;
-    }
-  else
-    gettimeofday (&now, NULL);
-
-  if (!packet)
-    return;
+  gchar *prot_desc = NULL;
+  node_id_t src_node_id;
+  node_id_t dst_node_id;
+  link_id_t link_id;
 
   /* Get a string with the protocol tree */
-  prot = get_packet_prot (packet, phdr.len);
+  prot_desc = get_packet_prot (packet, phdr.len);
 
   /* We create a packet structure to hold data */
   packet_info = g_malloc (sizeof (packet_t));
-  packet_info->size = phdr.len;
-  packet_info->timestamp = now;
-  packet_info->prot = g_strdup (prot);
+  packet_info->info.size = phdr.len;
+  packet_info->info.timestamp = now;
+  packet_info->info.prot_desc = g_strdup (prot_desc);
   packet_info->ref_count = 0;
 
   /* If there is no node with that id, create it. Otherwise 
    * just use the one available */
-  if ((node = g_tree_lookup (nodes, get_node_id (packet, SRC))))
-    packet_info->src_id = node->node_id;
-  else
-    packet_info->src_id =
-      g_memdup (get_node_id (packet, SRC), node_id_length);
-  if ((node = g_tree_lookup (nodes, get_node_id (packet, DST))))
-    packet_info->dst_id = node->node_id;
-  else
-    packet_info->dst_id =
-      g_memdup (get_node_id (packet, DST), node_id_length);
+  src_node_id = get_node_id (packet, SRC);
+  packet_info->src_id = src_node_id;
+
+  dst_node_id = get_node_id (packet, DST);
+  packet_info->dst_id = dst_node_id;
 
   n_packets++;
   n_mem_packets++;
 
-  add_protocol (protocols, prot, phdr, packet_info);
+  add_protocol (all_protocols, prot_desc, packet_info->info.size, packet_info);
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
-  add_node_packet (packet, packet_info, packet_info->src_id, OUTBOUND);
-  add_node_packet (packet, packet_info, packet_info->dst_id, INBOUND);
+  add_node_packet (packet, packet_info, OUTBOUND);
+  add_node_packet (packet, packet_info, INBOUND);
 
   link_id = get_link_id (packet);
   /* And now we update link traffic information for this packet */
-  add_link_packet (packet, packet_info, link_id);
-#ifndef LEAK
-  return;
-#endif
-
-
+  add_link_packet (&link_id, packet_info);
 }				/* packet_read */
 
-
-/* Returns a pointer to a set of octects that define a link for the
- * current mode in this particular packet */
-static guint8 *
-get_node_id (const guint8 * packet, create_node_type_t node_type)
-{
-  static guint8 *node_id = NULL;
-
-  if (node_id)
-    {
-      g_free (node_id);
-      node_id = NULL;
-    }
-
-  switch (pref.mode)
-    {
-    case ETHERNET:
-      if (node_type == SRC)
-	node_id = g_memdup (packet + 6, node_id_length);
-      else
-	node_id = g_memdup (packet, node_id_length);
-      break;
-    case FDDI:
-      if (node_type == SRC)
-	node_id = g_memdup (packet + 7, node_id_length);
-      else
-	node_id = g_memdup (packet + 1, node_id_length);
-      break;
-    case IEEE802:
-      if (node_type == SRC)
-	node_id = g_memdup (packet + 8, node_id_length);
-      else
-	node_id = g_memdup (packet + 2, node_id_length);
-      break;
-    case IP:
-      if (node_type == SRC)
-	node_id = g_memdup (packet + l3_offset + 12, node_id_length);
-      else
-	node_id = g_memdup (packet + l3_offset + 16, node_id_length);
-      break;
-    case TCP:
-      node_id = g_malloc (node_id_length);
-      if (node_type == SRC)
-	{
-	  guint16 port;
-	  g_memmove (node_id, packet + l3_offset + 12, 4);
-	  port = ntohs (*(guint16 *) (packet + l3_offset + 20));
-	  g_memmove (node_id + 4, &port, 2);
-	}
-      else
-	{
-	  guint16 port;
-	  g_memmove (node_id, packet + l3_offset + 16, 4);
-	  port = ntohs (*(guint16 *) (packet + l3_offset + 22));
-	  g_memmove (node_id + 4, &port, 2);
-	}
-      break;
-    default:
-      g_error (_("Reached default in get_node_id"));
-    }
-
-  return node_id;
-}				/* get_node_id */
-
-/* Returns a pointer to a set of octects that define a link for the
- * current mode in this particular packet */
-static guint8 *
-get_link_id (const guint8 * packet)
-{
-  static guint8 *link_id = NULL;
-  guint16 port;
-
-  if (link_id)
-    {
-      g_free (link_id);
-      link_id = NULL;
-    }
-
-
-  switch (pref.mode)
-    {
-    case ETHERNET:
-      link_id = g_malloc (2 * node_id_length);
-      g_memmove (link_id, packet + 6, node_id_length);
-      g_memmove (link_id + 6, packet, node_id_length);
-      break;
-    case FDDI:
-      link_id = g_malloc (2 * node_id_length);
-      g_memmove (link_id, packet + 7, node_id_length);
-      g_memmove (link_id + 6, packet + 1, node_id_length);
-      break;
-    case IEEE802:
-      link_id = g_malloc (2 * node_id_length);
-      g_memmove (link_id, packet + 8, node_id_length);
-      g_memmove (link_id + 6, packet + 2, node_id_length);
-      break;
-    case IP:
-      link_id = g_memdup (packet + l3_offset + 12, 2 * node_id_length);
-      break;
-    case TCP:
-
-      link_id = g_malloc (2 * node_id_length);
-      g_memmove (link_id, packet + l3_offset + 12, 4);
-      port = ntohs (*(guint16 *) (packet + l3_offset + 20));
-      g_memmove (link_id + 4, &port, 2);
-      g_memmove (link_id + 6, packet + l3_offset + 16, 4);
-      port = ntohs (*(guint16 *) (packet + l3_offset + 22));
-      g_memmove (link_id + 10, &port, 2);
-      break;
-    default:
-      g_error (_("Unsopported ape mode in get_link_id"));
-    }
-  return link_id;
-}				/* get_link_id */
 
 
 /* We update node information for each new packet that arrives in the
@@ -749,10 +766,17 @@ get_link_id (const guint8 * packet)
 static void
 add_node_packet (const guint8 * packet,
 		 packet_t * packet_info,
-		 const guint8 * node_id, packet_direction direction)
+		 packet_direction direction)
 {
   node_t *node;
-  node = g_tree_lookup (nodes, node_id);
+  const node_id_t *node_id;
+
+  if (direction == INBOUND)
+    node_id = &packet_info->dst_id;
+  else
+    node_id = &packet_info->src_id;
+
+  node = nodes_catalog_find(node_id);
   if (node == NULL)
     node = create_node (packet, node_id);
 
@@ -763,19 +787,19 @@ add_node_packet (const guint8 * packet,
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (node->protocols, packet_info->prot, phdr, NULL);
+  add_protocol (node->protocols, packet_info->info.prot_desc, packet_info->info.size, NULL);
 
   /* We update node info */
-  node->accumulated += packet_info->size;
+  node->accumulated += packet_info->info.size;
   if (direction == INBOUND)
-    node->accumulated_in += packet_info->size;
+    node->accumulated_in += packet_info->info.size;
   else
-    node->accumulated_out += packet_info->size;
-  node->aver_accu += packet_info->size;
+    node->accumulated_out += packet_info->info.size;
+  node->aver_accu += packet_info->info.size;
   if (direction == INBOUND)
-    node->aver_accu_in += packet_info->size;
+    node->aver_accu_in += packet_info->info.size;
   else
-    node->aver_accu_out += packet_info->size;
+    node->aver_accu_out += packet_info->info.size;
   node->last_time = now;
   node->n_packets++;
 
@@ -786,70 +810,54 @@ add_node_packet (const guint8 * packet,
     new_nodes = g_list_prepend (new_nodes, node);
 
   /* Update names list for this node */
-  get_packet_names (node->protocols, packet, packet_info->size,
-		    packet_info->prot, direction);
-
-
-
-  /* update_node (node->node_id, node, NULL); */
+  get_packet_names (node->protocols, packet, packet_info->info.size,
+		    packet_info->info.prot_desc, direction);
 
 }				/* add_node_packet */
 
 
 /* Save as above plus we update protocol aggregate information */
 static void
-add_link_packet (const guint8 * packet, packet_t * packet_info,
-		 const guint8 * link_id)
+add_link_packet (const link_id_t *link_id, packet_t * packet_info)
 {
   link_t *link;
 
-  link = g_tree_lookup (links, link_id);
-  if (!link)
-    link = create_link (packet, link_id);
+  /* retrieves link from catalog, creating a new one if necessary */
+  link = links_catalog_find_create(link_id);
 
   /* We add the packet structure the list of
    * packets that this link has */
   packet_info->ref_count++;
-  link->packets = g_list_prepend (link->packets, packet_info);
+  link->link_packets = g_list_prepend (link->link_packets, packet_info);
 
   /* We update the link's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (link->protocols, packet_info->prot, phdr, NULL);
+  add_protocol (link->link_protocols, packet_info->info.prot_desc, packet_info->info.size, NULL);
 
-  /* We update link info */
-  link->accumulated += packet_info->size;
+  /* update link info */
+  link->accumulated += packet_info->info.size;
   link->last_time = now;
   link->n_packets++;
-
-  /* update_link (link->link_id, link, NULL); */
 
 }				/* add_link_packet */
 
 /* Allocates a new node structure, and adds it to the
  * global nodes binary tree */
 static node_t *
-create_node (const guint8 * packet, const guint8 * node_id)
+create_node (const guint8 * packet, const node_id_t * node_id)
 {
   node_t *node = NULL;
   guint i = STACK_SIZE;
 
   node = g_malloc (sizeof (node_t));
 
-  /* We have already allocated memory for the id when we created the
-   * packet. We will use that, and will free it when the node disappears
-   * and not with the packet */
-  node->node_id = (guint8 *) node_id;	/* cast away const */
+  node->node_id = *node_id;
 
   node->name = NULL;
   node->numeric_name = NULL;
-  /* TODO remove these two, shouldn't be used anymore */
-  /* We initialize the ip_address, although it won't be
-   * used in many cases */
-  node->ip_address = 0;
-  node->numeric_ip = NULL;
 
-  node->name = g_string_new (print_mem (node_id, node_id_length));
-  node->numeric_name = g_string_new (print_mem (node_id, node_id_length));
+  node->name = print_mem (node_id);
+  node->numeric_name = print_mem (node_id);
 
   node->average = node->average_in = node->average_out = 0;
   node->n_packets = 0;
@@ -864,52 +872,14 @@ create_node (const guint8 * packet, const guint8 * node_id)
       i--;
     }
 
-  g_tree_insert (nodes, node->node_id, node);	/* Add it to the main tree of nodes */
+  nodes_catalog_insert(node);	/* Add it to the catalog of all nodes*/
 
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	 _("Creating node: %s. Number of nodes %d"),
-	 node->name->str, g_tree_nnodes (nodes));
+	 node->name->str, nodes_catalog_size());
 
   return node;
 }				/* create_node */
-
-
-/* Allocates a new link structure, and adds it to the
- * global links binary tree */
-static link_t *
-create_link (const guint8 * packet, const guint8 * link_id)
-{
-  link_t *link;
-  guint i = STACK_SIZE;
-  node_t *node;
-
-  link = g_malloc (sizeof (link_t));
-
-  link->link_id = g_memdup (link_id, 2 * node_id_length);
-  link->average = 0;
-  link->n_packets = 0;
-  link->accumulated = 0;
-  link->packets = NULL;
-  link->src_name = NULL;
-  link->dst_name = NULL;
-  while (i + 1)
-    {
-      link->protocols[i] = NULL;
-      link->main_prot[i] = NULL;
-      i--;
-    }
-  g_tree_insert (links, link->link_id, link);
-  node = g_tree_lookup (nodes, link_id);
-  link->src_name = g_strdup (node->name->str);
-  node = g_tree_lookup (nodes, (link_id + node_id_length));
-  link->dst_name = g_strdup (node->name->str);
-
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Creating link: %s-%s. Number of links %d"),
-	 link->src_name, link->dst_name, g_tree_nnodes (links));
-
-  return link;
-}				/* create_link */
 
 
 /* Callback function everytime a dns_lookup function is finished */
@@ -920,26 +890,19 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 }
 
 
-/* For a given protocol stack, it updates the both the global 
+/* For a given protocol stack, it updates both the global 
  * protocols and specific node and link list */
-void
-add_protocol (GList ** protocols, const gchar * stack,
-	      struct pcap_pkthdr phdr, packet_t * packet)
+static void
+add_protocol (GList ** prot_list, const gchar * stack,
+	      guint pkt_size, packet_t * packet)
 {
   GList *protocol_item = NULL;
   protocol_t *protocol_info = NULL;
   gchar **tokens = NULL;
   guint i = 0;
-  guint8 *src_id = NULL, *dst_id = NULL;
   gchar *protocol_name;
 
   tokens = g_strsplit (stack, "/", 0);
-
-  if (packet)
-    {
-      src_id = packet->src_id;
-      dst_id = packet->dst_id;
-    }
 
   for (; i <= STACK_SIZE; i++)
     {
@@ -951,20 +914,12 @@ add_protocol (GList ** protocols, const gchar * stack,
 	protocol_name = tokens[i];
 
       /* If there is yet not such protocol, create it */
-      if (!(protocol_item = g_list_find_custom (protocols[i],
+      if (!(protocol_item = g_list_find_custom (prot_list[i],
 						protocol_name,
 						protocol_compare)))
 	{
-	  protocol_info = g_malloc (sizeof (protocol_t));
-	  protocol_info->name = g_strdup (protocol_name);
-	  protocol_info->accumulated = 0;
-	  protocol_info->aver_accu = 0;
-	  protocol_info->average = 0;
-	  protocol_info->n_packets = 0;
-	  protocol_info->node_names = NULL;
-	  protocol_info->node_ids = NULL;
-	  protocol_info->packets = NULL;
-	  protocols[i] = g_list_prepend (protocols[i], protocol_info);
+	  protocol_info = protocol_t_create(protocol_name);
+	  prot_list[i] = g_list_prepend (prot_list[i], protocol_info);
 	}
       else
 	protocol_info = protocol_item->data;
@@ -982,25 +937,16 @@ add_protocol (GList ** protocols, const gchar * stack,
 	    g_list_prepend (protocol_info->packets, packet);
 	}
 
-      /* For protocols belonging to the global protocols list, take note of nodes that are using
-       * this protocol */
-      if (src_id)
-	{
-	  if (!g_list_find (protocol_info->node_ids, src_id))
-	    protocol_info->node_ids =
-	      g_list_prepend (protocol_info->node_ids, src_id);
-	}
-      if (dst_id)
-	{
-	  if (!g_list_find (protocol_info->node_ids, src_id))
-	    protocol_info->node_ids =
-	      g_list_prepend (protocol_info->node_ids, src_id);
-	}
     }
   g_strfreev (tokens);
-  tokens = NULL;
 }				/* add_protocol */
 
+/* gfunc called by g_list_foreach to remove the node */
+static void
+gfunc_remove_node(gpointer data, gpointer user_data)
+{
+  nodes_catalog_remove( (const node_id_t *) data);
+}
 
 /* Calls update_node for every node. This is actually a function that
  shouldn't be called often, because it might take a very long time 
@@ -1008,173 +954,66 @@ add_protocol (GList ** protocols, const gchar * stack,
 void
 update_nodes (void)
 {
-  guint n_nodes_before, n_nodes_after;
+  GList *delete_list = NULL;
 
-  /* We have to make sure that all packets have been processed before
-   * updating the nodes itself, because packets rely on the nodes
-   * node_id, and if a node were deleted, subsequent packet list
-   * updating could be corrupt */
-  g_tree_traverse (nodes, (GTraverseFunc) update_node_packets, G_IN_ORDER,
-		   NULL);
+  /* we can't delete nodes while traversing the catalog, so while updating we 
+   * fill a list with the node_id's to remove */
+  nodes_catalog_foreach((GTraverseFunc) update_node, &delete_list);
 
-  do
-    {
-      n_nodes_before = g_tree_nnodes (nodes);
-      g_tree_traverse (nodes, (GTraverseFunc) update_node, G_IN_ORDER, NULL);
-      n_nodes_after = g_tree_nnodes (nodes);
-    }
-  while (n_nodes_before != n_nodes_after);
+  /* after, remove all nodes on the list from catalog 
+   * WARNING: after this call, the list items are also destroyed */
+  g_list_foreach(delete_list, gfunc_remove_node, NULL);
+  
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
 
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+         _("Updated nodes. Active nodes %d"), nodes_catalog_size());
 }				/* update_nodes */
 
-/* Removes old packets from a node */
+/* update a node. If expired also add it to the to-remove list */
 static gint
-update_node_packets (guint8 * node_id, node_t * node, gpointer pointer)
-{
-
-  if (node->packets)
-    update_packet_list (node->packets, (gpointer) node, NODE);
-
-  return FALSE;
-}				/* update_node_packets */
-
-
-/* Deletes all data from a node, and possibly the node itself */
-static gint
-update_node (guint8 * node_id, node_t * node, gpointer pointer)
+update_node(node_id_t * node_id, node_t * node, gpointer delete_list_ptr)
 {
   struct timeval diff;
-  GList *protocol_item = NULL;
-  protocol_t *protocol_info = NULL;
-  guint i = STACK_SIZE;
+
+  g_assert(delete_list_ptr);
+
+  if (node->packets)
+    update_packet_list (node->packets, node, NODE);
 
   if (node->n_packets == 0)
     {
 
       diff = substract_times (now, node->last_time);
 
-#if 0
-      /* Delete node if we stop the capture */
-      if (status == STOP)
-#endif
-#if 1
-	/* Remove node if node is too old or if capture is stopped */
-	if ((IS_OLDER (diff, pref.node_timeout_time)
-	     && pref.node_timeout_time) || (status == STOP))
-#endif
-	  {
+      /* Remove node if node is too old or if capture is stopped */
+      if ((IS_OLDER (diff, pref.node_timeout_time)
+           && pref.node_timeout_time) || (status == STOP))
+        {
+          GList **delete_list = (GList **)delete_list_ptr;
 
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _("Removing node: %s. Number of nodes %d"),
-		   node->name->str, g_tree_nnodes (nodes) - 1);
+          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+                 _("Queuing node '%s' for remove"),node->name->str);
 
-	    /* First thing we do is delete the node for the list of new_nodes,
-	     * if it's there */
-	    new_nodes = g_list_remove (new_nodes, node);
+          /* First thing we do is delete the node from the list of new_nodes,
+           * if it's there */
+          new_nodes = g_list_remove (new_nodes, node);
 
-	    g_string_free (node->name, TRUE);
-	    node->name = NULL;
-	    g_string_free (node->numeric_name, TRUE);
-	    node->numeric_name = NULL;
-	    if (node->numeric_ip)
-	      {
-		g_string_free (node->numeric_ip, TRUE);
-		node->numeric_ip = NULL;
-	      }
-	    for (; i + 1; i--)
-	      if (node->main_prot[i])
-		{
-		  g_free (node->main_prot[i]);
-		  node->main_prot[i] = NULL;
-		}
-	    i = 0;
-	    while (i <= STACK_SIZE)
-	      {
-
-		while (node->protocols[i])
-		  {
-		    protocol_item = node->protocols[i];
-		    protocol_info = protocol_item->data;
-
-		    if (!protocol_info->accumulated)
-		      {
-			GList *name_item = NULL;
-			name_t *name;
-			g_free (protocol_info->name);
-			protocol_info->name = NULL;
-
-			while (protocol_info->node_names)
-			  {
-			    name_item = protocol_info->node_names;
-			    name = name_item->data;
-			    g_free (name->node_id);
-			    g_string_free (name->name, TRUE);
-			    g_string_free (name->numeric_name, TRUE);
-			    protocol_info->node_names =
-			      g_list_remove_link (protocol_info->node_names,
-						  name_item);
-			    g_free (name);
-			    g_list_free (name_item);
-			  }
-
-			node->protocols[i] =
-			  g_list_remove_link (node->protocols[i],
-					      protocol_item);
-			g_free (protocol_info);
-			g_list_free (protocol_item);
-		      }
-		  }
-		i++;
-	      }
-
-	    g_free (node);
-	    g_tree_remove (nodes, node_id);
-
-	    /* Remove all mentions to this node in the globals protocols list */
-	    forget_node_from_protocols (node_id);
-
-	    /* TODO 
-	     * I believe there might be instances where the node_id is still
-	     * tried to be used, by check_packet, in particular.  */
-	    g_free (node_id);
-
-	    node = NULL;
-	    return TRUE;	/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
-	  }
-	else
-	  {
-	    /* The packet list structure has already been freed in
-	     * check_packets */
-	    node->packets = NULL;
-	    node->average = node->average_in = node->average_out = 0.0;
-	  }
+          /* adds current to list of nodes to be delete */
+          *delete_list = g_list_append( *delete_list, node_id);
+        }
+      else
+        {
+          /* The packet list structure has already been freed in
+           * check_packets */
+          node->packets = NULL;
+          node->average = node->average_in = node->average_out = 0.0;
+        }
     }
 
   return FALSE;
 }				/* update_node */
-
-/* Remove all mentions to this node in the globals protocols list */
-static void
-forget_node_from_protocols (guint8 * node_id)
-{
-  GList *protocol_item = NULL;
-  protocol_t *protocol = NULL;
-  guint i = 0;
-
-  for (; i <= STACK_SIZE; i++)
-    {
-      protocol_item = protocols[i];
-      while (protocol_item)
-	{
-	  protocol = protocol_item->data;
-	  protocol->node_ids = g_list_remove (protocol->node_ids, node_id);
-	  protocol_item = protocol_item->next;
-	}
-    }
-
-}				/* forget_node_from_protocols */
 
 /* Returns a node from the list of new nodes or NULL if there are no more 
  * new nodes */
@@ -1193,7 +1032,7 @@ ape_get_new_node (void)
   /* We make sure now that the node hasn't been deleted since */
   /* TODO Sometimes when I get here I have a node, but a null
    * node->node_id. What gives? */
-  while (node && node->node_id && !g_tree_lookup (nodes, node->node_id))
+  while (node && !nodes_catalog_find(&node->node_id))
     {
       g_my_debug
 	("Already deleted node in list of new nodes, in ape_get_new_node");
@@ -1219,89 +1058,6 @@ ape_get_new_node (void)
 }				/* ape_get_new_node */
 
 
-/* Calls update_link for every link. This is actually a function that
- shouldn't be called often, because it might take a very long time 
- to complete */
-void
-update_links (void)
-{
-  guint n_links_before, n_links_after;
-
-  do
-    {
-      n_links_before = g_tree_nnodes (links);
-      g_tree_traverse (links, (GTraverseFunc) update_link, G_IN_ORDER, NULL);
-      n_links_after = g_tree_nnodes (links);
-    }
-  while (n_links_before != n_links_after);
-
-}				/* update_links */
-
-static gint
-update_link (guint8 * link_id, link_t * link, gpointer pointer)
-{
-  struct timeval diff;
-  guint i = STACK_SIZE;
-
-  if (link->packets)
-    update_packet_list (link->packets, (gpointer) link, LINK);
-
-  diff = substract_times (now, link->last_time);
-
-  if (link->n_packets == 0)
-    {
-
-
-#if 0
-      if (status == STOP)
-#endif
-#if 1
-	/* Remove link if it is too old or if capture is stopped */
-	if ((IS_OLDER (diff, pref.link_timeout_time)
-	     && pref.link_timeout_time) || (status == STOP))
-#endif
-	  {
-	    for (; i + 1; i--)
-	      if (link->main_prot[i])
-		{
-		  g_free (link->main_prot[i]);
-		  link->main_prot[i] = NULL;
-		}
-	    g_free (link->src_name);
-	    link->src_name = NULL;
-	    g_free (link->dst_name);
-	    link->dst_name = NULL;
-	    g_free (link);
-	    g_tree_remove (links, link_id);
-	    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-		   _("Removing link. Number of links %d"),
-		   g_tree_nnodes (links));
-
-	    g_free (link_id);
-	    link = NULL;
-
-	    return TRUE;	/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
-	  }
-	else
-	  {
-	    /* The packet list structure has already been freed in
-	     * check_packets */
-	    link->packets = NULL;
-	    link->accumulated = 0;
-	    while (i + 1)
-	      {
-		link->protocols[i] = NULL;
-		i--;
-	      }
-	  }
-    }
-
-  return FALSE;
-
-}				/* update_link */
-
 /* Update the values for the instantaneous traffic values of the global protocols
  * Delete them  if that's the case */
 void
@@ -1313,21 +1069,21 @@ update_protocols (void)
 
   for (; i <= STACK_SIZE; i++)
     {
-      item = protocols[i];
+      item = all_protocols[i];
       while (item)
 	{
 	  protocol = item->data;
 	  item = item->next;
 	  /* If update_protocol returns false, the protocol has been deleted */
 	  if (!update_protocol (protocol))
-	    protocols[i] = g_list_remove (protocols[i], protocol);
+	    all_protocols[i] = g_list_remove (all_protocols[i], protocol);
 	}
 
       /* This should be unnecesary now, shouldn't it? */
       if (status == STOP)
 	{
-	  g_list_free (protocols[i]);
-	  protocols[i] = NULL;
+	  g_list_free (all_protocols[i]);
+	  all_protocols[i] = NULL;
 	}
     }
 }				/* update_protocols */
@@ -1340,18 +1096,14 @@ update_protocols (void)
 gboolean
 update_protocol (protocol_t * protocol)
 {
-  update_packet_list (protocol->packets, (gpointer) protocol, PROTOCOL);
+  update_packet_list (protocol->packets, protocol, PROTOCOL);
 
   if (protocol->aver_accu == 0)
     protocol->packets = NULL;
 
   if (status == STOP)
     {
-      g_list_free (protocol->node_ids);
-      if (protocol->name)
-	g_free (protocol->name);
-      g_free (protocol);
-
+      protocol_t_delete(protocol);
       return (FALSE);
     }
 
@@ -1361,43 +1113,56 @@ update_protocol (protocol_t * protocol)
 /* This function is called to discard packets from the list 
  * of packets beloging to a node or a link, and to calculate
  * the average traffic for that node or link */
-void
+gboolean
 update_packet_list (GList * packets, gpointer parent,
 		    enum packet_belongs belongs_to)
 {
-  struct timeval difference;
-  guint i = STACK_SIZE;
-  node_t *node = NULL;
-  link_t *link = NULL;
-  protocol_t *protocol = NULL;
-  gdouble usecs_from_oldest;	/* usecs since the first valid packet */
   GList *packet_l_e = NULL;	/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
 				 * list element */
   packet_t *packet = NULL;
 
   if (!packets || !parent)
-    return;
+    return FALSE; /* no data */
 
   packet_l_e = g_list_last (packets);
 
-  /* Going from oldest to newer, delete all irrelevant packets */
-  while (check_packet (packet_l_e, &packet_l_e, parent, belongs_to));
-
+  while (packet_l_e)
+  {
+    packet_t * packet = (packet_t *)(packet_l_e->data);
+    if (check_packet(packet, parent, belongs_to))
+      break; /* packet valid, subsequent packets are younger, no need to go further */
+    else
+      {
+        /* packet expired, remove from list - gets the new check position 
+         * if this packet is the first of the list, all the previous packets
+         * should be already destroyed. We check that remove never returns a
+         * NEXT packet */
+        GList *next=packet_l_e->next;
+        packet_l_e = packet_list_remove(packet_l_e);
+        g_assert(packet_l_e == NULL || packet_l_e != next );
+      }
+  } /* end while */
+  
   /* TODO Move all this below to update_node and update_link */
   /* If there still is relevant packets, then calculate average
    * traffic and update names*/
 
   if (packet_l_e)
     {
+      node_t *node = NULL;
+      protocol_t *protocol = NULL;
+      struct timeval difference;
+      guint i = STACK_SIZE;
+      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
+
       packet_l_e = g_list_last (packets);
       packet = (packet_t *) packet_l_e->data;
 
       node = (node_t *) parent;
-      link = (link_t *) parent;
       protocol = (protocol_t *) parent;
 
-      difference = substract_times (now, packet->timestamp);
+      difference = substract_times (now, packet->info.timestamp);
       usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
 
       /* average in bps, so we multiply by 8 and 1000000 */
@@ -1414,22 +1179,10 @@ update_packet_list (GList * packets, gpointer parent,
 	      if (node->main_prot[i])
 		g_free (node->main_prot[i]);
 	      node->main_prot[i]
-		= get_main_prot (packets, node->protocols, i);
+		= get_main_prot (node->protocols, i);
 	      i--;
 	    }
 	  update_node_names (node);
-	  break;
-	case LINK:
-	  link->average = 8000000 * link->accumulated / usecs_from_oldest;
-	  /* We look for the most used protocol for this link */
-	  while (i + 1)
-	    {
-	      if (link->main_prot[i])
-		g_free (link->main_prot[i]);
-	      link->main_prot[i]
-		= get_main_prot (packets, link->protocols, i);
-	      i--;
-	    }
 	  break;
 	case PROTOCOL:
 	  protocol->average =
@@ -1440,8 +1193,62 @@ update_packet_list (GList * packets, gpointer parent,
 	    ("belongs_to not NODE, LINK or PROTOCOL in update_packet_list");
 	}
 
+      /* packet(s) remaining */
+      return TRUE;
     }
+  
+  /* no packets remaining */
+  return FALSE;
 }				/* update_packet_list */
+
+/* removes a packet from a list of packets, destroying it if necessary
+ * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
+ * if the list is empty */
+GList *
+packet_list_remove(GList *item_to_remove)
+{
+  packet_t *packet;
+
+  g_assert(item_to_remove);
+  
+  packet = (packet_t *) item_to_remove->data;
+  if (packet)
+    {
+      /* packet exists, decrement ref count */
+      packet->ref_count--;
+
+      if (!packet->ref_count)
+        {
+          /* packet now unused, delete it */
+          if (packet->info.prot_desc)
+            {
+              g_free (packet->info.prot_desc);
+              packet->info.prot_desc = NULL;
+            }
+          g_free (packet);
+          item_to_remove->data = NULL;
+    
+          n_mem_packets--;
+        }
+    }
+
+  /* TODO I have to come back here and make sure I can't make
+   * this any simpler */
+  if (item_to_remove->prev)
+    {
+      /* current packet is not at head */
+      GList *item = item_to_remove;
+      item_to_remove = item_to_remove->prev; 
+      g_list_delete_link (item_to_remove, item);
+    }
+  else
+    {
+      /* packet is head of list */
+      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
+    }
+
+  return item_to_remove;
+}
 
 /* Sets the node->name and node->numeric_name to the most used of 
  * the default name for the current mode */
@@ -1449,8 +1256,6 @@ static void
 update_node_names (node_t * node)
 {
   guint i = STACK_SIZE;
-  GList *protocol_item = NULL;
-  protocol_t *protocol = NULL;
 
   /* TODO Check if it's while i or while i+1. 
    * Then fix it in other places */
@@ -1458,12 +1263,14 @@ update_node_names (node_t * node)
     {
       if (node->protocols[i])
 	{
-	  protocol_item = protocols[i];
+          GList *protocol_item = NULL;
+          protocol_t *protocol = NULL;
+	  protocol_item = all_protocols[i];
 	  for (; protocol_item; protocol_item = protocol_item->next)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
 	      protocol->node_names
-		= g_list_sort (protocol->node_names, names_freq_compare);
+		= g_list_sort (protocol->node_names, node_name_freq_compare);
 	    }
 	}
       i--;
@@ -1496,6 +1303,7 @@ update_node_names (node_t * node)
     }
 }				/* update_node_names */
 
+
 static void
 set_node_name (node_t * node, gchar * preferences)
 {
@@ -1510,10 +1318,11 @@ set_node_name (node_t * node, gchar * preferences)
   prots = g_strsplit (preferences, ";", 0);
   for (; prots[i] && cont; i++)
     {
-      for (j = STACK_SIZE; j && cont; j--)	/* We don't do level 0,
-						 * which has the topmost prot */
+      tokens = g_strsplit (prots[i], ",", 0);
+
+      /* We don't do level 0, which has the topmost prot */
+      for (j = STACK_SIZE; j && cont; j--)
 	{
-	  tokens = g_strsplit (prots[i], ",", 0);
 	  protocol_item = g_list_find_custom (node->protocols[j],
 					      tokens[0], protocol_compare);
 	  if (protocol_item)
@@ -1527,8 +1336,7 @@ set_node_name (node_t * node, gchar * preferences)
 		   * the we have to go on */
 		  if (strcmp (tokens[1], "SOLVED") || name->solved)
 		    {
-		      if (node->name)
-			if (strcmp (node->name->str, name->name->str))
+		      if (node->name && strcmp (node->name->str, name->name->str))
 			  g_my_debug ("Switching node name from %s to %s",
 				      node->name->str, name->name->str);
 
@@ -1539,10 +1347,10 @@ set_node_name (node_t * node, gchar * preferences)
 		    }
 		}
 	    }
-	  g_strfreev (tokens);
-	  tokens = NULL;
 
 	}
+      g_strfreev (tokens);
+      tokens = NULL;
     }
   g_strfreev (prots);
   prots = NULL;
@@ -1550,9 +1358,9 @@ set_node_name (node_t * node, gchar * preferences)
 
 
 /* Finds the most commmon protocol of all the packets in a
- * given link (only link, by now) */
-static gchar *
-get_main_prot (GList * packets, GList ** protocols, guint level)
+ * given node/link */
+gchar *
+get_main_prot (GList ** protocols, guint level)
 {
   protocol_t *protocol;
   /* If we haven't recognized any protocol at that level,
@@ -1564,6 +1372,192 @@ get_main_prot (GList * packets, GList ** protocols, guint level)
   return g_strdup (protocol->name);
 }				/* get_main_prot */
 
+/* Make sure this particular packet in a list of packets beloging to 
+ * either o link or a node is young enough to be relevant. Else
+ * remove it from the list */
+/* TODO This whole function is a mess. I must take it to pieces
+ * so that it is more readble and maintainable */
+static gboolean
+check_packet (packet_t *packet,
+	      gpointer parent, enum packet_belongs belongs_to)
+{
+
+  struct timeval result;
+  double time_comparison;
+
+  if (!packet)
+    {
+      g_warning (_("Null packet in check_packet"));
+      return FALSE;
+    }
+
+  result = substract_times (now, packet->info.timestamp);
+
+  /* If this packet is older than the averaging time,
+   * then it is removed, and the process continues.
+   * Else, we are done. 
+   * For links, if the timeout time is smaller than the
+   * averaging time, we use that instead */
+
+  if ((belongs_to == NODE) || (belongs_to == PROTOCOL))
+    if (pref.node_timeout_time)
+      time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
+	pref.averaging_time : pref.node_timeout_time;
+    else
+      time_comparison = pref.averaging_time;
+  else if (pref.link_timeout_time)
+    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.link_timeout_time;
+  else
+    time_comparison = pref.averaging_time;
+
+  /* If this packet is too old, we discard it */
+  /* We also delete all packets if capture is stopped */
+  if (IS_OLDER (result, time_comparison) || (status == STOP))
+    {
+      node_t *node = NULL;
+      link_t *link = NULL;
+      protocol_t *protocol = NULL;
+      guint i = 0;
+      GList *protocol_item = NULL;
+      protocol_t *protocol_info = NULL;
+      gchar **tokens = NULL;
+      packet_direction direction = INBOUND;
+      static packet_direction last_lo_direction = INBOUND;
+      gchar *protocol_name = NULL;
+
+      node = (node_t *) parent;
+      link = (link_t *) parent;
+      protocol = (protocol_t *) parent;
+    
+      switch (belongs_to)
+        {
+        case NODE:
+          /* Find the direction of the packet */
+          if (!memcmp ( &packet->dst_id, &packet->src_id, sizeof(node_id_t)))
+            {
+              /* This is an evil case that can happen with the loopback
+               * device, and I can only think of a hack to try to solve 
+               * it */
+              if (last_lo_direction == INBOUND)
+                direction = OUTBOUND;
+              else
+                direction = INBOUND;
+              last_lo_direction = direction;
+            }
+          else if (!memcmp (&packet->dst_id, &node->node_id, sizeof(node_id_t)))
+            direction = INBOUND;
+          else if (!memcmp (&packet->src_id, &node->node_id, sizeof(node_id_t)))
+            direction = OUTBOUND;
+          else
+            g_my_critical ("Packet does not belong to node in check_packet!");
+  
+          /* Substract this packet's length to the accumulated */
+          node->aver_accu -= packet->info.size;
+          if (direction == INBOUND)
+            node->aver_accu_in -= packet->info.size;
+          else
+            node->aver_accu_out -= packet->info.size;
+          /* Decrease the number of packets */
+          g_assert(node->n_packets>0);
+          node->n_packets--;
+          /* If it was the last packet in the queue, set
+           * average to 0. It has to be done here because
+           * otherwise average calculation in update_packet list 
+           * requires some packets to exist */
+          if (!node->aver_accu)
+            node->average = 0;
+  
+          /* We remove protocol aggregate information */
+          tokens = g_strsplit (packet->info.prot_desc, "/", 0);
+          while ((i <= STACK_SIZE) && tokens[i])
+            {
+              if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+                protocol_name = "TCP-Unknown";
+              else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+                protocol_name = "UDP-Unknown";
+              else
+                protocol_name = tokens[i];
+  
+              protocol_item = g_list_find_custom (node->protocols[i],
+                                                  protocol_name,
+                                                  protocol_compare);
+              if (!protocol_item)
+                {
+                  g_my_critical
+                    ("Protocol not found while removing protocol information from node in check_packet");
+                  break;
+                }
+              protocol_info = protocol_item->data;
+              protocol_info->accumulated -= packet->info.size;
+              i++;
+            }
+          g_strfreev (tokens);
+          tokens = NULL;
+          break;
+  
+        case LINK:
+          /* See above for explanations */
+          link->accumulated -= packet->info.size;
+          if (!link->accumulated)
+            link->average = 0;
+
+          g_assert(link->n_packets>0);
+          link->n_packets--;
+
+          /* We remove protocol aggregate information */
+          tokens = g_strsplit (packet->info.prot_desc, "/", 0);
+          while ((i <= STACK_SIZE) && tokens[i])
+            {
+              if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+                protocol_name = "TCP-Unknown";
+              else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+                protocol_name = "UDP-Unknown";
+              else
+                protocol_name = tokens[i];
+  
+              protocol_item = g_list_find_custom (link->link_protocols[i],
+                                                  protocol_name,
+                                                  protocol_compare);
+              if (!protocol_item)
+                {
+                  g_my_critical
+                    ("Protocol not found while removing protocol information from link in check_packet");
+                  break;
+                }
+              protocol_info = protocol_item->data;
+              protocol_info->accumulated -= packet->info.size;
+  
+              if (!protocol_info->accumulated)
+                {
+                  g_free (protocol_info->name);
+                  protocol_info->name = NULL;
+                  g_free (protocol_info);
+  
+                  link->link_protocols[i] =
+                    g_list_delete_link(link->link_protocols[i], protocol_item);
+                }
+              i++;
+            }
+          g_strfreev (tokens);
+          tokens = NULL;
+          break;
+        case PROTOCOL:
+          protocol->aver_accu -= packet->info.size;
+          if (!protocol->aver_accu)
+            protocol->average = 0;
+          break;
+        }
+
+      /* expired packet, remove */
+      return FALSE;
+    }
+
+  /* packet still valid */
+  return TRUE;
+}				/* check_packet */
+
+#if 0 // just in case ...
 /* Make sure this particular packet in a list of packets beloging to 
  * either o link or a node is young enough to be relevant. Else
  * remove it from the list */
@@ -1596,7 +1590,7 @@ check_packet (GList * packets, GList ** packet_l_e,
       return FALSE;
     }
 
-  result = substract_times (now, packet->timestamp);
+  result = substract_times (now, packet->info.timestamp);
 
   /* If this packet is older than the averaging time,
    * then it is removed, and the process continues.
@@ -1629,7 +1623,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	{
 	case NODE:
 	  /* Find the direction of the packet */
-	  if (!memcmp (packet->dst_id, packet->src_id, node_id_length))
+	  if (!memcmp ( &packet->dst_id, &packet->src_id, sizeof(node_id_t)))
 	    {
 	      /* This is an evil case that can happen with the loopback
 	       * device, and I can only think of a hack to try to solve 
@@ -1640,20 +1634,21 @@ check_packet (GList * packets, GList ** packet_l_e,
 		direction = INBOUND;
 	      last_lo_direction = direction;
 	    }
-	  else if (!memcmp (packet->dst_id, node->node_id, node_id_length))
+	  else if (!memcmp (&packet->dst_id, &node->node_id, sizeof(node_id_t)))
 	    direction = INBOUND;
-	  else if (!memcmp (packet->src_id, node->node_id, node_id_length))
+	  else if (!memcmp (&packet->src_id, &node->node_id, sizeof(node_id_t)))
 	    direction = OUTBOUND;
 	  else
 	    g_my_critical ("Packet does not belong to node in check_packet!");
 
 	  /* Substract this packet's length to the accumulated */
-	  node->aver_accu -= packet->size;
+	  node->aver_accu -= packet->info.size;
 	  if (direction == INBOUND)
-	    node->aver_accu_in -= packet->size;
+	    node->aver_accu_in -= packet->info.size;
 	  else
-	    node->aver_accu_out -= packet->size;
+	    node->aver_accu_out -= packet->info.size;
 	  /* Decrease the number of packets */
+          g_assert(node->n_packets>0);
 	  node->n_packets--;
 	  /* If it was the last packet in the queue, set
 	   * average to 0. It has to be done here because
@@ -1663,7 +1658,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	    node->average = 0;
 
 	  /* We remove protocol aggregate information */
-	  tokens = g_strsplit (packet->prot, "/", 0);
+	  tokens = g_strsplit (packet->info.prot_desc, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
 	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
@@ -1683,7 +1678,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 		  break;
 		}
 	      protocol_info = protocol_item->data;
-	      protocol_info->accumulated -= packet->size;
+	      protocol_info->accumulated -= packet->info.size;
 	      i++;
 	    }
 	  g_strfreev (tokens);
@@ -1692,13 +1687,14 @@ check_packet (GList * packets, GList ** packet_l_e,
 
 	case LINK:
 	  /* See above for explanations */
-	  link->accumulated -= packet->size;
+	  link->accumulated -= packet->info.size;
+          g_assert(link->n_packets>0);
 	  link->n_packets--;
 	  if (!link->accumulated)
 	    link->average = 0;
 
 	  /* We remove protocol aggregate information */
-	  tokens = g_strsplit (packet->prot, "/", 0);
+	  tokens = g_strsplit (packet->info.prot_desc, "/", 0);
 	  while ((i <= STACK_SIZE) && tokens[i])
 	    {
 	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
@@ -1708,7 +1704,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	      else
 		protocol_name = tokens[i];
 
-	      protocol_item = g_list_find_custom (link->protocols[i],
+	      protocol_item = g_list_find_custom (link->link_protocols[i],
 						  protocol_name,
 						  protocol_compare);
 	      if (!protocol_item)
@@ -1718,17 +1714,16 @@ check_packet (GList * packets, GList ** packet_l_e,
 		  break;
 		}
 	      protocol_info = protocol_item->data;
-	      protocol_info->accumulated -= packet->size;
+	      protocol_info->accumulated -= packet->info.size;
 
 	      if (!protocol_info->accumulated)
 		{
 		  g_free (protocol_info->name);
 		  protocol_info->name = NULL;
 
-		  link->protocols[i] =
-		    g_list_remove_link (link->protocols[i], protocol_item);
-		  g_free (protocol_info);
-		  g_list_free (protocol_item);
+		  link->link_protocols[i] =
+		    g_list_remove_link (link->link_protocols[i], protocol_item);
+		  g_free (protocol_info);x  
 		}
 	      i++;
 	    }
@@ -1736,7 +1731,7 @@ check_packet (GList * packets, GList ** packet_l_e,
 	  tokens = NULL;
 	  break;
 	case PROTOCOL:
-	  protocol->aver_accu -= packet->size;
+	  protocol->aver_accu -= packet->info.size;
 	  if (!protocol->aver_accu)
 	    protocol->average = 0;
 	  break;
@@ -1746,21 +1741,12 @@ check_packet (GList * packets, GList ** packet_l_e,
 
       if (!packet->ref_count)
 	{
-	  if (packet->prot)
+	  if (packet->info.prot_desc)
 	    {
-	      g_free (packet->prot);
-	      packet->prot = NULL;
+	      g_free (packet->info.prot_desc);
+	      packet->info.prot_desc = NULL;
 
 	    }
-	  /* the pointers to the src_id
-	   * and dst_id are actually copies
-	   * of the ones held by the nodes,
-	   * and those will be freed with
-	   * the node */
-#if 0
-	  g_free (packet->src_id);
-	  g_free (packet->dst_id);
-#endif
 	  g_free (packet);
 	  packets->data = packet = NULL;
 
@@ -1794,62 +1780,7 @@ check_packet (GList * packets, GList ** packet_l_e,
   return FALSE;			/* Last packet searched
 				 * End search */
 }				/* check_packet */
-
-/* Comparison function used to order the (GTree *) nodes
- * and canvas_nodes heard on the network */
-gint
-node_id_compare (gconstpointer a, gconstpointer b)
-{
-  int i;
-
-  i = node_id_length - 1;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-
-  while (i)
-    {
-      if (((guint8 *) a)[i] < ((guint8 *) b)[i])
-	{
-	  return -1;
-	}
-      else if (((guint8 *) a)[i] > ((guint8 *) b)[i])
-	return 1;
-      i--;
-    }
-
-  return 0;
-}				/* node_id_compare */
-
-/* Comparison function used to order the (GTree *) links
- * and canvas_links heard on the network */
-gint
-link_id_compare (gconstpointer a, gconstpointer b)
-{
-  int i;
-
-  i = 2 * node_id_length - 1;
-
-  g_return_val_if_fail (a != NULL, 1);	/* This shouldn't happen.
-					 * We arbitrarily passing 1 to
-					 * the comparison */
-  g_return_val_if_fail (b != NULL, 1);
-
-
-  while (i)
-    {
-      if (((guint8 *) a)[i] < ((guint8 *) b)[i])
-	{
-	  return -1;
-	}
-      else if (((guint8 *) a)[i] > ((guint8 *) b)[i])
-	return 1;
-      i--;
-    }
-
-  return 0;
-}				/* link_id_compare */
+#endif
 
 /* Comparison function used to compare two link protocols */
 gint
@@ -1880,192 +1811,54 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
   return 0;
 }				/* prot_freq_compare */
 
-/* Comparison function to sort protocols by their accumulated traffic */
-static gint
-names_freq_compare (gconstpointer a, gconstpointer b)
+
+
+
+
+
+/* creates a new string from the given address */
+static GString *
+print_mem (const node_id_t *node_id)
 {
-  name_t *name_a, *name_b;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  name_a = (name_t *) a;
-  name_b = (name_t *) b;
-
-  if (name_a->accumulated > name_b->accumulated)
-    return -1;
-  if (name_a->accumulated < name_b->accumulated)
-    return 1;
-  return 0;
-}				/* names_freq_compare */
-
-
-/* Returns a timeval structure with the time difference between to
- * other timevals. result = a - b */
-struct timeval
-substract_times (struct timeval a, struct timeval b)
-{
-  struct timeval result;
-
-  /* Perform the carry for the later subtraction by updating Y. */
-  if (a.tv_usec < b.tv_usec)
-    {
-      int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
-      b.tv_usec -= 1000000 * nsec;
-      b.tv_sec += nsec;
-    }
-  if (a.tv_usec - b.tv_usec > 1000000)
-    {
-      int nsec = (a.tv_usec - b.tv_usec) / 1000000;
-      b.tv_usec += 1000000 * nsec;
-      b.tv_sec -= nsec;
-    }
-
-  result.tv_sec = a.tv_sec - b.tv_sec;
-  result.tv_usec = a.tv_usec - b.tv_usec;
-
-  return result;
-
-
-}				/* substract_times */
-
-
-/* Next three functions copied directly from ethereal packet.c
- * by Gerald Combs */
-
-/* Output has to be copied elsewhere */
-/* TODO should I dump this funtion now that I have dns_lookup? */
-gchar *
-ip_to_str (const guint8 * ad)
-{
-  static gchar str[3][16];
-  static gchar *cur;
-  gchar *p;
-  int i;
-  guint32 octet;
-  guint32 digit;
-
-  if (cur == &str[0][0])
-    {
-      cur = &str[1][0];
-    }
-  else if (cur == &str[1][0])
-    {
-      cur = &str[2][0];
-    }
-  else
-    {
-      cur = &str[0][0];
-    }
-  p = &cur[16];
-  *--p = '\0';
-  i = 3;
-  for (;;)
-    {
-      octet = ad[i];
-      *--p = (octet % 10) + '0';
-      octet /= 10;
-      digit = octet % 10;
-      octet /= 10;
-      if (digit != 0 || octet != 0)
-	*--p = digit + '0';
-      if (octet != 0)
-	*--p = octet + '0';
-      if (i == 0)
-	break;
-      *--p = '.';
-      i--;
-    }
-  return p;
-}				/* ip_to_str */
-
-/* (toledo) This function I copied from capture.c of ethereal it was
- * without comments, but I believe it keeps three different
- * strings conversions in memory so as to try to make sure that
- * the conversions made will be valid in memory for a longer
- * period of time */
-
-/* Places char punct in the string as the hex-digit separator.
- * If punct is '\0', no punctuation is applied (and thus
- * the resulting string is 5 bytes shorter)
- */
-
-gchar *
-ether_to_str_punct (const guint8 * ad, char punct)
-{
-  static gchar str[3][18];
-  static gchar *cur;
-  gchar *p;
-  int i;
-  guint32 octet;
   static const gchar hex_digits[16] = "0123456789abcdef";
-
-  if (cur == &str[0][0])
-    {
-      cur = &str[1][0];
-    }
-  else if (cur == &str[1][0])
-    {
-      cur = &str[2][0];
-    }
-  else
-    {
-      cur = &str[0][0];
-    }
-  p = &cur[18];
-  *--p = '\0';
-  i = 5;
-  for (;;)
-    {
-      octet = ad[i];
-      *--p = hex_digits[octet & 0xF];
-      octet >>= 4;
-      *--p = hex_digits[octet & 0xF];
-      if (i == 0)
-	break;
-      if (punct)
-	*--p = punct;
-      i--;
-    }
-  return p;
-}				/* ether_to_str_punct */
-
-
-
-/* Wrapper for the most common case of asking
- * for a string using a colon as the hex-digit separator.
- */
-gchar *
-ether_to_str (const guint8 * ad)
-{
-  return ether_to_str_punct (ad, ':');
-}				/* ether_to_str */
-
-
-gchar *
-print_mem (const guint8 * ad, guint length)
-{
-  static gchar str[3][50];
-  static gchar *cur;
+  gchar cur[50];
   char punct = ':';
   gchar *p;
   int i;
   guint32 octet;
-  static const gchar hex_digits[16] = "0123456789abcdef";
+  const guint8 *ad = NULL;
+  guint length = 0;
 
-  if (cur == &str[0][0])
+  switch (node_id->node_type)
     {
-      cur = &str[1][0];
+    case ETHERNET:
+      ad = node_id->addr.eth;
+      length = sizeof(node_id->addr.eth);
+      break;
+    case FDDI:
+      ad = node_id->addr.fddi;
+      length = sizeof(node_id->addr.fddi);
+      break;
+    case IEEE802:
+      ad = node_id->addr.i802;
+      length = sizeof(node_id->addr.i802);
+      break;
+    case IP:
+      ad = node_id->addr.ip4;
+      length = sizeof(node_id->addr.ip4);
+      break;
+    case TCP:
+      ad = node_id->addr.tcp4.host;
+      length = sizeof(node_id->addr.tcp4);
+      break;
+    default:
+      g_error (_("Unsopported ape mode in print_mem"));
     }
-  else if (cur == &str[1][0])
-    {
-      cur = &str[2][0];
-    }
-  else
-    {
-      cur = &str[0][0];
-    }
-  p = &cur[18];
+
+  if (length * 3 >= 50)
+     g_error (_("Invalid length in print_mem"));
+    
+  p = &cur[length * 3];
   *--p = '\0';
   i = length - 1;
   for (;;)
@@ -2080,53 +1873,5 @@ print_mem (const guint8 * ad, guint length)
 	*--p = punct;
       i--;
     }
-  return p;
+  return g_string_new(p);
 }				/* print_mem */
-
-
-void
-dump_node_info (node_t * node)
-{
-
-  GList *protocol_item = NULL, *name_item = NULL;
-  protocol_t *protocol = NULL;
-  name_t *name = NULL;
-  guint i = 1;
-
-  if (!node)
-    return;
-
-  if (node->name)
-    g_my_info ("NODE %s INFORMATION", node->name->str);
-
-  for (; i <= STACK_SIZE; i++)
-    {
-      if (node->protocols[i])
-	{
-	  g_my_info ("Protocol level %d information", i);
-	  protocol_item = node->protocols[i];
-	  while (protocol_item)
-	    {
-	      protocol = protocol_item->data;
-	      g_my_info ("\tProtocol %s", protocol->name);
-	      if ((name_item = protocol->node_names))
-		{
-		  GString *names = NULL;
-		  while (name_item)
-		    {
-		      if (!names)
-			names = g_string_new ("");
-		      name = name_item->data;
-		      names = g_string_append (names, name->name->str);
-		      names = g_string_append (names, " ");
-		      name_item = name_item->next;
-		    }
-		  g_my_info ("\t\tName: %s", names->str);
-		  g_string_free (names, TRUE);
-		}
-	      protocol_item = protocol_item->next;
-	    }
-	}
-    }
-
-}				/* dump_node_info */

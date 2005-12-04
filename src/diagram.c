@@ -28,8 +28,82 @@
 #include "globals.h"
 #include "diagram.h"
 #include "preferences.h"
+#include "node.h"
+#include "info_windows.h"
+#include "capture.h"
 
-GdkColor black_color;
+typedef struct
+{
+  node_id_t canvas_node_id;
+  node_t *node;
+  GnomeCanvasItem *node_item;
+  GnomeCanvasItem *text_item;
+  GnomeCanvasGroup *group_item;
+  GdkColor color;
+  gboolean is_new;
+  gboolean shown;		/* True if it is to be displayed. */
+}
+canvas_node_t;
+static gint canvas_node_compare(const canvas_node_t *a, const canvas_node_t *b);
+
+
+struct popup_data
+{
+  GtkWidget *node_popup;
+  canvas_node_t *canvas_node;
+};
+
+static GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+				 * separate data from presentation: that is, we need to
+				 * keep a list of CanvasItems, but we do not want to keep
+				 * that info on the nodes tree itself */
+static GTree *canvas_links;		/* See above */
+
+
+
+static gboolean is_idle = FALSE;
+static guint displayed_nodes;
+
+static guint prot_color_index = 0;
+static guint known_protocols[STACK_SIZE + 1];
+static GdkColor black_color;
+
+/* local Function definitions */
+
+static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
+static gint check_new_node (node_t * node, GtkWidget * canvas);
+static gint update_canvas_nodes (node_id_t  * ether_addr,
+				 canvas_node_t * canvas_node,
+				 GtkWidget * canvas);
+static gboolean display_node (node_t * node);
+static void limit_nodes (void);
+static gint add_ordered_node (node_id_t * node_id,
+			      canvas_node_t * canvas_node,
+			      GTree * ordered_nodes);
+static gint check_ordered_node (gdouble * traffic, canvas_node_t * node,
+				guint * count);
+static gint traffic_compare (gconstpointer a, gconstpointer b);
+static gint reposition_canvas_nodes (guint8 * ether_addr,
+				     canvas_node_t * canvas_node,
+				     GtkWidget * canvas);
+static gint check_new_link (link_id_t * link_id,
+			    link_t * link, GtkWidget * canvas);
+static gint update_canvas_links (link_id_t * link_id,
+				 canvas_link_t * canvas_link,
+				 GtkWidget * canvas);
+static gchar *get_prot_color (gchar * name);
+static gdouble get_node_size (gdouble average);
+static gdouble get_link_size (gdouble average);
+static gint link_item_event (GnomeCanvasItem * item,
+			     GdkEvent * event, canvas_link_t * canvas_link);
+static gint node_item_event (GnomeCanvasItem * item,
+			     GdkEvent * event, canvas_node_t * canvas_node);
+#if 0
+static guint popup_to (struct popup_data *pd);
+#endif
+
+
+
 
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
@@ -42,9 +116,8 @@ init_diagram ()
   GtkWidget *canvas;
 
   /* Creates trees */
-  canvas_nodes = g_tree_new (node_id_compare);
-  canvas_links = g_tree_new (link_id_compare);
-
+  canvas_nodes = g_tree_new ( (GCompareFunc)canvas_node_compare );
+  canvas_links = g_tree_new ( (GCompareFunc)link_id_compare );
 
   /* Updates controls from values of variables */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
@@ -232,8 +305,8 @@ update_diagram (GtkWidget * canvas)
 
   /* We search for new protocols */
   while (known_protocols[pref.stack_level] !=
-	 g_list_length (protocols[pref.stack_level]))
-    g_list_foreach (protocols[pref.stack_level], (GFunc) check_new_protocol,
+	 g_list_length (all_protocols[pref.stack_level]))
+    g_list_foreach (all_protocols[pref.stack_level], (GFunc) check_new_protocol,
 		    canvas);
 
   /* Deletes all nodes and updates traffic values */
@@ -244,19 +317,16 @@ update_diagram (GtkWidget * canvas)
   update_nodes ();
 
   /* Check if there are any new nodes */
-#if 0
-  g_tree_traverse (nodes, (GTraverseFunc) check_new_node, G_IN_ORDER, canvas);
-#endif
   while ((new_node = ape_get_new_node ()))
-    check_new_node (new_node->node_id, new_node, canvas);
+    check_new_node (new_node, canvas);
 
   /* Update nodes look and delete outdated canvas_nodes */
   do
     {
       n_nodes_before = g_tree_nnodes (canvas_nodes);
-      g_tree_traverse (canvas_nodes,
+      g_tree_foreach(canvas_nodes,
 		       (GTraverseFunc) update_canvas_nodes,
-		       G_IN_ORDER, canvas);
+		       canvas);
       n_nodes_after = g_tree_nnodes (canvas_nodes);
     }
   while (n_nodes_before != n_nodes_after);
@@ -270,18 +340,18 @@ update_diagram (GtkWidget * canvas)
 
   if (need_reposition)
     {
-      g_tree_traverse (canvas_nodes,
+      g_tree_foreach(canvas_nodes,
 		       (GTraverseFunc) reposition_canvas_nodes,
-		       G_IN_ORDER, canvas);
+		       canvas);
       need_reposition = 0;
     }
 
 
   /* Delete old capture links and update capture link variables */
-  update_links ();
+  links_catalog_update_all();
 
   /* Check if there are any new links */
-  g_tree_traverse (links, (GTraverseFunc) check_new_link, G_IN_ORDER, canvas);
+  links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
 
 
   /* Update links look 
@@ -291,9 +361,9 @@ update_diagram (GtkWidget * canvas)
   do
     {
       n_links = g_tree_nnodes (canvas_links);
-      g_tree_traverse (canvas_links,
+      g_tree_foreach(canvas_links,
 		       (GTraverseFunc) update_canvas_links,
-		       G_IN_ORDER, canvas);
+		       canvas);
       n_links_new = g_tree_nnodes (canvas_links);
     }
   while (n_links != n_links_new);
@@ -440,8 +510,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   g_object_unref (style);
 
   /* We create a legend protocol and add it to the list, to keep count */
-  legend_protocol = g_malloc (sizeof (protocol_t));
-  legend_protocol->name = g_strdup (protocol->name);
+  legend_protocol = protocol_t_create(protocol->name);
   legend_protocol->color = protocol->color;
   legend_protocols = g_list_prepend (legend_protocols, legend_protocol);
 
@@ -567,20 +636,20 @@ get_prot_color (gchar * name)
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
 static gint
-check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
+check_new_node (node_t * node, GtkWidget * canvas)
 {
   canvas_node_t *new_canvas_node;
   GnomeCanvasGroup *group;
 
-  if (!node || !node->node_id)
+  if (!node)
     return FALSE;
 
-  if (display_node (node) && !g_tree_lookup (canvas_nodes, node_id))
+  if (display_node (node) && !g_tree_lookup (canvas_nodes, &node->node_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
-      new_canvas_node->canvas_node_id = g_memdup (node_id, node_id_length);
+      new_canvas_node->canvas_node_id = node->node_id;
       new_canvas_node->node = node;
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
@@ -617,7 +686,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 			(GtkSignalFunc) node_item_event, new_canvas_node);
 
       g_tree_insert (canvas_nodes,
-		     new_canvas_node->canvas_node_id, new_canvas_node);
+		     &new_canvas_node->canvas_node_id, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _("Creating canvas_node: %s. Number of nodes %d"),
 	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
@@ -641,7 +710,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 
 /* - updates sizes, names, etc */
 static gint
-update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
+update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
 		     GtkWidget * canvas)
 {
   node_t *node;
@@ -653,16 +722,8 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   gdouble cpu_time_used;
   char *nametmp = NULL;
 
-  /* We don't need this anymore since now update_nodes is called in update_diagram */
-#if 0
-  node = canvas_node->node;
+  node = nodes_catalog_find(node_id);
 
-  /* First we check whether the link has timed out */
-  node = update_node (node);
-#endif
-#if 1
-  node = g_tree_lookup (nodes, node_id);
-#endif
   /* Remove node if node is too old or if capture is stopped */
   if (!node || !display_node (node))
     {
@@ -688,7 +749,6 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       g_tree_remove (canvas_nodes, node_id);
       g_my_debug ("Removing canvas_node. Number of nodes %d",
 		  g_tree_nnodes (canvas_nodes));
-      g_free (node_id);
       g_free (canvas_node);
       need_reposition = TRUE;
       return TRUE;		/* I've checked it's not safe to traverse 
@@ -698,7 +758,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 
   if (node->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (protocols[pref.stack_level],
+      protocol_item = g_list_find_custom (all_protocols[pref.stack_level],
 					  node->main_prot[pref.stack_level],
 					  protocol_compare);
       if (protocol_item)
@@ -837,16 +897,15 @@ limit_nodes (void)
 
   ordered_nodes = g_tree_new (traffic_compare);
 
-  g_tree_traverse (canvas_nodes, (GTraverseFunc) add_ordered_node, G_IN_ORDER,
-		   ordered_nodes);
-  g_tree_traverse (ordered_nodes, (GTraverseFunc) check_ordered_node,
-		   G_IN_ORDER, &limit);
+  g_tree_foreach(canvas_nodes, (GTraverseFunc) add_ordered_node, ordered_nodes);
+  g_tree_foreach(ordered_nodes, (GTraverseFunc) check_ordered_node,
+		   &limit);
   g_tree_destroy (ordered_nodes);
   ordered_nodes = NULL;
 }				/* limit_nodes */
 
 static gint
-add_ordered_node (guint8 * node_id, canvas_node_t * node,
+add_ordered_node (node_id_t * node_id, canvas_node_t * node,
 		  GTree * ordered_nodes)
 {
   g_tree_insert (ordered_nodes, node->node, node);
@@ -898,7 +957,7 @@ traffic_compare (gconstpointer a, gconstpointer b)
   /* If two nodes have the same traffic, we still have
    * to distinguish them somehow. We use the node_id */
 
-  return (node_id_compare (node_a->node_id, node_b->node_id));
+  return (node_id_compare (&node_a->node_id, &node_b->node_id));
 
 }				/* traffic_compare */
 
@@ -1029,7 +1088,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 /* Goes through all known links and checks whether there already exists
  * a corresponding canvas_link. If not, create it.*/
 static gint
-check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
+check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 {
   canvas_link_t *new_canvas_link;
   GnomeCanvasGroup *group;
@@ -1041,8 +1100,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
-      new_canvas_link->canvas_link_id = g_memdup (link_id,
-						  2 * node_id_length);
+      new_canvas_link->canvas_link_id = *link_id;
       new_canvas_link->link = link;
 
       /* We set the lines position using groups positions */
@@ -1059,7 +1117,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
 
       g_tree_insert (canvas_links,
-		     new_canvas_link->canvas_link_id, new_canvas_link);
+		     &new_canvas_link->canvas_link_id, new_canvas_link);
       gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
 
       gnome_canvas_points_unref (points);
@@ -1082,7 +1140,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
  *   traffic and main protocol, and old links are deleted
  * - caculates link size and color fading */
 static gint
-update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
+update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 		     GtkWidget * canvas)
 {
   link_t *link;
@@ -1097,7 +1155,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   double dx, dy;		/* temporary */
 
 /* We used to run update_link here, but that was a major performance penalty, and now it is done in update_diagram */
-  link = g_tree_lookup (links, link_id);
+  link = links_catalog_find(link_id);
 
   if (!link)
     {
@@ -1113,7 +1171,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       g_tree_remove (canvas_links, link_id);
       g_my_debug ("Removing canvas link. Number of links %d",
 		  g_tree_nnodes (canvas_links));
-      g_free (link_id);
       g_free (canvas_link);
       return TRUE;		/* I've checked it's not safe to traverse 
 				 * while deleting, so we return TRUE to stop
@@ -1124,7 +1181,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 
   if (link->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (protocols[pref.stack_level],
+      protocol_item = g_list_find_custom (all_protocols[pref.stack_level],
 					  link->main_prot[pref.stack_level],
 					  protocol_compare);
       if (protocol_item)
@@ -1142,7 +1199,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
    * deleting the link */
 
   /* We get coords for the destination node */
-  canvas_node = g_tree_lookup (canvas_nodes, link_id + node_id_length);
+  canvas_node = g_tree_lookup (canvas_nodes, &link_id->dst);
   if (!canvas_node || !canvas_node->shown)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
@@ -1153,7 +1210,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 		"y", &points->coords[1], NULL);
 
   /* We get coords from source node */
-  canvas_node = g_tree_lookup (canvas_nodes, link_id);
+  canvas_node = g_tree_lookup (canvas_nodes, &link_id->src);
   if (!canvas_node || !canvas_node->shown)
     {
       gnome_canvas_item_hide (canvas_link->link_item);
@@ -1212,13 +1269,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 			     "fill_color_rgba", black, NULL);
     }
 
-
-
-
-
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
-
 
   gnome_canvas_points_unref (points);
 
@@ -1357,7 +1409,11 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
     case GDK_2BUTTON_PRESS:
       if (!canvas_node || !canvas_node->node)
 	return FALSE;
-      create_node_info_window (canvas_node);
+      node_info_window_create( &canvas_node->canvas_node_id );
+      g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
+                 nodes_catalog_size());
+      node_dump(canvas_node->node);
+
       break;
     default:
       break;
@@ -1401,25 +1457,11 @@ popup_to (struct popup_data *pd)
       || !(pd->canvas_node->node->numeric_name))
     return FALSE;
 
-  if (mode == ETHERNET && pd->canvas_node->node->ip_address
-      && pd->canvas_node->node->numeric_ip)
-    {
-      str = g_strdup_printf ("%s (%s, %s)",
-			     pd->canvas_node->node->name->str,
-			     pd->canvas_node->node->numeric_ip->str,
-			     pd->canvas_node->node->numeric_name->str);
-      gtk_label_set_text (label, str);
-      g_free (str);
-    }
-
-  else
-    {
-      str = g_strdup_printf ("%s (%s)",
-			     pd->canvas_node->node->name->str,
-			     pd->canvas_node->node->numeric_name->str);
-      gtk_label_set_text (label, str);
-      g_free (str);
-    }
+    str = g_strdup_printf ("%s (%s)",
+                           pd->canvas_node->node->name->str,
+                           pd->canvas_node->node->numeric_name->str);
+    gtk_label_set_text (label, str);
+    g_free (str);
 
 
   label = (GtkLabel *) glade_xml_get_widget (xml_popup, "accumulated");
@@ -1496,3 +1538,10 @@ traffic_to_str (gdouble traffic, gboolean is_speed)
 
   return str;
 }				/* traffic_to_str */
+
+static gint canvas_node_compare(const canvas_node_t *a, const canvas_node_t *b)
+{
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+  return node_id_compare(&a->canvas_node_id, &b->canvas_node_id);
+}

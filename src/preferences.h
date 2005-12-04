@@ -52,12 +52,25 @@ void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
 void on_apply_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
-void on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data);
 
 void on_group_unk_check_toggled (GtkToggleButton * togglebutton, gpointer);
 void on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data);
 void on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 
+/* name tab callbacks */
+gboolean on_name_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data);
+void on_dns_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
+void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
+void on_protocol_add_button_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_remove_button_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_move_up_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_move_down_clicked (GtkButton * button, gpointer user_data);
 
-void color_list_to_pref (void);
+/* proto color tab callbacks */
+void on_color_add_button_clicked (GtkButton * button, gpointer user_data);
+void on_color_remove_button_clicked (GtkButton * button, gpointer user_data);
+void on_colordiag_ok_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data);
+void on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data);
+void on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data);

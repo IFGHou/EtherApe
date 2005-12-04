@@ -49,5 +49,9 @@ Issues in the source code
   * Move preference controls initialization for init_diagram to a new
     function in preferences.c
 
+  * Conversations are never aged. A conversation should expire with its link, or
+    better, make links dependent one from other, for example, a passive ftp 
+    depending on its ctrl conn.  Conversations are used for tracking pass.ftp and
+    accounting RPC.
 --
 $Id$

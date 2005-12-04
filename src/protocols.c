@@ -21,14 +21,81 @@
  */
 
 #include "globals.h"
-#include "protocols.h"
 #include <ctype.h>
 #include <string.h>
+#include "prot_types.h"
+#include "protocols.h"
+#include "conversations.h"
 
+
+#define IS_PORT(p) ( (src_service && src_service->number==p) \
+		       || (dst_service && dst_service->number==p) )
+#define LINESIZE 1024
+
+/* Enums */
+enum rpc_type
+{
+  RPC_CALL = 0,
+  RPC_REPLY = 1
+};
+
+enum rpc_program
+{
+  BOOTPARAMS_PROGRAM = 1,
+  MOUNT_PROGRAM = 100005,
+  NFS_PROGRAM = 100003,
+  NLM_PROGRAM = 100021,
+  PORTMAP_PROGRAM = 100000,
+  STAT_PROGRAM = 100024,
+  YPBIND_PROGRAM = 100007,
+  YPSERV_PROGRAM = 100004,
+  YPXFR_PROGRAM = 100069
+};
+
+/* Functions declarations */
+
+static void get_eth_type (void);
+static void get_fddi_type (void);
+static void get_ieee802_type (void);
+static void get_eth_II (etype_t etype);
+static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
+static void get_linux_sll_type (void);
+
+static void get_llc (void);
+static void get_ip (void);
+static void get_ipx (void);
+static void get_tcp (void);
+static gint tcp_compare (gconstpointer a, gconstpointer b);
+static void get_udp (void);
+static gint udp_compare (gconstpointer a, gconstpointer b);
+
+static void get_netbios (void);
+static void get_netbios_ssn (void);
+static void get_netbios_dgm (void);
+
+static void get_ftp (void);
+static gboolean get_rpc (gboolean is_udp);
+static void load_services (void);
+static guint16 choose_port (guint16 a, guint16 b);
+static void append_etype_prot (etype_t etype);
+
+/* Variables */
+static GTree *tcp_services = NULL;
+static GTree *udp_services = NULL;
+static guint offset = 0;
 static GString *prot;
 static const guint8 *packet;
-guint capture_len = 0;
+static guint capture_len = 0;
 
+/* These are used for conversations */
+static guint32 global_src_address;
+static guint32 global_dst_address;
+static guint16 global_src_port;
+static guint16 global_dst_port;
+
+/* ------------------------------------------------------------
+ * Implementation
+ * ------------------------------------------------------------*/
 gchar *
 get_packet_prot (const guint8 * p, guint len)
 {
@@ -86,7 +153,7 @@ get_packet_prot (const guint8 * p, guint len)
    * protocols other than just creating entries saying UNKNOWN */
   /* I think I'll do this by changing the global protocols into
    * a GArray */
-
+  i = 0;
   if (prot)
     {
       tokens = g_strsplit (prot->str, "/", 0);
@@ -114,6 +181,9 @@ get_packet_prot (const guint8 * p, guint len)
   return prot->str;
 }				/* get_packet_prot */
 
+/* ------------------------------------------------------------
+ * Private functions
+ * ------------------------------------------------------------*/
 
 static void
 get_eth_type (void)
@@ -635,7 +705,6 @@ get_tcp (void)
   dst_service = g_tree_lookup (tcp_services, &dst_port);
 
   /* Check whether this packet belongs to a registered conversation */
-
   if ((str = find_conversation (global_src_address, global_dst_address,
 				src_port, dst_port)))
     {

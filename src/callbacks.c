@@ -18,6 +18,7 @@
  */
 
 #include "callbacks.h"
+#include "diagram.h"
 
 /* Extern functions */
 extern void save_config (gchar * prefix);

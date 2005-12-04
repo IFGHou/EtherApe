@@ -18,6 +18,11 @@
  */
 
 #include "preferences.h"
+#include "diagram.h"
+#include "capture.h"
+
+static void color_list_to_pref (void);
+
 
 gboolean colors_changed = FALSE;
 
@@ -634,7 +639,7 @@ load_color_list (void)
 
 /* Called whenever preferences are applied or OKed. Copied whatever there is
  * in the color table to the color preferences in memory */
-void
+static void
 color_list_to_pref (void)
 {
   gint i;

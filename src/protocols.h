@@ -18,68 +18,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "prot_types.h"
+#ifndef PROTOCOLS_H
+#define PROTOCOLS_H
 
-#define IS_PORT(p) ( (src_service && src_service->number==p) \
-		       || (dst_service && dst_service->number==p) )
-#define LINESIZE 1024
+/* extracts the protocol stack from packet, and returs it as string */
+gchar *get_packet_prot (const guint8 * packet, guint len);
 
-/* Enums */
 
-enum rpc_type
-{
-  RPC_CALL = 0,
-  RPC_REPLY = 1
-};
-
-enum rpc_program
-{
-  BOOTPARAMS_PROGRAM = 1,
-  MOUNT_PROGRAM = 100005,
-  NFS_PROGRAM = 100003,
-  NLM_PROGRAM = 100021,
-  PORTMAP_PROGRAM = 100000,
-  STAT_PROGRAM = 100024,
-  YPBIND_PROGRAM = 100007,
-  YPSERV_PROGRAM = 100004,
-  YPXFR_PROGRAM = 100069
-};
-
-/* Variables */
-
-static GTree *tcp_services = NULL;
-static GTree *udp_services = NULL;
-static guint offset = 0;
-
-/* These are used for conversations */
-static guint32 global_src_address;
-static guint32 global_dst_address;
-static guint16 global_src_port;
-static guint16 global_dst_port;
-
-/* Functions declarations */
-
-static void get_eth_type (void);
-static void get_fddi_type (void);
-static void get_ieee802_type (void);
-static void get_eth_II (etype_t etype);
-static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
-static void get_linux_sll_type (void);
-
-static void get_llc (void);
-static void get_ip (void);
-static void get_ipx (void);
-static void get_tcp (void);
-static gint tcp_compare (gconstpointer a, gconstpointer b);
-static void get_udp (void);
-static gint udp_compare (gconstpointer a, gconstpointer b);
-
-static void get_netbios (void);
-static void get_netbios_ssn (void);
-static void get_netbios_dgm (void);
-
-static void get_ftp (void);
-static gboolean get_rpc (gboolean is_udp);
-static void load_services (void);
-static guint16 choose_port (guint16 a, guint16 b);
-static void append_etype_prot (etype_t etype);
+#endif

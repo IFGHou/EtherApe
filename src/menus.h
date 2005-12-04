@@ -25,9 +25,6 @@
 #include <libgnomeui/gnome-messagebox.h>
 #include <gtk/gtk.h>
 #include "globals.h"
-#include "util.h"
-
-GList *interface_list = NULL;	/* A list of all usable interface */
 
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_file_cancel_button_clicked (GtkButton * button, gpointer user_data);
@@ -48,4 +45,3 @@ void on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
 				   gpointer user_data);
 
 void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
-static void set_active_interface (void);

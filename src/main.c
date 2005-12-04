@@ -25,6 +25,9 @@
 #include "globals.h"
 #include "ip-cache.h"
 #include "main.h"
+#include "diagram.h"
+#include "info_windows.h"
+#include "capture.h"
 
 
 int

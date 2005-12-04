@@ -39,3 +39,8 @@ void dns_ack (void);
 /* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
    or just the hostname (if fqdn is zero) */
 char *dns_lookup (uint32_t address, int fqdn);
+
+/* utility functions */
+gchar *ip_to_str (const guint8 * ad);
+gchar *ether_to_str (const guint8 * ad);
+gchar *ether_to_str_punct (const guint8 * ad, char punct);

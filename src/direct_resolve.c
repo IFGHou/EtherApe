@@ -229,9 +229,6 @@ static dword res_nxdomain = 0;
 static dword res_nserror = 0;
 static dword res_hostipmismatch = 0;
 static dword res_unknownid = 0;
-static dword res_resend = 0;
-static dword res_timeout = 0;
-static dword resolvecount = 0;
 
 static int resfd = -1;			/* socket file descr. */
 static char tempstring[256];		/* temporary string used as buffer ... */

@@ -23,10 +23,15 @@
 
 typedef struct
 {
-  guint8 *node_id;
+  node_id_t node_id;
   GtkWidget *window;
 }
 node_info_window_t;
+
+void node_info_window_create(const node_id_t * node_id);
+guint update_info_windows (void);
+
+
 
 typedef struct
 {
@@ -35,7 +40,7 @@ typedef struct
 }
 prot_info_window_t;
 
-
+/* callbacks */
 gboolean on_prot_table_button_press_event (GtkWidget * widget,
 					   GdkEventButton * event,
 					   gpointer user_data);
@@ -47,3 +52,10 @@ gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
 				  gpointer ud);
 gboolean on_delete_protocol_window (GtkWidget * wdg, GdkEvent * e,
 				    gpointer ud);
+void on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
+void on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data);
+void on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data);
+void on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data);
+void on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data);
+void on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data);
+void on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data);

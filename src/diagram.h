@@ -20,49 +20,21 @@
 #include "globals.h"
 
 
-static gboolean is_idle = FALSE;
-static guint displayed_nodes;
-
-static guint prot_color_index = 0;
-static guint known_protocols[STACK_SIZE + 1];
-
-struct popup_data
+typedef struct
 {
-  GtkWidget *node_popup;
-  canvas_node_t *canvas_node;
-};
+  link_id_t canvas_link_id;
+  link_t *link;
+  GnomeCanvasItem *link_item;
+  GdkColor color;
+}
+canvas_link_t;
 
-/* Function definitions */
+gboolean already_updating;	/* True while an instance of update_diagram is running */
 
-static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
-static gint check_new_node (guint8 * ether_addr,
-			    node_t * node, GtkWidget * canvas);
-static gint update_canvas_nodes (guint8 * ether_addr,
-				 canvas_node_t * canvas_node,
-				 GtkWidget * canvas);
-static gboolean display_node (node_t * node);
-static void limit_nodes (void);
-static gint add_ordered_node (guint8 * node_id,
-			      canvas_node_t * canvas_node,
-			      GTree * ordered_nodes);
-static gint check_ordered_node (gdouble * traffic, canvas_node_t * node,
-				guint * count);
-static gint traffic_compare (gconstpointer a, gconstpointer b);
-static gint reposition_canvas_nodes (guint8 * ether_addr,
-				     canvas_node_t * canvas_node,
-				     GtkWidget * canvas);
-static gint check_new_link (guint8 * ether_link,
-			    link_t * link, GtkWidget * canvas);
-static gint update_canvas_links (guint8 * ether_link,
-				 canvas_link_t * canvas_link,
-				 GtkWidget * canvas);
-static gchar *get_prot_color (gchar * name);
-static gdouble get_node_size (gdouble average);
-static gdouble get_link_size (gdouble average);
-static gint link_item_event (GnomeCanvasItem * item,
-			     GdkEvent * event, canvas_link_t * canvas_link);
-static gint node_item_event (GnomeCanvasItem * item,
-			     GdkEvent * event, canvas_node_t * canvas_node);
-#if 0
-static guint popup_to (struct popup_data *pd);
-#endif
+guint update_diagram (GtkWidget * canvas);
+void init_diagram (void);
+void destroying_timeout (gpointer data);
+void destroying_idle (gpointer data);
+void set_appbar_status (gchar * str);
+void delete_gui_protocols (void);
+gchar *traffic_to_str (gdouble traffic, gboolean is_speed);

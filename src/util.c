@@ -108,12 +108,11 @@ typedef int mode_t;		/* for win32 */
 };
 
 
-static void search_for_if_cb (gpointer data, gpointer user_data);
-
-static void free_if_cb (gpointer data, gpointer user_data);
+static void interface_list_search_cb(gpointer data, gpointer user_data);
+static void interface_list_free_cb(gpointer data, gpointer user_data);
 
 GList *
-get_interface_list (int *err, char *err_str)
+interface_list_create(int *err, char *err_str)
 {
   GList *il = NULL;
   gint nonloopback_pos = 0;
@@ -172,7 +171,7 @@ get_interface_list (int *err, char *err_str)
        */
       user_data.name = ifr->ifr_name;
       user_data.found = FALSE;
-      g_list_foreach (il, search_for_if_cb, &user_data);
+      g_list_foreach (il, interface_list_search_cb, &user_data);
       if (user_data.found)
         {
 	  g_my_debug(_("skipping already listed interface %s"), ifr->ifr_name);
@@ -261,11 +260,7 @@ get_interface_list (int *err, char *err_str)
   return il;
 
 fail:
-  if (il != NULL)
-    {
-      g_list_foreach (il, free_if_cb, NULL);
-      g_list_free (il);
-    }
+  interface_list_free(il);
   free (ifc.ifc_buf);
   close (sock);
   *err = CANT_GET_INTERFACE_LIST;
@@ -274,7 +269,7 @@ fail:
 
 
 static void
-search_for_if_cb (gpointer data, gpointer user_data)
+interface_list_search_cb(gpointer data, gpointer user_data)
 {
   struct search_user_data *search_user_data = user_data;
 
@@ -283,18 +278,18 @@ search_for_if_cb (gpointer data, gpointer user_data)
 }
 
 static void
-free_if_cb (gpointer data, gpointer user_data)
+interface_list_free_cb(gpointer data, gpointer user_data)
 {
   g_free (data);
 }
 
 void
-free_interface_list (GList * if_list)
+interface_list_free(GList * if_list)
 {
   while (if_list != NULL)
     {
-      g_free (if_list->data);
-      if_list = g_list_remove_link (if_list, if_list);
+      g_list_foreach (if_list, interface_list_free_cb, NULL);
+      g_list_free (if_list);
     }
 }
 

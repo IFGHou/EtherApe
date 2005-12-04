@@ -28,5 +28,8 @@ typedef struct
 }
 conversation_t;
 
-GList *conversations = NULL;	/* Some protocols add an item here to help identify
-				 * further packets of the same protocol */
+void add_conversation (guint32 src_address, guint32 dst_address,
+		       guint16 src_port, guint16 dst_port, gchar * data);
+gchar *find_conversation (guint32 src_address, guint32 dst_address,
+			  guint16 src_port, guint16 dst_port);
+void delete_conversations (void);

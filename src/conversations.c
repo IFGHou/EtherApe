@@ -25,6 +25,45 @@
 #include <netinet/in.h>
 #include "globals.h"
 #include "conversations.h"
+#include "dns.h"
+
+static GList *conversations = NULL;	/* Some protocols add an item here to help identify
+				 * further packets of the same protocol */
+
+/* Returns the item ptr if there is any matching conversation in any of the
+ * two directions */
+/* A zero in any of the ports matches any port number */
+static GList
+  * find_conversation_ptr(guint32 src_address, guint32 dst_address,
+		       guint16 src_port, guint16 dst_port)
+{
+  GList *item = conversations;
+  conversation_t *conv = NULL;
+
+  while (item)
+    {
+      conv = item->data;
+      if (((src_address == conv->src_address)
+	   && (dst_address == conv->dst_address)
+	   && (!src_port || !conv->src_port || (src_port == conv->src_port))
+	   && (!dst_port || !conv->dst_port || (dst_port == conv->dst_port))
+          )
+	  || ((src_address == conv->dst_address)
+	      && (dst_address == conv->src_address)
+	      && (!src_port || !conv->dst_port || (src_port == conv->dst_port)) 
+              && (!dst_port || !conv->src_port || (dst_port == conv->src_port))
+              )
+          )
+	{
+          /* found */
+	  break;
+	}
+      item = item->next;
+    }
+
+  return item;
+}				/* find_conversation_ptr */
+
 
 void
 add_conversation (guint32 src_address, guint32 dst_address,
@@ -71,41 +110,25 @@ add_conversation (guint32 src_address, guint32 dst_address,
 }				/* add_conversation */
 
 
-/* Returns the data if the is any matching conversation in any of the
+/* Returns the data if there is any matching conversation in any of the
  * two directions */
 /* A zero in any of the ports matches any port number */
-gchar
-  * find_conversation (guint32 src_address, guint32 dst_address,
+gchar* 
+find_conversation (guint32 src_address, guint32 dst_address,
 		       guint16 src_port, guint16 dst_port)
 {
-  gchar *ret = NULL;
-  GList *item = conversations;
-  conversation_t *conv = NULL;
-
-  while (item)
+  GList *item;
+  item = find_conversation_ptr(src_address, dst_address, src_port, dst_port);
+  if (item)
     {
-      conv = item->data;
-      if (((src_address == conv->src_address)
-	   && (dst_address == conv->dst_address)
-	   && (!src_port || !conv->src_port || (src_port == conv->src_port))
-	   && (!dst_port || !conv->dst_port || (dst_port == conv->dst_port)))
-	  || ((src_address == conv->dst_address)
-	      && (dst_address == conv->src_address)
-	      && (!src_port || !conv->dst_port
-		  || (src_port == conv->dst_port)) && (!dst_port
-						       || !conv->src_port
-						       || (dst_port ==
-							   conv->src_port))))
-	{
-	  ret = conv->data;
-	  break;
-	}
-      item = item->next;
+      /* found */
+      conversation_t *conv = item->data;
+      return conv->data;
     }
-
-  return ret;
-}				/* find_conversation */
-
+  else
+    return NULL;
+}
+  
 void
 delete_conversations (void)
 {

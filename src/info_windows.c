@@ -21,10 +21,13 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
-#include "info_windows.h"
 #include <math.h>
 #include <time.h>
+#include "globals.h"
+#include "info_windows.h"
+#include "diagram.h"
+#include "node.h"
+#include "capture.h"
 
 /* private static vars */
 static GList *info_protocols = NULL;
@@ -35,8 +38,9 @@ static GList *prot_info_windows = NULL;
 static void update_prot_info_windows (void);
 static void update_node_info_window (node_info_window_t * node_info_window);
 static void update_prot_info_window (prot_info_window_t * prot_info_window);
-static gint node_info_compare (gconstpointer a, gconstpointer b);
+static gint node_info_window_compare (gconstpointer a, gconstpointer b);
 static gint prot_info_compare (gconstpointer a, gconstpointer b);
+static void update_node_info_windows (void);
 
 /* 
   
@@ -105,7 +109,7 @@ prot_info_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
-  return strcmp (((prot_info_window_t *) a)->prot_name, (guint8 *) b);
+  return strcmp (((prot_info_window_t *) a)->prot_name, (gchar *) b);
 }				/* prot_info_compare */
 
 static void
@@ -170,7 +174,7 @@ on_prot_info_delete_event (GtkWidget * prot_info, GdkEvent * evt,
 			   gpointer user_data)
 {
   GList *item = NULL;
-  guint8 *prot_name = NULL;
+  gchar *prot_name = NULL;
   prot_info_window_t *prot_info_window = NULL;
 
   prot_name = g_object_get_data (G_OBJECT (prot_info), "prot_name");
@@ -199,7 +203,7 @@ on_prot_info_delete_event (GtkWidget * prot_info, GdkEvent * evt,
 static void
 update_prot_info_window (prot_info_window_t * prot_info_window)
 {
-  guint8 *prot_name = NULL;
+  gchar *prot_name = NULL;
   protocol_t *prot = NULL;
   GtkWidget *window = NULL;
   GtkWidget *widget = NULL;
@@ -502,9 +506,7 @@ update_protocols_window (void)
       if (!g_list_find_custom (info_protocols, protocol->name,
 			       protocol_compare))
 	{
-	  protocol_t *nproto = g_malloc (sizeof (protocol_t));
-	  nproto->name = g_strdup (protocol->name);
-	  nproto->last_heard.tv_sec = nproto->last_heard.tv_usec = 0;
+	  protocol_t *nproto = protocol_t_create(protocol->name);
 	  info_protocols = g_list_prepend (info_protocols, nproto);
 	  nproto->color = protocol->color;
 
@@ -557,7 +559,7 @@ update_protocols_window (void)
 
       if (!
 	  (item =
-	   g_list_find_custom (protocols[pref.stack_level],
+	   g_list_find_custom (all_protocols[pref.stack_level],
 			       nproto->name, protocol_compare)))
 	{
 	  g_my_critical
@@ -735,12 +737,12 @@ on_prot_list_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
    ---------------------------------------------------------- */
 /* Comparison function used to compare node_info_windows */
 static gint
-node_info_compare (gconstpointer a, gconstpointer b)
+node_info_window_compare(gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
-  return memcmp (((node_info_window_t *) a)->node_id, (guint8 *) b,
-		 node_id_length);
+  return node_id_compare( & (((node_info_window_t *) a)->node_id), 
+                          & (((node_info_window_t *) b)->node_id));
 }
 
 guint
@@ -760,17 +762,20 @@ update_info_windows (void)
 }				/* update_info_windows */
 
 void
-create_node_info_window (canvas_node_t * canvas_node)
+node_info_window_create(const node_id_t * node_id)
 {
   GtkWidget *window;
   node_info_window_t *node_info_window;
   GladeXML *xml_info_window;
   GtkWidget *widget;
   GList *list_item;
+  node_info_window_t key;
+
+  key.node_id = *node_id;
+
   /* If there is already a window, we don't need to create it again */
   if (!(list_item =
-	g_list_find_custom (node_info_windows,
-			    canvas_node->canvas_node_id, node_info_compare)))
+	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
     {
       xml_info_window =
 	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_info", NULL);
@@ -807,10 +812,9 @@ create_node_info_window (canvas_node_t * canvas_node)
       g_object_set_data (G_OBJECT (window), "accumulated_out", widget);
       g_object_unref (xml_info_window);
       node_info_window = g_malloc (sizeof (node_info_window_t));
-      node_info_window->node_id =
-	g_memdup (canvas_node->canvas_node_id, node_id_length);
+      node_info_window->node_id = *node_id;
       g_object_set_data (G_OBJECT (window), "node_id",
-			 node_info_window->node_id);
+			 g_memdup(&node_info_window->node_id, sizeof(node_id_t)));
       node_info_window->window = window;
       node_info_windows =
 	g_list_prepend (node_info_windows, node_info_window);
@@ -818,14 +822,7 @@ create_node_info_window (canvas_node_t * canvas_node)
   else
     node_info_window = (node_info_window_t *) list_item->data;
   update_node_info_window (node_info_window);
-  if (canvas_node && canvas_node->node)
-    {
-      g_my_info ("Nodes: %d. Canvas nodes: %d", g_tree_nnodes (nodes),
-		 g_tree_nnodes (canvas_nodes));
-      dump_node_info (canvas_node->node);
-    }
-
-}				/* create_node_info_window */
+}				/* node_info_window_create */
 
 
 void
@@ -833,10 +830,11 @@ update_node_info_windows (void)
 {
   GList *list_item = NULL, *remove_item;
   node_info_window_t *node_info_window = NULL;
+  struct timeval diff;
   static struct timeval last_time = {
     0, 0
-  }
-  , diff;
+  };
+
   diff = substract_times (now, last_time);
   /* Update info windows at most twice a second */
   if (pref.refresh_period < 500)
@@ -848,7 +846,6 @@ update_node_info_windows (void)
       node_info_window = (node_info_window_t *) list_item->data;
       if (status == STOP)
 	{
-	  g_free (node_info_window->node_id);
 	  gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
 	  remove_item = list_item;
 	  list_item = list_item->next;
@@ -863,7 +860,6 @@ update_node_info_windows (void)
     }
 
   last_time = now;
-  return;
 }				/* update_node_info_windows */
 
 /* It's called when a node info window is closed by the user 
@@ -874,8 +870,10 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
 			   gpointer user_data)
 {
   GList *item = NULL;
-  guint8 *node_id = NULL;
+  node_id_t *node_id = NULL;
   node_info_window_t *node_info_window = NULL;
+  node_info_window_t key;
+  
   node_id = g_object_get_data (G_OBJECT (node_info), "node_id");
   if (!node_id)
     {
@@ -883,15 +881,15 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
       return TRUE;		/* ignore signal */
     }
 
+  key.node_id = *node_id;
   if (!(item =
-	g_list_find_custom (node_info_windows, node_id, node_info_compare)))
+	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
     {
       g_my_critical (_("No node_info_window in on_node_info_delete_event"));
       return TRUE;		/* ignore signal */
     }
 
   node_info_window = item->data;
-  g_free (node_info_window->node_id);
   gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
   node_info_windows = g_list_remove_link (node_info_windows, item);
 
@@ -901,13 +899,12 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
 static void
 update_node_info_window (node_info_window_t * node_info_window)
 {
-  guint8 *node_id = NULL;
   node_t *node = NULL;
   GtkWidget *window = NULL;
   GtkWidget *widget = NULL;
-  node_id = node_info_window->node_id;
+  
   window = node_info_window->window;
-  if (!(node = g_tree_lookup (nodes, node_id)))
+  if (!(node = nodes_catalog_find(&node_info_window->node_id)))
     {
       widget = g_object_get_data (G_OBJECT (window), "numeric_name_label");
       gtk_label_set_text (GTK_LABEL (widget), _("No info available"));

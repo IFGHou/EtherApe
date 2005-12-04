@@ -22,16 +22,22 @@
 #include <libgnomeui/gnome-file-entry.h>
 #include <gtk/gtkcontainer.h>
 #include "util.h"
+#include "diagram.h"
+#include "info_windows.h"
+#include "capture.h"
 
 
+static gboolean in_start_capture = FALSE;
+
+static void set_active_interface (void);
+
+
+#if 0
 static GnomeUIInfo help_submenu[] = {
   GNOMEUIINFO_HELP ("etherape"),
   GNOMEUIINFO_END
 };
 
-static gboolean in_start_capture = FALSE;
-
-#if 0
 /* This is here just as an example in case I need it again */
 void
 on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -62,15 +68,8 @@ init_menus (void)
   GSList *group = NULL;
   GString *info_string = NULL;
 
-  /* It seems libglade is not acknowledging the "Use gnome help" option in the 
-   * glade file and so it is not automatically adding the help items in the help
-   * menu. Thus I must add it manually here */
-  interface_list = get_interface_list (&err, err_str);
-
+  interfaces = interface_list_create(&err, err_str);
   g_my_info (_("get_interface result: %d (msg: '%s')"), err, err_str);
-
-  interfaces = interface_list;
-
   if (!interfaces)
     {
       g_my_info (_("No suitables interfaces for capture have been found"));
@@ -108,6 +107,7 @@ init_menus (void)
 
   g_my_info (info_string->str);
 
+  interface_list_free(interfaces);
 }				/* init_menus */
 
 /* FILE MENU */

@@ -28,10 +28,9 @@
 #include <pcap.h>
 #include <glade/glade.h>
 #include <string.h>
+#include "links.h"
 
 #define ETHERAPE_GLADE_FILE "etherape.glade2"	// glade 2 file
-#define STACK_SIZE 5		/* How many protocol levels to keep
-				 * track of (+1) */
 
 /* Enumerations */
 
@@ -99,19 +98,6 @@ typedef enum
 }
 node_size_variable_t;
 
-typedef enum
-{
-  DEFAULT = -1,
-  ETHERNET = 0,
-  FDDI = 1,
-  IEEE802 = 2,
-  IP = 3,
-  IPX = 4,
-  TCP = 5,
-  UDP = 6
-}
-apemode_t;
-
 /* Flag to indicate whether a packet belongs to a node or a link */
 /* TODO This has to go, it should be a packet property */
 enum packet_belongs
@@ -119,144 +105,12 @@ enum packet_belongs
   NODE = 0, LINK = 1, PROTOCOL = 2
 };
 
-/* Flag used in node packets to indicate whether this packet was
- * inbound or outbound for the parent node */
-typedef enum
-{
-  INBOUND = 0, OUTBOUND = 1
-}
-packet_direction;
 
 /* Possible states of capture status */
 enum status_t
 {
   STOP = 0, PLAY = 1, PAUSE = 2
 };
-
-/* Capture structures */
-
-typedef struct
-{
-  guint8 *node_id;
-  GString *name;
-  GString *numeric_name;
-  gboolean solved;
-  gdouble accumulated;
-  gdouble n_packets;
-}
-name_t;
-
-typedef struct
-{
-  guint8 *node_id;		/* pointer to the node identification
-				 * could be an ether or ip address*/
-  GString *name;		/* String with a readable default name of the node */
-  GString *numeric_name;	/* String with a numeric representation of the id */
-  guint32 ip_address;		/* Needed by the resolver */
-  GString *numeric_ip;		/* Ugly hack for ethernet mode */
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble average_in;		/* Average bytes in in the last x ms */
-  gdouble average_out;		/* Average bytes out in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes */
-  gdouble accumulated_in;	/* Accumulated incoming bytes */
-  gdouble accumulated_out;	/* Accumulated outcoming bytes */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble aver_accu_in;		/* Accumulated incoming bytes in the last x ms */
-  gdouble aver_accu_out;	/* Accumulated outcoming bytes in the last x ms */
-  gdouble n_packets;		/* Number of total packets received */
-  struct timeval last_time;	/* Timestamp of the last packet to be added */
-  GList *packets;		/* List of packets sizes in or out and
-				 * its sizes. Used to calculate average
-				 * traffic */
-  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the node */
-  GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of
-					 * all protocols heard at that level */
-
-}
-node_t;
-
-/* Link information */
-typedef struct
-{
-  guint8 *link_id;		/* pointer to guint8 containing src and
-				 * destination nodes_id's of the link */
-  gdouble average;
-  gdouble accumulated;
-  guint n_packets;
-  struct timeval last_time;	/* Timestamp of the last packet added */
-  GList *packets;		/* List of packets heard on this link */
-  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the link */
-  GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
-					 * all protocols heard at that level */
-  gchar *src_name;
-  gchar *dst_name;
-}
-link_t;
-
-/* Information about each packet heard on the network */
-typedef struct
-{
-  guint size;			/* Size in bytes of the packet */
-  struct timeval timestamp;	/* Time at which the packet was heard */
-  gchar *prot;			/* Packet protocol tree */
-  guint ref_count;		/* How many structures are referencing this 
-				 * packet. When the count reaches zero the packet
-				 * is deleted */
-  guint8 *src_id;		/* Source and destination ids for the packet */
-  guint8 *dst_id;		/* Useful to identify direction in node_packets */
-}
-packet_t;
-
-/* Information about each protocol heard on a link */
-typedef struct
-{
-  gchar *name;			/* Name of the protocol */
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
-  guint n_packets;		/* Number of packets containing this protocol */
-  GList *packets;		/* List of packets that used this protocol */
-  GdkColor color;		/* The color associated with this protocol. It's here
-				 * so that I can use the same structure and lookup functions
-				 * in capture.c and diagram.c */
-  GList *node_names;		/* Has a list of all node names used with this
-				 * protocol (used in node protocols) */
-  GList *node_ids;		/* Has a list of all the nodes that have used this
-				 * protocol (used in the global protocols list) */
-  struct timeval last_heard;	/* The last at which this protocol carried traffic */
-}
-protocol_t;
-
-/* Diagram structures */
-
-typedef struct
-{
-  guint8 *canvas_node_id;
-  node_t *node;
-  GnomeCanvasItem *node_item;
-  GnomeCanvasItem *text_item;
-  GnomeCanvasGroup *group_item;
-  GdkColor color;
-  gboolean is_new;
-  gboolean shown;		/* True if it is to be displayed. */
-}
-canvas_node_t;
-
-typedef struct
-{
-  guint8 *canvas_link_id;
-  link_t *link;
-  GnomeCanvasItem *link_item;
-  GdkColor color;
-}
-canvas_link_t;
-
-GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
-				 * separate data from presentation: that is, we need to
-				 * keep a list of CanvasItems, but we do not want to keep
-				 * that info on the nodes tree itself */
-GTree *canvas_links;		/* See above */
-gboolean already_updating;	/* True while an instance of update_diagram is running */
 
 
 /* Variables */
@@ -266,10 +120,6 @@ GtkWidget *app1;		/* Pointer to the main app window */
 GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
-GTree *nodes;			/* Has all the nodes heard on the network */
-GTree *links;			/* Has all links heard on the net */
-GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
-					 * all protocols heards at that level */
 gdouble n_packets;		/* Number of total packets received */
 gdouble n_mem_packets;		/* Number of packets currently in memory */
 
@@ -354,44 +204,6 @@ gboolean dns;			/* Negation of numeric. Is used by dns.c */
 void cleanup (int signum);
 void save_config (char *prefix);
 
-/* From capture.c */
-gchar *init_capture (void);
-gboolean start_capture (void);
-gboolean pause_capture (void);
-gboolean stop_capture (void);
-void cleanup_capture (void);
-gint set_filter (gchar * filter, gchar * device);
-void update_nodes (void);
-void update_links (void);
-void update_protocols (void);
-node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
-struct timeval substract_times (struct timeval a, struct timeval b);
-gint node_id_compare (gconstpointer a, gconstpointer b);
-gint link_id_compare (gconstpointer a, gconstpointer b);
-gint protocol_compare (gconstpointer a, gconstpointer b);
-gchar *ip_to_str (const guint8 * ad);
-gchar *ether_to_str (const guint8 * ad);
-gchar *ether_to_str_punct (const guint8 * ad, char punct);
-void dump_node_info (node_t * node);
-
-/* From protocols.c */
-gchar *get_packet_prot (const guint8 * packet, guint len);
-
-/* From names.c */
-void get_packet_names (GList ** protocols,
-		       const guint8 * packet,
-		       guint16 size,
-		       const gchar * prot_stack, packet_direction direction);
-
-/* From diagram.c */
-guint update_diagram (GtkWidget * canvas);
-void init_diagram (void);
-void destroying_timeout (gpointer data);
-void destroying_idle (gpointer data);
-void set_appbar_status (gchar * str);
-void delete_gui_protocols (void);
-gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
-
 /* From menus.c */
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);
@@ -402,19 +214,6 @@ gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
 
 /* From preferences.c */
 void load_color_list (void);
-
-/* From info_windows.c */
-void display_protocols_window (void);
-void create_node_info_window (canvas_node_t * canvas_node);
-guint update_info_windows (void);
-void update_node_info_windows (void);
-
-/* From conversations.c */
-void add_conversation (guint32 src_address, guint32 dst_address,
-		       guint16 src_port, guint16 dst_port, gchar * data);
-gchar *find_conversation (guint32 src_address, guint32 dst_address,
-			  guint16 src_port, guint16 dst_port);
-void delete_conversations (void);
 
 
 /* Macros */
