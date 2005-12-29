@@ -344,9 +344,9 @@ prot_window_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case 4:
-      if (prot1->n_packets == prot2->n_packets)
+      if (prot1->proto_packets == prot2->proto_packets)
 	ret = 0;
-      else if (prot1->n_packets < prot2->n_packets)
+      else if (prot1->proto_packets < prot2->proto_packets)
 	ret = -1;
       else
 	ret = 1;
@@ -573,13 +573,13 @@ update_protocols_window (void)
 	{
 	  nproto->accumulated = protocol->accumulated;
 	  nproto->last_heard = protocol->last_heard;
-	  nproto->n_packets = protocol->n_packets;
+	  nproto->proto_packets = protocol->proto_packets;
 	  nproto->color = protocol->color;
 
 	  str = traffic_to_str (protocol->accumulated, FALSE);
 	  gtk_list_store_set (gs, &it, 2, str, 6, &nproto->color, -1);
 
-	  str = g_strdup_printf ("%d", protocol->n_packets);
+	  str = g_strdup_printf ("%d", protocol->proto_packets);
 	  gtk_list_store_set (gs, &it, 4, str, -1);
 	  g_free (str);
 
@@ -590,8 +590,6 @@ update_protocols_window (void)
       gtk_list_store_set (gs, &it, 1, str, -1);
       str = timeval_to_str (protocol->last_heard);
       gtk_list_store_set (gs, &it, 3, str, -1);
-
-
     }
 }				/* update_protocols_window */
 

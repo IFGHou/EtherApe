@@ -314,7 +314,7 @@ update_diagram (GtkWidget * canvas)
    * node in update_canvas_nodes and create a new timeout function that would
    * make sure that old nodes get deleted by calling update_nodes, but
    * not as often as with diagram_refresh_period */
-  update_nodes ();
+  nodes_catalog_update_all();
 
   /* Check if there are any new nodes */
   while ((new_node = ape_get_new_node ()))
@@ -369,7 +369,7 @@ update_diagram (GtkWidget * canvas)
   while (n_links != n_links_new);
 
   /* Update protocol information */
-  update_protocols ();
+  protocol_summary_update_all();
 
   /* With this we make sure that we don't overload the
    * CPU with redraws */

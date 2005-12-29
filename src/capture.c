@@ -56,9 +56,6 @@ static gint capture_source;		/* It's the input tag or the timeout tag,
 static guint32 ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
-static GList *new_nodes = NULL;	/* List that contains every new node not yet
-				 * acknowledged by the main app with
-				 * ape_get_new_node */
 
 
 /* Local funtions declarations */
@@ -71,22 +68,13 @@ static void packet_acquired(guint8 * packet);
 static node_t *create_node (const guint8 * packet, const node_id_t * node_id);
 
 static void add_node_packet (const guint8 * packet,
-			     packet_t * packet_info,
+			     packet_info_t * packet_info,
+                             const node_id_t *node_id,
 			     packet_direction direction);
-static void add_link_packet (const link_id_t *link_id, packet_t * packet_info);
-static void add_protocol (GList ** protocols, const gchar * stack,
-		   guint pkt_size, packet_t * packet_info);
+static void add_link_packet (const link_id_t *link_id, packet_info_t * packet_info);
 
-static gint update_node(node_id_t * node_id, node_t * node, gpointer delete_list_ptr);
-static gboolean update_protocol (protocol_t * protocol);
-
-
-static void update_node_names (node_t * node);
 static void set_node_name (node_t * node, gchar * preferences);
 
-static gboolean check_packet (packet_t * packet,
-			      gpointer parent,
-			      enum packet_belongs belongs_to);
 
 static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static GString *print_mem (const node_id_t *node_id);
@@ -489,6 +477,9 @@ start_capture (void)
       return FALSE;
     }
 
+  /* preparing protocol summary */
+  protocol_summary_open();
+
   /*
    * See pause_capture for an explanation of why we don't always
    * add the source
@@ -591,16 +582,15 @@ stop_capture (void)
   status = STOP;
 
   /* With status in STOP, all protocols, nodes and links will be deleted */
-  update_protocols ();
-  update_nodes ();
+  protocol_summary_close();
+  nodes_catalog_update_all();
   links_catalog_update_all();
 
   /* Free conversations */
   delete_conversations ();
 
   /* Free the list of new_nodes */
-  g_list_free (new_nodes);
-  new_nodes = NULL;
+  new_nodes_clear();
 
   if (pref.filter)
     {
@@ -620,6 +610,7 @@ stop_capture (void)
   pcap_close (pch_struct);
   g_my_info (_("Capture device stopped or file closed"));
 
+  
   return TRUE;
 }				/* stop_capture */
 
@@ -717,45 +708,42 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
  * the network interface. It then updates traffic information
  * for the appropriate nodes and links */
 static void
-packet_acquired(guint8 * packet)
+packet_acquired(guint8 * raw_packet)
 {
-  packet_t *packet_info = NULL;
+  packet_info_t *packet;
   gchar *prot_desc = NULL;
   node_id_t src_node_id;
   node_id_t dst_node_id;
   link_id_t link_id;
 
   /* Get a string with the protocol tree */
-  prot_desc = get_packet_prot (packet, phdr.len);
+  prot_desc = get_packet_prot (raw_packet, phdr.len);
 
   /* We create a packet structure to hold data */
-  packet_info = g_malloc (sizeof (packet_t));
-  packet_info->info.size = phdr.len;
-  packet_info->info.timestamp = now;
-  packet_info->info.prot_desc = g_strdup (prot_desc);
-  packet_info->ref_count = 0;
+  packet = g_malloc (sizeof (packet_info_t));
+  packet->size = phdr.len;
+  packet->timestamp = now;
+  packet->prot_desc = g_strdup (prot_desc);
+  packet->ref_count = 0;
 
   /* If there is no node with that id, create it. Otherwise 
    * just use the one available */
-  src_node_id = get_node_id (packet, SRC);
-  packet_info->src_id = src_node_id;
-
-  dst_node_id = get_node_id (packet, DST);
-  packet_info->dst_id = dst_node_id;
+  src_node_id = get_node_id (raw_packet, SRC);
+  dst_node_id = get_node_id (raw_packet, DST);
 
   n_packets++;
   n_mem_packets++;
 
-  add_protocol (all_protocols, prot_desc, packet_info->info.size, packet_info);
+  protocol_summary_add_packet(packet);
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
-  add_node_packet (packet, packet_info, OUTBOUND);
-  add_node_packet (packet, packet_info, INBOUND);
+  add_node_packet (raw_packet, packet, &src_node_id, OUTBOUND);
+  add_node_packet (raw_packet, packet, &dst_node_id, INBOUND);
 
-  link_id = get_link_id (packet);
   /* And now we update link traffic information for this packet */
-  add_link_packet (&link_id, packet_info);
+  link_id = get_link_id (raw_packet);
+  add_link_packet (&link_id, packet);
 }				/* packet_read */
 
 
@@ -764,42 +752,45 @@ packet_acquired(guint8 * packet)
  * network. If the node the packet refers to is unknown, we
  * create it. */
 static void
-add_node_packet (const guint8 * packet,
-		 packet_t * packet_info,
+add_node_packet (const guint8 * raw_packet,
+		 packet_info_t * packet,
+                 const node_id_t *node_id,
 		 packet_direction direction)
 {
   node_t *node;
-  const node_id_t *node_id;
-
-  if (direction == INBOUND)
-    node_id = &packet_info->dst_id;
-  else
-    node_id = &packet_info->src_id;
+  packet_list_item_t *newit;
 
   node = nodes_catalog_find(node_id);
   if (node == NULL)
-    node = create_node (packet, node_id);
+    node = create_node (raw_packet, node_id);
 
   /* We add a packet to the list of packets to/from that host which we want
    * to account for */
-  packet_info->ref_count++;
-  node->packets = g_list_prepend (node->packets, packet_info);
+  newit = g_malloc( sizeof(packet_list_item_t) );
+
+  /* increments refcount of packet */
+  packet->ref_count++;
+
+  /* fills item, adding it to pkt list */
+  newit->info = packet;
+  newit->direction = direction;
+  node->packets = g_list_prepend (node->packets, newit);
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (node->protocols, packet_info->info.prot_desc, packet_info->info.size, NULL);
+  protocol_stack_add_pkt(node->protocols, packet);
 
   /* We update node info */
-  node->accumulated += packet_info->info.size;
+  node->accumulated += packet->size;
   if (direction == INBOUND)
-    node->accumulated_in += packet_info->info.size;
+    node->accumulated_in += packet->size;
   else
-    node->accumulated_out += packet_info->info.size;
-  node->aver_accu += packet_info->info.size;
+    node->accumulated_out += packet->size;
+  node->aver_accu += packet->size;
   if (direction == INBOUND)
-    node->aver_accu_in += packet_info->info.size;
+    node->aver_accu_in += packet->size;
   else
-    node->aver_accu_out += packet_info->info.size;
+    node->aver_accu_out += packet->size;
   node->last_time = now;
   node->n_packets++;
 
@@ -807,35 +798,41 @@ add_node_packet (const guint8 * packet,
    * we add it to the list of new nodes so that the main app know this 
    * node is active again */
   if (node->n_packets == 1)
-    new_nodes = g_list_prepend (new_nodes, node);
+    new_nodes_add(node);
 
   /* Update names list for this node */
-  get_packet_names (node->protocols, packet, packet_info->info.size,
-		    packet_info->info.prot_desc, direction);
+  get_packet_names (node->protocols, raw_packet, packet->size,
+		    packet->prot_desc, direction);
 
 }				/* add_node_packet */
 
 
 /* Save as above plus we update protocol aggregate information */
 static void
-add_link_packet (const link_id_t *link_id, packet_t * packet_info)
+add_link_packet (const link_id_t *link_id, packet_info_t * packet)
 {
   link_t *link;
+  packet_list_item_t *newit;
 
   /* retrieves link from catalog, creating a new one if necessary */
   link = links_catalog_find_create(link_id);
 
-  /* We add the packet structure the list of
-   * packets that this link has */
-  packet_info->ref_count++;
-  link->link_packets = g_list_prepend (link->link_packets, packet_info);
+  newit = g_malloc( sizeof(packet_list_item_t) );
+
+  /* increments refcount of packet */
+  packet->ref_count++;
+
+  /* fills item, adding it to pkt list */
+  newit->info = packet;
+  newit->direction = EITHERBOUND;
+  link->link_packets = g_list_prepend (link->link_packets, newit);
 
   /* We update the link's protocol stack with the protocol
    * information this packet is bearing */
-  add_protocol (link->link_protocols, packet_info->info.prot_desc, packet_info->info.size, NULL);
+  protocol_stack_add_pkt(link->link_protocols, packet);
 
   /* update link info */
-  link->accumulated += packet_info->info.size;
+  link->accumulated += packet->size;
   link->last_time = now;
   link->n_packets++;
 
@@ -890,316 +887,6 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 }
 
 
-/* For a given protocol stack, it updates both the global 
- * protocols and specific node and link list */
-static void
-add_protocol (GList ** prot_list, const gchar * stack,
-	      guint pkt_size, packet_t * packet)
-{
-  GList *protocol_item = NULL;
-  protocol_t *protocol_info = NULL;
-  gchar **tokens = NULL;
-  guint i = 0;
-  gchar *protocol_name;
-
-  tokens = g_strsplit (stack, "/", 0);
-
-  for (; i <= STACK_SIZE; i++)
-    {
-      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-	protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-	protocol_name = "UDP-Unknown";
-      else
-	protocol_name = tokens[i];
-
-      /* If there is yet not such protocol, create it */
-      if (!(protocol_item = g_list_find_custom (prot_list[i],
-						protocol_name,
-						protocol_compare)))
-	{
-	  protocol_info = protocol_t_create(protocol_name);
-	  prot_list[i] = g_list_prepend (prot_list[i], protocol_info);
-	}
-      else
-	protocol_info = protocol_item->data;
-
-      protocol_info->last_heard = now;
-      protocol_info->accumulated += phdr.len;
-      protocol_info->aver_accu += phdr.len;
-      protocol_info->n_packets++;
-
-      /* We add a packet to the list of packets that used this protocol */
-      if (packet)
-	{
-	  packet->ref_count++;
-	  protocol_info->packets =
-	    g_list_prepend (protocol_info->packets, packet);
-	}
-
-    }
-  g_strfreev (tokens);
-}				/* add_protocol */
-
-/* gfunc called by g_list_foreach to remove the node */
-static void
-gfunc_remove_node(gpointer data, gpointer user_data)
-{
-  nodes_catalog_remove( (const node_id_t *) data);
-}
-
-/* Calls update_node for every node. This is actually a function that
- shouldn't be called often, because it might take a very long time 
- to complete */
-void
-update_nodes (void)
-{
-  GList *delete_list = NULL;
-
-  /* we can't delete nodes while traversing the catalog, so while updating we 
-   * fill a list with the node_id's to remove */
-  nodes_catalog_foreach((GTraverseFunc) update_node, &delete_list);
-
-  /* after, remove all nodes on the list from catalog 
-   * WARNING: after this call, the list items are also destroyed */
-  g_list_foreach(delete_list, gfunc_remove_node, NULL);
-  
-  /* free the list - list items are already destroyed */
-  g_list_free(delete_list);
-
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-         _("Updated nodes. Active nodes %d"), nodes_catalog_size());
-}				/* update_nodes */
-
-/* update a node. If expired also add it to the to-remove list */
-static gint
-update_node(node_id_t * node_id, node_t * node, gpointer delete_list_ptr)
-{
-  struct timeval diff;
-
-  g_assert(delete_list_ptr);
-
-  if (node->packets)
-    update_packet_list (node->packets, node, NODE);
-
-  if (node->n_packets == 0)
-    {
-
-      diff = substract_times (now, node->last_time);
-
-      /* Remove node if node is too old or if capture is stopped */
-      if ((IS_OLDER (diff, pref.node_timeout_time)
-           && pref.node_timeout_time) || (status == STOP))
-        {
-          GList **delete_list = (GList **)delete_list_ptr;
-
-          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-                 _("Queuing node '%s' for remove"),node->name->str);
-
-          /* First thing we do is delete the node from the list of new_nodes,
-           * if it's there */
-          new_nodes = g_list_remove (new_nodes, node);
-
-          /* adds current to list of nodes to be delete */
-          *delete_list = g_list_append( *delete_list, node_id);
-        }
-      else
-        {
-          /* The packet list structure has already been freed in
-           * check_packets */
-          node->packets = NULL;
-          node->average = node->average_in = node->average_out = 0.0;
-        }
-    }
-
-  return FALSE;
-}				/* update_node */
-
-/* Returns a node from the list of new nodes or NULL if there are no more 
- * new nodes */
-node_t *
-ape_get_new_node (void)
-{
-  node_t *node = NULL;
-  GList *old_item = NULL;
-
-  if (!new_nodes)
-    return NULL;
-
-  node = new_nodes->data;
-  old_item = new_nodes;
-
-  /* We make sure now that the node hasn't been deleted since */
-  /* TODO Sometimes when I get here I have a node, but a null
-   * node->node_id. What gives? */
-  while (node && !nodes_catalog_find(&node->node_id))
-    {
-      g_my_debug
-	("Already deleted node in list of new nodes, in ape_get_new_node");
-
-      /* Remove this node from the list of new nodes */
-      new_nodes = g_list_remove_link (new_nodes, new_nodes);
-      g_list_free_1 (old_item);
-      if (new_nodes)
-	node = new_nodes->data;
-      else
-	node = NULL;
-      old_item = new_nodes;
-    }
-
-  if (!new_nodes)
-    return NULL;
-
-  /* Remove this node from the list of new nodes */
-  new_nodes = g_list_remove_link (new_nodes, new_nodes);
-  g_list_free_1 (old_item);
-
-  return node;
-}				/* ape_get_new_node */
-
-
-/* Update the values for the instantaneous traffic values of the global protocols
- * Delete them  if that's the case */
-void
-update_protocols (void)
-{
-  GList *item = NULL;
-  protocol_t *protocol = NULL;
-  guint i = 0;
-
-  for (; i <= STACK_SIZE; i++)
-    {
-      item = all_protocols[i];
-      while (item)
-	{
-	  protocol = item->data;
-	  item = item->next;
-	  /* If update_protocol returns false, the protocol has been deleted */
-	  if (!update_protocol (protocol))
-	    all_protocols[i] = g_list_remove (all_protocols[i], protocol);
-	}
-
-      /* This should be unnecesary now, shouldn't it? */
-      if (status == STOP)
-	{
-	  g_list_free (all_protocols[i]);
-	  all_protocols[i] = NULL;
-	}
-    }
-}				/* update_protocols */
-
-/* Update the values for the instantaneous traffic values of a particular
- * protocol, which could be either one of the globals or one that belongs
- * to a single node. Returns TRUE for regular updating, and FALSE if the
- * protocol has been deleted */
-
-gboolean
-update_protocol (protocol_t * protocol)
-{
-  update_packet_list (protocol->packets, protocol, PROTOCOL);
-
-  if (protocol->aver_accu == 0)
-    protocol->packets = NULL;
-
-  if (status == STOP)
-    {
-      protocol_t_delete(protocol);
-      return (FALSE);
-    }
-
-  return TRUE;
-}				/* update_protocol */
-
-/* This function is called to discard packets from the list 
- * of packets beloging to a node or a link, and to calculate
- * the average traffic for that node or link */
-gboolean
-update_packet_list (GList * packets, gpointer parent,
-		    enum packet_belongs belongs_to)
-{
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-  packet_t *packet = NULL;
-
-  if (!packets || !parent)
-    return FALSE; /* no data */
-
-  packet_l_e = g_list_last (packets);
-
-  while (packet_l_e)
-  {
-    packet_t * packet = (packet_t *)(packet_l_e->data);
-    if (check_packet(packet, parent, belongs_to))
-      break; /* packet valid, subsequent packets are younger, no need to go further */
-    else
-      {
-        /* packet expired, remove from list - gets the new check position 
-         * if this packet is the first of the list, all the previous packets
-         * should be already destroyed. We check that remove never returns a
-         * NEXT packet */
-        GList *next=packet_l_e->next;
-        packet_l_e = packet_list_remove(packet_l_e);
-        g_assert(packet_l_e == NULL || packet_l_e != next );
-      }
-  } /* end while */
-  
-  /* TODO Move all this below to update_node and update_link */
-  /* If there still is relevant packets, then calculate average
-   * traffic and update names*/
-
-  if (packet_l_e)
-    {
-      node_t *node = NULL;
-      protocol_t *protocol = NULL;
-      struct timeval difference;
-      guint i = STACK_SIZE;
-      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-
-      packet_l_e = g_list_last (packets);
-      packet = (packet_t *) packet_l_e->data;
-
-      node = (node_t *) parent;
-      protocol = (protocol_t *) parent;
-
-      difference = substract_times (now, packet->info.timestamp);
-      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
-
-      /* average in bps, so we multiply by 8 and 1000000 */
-      switch (belongs_to)
-	{
-	case NODE:
-
-	  node->average = 8000000 * node->aver_accu / usecs_from_oldest;
-	  node->average_in = 8000000 * node->aver_accu_in / usecs_from_oldest;
-	  node->average_out =
-	    8000000 * node->aver_accu_out / usecs_from_oldest;
-	  while (i + 1)
-	    {
-	      if (node->main_prot[i])
-		g_free (node->main_prot[i]);
-	      node->main_prot[i]
-		= get_main_prot (node->protocols, i);
-	      i--;
-	    }
-	  update_node_names (node);
-	  break;
-	case PROTOCOL:
-	  protocol->average =
-	    8000000 * protocol->aver_accu / usecs_from_oldest;
-	  break;
-	default:
-	  g_my_critical
-	    ("belongs_to not NODE, LINK or PROTOCOL in update_packet_list");
-	}
-
-      /* packet(s) remaining */
-      return TRUE;
-    }
-  
-  /* no packets remaining */
-  return FALSE;
-}				/* update_packet_list */
 
 /* removes a packet from a list of packets, destroying it if necessary
  * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
@@ -1207,29 +894,37 @@ update_packet_list (GList * packets, gpointer parent,
 GList *
 packet_list_remove(GList *item_to_remove)
 {
-  packet_t *packet;
+  packet_list_item_t *litem;
 
   g_assert(item_to_remove);
   
-  packet = (packet_t *) item_to_remove->data;
-  if (packet)
+  litem = (packet_list_item_t *) item_to_remove->data;
+  if (litem)
     {
-      /* packet exists, decrement ref count */
-      packet->ref_count--;
+      packet_info_t *packet = litem->info;
 
-      if (!packet->ref_count)
+      if (packet)
         {
-          /* packet now unused, delete it */
-          if (packet->info.prot_desc)
-            {
-              g_free (packet->info.prot_desc);
-              packet->info.prot_desc = NULL;
-            }
-          g_free (packet);
-          item_to_remove->data = NULL;
+          /* packet exists, decrement ref count */
+          packet->ref_count--;
     
-          n_mem_packets--;
+          if (!packet->ref_count)
+            {
+              /* packet now unused, delete it */
+              if (packet->prot_desc)
+                {
+                  g_free (packet->prot_desc);
+                  packet->prot_desc = NULL;
+                }
+              g_free (packet);
+
+              n_mem_packets--;
+            }
+          litem->info = NULL;
         }
+
+      g_free(litem);
+      item_to_remove->data = NULL;
     }
 
   /* TODO I have to come back here and make sure I can't make
@@ -1252,7 +947,7 @@ packet_list_remove(GList *item_to_remove)
 
 /* Sets the node->name and node->numeric_name to the most used of 
  * the default name for the current mode */
-static void
+void
 update_node_names (node_t * node)
 {
   guint i = STACK_SIZE;
@@ -1372,415 +1067,7 @@ get_main_prot (GList ** protocols, guint level)
   return g_strdup (protocol->name);
 }				/* get_main_prot */
 
-/* Make sure this particular packet in a list of packets beloging to 
- * either o link or a node is young enough to be relevant. Else
- * remove it from the list */
-/* TODO This whole function is a mess. I must take it to pieces
- * so that it is more readble and maintainable */
-static gboolean
-check_packet (packet_t *packet,
-	      gpointer parent, enum packet_belongs belongs_to)
-{
 
-  struct timeval result;
-  double time_comparison;
-
-  if (!packet)
-    {
-      g_warning (_("Null packet in check_packet"));
-      return FALSE;
-    }
-
-  result = substract_times (now, packet->info.timestamp);
-
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. 
-   * For links, if the timeout time is smaller than the
-   * averaging time, we use that instead */
-
-  if ((belongs_to == NODE) || (belongs_to == PROTOCOL))
-    if (pref.node_timeout_time)
-      time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
-	pref.averaging_time : pref.node_timeout_time;
-    else
-      time_comparison = pref.averaging_time;
-  else if (pref.link_timeout_time)
-    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.link_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  /* If this packet is too old, we discard it */
-  /* We also delete all packets if capture is stopped */
-  if (IS_OLDER (result, time_comparison) || (status == STOP))
-    {
-      node_t *node = NULL;
-      link_t *link = NULL;
-      protocol_t *protocol = NULL;
-      guint i = 0;
-      GList *protocol_item = NULL;
-      protocol_t *protocol_info = NULL;
-      gchar **tokens = NULL;
-      packet_direction direction = INBOUND;
-      static packet_direction last_lo_direction = INBOUND;
-      gchar *protocol_name = NULL;
-
-      node = (node_t *) parent;
-      link = (link_t *) parent;
-      protocol = (protocol_t *) parent;
-    
-      switch (belongs_to)
-        {
-        case NODE:
-          /* Find the direction of the packet */
-          if (!memcmp ( &packet->dst_id, &packet->src_id, sizeof(node_id_t)))
-            {
-              /* This is an evil case that can happen with the loopback
-               * device, and I can only think of a hack to try to solve 
-               * it */
-              if (last_lo_direction == INBOUND)
-                direction = OUTBOUND;
-              else
-                direction = INBOUND;
-              last_lo_direction = direction;
-            }
-          else if (!memcmp (&packet->dst_id, &node->node_id, sizeof(node_id_t)))
-            direction = INBOUND;
-          else if (!memcmp (&packet->src_id, &node->node_id, sizeof(node_id_t)))
-            direction = OUTBOUND;
-          else
-            g_my_critical ("Packet does not belong to node in check_packet!");
-  
-          /* Substract this packet's length to the accumulated */
-          node->aver_accu -= packet->info.size;
-          if (direction == INBOUND)
-            node->aver_accu_in -= packet->info.size;
-          else
-            node->aver_accu_out -= packet->info.size;
-          /* Decrease the number of packets */
-          g_assert(node->n_packets>0);
-          node->n_packets--;
-          /* If it was the last packet in the queue, set
-           * average to 0. It has to be done here because
-           * otherwise average calculation in update_packet list 
-           * requires some packets to exist */
-          if (!node->aver_accu)
-            node->average = 0;
-  
-          /* We remove protocol aggregate information */
-          tokens = g_strsplit (packet->info.prot_desc, "/", 0);
-          while ((i <= STACK_SIZE) && tokens[i])
-            {
-              if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-                protocol_name = "TCP-Unknown";
-              else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-                protocol_name = "UDP-Unknown";
-              else
-                protocol_name = tokens[i];
-  
-              protocol_item = g_list_find_custom (node->protocols[i],
-                                                  protocol_name,
-                                                  protocol_compare);
-              if (!protocol_item)
-                {
-                  g_my_critical
-                    ("Protocol not found while removing protocol information from node in check_packet");
-                  break;
-                }
-              protocol_info = protocol_item->data;
-              protocol_info->accumulated -= packet->info.size;
-              i++;
-            }
-          g_strfreev (tokens);
-          tokens = NULL;
-          break;
-  
-        case LINK:
-          /* See above for explanations */
-          link->accumulated -= packet->info.size;
-          if (!link->accumulated)
-            link->average = 0;
-
-          g_assert(link->n_packets>0);
-          link->n_packets--;
-
-          /* We remove protocol aggregate information */
-          tokens = g_strsplit (packet->info.prot_desc, "/", 0);
-          while ((i <= STACK_SIZE) && tokens[i])
-            {
-              if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-                protocol_name = "TCP-Unknown";
-              else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-                protocol_name = "UDP-Unknown";
-              else
-                protocol_name = tokens[i];
-  
-              protocol_item = g_list_find_custom (link->link_protocols[i],
-                                                  protocol_name,
-                                                  protocol_compare);
-              if (!protocol_item)
-                {
-                  g_my_critical
-                    ("Protocol not found while removing protocol information from link in check_packet");
-                  break;
-                }
-              protocol_info = protocol_item->data;
-              protocol_info->accumulated -= packet->info.size;
-  
-              if (!protocol_info->accumulated)
-                {
-                  g_free (protocol_info->name);
-                  protocol_info->name = NULL;
-                  g_free (protocol_info);
-  
-                  link->link_protocols[i] =
-                    g_list_delete_link(link->link_protocols[i], protocol_item);
-                }
-              i++;
-            }
-          g_strfreev (tokens);
-          tokens = NULL;
-          break;
-        case PROTOCOL:
-          protocol->aver_accu -= packet->info.size;
-          if (!protocol->aver_accu)
-            protocol->average = 0;
-          break;
-        }
-
-      /* expired packet, remove */
-      return FALSE;
-    }
-
-  /* packet still valid */
-  return TRUE;
-}				/* check_packet */
-
-#if 0 // just in case ...
-/* Make sure this particular packet in a list of packets beloging to 
- * either o link or a node is young enough to be relevant. Else
- * remove it from the list */
-/* TODO This whole function is a mess. I must take it to pieces
- * so that it is more readble and maintainable */
-static gboolean
-check_packet (GList * packets, GList ** packet_l_e,
-	      gpointer parent, enum packet_belongs belongs_to)
-{
-
-  struct timeval result;
-  double time_comparison;
-  guint i = 0;
-  node_t *node = NULL;
-  link_t *link = NULL;
-  protocol_t *protocol = NULL;
-  GList *protocol_item = NULL;
-  protocol_t *protocol_info = NULL;
-  gchar **tokens = NULL;
-  packet_t *packet = NULL;
-  packet_direction direction = INBOUND;
-  static packet_direction last_lo_direction = INBOUND;
-  gchar *protocol_name = NULL;
-
-  packet = (packet_t *) packets->data;
-
-  if (!packet)
-    {
-      g_warning (_("Null packet in check_packet"));
-      return FALSE;
-    }
-
-  result = substract_times (now, packet->info.timestamp);
-
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. 
-   * For links, if the timeout time is smaller than the
-   * averaging time, we use that instead */
-
-  if ((belongs_to == NODE) || (belongs_to == PROTOCOL))
-    if (pref.node_timeout_time)
-      time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
-	pref.averaging_time : pref.node_timeout_time;
-    else
-      time_comparison = pref.averaging_time;
-  else if (pref.link_timeout_time)
-    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.link_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  node = (node_t *) parent;
-  link = (link_t *) parent;
-  protocol = (protocol_t *) parent;
-
-  /* If this packet is too old, we discard it */
-  /* We also delete all packets if capture is stopped */
-  if (IS_OLDER (result, time_comparison) || (status == STOP))
-    {
-
-      switch (belongs_to)
-	{
-	case NODE:
-	  /* Find the direction of the packet */
-	  if (!memcmp ( &packet->dst_id, &packet->src_id, sizeof(node_id_t)))
-	    {
-	      /* This is an evil case that can happen with the loopback
-	       * device, and I can only think of a hack to try to solve 
-	       * it */
-	      if (last_lo_direction == INBOUND)
-		direction = OUTBOUND;
-	      else
-		direction = INBOUND;
-	      last_lo_direction = direction;
-	    }
-	  else if (!memcmp (&packet->dst_id, &node->node_id, sizeof(node_id_t)))
-	    direction = INBOUND;
-	  else if (!memcmp (&packet->src_id, &node->node_id, sizeof(node_id_t)))
-	    direction = OUTBOUND;
-	  else
-	    g_my_critical ("Packet does not belong to node in check_packet!");
-
-	  /* Substract this packet's length to the accumulated */
-	  node->aver_accu -= packet->info.size;
-	  if (direction == INBOUND)
-	    node->aver_accu_in -= packet->info.size;
-	  else
-	    node->aver_accu_out -= packet->info.size;
-	  /* Decrease the number of packets */
-          g_assert(node->n_packets>0);
-	  node->n_packets--;
-	  /* If it was the last packet in the queue, set
-	   * average to 0. It has to be done here because
-	   * otherwise average calculation in update_packet list 
-	   * requires some packets to exist */
-	  if (!node->aver_accu)
-	    node->average = 0;
-
-	  /* We remove protocol aggregate information */
-	  tokens = g_strsplit (packet->info.prot_desc, "/", 0);
-	  while ((i <= STACK_SIZE) && tokens[i])
-	    {
-	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-		protocol_name = "TCP-Unknown";
-	      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-		protocol_name = "UDP-Unknown";
-	      else
-		protocol_name = tokens[i];
-
-	      protocol_item = g_list_find_custom (node->protocols[i],
-						  protocol_name,
-						  protocol_compare);
-	      if (!protocol_item)
-		{
-		  g_my_critical
-		    ("Protocol not found while removing protocol information from node in check_packet");
-		  break;
-		}
-	      protocol_info = protocol_item->data;
-	      protocol_info->accumulated -= packet->info.size;
-	      i++;
-	    }
-	  g_strfreev (tokens);
-	  tokens = NULL;
-	  break;
-
-	case LINK:
-	  /* See above for explanations */
-	  link->accumulated -= packet->info.size;
-          g_assert(link->n_packets>0);
-	  link->n_packets--;
-	  if (!link->accumulated)
-	    link->average = 0;
-
-	  /* We remove protocol aggregate information */
-	  tokens = g_strsplit (packet->info.prot_desc, "/", 0);
-	  while ((i <= STACK_SIZE) && tokens[i])
-	    {
-	      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-		protocol_name = "TCP-Unknown";
-	      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-		protocol_name = "UDP-Unknown";
-	      else
-		protocol_name = tokens[i];
-
-	      protocol_item = g_list_find_custom (link->link_protocols[i],
-						  protocol_name,
-						  protocol_compare);
-	      if (!protocol_item)
-		{
-		  g_my_critical
-		    ("Protocol not found while removing protocol information from link in check_packet");
-		  break;
-		}
-	      protocol_info = protocol_item->data;
-	      protocol_info->accumulated -= packet->info.size;
-
-	      if (!protocol_info->accumulated)
-		{
-		  g_free (protocol_info->name);
-		  protocol_info->name = NULL;
-
-		  link->link_protocols[i] =
-		    g_list_remove_link (link->link_protocols[i], protocol_item);
-		  g_free (protocol_info);x  
-		}
-	      i++;
-	    }
-	  g_strfreev (tokens);
-	  tokens = NULL;
-	  break;
-	case PROTOCOL:
-	  protocol->aver_accu -= packet->info.size;
-	  if (!protocol->aver_accu)
-	    protocol->average = 0;
-	  break;
-	}
-
-      packet->ref_count--;
-
-      if (!packet->ref_count)
-	{
-	  if (packet->info.prot_desc)
-	    {
-	      g_free (packet->info.prot_desc);
-	      packet->info.prot_desc = NULL;
-
-	    }
-	  g_free (packet);
-	  packets->data = packet = NULL;
-
-	  n_mem_packets--;
-	}
-
-      /* TODO I have to come back here and make sure I can't make
-       * this any simpler */
-      if (packets->prev)
-	{
-	  GList *item;
-	  packets = packets->prev;
-	  item = packets->next;
-	  g_list_remove_link (packets, item);
-	  g_list_free_1 (item);
-	  *packet_l_e = packets;
-	  return (TRUE);	/* Old packet removed,
-				 * keep on searching */
-	}
-      else
-	{
-	  packets->data = NULL;
-	  *packet_l_e = NULL;
-	  g_list_free (packets);
-	  /* Last packet removed,
-	   * don't search anymore
-	   */
-	}
-    }
-
-  return FALSE;			/* Last packet searched
-				 * End search */
-}				/* check_packet */
-#endif
 
 /* Comparison function used to compare two link protocols */
 gint
@@ -1810,11 +1097,6 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
     return 1;
   return 0;
 }				/* prot_freq_compare */
-
-
-
-
-
 
 /* creates a new string from the given address */
 static GString *
@@ -1875,3 +1157,264 @@ print_mem (const node_id_t *node_id)
     }
   return g_string_new(p);
 }				/* print_mem */
+
+/***************************************************************************
+ *
+ * protocol_stack implementation
+ *
+ **************************************************************************/
+
+void protocol_stack_init(GList *protostack[])
+{
+  guint i;
+  for (i = 0 ; i <= STACK_SIZE ; ++i)
+    protostack[i] = NULL;
+}
+
+void protocol_stack_free(GList *protostack[])
+{
+  guint i;
+  protocol_t *protocol_info;
+
+  for (i = 0 ; i <= STACK_SIZE ; ++i)
+    {
+      while (protostack[i])
+        {
+          protocol_info = protostack[i]->data;
+
+          protocol_t_delete(protocol_info);
+          protostack[i] = g_list_delete_link (protostack[i], protostack[i]);
+        }
+    }
+}
+
+/* adds the given packet to the stack */
+void
+protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
+{
+  GList *protocol_item;
+  protocol_t *protocol_info;
+  gchar **tokens = NULL;
+  guint i;
+  gchar *protocol_name;
+
+  g_assert(packet);
+  
+  tokens = g_strsplit (packet->prot_desc, "/", 0);
+
+  for (i = 0; i <= STACK_SIZE; i++)
+    {
+      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+	protocol_name = "TCP-Unknown";
+      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+	protocol_name = "UDP-Unknown";
+      else
+	protocol_name = tokens[i];
+
+      /* If there is yet not such protocol, create it */
+      if (!(protocol_item = g_list_find_custom (protostack[i],
+						protocol_name,
+						protocol_compare)))
+	{
+	  protocol_info = protocol_t_create(protocol_name);
+	  protostack[i] = g_list_prepend (protostack[i], protocol_info);
+	}
+      else
+	protocol_info = protocol_item->data;
+
+      protocol_info->last_heard = now;
+      protocol_info->accumulated += packet->size;
+      protocol_info->aver_accu += packet->size;
+      protocol_info->proto_packets++;
+
+    }
+  g_strfreev (tokens);
+}				/* add_protocol */
+
+
+void protocol_stack_remove_pkt(GList *protostack[], const packet_info_t * packet)
+{
+  guint i = 0;
+  gchar **tokens = NULL;
+  GList *protocol_item = NULL;
+  protocol_t *protocol_info = NULL;
+  gchar *protocol_name = NULL;
+
+  if (!packet)
+    return;
+
+  /* We remove protocol aggregate information */
+  tokens = g_strsplit (packet->prot_desc, "/", 0);
+  while ((i <= STACK_SIZE) && tokens[i])
+    {
+      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+        protocol_name = "TCP-Unknown";
+      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+        protocol_name = "UDP-Unknown";
+      else
+        protocol_name = tokens[i];
+
+      protocol_item = g_list_find_custom (protostack[i],
+                                          protocol_name,
+                                          protocol_compare);
+      if (!protocol_item)
+        {
+          g_my_critical
+            ("Protocol not found while removing packet in protocol_stack_remove_pkt");
+          break;
+        }
+      protocol_info = protocol_item->data;
+      protocol_info->accumulated -= packet->size;
+
+      if (!protocol_info->accumulated)
+        {
+          g_free (protocol_info->name);
+          protocol_info->name = NULL;
+
+          g_free (protocol_info);
+
+          protostack[i] = g_list_delete_link(protostack[i], protocol_item);
+        }
+      i++;
+    }
+  g_strfreev (tokens);
+}
+
+/***************************************************************************
+ *
+ * protocol_summary_t implementation
+ *
+ **************************************************************************/
+static protocol_summary_t *protosummary = NULL;
+
+/* initializes the summary */
+void protocol_summary_open(void)
+{
+  if (protosummary)
+    protocol_summary_close();
+
+  protosummary = g_malloc( sizeof(protocol_summary_t) );
+  protosummary->n_packets = 0;
+  protosummary->packets = NULL;
+  protocol_stack_init(protosummary->protostack);
+}
+
+/* frees summary, releasing resources */
+void protocol_summary_close(void)
+{
+  if (protosummary)
+    {
+      while (protosummary->packets)
+        protosummary->packets = packet_list_remove(protosummary->packets);
+      protosummary->packets = NULL;
+      protosummary->n_packets = 0;
+      protocol_stack_free(protosummary->protostack);
+      g_free(protosummary);
+      protosummary = NULL;
+    }
+}
+
+/* adds a new packet to summary */
+void protocol_summary_add_packet(packet_info_t *packet)
+{
+  packet_list_item_t *newit;
+  
+  if (!protosummary)
+    protocol_summary_open();
+
+  newit = g_malloc( sizeof(packet_list_item_t) );
+  packet->ref_count++;
+  newit->info = packet;
+  newit->direction = EITHERBOUND;
+  protosummary->packets = g_list_prepend (protosummary->packets, newit);
+  ++protosummary->n_packets;
+
+  protocol_stack_add_pkt(protosummary->protostack, packet);
+}
+
+static void
+protocol_summary_purge_expired_packets()
+{
+  struct timeval result;
+  double time_comparison;
+  GList *packet_l_e = NULL;	/* Packets is a list of packets.
+				 * packet_l_e is always the latest (oldest)
+				 * list element */
+
+  /* If this packet is older than the averaging time,
+   * then it is removed, and the process continues.
+   * Else, we are done. */
+  if (pref.node_timeout_time)
+    time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.node_timeout_time;
+  else
+    time_comparison = pref.averaging_time;
+
+  packet_l_e = g_list_last (protosummary->packets);
+  while (packet_l_e)
+  {
+    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
+
+    result = substract_times (now, packet->info->timestamp);
+    if (!IS_OLDER (result, time_comparison) && (status != STOP))
+      break; /* packet valid, subsequent packets are younger, no need to go further */
+
+    /* packet expired, remove */
+    protocol_stack_remove_pkt(protosummary->protostack, packet->info);
+
+    /* packet expired, remove from list - gets the new check position 
+     * if this packet is the first of the list, all the previous packets
+     * should be already destroyed. We check that remove never returns a
+     * NEXT packet */
+    GList *next=packet_l_e->next;
+    packet_l_e = packet_list_remove(packet_l_e);
+    g_assert(packet_l_e == NULL || packet_l_e != next );
+    protosummary->n_packets--;
+  }
+
+  if (!packet_l_e)
+    {
+      /* removed all packets */
+      protosummary->n_packets = 0;
+      protosummary->packets=NULL;
+    }
+}
+
+/* update stats on protocol summary */
+void protocol_summary_update_all(void)
+{
+  if (!protosummary)
+    return;
+
+  protocol_summary_purge_expired_packets();
+
+  if (protosummary->packets)
+    {
+      /* ok, we have active packets, update stats */
+      GList *item = NULL;
+      protocol_t *protocol = NULL;
+      guint i = 0;
+      struct timeval difference;
+      packet_list_item_t *packet;
+      gdouble usecs_from_oldest;	/* usecs since the oldest valid packet */
+
+      packet = (packet_list_item_t *) g_list_last (protosummary->packets)->data;
+
+      difference = substract_times (now, packet->info->timestamp);
+      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
+
+      for (i = 0; i <= STACK_SIZE; i++)
+        {
+          item = protosummary->protostack[i];
+          while (item)
+            {
+              protocol = (protocol_t *)item;
+
+              protocol->average =
+                8000000 * protocol->aver_accu / usecs_from_oldest;
+
+              item = item->next;
+            }
+        }
+    }
+}

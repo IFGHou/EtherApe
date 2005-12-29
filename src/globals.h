@@ -98,14 +98,6 @@ typedef enum
 }
 node_size_variable_t;
 
-/* Flag to indicate whether a packet belongs to a node or a link */
-/* TODO This has to go, it should be a packet property */
-enum packet_belongs
-{
-  NODE = 0, LINK = 1, PROTOCOL = 2
-};
-
-
 /* Possible states of capture status */
 enum status_t
 {

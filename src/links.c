@@ -121,38 +121,71 @@ gfunc_remove_link(gpointer data, gpointer user_data)
 }
 
 static void
+link_subtract_packet_data(link_t * link, packet_info_t * packet)
+{
+  link->accumulated -= packet->size;
+  if (!link->accumulated)
+    link->average = 0;
+
+  /* We remove protocol aggregate information */
+  protocol_stack_remove_pkt(link->link_protocols, packet);
+}
+
+static void
 link_purge_expired_packets(link_t * link)
 {
+  double time_comparison;
+  struct timeval result;
   GList *packet_l_e = NULL;	/* Packets is a list of packets.
 				 * packet_l_e is always the latest (oldest)
 				 * list element */
+
   if (!link->link_packets)
     {
       link->n_packets = 0;
       return;
     }
-  
+
+  /* calculate the right expiration interval */
+  if (pref.link_timeout_time)
+    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.link_timeout_time;
+  else
+    time_comparison = pref.averaging_time;
+
   packet_l_e = g_list_last (link->link_packets);
   while (packet_l_e)
-  {
-    packet_t * packet = (packet_t *)(packet_l_e->data);
-    if (check_packet(packet, link, LINK)) 
-      break; /* packet valid, subsequent packets are younger, no need to go further */
-    else
-      {
-        /* packet expired, remove from list - gets the new check position 
-         * if this packet is the first of the list, all the previous packets
-         * should be already destroyed. We check that remove never returns a
-         * NEXT packet */
-        GList *next=packet_l_e->next;
-        packet_l_e = packet_list_remove(packet_l_e);
-        g_assert(packet_l_e == NULL || packet_l_e != next );
-        link->n_packets--;
-        if (!link->link_packets)
-          link->n_packets = 0;
-      }
-  } /* end while */
+    {
+      packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
+      if (packet)
+        {
+          /* if the packet is old or capture is stopped, we purge */
+          result = substract_times (now, packet->info->timestamp);
+          if (!IS_OLDER (result, time_comparison) && (status != STOP))
+            break; /* packet valid, subsequent packets are younger, no need to go further */
+          
+          /* expired packet, remove data */
+          link_subtract_packet_data(link, packet->info);
+        }
+  
+      /* packet null or expired, remove from list 
+       * gets the new check position 
+       * if this packet is the first of the list, all the previous packets
+       * should be already destroyed. We check that remove never returns a
+       * NEXT packet */
+      GList *next=packet_l_e->next;
+      packet_l_e = packet_list_remove(packet_l_e);
+      g_assert(packet_l_e == NULL || packet_l_e != next );
+      link->n_packets--;
+  
+    } /* end while */
 
+  if (!packet_l_e)
+    {
+      /* removed all packets */
+      link->n_packets = 0;
+      link->link_packets=NULL;
+    }
 }
 
 static gint
@@ -167,21 +200,20 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
 
   /* If there still is relevant packets, then calculate average
    * traffic and update names*/
-  if (link->n_packets)
+  if (link->link_packets)
     {
-      struct timeval difference;
       guint i = STACK_SIZE;
       gdouble usecs_from_oldest;	/* usecs since the first valid packet */
       GList *packet_l_e;	/* Packets is a list of packets.
                                      * packet_l_e is always the latest (oldest)
                                      * list element */
-      packet_t *packet;
+      packet_list_item_t *packet;
 
       packet_l_e = g_list_last (link->link_packets);
-      packet = (packet_t *) packet_l_e->data;
+      packet = (packet_list_item_t *) packet_l_e->data;
 
-      difference = substract_times (now, packet->info.timestamp);
-      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
+      diff = substract_times (now, packet->info->timestamp);
+      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
 
       /* average in bps, so we multiply by 8 and 1000000 */
       link->average = 8000000 * link->accumulated / usecs_from_oldest;
@@ -198,6 +230,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
     }
   else
     {
+      /* no packets remaining on link */
       diff = substract_times (now, link->last_time);
 
       /* Remove link if it is too old or if capture is stopped */
@@ -219,7 +252,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
           guint i = STACK_SIZE;
           
           /* The packet list structure has already been freed in
-           * check_packet */
+           * link_subtract_packet_data */
           link->link_packets = NULL;
           link->accumulated = 0;
           while (i + 1)

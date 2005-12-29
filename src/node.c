@@ -20,7 +20,7 @@
 #include "globals.h"
 #include "node.h"
 
-static GTree *all_nodes = NULL;		/* Has all the nodes heard on the network */
+static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
 /***************************************************************************
  *
@@ -77,7 +77,7 @@ void traffic_stats_reset(traffic_stats_t *tf_stat)
 
 static void packet_stats_list_item_delete(gpointer data, gpointer dum)
 {
-  g_free(data);
+  g_free(data); /* TODO: properly release memory */
 }
 
 /* initializes counters */
@@ -85,11 +85,13 @@ void packet_stats_initialize(packet_stats_t *pkt_stat)
 {
   g_assert(pkt_stat);
 
-  pkt_stat->cur_pkt_list = NULL;
+  pkt_stat->pkt_list = NULL;
   pkt_stat->n_packets = 0;
   pkt_stat->last_time = now;
 
   traffic_stats_reset(&pkt_stat->stats);
+  traffic_stats_reset(&pkt_stat->stats_in);
+  traffic_stats_reset(&pkt_stat->stats_out);
 }
 
 /* releases memory */
@@ -98,22 +100,34 @@ void packet_stats_release(packet_stats_t *pkt_stat)
   g_assert(pkt_stat);
 
   /* release items and free list */
-  g_list_foreach(pkt_stat->cur_pkt_list, packet_stats_list_item_delete, NULL);
-  g_list_free(pkt_stat->cur_pkt_list);
+  g_list_foreach(pkt_stat->pkt_list, packet_stats_list_item_delete, NULL);
+  g_list_free(pkt_stat->pkt_list);
 
   /* resets everything */
   packet_stats_initialize(pkt_stat);
 }
 
 /* adds a packet */
-void packet_stats_add_packet(packet_stats_t *pkt_stat, packet_info_t *new_pkt)
+void 
+packet_stats_add_packet(packet_stats_t *pkt_stat, 
+                        packet_info_t *new_pkt, 
+                        packet_direction dir)
 {
+  packet_list_item_t *newit;
+  
   g_assert(pkt_stat);
   g_assert(new_pkt);
 
+  newit = g_malloc( sizeof(packet_list_item_t) );
+
+  /* increments refcount of packet */
   new_pkt->ref_count++;
-  
-  pkt_stat->cur_pkt_list = g_list_prepend (pkt_stat->cur_pkt_list, new_pkt);
+
+  /* fills item, adding it to pkt list */
+  newit->info = new_pkt;
+  newit->direction = dir;
+
+  pkt_stat->pkt_list = g_list_prepend (pkt_stat->pkt_list, newit);
 
   pkt_stat->n_packets++;
   pkt_stat->last_time = now;
@@ -121,8 +135,68 @@ void packet_stats_add_packet(packet_stats_t *pkt_stat, packet_info_t *new_pkt)
   pkt_stat->stats.accumulated += new_pkt->size;
   pkt_stat->stats.aver_accu += new_pkt->size;
 
+  switch (dir)
+    {
+    case INBOUND:
+      pkt_stat->stats_in.accumulated += new_pkt->size;
+      pkt_stat->stats_in.aver_accu += new_pkt->size;
+      break;
+    case OUTBOUND:
+      pkt_stat->stats_out.accumulated += new_pkt->size;
+      pkt_stat->stats_out.aver_accu += new_pkt->size;
+      break;
+    case EITHERBOUND:
+      pkt_stat->stats_in.accumulated += new_pkt->size;
+      pkt_stat->stats_in.aver_accu += new_pkt->size;
+      pkt_stat->stats_out.accumulated += new_pkt->size;
+      pkt_stat->stats_out.aver_accu += new_pkt->size;
+      break;
+    }
+
   /* note: averages are calculated later, by update_packet_list */
 }
+
+#if 0
+void
+packet_stats_purge_expired_packets(packet_stats_t *pkt_stat, double time_comparison)
+{
+  struct timeval result;
+  GList *packet_l_e = NULL;	/* Packets is a list of packets.
+				 * packet_l_e is always the latest (oldest)
+				 * list element */
+
+  packet_l_e = g_list_last (pkt_stat->pkt_list);
+  while (packet_l_e)
+  {
+    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
+
+    result = substract_times (now, packet->info->timestamp);
+    if (!IS_OLDER (result, time_comparison) && (status != STOP))
+      break; /* packet valid, subsequent packets are younger, no need to go further */
+
+    /* packet expired, remove */
+    protocol->aver_accu -= packet->info->size;
+    if (!protocol->aver_accu)
+      protocol->average = 0;
+
+    /* packet expired, remove from list - gets the new check position 
+     * if this packet is the first of the list, all the previous packets
+     * should be already destroyed. We check that remove never returns a
+     * NEXT packet */
+    GList *next=packet_l_e->next;
+    packet_l_e = packet_list_remove(packet_l_e);
+    g_assert(packet_l_e == NULL || packet_l_e != next );
+    protocol->n_packets--;
+  }
+
+  if (!packet_l_e)
+    {
+      /* removed all packets */
+      protocol->n_packets = 0;
+      protocol->packets=NULL;
+    }
+}
+#endif
 
 /***************************************************************************
  *
@@ -287,8 +361,241 @@ void node_delete(node_t *node)
       i++;
     }
 
+  while (node->packets)
+    node->packets = packet_list_remove(node->packets);
+  node->packets = NULL;
+
   g_free (node);
 }
+
+static void
+node_subtract_packet_data(node_t *node, packet_list_item_t * packet)
+{
+  /* Substract this packet's length to the accumulated */
+  node->aver_accu -= packet->info->size;
+  if (packet->direction == INBOUND)
+    node->aver_accu_in -= packet->info->size;
+  else
+    node->aver_accu_out -= packet->info->size;
+
+  /* If it was the last packet in the queue, set
+   * average to 0. It has to be done here because
+   * otherwise average calculation in update_packet list 
+   * requires some packets to exist */
+  if (!node->aver_accu)
+    node->average = 0;
+
+  /* We remove protocol aggregate information */
+  protocol_stack_remove_pkt(node->protocols, packet->info);
+}
+
+/* Make sure this particular packet in a list of packets beloging to 
+ * either o link or a node is young enough to be relevant. Else
+ * remove it from the list */
+/* TODO This whole function is a mess. I must take it to pieces
+ * so that it is more readble and maintainable */
+static void
+node_purge_expired_packets(node_t *node)
+{
+  struct timeval result;
+  double time_comparison;
+  GList *packet_l_e = NULL;	/* Packets is a list of packets.
+				 * packet_l_e is always the latest (oldest)
+				 * list element */
+
+  if (!node->packets)
+    {
+      node->n_packets = 0;
+      return;
+    }
+
+  /* If this packet is older than the averaging time,
+   * then it is removed, and the process continues.
+   * Else, we are done. */
+  if (pref.node_timeout_time)
+    time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.node_timeout_time;
+  else
+    time_comparison = pref.averaging_time;
+
+  packet_l_e = g_list_last (node->packets);
+  while (packet_l_e)
+    {
+      packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
+      if (packet)
+        {
+          /* if the packet is old or capture is stopped, we purge */
+          result = substract_times (now, packet->info->timestamp);
+          if (!IS_OLDER (result, time_comparison) && (status != STOP))
+            break; /* packet valid, subsequent packets are younger, no need to go further */
+
+          /* expired packet, remove data */
+          node_subtract_packet_data(node, packet);
+        }
+
+      /* packet null or expired, remove from list 
+       * gets the new check position 
+       * if this packet is the first of the list, all the previous packets
+       * should be already destroyed. We check that remove never returns a
+       * NEXT packet */
+      GList *next=packet_l_e->next;
+      packet_l_e = packet_list_remove(packet_l_e);
+      g_assert(packet_l_e == NULL || packet_l_e != next );
+      node->n_packets--;
+        
+    } /* end while */
+
+  if (!packet_l_e)
+    {
+      /* removed all packets */
+      node->n_packets = 0;
+      node->packets=NULL;
+    }
+}
+
+/* This function is called to discard packets from the list 
+ * of packets beloging to a node or a link, and to calculate
+ * the average traffic for that node or link */
+gboolean
+node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
+{
+  struct timeval diff;
+
+  g_assert(delete_list_ptr);
+
+  if (node->packets)
+    node_purge_expired_packets(node);
+
+  if (node->packets)
+    {
+      guint i = STACK_SIZE;
+      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
+      GList *packet_l_e;	/* Packets is a list of packets.
+                                 * packet_l_e is always the latest (oldest)
+                                 * list element */
+      packet_list_item_t *packet;
+
+      packet_l_e = g_list_last (node->packets);
+      packet = (packet_list_item_t *) packet_l_e->data;
+
+      diff = substract_times (now, packet->info->timestamp);
+      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
+
+      /* average in bps, so we multiply by 8 and 1000000 */
+      node->average = 8000000 * node->aver_accu / usecs_from_oldest;
+      node->average_in = 8000000 * node->aver_accu_in / usecs_from_oldest;
+      node->average_out =
+        8000000 * node->aver_accu_out / usecs_from_oldest;
+      while (i + 1)
+        {
+          if (node->main_prot[i])
+            g_free (node->main_prot[i]);
+          node->main_prot[i] = get_main_prot (node->protocols, i);
+          i--;
+        }
+      update_node_names (node);
+
+    }
+  else
+    {
+      /* no packet remaining on node */
+      diff = substract_times (now, node->last_time);
+
+      /* Remove node if node is too old or if capture is stopped */
+      if ((IS_OLDER (diff, pref.node_timeout_time)
+           && pref.node_timeout_time) || (status == STOP))
+        {
+          GList **delete_list = (GList **)delete_list_ptr;
+
+          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+                 _("Queuing node '%s' for remove"),node->name->str);
+
+          /* First thing we do is delete the node from the list of new_nodes,
+           * if it's there */
+          new_nodes_remove(node);
+
+          /* adds current to list of nodes to be delete */
+          *delete_list = g_list_append( *delete_list, node_id);
+        }
+      else
+        {
+          /* The packet list structure has already been freed in
+           * check_packets */
+          node->packets = NULL;
+          node->average = node->average_in = node->average_out = 0.0;
+        }
+    }
+
+  return FALSE;
+}				/* node_update */
+
+/***************************************************************************
+ *
+ * new nodes methods
+ *
+ **************************************************************************/
+
+static GList *new_nodes = NULL;	/* List that contains every new node not yet
+				 * acknowledged by the main app with
+				 * ape_get_new_node */
+
+void new_nodes_clear(void)
+{
+  g_list_free (new_nodes);
+  new_nodes = NULL;
+}
+
+void new_nodes_add(node_t *node)
+{
+  new_nodes = g_list_prepend (new_nodes, node);
+}
+
+void new_nodes_remove(node_t *node)
+{
+  new_nodes = g_list_remove (new_nodes, node);
+}
+
+/* Returns a node from the list of new nodes or NULL if there are no more 
+ * new nodes */
+node_t *
+ape_get_new_node (void)
+{
+  node_t *node = NULL;
+  GList *old_item = NULL;
+
+  if (!new_nodes)
+    return NULL;
+
+  node = new_nodes->data;
+  old_item = new_nodes;
+
+  /* We make sure now that the node hasn't been deleted since */
+  /* TODO Sometimes when I get here I have a node, but a null
+   * node->node_id. What gives? */
+  while (node && !nodes_catalog_find(&node->node_id))
+    {
+      g_my_debug
+	("Already deleted node in list of new nodes, in ape_get_new_node");
+
+      /* Remove this node from the list of new nodes */
+      new_nodes = g_list_remove_link (new_nodes, new_nodes);
+      g_list_free_1 (old_item);
+      if (new_nodes)
+	node = new_nodes->data;
+      else
+	node = NULL;
+      old_item = new_nodes;
+    }
+
+  if (!new_nodes)
+    return NULL;
+
+  /* Remove this node from the list of new nodes */
+  new_nodes = g_list_remove_link (new_nodes, new_nodes);
+  g_list_free_1 (old_item);
+
+  return node;
+}				/* ape_get_new_node */
 
 /***************************************************************************
  *
@@ -362,6 +669,36 @@ void nodes_catalog_foreach(GTraverseFunc func, gpointer data)
 
   return g_tree_foreach(all_nodes, func, data);
 }
+
+/* gfunc called by g_list_foreach to remove the node */
+static void
+gfunc_remove_node(gpointer data, gpointer user_data)
+{
+  nodes_catalog_remove( (const node_id_t *) data);
+}
+
+/* Calls update_node for every node. This is actually a function that
+ shouldn't be called often, because it might take a very long time 
+ to complete */
+void
+nodes_catalog_update_all(void)
+{
+  GList *delete_list = NULL;
+
+  /* we can't delete nodes while traversing the catalog, so while updating we 
+   * fill a list with the node_id's to remove */
+  nodes_catalog_foreach((GTraverseFunc) node_update, &delete_list);
+
+  /* after, remove all nodes on the list from catalog 
+   * WARNING: after this call, the list items are also destroyed */
+  g_list_foreach(delete_list, gfunc_remove_node, NULL);
+  
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
+
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+         _("Updated nodes. Active nodes %d"), nodes_catalog_size());
+}				/* update_nodes */
 
 /***************************************************************************
  *
@@ -437,7 +774,7 @@ node_name_freq_compare (gconstpointer a, gconstpointer b)
   if (name_a->accumulated < name_b->accumulated)
     return 1;
   return 0;
-}				/* names_freq_compare */
+}
 
 
 /***************************************************************************
@@ -454,9 +791,8 @@ protocol_t *protocol_t_create(const gchar *protocol_name)
   pr->accumulated = 0;
   pr->aver_accu = 0;
   pr->average = 0;
-  pr->n_packets = 0;
+  pr->proto_packets = 0;
   pr->node_names = NULL;
-  pr->packets = NULL;
   pr->color.pixel = 0;
   pr->color.red = 0;
   pr->color.green = 0;

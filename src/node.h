@@ -37,10 +37,11 @@ void traffic_stats_reset(traffic_stats_t *tf_stat); /* resets counters */
 
 
 /* Flag used in node packets to indicate whether this packet was
- * inbound or outbound for the parent node */
+ * inbound or outbound for the node. Links and protocols use
+ * "eitherbound" */
 typedef enum
 {
-  INBOUND = 0, OUTBOUND = 1
+  EITHERBOUND=-1, INBOUND = 0, OUTBOUND = 1
 }
 packet_direction;
 
@@ -50,27 +51,38 @@ typedef struct
   guint size;			/* Size in bytes of the packet */
   struct timeval timestamp;	/* Time at which the packet was heard */
   gchar *prot_desc;			/* Packet protocol tree */
-  packet_direction dir;         /* packet direction - used for nodes */
   guint ref_count;		/* How many structures are referencing this 
 				 * packet. When the count reaches zero the packet
 				 * is deleted */
 }
 packet_info_t;
 
+/* items of a packet list. The "direction" item is used to update in/out 
+ * stats */
+typedef struct
+{
+  packet_info_t *info;
+  packet_direction direction;         /* packet direction - used for nodes */
+}
+packet_list_item_t;
 
 
 typedef struct
 {
-  GList *cur_pkt_list;          /* current packets - private */
-  gdouble n_packets;		/* Number of total packets received */
-  struct timeval last_time;	/* Timestamp of the last packet to be added */
+  GList *pkt_list;              /* list of packet_list_item_t - private */
+  gdouble n_packets;		/* Number of packets in the list */
+  struct timeval last_time;	/* Timestamp of the last packet added */
   traffic_stats_t stats;        /* total traffic stats */
+  traffic_stats_t stats_in;     /* inbound traffic stats */
+  traffic_stats_t stats_out;    /* outbound traffic stats */
 }
 packet_stats_t;
 
 void packet_stats_initialize(packet_stats_t *pkt_stat); /* initializes counters */
 void packet_stats_release(packet_stats_t *pkt_stat); /* releases memory */
-void packet_stats_add_packet(packet_stats_t *pkt_stat, packet_info_t *new_pkt); /* adds a packet */
+void packet_stats_add_packet( packet_stats_t *pkt_stat, 
+                              packet_info_t *new_pkt, 
+                              packet_direction dir); /* adds a packet */
 
 
 typedef enum
@@ -139,6 +151,14 @@ node_t;
 
 void node_dump(node_t * node);
 void node_delete(node_t *node); /* destroys a node, releasing memory */
+gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
+
+/* methods to handle every new node not yest handled in the main app */
+void new_nodes_clear(void);
+void new_nodes_add(node_t *node);
+void new_nodes_remove(node_t *node);
+node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
+
 
 /* nodes catalog methods */
 void nodes_catalog_open(void); /* initializes the catalog */
@@ -148,6 +168,7 @@ void nodes_catalog_insert(node_t *new_node); /* inserts a new node */
 void nodes_catalog_remove(const node_id_t *key); /* removes AND DESTROYS the named node from catalog */
 gint nodes_catalog_size(void); /* returns the current number of nodes in catalog */
 void nodes_catalog_foreach(GTraverseFunc func, gpointer data); /* calls the func for every node */
+void nodes_catalog_update_all(void);
 
 
 typedef struct
@@ -168,6 +189,11 @@ gint node_name_id_compare(const name_t *a, const name_t *b);
 gint node_name_freq_compare (gconstpointer a, gconstpointer b);
 
 
+/* removes a packet from a list of packets, destroying it if necessary
+ * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
+ * if the list is empty */
+GList *packet_list_remove(GList *item_to_remove);
+
 /* Information about each protocol heard on a link */
 typedef struct
 {
@@ -175,8 +201,7 @@ typedef struct
   gdouble average;		/* Average bytes in or out in the last x ms */
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
-  guint n_packets;		/* Number of packets containing this protocol */
-  GList *packets;		/* List of packets that used this protocol */
+  guint proto_packets;		/* Number of packets containing this protocol */
   GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
@@ -189,8 +214,33 @@ protocol_t;
 protocol_t *protocol_t_create(const gchar *protocol_name);
 void protocol_t_delete(protocol_t *prot);
 
+/* protocol stack methods */
+void protocol_stack_init(GList *protostack[]);
+void protocol_stack_free(GList *protostack[]);
+/* adds the given packet to the stack */
+void protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet);
+
+void protocol_stack_remove_pkt(GList *protostack[], const packet_info_t * packet);
+
+gchar *get_main_prot (GList ** protocols, guint level);
+void update_node_names (node_t * node);
+
 GList *all_protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
 					 * all protocols heards at that level */
 
+typedef struct 
+{
+  guint n_packets;		/* Number of active packets linked to some proto*/
+  GList *packets;		/* List of active packets */
+  
+  GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
+                                         * all protocols heard at that level */
+} protocol_summary_t;
+
+/* protocol summary method */
+void protocol_summary_open(void); /* initializes the summary */
+void protocol_summary_close(void); /* frees summary, releasing resources */
+void protocol_summary_add_packet(packet_info_t *packet); /* adds a new packet to summary */
+void protocol_summary_update_all(void); /* update stats on protocol summary */
 
 #endif
