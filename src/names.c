@@ -23,7 +23,7 @@
 #include "eth_resolv.h"
 #include "names_netbios.h"
 #include "names.h"
-#include "capture.h"
+#include "protocols.h"
 
 typedef struct
 {
@@ -153,7 +153,15 @@ static void decode_next(name_add_t *nt)
 
   next_func = g_tree_lookup (prot_functions, nt->decoder.tokens[nt->decoder.level]);
   if (next_func)
-    next_func->function (nt);
+    {
+      if (nt->packet_size <= nt->offset)
+        {
+          g_critical(_("detected undersize packet, aborting protocol decode"));
+          return;
+        }
+  
+      next_func->function (nt);
+    }
 }
 
 /* fills a node id with the specified mode and the data taken from nt using current

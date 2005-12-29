@@ -1,3 +1,4 @@
+
 /* Etherape
  * Copyright (C) 2000 Juan Toledo
  * $Id$
@@ -16,14 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef ETHERAPE_CAPTURE_H
-#define ETHERAPE_CAPTURE_H
 
-gchar *init_capture (void);
-gboolean start_capture (void);
-gboolean pause_capture (void);
-gboolean stop_capture (void);
-void cleanup_capture (void);
-gint set_filter (gchar * filter, gchar * device);
+#ifndef DECODE_PROTO_H
+#define DECODE_PROTO_H
+
+/* extracts the protocol stack from packet, and returs it as string */
+gchar *get_packet_prot (const guint8 * packet, guint len);
+
 
 #endif

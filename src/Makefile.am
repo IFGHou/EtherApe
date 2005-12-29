@@ -30,6 +30,7 @@ etherape_SOURCES = \
 	names.c names.h \
 	names_netbios.c names_netbios.h \
 	protocols.c protocols.h \
+	decode_proto.c decode_proto.h \
 	prot_types.h \
 	info_windows.c info_windows.h \
 	ip-cache.c ip-cache.h \

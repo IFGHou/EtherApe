@@ -27,7 +27,7 @@
 #include "info_windows.h"
 #include "diagram.h"
 #include "node.h"
-#include "capture.h"
+#include "protocols.h"
 
 /* private static vars */
 static GList *info_protocols = NULL;
@@ -480,7 +480,7 @@ update_protocols_window (void)
   static gboolean inited = FALSE;
   GtkListStore *gs = NULL;
   GList *item = NULL;
-  protocol_t *protocol = NULL;
+  const protocol_t *protocol = NULL;
   struct timeval diff;
   gchar *str = NULL;
   gboolean res;
@@ -528,7 +528,7 @@ update_protocols_window (void)
 	{
 	  info_protocols = g_list_remove (info_protocols, protocol);
 	  g_free (protocol->name);
-	  g_free (protocol);
+	  g_free ( (protocol_t *)protocol);
 
 	  /* remove row - after, iter points to next row if res = TRUE */
 #if GTK_CHECK_VERSION(2,2,0)
@@ -557,17 +557,14 @@ update_protocols_window (void)
 	  return;
 	}
 
-      if (!
-	  (item =
-	   g_list_find_custom (all_protocols[pref.stack_level],
-			       nproto->name, protocol_compare)))
+      protocol = protocol_summary_find(pref.stack_level, nproto->name);
+      if (!protocol)
 	{
 	  g_my_critical
 	    ("Global protocol not found in update_protocols_window");
 	  return;
 	}
 
-      protocol = item->data;
       diff = substract_times (nproto->last_heard, protocol->last_heard);
       if ((diff.tv_usec < 0) || (diff.tv_sec < 0))
 	{

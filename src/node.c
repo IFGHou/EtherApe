@@ -19,6 +19,7 @@
 
 #include "globals.h"
 #include "node.h"
+#include "protocols.h"
 
 static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
@@ -386,7 +387,7 @@ node_subtract_packet_data(node_t *node, packet_list_item_t * packet)
     node->average = 0;
 
   /* We remove protocol aggregate information */
-  protocol_stack_remove_pkt(node->protocols, packet->info);
+  protocol_stack_sub_pkt(node->protocols, packet->info, TRUE);
 }
 
 /* Make sure this particular packet in a list of packets beloging to 
@@ -774,51 +775,4 @@ node_name_freq_compare (gconstpointer a, gconstpointer b)
   if (name_a->accumulated < name_b->accumulated)
     return 1;
   return 0;
-}
-
-
-/***************************************************************************
- *
- * protocol_t implementation
- *
- **************************************************************************/
-protocol_t *protocol_t_create(const gchar *protocol_name)
-{
-  protocol_t *pr = NULL;
-
-  pr = g_malloc (sizeof (protocol_t));
-  pr->name = g_strdup (protocol_name);
-  pr->accumulated = 0;
-  pr->aver_accu = 0;
-  pr->average = 0;
-  pr->proto_packets = 0;
-  pr->node_names = NULL;
-  pr->color.pixel = 0;
-  pr->color.red = 0;
-  pr->color.green = 0;
-  pr->color.blue = 0;
-  pr->last_heard.tv_sec = 0;
-  pr->last_heard.tv_usec = 0;
-
-  return pr;
-}
-
-void protocol_t_delete(protocol_t *prot)
-{
-  g_assert(prot);
-
-  g_free (prot->name);
-  prot->name = NULL;
-
-  while (prot->node_names)
-    {
-      GList *name_item = prot->node_names;
-      name_t *name = name_item->data;
-      node_name_delete(name);
-      prot->node_names =
-        g_list_delete_link (prot->node_names,
-                            name_item);
-    }
-
-  g_free (prot);
 }

@@ -18,7 +18,7 @@
  */
 
 #include "globals.h"
-#include "capture.h"
+#include "protocols.h"
 #include "links.h"
 
 static GTree *all_links = NULL;			/* Has all links heard on the net */
@@ -128,7 +128,7 @@ link_subtract_packet_data(link_t * link, packet_info_t * packet)
     link->average = 0;
 
   /* We remove protocol aggregate information */
-  protocol_stack_remove_pkt(link->link_protocols, packet);
+  protocol_stack_sub_pkt(link->link_protocols, packet, TRUE);
 }
 
 static void

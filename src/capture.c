@@ -28,12 +28,11 @@
 #include "node.h"
 #include "conversations.h"
 #include "dns.h"
+#include "decode_proto.h"
 #include "protocols.h"
 
 #define MAXSIZE 200
 #define PCAP_TIMEOUT 250
-
-#include "globals.h"
 
 /* Used on some functions to indicate how to operate on the node info
  * depending on what side of the comm the node was at */
@@ -43,10 +42,6 @@ typedef enum
   DST = 1
 }
 create_node_type_t;
-
-
-
-
 
 static pcap_t *pch_struct;		/* pcap structure */
 static struct pcap_pkthdr phdr;
@@ -88,7 +83,7 @@ static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 /* Returns a pointer to a set of octects that define a link for the
  * current mode in this particular packet */
 static node_id_t 
-get_node_id (const guint8 * packet, create_node_type_t node_type)
+get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node_type)
 {
   node_id_t node_id;
   memset( &node_id, 0, sizeof(node_id));
@@ -97,44 +92,69 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
   switch (pref.mode)
     {
     case ETHERNET:
-      if (node_type == SRC)
-	g_memmove(node_id.addr.eth, packet + 6, sizeof(node_id.addr.eth));
-      else
-	g_memmove(node_id.addr.eth, packet, sizeof(node_id.addr.eth));
+      if (raw_size >= 6+sizeof(node_id.addr.eth))
+        {
+          if (node_type == SRC)
+            g_memmove(node_id.addr.eth, raw_packet + 6, sizeof(node_id.addr.eth));
+          else
+            g_memmove(node_id.addr.eth, raw_packet, sizeof(node_id.addr.eth));
+        }
+        else
+          g_critical(_("Received subsize ethernet packet! Forged ?"));
       break;
     case FDDI:
-      if (node_type == SRC)
-	g_memmove(node_id.addr.fddi, packet + 7, sizeof(node_id.addr.fddi));
-      else
-	g_memmove(node_id.addr.fddi, packet + 1, sizeof(node_id.addr.fddi));
+      if (raw_size >= 7+sizeof(node_id.addr.fddi))
+        {
+          if (node_type == SRC)
+            g_memmove(node_id.addr.fddi, raw_packet + 7, sizeof(node_id.addr.fddi));
+          else
+            g_memmove(node_id.addr.fddi, raw_packet + 1, sizeof(node_id.addr.fddi));
+        }
+        else
+          g_critical(_("Received subsize FDDI packet! Forged ?"));
       break;
     case IEEE802:
-      if (node_type == SRC)
-	g_memmove(node_id.addr.i802, packet + 8, sizeof(node_id.addr.i802));
-      else
-	g_memmove(node_id.addr.i802, packet + 2, sizeof(node_id.addr.i802));
+      if (raw_size >= 8+sizeof(node_id.addr.i802))
+        {
+          if (node_type == SRC)
+            g_memmove(node_id.addr.i802, raw_packet + 8, sizeof(node_id.addr.i802));
+          else
+            g_memmove(node_id.addr.i802, raw_packet + 2, sizeof(node_id.addr.i802));
+        }
+        else
+          g_critical(_("Received subsize IEEE802 packet! Forged ?"));
       break;
     case IP:
-      if (node_type == SRC)
-	g_memmove(node_id.addr.ip4, packet + l3_offset + 12, sizeof(node_id.addr.ip4));
-      else
-	g_memmove(node_id.addr.ip4, packet + l3_offset + 16, sizeof(node_id.addr.ip4));
+      if (raw_size >= 16+sizeof(node_id.addr.ip4))
+        {
+          if (node_type == SRC)
+            g_memmove(node_id.addr.ip4, raw_packet + l3_offset + 12, sizeof(node_id.addr.ip4));
+          else
+            g_memmove(node_id.addr.ip4, raw_packet + l3_offset + 16, sizeof(node_id.addr.ip4));
+        }
+        else
+          g_critical(_("Received subsize IP packet! Forged ?"));
       break;
     case TCP:
-      if (node_type == SRC)
-	{
-	  guint16 port;
-	  g_memmove (node_id.addr.tcp4.host, packet + l3_offset + 12, 4);
-	  port = ntohs (*(guint16 *) (packet + l3_offset + 20));
-	  g_memmove (node_id.addr.tcp4.port, &port, 2);
-	}
-      else
-	{
-	  guint16 port;
-	  g_memmove (node_id.addr.tcp4.host, packet + l3_offset + 16, 4);
-	  port = ntohs (*(guint16 *) (packet + l3_offset + 22));
-	  g_memmove (node_id.addr.tcp4.port, &port, 2);
-	}
+      if (raw_size >= l3_offset+24)
+        {
+          if (node_type == SRC)
+            {
+              guint16 port;
+              g_memmove (node_id.addr.tcp4.host, raw_packet + l3_offset + 12, 4);
+              port = ntohs (*(guint16 *) (raw_packet + l3_offset + 20));
+              g_memmove (node_id.addr.tcp4.port, &port, 2);
+            }
+          else
+            {
+              guint16 port;
+              g_memmove (node_id.addr.tcp4.host, raw_packet + l3_offset + 16, 4);
+              port = ntohs (*(guint16 *) (raw_packet + l3_offset + 22));
+              g_memmove (node_id.addr.tcp4.port, &port, 2);
+            }
+        }
+        else
+          g_critical(_("Received subsize TCP/UDP packet! Forged ?"));
       break;
     default:
       g_error (_("Reached default in get_node_id"));
@@ -147,13 +167,13 @@ get_node_id (const guint8 * packet, create_node_type_t node_type)
  * current mode in this particular packet 
  * Is always formed by two node_ids */
 static link_id_t
-get_link_id (const guint8 * packet)
+get_link_id (const guint8 * raw_packet, size_t raw_size)
 {
   link_id_t link_id;
   memset( &link_id, 0, sizeof(link_id));
 
-  link_id.src = get_node_id(packet, SRC);
-  link_id.dst = get_node_id(packet, DST);
+  link_id.src = get_node_id(raw_packet, raw_size, SRC);
+  link_id.dst = get_node_id(raw_packet, raw_size, DST);
 
   return link_id;
 }				/* get_link_id */
@@ -168,7 +188,6 @@ gchar *
 init_capture (void)
 {
 
-  guint i = STACK_SIZE;
   gchar *device;
   gchar ebuf[300];
   gchar *str = NULL;
@@ -182,11 +201,6 @@ init_capture (void)
       nodes_catalog_open();
       links_catalog_open();
 
-      while (i + 1)
-	{
-	  all_protocols[i] = NULL;
-	  i--;
-	}
       if (!pref.numeric)
 	{
 	  dns_open ();
@@ -728,8 +742,8 @@ packet_acquired(guint8 * raw_packet)
 
   /* If there is no node with that id, create it. Otherwise 
    * just use the one available */
-  src_node_id = get_node_id (raw_packet, SRC);
-  dst_node_id = get_node_id (raw_packet, DST);
+  src_node_id = get_node_id (raw_packet, phdr.len, SRC);
+  dst_node_id = get_node_id (raw_packet, phdr.len, DST);
 
   n_packets++;
   n_mem_packets++;
@@ -742,7 +756,7 @@ packet_acquired(guint8 * raw_packet)
   add_node_packet (raw_packet, packet, &dst_node_id, INBOUND);
 
   /* And now we update link traffic information for this packet */
-  link_id = get_link_id (raw_packet);
+  link_id = get_link_id (raw_packet, phdr.len);
   add_link_packet (&link_id, packet);
 }				/* packet_read */
 
@@ -960,7 +974,7 @@ update_node_names (node_t * node)
 	{
           GList *protocol_item = NULL;
           protocol_t *protocol = NULL;
-	  protocol_item = all_protocols[i];
+	  protocol_item = node->protocols[i];
 	  for (; protocol_item; protocol_item = protocol_item->next)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
@@ -1069,16 +1083,6 @@ get_main_prot (GList ** protocols, guint level)
 
 
 
-/* Comparison function used to compare two link protocols */
-gint
-protocol_compare (gconstpointer a, gconstpointer b)
-{
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  return strcmp (((protocol_t *) a)->name, (gchar *) b);
-}
-
 /* Comparison function to sort protocols by their accumulated traffic */
 static gint
 prot_freq_compare (gconstpointer a, gconstpointer b)
@@ -1157,264 +1161,3 @@ print_mem (const node_id_t *node_id)
     }
   return g_string_new(p);
 }				/* print_mem */
-
-/***************************************************************************
- *
- * protocol_stack implementation
- *
- **************************************************************************/
-
-void protocol_stack_init(GList *protostack[])
-{
-  guint i;
-  for (i = 0 ; i <= STACK_SIZE ; ++i)
-    protostack[i] = NULL;
-}
-
-void protocol_stack_free(GList *protostack[])
-{
-  guint i;
-  protocol_t *protocol_info;
-
-  for (i = 0 ; i <= STACK_SIZE ; ++i)
-    {
-      while (protostack[i])
-        {
-          protocol_info = protostack[i]->data;
-
-          protocol_t_delete(protocol_info);
-          protostack[i] = g_list_delete_link (protostack[i], protostack[i]);
-        }
-    }
-}
-
-/* adds the given packet to the stack */
-void
-protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
-{
-  GList *protocol_item;
-  protocol_t *protocol_info;
-  gchar **tokens = NULL;
-  guint i;
-  gchar *protocol_name;
-
-  g_assert(packet);
-  
-  tokens = g_strsplit (packet->prot_desc, "/", 0);
-
-  for (i = 0; i <= STACK_SIZE; i++)
-    {
-      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-	protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-	protocol_name = "UDP-Unknown";
-      else
-	protocol_name = tokens[i];
-
-      /* If there is yet not such protocol, create it */
-      if (!(protocol_item = g_list_find_custom (protostack[i],
-						protocol_name,
-						protocol_compare)))
-	{
-	  protocol_info = protocol_t_create(protocol_name);
-	  protostack[i] = g_list_prepend (protostack[i], protocol_info);
-	}
-      else
-	protocol_info = protocol_item->data;
-
-      protocol_info->last_heard = now;
-      protocol_info->accumulated += packet->size;
-      protocol_info->aver_accu += packet->size;
-      protocol_info->proto_packets++;
-
-    }
-  g_strfreev (tokens);
-}				/* add_protocol */
-
-
-void protocol_stack_remove_pkt(GList *protostack[], const packet_info_t * packet)
-{
-  guint i = 0;
-  gchar **tokens = NULL;
-  GList *protocol_item = NULL;
-  protocol_t *protocol_info = NULL;
-  gchar *protocol_name = NULL;
-
-  if (!packet)
-    return;
-
-  /* We remove protocol aggregate information */
-  tokens = g_strsplit (packet->prot_desc, "/", 0);
-  while ((i <= STACK_SIZE) && tokens[i])
-    {
-      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
-        protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
-        protocol_name = "UDP-Unknown";
-      else
-        protocol_name = tokens[i];
-
-      protocol_item = g_list_find_custom (protostack[i],
-                                          protocol_name,
-                                          protocol_compare);
-      if (!protocol_item)
-        {
-          g_my_critical
-            ("Protocol not found while removing packet in protocol_stack_remove_pkt");
-          break;
-        }
-      protocol_info = protocol_item->data;
-      protocol_info->accumulated -= packet->size;
-
-      if (!protocol_info->accumulated)
-        {
-          g_free (protocol_info->name);
-          protocol_info->name = NULL;
-
-          g_free (protocol_info);
-
-          protostack[i] = g_list_delete_link(protostack[i], protocol_item);
-        }
-      i++;
-    }
-  g_strfreev (tokens);
-}
-
-/***************************************************************************
- *
- * protocol_summary_t implementation
- *
- **************************************************************************/
-static protocol_summary_t *protosummary = NULL;
-
-/* initializes the summary */
-void protocol_summary_open(void)
-{
-  if (protosummary)
-    protocol_summary_close();
-
-  protosummary = g_malloc( sizeof(protocol_summary_t) );
-  protosummary->n_packets = 0;
-  protosummary->packets = NULL;
-  protocol_stack_init(protosummary->protostack);
-}
-
-/* frees summary, releasing resources */
-void protocol_summary_close(void)
-{
-  if (protosummary)
-    {
-      while (protosummary->packets)
-        protosummary->packets = packet_list_remove(protosummary->packets);
-      protosummary->packets = NULL;
-      protosummary->n_packets = 0;
-      protocol_stack_free(protosummary->protostack);
-      g_free(protosummary);
-      protosummary = NULL;
-    }
-}
-
-/* adds a new packet to summary */
-void protocol_summary_add_packet(packet_info_t *packet)
-{
-  packet_list_item_t *newit;
-  
-  if (!protosummary)
-    protocol_summary_open();
-
-  newit = g_malloc( sizeof(packet_list_item_t) );
-  packet->ref_count++;
-  newit->info = packet;
-  newit->direction = EITHERBOUND;
-  protosummary->packets = g_list_prepend (protosummary->packets, newit);
-  ++protosummary->n_packets;
-
-  protocol_stack_add_pkt(protosummary->protostack, packet);
-}
-
-static void
-protocol_summary_purge_expired_packets()
-{
-  struct timeval result;
-  double time_comparison;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. */
-  if (pref.node_timeout_time)
-    time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.node_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  packet_l_e = g_list_last (protosummary->packets);
-  while (packet_l_e)
-  {
-    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
-
-    result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, time_comparison) && (status != STOP))
-      break; /* packet valid, subsequent packets are younger, no need to go further */
-
-    /* packet expired, remove */
-    protocol_stack_remove_pkt(protosummary->protostack, packet->info);
-
-    /* packet expired, remove from list - gets the new check position 
-     * if this packet is the first of the list, all the previous packets
-     * should be already destroyed. We check that remove never returns a
-     * NEXT packet */
-    GList *next=packet_l_e->next;
-    packet_l_e = packet_list_remove(packet_l_e);
-    g_assert(packet_l_e == NULL || packet_l_e != next );
-    protosummary->n_packets--;
-  }
-
-  if (!packet_l_e)
-    {
-      /* removed all packets */
-      protosummary->n_packets = 0;
-      protosummary->packets=NULL;
-    }
-}
-
-/* update stats on protocol summary */
-void protocol_summary_update_all(void)
-{
-  if (!protosummary)
-    return;
-
-  protocol_summary_purge_expired_packets();
-
-  if (protosummary->packets)
-    {
-      /* ok, we have active packets, update stats */
-      GList *item = NULL;
-      protocol_t *protocol = NULL;
-      guint i = 0;
-      struct timeval difference;
-      packet_list_item_t *packet;
-      gdouble usecs_from_oldest;	/* usecs since the oldest valid packet */
-
-      packet = (packet_list_item_t *) g_list_last (protosummary->packets)->data;
-
-      difference = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
-
-      for (i = 0; i <= STACK_SIZE; i++)
-        {
-          item = protosummary->protostack[i];
-          while (item)
-            {
-              protocol = (protocol_t *)item;
-
-              protocol->average =
-                8000000 * protocol->aver_accu / usecs_from_oldest;
-
-              item = item->next;
-            }
-        }
-    }
-}

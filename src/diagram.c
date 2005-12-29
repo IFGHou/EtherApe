@@ -30,7 +30,7 @@
 #include "preferences.h"
 #include "node.h"
 #include "info_windows.h"
-#include "capture.h"
+#include "protocols.h"
 
 typedef struct
 {
@@ -298,15 +298,12 @@ update_diagram (GtkWidget * canvas)
     }
 
   already_updating = TRUE;
-
-
   gettimeofday (&now, NULL);
 
 
   /* We search for new protocols */
-  while (known_protocols[pref.stack_level] !=
-	 g_list_length (all_protocols[pref.stack_level]))
-    g_list_foreach (all_protocols[pref.stack_level], (GFunc) check_new_protocol,
+  while (known_protocols[pref.stack_level] < protocol_summary_size(pref.stack_level))
+    protocol_summary_foreach(pref.stack_level, (GFunc) check_new_protocol,
 		    canvas);
 
   /* Deletes all nodes and updates traffic values */
@@ -715,8 +712,7 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  GList *protocol_item;
-  protocol_t *protocol = NULL;
+  const protocol_t *protocol = NULL;
   static clock_t start = 0;
   clock_t end;
   gdouble cpu_time_used;
@@ -758,12 +754,8 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
 
   if (node->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (all_protocols[pref.stack_level],
-					  node->main_prot[pref.stack_level],
-					  protocol_compare);
-      if (protocol_item)
-	protocol = protocol_item->data;
-      else
+      protocol = protocol_summary_find(pref.stack_level, node->main_prot[pref.stack_level]);
+      if (!protocol)
 	g_warning (_("Main node protocol not found in update_canvas_nodes"));
     }
 
@@ -1146,8 +1138,7 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
   link_t *link;
   GnomeCanvasPoints *points;
   canvas_node_t *canvas_node;
-  GList *protocol_item;
-  protocol_t *protocol = NULL;
+  const protocol_t *protocol = NULL;
   gdouble link_size, versorx, versory, modulus;
   struct timeval diff;
   guint32 scaledColor;
@@ -1181,12 +1172,8 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 
   if (link->main_prot[pref.stack_level])
     {
-      protocol_item = g_list_find_custom (all_protocols[pref.stack_level],
-					  link->main_prot[pref.stack_level],
-					  protocol_compare);
-      if (protocol_item)
-	protocol = protocol_item->data;
-      else
+      protocol = protocol_summary_find(pref.stack_level, link->main_prot[pref.stack_level]);
+      if (!protocol)
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
 
