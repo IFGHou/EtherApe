@@ -166,6 +166,41 @@ const protocol_t *protocol_stack_find(GList *protostack[], size_t level, const g
   return NULL;
 }
 
+/* Comparison function to sort protocols by their accumulated traffic */
+static gint
+prot_freq_compare (gconstpointer a, gconstpointer b)
+{
+  protocol_t *prot_a, *prot_b;
+
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
+  prot_a = (protocol_t *) a;
+  prot_b = (protocol_t *) b;
+
+  if (prot_a->accumulated > prot_b->accumulated)
+    return -1;
+  if (prot_a->accumulated < prot_b->accumulated)
+    return 1;
+  return 0;
+}				/* prot_freq_compare */
+
+
+/* Finds the most commmon protocol of all the packets in a
+ * given node/link */
+gchar *
+protocol_stack_find_most_used(GList *protostack[], size_t level)
+{
+  protocol_t *protocol;
+  /* If we haven't recognized any protocol at that level,
+   * we say it's unknown */
+  if (level>STACK_SIZE || !protostack || !protostack[level])
+    return NULL;
+  protostack[level] = g_list_sort (protostack[level], prot_freq_compare);
+  protocol = (protocol_t *) protostack[level]->data;
+  return g_strdup (protocol->name);
+}				/* get_main_prot */
+
 /***************************************************************************
  *
  * protocol_summary_t implementation

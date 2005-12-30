@@ -58,9 +58,7 @@ static guint get_offline_packet (void);
 static void cap_t_o_destroy (gpointer data);
 static void read_packet_live(gpointer dummy, gint source,
 			 GdkInputCondition condition);
-static void packet_acquired(guint8 * packet);
-
-static node_t *create_node (const guint8 * packet, const node_id_t * node_id);
+static void packet_acquired(guint8 * packet, guint raw_size);
 
 static void add_node_packet (const guint8 * packet,
 			     packet_info_t * packet_info,
@@ -71,7 +69,6 @@ static void add_link_packet (const link_id_t *link_id, packet_info_t * packet_in
 static void set_node_name (node_t * node, gchar * preferences);
 
 
-static gint prot_freq_compare (gconstpointer a, gconstpointer b);
 static GString *print_mem (const node_id_t *node_id);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 
@@ -162,22 +159,6 @@ get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node
 
   return node_id;
 }				/* get_node_id */
-
-/* Returns a set of octects that define a link for the
- * current mode in this particular packet 
- * Is always formed by two node_ids */
-static link_id_t
-get_link_id (const guint8 * raw_packet, size_t raw_size)
-{
-  link_id_t link_id;
-  memset( &link_id, 0, sizeof(link_id));
-
-  link_id.src = get_node_id(raw_packet, raw_size, SRC);
-  link_id.dst = get_node_id(raw_packet, raw_size, DST);
-
-  return link_id;
-}				/* get_link_id */
-
 
 /* Sets up the pcap device
  * Sets up the mode and related variables
@@ -660,7 +641,7 @@ get_offline_packet (void)
   if (packet)
   {
     gettimeofday (&now, NULL);
-    packet_acquired(packet);
+    packet_acquired(packet, phdr.len);
   }
 
   packet = (guint8 *) pcap_next (pch_struct, &phdr);
@@ -714,7 +695,7 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
   now.tv_usec = phdr.ts.tv_usec;
 
   if (packet)
-    packet_acquired(packet);
+    packet_acquired(packet, phdr.len);
 
 }				/* packet_read */
 
@@ -722,7 +703,7 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
  * the network interface. It then updates traffic information
  * for the appropriate nodes and links */
 static void
-packet_acquired(guint8 * raw_packet)
+packet_acquired(guint8 * raw_packet, guint raw_size)
 {
   packet_info_t *packet;
   gchar *prot_desc = NULL;
@@ -735,15 +716,15 @@ packet_acquired(guint8 * raw_packet)
 
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));
-  packet->size = phdr.len;
+  packet->size = raw_size;
   packet->timestamp = now;
   packet->prot_desc = g_strdup (prot_desc);
   packet->ref_count = 0;
 
   /* If there is no node with that id, create it. Otherwise 
    * just use the one available */
-  src_node_id = get_node_id (raw_packet, phdr.len, SRC);
-  dst_node_id = get_node_id (raw_packet, phdr.len, DST);
+  src_node_id = get_node_id (raw_packet, packet->size, SRC);
+  dst_node_id = get_node_id (raw_packet, packet->size, DST);
 
   n_packets++;
   n_mem_packets++;
@@ -756,10 +737,10 @@ packet_acquired(guint8 * raw_packet)
   add_node_packet (raw_packet, packet, &dst_node_id, INBOUND);
 
   /* And now we update link traffic information for this packet */
-  link_id = get_link_id (raw_packet, phdr.len);
+  link_id.src = src_node_id;
+  link_id.dst = dst_node_id;
   add_link_packet (&link_id, packet);
-}				/* packet_read */
-
+}
 
 
 /* We update node information for each new packet that arrives in the
@@ -776,7 +757,17 @@ add_node_packet (const guint8 * raw_packet,
 
   node = nodes_catalog_find(node_id);
   if (node == NULL)
-    node = create_node (raw_packet, node_id);
+    {
+      /* creates the new node, adding it to the catalog */
+      GString *node_id_str = print_mem (node_id);
+      node = node_create(node_id, node_id_str->str);
+      nodes_catalog_insert(node);
+    
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+             _("Creating node: %s. Number of nodes %d"),
+             node_id_str->str, nodes_catalog_size());
+      g_string_free(node_id_str, TRUE);
+    }
 
   /* We add a packet to the list of packets to/from that host which we want
    * to account for */
@@ -852,45 +843,6 @@ add_link_packet (const link_id_t *link_id, packet_info_t * packet)
 
 }				/* add_link_packet */
 
-/* Allocates a new node structure, and adds it to the
- * global nodes binary tree */
-static node_t *
-create_node (const guint8 * packet, const node_id_t * node_id)
-{
-  node_t *node = NULL;
-  guint i = STACK_SIZE;
-
-  node = g_malloc (sizeof (node_t));
-
-  node->node_id = *node_id;
-
-  node->name = NULL;
-  node->numeric_name = NULL;
-
-  node->name = print_mem (node_id);
-  node->numeric_name = print_mem (node_id);
-
-  node->average = node->average_in = node->average_out = 0;
-  node->n_packets = 0;
-  node->accumulated = node->accumulated_in = node->accumulated_out = 0;
-  node->aver_accu = node->aver_accu_in = node->aver_accu_out = 0;
-
-  node->packets = NULL;
-  while (i + 1)
-    {
-      node->protocols[i] = NULL;
-      node->main_prot[i] = NULL;
-      i--;
-    }
-
-  nodes_catalog_insert(node);	/* Add it to the catalog of all nodes*/
-
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Creating node: %s. Number of nodes %d"),
-	 node->name->str, nodes_catalog_size());
-
-  return node;
-}				/* create_node */
 
 
 /* Callback function everytime a dns_lookup function is finished */
@@ -1065,42 +1017,6 @@ set_node_name (node_t * node, gchar * preferences)
   prots = NULL;
 }				/* set_node_name */
 
-
-/* Finds the most commmon protocol of all the packets in a
- * given node/link */
-gchar *
-get_main_prot (GList ** protocols, guint level)
-{
-  protocol_t *protocol;
-  /* If we haven't recognized any protocol at that level,
-   * we say it's unknown */
-  if (!protocols[level])
-    return NULL;
-  protocols[level] = g_list_sort (protocols[level], prot_freq_compare);
-  protocol = (protocol_t *) protocols[level]->data;
-  return g_strdup (protocol->name);
-}				/* get_main_prot */
-
-
-
-/* Comparison function to sort protocols by their accumulated traffic */
-static gint
-prot_freq_compare (gconstpointer a, gconstpointer b)
-{
-  protocol_t *prot_a, *prot_b;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  prot_a = (protocol_t *) a;
-  prot_b = (protocol_t *) b;
-
-  if (prot_a->accumulated > prot_b->accumulated)
-    return -1;
-  if (prot_a->accumulated < prot_b->accumulated)
-    return 1;
-  return 0;
-}				/* prot_freq_compare */
 
 /* creates a new string from the given address */
 static GString *

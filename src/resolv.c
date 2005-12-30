@@ -69,7 +69,6 @@
 #include "globals.h"
 #include "eth_resolv.h"		/* JTC name space conflict */
 #include "util.h"
-#include "capture.h"
 #include "dns.h"
 
 #define EPATH_ETHERS 		"/etc/ethers"

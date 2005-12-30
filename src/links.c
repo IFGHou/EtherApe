@@ -223,7 +223,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
           if (link->main_prot[i])
             g_free (link->main_prot[i]);
           link->main_prot[i]
-            = get_main_prot (link->link_protocols, i);
+            = protocol_stack_find_most_used(link->link_protocols, i);
           i--;
         }
 

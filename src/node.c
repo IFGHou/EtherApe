@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "node.h"
 #include "protocols.h"
+#include "capture.h"
 
 static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
@@ -273,53 +274,39 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
  * node_t implementation
  *
  **************************************************************************/
- 
-void
-node_dump(node_t * node)
+/* Allocates a new node structure */
+node_t *
+node_create(const node_id_t * node_id, const gchar *node_id_str)
 {
+  node_t *node = NULL;
+  guint i = STACK_SIZE;
 
-  GList *protocol_item = NULL, *name_item = NULL;
-  protocol_t *protocol = NULL;
-  name_t *name = NULL;
-  guint i = 1;
+  node = g_malloc (sizeof (node_t));
 
-  if (!node)
-    return;
+  node->node_id = *node_id;
 
-  if (node->name)
-    g_my_info ("NODE %s INFORMATION", node->name->str);
+  node->name = NULL;
+  node->numeric_name = NULL;
 
-  for (; i <= STACK_SIZE; i++)
+  node->name = g_string_new(node_id_str);
+  node->numeric_name = g_string_new(node_id_str);
+
+  node->average = node->average_in = node->average_out = 0;
+  node->n_packets = 0;
+  node->accumulated = node->accumulated_in = node->accumulated_out = 0;
+  node->aver_accu = node->aver_accu_in = node->aver_accu_out = 0;
+
+  node->packets = NULL;
+  while (i + 1)
     {
-      if (node->protocols[i])
-	{
-	  g_my_info ("Protocol level %d information", i);
-	  protocol_item = node->protocols[i];
-	  while (protocol_item)
-	    {
-	      protocol = protocol_item->data;
-	      g_my_info ("\tProtocol %s", protocol->name);
-	      if ((name_item = protocol->node_names))
-		{
-		  GString *names = NULL;
-		  while (name_item)
-		    {
-		      if (!names)
-			names = g_string_new ("");
-		      name = name_item->data;
-		      names = g_string_append (names, name->name->str);
-		      names = g_string_append (names, " ");
-		      name_item = name_item->next;
-		    }
-		  g_my_info ("\t\tName: %s", names->str);
-		  g_string_free (names, TRUE);
-		}
-	      protocol_item = protocol_item->next;
-	    }
-	}
+      node->protocols[i] = NULL;
+      node->main_prot[i] = NULL;
+      i--;
     }
 
-}				/* dump_node_info */
+
+  return node;
+}				/* create_node */
 
 /* destroys a node */
 void node_delete(node_t *node)
@@ -367,6 +354,53 @@ void node_delete(node_t *node)
   node->packets = NULL;
 
   g_free (node);
+}
+
+void
+node_dump(node_t * node)
+{
+
+  GList *protocol_item = NULL, *name_item = NULL;
+  protocol_t *protocol = NULL;
+  name_t *name = NULL;
+  guint i = 1;
+
+  if (!node)
+    return;
+
+  if (node->name)
+    g_my_info ("NODE %s INFORMATION", node->name->str);
+
+  for (; i <= STACK_SIZE; i++)
+    {
+      if (node->protocols[i])
+	{
+	  g_my_info ("Protocol level %d information", i);
+	  protocol_item = node->protocols[i];
+	  while (protocol_item)
+	    {
+	      protocol = protocol_item->data;
+	      g_my_info ("\tProtocol %s", protocol->name);
+	      if ((name_item = protocol->node_names))
+		{
+		  GString *names = NULL;
+		  while (name_item)
+		    {
+		      if (!names)
+			names = g_string_new ("");
+		      name = name_item->data;
+		      names = g_string_append (names, name->name->str);
+		      names = g_string_append (names, " ");
+		      name_item = name_item->next;
+		    }
+		  g_my_info ("\t\tName: %s", names->str);
+		  g_string_free (names, TRUE);
+		}
+	      protocol_item = protocol_item->next;
+	    }
+	}
+    }
+
 }
 
 static void
@@ -491,7 +525,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
         {
           if (node->main_prot[i])
             g_free (node->main_prot[i]);
-          node->main_prot[i] = get_main_prot (node->protocols, i);
+          node->main_prot[i] = protocol_stack_find_most_used(node->protocols, i);
           i--;
         }
       update_node_names (node);
@@ -538,7 +572,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 
 static GList *new_nodes = NULL;	/* List that contains every new node not yet
 				 * acknowledged by the main app with
-				 * ape_get_new_node */
+				 * new_nodes_pop */
 
 void new_nodes_clear(void)
 {
@@ -559,7 +593,7 @@ void new_nodes_remove(node_t *node)
 /* Returns a node from the list of new nodes or NULL if there are no more 
  * new nodes */
 node_t *
-ape_get_new_node (void)
+new_nodes_pop(void)
 {
   node_t *node = NULL;
   GList *old_item = NULL;
@@ -576,7 +610,7 @@ ape_get_new_node (void)
   while (node && !nodes_catalog_find(&node->node_id))
     {
       g_my_debug
-	("Already deleted node in list of new nodes, in ape_get_new_node");
+	("Already deleted node in list of new nodes, in new_nodes_pop");
 
       /* Remove this node from the list of new nodes */
       new_nodes = g_list_remove_link (new_nodes, new_nodes);

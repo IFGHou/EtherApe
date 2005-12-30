@@ -32,6 +32,10 @@
 
 #define ETHERAPE_GLADE_FILE "etherape.glade2"	// glade 2 file
 
+#define MAXDNAME        1025	/* maximum domain name length */
+
+
+
 /* Enumerations */
 
 /* Since gdb does understand enums and not defines, and as 

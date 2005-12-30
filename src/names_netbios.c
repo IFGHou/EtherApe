@@ -30,6 +30,12 @@
  */
 
 #include "names_netbios.h"
+
+#define NBNAME_BUF_LEN   128
+#define BYTES_ARE_IN_FRAME(a,b) 1
+/* TODO Find a way to get capture_len here so that I can actually use this macro */
+
+
 typedef struct
 {
   int number;
@@ -73,7 +79,23 @@ static const value_string name_type_vals[] = {
   {0x00, NULL}
 };
 
-int
+
+/***************************************************************************
+ *
+ * local function definitions
+ *
+ **************************************************************************/
+static int get_dns_name (const gchar * pd, int offset, int dns_data_offset,
+		  char *name, int maxname);
+static int process_netbios_name (const gchar * name_ptr, char *name_ret);
+
+
+/***************************************************************************
+ *
+ * implementation
+ *
+ **************************************************************************/
+static int
 get_dns_name (const gchar * pd, int offset, int dns_data_offset,
 	      char *name, int maxname)
 {
@@ -166,7 +188,7 @@ overflow:
   return len;
 }
 
-int
+static int
 process_netbios_name (const gchar * name_ptr, char *name_ret)
 {
   int i;
@@ -291,46 +313,6 @@ bad:
 }
 
 
-int
-get_nbns_name_type_class (const gchar * pd, int offset, int nbns_data_offset,
-			  char *name_ret, int *name_len_ret,
-			  int *name_type_ret, int *type_ret, int *class_ret)
-{
-  int name_len;
-  int type;
-  int class;
-
-  name_len = ethereal_nbns_name (pd, offset, nbns_data_offset, name_ret,
-				 name_type_ret);
-  offset += name_len;
-
-
-/* I'm leaving this out at least until I pass captured_len to this function */
-  if (!BYTES_ARE_IN_FRAME (offset, 2))
-    {
-      /* We ran past the end of the captured data in the packet. */
-      return -1;
-    }
-
-  type = pntohs (&pd[offset]);
-  offset += 2;
-
-  if (!BYTES_ARE_IN_FRAME (offset, 2))
-    {
-      /* We ran past the end of the captured data in the packet. */
-      return -1;
-    }
-
-  class = pntohs (&pd[offset]);
-
-  *type_ret = type;
-  *class_ret = class;
-  *name_len_ret = name_len;
-
-  return name_len + 4;
-}
-
-
 /* My only code here (JTC) */
 
 gchar *
@@ -346,6 +328,4 @@ get_netbios_host_type (int type)
     }
 
   return "Unknown";
-
-
 }				/* get_netbios_host_type */

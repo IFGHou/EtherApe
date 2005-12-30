@@ -314,7 +314,7 @@ update_diagram (GtkWidget * canvas)
   nodes_catalog_update_all();
 
   /* Check if there are any new nodes */
-  while ((new_node = ape_get_new_node ()))
+  while ((new_node = new_nodes_pop()))
     check_new_node (new_node, canvas);
 
   /* Update nodes look and delete outdated canvas_nodes */

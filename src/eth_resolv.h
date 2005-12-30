@@ -1,4 +1,4 @@
-/* resolv.h
+/* eth_resolv.h
  * Definitions for network object lookup
  *
  * $Id$

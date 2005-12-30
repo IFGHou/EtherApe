@@ -29,8 +29,8 @@ struct timeval substract_times (struct timeval a, struct timeval b);
 typedef struct
 {
   gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes */
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
+  gdouble accumulated;		/* Accumulated bytes */
 }
 traffic_stats_t;
 void traffic_stats_reset(traffic_stats_t *tf_stat); /* resets counters */
@@ -153,15 +153,16 @@ typedef struct
 }
 node_t;
 
-void node_dump(node_t * node);
+node_t *node_create(const node_id_t * node_id, const gchar *node_id_str); /* creates a new node */
 void node_delete(node_t *node); /* destroys a node, releasing memory */
+void node_dump(node_t * node);
 gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
 /* methods to handle every new node not yest handled in the main app */
 void new_nodes_clear(void);
 void new_nodes_add(node_t *node);
 void new_nodes_remove(node_t *node);
-node_t *ape_get_new_node (void);	/* Returns a new node that hasn't been heard of */
+node_t *new_nodes_pop(void);	/* Returns a new node that hasn't been heard of */
 
 
 /* nodes catalog methods */

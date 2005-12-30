@@ -54,11 +54,11 @@ void protocol_stack_free(GList *protostack[]);
 void protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet);
 /* subtracts packet data from stack */
 void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, gboolean purge_entry);
-/* finds named protocol in the level protocols of protostack*/
+/* finds named protocol in the requested level of protostack*/
 const protocol_t *protocol_stack_find(GList *protostack[], size_t level, const gchar *protoname);
+/* finds the most used protocol in the requested level */
+gchar *protocol_stack_find_most_used(GList *protostack[], size_t level);
 
-gchar *get_main_prot (GList ** protocols, guint level);
-void update_node_names (node_t * node);
 
 
 typedef struct 

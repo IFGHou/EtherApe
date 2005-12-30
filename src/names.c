@@ -154,7 +154,9 @@ static void decode_next(name_add_t *nt)
   next_func = g_tree_lookup (prot_functions, nt->decoder.tokens[nt->decoder.level]);
   if (next_func)
     {
-      if (nt->packet_size <= nt->offset)
+      /* before calling the next decoder, we check for size overflow 
+       * To continue, we must have at least 4 bytes remaining ... */
+      if (nt->packet_size <= nt->offset + 4)
         {
           g_critical(_("detected undersize packet, aborting protocol decode"));
           return;
@@ -397,6 +399,12 @@ get_arp_name (name_add_t *nt)
   if (protocol_type != ARPTYPE_IP)
     return;
 
+  if (nt->packet_size <= nt->offset + 7)
+    {
+      g_critical(_("detected undersize packet, aborting get_arp_name"));
+      return;
+    }
+
   hardware_len = *(guint8 *) (nt->p + nt->offset + 4);
   protocol_len = *(guint8 *) (nt->p + nt->offset + 5);
 
@@ -478,6 +486,12 @@ get_tcp_name (name_add_t *nt)
   g_string_free (resolved_name, TRUE);
   resolved_name = NULL;
 
+  if (nt->packet_size <= nt->offset + 14)
+    {
+      g_critical(_("detected undersize packet, aborting get_tcp_name"));
+      return;
+    }
+
   th_off_x2 = *(guint8 *) (nt->p + nt->offset + 12);
   tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
   nt->offset += tcp_len;
@@ -502,6 +516,7 @@ static void
 get_ipxsap_name (name_add_t *nt)
 {
   guint16 sap_type;
+  guint16 curpos;
   gchar *name;
 
   sap_type = pntohs (nt->p + nt->offset);
@@ -510,6 +525,17 @@ get_ipxsap_name (name_add_t *nt)
   if (sap_type != 0x0002)
     return;
 
+  for (curpos = nt->offset + 4; curpos < nt->packet_size ; ++curpos)
+    {
+      if ( ! *((gchar *) (nt->p + curpos)) )
+        break; // found termination
+    }
+  if (curpos >= nt->packet_size)
+    {
+      g_critical(_("detected undersize packet, aborting get_sap_name"));
+      return;
+    }
+    
   name = (gchar *) (nt->p + nt->offset + 4);
 
   g_my_debug ("Sap name %s found", name);
@@ -522,17 +548,12 @@ static void
 get_nbipx_name (name_add_t *nt)
 {
 
-}				/* get_ipxsap_name */
-
+}
 
 static void
 get_nbss_name (name_add_t *nt)
 {
-  /* TODO this really shouldn't be definened both here and in
-   * names_netbios.h */
 #define SESSION_REQUEST 0x81
-#define MAXDNAME        1025	/* maximum domain name length */
-#define NETBIOS_NAME_LEN  16
 
   guint i = 0;
   guint8 mesg_type;
@@ -559,7 +580,8 @@ get_nbss_name (name_add_t *nt)
 
       /* We just want the name, not the space padding behind it */
 
-      for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++);
+      for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
+        ;
       name[i] = '\0';
 
       /* Many packages will be straight TCP packages directed to the proper
@@ -620,7 +642,8 @@ get_nbdgm_name (name_add_t *nt)
 
   /* We just want the name, not the space padding behind it */
 
-  for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++);
+  for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
+    ;
   name[i] = '\0';
 
   /* The reasing here might not make sense as in the TCP case, but it
