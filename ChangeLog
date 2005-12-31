@@ -1,7 +1,58 @@
+2005-12-31 09:00  bchiara
+
+	* src/diagram.c: fix for 1372245
+
+2005-12-30 16:36  bchiara
+
+	* src/: capture.c, capture.h, diagram.c, eth_resolv.h, globals.h,
+	links.c, names.c, names_netbios.c, names_netbios.h, node.c, node.h,
+	protocols.c, protocols.h, resolv.c: still refactoring ...
+
+2005-12-29 22:58  bchiara
+
+	* src/: Makefile.am, capture.c, capture.h, decode_proto.c,
+	decode_proto.h, diagram.c, info_windows.c, links.c, names.c,
+	node.c, node.h, protocols.c, protocols.h: Code restructuring
+	continues.  Moved protocol decoding to decode_proto.h/c, so now
+	protocols.h/c contains only routines dealing with protocol stats. 
+	Likewise, node.h/c and links.h/c handle node and link stats
+	respectively.
+
+2005-12-29 18:53  bchiara
+
+	* config.h.in, configure.in, src/capture.c, src/capture.h,
+	src/diagram.c, src/globals.h, src/info_windows.c, src/links.c,
+	src/node.c, src/node.h: source restructuring continues...
+
+2005-12-04 20:18  bchiara
+
+	* TODO, m4/Makefile.am, src/Makefile.am, src/callbacks.c,
+	src/capture.c, src/capture.h, src/conversations.c,
+	src/conversations.h, src/diagram.c, src/diagram.h,
+	src/direct_resolve.c, src/dns.c, src/dns.h, src/eth_resolv.h,
+	src/globals.h, src/info_windows.c, src/info_windows.h, src/links.c,
+	src/links.h, src/main.c, src/menus.c, src/menus.h, src/names.c,
+	src/names.h, src/node.c, src/node.h, src/preferences.c,
+	src/preferences.h, src/protocols.c, src/protocols.h, src/resolv.c,
+	src/util.c, src/util.h: Heavy source restructuring.
+
+2005-11-09 20:22  bchiara
+
+	* src/: menus.c, util.c, util.h: added some debug code to
+	get_interfaces_list
+
+2005-11-04 20:42  bchiara
+
+	* src/Makefile.am: force exporting of dynamic function to let
+	libglade always see signals
+
+2005-11-02 20:22  bchiara
+
+	* ChangeLog: aligned
+
 2005-11-01 08:26  bchiara
 
-	* etherape.spec.in: Aligned spec file to newer syntax Thanks to
-	J.French for signaling.
+	* etherape.spec.in: Aligned spec file to newer syntax
 
 2005-08-24 18:07  bchiara
 
@@ -23,6 +74,10 @@
 	* .cvsignore, NEWS, autogen.sh, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po, src/diagram.c: Small
 	correction, updated NEWS
+
+2005-08-17 21:21  bchiara
+
+	* ChangeLog: Changelog
 
 2005-08-17 21:20  bchiara
 
@@ -1356,22 +1411,8 @@
 
 2001-04-20 15:04  toledo
 
-	* doc/C/: Makefile.am, etherape/authors.html, etherape/bugs.html,
-	etherape/docbook.css, etherape/index.html, etherape/license.html,
-	etherape/ln7.html, etherape/prefs.html, etherape/usage.html,
-	etherape/stylesheet-images/caution.gif,
-	etherape/stylesheet-images/home.gif,
-	etherape/stylesheet-images/important.gif,
-	etherape/stylesheet-images/next.gif,
-	etherape/stylesheet-images/note.gif,
-	etherape/stylesheet-images/prev.gif,
-	etherape/stylesheet-images/tip.gif,
-	etherape/stylesheet-images/toc-blank.gif,
-	etherape/stylesheet-images/toc-minus.gif,
-	etherape/stylesheet-images/toc-plus.gif,
-	etherape/stylesheet-images/up.gif,
-	etherape/stylesheet-images/warning.gif: etherape directory needed
-	for people building from CVS
+	* doc/C/Makefile.am: etherape directory needed for people building
+	from CVS
 
 2001-04-20 08:19  toledo
 
@@ -3193,11 +3234,6 @@
 	src/support.c, src/util.c: 
 	Diagram resizes with window
 
-2000-02-25 13:17  toledo
-
-	* src/.deps/: callbacks.P, capture.P, interface.P, main.P,
-	resolv.P, support.P, util.P: [no log message]
-
 2000-02-25 13:09  toledo
 
 	* intl/: ChangeLog, Makefile, Makefile.in, VERSION, bindtextdom.c,
@@ -3227,9 +3263,7 @@
 
 2000-02-24 16:53  toledo
 
-	* src/: Makefile, main.c, .deps/callbacks.P, .deps/capture.P,
-	.deps/interface.P, .deps/main.P, .deps/resolv.P, .deps/support.P,
-	.deps/util.P: [no log message]
+	* src/: Makefile, main.c: [no log message]
 
 2000-02-24 07:52  toledo
 
@@ -3253,8 +3287,8 @@
 
 2000-02-23 17:54  toledo
 
-	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h,
-	src/.deps/resolv.P, src/.deps/util.P: 
+	* acinclude.m4, src/resolv.c, src/resolv.h, src/util.c, src/util.h:
+	
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3265,7 +3299,7 @@
 	configure, configure.in, etherape.glade, intl/Makefile,
 	macros/Makefile, macros/Makefile.in, po/Makefile, po/Makefile.in,
 	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
-	src/capture.c, src/interface.c, src/.deps/capture.P: 
+	src/capture.c, src/interface.c: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3279,7 +3313,7 @@
 
 2000-02-23 12:19  toledo
 
-	* src/: Makefile, capture.c, interface.c, main.c, .deps/capture.P: 
+	* src/: Makefile, capture.c, interface.c, main.c: 
 	
 	First gnome_canvas version
 
@@ -3310,14 +3344,14 @@
 2000-02-21 23:22  toledo
 
 	* README, po/etherape.pot, src/callbacks.h, src/capture.c,
-	src/capture.h, src/main.c, src/.deps/main.P: 
+	src/capture.h, src/main.c: 
 	
 	Node sizes as average traffic in the last 10 seconds
 
 2000-02-21 14:16  toledo
 
 	* src/: Makefile, callbacks.c, callbacks.h, capture.c, capture.h,
-	interface.c, main.c, support.c, .deps/main.P: 
+	interface.c, main.c, support.c: 
 	Added gnome support. Correctly displays ether addresses.
 
 2000-02-21 14:13  toledo
@@ -3361,8 +3395,7 @@
 	configure, configure.in, etherape.glade, src/Makefile,
 	src/Makefile.am, src/Makefile.in, src/callbacks.c, src/callbacks.h,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: 
+	src/support.h: 
 	
 	Added gnome support in order to use the gnome_canvas.
 
@@ -3388,13 +3421,12 @@
 2000-02-18 19:56  toledo
 
 	* src/: Makefile, Makefile.am, Makefile.in, callbacks.h, capture.c,
-	interface.h, main.c, support.h, .deps/capture.P, .deps/main.P: [no
-	log message]
+	interface.h, main.c, support.h: [no log message]
 
 2000-02-18 12:23  toledo
 
-	* Makefile, README, config.h, config.status, src/Makefile,
-	src/.deps/capture.P: [no log message]
+	* Makefile, README, config.h, config.status, src/Makefile: [no log
+	message]
 
 2000-02-18 11:48  toledo
 
@@ -3408,9 +3440,7 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P: [no
-	log message]
+	src/support.h: [no log message]
 
 2000-02-18 11:31  toledo
 
@@ -3420,7 +3450,5 @@
 	etherape.glade, stamp-h, stamp-h.in, src/Makefile, src/Makefile.am,
 	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
-	src/support.h, src/.deps/callbacks.P, src/.deps/capture.P,
-	src/.deps/interface.P, src/.deps/main.P, src/.deps/support.P:
-	Initial revision
+	src/support.h: Initial revision
 
