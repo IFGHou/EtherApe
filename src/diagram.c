@@ -32,6 +32,10 @@
 #include "info_windows.h"
 #include "protocols.h"
 
+/* maximum node and link size */
+#define MAX_NODE_SIZE 5000
+#define MAX_LINK_SIZE (MAX_NODE_SIZE/4)
+
 typedef struct
 {
   node_id_t canvas_node_id;
@@ -783,7 +787,11 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
       node_size = get_node_size (node->average_out);
       g_warning (_("Unknown value or node_size_variable"));
     }
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, _("Size: %g. "), node_size);
 
+  /* limit the maximum size to avoid overload */
+  if (node_size > MAX_NODE_SIZE)
+    node_size = MAX_NODE_SIZE; 
 
   if (protocol)
     {
@@ -1211,6 +1219,10 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 
   modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
   link_size = get_link_size (link->average) / 2;
+
+  /* limit the maximum size to avoid overload */
+  if (link_size > MAX_LINK_SIZE)
+    link_size = MAX_LINK_SIZE; 
 
   points->coords[2] = dx + (versorx / modulus) * link_size;
   points->coords[3] = dy + (versory / modulus) * link_size;
