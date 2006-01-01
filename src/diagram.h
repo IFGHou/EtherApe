@@ -20,14 +20,6 @@
 #include "globals.h"
 
 
-typedef struct
-{
-  link_id_t canvas_link_id;
-  link_t *link;
-  GnomeCanvasItem *link_item;
-  GdkColor color;
-}
-canvas_link_t;
 
 gboolean already_updating;	/* True while an instance of update_diagram is running */
 

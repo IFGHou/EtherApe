@@ -36,6 +36,11 @@
 #define MAX_NODE_SIZE 5000
 #define MAX_LINK_SIZE (MAX_NODE_SIZE/4)
 
+/***************************************************************************
+ *
+ * canvas_node_t definition and methods
+ *
+ **************************************************************************/
 typedef struct
 {
   node_id_t canvas_node_id;
@@ -48,22 +53,49 @@ typedef struct
   gboolean shown;		/* True if it is to be displayed. */
 }
 canvas_node_t;
-static gint canvas_node_compare(const canvas_node_t *a, const canvas_node_t *b);
+static gint canvas_node_compare(const node_id_t *a, const node_id_t *b, 
+                                gpointer dummy);
+static void canvas_node_delete(canvas_node_t *cn);
 
 
+/***************************************************************************
+ *
+ * canvas_link_t definition and methods
+ *
+ **************************************************************************/
+typedef struct
+{
+  link_id_t canvas_link_id;
+  link_t *link;
+  GnomeCanvasItem *link_item;
+  GdkColor color;
+}
+canvas_link_t;
+static gint canvas_link_compare(const link_id_t *a, const link_id_t *b, 
+                                gpointer dummy);
+static void canvas_link_delete(canvas_link_t *canvas_link);
+
+
+#if 0
 struct popup_data
 {
   GtkWidget *node_popup;
   canvas_node_t *canvas_node;
 };
+#endif
+
+/***************************************************************************
+ *
+ * local variables
+ *
+ **************************************************************************/
+
 
 static GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
-static GTree *canvas_links;		/* See above */
-
-
+static GTree *canvas_links;		/* See canvas_nodes */
 
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
@@ -72,13 +104,17 @@ static guint prot_color_index = 0;
 static guint known_protocols[STACK_SIZE + 1];
 static GdkColor black_color;
 
-/* local Function definitions */
+/***************************************************************************
+ *
+ * local Function definitions
+ *
+ **************************************************************************/
 
 static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
 static gint check_new_node (node_t * node, GtkWidget * canvas);
 static gint update_canvas_nodes (node_id_t  * ether_addr,
 				 canvas_node_t * canvas_node,
-				 GtkWidget * canvas);
+				 GList ** delete_list);
 static gboolean display_node (node_t * node);
 static void limit_nodes (void);
 static gint add_ordered_node (node_id_t * node_id,
@@ -94,7 +130,7 @@ static gint check_new_link (link_id_t * link_id,
 			    link_t * link, GtkWidget * canvas);
 static gint update_canvas_links (link_id_t * link_id,
 				 canvas_link_t * canvas_link,
-				 GtkWidget * canvas);
+				 GList ** delete_list);
 static gchar *get_prot_color (gchar * name);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
@@ -120,8 +156,10 @@ init_diagram ()
   GtkWidget *canvas;
 
   /* Creates trees */
-  canvas_nodes = g_tree_new ( (GCompareFunc)canvas_node_compare );
-  canvas_links = g_tree_new ( (GCompareFunc)link_id_compare );
+  canvas_nodes = g_tree_new_full ( (GCompareDataFunc)canvas_node_compare, 
+                            NULL, NULL, (GDestroyNotify)canvas_node_delete);
+  canvas_links = g_tree_new_full( (GCompareDataFunc)canvas_link_compare,
+                            NULL, NULL, (GDestroyNotify)canvas_link_delete);
 
   /* Updates controls from values of variables */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
@@ -262,6 +300,45 @@ destroying_idle (gpointer data)
   is_idle = FALSE;
 }
 
+/* delete the specified canvas node */
+static void 
+canvas_node_delete(canvas_node_t *canvas_node)
+{
+  if (canvas_node->group_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+      g_object_unref (G_OBJECT (canvas_node->group_item));
+      canvas_node->group_item = NULL;
+    }
+  if (canvas_node->node_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
+      g_object_unref (G_OBJECT (canvas_node->node_item));
+      canvas_node->node_item = NULL;
+    }
+  if (canvas_node->text_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
+      g_object_unref (G_OBJECT (canvas_node->text_item));
+      canvas_node->text_item = NULL;
+    }
+
+  g_free (canvas_node);
+}
+
+/* used to remove nodes */
+static void 
+gfunc_remove_canvas_node(gpointer data, gpointer user_data)
+{
+  g_tree_remove (canvas_nodes, (const node_id_t *)data);
+}
+
+/* used to remove links */
+static void 
+gfunc_remove_canvas_link(gpointer data, gpointer user_data)
+{
+  g_tree_remove (canvas_links, (const link_id_t *)data);
+}
 
 /* Refreshes the diagram. Called each refresh_period ms
  * 1. Checks for new protocols and displays them
@@ -272,11 +349,10 @@ guint
 update_diagram (GtkWidget * canvas)
 {
   GString *status_string = NULL;
-  guint n_links = 0, n_links_new = 1;
-  guint n_nodes_before = 0, n_nodes_after = 1;
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
   node_t *new_node = NULL;
+  GList *delete_list = NULL;
 
   if (status == PAUSE)
     return FALSE;
@@ -321,16 +397,18 @@ update_diagram (GtkWidget * canvas)
   while ((new_node = new_nodes_pop()))
     check_new_node (new_node, canvas);
 
-  /* Update nodes look and delete outdated canvas_nodes */
-  do
-    {
-      n_nodes_before = g_tree_nnodes (canvas_nodes);
-      g_tree_foreach(canvas_nodes,
-		       (GTraverseFunc) update_canvas_nodes,
-		       canvas);
-      n_nodes_after = g_tree_nnodes (canvas_nodes);
-    }
-  while (n_nodes_before != n_nodes_after);
+  /* Update nodes look and queue outdated canvas_nodes for deletion */
+  g_tree_foreach(canvas_nodes,
+	       (GTraverseFunc) update_canvas_nodes,
+	       delete_list);
+
+  /* delete all canvas nodes queued */
+  g_list_foreach(delete_list, gfunc_remove_canvas_node, NULL);
+
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
+
+  g_my_debug ("Number of nodes %d", g_tree_nnodes (canvas_nodes));
 
   /* Limit the number of nodes displayed, if a limit has been set */
   /* TODO check whether this is the right function to use, now that we have a more
@@ -338,7 +416,6 @@ update_diagram (GtkWidget * canvas)
   limit_nodes ();
 
   /* Reposition canvas_nodes */
-
   if (need_reposition)
     {
       g_tree_foreach(canvas_nodes,
@@ -354,20 +431,21 @@ update_diagram (GtkWidget * canvas)
   /* Check if there are any new links */
   links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
 
-
   /* Update links look 
    * We also delete timedout links, and when we do that we stop
    * traversing, so we need to go on until we have finished updating */
+  delete_list = NULL;
+  g_tree_foreach(canvas_links,
+                   (GTraverseFunc) update_canvas_links,
+                   delete_list);
 
-  do
-    {
-      n_links = g_tree_nnodes (canvas_links);
-      g_tree_foreach(canvas_links,
-		       (GTraverseFunc) update_canvas_links,
-		       canvas);
-      n_links_new = g_tree_nnodes (canvas_links);
-    }
-  while (n_links != n_links_new);
+  /* delete all canvas links queued */
+  g_list_foreach(delete_list, gfunc_remove_canvas_link, NULL);
+
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
+
+  g_my_debug ("Number of links %d", g_tree_nnodes (canvas_links));
 
   /* Update protocol information */
   protocol_summary_update_all();
@@ -388,7 +466,7 @@ update_diagram (GtkWidget * canvas)
   last_time = now;
 
   status_string = g_string_new (_("Number of nodes: "));
-  g_string_sprintfa (status_string, "%d", n_nodes_after);
+  g_string_sprintfa (status_string, "%d", g_tree_nnodes(canvas_nodes));
 
   g_string_sprintfa (status_string,
 		     _(". Refresh Period: %d"), (int) diff_msecs);
@@ -429,7 +507,6 @@ update_diagram (GtkWidget * canvas)
     }
 
   return TRUE;			/* Keep on calling this function */
-
 }				/* update_diagram */
 
 
@@ -712,7 +789,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 /* - updates sizes, names, etc */
 static gint
 update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
-		     GtkWidget * canvas)
+		     GList **delete_list)
 {
   node_t *node;
   gdouble node_size;
@@ -727,33 +804,11 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
   /* Remove node if node is too old or if capture is stopped */
   if (!node || !display_node (node))
     {
-      if (canvas_node->group_item)
-	{
-	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-	  g_object_unref (G_OBJECT (canvas_node->group_item));
-	  canvas_node->group_item = NULL;
-	}
-      if (canvas_node->node_item)
-	{
-	  gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
-	  g_object_unref (G_OBJECT (canvas_node->node_item));
-	  canvas_node->node_item = NULL;
-	}
-      if (canvas_node->text_item)
-	{
-	  gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-	  g_object_unref (G_OBJECT (canvas_node->text_item));
-	  canvas_node->text_item = NULL;
-	}
-
-      g_tree_remove (canvas_nodes, node_id);
-      g_my_debug ("Removing canvas_node. Number of nodes %d",
-		  g_tree_nnodes (canvas_nodes));
-      g_free (canvas_node);
+      /* adds current to list of canvas nodes to delete */
+      *delete_list = g_list_append( *delete_list, node_id);
+      g_my_debug ("Queing canvas node to remove.");
       need_reposition = TRUE;
-      return TRUE;		/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
+      return FALSE;
     }
 
   if (node->main_prot[pref.stack_level])
@@ -787,7 +842,6 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
       node_size = get_node_size (node->average_out);
       g_warning (_("Unknown value or node_size_variable"));
     }
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, _("Size: %g. "), node_size);
 
   /* limit the maximum size to avoid overload */
   if (node_size > MAX_NODE_SIZE)
@@ -1141,7 +1195,7 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
  * - caculates link size and color fading */
 static gint
 update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
-		     GtkWidget * canvas)
+		     GList **delete_list)
 {
   link_t *link;
   GnomeCanvasPoints *points;
@@ -1158,22 +1212,9 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 
   if (!link)
     {
-      /* Right now I'm not very sure in which cases there could be a canvas_link but not a link_item, but
-       * I had a not in update_canvas_nodes that if the test is not done it can lead to corruption */
-      if (canvas_link->link_item)
-	{
-	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-	  g_object_unref (G_OBJECT (canvas_link->link_item));
-	  canvas_link->link_item = NULL;
-	}
-
-      g_tree_remove (canvas_links, link_id);
-      g_my_debug ("Removing canvas link. Number of links %d",
-		  g_tree_nnodes (canvas_links));
-      g_free (canvas_link);
-      return TRUE;		/* I've checked it's not safe to traverse 
-				 * while deleting, so we return TRUE to stop
-				 * the traversion (Does that word exist? :-) */
+      *delete_list = g_list_append( *delete_list, link_id);
+      g_my_debug ("Queing canvas link to remove.");
+      return FALSE;
     }
 
   diff = substract_times (now, link->last_time);
@@ -1184,7 +1225,6 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
       if (!protocol)
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
-
 
   points = gnome_canvas_points_new (3);
 
@@ -1538,9 +1578,33 @@ traffic_to_str (gdouble traffic, gboolean is_speed)
   return str;
 }				/* traffic_to_str */
 
-static gint canvas_node_compare(const canvas_node_t *a, const canvas_node_t *b)
+static gint canvas_node_compare(const node_id_t *a, const node_id_t *b,
+                                gpointer dummy)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
-  return node_id_compare(&a->canvas_node_id, &b->canvas_node_id);
+  return node_id_compare(a, b);
+}
+
+static gint canvas_link_compare(const link_id_t *a, const link_id_t *b,
+                                gpointer dummy)
+{
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+  return link_id_compare(a, b);
+}
+
+static void 
+canvas_link_delete(canvas_link_t *canvas_link)
+{
+   /* Right now I'm not very sure in which cases there could be a canvas_link but not a link_item, but
+   * I had a not in update_canvas_nodes that if the test is not done it can lead to corruption */
+  if (canvas_link->link_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
+      g_object_unref (G_OBJECT (canvas_link->link_item));
+      canvas_link->link_item = NULL;
+    }
+
+  g_free (canvas_link);
 }
