@@ -400,7 +400,7 @@ update_diagram (GtkWidget * canvas)
   /* Update nodes look and queue outdated canvas_nodes for deletion */
   g_tree_foreach(canvas_nodes,
 	       (GTraverseFunc) update_canvas_nodes,
-	       delete_list);
+	       &delete_list);
 
   /* delete all canvas nodes queued */
   g_list_foreach(delete_list, gfunc_remove_canvas_node, NULL);
@@ -437,7 +437,7 @@ update_diagram (GtkWidget * canvas)
   delete_list = NULL;
   g_tree_foreach(canvas_links,
                    (GTraverseFunc) update_canvas_links,
-                   delete_list);
+                   &delete_list);
 
   /* delete all canvas links queued */
   g_list_foreach(delete_list, gfunc_remove_canvas_link, NULL);
