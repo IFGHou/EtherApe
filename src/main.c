@@ -28,6 +28,7 @@
 #include "diagram.h"
 #include "info_windows.h"
 #include "capture.h"
+#include "datastructs.h"
 
 
 int
@@ -227,6 +228,8 @@ main (int argc, char *argv[])
 
   /* MAIN LOOP */
   gtk_main ();
+
+  protohash_clear();
   return 0;
 }				/* main */
 

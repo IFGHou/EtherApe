@@ -29,22 +29,13 @@
  *
  ***********************************************************************
 */
-static GHashTable *protohash = NULL;
+static GHashTable *protohash = NULL; /* the hash table containing proto,color pairs*/
+static GList *free_color_list = NULL; /* the list of colors without protocol */
+static GList *current_free = NULL; /* current ptr to free color */
 
-static void 
-protohash_item_to_prefvect(gpointer key,
-                           gpointer value,
-                           gpointer user_data)
-{
-   gchar *proto = (gchar *)key;
-   GdkColor *color = (GdkColor *)value;
-   gint *i = (gint *)user_data;
-   g_assert( proto && color && i);
-   
-   pref.colors[*i] = g_strdup_printf ("#%02x%02x%02x%s%s",  
-                color->red >> 8, color->green >> 8, color->blue >> 8, 
-                (*proto) ? ":" :"", proto);
-}
+/* adds or replaces the protoname item */
+static gboolean protohash_set(gchar *protoname, GdkColor protocolor);
+
 
 
 static gboolean 
@@ -69,95 +60,92 @@ protohash_clear(void)
       g_hash_table_destroy(protohash);
       protohash=NULL;
    }
+   
+   while (free_color_list)
+     {
+       g_free(free_color_list->data);
+       free_color_list = g_list_delete_link(free_color_list,free_color_list);
+     }
+  current_free = NULL;
 }
 
 /* adds or replaces the protoname item */
-gboolean 
+static gboolean 
 protohash_set(gchar *protoname, GdkColor protocolor)
 {
    GdkColor *newc=NULL;
    
-   g_assert(protoname); /* proto must be valid - note: empty IS valid, Null no*/
-  
    if (!protohash && ! protohash_init())
       return FALSE;
 
-   /* hash tables operates only on ptr's externally allocated ... */
+   /* hash tables and lists operate only on ptr's externally allocated ... */
    newc = g_malloc(sizeof(GdkColor));
    g_assert(newc);
    g_memmove(newc, &protocolor, sizeof(GdkColor));
-   
-   g_hash_table_insert(protohash, g_strdup(protoname), newc);
-   
+
+   /* If the protocol is missing, the color is added to the cycle list,
+    * otherwise the pair (proto,color) is placed in the hash */
+   if (protoname)
+     g_hash_table_insert(protohash, g_strdup(protoname), newc);
+   else
+     {
+       free_color_list = g_list_prepend(free_color_list, newc);
+       current_free = free_color_list;
+     }
+
    return TRUE;
 }
 
 /* returns the proto color if exists, NULL otherwise */
 GdkColor *
-protohash_get(gchar *protoname)
+protohash_get(const gchar *protoname)
 {
-   g_assert(protoname); /* proto must be valid - note: empty IS valid, Null no*/
- 
-   if (!protohash && ! protohash_init())
-      return NULL;
+  GdkColor *color;
+  g_assert(protoname); /* proto must be valid - note: empty IS valid, NULL no*/
+  g_assert(protohash);
 
-   return (GdkColor *)g_hash_table_lookup(protohash, protoname);
+  color = (GdkColor *)g_hash_table_lookup(protohash, protoname);
+  if (!color)
+    {
+      color = (GdkColor *)current_free->data;
+      current_free = current_free->next;
+      if (!current_free)
+        current_free = free_color_list;
+    }
+  g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x", 
+              protoname, color->red, color->green, color->blue);
+  return color;
 }
 
 /* fills the hash from a pref vector */
 gboolean 
 protohash_read_prefvect(gchar **colors, gint n_colors)
 {
-   int i;
-   
-   protohash_clear();
-   
+  int i;
+  GdkColor gdk_color;
+  
+  protohash_clear();
+
   for (i = 0; i < n_colors; i++)
     {
-      GdkColor gdk_color;
       gchar **colors_protocols = NULL;
-      gchar *protocol = NULL;
 
       colors_protocols = g_strsplit (colors[i], ";", 0);
 
       /* converting color */
       gdk_color_parse (colors_protocols[0], &gdk_color);
 
-      /* converting proto name */
-      if (!colors_protocols[1])
-	protocol = "";
-      else
-	protocol = colors_protocols[1];
+      protohash_set(colors_protocols[1], gdk_color);
 
-      if (!protohash_set(protocol, gdk_color))
-         return FALSE;
+      g_strfreev(colors_protocols);
+
     }
-    
-    return TRUE;
-}
 
-/* fills the pref vector from the hash */
-gboolean 
-protohash_write_prefvect(void)
-{
-  gint i;
-
-  while (pref.colors && pref.n_colors)
+  if (!free_color_list)
     {
-      g_free (pref.colors[pref.n_colors - 1]);
-      pref.n_colors--;
+      /* the list of color available for cycling is empty, so we add a grey */
+      gdk_color_parse ("#7f7f7f", &gdk_color);
+      protohash_set(NULL, gdk_color);
     }
-  g_free (pref.colors);
-  pref.colors = NULL;
-
-   if (!protohash && ! protohash_init())
-      return FALSE;
-   
-  pref.n_colors = g_hash_table_size(protohash);
-  pref.colors = g_malloc (sizeof (gchar *) * pref.n_colors);
-
-  i=0;
-  g_hash_table_foreach(protohash, protohash_item_to_prefvect, &i); 
-
-  return TRUE;   
+    return TRUE;
 }

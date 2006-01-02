@@ -20,6 +20,7 @@
 #include "preferences.h"
 #include "diagram.h"
 #include "capture.h"
+#include "datastructs.h"
 
 static void color_list_to_pref (void);
 
@@ -634,7 +635,6 @@ load_color_list (void)
       gtk_list_store_append (ep.gs, &it);
       gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, protocol, -1);
     }
-
 }
 
 /* Called whenever preferences are applied or OKed. Copied whatever there is
@@ -668,7 +668,7 @@ color_list_to_pref (void)
 
       /* reads the list */
       gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it,
-			  0, &color, 2, &protocol, -1);
+                          0, &color, 2, &protocol, -1);
 
       if (strcmp ("", protocol))
 	pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
@@ -680,4 +680,6 @@ color_list_to_pref (void)
 
       gtk_tree_model_iter_next (GTK_TREE_MODEL (ep.gs), &it);
     }
-}				/* color_clist_to_pref */
+
+  protohash_read_prefvect(pref.colors, pref.n_colors);
+}

@@ -131,7 +131,7 @@ static gint check_new_link (link_id_t * link_id,
 static gint update_canvas_links (link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
-static gchar *get_prot_color (gchar * name);
+static GdkColor get_prot_color (const gchar * protoname);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
 static gint link_item_event (GnomeCanvasItem * item,
@@ -520,7 +520,6 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   GtkWidget *prot_table;
   GtkWidget *label;
   GtkStyle *style;
-  gchar *color_string;
   guint n_rows = 1, n_columns = 1;
   static gboolean first = TRUE;
 
@@ -572,11 +571,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 
-  color_string = get_prot_color (protocol->name);
-  g_my_debug ("Protocol %s in color %s", protocol->name, color_string);
-  if (!gdk_color_parse (color_string, &(protocol->color)))
-    g_warning (_("Unable to parse color string %s for new protocol %s"),
-	       color_string, protocol->name);
+  protocol->color = get_prot_color (protocol->name);
   if (!gdk_colormap_alloc_color
       (gdk_colormap_get_system (), &protocol->color, FALSE, TRUE))
     g_warning (_("Unable to allocate color for new protocol %s"),
@@ -642,70 +637,73 @@ delete_gui_protocols (void)
 /* 
  * For a given protocol, returns the color string that should be used
  */
-static gchar *
-get_prot_color (gchar * name)
+static GdkColor
+get_prot_color (const gchar * protoname)
 {
-  gchar **color_protocol = NULL;
-  static gchar *color = NULL;
-  static gchar *protocol = NULL;
-  gint i = 0;
-
-  /* Default is to assign the next color in cycle as long
-   * as cycling assigned protocols is set.
-   * If it's not, then search for a not assigned color. */
+  GdkColor color;
+  static gchar *color_string = NULL;
 
   if (pref.n_colors<1)
-  {
-     /* no colors defined, forcing grey */
-     color = g_strdup("#7f7f7f");
-     return color;
-  }
-  
-  do
+     color_string = g_strdup("#7f7f7f"); /* no colors defined, forcing grey */
+  else
     {
-      if (color)
-	g_free (color);
-      if (protocol)
+      gchar **color_protocol = NULL;
+      static gchar *protocol_str = NULL;
+      gint i = 0;
+
+      /* Default is to assign the next color in cycle as long
+       * as cycling assigned protocols is set.
+       * If it's not, then search for a not assigned color. */
+
+      do
         {
-          g_free (protocol);
-          protocol=NULL;
+          if (color_string)
+            g_free (color_string);
+          if (protocol_str)
+            {
+              g_free (protocol_str);
+              protocol_str=NULL;
+            }
+          color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
+          color_string = g_strdup (color_protocol[0]);
+          protocol_str = g_strdup (color_protocol[1]);
+          g_strfreev (color_protocol);
+          prot_color_index++;
+          if (prot_color_index >= pref.n_colors)
+            prot_color_index = 0;
+          i++;
         }
-      color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
-      color = g_strdup (color_protocol[0]);
-      protocol = g_strdup (color_protocol[1]);
-      g_strfreev (color_protocol);
-      prot_color_index++;
-      if (prot_color_index >= pref.n_colors)
-	prot_color_index = 0;
-      i++;
-    }
-  while ((!pref.cycle) && protocol && strcmp (protocol, "")
-	 && (i < pref.n_colors));
-
-  if (protocol)
-  {
-    g_free (protocol);
-    protocol=NULL;
-  }
-
-  /* But if we find that a particular protocol has a particular color
-   * assigned, we override the default */
-
-  for (i = 0; i < pref.n_colors; i++)
-    {
-      color_protocol = g_strsplit (pref.colors[i], ";", 0);
-      if (color_protocol[1] && !strcmp (name, color_protocol[1]))
-	{
-	  g_free (color);
-	  color = g_strdup (color_protocol[0]);
-	  if (!prot_color_index)
-	    prot_color_index = pref.n_colors - 1;
-	  else
-	    prot_color_index--;
-	}
-      g_strfreev (color_protocol);
+      while ((!pref.cycle) && protocol_str && strcmp (protocol_str, "")
+             && (i < pref.n_colors));
+    
+      if (protocol_str)
+      {
+        g_free (protocol_str);
+        protocol_str=NULL;
+      }
+    
+      /* But if we find that a particular protocol has a particular color
+       * assigned, we override the default */
+    
+      for (i = 0; i < pref.n_colors; i++)
+        {
+          color_protocol = g_strsplit (pref.colors[i], ";", 0);
+          if (color_protocol[1] && !strcmp (protoname, color_protocol[1]))
+            {
+              g_free (color_string);
+              color_string = g_strdup (color_protocol[0]);
+              if (!prot_color_index)
+                prot_color_index = pref.n_colors - 1;
+              else
+                prot_color_index--;
+              break;
+            }
+          g_strfreev (color_protocol);
+        }
     }
 
+  g_my_debug ("Protocol %s in color %s", protoname, color_string);
+  gdk_color_parse (color_string, &color);
   return color;
 
 }				/* get_prot_color */
@@ -1276,15 +1274,7 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
       canvas_link->color = protocol->color;
 
       if (pref.nofade)
-	{
-	  guint32 color;
-	  color = (((int) (canvas_link->color.red) & 0xFF00) << 16) |
-	    (((int) (canvas_link->color.green) & 0xFF00) << 8) |
-	    ((int) (canvas_link->color.blue) & 0xFF00) | 0xFF;
-	  gnome_canvas_item_set (canvas_link->link_item,
-				 "points", points,
-				 "fill_color_rgba", color, NULL);
-	}
+        scale = 1.0;
       else
 	{
 	  /* scale color down to 10% at link timeout */
@@ -1292,21 +1282,22 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 	    pow (0.10,
 		 (diff.tv_sec * 1000.0 +
 		  diff.tv_usec / 1000) / pref.link_timeout_time);
-	  scaledColor =
-	    (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
-	    (((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
-	    ((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
-	  gnome_canvas_item_set (canvas_link->link_item, "points", points,
-				 "fill_color_rgba", scaledColor, NULL);
 	}
-    }
 
+      scaledColor =
+        (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
+        (((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
+        ((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+    }
   else
     {
       guint32 black = 0x000000ff;
-      gnome_canvas_item_set (canvas_link->link_item, "points", points,
-			     "fill_color_rgba", black, NULL);
+      scaledColor = black;
     }
+
+  gnome_canvas_item_set (canvas_link->link_item, 
+                          "points", points,
+                          "fill_color_rgba", scaledColor, NULL);
 
   /* If we got this far, the link can be shown. Make sure it is */
   gnome_canvas_item_show (canvas_link->link_item);
