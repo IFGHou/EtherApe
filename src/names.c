@@ -430,7 +430,7 @@ get_ip_name (name_add_t *nt)
   else
     fill_node_id(&nt->node_id, IP, nt, 12, 0);
 
-  if (pref.numeric)
+  if (!pref.name_res)
     add_name (ip_to_str (nt->node_id.addr.ip4), ip_to_str (nt->node_id.addr.ip4), FALSE, &nt->node_id, nt);
   else
     {
@@ -692,7 +692,7 @@ add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved,
       protocol->node_names = g_list_prepend (protocol->node_names, name);
     }
 
-  if (pref.numeric)
+  if (!pref.name_res)
     node_name_assign(name, numeric_name, numeric_name, FALSE, nt->packet_size);
   else
     node_name_assign(name, resolved_name, numeric_name, solved, nt->packet_size);

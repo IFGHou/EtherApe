@@ -312,9 +312,7 @@ on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
 void
 on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-
   pref.nofade = !gtk_toggle_button_get_active (togglebutton);
-
 }				/* on_fade_toggle_toggled */
 
 void
@@ -325,47 +323,11 @@ on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 }				/* on_cycle_toggle_toggled */
 
 
-/*
- * Names dialog related functions
- */
-
-
-gboolean
-on_name_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
-{
-  return TRUE;
-}				/* on_name_clist_select_row */
-
-void
-on_dns_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-}				/* on_dns_toggle_toggled */
-
 void
 on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
+  pref.name_res = gtk_toggle_button_get_active (togglebutton);
 }				/* on_numeric_toggle_toggled */
-
-
-void
-on_protocol_add_button_clicked (GtkButton * button, gpointer user_data)
-{
-}				/* on_protocol_add_button_clicked */
-
-void
-on_protocol_remove_button_clicked (GtkButton * button, gpointer user_data)
-{
-}				/* on_protocol_remove_button_clicked */
-
-void
-on_protocol_move_up_clicked (GtkButton * button, gpointer user_data)
-{
-}				/* on_protocol_move_up_clicked */
-
-void
-on_protocol_move_down_clicked (GtkButton * button, gpointer user_data)
-{
-}				/* on_protocol_move_down_clicked */
 
 /* ----------------------------------------------------------
 

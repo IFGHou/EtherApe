@@ -28,12 +28,14 @@
 #include <pcap.h>
 #include <glade/glade.h>
 #include <string.h>
+#include <arpa/nameser.h>
 #include "links.h"
 
 #define ETHERAPE_GLADE_FILE "etherape.glade2"	// glade 2 file
 
+#ifndef MAXDNAME
 #define MAXDNAME        1025	/* maximum domain name length */
-
+#endif
 
 
 /* Enumerations */
@@ -138,7 +140,7 @@ struct
 /* General settings */
 
   gchar *input_file;		/* Capture file to read from */
-  gboolean numeric;		/* Whether dns lookups are performed */
+  gboolean name_res;		/* Whether dns lookups are performed */
   apemode_t mode;		/* Mode of operation. Can be
 				 * ETHERNET, IP, UDP or TCP */
 
@@ -190,8 +192,6 @@ struct
 
 }
 pref;
-
-gboolean dns;			/* Negation of numeric. Is used by dns.c */
 
 
 /* Global functions declarations */

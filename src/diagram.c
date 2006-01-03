@@ -192,6 +192,10 @@ init_diagram ()
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
   widget = glade_xml_get_widget (xml, "cycle_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
+  widget = glade_xml_get_widget (xml, "aa_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.antialias);
+  widget = glade_xml_get_widget (xml, "name_res_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
@@ -562,7 +566,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 
 
   gtk_widget_show (label);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_CENTER);
+  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
   gtk_table_attach (GTK_TABLE (prot_table), label,
 		    0, 1, n_rows - 1, n_rows,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),

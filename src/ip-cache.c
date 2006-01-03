@@ -45,17 +45,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <ip-cache.h>
+#include "globals.h"
+#include "ip-cache.h"
 
 #ifdef NO_STRERROR
 extern int sys_nerr;
 extern char *sys_errlist[];
 #define strerror(errno) (((errno) >= 0 && (errno) < sys_nerr) ? sys_errlist[errno] : "unlisted error")
 #endif
-
-/* Defined in main.c - non zero if you want to globally activate DNS resolving, zero to disable*/
-extern int dns;
-
 
 /* Defines */
 
@@ -616,7 +613,7 @@ ipcache_getnameip(uint32_t ip, int fqdn, int *is_expired)
   struct ipcache_item *rp;
   uint32_t iptofind = ip;
 
-  if (!dns)
+  if (!pref.name_res)
     return strlongip (ip); /* name resolution globally disabled */
 
   /*iptofind = htonl (ip);*/

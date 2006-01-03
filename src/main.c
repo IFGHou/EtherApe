@@ -38,6 +38,7 @@ main (int argc, char *argv[])
   GtkWidget *widget;
   GnomeClient *client;
   gchar *cl_filter = NULL, *cl_interface = NULL, *cl_input_file = NULL;
+  gboolean cl_numeric = FALSE;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
@@ -49,7 +50,7 @@ main (int argc, char *argv[])
      N_("set capture filter"), N_("<capture filter>")},
     {"infile", 'r', POPT_ARG_STRING, &cl_input_file, 0,
      N_("set input file"), N_("<file name>")},
-    {"numeric", 'n', POPT_ARG_NONE, &(pref.numeric), 0,
+    {"numeric", 'n', POPT_ARG_NONE, &cl_numeric, 0,
      N_("don't convert addresses to names"), NULL},
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
@@ -91,9 +92,8 @@ main (int argc, char *argv[])
    * Third, whatever given in the command line */
 
   /* Absolute defaults */
-  pref.numeric = 0;
+  pref.name_res = TRUE;
   pref.mode = IP;
-  dns = 1;
   pref.filter = NULL;
   status = STOP;
   pref.refresh_period = 800;	/* ms */
@@ -105,13 +105,13 @@ main (int argc, char *argv[])
   pref.text_color = g_strdup ("yellow");
   pref.node_limit = -1;
 
-
   set_debug_level ();
 
   /* Config file */
   load_config ("/Etherape/");
 
   /* Command line */
+  cl_numeric = !pref.name_res;
   poptcon =
     poptGetContext ("Etherape", argc, (const char **) argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
@@ -136,10 +136,8 @@ main (int argc, char *argv[])
 	g_free (pref.input_file);
       pref.input_file = g_strdup (cl_input_file);
     }
+  pref.name_res = !cl_numeric;
 
-
-  /* dns is used in dns.c as opposite of numeric */
-  dns = !pref.numeric;
 
   /* Find mode of operation */
   if (mode_string)
@@ -177,7 +175,6 @@ main (int argc, char *argv[])
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
-
 
   /* Session handling */
   client = gnome_master_client ();
@@ -257,6 +254,8 @@ load_config (char *prefix)
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
   pref.antialias =
     gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
+  pref.name_res =
+    gnome_config_get_bool_with_default ("Diagram/name_res=FALSE", &u);
   pref.node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=3600000.0", &u);
@@ -379,6 +378,7 @@ save_config (char *prefix)
   gnome_config_set_bool ("Diagram/nofade", pref.nofade);
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
   gnome_config_set_bool ("Diagram/antialias", pref.antialias);
+  gnome_config_set_bool ("Diagram/name_res", pref.name_res);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",

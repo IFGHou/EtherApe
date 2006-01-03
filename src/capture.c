@@ -182,7 +182,7 @@ init_capture (void)
       nodes_catalog_open();
       links_catalog_open();
 
-      if (!pref.numeric)
+      if (pref.name_res)
 	{
 	  dns_open ();
           if (dns_hasfd())

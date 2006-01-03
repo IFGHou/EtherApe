@@ -1,3 +1,9 @@
+2006-01-03 11:01  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/datastructs.c,
+	src/datastructs.h, src/diagram.c, src/main.c: proto color hashing
+	for better performance
+
 2006-01-02 20:44  bchiara
 
 	* ChangeLog, src/datastructs.c, src/datastructs.h, src/diagram.c,
