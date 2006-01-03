@@ -31,6 +31,7 @@
 #include "node.h"
 #include "info_windows.h"
 #include "protocols.h"
+#include "datastructs.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000
@@ -131,7 +132,6 @@ static gint check_new_link (link_id_t * link_id,
 static gint update_canvas_links (link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
-static GdkColor get_prot_color (const gchar * protoname);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
 static gint link_item_event (GnomeCanvasItem * item,
@@ -571,7 +571,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 
-  protocol->color = get_prot_color (protocol->name);
+  /*protocol->color = get_prot_color (protocol->name);*/
+  protocol->color = protohash_get(protocol->name);
   if (!gdk_colormap_alloc_color
       (gdk_colormap_get_system (), &protocol->color, FALSE, TRUE))
     g_warning (_("Unable to allocate color for new protocol %s"),
@@ -633,81 +634,6 @@ delete_gui_protocols (void)
   gtk_table_resize (GTK_TABLE (prot_table), 1, n_columns );
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 }				/* delete_gui_protocols */
-
-/* 
- * For a given protocol, returns the color string that should be used
- */
-static GdkColor
-get_prot_color (const gchar * protoname)
-{
-  GdkColor color;
-  static gchar *color_string = NULL;
-
-  if (pref.n_colors<1)
-     color_string = g_strdup("#7f7f7f"); /* no colors defined, forcing grey */
-  else
-    {
-      gchar **color_protocol = NULL;
-      static gchar *protocol_str = NULL;
-      gint i = 0;
-
-      /* Default is to assign the next color in cycle as long
-       * as cycling assigned protocols is set.
-       * If it's not, then search for a not assigned color. */
-
-      do
-        {
-          if (color_string)
-            g_free (color_string);
-          if (protocol_str)
-            {
-              g_free (protocol_str);
-              protocol_str=NULL;
-            }
-          color_protocol = g_strsplit (pref.colors[prot_color_index], ";", 0);
-          color_string = g_strdup (color_protocol[0]);
-          protocol_str = g_strdup (color_protocol[1]);
-          g_strfreev (color_protocol);
-          prot_color_index++;
-          if (prot_color_index >= pref.n_colors)
-            prot_color_index = 0;
-          i++;
-        }
-      while ((!pref.cycle) && protocol_str && strcmp (protocol_str, "")
-             && (i < pref.n_colors));
-    
-      if (protocol_str)
-      {
-        g_free (protocol_str);
-        protocol_str=NULL;
-      }
-    
-      /* But if we find that a particular protocol has a particular color
-       * assigned, we override the default */
-    
-      for (i = 0; i < pref.n_colors; i++)
-        {
-          color_protocol = g_strsplit (pref.colors[i], ";", 0);
-          if (color_protocol[1] && !strcmp (protoname, color_protocol[1]))
-            {
-              g_free (color_string);
-              color_string = g_strdup (color_protocol[0]);
-              if (!prot_color_index)
-                prot_color_index = pref.n_colors - 1;
-              else
-                prot_color_index--;
-              break;
-            }
-          g_strfreev (color_protocol);
-        }
-    }
-
-  g_my_debug ("Protocol %s in color %s", protoname, color_string);
-  gdk_color_parse (color_string, &color);
-  return color;
-
-}				/* get_prot_color */
-
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */

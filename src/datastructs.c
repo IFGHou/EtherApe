@@ -30,8 +30,8 @@
  ***********************************************************************
 */
 static GHashTable *protohash = NULL; /* the hash table containing proto,color pairs*/
-static GList *free_color_list = NULL; /* the list of colors without protocol */
-static GList *current_free = NULL; /* current ptr to free color */
+static GList *cycle_color_list = NULL; /* the list of colors without protocol */
+static GList *current_cycle = NULL; /* current ptr to free color */
 
 /* adds or replaces the protoname item */
 static gboolean protohash_set(gchar *protoname, GdkColor protocolor);
@@ -61,43 +61,42 @@ protohash_clear(void)
       protohash=NULL;
    }
    
-   while (free_color_list)
+   while (cycle_color_list)
      {
-       g_free(free_color_list->data);
-       free_color_list = g_list_delete_link(free_color_list,free_color_list);
+       g_free(cycle_color_list->data);
+       cycle_color_list = g_list_delete_link(cycle_color_list,cycle_color_list);
      }
-  current_free = NULL;
+  current_cycle = NULL;
 }
 
 /* adds or replaces the protoname item */
 static gboolean 
 protohash_set(gchar *protoname, GdkColor protocolor)
 {
-   GdkColor *newc=NULL;
-   
    if (!protohash && ! protohash_init())
       return FALSE;
 
-   /* hash tables and lists operate only on ptr's externally allocated ... */
-   newc = g_malloc(sizeof(GdkColor));
-   g_assert(newc);
-   g_memmove(newc, &protocolor, sizeof(GdkColor));
+   /* N.B. hash tables and lists operate only on ptr's externally allocated ... */
 
-   /* If the protocol is missing, the color is added to the cycle list,
-    * otherwise the pair (proto,color) is placed in the hash */
+   /* if a protocol is specified, we put the pair (proto,color) in the hash */
    if (protoname)
-     g_hash_table_insert(protohash, g_strdup(protoname), newc);
-   else
+     g_hash_table_insert(protohash, g_strdup(protoname), 
+                         g_memdup(&protocolor, sizeof(GdkColor)));
+
+   /* Without protocol, or if we want also registered colors in the cycle
+    * list, we add the color to the cycle list */
+   if (!protoname || pref.cycle)
      {
-       free_color_list = g_list_prepend(free_color_list, newc);
-       current_free = free_color_list;
+       cycle_color_list = g_list_prepend(cycle_color_list, 
+                                   g_memdup(&protocolor, sizeof(GdkColor)));
+       current_cycle = cycle_color_list;
      }
 
    return TRUE;
 }
 
 /* returns the proto color if exists, NULL otherwise */
-GdkColor *
+GdkColor
 protohash_get(const gchar *protoname)
 {
   GdkColor *color;
@@ -107,14 +106,14 @@ protohash_get(const gchar *protoname)
   color = (GdkColor *)g_hash_table_lookup(protohash, protoname);
   if (!color)
     {
-      color = (GdkColor *)current_free->data;
-      current_free = current_free->next;
-      if (!current_free)
-        current_free = free_color_list;
+      color = (GdkColor *)current_cycle->data;
+      current_cycle = current_cycle->next;
+      if (!current_cycle)
+        current_cycle = cycle_color_list;
     }
   g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x", 
               protoname, color->red, color->green, color->blue);
-  return color;
+  return *color;
 }
 
 /* fills the hash from a pref vector */
@@ -126,11 +125,12 @@ protohash_read_prefvect(gchar **colors, gint n_colors)
   
   protohash_clear();
 
-  for (i = 0; i < n_colors; i++)
+  /* fills with colors */
+  for (i = n_colors; i >0; --i)
     {
       gchar **colors_protocols = NULL;
 
-      colors_protocols = g_strsplit (colors[i], ";", 0);
+      colors_protocols = g_strsplit (colors[i-1], ";", 0);
 
       /* converting color */
       gdk_color_parse (colors_protocols[0], &gdk_color);
@@ -141,7 +141,7 @@ protohash_read_prefvect(gchar **colors, gint n_colors)
 
     }
 
-  if (!free_color_list)
+  if (!cycle_color_list)
     {
       /* the list of color available for cycling is empty, so we add a grey */
       gdk_color_parse ("#7f7f7f", &gdk_color);

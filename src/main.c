@@ -315,9 +315,10 @@ load_config (char *prefix)
      pref.colors[0] = g_strdup("#7f7f7f");
   }
 
-  
   g_free (config_file_version);
   gnome_config_pop_prefix ();
+
+  protohash_read_prefvect(pref.colors, pref.n_colors);
 }				/* load_config */
 
 static gint

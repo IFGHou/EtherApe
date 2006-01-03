@@ -17,6 +17,12 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="icon">etherape.png</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="enable_layout_config">True</property>
   <signal name="delete_event" handler="cleanup"/>
 
@@ -381,64 +387,110 @@
 	      <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
 	      <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
 	      <property name="tooltips">True</property>
+	      <property name="show_arrow">True</property>
 
 	      <child>
-		<widget class="button" id="start_button">
+		<widget class="GtkToolButton" id="start_button">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Start capture</property>
 		  <property name="label" translatable="yes">Start</property>
 		  <property name="use_underline">True</property>
 		  <property name="icon">play.xpm</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		  <property name="is_important">False</property>
 		  <signal name="clicked" handler="on_start_menuitem_activate"/>
 		</widget>
+		<packing>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">True</property>
+		</packing>
 	      </child>
 
 	      <child>
-		<widget class="button" id="pause_button">
+		<widget class="GtkToolButton" id="pause_button">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Pause capture</property>
 		  <property name="label" translatable="yes">Pause</property>
 		  <property name="use_underline">True</property>
 		  <property name="icon">pause.xpm</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		  <property name="is_important">False</property>
 		  <signal name="clicked" handler="on_pause_menuitem_activate"/>
 		</widget>
+		<packing>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">True</property>
+		</packing>
 	      </child>
 
 	      <child>
-		<widget class="button" id="stop_button">
+		<widget class="GtkToolButton" id="stop_button">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Stop capture</property>
 		  <property name="label" translatable="yes">Stop</property>
 		  <property name="use_underline">True</property>
 		  <property name="icon">stop.xpm</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		  <property name="is_important">False</property>
 		  <signal name="clicked" handler="on_stop_menuitem_activate"/>
 		</widget>
-	      </child>
-
-	      <child>
-		<widget class="button" id="preferences_toolbar_button">
-		  <property name="visible">True</property>
-		  <property name="tooltip" translatable="yes">Preferences (Ctrl-P)</property>
-		  <property name="label" translatable="yes">Pref.</property>
-		  <property name="use_underline">True</property>
-		  <property name="stock_pixmap">gtk-preferences</property>
-		  <signal name="clicked" handler="on_preferences1_activate"/>
-		  <accelerator key="P" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
-		</widget>
 		<packing>
-		  <property name="new_group">True</property>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">True</property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="button" id="protocols_toolbar_button">
+		<widget class="GtkSeparatorToolItem" id="separatortoolitem1">
+		  <property name="visible">True</property>
+		  <property name="draw">True</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		</widget>
+		<packing>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkToolButton" id="preferences_toolbar_button">
+		  <property name="visible">True</property>
+		  <property name="tooltip" translatable="yes">Preferences (Ctrl-P)</property>
+		  <property name="label" translatable="yes">Pref.</property>
+		  <property name="use_underline">True</property>
+		  <property name="stock_id">gtk-preferences</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		  <property name="is_important">False</property>
+		  <signal name="clicked" handler="on_preferences1_activate"/>
+		  <accelerator key="P" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
+		</widget>
+		<packing>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkToolButton" id="protocols_toolbar_button">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Display the protocols window</property>
 		  <property name="label" translatable="yes">Prot.</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_pixmap">gtk-index</property>
+		  <property name="stock_id">gtk-index</property>
+		  <property name="visible_horizontal">True</property>
+		  <property name="visible_vertical">True</property>
+		  <property name="is_important">False</property>
 		  <signal name="clicked" handler="toggle_protocols_window"/>
 		</widget>
+		<packing>
+		  <property name="expand">False</property>
+		  <property name="homogeneous">True</property>
+		</packing>
 	      </child>
 	    </widget>
 	  </child>
@@ -516,6 +568,10 @@
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="type">label_item</property>
@@ -587,7 +643,14 @@
 </widget>
 
 <widget class="GnomeAbout" id="about2">
+  <property name="border_width">5</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="logo">etherape.png</property>
   <property name="copyright" translatable="yes">Copyright 2001 Juan Toledo</property>
   <property name="comments" translatable="yes">A Graphical Network Browser.
@@ -622,6 +685,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="button_press_event" handler="gtk_widget_destroy"/>
   <signal name="motion_notify_event" handler="gtk_widget_destroy"/>
   <signal name="leave_notify_event" handler="gtk_widget_destroy"/>
@@ -656,6 +725,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	      <signal name="motion_notify_event" handler="on_name_motion_notify_event"/>
 	    </widget>
 	    <packing>
@@ -680,6 +753,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
@@ -703,6 +780,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
@@ -726,6 +807,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="auto_close">True</property>
   <property name="hide_on_close">False</property>
 
@@ -748,6 +835,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	    </widget>
 	  </child>
 	</widget>
@@ -774,6 +862,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -795,6 +889,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label" translatable="yes">Save</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_save_pref_button_clicked"/>
 	    </widget>
@@ -808,6 +903,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_ok_pref_button_clicked"/>
 	    </widget>
@@ -821,6 +917,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-apply</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_apply_pref_button_clicked"/>
 	    </widget>
@@ -834,6 +931,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_cancel_pref_button_clicked"/>
 	    </widget>
@@ -886,6 +984,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -902,6 +1004,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label">gtk-select-font</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <signal name="clicked" handler="on_font_button_clicked"/>
 		    </widget>
 		    <packing>
@@ -940,6 +1043,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1037,6 +1144,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1142,6 +1253,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">2</property>
@@ -1199,6 +1314,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1218,7 +1337,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="update_policy">GTK_UPDATE_IF_VALID</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">10000 0 3.6e+07 100 1000 10000</property>
+		      <property name="adjustment">10000 0 36000000 100 1000 10000</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1246,7 +1365,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <child>
 		    <widget class="GtkLabel" id="label9">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Max. Link Width</property>
+		      <property name="label" translatable="yes">Link Width Multiplier</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1256,6 +1375,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">2</property>
@@ -1301,7 +1424,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <child>
 		    <widget class="GtkLabel" id="label8">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Max. Node Radius</property>
+		      <property name="label" translatable="yes">Node Radius Multiplier</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1311,6 +1434,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">2</property>
@@ -1366,6 +1493,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1442,6 +1573,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Hide node names</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -1461,6 +1593,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Group unknown ports</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -1500,6 +1633,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Node _Anti Aliasing</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">True</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -1541,6 +1675,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="type">tab</property>
@@ -1575,6 +1713,9 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="rules_hint">False</property>
 			  <property name="reorderable">False</property>
 			  <property name="enable_search">True</property>
+			  <property name="fixed_height_mode">False</property>
+			  <property name="hover_selection">False</property>
+			  <property name="hover_expand">False</property>
 			</widget>
 		      </child>
 		    </widget>
@@ -1599,6 +1740,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Add color</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_color_add_button_clicked"/>
 			</widget>
 			<packing>
@@ -1615,6 +1757,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Remove color</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_color_remove_button_clicked"/>
 			</widget>
 			<packing>
@@ -1631,6 +1774,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Edit protocol</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_edit_button_clicked"/>
 			</widget>
 			<packing>
@@ -1673,6 +1817,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Fade colors</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -1693,6 +1838,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Cycle assigned colors</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -1731,6 +1877,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="type">tab</property>
@@ -1762,6 +1912,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">10</property>
@@ -1858,6 +2012,9 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="rules_hint">False</property>
 			  <property name="reorderable">False</property>
 			  <property name="enable_search">True</property>
+			  <property name="fixed_height_mode">False</property>
+			  <property name="hover_selection">False</property>
+			  <property name="hover_expand">False</property>
 			  <signal name="select_cursor_row" handler="on_name_clist_select_row" last_modification_time="Fri, 21 Feb 2003 21:56:30 GMT"/>
 			</widget>
 		      </child>
@@ -1883,6 +2040,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Add protocol</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_add_button_clicked"/>
 			</widget>
 			<packing>
@@ -1900,6 +2058,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Remove protocol</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_remove_button_clicked"/>
 			</widget>
 			<packing>
@@ -1917,6 +2076,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Toggle solved</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_edit_button_clicked"/>
 			</widget>
 			<packing>
@@ -1934,6 +2094,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Move up</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_move_up_clicked"/>
 			</widget>
 			<packing>
@@ -1951,6 +2112,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="label" translatable="yes">Move down</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <signal name="clicked" handler="on_protocol_move_down_clicked"/>
 			</widget>
 			<packing>
@@ -1989,6 +2151,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">Force numeric</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2009,6 +2172,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="label" translatable="yes">DNS resolution</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2047,6 +2211,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="type">tab</property>
@@ -2084,7 +2252,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 			  <property name="max_length">0</property>
 			  <property name="text" translatable="yes"></property>
 			  <property name="has_frame">True</property>
-			  <property name="invisible_char" translatable="yes">*</property>
+			  <property name="invisible_char">*</property>
 			  <property name="activates_default">False</property>
 			</widget>
 		      </child>
@@ -2109,6 +2277,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2144,7 +2316,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="update_policy">GTK_UPDATE_IF_VALID</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">10000 1 3.6e+07 100 1000 10000</property>
+		      <property name="adjustment">10000 1 36000000 100 1000 10000</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2166,6 +2338,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2201,7 +2377,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="update_policy">GTK_UPDATE_IF_VALID</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">2000 0 3.6e+07 100 1000 10000</property>
+		      <property name="adjustment">2000 0 36000000 100 1000 10000</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2223,6 +2399,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2258,7 +2438,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="update_policy">GTK_UPDATE_IF_VALID</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">10000 0 3.6e+07 100 1000 10000</property>
+		      <property name="adjustment">10000 0 36000000 100 1000 10000</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2280,6 +2460,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2316,6 +2500,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="type">tab</property>
@@ -2340,6 +2528,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="gtk_widget_hide"/>
 
   <child internal-child="cancel_button">
@@ -2350,6 +2544,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="label">gtk-cancel</property>
       <property name="use_stock">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
       <signal name="clicked" handler="on_cancel_button1_clicked"/>
     </widget>
   </child>
@@ -2362,6 +2557,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="label">gtk-apply</property>
       <property name="use_stock">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
       <signal name="clicked" handler="on_apply_button1_clicked"/>
     </widget>
   </child>
@@ -2374,6 +2570,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="label">gtk-ok</property>
       <property name="use_stock">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
       <signal name="clicked" handler="on_ok_button1_clicked"/>
     </widget>
   </child>
@@ -2399,6 +2596,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -2419,6 +2622,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_file_ok_button_clicked"/>
 	    </widget>
@@ -2431,6 +2635,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_file_cancel_button_clicked"/>
 	    </widget>
@@ -2463,6 +2668,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2490,6 +2699,8 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="browse_dialog_title" translatable="yes">EtherApe: Select Capture File</property>
 		  <property name="directory_entry">False</property>
 		  <property name="modal">True</property>
+		  <property name="use_filechooser">False</property>
+		  <property name="filechooser_action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
 
 		  <child internal-child="entry">
 		    <widget class="GtkEntry" id="file_combo_entry">
@@ -2501,7 +2712,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="max_length">0</property>
 		      <property name="text" translatable="yes"></property>
 		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
 		    </widget>
 		  </child>
@@ -2532,7 +2743,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="max_length">0</property>
 		      <property name="text" translatable="yes"></property>
 		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
 		    </widget>
 		  </child>
@@ -2559,6 +2770,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">0</property>
@@ -2583,6 +2798,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">0</property>
@@ -2618,6 +2837,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_node_info_delete_event"/>
 
   <child>
@@ -2653,6 +2878,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -2674,6 +2903,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -2718,6 +2951,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -2739,6 +2976,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -2775,6 +3016,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="label" translatable="yes">Show traffic</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
 		  <property name="active">False</property>
 		  <property name="inconsistent">False</property>
 		  <property name="draw_indicator">True</property>
@@ -2792,6 +3034,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="label" translatable="yes">Show protocols</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
 		  <property name="active">False</property>
 		  <property name="inconsistent">False</property>
 		  <property name="draw_indicator">True</property>
@@ -2848,6 +3091,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2869,6 +3116,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2906,6 +3157,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2927,6 +3182,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2964,6 +3223,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -2985,6 +3248,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3022,6 +3289,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3043,6 +3314,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3080,6 +3355,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3101,6 +3380,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3138,6 +3421,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3159,6 +3446,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3202,6 +3493,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="default_height">300</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_delete_protocol_window" last_modification_time="Tue, 25 Feb 2003 21:12:18 GMT"/>
 
   <child>
@@ -3319,6 +3616,9 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="rules_hint">False</property>
 	      <property name="reorderable">False</property>
 	      <property name="enable_search">False</property>
+	      <property name="fixed_height_mode">False</property>
+	      <property name="hover_selection">False</property>
+	      <property name="hover_expand">False</property>
 	      <signal name="select_cursor_row" handler="on_prot_list_select_row" last_modification_time="Sun, 23 Feb 2003 09:05:51 GMT"/>
 	      <signal name="row_activated" handler="on_prot_list_select_row" last_modification_time="Sun, 23 Feb 2003 09:05:47 GMT"/>
 	    </widget>
@@ -3336,6 +3636,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_prot_info_delete_event"/>
 
   <child>
@@ -3364,6 +3670,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	  </child>
 	</widget>
@@ -3400,6 +3710,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -3421,6 +3735,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -3474,6 +3792,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3495,6 +3817,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3532,6 +3858,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3553,6 +3883,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -3591,6 +3925,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="gtk_widget_hide"/>
 
   <child internal-child="cancel_button">
@@ -3599,6 +3939,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
       <signal name="clicked" handler="gtk_widget_hide" object="colorselectiondialog"/>
     </widget>
   </child>
@@ -3609,6 +3950,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
       <signal name="clicked" handler="on_colordiag_ok_clicked"/>
     </widget>
   </child>
@@ -3618,6 +3960,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
     </widget>
   </child>
 
@@ -3637,6 +3980,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
   <signal name="show" handler="on_protocol_edit_dialog_show" last_modification_time="Mon, 17 Feb 2003 20:07:27 GMT"/>
 
@@ -3660,6 +4009,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	      <signal name="clicked" handler="on_protocol_edit_ok_clicked"/>
 	    </widget>
@@ -3672,6 +4022,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-apply</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_protocol_edit_ok_clicked"/>
 	    </widget>
@@ -3685,6 +4036,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="gtk_widget_hide" object="protocol_edit_dialog"/>
 	    </widget>
@@ -3717,6 +4069,10 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">5</property>
@@ -3741,7 +4097,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 		  <property name="max_length">0</property>
 		  <property name="text" translatable="yes"></property>
 		  <property name="has_frame">True</property>
-		  <property name="invisible_char" translatable="yes">*</property>
+		  <property name="invisible_char">*</property>
 		  <property name="activates_default">False</property>
 		</widget>
 	      </child>

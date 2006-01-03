@@ -1,3 +1,9 @@
+2006-01-02 20:44  bchiara
+
+	* ChangeLog, src/datastructs.c, src/datastructs.h, src/diagram.c,
+	src/main.c, src/preferences.c: preparing to hash proto-color
+	pairings
+
 2006-01-01 19:29  bchiara
 
 	* ChangeLog, src/diagram.c: correcting a silly mistake

@@ -28,7 +28,7 @@
 void  protohash_clear(void);
 
 /* returns the proto color if exists, NULL otherwise */
-GdkColor * protohash_get(const gchar *protoname);
+GdkColor protohash_get(const gchar *protoname);
 
 /* fills the hash from a pref vector */
 gboolean protohash_read_prefvect(gchar **colors, gint n_colors);
