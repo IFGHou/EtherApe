@@ -23,9 +23,258 @@
 #include "datastructs.h"
 
 static void color_list_to_pref (void);
+static void load_color_list (void);
+static gboolean get_version_levels (const gchar * version_string,
+				    guint * major, guint * minor,
+				    guint * patch);
+static gint version_compare (const gchar * a, const gchar * b);
 
 
-gboolean colors_changed = FALSE;
+static gboolean colors_changed = FALSE;
+static GtkWidget *diag_pref = NULL;		/* Pointer to the diagram configuration window */
+
+
+/* loads configuration from .gnome/Etherape */
+void
+load_config (const char *prefix)
+{
+  gboolean u;
+  gchar *config_file_version;
+
+  gnome_config_push_prefix (prefix);
+
+  config_file_version =
+    gnome_config_get_string_with_default ("General/version=0.5.4", &u);
+  pref.diagram_only =
+    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
+  pref.group_unk =
+    gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
+  pref.stationary
+    = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
+  pref.nofade =
+    gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
+  pref.antialias =
+    gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
+  pref.name_res =
+    gnome_config_get_bool_with_default ("Diagram/name_res=FALSE", &u);
+  pref.node_timeout_time =
+    gnome_config_get_float_with_default
+    ("Diagram/node_timeout_time=3600000.0", &u);
+  pref.gui_node_timeout_time =
+    gnome_config_get_float_with_default
+    ("Diagram/gui_node_timeout_time=60000.0", &u);
+  if (pref.nofade)
+    pref.link_timeout_time =
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=5000.0", &u);
+  else
+    pref.link_timeout_time =
+      gnome_config_get_float_with_default
+      ("Diagram/link_timeout_time=20000.0", &u);
+  pref.averaging_time =
+    gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
+  pref.node_radius_multiplier =
+    gnome_config_get_float_with_default
+    ("Diagram/node_radius_multiplier=0.0005", &u);
+  if (u)
+    pref.node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
+  pref.link_width_multiplier =
+    gnome_config_get_float_with_default
+    ("Diagram/link_width_multiplier=0.0005", &u);
+  if (u)
+    pref.link_width_multiplier = 0.0005;
+  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  if (pref.mode == IP || pref.mode == TCP)
+    pref.refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
+  else
+    pref.refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
+
+  pref.size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
+  pref.node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
+  pref.stack_level =
+    gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
+  if ((pref.stack_level != 0)
+      && (version_compare (config_file_version, "0.5.4") < 0))
+    g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
+		 "Please check in the preferences dialog that this is what "
+		 "you really want"));
+  pref.fontname =
+    gnome_config_get_string_with_default
+    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
+  gnome_config_get_vector_with_default
+    ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
+     &(pref.n_colors), &(pref.colors), &u);
+
+  if (!pref.n_colors || !pref.colors || !strlen(pref.colors[0]))
+  {
+     /* color array defined in prefs, but empty */
+     pref.n_colors = 1;
+     g_free(pref.colors[0]);
+     pref.colors[0] = g_strdup("#7f7f7f");
+  }
+
+  g_free (config_file_version);
+  gnome_config_pop_prefix ();
+
+  protohash_read_prefvect(pref.colors, pref.n_colors);
+}				/* load_config */
+
+/* saves configuration to .gnome/Etherape */
+/* It's not static since it will be called from the GUI */
+void
+save_config (const char *prefix)
+{
+  gnome_config_push_prefix (prefix);
+  gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
+  gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
+  gnome_config_set_bool ("Diagram/nofade", pref.nofade);
+  gnome_config_set_bool ("Diagram/cycle", pref.cycle);
+  gnome_config_set_bool ("Diagram/antialias", pref.antialias);
+  gnome_config_set_bool ("Diagram/name_res", pref.name_res);
+  gnome_config_set_float ("Diagram/node_timeout_time",
+			  pref.node_timeout_time);
+  gnome_config_set_float ("Diagram/gui_node_timeout_time",
+			  pref.gui_node_timeout_time);
+  gnome_config_set_float ("Diagram/link_timeout_time",
+			  pref.link_timeout_time);
+  gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
+  gnome_config_set_float ("Diagram/node_radius_multiplier",
+			  pref.node_radius_multiplier);
+  gnome_config_set_float ("Diagram/link_width_multiplier",
+			  pref.link_width_multiplier);
+#if 0				/* TODO should we save this? */
+  gnome_config_set_int ("General/mode", pref.mode);
+#endif
+  gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
+  gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
+  gnome_config_set_int ("Diagram/node_size_variable",
+			pref.node_size_variable);
+  gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
+  gnome_config_set_string ("Diagram/fontname", pref.fontname);
+
+  gnome_config_set_vector ("Diagram/colors", pref.n_colors,
+			   (const gchar * const *) pref.colors);
+
+  gnome_config_set_string ("General/version", VERSION);
+
+  gnome_config_sync ();
+  gnome_config_pop_prefix ();
+
+  g_my_info (_("Preferences saved"));
+
+}				/* save_config */
+
+void
+initialize_pref_controls(void)
+{
+  GtkWidget *widget;
+  GtkSpinButton *spin;
+
+  diag_pref = glade_xml_get_widget (xml, "diag_pref");
+
+  /* Updates controls from values of variables */
+  widget = glade_xml_get_widget (xml, "node_radius_slider");
+  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+			    log (pref.node_radius_multiplier) / log (10));
+  g_signal_emit_by_name (G_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
+  widget = glade_xml_get_widget (xml, "link_width_slider");
+  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+			    log (pref.link_width_multiplier) / log (10));
+  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
+  gtk_spin_button_set_value (spin, pref.averaging_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
+  gtk_spin_button_set_value (spin, pref.refresh_period);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
+  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
+  gtk_spin_button_set_value (spin, pref.node_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
+  gtk_spin_button_set_value (spin, pref.link_timeout_time);
+
+  widget = glade_xml_get_widget (xml, "diagram_only_toggle");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
+				pref.diagram_only);
+  widget = glade_xml_get_widget (xml, "group_unk_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
+  widget = glade_xml_get_widget (xml, "fade_toggle");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
+  widget = glade_xml_get_widget (xml, "cycle_toggle");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
+  widget = glade_xml_get_widget (xml, "aa_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.antialias);
+  widget = glade_xml_get_widget (xml, "name_res_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
+
+  widget = glade_xml_get_widget (xml, "size_mode_menu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
+  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget),
+			       pref.node_size_variable);
+  widget = glade_xml_get_widget (xml, "stack_level_menu");
+  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
+  widget = glade_xml_get_widget (xml, "filter_gnome_entry");
+  widget = glade_xml_get_widget (xml, "file_filter_entry");
+  widget = glade_xml_get_widget (xml, "fileentry");
+  widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
+
+  load_color_list ();		/* Updates the color preferences table with pref.colors */
+
+  /* Connects signals */
+  widget = glade_xml_get_widget (xml, "node_radius_slider");
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_radius_slider_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "link_width_slider");
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_width_slider_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "averaging_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_averaging_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "refresh_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_refresh_spin_adjustment_changed),
+		    glade_xml_get_widget (xml, "canvas1"));
+  widget = glade_xml_get_widget (xml, "node_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "gui_node_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_gui_node_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "link_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "size_mode_menu");
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
+  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected), NULL);
+  widget = glade_xml_get_widget (xml, "stack_level_menu");
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
+}
 
 void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -561,7 +810,7 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
 
 
 
-void
+static void
 load_color_list (void)
 {
   gint i;
@@ -644,4 +893,49 @@ color_list_to_pref (void)
     }
 
   protohash_read_prefvect(pref.colors, pref.n_colors);
+}
+
+static gint
+version_compare (const gchar * a, const gchar * b)
+{
+  guint a_mj, a_mi, a_pl, b_mj, b_mi, b_pl;
+
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
+  /* TODO What should we return if there was a problem? */
+  g_return_val_if_fail ((get_version_levels (a, &a_mj, &a_mi, &a_pl)
+			 && get_version_levels (b, &b_mj, &b_mi, &b_pl)), 0);
+  if (a_mj < b_mj)
+    return -1;
+  else if (a_mj > b_mj)
+    return 1;
+  else if (a_mi < b_mi)
+    return -1;
+  else if (a_mi > b_mi)
+    return 1;
+  else if (a_pl < b_pl)
+    return -1;
+  else if (a_pl > b_pl)
+    return 1;
+  else
+    return 0;
+}
+
+static gboolean
+get_version_levels (const gchar * version_string,
+		    guint * major, guint * minor, guint * patch)
+{
+  gchar **tokens;
+
+  g_assert (version_string != NULL);
+
+  tokens = g_strsplit (version_string, ".", 0);
+  g_return_val_if_fail ((tokens
+			 && tokens[0] && tokens[1] && tokens[2]
+			 && sscanf (tokens[0], "%d", major)
+			 && sscanf (tokens[1], "%d", minor)
+			 && sscanf (tokens[2], "%d", patch)), FALSE);
+  g_strfreev (tokens);
+  return TRUE;
 }

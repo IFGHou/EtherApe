@@ -23,14 +23,45 @@
 
 #include <netinet/in.h>
 #include "globals.h"
+#include <signal.h>
+#include <libgnomeui/gnome-client.h>
 #include "ip-cache.h"
 #include "main.h"
 #include "diagram.h"
+#include "preferences.h"
 #include "info_windows.h"
 #include "capture.h"
 #include "datastructs.h"
 
+/***************************************************************************
+ *
+ * local variables
+ *
+ **************************************************************************/
+static gboolean quiet = FALSE;
+static GLogLevelFlags debug_mask;
+static void (*oldhandler) (int);
 
+/***************************************************************************
+ *
+ * internal functions
+ *
+ **************************************************************************/
+static void set_debug_level (void);
+static void session_die (GnomeClient * client, gpointer client_data);
+static gint
+save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
+	      gint is_shutdown, GnomeInteractStyle interact_style,
+	      gint is_fast, gpointer client_data);
+static void
+log_handler (gchar * log_domain,
+	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
+
+/***************************************************************************
+ *
+ * implementation
+ *
+ **************************************************************************/
 int
 main (int argc, char *argv[])
 {
@@ -171,7 +202,6 @@ main (int argc, char *argv[])
   glade_xml_signal_autoconnect (xml);
 
   app1 = glade_xml_get_widget (xml, "app1");
-  diag_pref = glade_xml_get_widget (xml, "diag_pref");
 
   /* Sets controls to the values of variables and connects signals */
   init_diagram ();
@@ -232,185 +262,7 @@ main (int argc, char *argv[])
 
 
 
-/* loads configuration from .gnome/Etherape */
-static void
-load_config (char *prefix)
-{
-  gboolean u;
-  gchar *config_file_version;
 
-  gnome_config_push_prefix (prefix);
-
-  config_file_version =
-    gnome_config_get_string_with_default ("General/version=0.5.4", &u);
-  pref.diagram_only =
-    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
-  pref.group_unk =
-    gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
-  pref.stationary
-    = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.nofade =
-    gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
-  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
-  pref.antialias =
-    gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
-  pref.name_res =
-    gnome_config_get_bool_with_default ("Diagram/name_res=FALSE", &u);
-  pref.node_timeout_time =
-    gnome_config_get_float_with_default
-    ("Diagram/node_timeout_time=3600000.0", &u);
-  pref.gui_node_timeout_time =
-    gnome_config_get_float_with_default
-    ("Diagram/gui_node_timeout_time=60000.0", &u);
-  if (pref.nofade)
-    pref.link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=5000.0", &u);
-  else
-    pref.link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=20000.0", &u);
-  pref.averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
-  pref.node_radius_multiplier =
-    gnome_config_get_float_with_default
-    ("Diagram/node_radius_multiplier=0.0005", &u);
-  if (u)
-    pref.node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
-  pref.link_width_multiplier =
-    gnome_config_get_float_with_default
-    ("Diagram/link_width_multiplier=0.0005", &u);
-  if (u)
-    pref.link_width_multiplier = 0.0005;
-  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
-  if (pref.mode == IP || pref.mode == TCP)
-    pref.refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
-  else
-    pref.refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
-
-  pref.size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
-  pref.node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
-  pref.stack_level =
-    gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
-  if ((pref.stack_level != 0)
-      && (version_compare (config_file_version, "0.5.4") < 0))
-    g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
-		 "Please check in the preferences dialog that this is what "
-		 "you really want"));
-  pref.fontname =
-    gnome_config_get_string_with_default
-    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
-  gnome_config_get_vector_with_default
-    ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
-     &(pref.n_colors), &(pref.colors), &u);
-
-  if (!pref.n_colors || !pref.colors || !strlen(pref.colors[0]))
-  {
-     /* color array defined in prefs, but empty */
-     pref.n_colors = 1;
-     g_free(pref.colors[0]);
-     pref.colors[0] = g_strdup("#7f7f7f");
-  }
-
-  g_free (config_file_version);
-  gnome_config_pop_prefix ();
-
-  protohash_read_prefvect(pref.colors, pref.n_colors);
-}				/* load_config */
-
-static gint
-version_compare (const gchar * a, const gchar * b)
-{
-  guint a_mj, a_mi, a_pl, b_mj, b_mi, b_pl;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  /* TODO What should we return if there was a problem? */
-  g_return_val_if_fail ((get_version_levels (a, &a_mj, &a_mi, &a_pl)
-			 && get_version_levels (b, &b_mj, &b_mi, &b_pl)), 0);
-  if (a_mj < b_mj)
-    return -1;
-  else if (a_mj > b_mj)
-    return 1;
-  else if (a_mi < b_mi)
-    return -1;
-  else if (a_mi > b_mi)
-    return 1;
-  else if (a_pl < b_pl)
-    return -1;
-  else if (a_pl > b_pl)
-    return 1;
-  else
-    return 0;
-}
-
-static gboolean
-get_version_levels (const gchar * version_string,
-		    guint * major, guint * minor, guint * patch)
-{
-  gchar **tokens;
-
-  g_assert (version_string != NULL);
-
-  tokens = g_strsplit (version_string, ".", 0);
-  g_return_val_if_fail ((tokens
-			 && tokens[0] && tokens[1] && tokens[2]
-			 && sscanf (tokens[0], "%d", major)
-			 && sscanf (tokens[1], "%d", minor)
-			 && sscanf (tokens[2], "%d", patch)), FALSE);
-  g_strfreev (tokens);
-  return TRUE;
-}
-
-
-
-/* saves configuration to .gnome/Etherape */
-/* It's not static since it will be called from the GUI */
-void
-save_config (char *prefix)
-{
-  gnome_config_push_prefix (prefix);
-  gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
-  gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
-  gnome_config_set_bool ("Diagram/nofade", pref.nofade);
-  gnome_config_set_bool ("Diagram/cycle", pref.cycle);
-  gnome_config_set_bool ("Diagram/antialias", pref.antialias);
-  gnome_config_set_bool ("Diagram/name_res", pref.name_res);
-  gnome_config_set_float ("Diagram/node_timeout_time",
-			  pref.node_timeout_time);
-  gnome_config_set_float ("Diagram/gui_node_timeout_time",
-			  pref.gui_node_timeout_time);
-  gnome_config_set_float ("Diagram/link_timeout_time",
-			  pref.link_timeout_time);
-  gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
-  gnome_config_set_float ("Diagram/node_radius_multiplier",
-			  pref.node_radius_multiplier);
-  gnome_config_set_float ("Diagram/link_width_multiplier",
-			  pref.link_width_multiplier);
-#if 0				/* TODO should we save this? */
-  gnome_config_set_int ("General/mode", pref.mode);
-#endif
-  gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
-  gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
-  gnome_config_set_int ("Diagram/node_size_variable",
-			pref.node_size_variable);
-  gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
-  gnome_config_set_string ("Diagram/fontname", pref.fontname);
-
-  gnome_config_set_vector ("Diagram/colors", pref.n_colors,
-			   (const gchar * const *) pref.colors);
-
-  gnome_config_set_string ("General/version", VERSION);
-
-  gnome_config_sync ();
-  gnome_config_pop_prefix ();
-
-  g_my_info (_("Preferences saved"));
-
-}				/* save_config */
 
 
 static void

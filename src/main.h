@@ -18,27 +18,5 @@
  */
 
 
-#include <signal.h>
-#include <libgnomeui/gnome-client.h>
 
-static GLogLevelFlags debug_mask;
-static void (*oldhandler) (int);
-
-static gboolean quiet = FALSE;
-
-static void load_config (gchar * prefix);
-static gboolean get_version_levels (const gchar * version_string,
-				    guint * major, guint * minor,
-				    guint * patch);
-static gint version_compare (const gchar * a, const gchar * b);
-static void set_debug_level (void);
-
-static void session_die (GnomeClient * client, gpointer client_data);
-
-static gint
-save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gint is_shutdown, GnomeInteractStyle interact_style,
-	      gint is_fast, gpointer client_data);
-static void
-log_handler (gchar * log_domain,
-	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
+void cleanup (int signum);

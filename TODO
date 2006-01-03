@@ -1,18 +1,13 @@
 User visible features:
 ----------------------
 
-  * I need information on what is the best set of colors to display
-    over a black background
- 
-  * Make protocol colors user-selectable.
-  
   * Ability to set per node preferences. Like setting an hour long
     averaging time only for the router.
-    
+
   * Ability to manually place nodes. It's dependent on the above.
     Once is done you will be able to open and save your own 
     diagrams.
-    
+
   * Hitting cancel on the preferences window should undo all
     changes done.
 
@@ -35,17 +30,10 @@ Issues in the source code
 
   * Find out a way to customize the gnome message that pops up
     if a SIGSEGV crashes us.
-    
-  * Clean up the resolver functions. Right now I'm using two 
-    different files from two different packages (resolv.c from 
-    ethereal and dns.c from mtr)
 
-  * belongs_to should be a packet property, and not have to be
-    passed from the functions.
-  
   * Define GLADEDIR in config.h the same way that PIXMAPS_DIR is, and not
     just pass it to the compiler
-    
+
   * Move preference controls initialization for init_diagram to a new
     function in preferences.c
 

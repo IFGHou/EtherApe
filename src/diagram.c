@@ -143,15 +143,11 @@ static guint popup_to (struct popup_data *pd);
 #endif
 
 
-
-
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
 void
 init_diagram ()
 {
-  GtkWidget *widget;
-  GtkSpinButton *spin;
   GtkStyle *style;
   GtkWidget *canvas;
 
@@ -161,106 +157,9 @@ init_diagram ()
   canvas_links = g_tree_new_full( (GCompareDataFunc)canvas_link_compare,
                             NULL, NULL, (GDestroyNotify)canvas_link_delete);
 
-  /* Updates controls from values of variables */
-  widget = glade_xml_get_widget (xml, "node_radius_slider");
-  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
-			    log (pref.node_radius_multiplier) / log (10));
-  g_signal_emit_by_name (G_OBJECT (GTK_RANGE (widget)->adjustment),
-			 "changed");
-  widget = glade_xml_get_widget (xml, "link_width_slider");
-  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
-			    log (pref.link_width_multiplier) / log (10));
-  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-			 "changed");
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
-  gtk_spin_button_set_value (spin, pref.averaging_time);
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
-  gtk_spin_button_set_value (spin, pref.refresh_period);
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.node_timeout_time);
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
-  gtk_spin_button_set_value (spin, pref.link_timeout_time);
+  initialize_pref_controls();
 
-  widget = glade_xml_get_widget (xml, "diagram_only_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-				pref.diagram_only);
-  widget = glade_xml_get_widget (xml, "group_unk_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
-  widget = glade_xml_get_widget (xml, "fade_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
-  widget = glade_xml_get_widget (xml, "cycle_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
-  widget = glade_xml_get_widget (xml, "aa_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.antialias);
-  widget = glade_xml_get_widget (xml, "name_res_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
-
-  widget = glade_xml_get_widget (xml, "size_mode_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
-  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget),
-			       pref.node_size_variable);
-  widget = glade_xml_get_widget (xml, "stack_level_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
-  widget = glade_xml_get_widget (xml, "filter_gnome_entry");
-  widget = glade_xml_get_widget (xml, "file_filter_entry");
-  widget = glade_xml_get_widget (xml, "fileentry");
-  widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
-
-  load_color_list ();		/* Updates the color preferences table with pref.colors */
-
-  /* Connects signals */
-  widget = glade_xml_get_widget (xml, "node_radius_slider");
-  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_node_radius_slider_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "link_width_slider");
-  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_link_width_slider_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "averaging_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_averaging_spin_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "refresh_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_refresh_spin_adjustment_changed),
-		    glade_xml_get_widget (xml, "canvas1"));
-  widget = glade_xml_get_widget (xml, "node_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_node_to_spin_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "gui_node_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_gui_node_to_spin_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "link_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_link_to_spin_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "size_mode_menu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
-  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected), NULL);
-  widget = glade_xml_get_widget (xml, "stack_level_menu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
-
+  
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
 

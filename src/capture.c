@@ -51,6 +51,8 @@ static gint capture_source;		/* It's the input tag or the timeout tag,
 static guint32 ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
+static guint node_id_length;		/* Length of the node_id key. Depends
+				 * on the mode of operation */
 
 
 /* Local funtions declarations */

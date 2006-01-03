@@ -115,15 +115,12 @@ enum status_t
 
 GladeXML *xml;
 GtkWidget *app1;		/* Pointer to the main app window */
-GtkWidget *diag_pref;		/* Pointer to the diagram configuration window */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 gdouble n_packets;		/* Number of total packets received */
 gdouble n_mem_packets;		/* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
-guint node_id_length;		/* Length of the node_id key. Depends
-				 * on the mode of operation */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
 enum status_t status;		/* Keeps capture status (playing, stopped, paused) */
@@ -196,10 +193,6 @@ pref;
 
 /* Global functions declarations */
 
-/* From main.c */
-void cleanup (int signum);
-void save_config (char *prefix);
-
 /* From menus.c */
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);
@@ -208,12 +201,7 @@ void gui_pause_capture (void);
 gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
 					 * it can't run if diagram_update is running */
 
-/* From preferences.c */
-void load_color_list (void);
-
-
 /* Macros */
-
 
 #define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
 						  G_LOG_LEVEL_DEBUG, \

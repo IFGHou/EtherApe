@@ -1,3 +1,10 @@
+2006-01-03 19:51  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,
+	src/globals.h, src/ip-cache.c, src/main.c, src/names.c,
+	src/preferences.c: fixes bug 1396236 and tidies up preferences
+	dialog.
+
 2006-01-03 11:01  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/datastructs.c,

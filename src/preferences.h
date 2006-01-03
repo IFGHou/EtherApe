@@ -25,9 +25,12 @@
 #include "globals.h"
 #include "math.h"
 
-/* Extern functions */
-extern void save_config (gchar * prefix);
+void load_config (const char *prefix);
+void save_config (const char * prefix);
 
+void initialize_pref_controls(void);
+
+/* callbacks */
 void on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_averaging_spin_adjustment_changed (GtkAdjustment * adj);
 void on_refresh_spin_adjustment_changed (GtkAdjustment * adj,
@@ -57,15 +60,7 @@ void on_group_unk_check_toggled (GtkToggleButton * togglebutton, gpointer);
 void on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data);
 void on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
-
-/* name tab callbacks */
-gboolean on_name_clist_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data);
-void on_dns_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
 void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
-void on_protocol_add_button_clicked (GtkButton * button, gpointer user_data);
-void on_protocol_remove_button_clicked (GtkButton * button, gpointer user_data);
-void on_protocol_move_up_clicked (GtkButton * button, gpointer user_data);
-void on_protocol_move_down_clicked (GtkButton * button, gpointer user_data);
 
 /* proto color tab callbacks */
 void on_color_add_button_clicked (GtkButton * button, gpointer user_data);
