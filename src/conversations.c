@@ -128,7 +128,28 @@ find_conversation (guint32 src_address, guint32 dst_address,
   else
     return NULL;
 }
-  
+
+/* removes all conversations with the specified addresses */
+void
+delete_conversation_link(guint32 src_address, guint32 dst_address)
+{
+  GList *item;
+  while ( (item = find_conversation_ptr(src_address, dst_address, 0, 0)) )
+    {
+      conversation_t *conv = NULL;
+      guint32 src, dst;
+      conv = item->data;
+      /* Because that is the way that ip_to_str works */
+      src = htonl (conv->src_address);
+      dst = htonl (conv->dst_address);
+      g_my_debug ("Removing conversation %s:%d-%s:%d %s",
+		  ip_to_str ((guint8 *) & src), conv->src_port,
+		  ip_to_str ((guint8 *) & dst), conv->dst_port, conv->data);
+      g_free (conv->data);
+      conversations = g_list_delete_link(conversations, item);
+    }
+}
+
 void
 delete_conversations (void)
 {

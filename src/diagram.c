@@ -57,6 +57,9 @@ canvas_node_t;
 static gint canvas_node_compare(const node_id_t *a, const node_id_t *b, 
                                 gpointer dummy);
 static void canvas_node_delete(canvas_node_t *cn);
+static gint canvas_node_update(node_id_t  * ether_addr,
+				 canvas_node_t * canvas_node,
+				 GList ** delete_list);
 
 
 /***************************************************************************
@@ -75,6 +78,9 @@ canvas_link_t;
 static gint canvas_link_compare(const link_id_t *a, const link_id_t *b, 
                                 gpointer dummy);
 static void canvas_link_delete(canvas_link_t *canvas_link);
+static gint canvas_link_update(link_id_t * link_id,
+				 canvas_link_t * canvas_link,
+				 GList ** delete_list);
 
 
 #if 0
@@ -110,12 +116,11 @@ static GdkColor black_color;
  * local Function definitions
  *
  **************************************************************************/
+static void diagram_update_nodes(GtkWidget * canvas); /* updates ALL nodes */
+static void diagram_update_links(GtkWidget * canvas); /* updates ALL links */
 
 static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
 static gint check_new_node (node_t * node, GtkWidget * canvas);
-static gint update_canvas_nodes (node_id_t  * ether_addr,
-				 canvas_node_t * canvas_node,
-				 GList ** delete_list);
 static gboolean display_node (node_t * node);
 static void limit_nodes (void);
 static gint add_ordered_node (node_id_t * node_id,
@@ -129,18 +134,12 @@ static gint reposition_canvas_nodes (guint8 * ether_addr,
 				     GtkWidget * canvas);
 static gint check_new_link (link_id_t * link_id,
 			    link_t * link, GtkWidget * canvas);
-static gint update_canvas_links (link_id_t * link_id,
-				 canvas_link_t * canvas_link,
-				 GList ** delete_list);
 static gdouble get_node_size (gdouble average);
 static gdouble get_link_size (gdouble average);
 static gint link_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_link_t * canvas_link);
 static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
-#if 0
-static guint popup_to (struct popup_data *pd);
-#endif
 
 
 /* It updates controls from values of variables, and connects control
@@ -243,6 +242,79 @@ gfunc_remove_canvas_link(gpointer data, gpointer user_data)
   g_tree_remove (canvas_links, (const link_id_t *)data);
 }
 
+static void
+diagram_update_nodes(GtkWidget * canvas)
+{
+  GList *delete_list = NULL;
+  node_t *new_node = NULL;
+
+  /* Deletes all nodes and updates traffic values */
+  /* TODO To reduce CPU usage, I could just as well update each specific
+   * node in update_canvas_nodes and create a new timeout function that would
+   * make sure that old nodes get deleted by calling update_nodes, but
+   * not as often as with diagram_refresh_period */
+  nodes_catalog_update_all();
+
+  /* Check if there are any new nodes */
+  while ((new_node = new_nodes_pop()))
+    check_new_node (new_node, canvas);
+
+  /* Update nodes look and queue outdated canvas_nodes for deletion */
+  g_tree_foreach(canvas_nodes,
+	       (GTraverseFunc) canvas_node_update,
+	       &delete_list);
+
+  /* delete all canvas nodes queued */
+  g_list_foreach(delete_list, gfunc_remove_canvas_node, NULL);
+
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
+
+  g_my_debug ("Number of nodes %d", g_tree_nnodes (canvas_nodes));
+
+  /* Limit the number of nodes displayed, if a limit has been set */
+  /* TODO check whether this is the right function to use, now that we have a more
+   * general display_node called in update_canvas_nodes */
+  limit_nodes ();
+
+  /* Reposition canvas_nodes */
+  if (need_reposition)
+    {
+      g_tree_foreach(canvas_nodes,
+		       (GTraverseFunc) reposition_canvas_nodes,
+		       canvas);
+      need_reposition = 0;
+    }
+}
+
+static void
+diagram_update_links(GtkWidget * canvas)
+{
+  GList *delete_list = NULL;
+
+  /* Delete old capture links and update capture link variables */
+  links_catalog_update_all();
+
+  /* Check if there are any new links */
+  links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
+
+  /* Update links look 
+   * We also delete timedout links, and when we do that we stop
+   * traversing, so we need to go on until we have finished updating */
+  delete_list = NULL;
+  g_tree_foreach(canvas_links,
+                   (GTraverseFunc) canvas_link_update,
+                   &delete_list);
+
+  /* delete all canvas links queued */
+  g_list_foreach(delete_list, gfunc_remove_canvas_link, NULL);
+
+  /* free the list - list items are already destroyed */
+  g_list_free(delete_list);
+
+  g_my_debug ("Number of links %d", g_tree_nnodes (canvas_links));
+}
+
 /* Refreshes the diagram. Called each refresh_period ms
  * 1. Checks for new protocols and displays them
  * 2. Updates nodes looks
@@ -251,11 +323,8 @@ gfunc_remove_canvas_link(gpointer data, gpointer user_data)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  GString *status_string = NULL;
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
-  node_t *new_node = NULL;
-  GList *delete_list = NULL;
 
   if (status == PAUSE)
     return FALSE;
@@ -283,72 +352,16 @@ update_diagram (GtkWidget * canvas)
   already_updating = TRUE;
   gettimeofday (&now, NULL);
 
-
   /* We search for new protocols */
   while (known_protocols[pref.stack_level] < protocol_summary_size(pref.stack_level))
     protocol_summary_foreach(pref.stack_level, (GFunc) check_new_protocol,
 		    canvas);
 
-  /* Deletes all nodes and updates traffic values */
-  /* TODO To reduce CPU usage, I could just as well update each specific
-   * node in update_canvas_nodes and create a new timeout function that would
-   * make sure that old nodes get deleted by calling update_nodes, but
-   * not as often as with diagram_refresh_period */
-  nodes_catalog_update_all();
+  /* update nodes */
+  diagram_update_nodes(canvas);
 
-  /* Check if there are any new nodes */
-  while ((new_node = new_nodes_pop()))
-    check_new_node (new_node, canvas);
-
-  /* Update nodes look and queue outdated canvas_nodes for deletion */
-  g_tree_foreach(canvas_nodes,
-	       (GTraverseFunc) update_canvas_nodes,
-	       &delete_list);
-
-  /* delete all canvas nodes queued */
-  g_list_foreach(delete_list, gfunc_remove_canvas_node, NULL);
-
-  /* free the list - list items are already destroyed */
-  g_list_free(delete_list);
-
-  g_my_debug ("Number of nodes %d", g_tree_nnodes (canvas_nodes));
-
-  /* Limit the number of nodes displayed, if a limit has been set */
-  /* TODO check whether this is the right function to use, now that we have a more
-   * general display_node called in update_canvas_nodes */
-  limit_nodes ();
-
-  /* Reposition canvas_nodes */
-  if (need_reposition)
-    {
-      g_tree_foreach(canvas_nodes,
-		       (GTraverseFunc) reposition_canvas_nodes,
-		       canvas);
-      need_reposition = 0;
-    }
-
-
-  /* Delete old capture links and update capture link variables */
-  links_catalog_update_all();
-
-  /* Check if there are any new links */
-  links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
-
-  /* Update links look 
-   * We also delete timedout links, and when we do that we stop
-   * traversing, so we need to go on until we have finished updating */
-  delete_list = NULL;
-  g_tree_foreach(canvas_links,
-                   (GTraverseFunc) update_canvas_links,
-                   &delete_list);
-
-  /* delete all canvas links queued */
-  g_list_foreach(delete_list, gfunc_remove_canvas_link, NULL);
-
-  /* free the list - list items are already destroyed */
-  g_list_free(delete_list);
-
-  g_my_debug ("Number of links %d", g_tree_nnodes (canvas_links));
+  /* update links */
+  diagram_update_links(canvas);
 
   /* Update protocol information */
   protocol_summary_update_all();
@@ -368,23 +381,24 @@ update_diagram (GtkWidget * canvas)
   diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
   last_time = now;
 
-  status_string = g_string_new (_("Number of nodes: "));
-  g_string_sprintfa (status_string, "%d", g_tree_nnodes(canvas_nodes));
-
-  g_string_sprintfa (status_string,
-		     _(". Refresh Period: %d"), (int) diff_msecs);
-
-  g_string_sprintfa (status_string,
-		     ". Total Packets %g, packets in memory: %g", n_packets,
-		     n_mem_packets);
-  if (is_idle)
-    status_string = g_string_append (status_string, _(". IDLE."));
-  else
-    status_string = g_string_append (status_string, _(". TIMEOUT."));
-  g_my_debug (status_string->str);
-  g_string_free (status_string, TRUE);
-  status_string = NULL;
-
+  if (pref.is_debug)
+    {
+      GString *status_string= g_string_new (_("Number of nodes: "));
+      g_string_sprintfa (status_string, "%d", g_tree_nnodes(canvas_nodes));
+    
+      g_string_sprintfa (status_string,
+                         _(". Refresh Period: %d"), (int) diff_msecs);
+    
+      g_string_sprintfa (status_string,
+                         ". Total Packets %g, packets in memory: %g", n_packets,
+                         n_mem_packets);
+      if (is_idle)
+        status_string = g_string_append (status_string, _(". IDLE."));
+      else
+        status_string = g_string_append (status_string, _(". TIMEOUT."));
+      g_my_debug (status_string->str);
+      g_string_free (status_string, TRUE);
+    }
 #if 0
   g_message ("Total Packets %g, packets in memory: %g", n_packets,
 	     n_mem_packets);
@@ -615,7 +629,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
 /* - updates sizes, names, etc */
 static gint
-update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
+canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
 		     GList **delete_list)
 {
   node_t *node;
@@ -632,7 +646,7 @@ update_canvas_nodes (node_id_t * node_id, canvas_node_t * canvas_node,
   if (!node || !display_node (node))
     {
       /* adds current to list of canvas nodes to delete */
-      *delete_list = g_list_append( *delete_list, node_id);
+      *delete_list = g_list_prepend( *delete_list, node_id);
       g_my_debug ("Queing canvas node to remove.");
       need_reposition = TRUE;
       return FALSE;
@@ -756,7 +770,6 @@ display_node (node_t * node)
 
   return TRUE;
 }				/* display_node */
-
 
 /* Sorts canvas nodes with the criterium set in preferences and sets
  * which will be displayed in the diagram */
@@ -1021,7 +1034,7 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
  *   traffic and main protocol, and old links are deleted
  * - caculates link size and color fading */
 static gint
-update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
+canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
 		     GList **delete_list)
 {
   link_t *link;
@@ -1039,7 +1052,7 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
 
   if (!link)
     {
-      *delete_list = g_list_append( *delete_list, link_id);
+      *delete_list = g_list_prepend( *delete_list, link_id);
       g_my_debug ("Queing canvas link to remove.");
       return FALSE;
     }
@@ -1050,7 +1063,7 @@ update_canvas_links (link_id_t * link_id, canvas_link_t * canvas_link,
     {
       protocol = protocol_summary_find(pref.stack_level, link->main_prot[pref.stack_level]);
       if (!protocol)
-	g_warning (_("Main link protocol not found in update_canvas_links"));
+	g_warning (_("Main link protocol not found in canvas_link_update"));
     }
 
   points = gnome_canvas_points_new (3);
@@ -1243,28 +1256,6 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
   switch (event->type)
     {
 
-      /* I am finally going to get rid of the hideous popup! */
-#if 0
-    case GDK_ENTER_NOTIFY:
-      pd.canvas_node = canvas_node;
-      popup = gtk_timeout_add (1000, (GtkFunction) popup_to, &pd);
-      str = g_strdup_printf ("%s (%s)",
-			     canvas_node->node->name->str,
-			     canvas_node->node->numeric_name->str);
-      gnome_appbar_push (appbar, str);
-      g_free (str);
-      break;
-    case GDK_LEAVE_NOTIFY:
-      if (popup)
-	{
-	  gtk_timeout_remove (popup);
-	  popup = 0;
-	  pd.canvas_node = NULL;
-	  pd.node_popup = NULL;
-	}
-      gnome_appbar_pop (appbar);
-      break;
-#endif
     case GDK_2BUTTON_PRESS:
       if (!canvas_node || !canvas_node->node)
 	return FALSE;
@@ -1281,67 +1272,6 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
   return FALSE;
 
 }				/* node_item_event */
-
-
-
-#if 0
-/* This function is the one that sets ups and displays the node
- * pop up windows */
-static guint
-popup_to (struct popup_data *pd)
-{
-
-  GladeXML *xml_popup;
-  GtkLabel *label;
-  gchar *str;
-
-  xml_popup =
-    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_popup", NULL);
-  glade_xml_signal_autoconnect (xml);
-  pd->node_popup = glade_xml_get_widget (xml_popup, "node_popup");
-
-  /* TODO Why is not the signal connection being set up automatically?
-   * I don't know, and so I have to do it on my own while I investigate
-   * the problem */
-  gtk_widget_set_events (pd->node_popup, GDK_POINTER_MOTION_MASK);
-  gtk_signal_connect (GTK_OBJECT (pd->node_popup), "motion_notify_event",
-		      GTK_SIGNAL_FUNC (gtk_widget_destroy), NULL);
-
-  label = (GtkLabel *) glade_xml_get_widget (xml_popup, "name");
-
-  /* This function may be called even before the node has a name
-   * If that happens, return */
-  if (!(pd->canvas_node) || !(pd->canvas_node->node)
-      || !(pd->canvas_node->node->name)
-      || !(pd->canvas_node->node->numeric_name))
-    return FALSE;
-
-    str = g_strdup_printf ("%s (%s)",
-                           pd->canvas_node->node->name->str,
-                           pd->canvas_node->node->numeric_name->str);
-    gtk_label_set_text (label, str);
-    g_free (str);
-
-
-  label = (GtkLabel *) glade_xml_get_widget (xml_popup, "accumulated");
-  str =
-    g_strdup_printf ("Acummulated bytes: %g",
-		     pd->canvas_node->node->accumulated);
-  gtk_label_set_text (label, str);
-  g_free (str);
-
-  label = (GtkLabel *) glade_xml_get_widget (xml_popup, "average");
-  str = g_strdup_printf ("Average bps: %g", pd->canvas_node->node->average);
-  gtk_label_set_text (label, str);
-  g_free (str);
-
-  gtk_widget_show (GTK_WIDGET (pd->node_popup));
-
-/*  gtk_object_unref(GTK_OBJECT(xml_popup)); */
-  return FALSE;			/* Only called once */
-
-}				/* popup_to */
-#endif
 
 /* Pushes a string into the appbar status area */
 

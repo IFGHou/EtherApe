@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "protocols.h"
 #include "links.h"
+#include "conversations.h"
 
 static GTree *all_links = NULL;			/* Has all links heard on the net */
 
@@ -71,9 +72,9 @@ link_t *link_create(const link_id_t *link_id)
   link->src_name = NULL;
   link->dst_name = NULL;
   link->last_time = now;
+  protocol_stack_init(&link->link_protos);
   while (i + 1)
     {
-      link->link_protocols[i] = NULL;
       link->main_prot[i] = NULL;
       i--;
     }
@@ -95,6 +96,10 @@ void link_delete(link_t *link)
 
   g_assert(link);
 
+  /* first, free any conversation belonging to the link */
+  delete_conversation_link((guint32)(link->link_id.src.addr.ip4), 
+                           (guint32)(link->link_id.dst.addr.ip4));
+  
   for (i = STACK_SIZE; i + 1; i--)
     if (link->main_prot[i])
       {
@@ -128,7 +133,7 @@ link_subtract_packet_data(link_t * link, packet_info_t * packet)
     link->average = 0;
 
   /* We remove protocol aggregate information */
-  protocol_stack_sub_pkt(link->link_protocols, packet, TRUE);
+  protocol_stack_sub_pkt(&link->link_protos, packet, TRUE);
 }
 
 static void
@@ -223,7 +228,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
           if (link->main_prot[i])
             g_free (link->main_prot[i]);
           link->main_prot[i]
-            = protocol_stack_find_most_used(link->link_protocols, i);
+            = protocol_stack_find_most_used(&link->link_protos, i);
           i--;
         }
 
@@ -243,23 +248,18 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
                  _("Queuing link for remove"));
 
           /* adds current to list of links to delete */
-          *delete_list = g_list_append( *delete_list, link_id);
+          *delete_list = g_list_prepend( *delete_list, link_id);
 
         }
       else
         {
           /* link not expired */
-          guint i = STACK_SIZE;
-          
+
           /* The packet list structure has already been freed in
            * link_subtract_packet_data */
           link->link_packets = NULL;
           link->accumulated = 0;
-          while (i + 1)
-            {
-              link->link_protocols[i] = NULL;
-              i--;
-            }
+          protocol_stack_free(&link->link_protos);
         }
     }
 

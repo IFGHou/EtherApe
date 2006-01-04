@@ -284,6 +284,9 @@ set_debug_level (void)
   if (quiet)
     debug_mask = 0;
 
+  /* if someone requested debug infos, enable the relevant flag */
+  pref.is_debug = (debug_mask & G_LOG_LEVEL_DEBUG) ? TRUE : FALSE;
+
   g_log_set_handler (NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
   g_my_debug ("debug_mask %d", debug_mask);
 }

@@ -20,7 +20,7 @@
 #include "globals.h"
 #include "node.h"
 
-void get_packet_names (GList ** protocols,
+void get_packet_names (protostack_t *pstk,
 		       const guint8 * packet,
 		       guint16 size,
 		       const gchar * prot_stack, packet_direction direction);

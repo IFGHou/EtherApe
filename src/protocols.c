@@ -29,33 +29,35 @@
  *
  **************************************************************************/
 
-void protocol_stack_init(GList *protostack[])
+void protocol_stack_init(protostack_t *pstk)
 {
+  g_assert(pstk);
   guint i;
   for (i = 0 ; i <= STACK_SIZE ; ++i)
-    protostack[i] = NULL;
+    pstk->protostack[i] = NULL;
 }
 
-void protocol_stack_free(GList *protostack[])
+void protocol_stack_free(protostack_t *pstk)
 {
   guint i;
   protocol_t *protocol_info;
 
+  g_assert(pstk);
   for (i = 0 ; i <= STACK_SIZE ; ++i)
     {
-      while (protostack[i])
+      while (pstk->protostack[i])
         {
-          protocol_info = protostack[i]->data;
+          protocol_info = pstk->protostack[i]->data;
 
           protocol_t_delete(protocol_info);
-          protostack[i] = g_list_delete_link (protostack[i], protostack[i]);
+          pstk->protostack[i] = g_list_delete_link (pstk->protostack[i], pstk->protostack[i]);
         }
     }
 }
 
 /* adds the given packet to the stack */
 void
-protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
+protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 {
   GList *protocol_item;
   protocol_t *protocol_info;
@@ -64,7 +66,8 @@ protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
   gchar *protocol_name;
 
   g_assert(packet);
-  
+  g_assert(pstk);
+
   tokens = g_strsplit (packet->prot_desc, "/", 0);
 
   for (i = 0; i <= STACK_SIZE; i++)
@@ -77,12 +80,12 @@ protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
 	protocol_name = tokens[i];
 
       /* If there is yet not such protocol, create it */
-      if (!(protocol_item = g_list_find_custom (protostack[i],
+      if (!(protocol_item = g_list_find_custom (pstk->protostack[i],
 						protocol_name,
 						protocol_compare)))
 	{
 	  protocol_info = protocol_t_create(protocol_name);
-	  protostack[i] = g_list_prepend (protostack[i], protocol_info);
+	  pstk->protostack[i] = g_list_prepend (pstk->protostack[i], protocol_info);
 	}
       else
 	protocol_info = protocol_item->data;
@@ -97,13 +100,15 @@ protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet)
 }				/* add_protocol */
 
 
-void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, gboolean purge_entry)
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry)
 {
   guint i = 0;
   gchar **tokens = NULL;
   GList *item = NULL;
   protocol_t *protocol = NULL;
   gchar *protocol_name = NULL;
+
+  g_assert(pstk);
 
   if (!packet)
     return;
@@ -119,7 +124,7 @@ void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, g
       else
         protocol_name = tokens[i];
 
-      item = g_list_find_custom (protostack[i],
+      item = g_list_find_custom (pstk->protostack[i],
                                  protocol_name,
                                  protocol_compare);
       if (!item)
@@ -143,7 +148,7 @@ void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, g
               g_free (protocol->name);
               g_free (protocol);
     
-              protostack[i] = g_list_delete_link(protostack[i], item);
+              pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
             }
         }
       i++;
@@ -152,14 +157,16 @@ void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, g
 }
 
 /* finds named protocol in the level protocols of protostack*/
-const protocol_t *protocol_stack_find(GList *protostack[], size_t level, const gchar *protoname)
+const protocol_t *protocol_stack_find(protostack_t *pstk, size_t level, const gchar *protoname)
 {
   GList *item;
-  
+
+  g_assert(pstk);
+
   if (level>STACK_SIZE || !protoname)
     return NULL;
   
-  item = g_list_find_custom (protostack[level], protoname, protocol_compare);
+  item = g_list_find_custom (pstk->protostack[level], protoname, protocol_compare);
   if (item && item->data)
     return (const protocol_t *)item->data;
 
@@ -189,15 +196,16 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
 /* Finds the most commmon protocol of all the packets in a
  * given node/link */
 gchar *
-protocol_stack_find_most_used(GList *protostack[], size_t level)
+protocol_stack_find_most_used(protostack_t *pstk, size_t level)
 {
   protocol_t *protocol;
+
   /* If we haven't recognized any protocol at that level,
    * we say it's unknown */
-  if (level>STACK_SIZE || !protostack || !protostack[level])
+  if (level>STACK_SIZE || !pstk || !pstk->protostack[level])
     return NULL;
-  protostack[level] = g_list_sort (protostack[level], prot_freq_compare);
-  protocol = (protocol_t *) protostack[level]->data;
+  pstk->protostack[level] = g_list_sort (pstk->protostack[level], prot_freq_compare);
+  protocol = (protocol_t *) pstk->protostack[level]->data;
   return g_strdup (protocol->name);
 }				/* get_main_prot */
 
@@ -217,7 +225,7 @@ void protocol_summary_open(void)
   protosummary = g_malloc( sizeof(protocol_summary_t) );
   protosummary->n_packets = 0;
   protosummary->packets = NULL;
-  protocol_stack_init(protosummary->protostack);
+  protocol_stack_init(&protosummary->protos);
 }
 
 /* frees summary, releasing resources */
@@ -229,7 +237,7 @@ void protocol_summary_close(void)
         protosummary->packets = packet_list_remove(protosummary->packets);
       protosummary->packets = NULL;
       protosummary->n_packets = 0;
-      protocol_stack_free(protosummary->protostack);
+      protocol_stack_free(&protosummary->protos);
       g_free(protosummary);
       protosummary = NULL;
     }
@@ -250,7 +258,7 @@ void protocol_summary_add_packet(packet_info_t *packet)
   protosummary->packets = g_list_prepend (protosummary->packets, newit);
   ++protosummary->n_packets;
 
-  protocol_stack_add_pkt(protosummary->protostack, packet);
+  protocol_stack_add_pkt(&protosummary->protos, packet);
 }
 
 static void
@@ -283,7 +291,7 @@ protocol_summary_purge_expired_packets()
     /* TODO: insert proto expiration. Right a proto is never removed */
     /* packet expired, remove WITHOUT removing the proto entry, because the 
      * proto legend/window can't cope */
-    protocol_stack_sub_pkt(protosummary->protostack, packet->info, FALSE);
+    protocol_stack_sub_pkt(&protosummary->protos, packet->info, FALSE);
 
     /* packet expired, remove from list - gets the new check position 
      * if this packet is the first of the list, all the previous packets
@@ -329,7 +337,7 @@ void protocol_summary_update_all(void)
 
       for (i = 0; i <= STACK_SIZE; i++)
         {
-          item = protosummary->protostack[i];
+          item = protosummary->protos.protostack[i];
           while (item)
             {
               protocol = (protocol_t *)item->data;
@@ -348,7 +356,7 @@ guint protocol_summary_size(size_t level)
 {
   if (!protosummary || level > STACK_SIZE)
     return 0;
-  return g_list_length(protosummary->protostack[level]);
+  return g_list_length(protosummary->protos.protostack[level]);
 }
 
 
@@ -357,7 +365,7 @@ void protocol_summary_foreach(size_t level, GFunc func, gpointer data)
 {
   if (!protosummary || level > STACK_SIZE)
     return;
-  g_list_foreach (protosummary->protostack[level], func, data);
+  g_list_foreach (protosummary->protos.protostack[level], func, data);
 }
 
 
@@ -366,7 +374,7 @@ const protocol_t *protocol_summary_find(size_t level, const gchar *protoname)
 {
   if (!protosummary)
     return NULL;
-  return protocol_stack_find(protosummary->protostack, level, protoname);
+  return protocol_stack_find(&protosummary->protos, level, protoname);
 }
 
 /***************************************************************************
@@ -407,9 +415,7 @@ void protocol_t_delete(protocol_t *prot)
       GList *name_item = prot->node_names;
       name_t *name = name_item->data;
       node_name_delete(name);
-      prot->node_names =
-        g_list_delete_link (prot->node_names,
-                            name_item);
+      prot->node_names = g_list_delete_link (prot->node_names, name_item);
     }
 
   g_free (prot);

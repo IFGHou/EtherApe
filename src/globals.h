@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
+ 
 #ifndef ETHERAPE_GLOBALS_H
 #define ETHERAPE_GLOBALS_H
 
@@ -36,7 +36,6 @@
 #ifndef MAXDNAME
 #define MAXDNAME        1025	/* maximum domain name length */
 #endif
-
 
 /* Enumerations */
 
@@ -187,6 +186,7 @@ struct
   gchar *interface;		/* Network interface to listen to */
   gchar *filter;		/* Pcap filter to be used */
 
+  gboolean is_debug;    /* TRUE if DEBUG specified on environment */
 }
 pref;
 

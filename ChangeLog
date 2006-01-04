@@ -1,3 +1,9 @@
+2006-01-03 21:27  bchiara
+
+	* ChangeLog, README.help, TODO, html/FAQ.html, src/capture.c,
+	src/diagram.c, src/globals.h, src/main.c, src/main.h,
+	src/preferences.c, src/preferences.h: cleanups ...
+
 2006-01-03 19:51  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,

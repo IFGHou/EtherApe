@@ -21,6 +21,10 @@
 #ifndef PROTOCOLS_H
 #define PROTOCOLS_H
 
+#include "pkt_info.h"
+
+#define STACK_SIZE 5		/* How many protocol levels to keep
+				 * track of (+1) */
 
 /* Information about each protocol heard on a link */
 typedef struct
@@ -44,20 +48,24 @@ void protocol_t_delete(protocol_t *prot);
 
 gint protocol_compare (gconstpointer a, gconstpointer b);
 
-
-
+typedef struct
+{
+  GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
+                                         * all protocol_t heard at that level */
+}
+protostack_t;
 
 /* protocol stack methods */
-void protocol_stack_init(GList *protostack[]);
-void protocol_stack_free(GList *protostack[]);
+void protocol_stack_init(protostack_t *pstk);
+void protocol_stack_free(protostack_t *pstk);
 /* adds packet data to the stack */
-void protocol_stack_add_pkt(GList *protostack[], const packet_info_t * packet);
+void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */
-void protocol_stack_sub_pkt(GList *protostack[], const packet_info_t * packet, gboolean purge_entry);
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry);
 /* finds named protocol in the requested level of protostack*/
-const protocol_t *protocol_stack_find(GList *protostack[], size_t level, const gchar *protoname);
+const protocol_t *protocol_stack_find(protostack_t *pstk, size_t level, const gchar *protoname);
 /* finds the most used protocol in the requested level */
-gchar *protocol_stack_find_most_used(GList *protostack[], size_t level);
+gchar *protocol_stack_find_most_used(protostack_t *pstk, size_t level);
 
 
 
@@ -65,9 +73,7 @@ typedef struct
 {
   guint n_packets;		/* Number of active packets linked to some proto*/
   GList *packets;		/* List of active packets */
-  
-  GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
-                                         * all protocols heard at that level */
+  protostack_t protos;          /* the protocol stack */
 } protocol_summary_t;
 
 /* protocol summary method */

@@ -35,6 +35,8 @@ gint link_id_compare (const link_id_t *a, const link_id_t *b);
 typedef struct
 {
   link_id_t link_id;		/* src and dest addresses of link */
+  gchar *src_name;
+  gchar *dst_name;
   gdouble average;
   gdouble accumulated;
   guint n_packets;
@@ -42,10 +44,7 @@ typedef struct
   GList *link_packets;		/* List of packets heard on this link */
 
   gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the link */
-  GList *link_protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
-					 * all protocols heard at that level */
-  gchar *src_name;
-  gchar *dst_name;
+  protostack_t link_protos;
 }
 link_t;
 link_t *link_create(const link_id_t *link_id); /* creates a new link object */

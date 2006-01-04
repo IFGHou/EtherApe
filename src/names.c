@@ -37,7 +37,7 @@ typedef struct
   {
     guint8 level;       /* current decoder level */
     gchar **tokens;     /* array of decoder names */
-    GList **prot_list;  /* protocol list */
+    protostack_t *protos;  /* protocol list */
   } decoder;
 }
 name_add_t;
@@ -97,14 +97,14 @@ static void add_name (gchar * numeric, gchar * resolved, gboolean solved,
 static void decode_next(name_add_t *nt);
 
 void
-get_packet_names (GList ** protocols,
+get_packet_names (protostack_t *pstk,
 		  const guint8 * packet,
 		  guint16 size,
 		  const gchar * prot_stack, packet_direction direction)
 {
   name_add_t nt;
 
-  g_assert (protocols != NULL);
+  g_assert (pstk != NULL);
   g_assert (packet != NULL);
 
   nt.p = packet;
@@ -118,7 +118,7 @@ get_packet_names (GList ** protocols,
    */
   nt.decoder.level = 0;
   nt.decoder.tokens = g_strsplit (prot_stack, "/", 0);
-  nt.decoder.prot_list = protocols;
+  nt.decoder.protos = pstk;
 
   /* starts decoding */
   decode_next(&nt);
@@ -572,9 +572,9 @@ get_nbss_name (name_add_t *nt)
 
   if (mesg_type == SESSION_REQUEST)
     {
-      name_len = ethereal_nbns_name (nt->p, nt->offset, nt->offset, name, &name_type);
+      name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
       if (nt->dir == OUTBOUND)
-	ethereal_nbns_name (nt->p, nt->offset + name_len, nt->offset + name_len, name,
+	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + name_len, nt->offset + name_len, name,
 			    &name_type);
 
 
@@ -624,10 +624,10 @@ get_nbdgm_name (name_add_t *nt)
   if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
     {
       nt->offset += 4;
-      len = ethereal_nbns_name (nt->p, nt->offset, nt->offset, name, &name_type);
+      len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
 
       if (nt->dir == INBOUND)
-	ethereal_nbns_name (nt->p, nt->offset + len, nt->offset + len, name, &name_type);
+	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + len, nt->offset + len, name, &name_type);
       name_found = TRUE;
 
     }
@@ -635,7 +635,7 @@ get_nbdgm_name (name_add_t *nt)
     {
       if (nt->dir == INBOUND)
 	{
-	  len = ethereal_nbns_name (nt->p, nt->offset, nt->offset, name, &name_type);
+	  len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
 	  name_found = TRUE;
 	}
     }
@@ -667,17 +667,15 @@ static void
 add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved, 
           const node_id_t *node_id, const name_add_t *nt)
 {
-  GList *protocol_item = NULL;
   protocol_t *protocol = NULL;
   GList *name_item = NULL;
   name_t *name = NULL;
   name_t key;
 
   /* Find the protocol entry */
-  protocol_item = g_list_find_custom (nt->decoder.prot_list[nt->decoder.level],
-				      nt->decoder.tokens[nt->decoder.level], 
-                                      protocol_compare);
-  protocol = (protocol_t *) (protocol_item->data);
+  protocol = protocol_stack_find(nt->decoder.protos,
+                                 nt->decoder.level,
+			         nt->decoder.tokens[nt->decoder.level]);
 
   key.node_id = *node_id;
   

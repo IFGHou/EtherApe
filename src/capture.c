@@ -785,7 +785,7 @@ add_node_packet (const guint8 * raw_packet,
 
   /* We update the node's protocol stack with the protocol
    * information this packet is bearing */
-  protocol_stack_add_pkt(node->protocols, packet);
+  protocol_stack_add_pkt(&node->node_protos, packet);
 
   /* We update node info */
   node->accumulated += packet->size;
@@ -808,7 +808,7 @@ add_node_packet (const guint8 * raw_packet,
     new_nodes_add(node);
 
   /* Update names list for this node */
-  get_packet_names (node->protocols, raw_packet, packet->size,
+  get_packet_names (&node->node_protos, raw_packet, packet->size,
 		    packet->prot_desc, direction);
 
 }				/* add_node_packet */
@@ -836,7 +836,7 @@ add_link_packet (const link_id_t *link_id, packet_info_t * packet)
 
   /* We update the link's protocol stack with the protocol
    * information this packet is bearing */
-  protocol_stack_add_pkt(link->link_protocols, packet);
+  protocol_stack_add_pkt(&link->link_protos, packet);
 
   /* update link info */
   link->accumulated += packet->size;
@@ -924,11 +924,11 @@ update_node_names (node_t * node)
    * Then fix it in other places */
   while (i + 1)
     {
-      if (node->protocols[i])
+      if (node->node_protos.protostack[i])
 	{
           GList *protocol_item = NULL;
           protocol_t *protocol = NULL;
-	  protocol_item = node->protocols[i];
+	  protocol_item = node->node_protos.protostack[i];
 	  for (; protocol_item; protocol_item = protocol_item->next)
 	    {
 	      protocol = (protocol_t *) (protocol_item->data);
@@ -970,9 +970,9 @@ update_node_names (node_t * node)
 static void
 set_node_name (node_t * node, gchar * preferences)
 {
-  GList *name_item = NULL, *protocol_item = NULL;
+  GList *name_item = NULL;
   name_t *name = NULL;
-  protocol_t *protocol = NULL;
+  const protocol_t *protocol = NULL;
   gchar **prots, **tokens;
   guint i = 0;
   guint j = STACK_SIZE;
@@ -986,11 +986,9 @@ set_node_name (node_t * node, gchar * preferences)
       /* We don't do level 0, which has the topmost prot */
       for (j = STACK_SIZE; j && cont; j--)
 	{
-	  protocol_item = g_list_find_custom (node->protocols[j],
-					      tokens[0], protocol_compare);
-	  if (protocol_item)
+	  protocol = protocol_stack_find(&node->node_protos, j, tokens[0]);
+	  if (protocol)
 	    {
-	      protocol = (protocol_t *) (protocol_item->data);
 	      name_item = protocol->node_names;
 	      if (!strcmp (protocol->name, tokens[0]) && name_item)
 		{

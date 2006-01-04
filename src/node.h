@@ -20,8 +20,8 @@
 #ifndef ETHERAPE_NODE_H
 #define ETHERAPE_NODE_H
 
-#define STACK_SIZE 5		/* How many protocol levels to keep
-				 * track of (+1) */
+#include "protocols.h"
+
 
 struct timeval substract_times (struct timeval a, struct timeval b);
 
@@ -34,37 +34,9 @@ typedef struct
 }
 traffic_stats_t;
 void traffic_stats_reset(traffic_stats_t *tf_stat); /* resets counters */
-
-
-/* Flag used in node packets to indicate whether this packet was
- * inbound or outbound for the node. Links and protocols use
- * "eitherbound" */
-typedef enum
-{
-  EITHERBOUND=-1, INBOUND = 0, OUTBOUND = 1
-}
-packet_direction;
-
-/* Information about each packet heard on the network */
-typedef struct
-{
-  guint size;			/* Size in bytes of the packet */
-  struct timeval timestamp;	/* Time at which the packet was heard */
-  gchar *prot_desc;			/* Packet protocol tree */
-  guint ref_count;		/* How many structures are referencing this 
-				 * packet. When the count reaches zero the packet
-				 * is deleted */
-}
-packet_info_t;
-
-/* items of a packet list. The "direction" item is used to update in/out 
- * stats */
-typedef struct
-{
-  packet_info_t *info;
-  packet_direction direction;         /* packet direction - used for nodes */
-}
-packet_list_item_t;
+void traffic_stats_add(traffic_stats_t *tf_stat, gdouble val); 
+void traffic_stats_sub(traffic_stats_t *tf_stat, gdouble val); 
+void traffic_stats_avg(traffic_stats_t *tf_stat, gdouble avg_usecs);
 
 
 typedef struct
@@ -83,6 +55,8 @@ void packet_stats_release(packet_stats_t *pkt_stat); /* releases memory */
 void packet_stats_add_packet( packet_stats_t *pkt_stat, 
                               packet_info_t *new_pkt, 
                               packet_direction dir); /* adds a packet */
+void packet_stats_purge_expired_packets(packet_stats_t *pkt_stat, double expire_time);
+gboolean packet_stats_update(packet_stats_t *pkt_stat, double expire_time);
 /* removes a packet from a list of packets, destroying it if necessary
  * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
  * if the list is empty */
@@ -148,8 +122,7 @@ typedef struct
 				 * its sizes. Used to calculate average
 				 * traffic */
   gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the node */
-  GList *protocols[STACK_SIZE + 1];	/* It's a stack. Each level is a list of
-					 * all protocols heard at that level */
+  protostack_t node_protos;
 }
 node_t;
 
