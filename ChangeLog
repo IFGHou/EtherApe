@@ -1,3 +1,12 @@
+2006-01-04 19:48  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/capture.c,
+	src/conversations.c, src/conversations.h, src/diagram.c,
+	src/globals.h, src/links.c, src/links.h, src/main.c, src/names.c,
+	src/names.h, src/node.c, src/node.h, src/protocols.c,
+	src/protocols.h: Conversation now expire with the corresponding
+	link. Protocol stack revision.
+
 2006-01-03 21:27  bchiara
 
 	* ChangeLog, README.help, TODO, html/FAQ.html, src/capture.c,
