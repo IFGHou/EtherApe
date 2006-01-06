@@ -1,3 +1,8 @@
+2006-01-04 19:50  bchiara
+
+	* ChangeLog, src/pkt_info.h: pkt_info.h now contains declarations
+	of basic packet structures
+
 2006-01-04 19:48  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/capture.c,

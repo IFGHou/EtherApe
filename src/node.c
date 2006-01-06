@@ -58,11 +58,11 @@ substract_times (struct timeval a, struct timeval b)
 
 /***************************************************************************
  *
- * traffic_stats_t implementation
+ * basic_stats_t implementation
  *
  **************************************************************************/
 /* resets counters */
-void traffic_stats_reset(traffic_stats_t *tf_stat)
+void basic_stats_reset(basic_stats_t *tf_stat)
 {
   g_assert(tf_stat);
   tf_stat->average = 0;
@@ -70,26 +70,26 @@ void traffic_stats_reset(traffic_stats_t *tf_stat)
   tf_stat->aver_accu = 0;
 }
 
-void traffic_stats_add(traffic_stats_t *tf_stat, gdouble val)
+void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
 {
   g_assert(tf_stat);
   tf_stat->accumulated += val;
   tf_stat->aver_accu += val;
-  /* averages are calculated by traffic_stats_avg */
+  /* averages are calculated by basic_stats_avg */
 }
 
-void traffic_stats_sub(traffic_stats_t *tf_stat, gdouble val)
+void basic_stats_sub(basic_stats_t *tf_stat, gdouble val)
 {
   g_assert(tf_stat);
   tf_stat->accumulated -= val;
   tf_stat->aver_accu -= val;
   if (!tf_stat->aver_accu)
     tf_stat->average = 0;
-  /* averages are calculated by traffic_stats_avg */
+  /* averages are calculated by basic_stats_avg */
 }
 
 void
-traffic_stats_avg(traffic_stats_t *tf_stat, gdouble avg_usecs)
+basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
 {
   g_assert(tf_stat);
 
@@ -99,17 +99,17 @@ traffic_stats_avg(traffic_stats_t *tf_stat, gdouble avg_usecs)
 
 /***************************************************************************
  *
- * packet_stats_t implementation
+ * traffic_stats_t implementation
  *
  **************************************************************************/
 
-static void packet_stats_list_item_delete(gpointer data, gpointer dum)
+static void traffic_stats_list_item_delete(gpointer data, gpointer dum)
 {
   g_free(data); /* TODO: properly release memory */
 }
 
 /* initializes counters */
-void packet_stats_initialize(packet_stats_t *pkt_stat)
+void traffic_stats_open(traffic_stats_t *pkt_stat)
 {
   g_assert(pkt_stat);
 
@@ -117,27 +117,36 @@ void packet_stats_initialize(packet_stats_t *pkt_stat)
   pkt_stat->n_packets = 0;
   pkt_stat->last_time = now;
 
-  traffic_stats_reset(&pkt_stat->stats);
-  traffic_stats_reset(&pkt_stat->stats_in);
-  traffic_stats_reset(&pkt_stat->stats_out);
+  basic_stats_reset(&pkt_stat->stats);
+  basic_stats_reset(&pkt_stat->stats_in);
+  basic_stats_reset(&pkt_stat->stats_out);
+  
+  protocol_stack_open(&pkt_stat->stats_protos);
 }
 
 /* releases memory */
-void packet_stats_release(packet_stats_t *pkt_stat)
+void traffic_stats_close(traffic_stats_t *pkt_stat)
 {
   g_assert(pkt_stat);
 
   /* release items and free list */
-  g_list_foreach(pkt_stat->pkt_list, packet_stats_list_item_delete, NULL);
+  g_list_foreach(pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
   g_list_free(pkt_stat->pkt_list);
+  protocol_stack_close(&pkt_stat->stats_protos);
 
   /* resets everything */
-  packet_stats_initialize(pkt_stat);
+  pkt_stat->pkt_list = NULL;
+  pkt_stat->n_packets = 0;
+  pkt_stat->last_time = now;
+
+  basic_stats_reset(&pkt_stat->stats);
+  basic_stats_reset(&pkt_stat->stats_in);
+  basic_stats_reset(&pkt_stat->stats_out);
 }
 
 /* adds a packet */
 void 
-packet_stats_add_packet(packet_stats_t *pkt_stat, 
+traffic_stats_add_packet(traffic_stats_t *pkt_stat, 
                         packet_info_t *new_pkt, 
                         packet_direction dir)
 {
@@ -160,17 +169,20 @@ packet_stats_add_packet(packet_stats_t *pkt_stat,
   pkt_stat->n_packets++;
   pkt_stat->last_time = now;
 
-  traffic_stats_add(&pkt_stat->stats, newit->info->size);
+  basic_stats_add(&pkt_stat->stats, newit->info->size);
   if (newit->direction != OUTBOUND)
-    traffic_stats_add(&pkt_stat->stats_in, newit->info->size); /* in or either */
+    basic_stats_add(&pkt_stat->stats_in, newit->info->size); /* in or either */
   if (newit->direction != INBOUND)
-    traffic_stats_add(&pkt_stat->stats_out, newit->info->size);/* out or either */
+    basic_stats_add(&pkt_stat->stats_out, newit->info->size);/* out or either */
+
+  /* adds also to protocol stack */
+  protocol_stack_add_pkt(&pkt_stat->stats_protos, newit->info);
 
   /* note: averages are calculated later, by update_packet_list */
 }
 
 void
-packet_stats_purge_expired_packets(packet_stats_t *pkt_stat, double expire_time)
+traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_protos)
 {
   struct timeval result;
   GList *packet_l_e = NULL;	/* Packets is a list of packets.
@@ -186,14 +198,17 @@ packet_stats_purge_expired_packets(packet_stats_t *pkt_stat, double expire_time)
     if (!IS_OLDER (result, expire_time) && (status != STOP))
       break; /* packet valid, subsequent packets are younger, no need to go further */
 
-    /* packet expired, remove */
-    traffic_stats_sub(&pkt_stat->stats, packet->info->size);
+    /* packet expired, remove from stats */
+    basic_stats_sub(&pkt_stat->stats, packet->info->size);
     if (packet->direction != OUTBOUND)
-      traffic_stats_sub(&pkt_stat->stats_in, packet->info->size); /* in or either */
+      basic_stats_sub(&pkt_stat->stats_in, packet->info->size); /* in or either */
     if (packet->direction != INBOUND)
-      traffic_stats_sub(&pkt_stat->stats_out, packet->info->size);/* out or either */
+      basic_stats_sub(&pkt_stat->stats_out, packet->info->size);/* out or either */
 
-    /* packet expired, remove from list - gets the new check position 
+    /* and protocol stack */
+    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info, purge_protos);
+
+    /* and, finally from packet list - gets the new check position 
      * if this packet is the first of the list, all the previous packets
      * should be already destroyed. We check that remove never returns a
      * NEXT packet */
@@ -217,9 +232,9 @@ packet_stats_purge_expired_packets(packet_stats_t *pkt_stat, double expire_time)
 /* Update stats, purging expired packets - returns FALSE if there are no 
  * active packets */
 gboolean
-packet_stats_update(packet_stats_t *pkt_stat, double expire_time)
+traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_expired_protos)
 {
-  packet_stats_purge_expired_packets(pkt_stat, expire_time);
+  traffic_stats_purge_expired_packets(pkt_stat, expire_time, purge_expired_protos);
 
   if (pkt_stat->pkt_list)
     {
@@ -237,9 +252,9 @@ packet_stats_update(packet_stats_t *pkt_stat, double expire_time)
       usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
 
       /* calculate averages */
-      traffic_stats_avg(&pkt_stat->stats, usecs_from_oldest);
-      traffic_stats_avg(&pkt_stat->stats_in, usecs_from_oldest);
-      traffic_stats_avg(&pkt_stat->stats_out, usecs_from_oldest);
+      basic_stats_avg(&pkt_stat->stats, usecs_from_oldest);
+      basic_stats_avg(&pkt_stat->stats_in, usecs_from_oldest);
+      basic_stats_avg(&pkt_stat->stats_out, usecs_from_oldest);
 
       return TRUE; /* there are packets active */
     }
@@ -346,7 +361,7 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
   node->aver_accu = node->aver_accu_in = node->aver_accu_out = 0;
 
   node->packets = NULL;
-  protocol_stack_init(&node->node_protos);
+  protocol_stack_open(&node->node_protos);
   while (i + 1)
     {
       node->main_prot[i] = NULL;
@@ -360,8 +375,6 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
 /* destroys a node */
 void node_delete(node_t *node)
 {
-  GList *protocol_item = NULL;
-  protocol_t *protocol_info = NULL;
   guint i = STACK_SIZE;
 
   if (!node)
@@ -378,29 +391,11 @@ void node_delete(node_t *node)
         g_free (node->main_prot[i]);
         node->main_prot[i] = NULL;
       }
-  i = 0;
-  while (i <= STACK_SIZE)
-    {
-
-      while (node->node_protos.protostack[i])
-        {
-          protocol_item = node->node_protos.protostack[i];
-          protocol_info = protocol_item->data;
-
-          if (!protocol_info->accumulated)
-            {
-              protocol_t_delete(protocol_info);
-              node->node_protos.protostack[i] =
-                g_list_delete_link (node->node_protos.protostack[i],
-                                    protocol_item);
-            }
-        }
-      i++;
-    }
-
   while (node->packets)
     node->packets = packet_list_remove(node->packets);
   node->packets = NULL;
+
+  protocol_stack_close(&node->node_protos);
 
   g_free (node);
 }
@@ -574,7 +569,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
         {
           if (node->main_prot[i])
             g_free (node->main_prot[i]);
-          node->main_prot[i] = protocol_stack_find_most_used(&node->node_protos, i);
+          node->main_prot[i] = protocol_stack_sort_most_used(&node->node_protos, i);
           i--;
         }
       update_node_names (node);

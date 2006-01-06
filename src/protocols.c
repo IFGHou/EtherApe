@@ -29,7 +29,7 @@
  *
  **************************************************************************/
 
-void protocol_stack_init(protostack_t *pstk)
+void protocol_stack_open(protostack_t *pstk)
 {
   g_assert(pstk);
   guint i;
@@ -37,7 +37,7 @@ void protocol_stack_init(protostack_t *pstk)
     pstk->protostack[i] = NULL;
 }
 
-void protocol_stack_free(protostack_t *pstk)
+void protocol_stack_close(protostack_t *pstk)
 {
   guint i;
   protocol_t *protocol_info;
@@ -157,7 +157,7 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gb
 }
 
 /* finds named protocol in the level protocols of protostack*/
-const protocol_t *protocol_stack_find(protostack_t *pstk, size_t level, const gchar *protoname)
+const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname)
 {
   GList *item;
 
@@ -193,10 +193,9 @@ prot_freq_compare (gconstpointer a, gconstpointer b)
 }				/* prot_freq_compare */
 
 
-/* Finds the most commmon protocol of all the packets in a
- * given node/link */
+/* sorts on the most used protocol in the requested level and returns it */
 gchar *
-protocol_stack_find_most_used(protostack_t *pstk, size_t level)
+protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
 {
   protocol_t *protocol;
 
@@ -225,7 +224,7 @@ void protocol_summary_open(void)
   protosummary = g_malloc( sizeof(protocol_summary_t) );
   protosummary->n_packets = 0;
   protosummary->packets = NULL;
-  protocol_stack_init(&protosummary->protos);
+  protocol_stack_open(&protosummary->protos);
 }
 
 /* frees summary, releasing resources */
@@ -237,7 +236,7 @@ void protocol_summary_close(void)
         protosummary->packets = packet_list_remove(protosummary->packets);
       protosummary->packets = NULL;
       protosummary->n_packets = 0;
-      protocol_stack_free(&protosummary->protos);
+      protocol_stack_close(&protosummary->protos);
       g_free(protosummary);
       protosummary = NULL;
     }

@@ -56,16 +56,16 @@ typedef struct
 protostack_t;
 
 /* protocol stack methods */
-void protocol_stack_init(protostack_t *pstk);
-void protocol_stack_free(protostack_t *pstk);
+void protocol_stack_open(protostack_t *pstk);
+void protocol_stack_close(protostack_t *pstk);
 /* adds packet data to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */
 void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry);
 /* finds named protocol in the requested level of protostack*/
-const protocol_t *protocol_stack_find(protostack_t *pstk, size_t level, const gchar *protoname);
-/* finds the most used protocol in the requested level */
-gchar *protocol_stack_find_most_used(protostack_t *pstk, size_t level);
+const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname);
+/* sorts on the most used protocol in the requested level and returns it */
+gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
 
 
 

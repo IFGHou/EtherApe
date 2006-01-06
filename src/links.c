@@ -72,7 +72,7 @@ link_t *link_create(const link_id_t *link_id)
   link->src_name = NULL;
   link->dst_name = NULL;
   link->last_time = now;
-  protocol_stack_init(&link->link_protos);
+  protocol_stack_open(&link->link_protos);
   while (i + 1)
     {
       link->main_prot[i] = NULL;
@@ -115,6 +115,9 @@ void link_delete(link_t *link)
   link->src_name = NULL;
   g_free (link->dst_name);
   link->dst_name = NULL;
+
+  protocol_stack_close(&link->link_protos);
+
   g_free (link);
 }
 
@@ -228,7 +231,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
           if (link->main_prot[i])
             g_free (link->main_prot[i]);
           link->main_prot[i]
-            = protocol_stack_find_most_used(&link->link_protos, i);
+            = protocol_stack_sort_most_used(&link->link_protos, i);
           i--;
         }
 
@@ -259,7 +262,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
            * link_subtract_packet_data */
           link->link_packets = NULL;
           link->accumulated = 0;
-          protocol_stack_free(&link->link_protos);
+          protocol_stack_close(&link->link_protos);
         }
     }
 

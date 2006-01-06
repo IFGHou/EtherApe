@@ -68,7 +68,7 @@ static void add_node_packet (const guint8 * packet,
 			     packet_direction direction);
 static void add_link_packet (const link_id_t *link_id, packet_info_t * packet_info);
 
-static void set_node_name (node_t * node, gchar * preferences);
+static void set_node_name (node_t * node, const gchar * preferences);
 
 
 static GString *print_mem (const node_id_t *node_id);
@@ -968,7 +968,7 @@ update_node_names (node_t * node)
 
 
 static void
-set_node_name (node_t * node, gchar * preferences)
+set_node_name (node_t * node, const gchar * preferences)
 {
   GList *name_item = NULL;
   name_t *name = NULL;

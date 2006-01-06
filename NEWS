@@ -2,6 +2,16 @@
 
    $Date 2005/08/18 21:47:23 $
 
+  Overview of changes in EtherApe 0.9.4 (????):
+
+     * Fixes bug 1385105 (crash with double free). Thanks to goga_russian for the segnalation.
+     * Fixes bug 1372245 (crashes when node goes too big). Thanks to goga_russing for the segnalation.
+     * Fixes bug 1396236 ("force numeric" and "dns resolution" checkboxes not working)
+     * Fixes bug 1268291 (OSX net/if.h). Thanks to Eric Stewart for the patch.
+     * Heavy refactoring to make sources easier to understand and maintain.
+     * Small performance enhancements due to refactoring.
+     * Better memory handling due to refactoring.
+
   Overview of changes in EtherApe 0.9.3 (Thursday 8-18-2005):
 
      * Fixes bug 1083524 (deletion of all user colors)
