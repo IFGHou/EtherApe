@@ -48,6 +48,25 @@ link_id_compare (const link_id_t *a, const link_id_t *b)
 
 }				/* link_id_compare */
 
+/* returns a NEW gchar * with the node names of the link_id */
+gchar *
+link_id_node_names(const link_id_t *link_id)
+{
+  const node_t *src_node, *dst_node;
+  
+  src_node = nodes_catalog_find(&link_id->src);
+  dst_node = nodes_catalog_find(&link_id->dst);
+  if (!src_node || !dst_node || 
+    !src_node->name->str || !dst_node->name->str)
+    return g_strdup(""); /* invalid info */
+
+  return g_strdup_printf("%s-%s",
+          src_node->name->str,
+          dst_node->name->str);
+}
+
+
+
 /***************************************************************************
  *
  * link_t implementation
@@ -60,31 +79,19 @@ link_t *link_create(const link_id_t *link_id)
 {
   link_t *link;
   guint i = STACK_SIZE;
-  node_t *node;
 
   link = g_malloc (sizeof (link_t));
+  
 
   link->link_id = *link_id;
-  link->average = 0;
-  link->n_packets = 0;
-  link->accumulated = 0;
-  link->link_packets = NULL;
-  link->src_name = NULL;
-  link->dst_name = NULL;
-  link->last_time = now;
-  protocol_stack_open(&link->link_protos);
+
   while (i + 1)
     {
       link->main_prot[i] = NULL;
       i--;
     }
-  node = nodes_catalog_find(&link_id->src);
-  g_assert(node);
-  link->src_name = g_strdup (node->name->str);
 
-  node = nodes_catalog_find(&link_id->dst);
-  g_assert(node);
-  link->dst_name = g_strdup (node->name->str);
+  traffic_stats_init(&link->link_stats);
 
   return link;
 }
@@ -106,17 +113,8 @@ void link_delete(link_t *link)
         g_free (link->main_prot[i]);
         link->main_prot[i] = NULL;
       }
-  
-  while (link->link_packets)
-    link->link_packets = packet_list_remove(link->link_packets);
-  link->link_packets = NULL;
-      
-  g_free (link->src_name);
-  link->src_name = NULL;
-  g_free (link->dst_name);
-  link->dst_name = NULL;
 
-  protocol_stack_close(&link->link_protos);
+  traffic_stats_reset(&link->link_stats);
 
   g_free (link);
 }
@@ -128,110 +126,32 @@ gfunc_remove_link(gpointer data, gpointer user_data)
   links_catalog_remove( (const link_id_t *) data);
 }
 
-static void
-link_subtract_packet_data(link_t * link, packet_info_t * packet)
-{
-  link->accumulated -= packet->size;
-  if (!link->accumulated)
-    link->average = 0;
-
-  /* We remove protocol aggregate information */
-  protocol_stack_sub_pkt(&link->link_protos, packet, TRUE);
-}
-
-static void
-link_purge_expired_packets(link_t * link)
-{
-  double time_comparison;
-  struct timeval result;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-
-  if (!link->link_packets)
-    {
-      link->n_packets = 0;
-      return;
-    }
-
-  /* calculate the right expiration interval */
-  if (pref.link_timeout_time)
-    time_comparison = (pref.link_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.link_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  packet_l_e = g_list_last (link->link_packets);
-  while (packet_l_e)
-    {
-      packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
-      if (packet)
-        {
-          /* if the packet is old or capture is stopped, we purge */
-          result = substract_times (now, packet->info->timestamp);
-          if (!IS_OLDER (result, time_comparison) && (status != STOP))
-            break; /* packet valid, subsequent packets are younger, no need to go further */
-          
-          /* expired packet, remove data */
-          link_subtract_packet_data(link, packet->info);
-        }
-  
-      /* packet null or expired, remove from list 
-       * gets the new check position 
-       * if this packet is the first of the list, all the previous packets
-       * should be already destroyed. We check that remove never returns a
-       * NEXT packet */
-      GList *next=packet_l_e->next;
-      packet_l_e = packet_list_remove(packet_l_e);
-      g_assert(packet_l_e == NULL || packet_l_e != next );
-      link->n_packets--;
-  
-    } /* end while */
-
-  if (!packet_l_e)
-    {
-      /* removed all packets */
-      link->n_packets = 0;
-      link->link_packets=NULL;
-    }
-}
-
 static gint
 update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
 {
+  double pkt_expire_time;
   struct timeval diff;
 
   g_assert(delete_list_ptr);
 
-  if (link->link_packets)
-    link_purge_expired_packets(link);
+  /* calculate the right expiration interval */
+  if (pref.link_timeout_time)
+    pkt_expire_time = (pref.link_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.link_timeout_time;
+  else
+    pkt_expire_time = pref.averaging_time;
 
-  /* If there still is relevant packets, then calculate average
-   * traffic and update names*/
-  if (link->link_packets)
+  /* update stats - returns true if there are active packets */
+  if (traffic_stats_update(&link->link_stats, pkt_expire_time, TRUE))
     {
+      /* packet(s) active, update the most used protocols for this link */
       guint i = STACK_SIZE;
-      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-      GList *packet_l_e;	/* Packets is a list of packets.
-                                     * packet_l_e is always the latest (oldest)
-                                     * list element */
-      packet_list_item_t *packet;
-
-      packet_l_e = g_list_last (link->link_packets);
-      packet = (packet_list_item_t *) packet_l_e->data;
-
-      diff = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
-
-      /* average in bps, so we multiply by 8 and 1000000 */
-      link->average = 8000000 * link->accumulated / usecs_from_oldest;
-      /* We look for the most used protocol for this link */
       while (i + 1)
         {
           if (link->main_prot[i])
             g_free (link->main_prot[i]);
           link->main_prot[i]
-            = protocol_stack_sort_most_used(&link->link_protos, i);
+            = protocol_stack_sort_most_used(&link->link_stats.stats_protos, i);
           i--;
         }
 
@@ -239,7 +159,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
   else
     {
       /* no packets remaining on link */
-      diff = substract_times (now, link->last_time);
+      diff = substract_times (now, link->link_stats.last_time);
 
       /* Remove link if it is too old or if capture is stopped */
       if ((IS_OLDER (diff, pref.link_timeout_time)
@@ -247,28 +167,16 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
         {
           GList **delete_list = (GList **)delete_list_ptr;
     
-          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-                 _("Queuing link for remove"));
-
           /* adds current to list of links to delete */
           *delete_list = g_list_prepend( *delete_list, link_id);
 
-        }
-      else
-        {
-          /* link not expired */
+          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,_("Queuing link for remove"));
 
-          /* The packet list structure has already been freed in
-           * link_subtract_packet_data */
-          link->link_packets = NULL;
-          link->accumulated = 0;
-          protocol_stack_close(&link->link_protos);
         }
     }
 
   return FALSE;
 }
-
 
 /***************************************************************************
  *
@@ -308,9 +216,15 @@ void links_catalog_insert(link_t *new_link)
  
   g_tree_insert (all_links, &new_link->link_id, new_link);
 
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("New link: %s-%s. Number of links %d"),
-	 new_link->src_name, new_link->dst_name, links_catalog_size());
+  if (pref.is_debug)
+  {
+    gchar *str = link_id_node_names(&new_link->link_id);
+
+    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+            _("New link: %s. Number of links %d"),
+            str, links_catalog_size());
+    g_free(str);
+  }
 }
 
 /* removes AND DESTROYS the named link from catalog */
@@ -384,4 +298,16 @@ links_catalog_update_all(void)
 
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
          _("Updated links. Active links %d"), links_catalog_size());
+}
+
+/* adds a new packet to the link, creating it if necessary */
+void
+links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet)
+{
+  link_t *link;
+
+  /* retrieves link from catalog, creating a new one if necessary */
+  link = links_catalog_find_create(link_id);
+
+  traffic_stats_add_packet(&link->link_stats, packet, EITHERBOUND);
 }

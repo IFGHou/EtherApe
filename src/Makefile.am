@@ -31,12 +31,13 @@ etherape_SOURCES = \
 	names_netbios.c names_netbios.h \
 	protocols.c protocols.h \
 	decode_proto.c decode_proto.h \
-	prot_types.h \
+	prot_types.h pkt_info.h \
 	info_windows.c info_windows.h \
 	ip-cache.c ip-cache.h \
 	node.c node.h \
 	links.c links.h \
 	conversations.c conversations.h \
+	traffic_stats.c traffic_stats.h \
 	datastructs.c datastructs.h
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 

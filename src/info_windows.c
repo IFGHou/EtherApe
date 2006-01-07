@@ -926,21 +926,21 @@ update_node_info_window (node_info_window_t * node_info_window)
   gtk_label_set_text (GTK_LABEL (widget), node->numeric_name->str);
   widget = g_object_get_data (G_OBJECT (window), "average");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->average, TRUE));
+		      traffic_to_str (node->node_stats.stats.average, TRUE));
   widget = g_object_get_data (G_OBJECT (window), "average_in");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->average_in, TRUE));
+		      traffic_to_str (node->node_stats.stats_in.average, TRUE));
   widget = g_object_get_data (G_OBJECT (window), "average_out");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->average_out, TRUE));
+		      traffic_to_str (node->node_stats.stats_out.average, TRUE));
   widget = g_object_get_data (G_OBJECT (window), "accumulated");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->accumulated, FALSE));
+		      traffic_to_str (node->node_stats.stats.accumulated, FALSE));
   widget = g_object_get_data (G_OBJECT (window), "accumulated_in");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->accumulated_in, FALSE));
+		      traffic_to_str (node->node_stats.stats_in.accumulated, FALSE));
   widget = g_object_get_data (G_OBJECT (window), "accumulated_out");
   gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (node->accumulated_out, FALSE));
+		      traffic_to_str (node->node_stats.stats_out.accumulated, FALSE));
   gtk_widget_queue_resize (GTK_WIDGET (node_info_window->window));
 }				/* update_node_info_window */

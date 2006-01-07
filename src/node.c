@@ -25,251 +25,9 @@ static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
 /***************************************************************************
  *
- * utility functions
- *
- **************************************************************************/
-
-/* Returns a timeval structure with the time difference between to
- * other timevals. result = a - b */
-struct timeval
-substract_times (struct timeval a, struct timeval b)
-{
-  struct timeval result;
-
-  /* Perform the carry for the later subtraction by updating Y. */
-  if (a.tv_usec < b.tv_usec)
-    {
-      int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
-      b.tv_usec -= 1000000 * nsec;
-      b.tv_sec += nsec;
-    }
-  if (a.tv_usec - b.tv_usec > 1000000)
-    {
-      int nsec = (a.tv_usec - b.tv_usec) / 1000000;
-      b.tv_usec += 1000000 * nsec;
-      b.tv_sec -= nsec;
-    }
-
-  result.tv_sec = a.tv_sec - b.tv_sec;
-  result.tv_usec = a.tv_usec - b.tv_usec;
-
-  return result;
-}				/* substract_times */
-
-/***************************************************************************
- *
- * basic_stats_t implementation
- *
- **************************************************************************/
-/* resets counters */
-void basic_stats_reset(basic_stats_t *tf_stat)
-{
-  g_assert(tf_stat);
-  tf_stat->average = 0;
-  tf_stat->accumulated = 0;
-  tf_stat->aver_accu = 0;
-}
-
-void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
-{
-  g_assert(tf_stat);
-  tf_stat->accumulated += val;
-  tf_stat->aver_accu += val;
-  /* averages are calculated by basic_stats_avg */
-}
-
-void basic_stats_sub(basic_stats_t *tf_stat, gdouble val)
-{
-  g_assert(tf_stat);
-  tf_stat->accumulated -= val;
-  tf_stat->aver_accu -= val;
-  if (!tf_stat->aver_accu)
-    tf_stat->average = 0;
-  /* averages are calculated by basic_stats_avg */
-}
-
-void
-basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
-{
-  g_assert(tf_stat);
-
-  /* average in bps, so we multiply by 8 and 1000000 */
-  tf_stat->average = 8000000 * tf_stat->aver_accu / avg_usecs;
-}
-
-/***************************************************************************
- *
- * traffic_stats_t implementation
- *
- **************************************************************************/
-
-static void traffic_stats_list_item_delete(gpointer data, gpointer dum)
-{
-  g_free(data); /* TODO: properly release memory */
-}
-
-/* initializes counters */
-void traffic_stats_open(traffic_stats_t *pkt_stat)
-{
-  g_assert(pkt_stat);
-
-  pkt_stat->pkt_list = NULL;
-  pkt_stat->n_packets = 0;
-  pkt_stat->last_time = now;
-
-  basic_stats_reset(&pkt_stat->stats);
-  basic_stats_reset(&pkt_stat->stats_in);
-  basic_stats_reset(&pkt_stat->stats_out);
-  
-  protocol_stack_open(&pkt_stat->stats_protos);
-}
-
-/* releases memory */
-void traffic_stats_close(traffic_stats_t *pkt_stat)
-{
-  g_assert(pkt_stat);
-
-  /* release items and free list */
-  g_list_foreach(pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
-  g_list_free(pkt_stat->pkt_list);
-  protocol_stack_close(&pkt_stat->stats_protos);
-
-  /* resets everything */
-  pkt_stat->pkt_list = NULL;
-  pkt_stat->n_packets = 0;
-  pkt_stat->last_time = now;
-
-  basic_stats_reset(&pkt_stat->stats);
-  basic_stats_reset(&pkt_stat->stats_in);
-  basic_stats_reset(&pkt_stat->stats_out);
-}
-
-/* adds a packet */
-void 
-traffic_stats_add_packet(traffic_stats_t *pkt_stat, 
-                        packet_info_t *new_pkt, 
-                        packet_direction dir)
-{
-  packet_list_item_t *newit;
-  
-  g_assert(pkt_stat);
-  g_assert(new_pkt);
-
-  newit = g_malloc( sizeof(packet_list_item_t) );
-
-  /* increments refcount of packet */
-  new_pkt->ref_count++;
-
-  /* fills item, adding it to pkt list */
-  newit->info = new_pkt;
-  newit->direction = dir;
-
-  pkt_stat->pkt_list = g_list_prepend (pkt_stat->pkt_list, newit);
-
-  pkt_stat->n_packets++;
-  pkt_stat->last_time = now;
-
-  basic_stats_add(&pkt_stat->stats, newit->info->size);
-  if (newit->direction != OUTBOUND)
-    basic_stats_add(&pkt_stat->stats_in, newit->info->size); /* in or either */
-  if (newit->direction != INBOUND)
-    basic_stats_add(&pkt_stat->stats_out, newit->info->size);/* out or either */
-
-  /* adds also to protocol stack */
-  protocol_stack_add_pkt(&pkt_stat->stats_protos, newit->info);
-
-  /* note: averages are calculated later, by update_packet_list */
-}
-
-void
-traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_protos)
-{
-  struct timeval result;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-
-  packet_l_e = g_list_last (pkt_stat->pkt_list);
-  while (packet_l_e)
-  {
-    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
-
-    result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, expire_time) && (status != STOP))
-      break; /* packet valid, subsequent packets are younger, no need to go further */
-
-    /* packet expired, remove from stats */
-    basic_stats_sub(&pkt_stat->stats, packet->info->size);
-    if (packet->direction != OUTBOUND)
-      basic_stats_sub(&pkt_stat->stats_in, packet->info->size); /* in or either */
-    if (packet->direction != INBOUND)
-      basic_stats_sub(&pkt_stat->stats_out, packet->info->size);/* out or either */
-
-    /* and protocol stack */
-    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info, purge_protos);
-
-    /* and, finally from packet list - gets the new check position 
-     * if this packet is the first of the list, all the previous packets
-     * should be already destroyed. We check that remove never returns a
-     * NEXT packet */
-    GList *next=packet_l_e->next;
-    packet_l_e = packet_list_remove(packet_l_e);
-    g_assert(packet_l_e == NULL || packet_l_e != next );
-    pkt_stat->n_packets--;
-  }
-
-  if (!packet_l_e)
-    {
-      /* removed all packets */
-      pkt_stat->n_packets = 0;
-      pkt_stat->pkt_list=NULL;
-      pkt_stat->stats.average = 0;
-      pkt_stat->stats_in.average = 0;
-      pkt_stat->stats_out.average = 0;
-    }
-}
-
-/* Update stats, purging expired packets - returns FALSE if there are no 
- * active packets */
-gboolean
-traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_expired_protos)
-{
-  traffic_stats_purge_expired_packets(pkt_stat, expire_time, purge_expired_protos);
-
-  if (pkt_stat->pkt_list)
-    {
-      struct timeval diff;
-      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-      GList *packet_l_e;	/* Packets is a list of packets.
-                                 * packet_l_e is always the latest (oldest)
-                                 * list element */
-      packet_list_item_t *packet;
-
-      packet_l_e = g_list_last (pkt_stat->pkt_list);
-      packet = (packet_list_item_t *) packet_l_e->data;
-
-      diff = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
-
-      /* calculate averages */
-      basic_stats_avg(&pkt_stat->stats, usecs_from_oldest);
-      basic_stats_avg(&pkt_stat->stats_in, usecs_from_oldest);
-      basic_stats_avg(&pkt_stat->stats_out, usecs_from_oldest);
-
-      return TRUE; /* there are packets active */
-    }
-
-  /* no packet active remaining */
-  return FALSE;
-}
-
-
-/***************************************************************************
- *
  * node_id_t implementation
  *
  **************************************************************************/
-
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
@@ -342,7 +100,7 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
 node_t *
 node_create(const node_id_t * node_id, const gchar *node_id_str)
 {
-  node_t *node = NULL;
+  node_t *node;
   guint i = STACK_SIZE;
 
   node = g_malloc (sizeof (node_t));
@@ -355,19 +113,13 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
   node->name = g_string_new(node_id_str);
   node->numeric_name = g_string_new(node_id_str);
 
-  node->average = node->average_in = node->average_out = 0;
-  node->n_packets = 0;
-  node->accumulated = node->accumulated_in = node->accumulated_out = 0;
-  node->aver_accu = node->aver_accu_in = node->aver_accu_out = 0;
-
-  node->packets = NULL;
-  protocol_stack_open(&node->node_protos);
   while (i + 1)
     {
       node->main_prot[i] = NULL;
       i--;
     }
 
+  traffic_stats_init(&node->node_stats);
 
   return node;
 }				/* create_node */
@@ -375,7 +127,7 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
 /* destroys a node */
 void node_delete(node_t *node)
 {
-  guint i = STACK_SIZE;
+  guint i;
 
   if (!node)
     return; /* nothing to do */
@@ -385,29 +137,25 @@ void node_delete(node_t *node)
   g_string_free (node->numeric_name, TRUE);
   node->numeric_name = NULL;
 
-  for (; i + 1; i--)
+  for (i = 0; i <= STACK_SIZE; ++i)
     if (node->main_prot[i])
       {
         g_free (node->main_prot[i]);
         node->main_prot[i] = NULL;
       }
-  while (node->packets)
-    node->packets = packet_list_remove(node->packets);
-  node->packets = NULL;
 
-  protocol_stack_close(&node->node_protos);
+  traffic_stats_reset(&node->node_stats);
 
   g_free (node);
 }
 
 void
-node_dump(node_t * node)
+node_dump(const node_t * node)
 {
-
   GList *protocol_item = NULL, *name_item = NULL;
   protocol_t *protocol = NULL;
   name_t *name = NULL;
-  guint i = 1;
+  guint i;
 
   if (!node)
     return;
@@ -415,121 +163,35 @@ node_dump(node_t * node)
   if (node->name)
     g_my_info ("NODE %s INFORMATION", node->name->str);
 
-  for (; i <= STACK_SIZE; i++)
+  /* we skip level 0 */
+  for (i = 1; i <= STACK_SIZE; i++)
     {
-      if (node->node_protos.protostack[i])
-	{
-	  g_my_info ("Protocol level %d information", i);
-	  protocol_item = node->node_protos.protostack[i];
-	  while (protocol_item)
-	    {
-	      protocol = protocol_item->data;
-	      g_my_info ("\tProtocol %s", protocol->name);
-	      if ((name_item = protocol->node_names))
-		{
-		  GString *names = NULL;
-		  while (name_item)
-		    {
-		      if (!names)
-			names = g_string_new ("");
-		      name = name_item->data;
-		      names = g_string_append (names, name->name->str);
-		      names = g_string_append (names, " ");
-		      name_item = name_item->next;
-		    }
-		  g_my_info ("\t\tName: %s", names->str);
-		  g_string_free (names, TRUE);
-		}
-	      protocol_item = protocol_item->next;
-	    }
-	}
-    }
-
-}
-
-static void
-node_subtract_packet_data(node_t *node, packet_list_item_t * packet)
-{
-  /* Substract this packet's length to the accumulated */
-  node->aver_accu -= packet->info->size;
-  if (packet->direction == INBOUND)
-    node->aver_accu_in -= packet->info->size;
-  else
-    node->aver_accu_out -= packet->info->size;
-
-  /* If it was the last packet in the queue, set
-   * average to 0. It has to be done here because
-   * otherwise average calculation in update_packet list 
-   * requires some packets to exist */
-  if (!node->aver_accu)
-    node->average = 0;
-
-  /* We remove protocol aggregate information */
-  protocol_stack_sub_pkt(&node->node_protos, packet->info, TRUE);
-}
-
-/* Make sure this particular packet in a list of packets beloging to 
- * either o link or a node is young enough to be relevant. Else
- * remove it from the list */
-/* TODO This whole function is a mess. I must take it to pieces
- * so that it is more readble and maintainable */
-static void
-node_purge_expired_packets(node_t *node)
-{
-  struct timeval result;
-  double time_comparison;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-
-  if (!node->packets)
-    {
-      node->n_packets = 0;
-      return;
-    }
-
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. */
-  if (pref.node_timeout_time)
-    time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.node_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  packet_l_e = g_list_last (node->packets);
-  while (packet_l_e)
-    {
-      packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
-      if (packet)
+      protocol_item = node->node_stats.stats_protos.protostack[i];
+      if (protocol_item)
+        g_my_info ("Protocol level %d information", i);
+      while (protocol_item)
         {
-          /* if the packet is old or capture is stopped, we purge */
-          result = substract_times (now, packet->info->timestamp);
-          if (!IS_OLDER (result, time_comparison) && (status != STOP))
-            break; /* packet valid, subsequent packets are younger, no need to go further */
-
-          /* expired packet, remove data */
-          node_subtract_packet_data(node, packet);
+          protocol = protocol_item->data;
+          g_my_info ("\tProtocol %s", protocol->name);
+          if ((name_item = protocol->node_names))
+            {
+              GString *names = NULL;
+              while (name_item)
+                {
+                  if (!names)
+                    names = g_string_new ("");
+                  name = name_item->data;
+                  names = g_string_append (names, name->name->str);
+                  names = g_string_append (names, " ");
+                  name_item = name_item->next;
+                }
+              g_my_info ("\t\tName: %s", names->str);
+              g_string_free (names, TRUE);
+            }
+          protocol_item = protocol_item->next;
         }
-
-      /* packet null or expired, remove from list 
-       * gets the new check position 
-       * if this packet is the first of the list, all the previous packets
-       * should be already destroyed. We check that remove never returns a
-       * NEXT packet */
-      GList *next=packet_l_e->next;
-      packet_l_e = packet_list_remove(packet_l_e);
-      g_assert(packet_l_e == NULL || packet_l_e != next );
-      node->n_packets--;
-        
-    } /* end while */
-
-  if (!packet_l_e)
-    {
-      /* removed all packets */
-      node->n_packets = 0;
-      node->packets=NULL;
     }
+
 }
 
 /* This function is called to discard packets from the list 
@@ -538,47 +200,34 @@ node_purge_expired_packets(node_t *node)
 gboolean
 node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 {
+  double pkt_expire_time;
   struct timeval diff;
 
   g_assert(delete_list_ptr);
 
-  if (node->packets)
-    node_purge_expired_packets(node);
+  if (pref.node_timeout_time)
+    pkt_expire_time = (pref.node_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.node_timeout_time;
+  else
+    pkt_expire_time = pref.averaging_time;
 
-  if (node->packets)
+  if (traffic_stats_update(&node->node_stats, pkt_expire_time, TRUE))
     {
+      /* packet(s) active, update the most used protocols for this link */
       guint i = STACK_SIZE;
-      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-      GList *packet_l_e;	/* Packets is a list of packets.
-                                 * packet_l_e is always the latest (oldest)
-                                 * list element */
-      packet_list_item_t *packet;
-
-      packet_l_e = g_list_last (node->packets);
-      packet = (packet_list_item_t *) packet_l_e->data;
-
-      diff = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
-
-      /* average in bps, so we multiply by 8 and 1000000 */
-      node->average = 8000000 * node->aver_accu / usecs_from_oldest;
-      node->average_in = 8000000 * node->aver_accu_in / usecs_from_oldest;
-      node->average_out =
-        8000000 * node->aver_accu_out / usecs_from_oldest;
       while (i + 1)
         {
           if (node->main_prot[i])
             g_free (node->main_prot[i]);
-          node->main_prot[i] = protocol_stack_sort_most_used(&node->node_protos, i);
+          node->main_prot[i] = protocol_stack_sort_most_used(&node->node_stats.stats_protos, i);
           i--;
         }
       update_node_names (node);
-
     }
   else
     {
       /* no packet remaining on node */
-      diff = substract_times (now, node->last_time);
+      diff = substract_times (now, node->node_stats.last_time);
 
       /* Remove node if node is too old or if capture is stopped */
       if ((IS_OLDER (diff, pref.node_timeout_time)
@@ -595,13 +244,6 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 
           /* adds current to list of nodes to be delete */
           *delete_list = g_list_prepend( *delete_list, node_id);
-        }
-      else
-        {
-          /* The packet list structure has already been freed in
-           * check_packets */
-          node->packets = NULL;
-          node->average = node->average_in = node->average_out = 0.0;
         }
     }
 

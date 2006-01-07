@@ -37,7 +37,7 @@ void protocol_stack_open(protostack_t *pstk)
     pstk->protostack[i] = NULL;
 }
 
-void protocol_stack_close(protostack_t *pstk)
+void protocol_stack_reset(protostack_t *pstk)
 {
   guint i;
   protocol_t *protocol_info;
@@ -236,7 +236,7 @@ void protocol_summary_close(void)
         protosummary->packets = packet_list_remove(protosummary->packets);
       protosummary->packets = NULL;
       protosummary->n_packets = 0;
-      protocol_stack_close(&protosummary->protos);
+      protocol_stack_reset(&protosummary->protos);
       g_free(protosummary);
       protosummary = NULL;
     }

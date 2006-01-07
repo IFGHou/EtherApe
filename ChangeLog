@@ -1,3 +1,10 @@
+2006-01-06 17:41  bchiara
+
+	* ChangeLog, NEWS, src/capture.c, src/links.c, src/node.c,
+	src/node.h, src/protocols.c, src/protocols.h: Completed unified
+	traffic stats routines/structures. Updated NEWS with some notes
+	work already completed.
+
 2006-01-04 19:50  bchiara
 
 	* ChangeLog, src/pkt_info.h: pkt_info.h now contains declarations

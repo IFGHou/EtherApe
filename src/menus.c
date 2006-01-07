@@ -62,14 +62,13 @@ void
 init_menus (void)
 {
   GtkWidget *widget = NULL, *item = NULL;
-  gint err;
-  gchar err_str[300];
   GList *interfaces;
   GSList *group = NULL;
   GString *info_string = NULL;
+  GString *err_str = g_string_new ("");
 
-  interfaces = interface_list_create(&err, err_str);
-  g_my_info (_("get_interface result: %d (msg: '%s')"), err, err_str);
+  interfaces = interface_list_create(err_str);
+  g_my_info (_("get_interface result: '%s'"), err_str);
   if (!interfaces)
     {
       g_my_info (_("No suitables interfaces for capture have been found"));

@@ -11,6 +11,8 @@
      * Heavy refactoring to make sources easier to understand and maintain.
      * Small performance enhancements due to refactoring.
      * Better memory handling due to refactoring.
+     * Unified handling of traffic statistics. 
+     * Rewritten interface listing. Now uses directly pcap_findalldevs to list interfaces available for capturing. The interface submenu now list also the "any" device, if present. The older method is deprecated (at the moment it can be enabled with a #define) and will be removed in a future release. If someone needs it, please file a feature request.
 
   Overview of changes in EtherApe 0.9.3 (Thursday 8-18-2005):
 

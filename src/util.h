@@ -35,17 +35,11 @@ extern "C"
  * variable, or a default directory if HOME is not set */
   const char *get_home_dir (void);
 
-#ifdef HAVE_LIBPCAP
-
-  GList *interface_list_create(int *err, char *err_str);
-
-/* Error values from "get_interface_list()". */
-#define	CANT_GET_INTERFACE_LIST	1	/* error getting list */
-#define	NO_INTERFACES_FOUND	2	/* list is empty */
-
+  /* gets a list containing the names of available interfaces. Returns NULL 
+   * if there is an error, putting also an error message into err_str.
+   * The returned list MUST be freed with interface_list_free() */
+  GList *interface_list_create(GString *err_str);
   void interface_list_free(GList * if_list);
-
-#endif
 
 #ifdef __cplusplus
 }

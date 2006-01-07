@@ -20,49 +20,7 @@
 #ifndef ETHERAPE_NODE_H
 #define ETHERAPE_NODE_H
 
-#include "protocols.h"
-
-
-struct timeval substract_times (struct timeval a, struct timeval b);
-
-
-typedef struct
-{
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes */
-}
-basic_stats_t;
-void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
-void basic_stats_add(basic_stats_t *tf_stat, gdouble val); 
-void basic_stats_sub(basic_stats_t *tf_stat, gdouble val); 
-void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs);
-
-
-typedef struct
-{
-  GList *pkt_list;              /* list of packet_list_item_t - private */
-  gdouble n_packets;		/* Number of packets in the list */
-  struct timeval last_time;	/* Timestamp of the last packet added */
-  basic_stats_t stats;        /* total traffic stats */
-  basic_stats_t stats_in;     /* inbound traffic stats */
-  basic_stats_t stats_out;    /* outbound traffic stats */
-  protostack_t stats_protos;    /* protocol stack */
-}
-traffic_stats_t;
-
-void traffic_stats_open(traffic_stats_t *pkt_stat); /* initializes counters */
-void traffic_stats_close(traffic_stats_t *pkt_stat); /* releases memory */
-void traffic_stats_add_packet( traffic_stats_t *pkt_stat, 
-                              packet_info_t *new_pkt, 
-                              packet_direction dir); /* adds a packet */
-void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
-gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
-/* removes a packet from a list of packets, destroying it if necessary
- * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
- * if the list is empty */
-GList *packet_list_remove(GList *item_to_remove);
-
+#include "traffic_stats.h"
 
 typedef enum
 {
@@ -108,28 +66,15 @@ typedef struct
   node_id_t node_id;		/* node identification */
   GString *name;		/* String with a readable default name of the node */
   GString *numeric_name;	/* String with a numeric representation of the id */
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble average_in;		/* Average bytes in in the last x ms */
-  gdouble average_out;		/* Average bytes out in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes */
-  gdouble accumulated_in;	/* Accumulated incoming bytes */
-  gdouble accumulated_out;	/* Accumulated outcoming bytes */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble aver_accu_in;		/* Accumulated incoming bytes in the last x ms */
-  gdouble aver_accu_out;	/* Accumulated outcoming bytes in the last x ms */
-  gdouble n_packets;		/* Number of total packets received */
-  struct timeval last_time;	/* Timestamp of the last packet to be added */
-  GList *packets;		/* List of packets sizes in or out and
-				 * its sizes. Used to calculate average
-				 * traffic */
+
   gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the node */
-  protostack_t node_protos;
+  traffic_stats_t node_stats;
 }
 node_t;
 
 node_t *node_create(const node_id_t * node_id, const gchar *node_id_str); /* creates a new node */
 void node_delete(node_t *node); /* destroys a node, releasing memory */
-void node_dump(node_t * node);
+void node_dump(const node_t * node);
 gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
 /* methods to handle every new node not yest handled in the main app */

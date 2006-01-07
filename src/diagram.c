@@ -45,7 +45,6 @@
 typedef struct
 {
   node_id_t canvas_node_id;
-  node_t *node;
   GnomeCanvasItem *node_item;
   GnomeCanvasItem *text_item;
   GnomeCanvasGroup *group_item;
@@ -69,8 +68,7 @@ static gint canvas_node_update(node_id_t  * ether_addr,
  **************************************************************************/
 typedef struct
 {
-  link_id_t canvas_link_id;
-  link_t *link;
+  link_id_t canvas_link_id; /* id of the link */
   GnomeCanvasItem *link_item;
   GdkColor color;
 }
@@ -82,14 +80,6 @@ static gint canvas_link_update(link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
 
-
-#if 0
-struct popup_data
-{
-  GtkWidget *node_popup;
-  canvas_node_t *canvas_node;
-};
-#endif
 
 /***************************************************************************
  *
@@ -569,7 +559,6 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->canvas_node_id = node->node_id;
-      new_canvas_node->node = node;
 
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 							 gnome_canvas_group_get_type
@@ -608,7 +597,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 		     &new_canvas_node->canvas_node_id, new_canvas_node);
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 	     _("Creating canvas_node: %s. Number of nodes %d"),
-	     new_canvas_node->node->name->str, g_tree_nnodes (canvas_nodes));
+	     node->name->str, g_tree_nnodes (canvas_nodes));
 
       /*
        * We hide them until we are sure that they will get a proper position
@@ -662,25 +651,25 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
   switch (pref.node_size_variable)
     {
     case INST_TOTAL:
-      node_size = get_node_size (node->average);
+      node_size = get_node_size (node->node_stats.stats.average);
       break;
     case INST_INBOUND:
-      node_size = get_node_size (node->average_in);
+      node_size = get_node_size (node->node_stats.stats_in.average);
       break;
     case INST_OUTBOUND:
-      node_size = get_node_size (node->average_out);
+      node_size = get_node_size (node->node_stats.stats_out.average);
       break;
     case ACCU_TOTAL:
-      node_size = get_node_size (node->accumulated);
+      node_size = get_node_size (node->node_stats.stats.accumulated);
       break;
     case ACCU_INBOUND:
-      node_size = get_node_size (node->accumulated_in);
+      node_size = get_node_size (node->node_stats.stats_in.accumulated);
       break;
     case ACCU_OUTBOUND:
-      node_size = get_node_size (node->accumulated_out);
+      node_size = get_node_size (node->node_stats.stats_out.accumulated);
       break;
     default:
-      node_size = get_node_size (node->average_out);
+      node_size = get_node_size (node->node_stats.stats_out.average);
       g_warning (_("Unknown value or node_size_variable"));
     }
 
@@ -753,18 +742,18 @@ display_node (node_t * node)
   if (!node)
     return FALSE;
 
-  diff = substract_times (now, node->last_time);
+  diff = substract_times (now, node->node_stats.last_time);
 
   /* There are problems if a canvas_node is deleted if it still
    * has packets, so we have to check that as well */
 
   /* Remove canvas_node if node is too old */
   if (IS_OLDER (diff, pref.gui_node_timeout_time)
-      && pref.gui_node_timeout_time && !node->n_packets)
+      && pref.gui_node_timeout_time && !node->node_stats.n_packets)
     return FALSE;
 
 #if 1
-  if ((pref.gui_node_timeout_time == 1) && !node->n_packets)
+  if ((pref.gui_node_timeout_time == 1) && !node->node_stats.n_packets)
     g_my_critical ("Impossible situation in display node");
 #endif
 
@@ -802,7 +791,7 @@ static gint
 add_ordered_node (node_id_t * node_id, canvas_node_t * node,
 		  GTree * ordered_nodes)
 {
-  g_tree_insert (ordered_nodes, node->node, node);
+  g_tree_insert (ordered_nodes, node, node);
   g_my_debug ("Adding ordered node. Number of nodes: %d",
 	      g_tree_nnodes (ordered_nodes));
   return FALSE;			/* keep on traversing */
@@ -843,9 +832,9 @@ traffic_compare (gconstpointer a, gconstpointer b)
   node_a = (node_t *) a;
   node_b = (node_t *) b;
 
-  if (node_a->average < node_b->average)
+  if (node_a->node_stats.stats.average < node_b->node_stats.stats.average)
     return 1;
-  if (node_a->average > node_b->average)
+  if (node_a->node_stats.stats.average > node_b->node_stats.stats.average)
     return -1;
 
   /* If two nodes have the same traffic, we still have
@@ -995,7 +984,6 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
       new_canvas_link->canvas_link_id = *link_id;
-      new_canvas_link->link = link;
 
       /* We set the lines position using groups positions */
       points = gnome_canvas_points_new (3);
@@ -1020,9 +1008,14 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 			(GtkSignalFunc) link_item_event, new_canvas_link);
 
 
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Creating canvas_link: %s-%s. Number of links %d"),
-	     link->src_name, link->dst_name, g_tree_nnodes (canvas_links));
+      if (pref.is_debug)
+      {
+        gchar *str = link_id_node_names(link_id);
+        g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+               _("Creating canvas_link: %s. Number of links %d"),
+               str, g_tree_nnodes (canvas_links));
+        g_free(str);
+      }
 
     }
 
@@ -1042,7 +1035,6 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   canvas_node_t *canvas_node;
   const protocol_t *protocol = NULL;
   gdouble link_size, versorx, versory, modulus;
-  struct timeval diff;
   guint32 scaledColor;
   gdouble scale;
   double dx, dy;		/* temporary */
@@ -1057,7 +1049,6 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       return FALSE;
     }
 
-  diff = substract_times (now, link->last_time);
 
   if (link->main_prot[pref.stack_level])
     {
@@ -1098,7 +1089,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   versory = points->coords[0] - dx;
 
   modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
-  link_size = get_link_size (link->average) / 2;
+  link_size = get_link_size (link->link_stats.stats.average) / 2;
 
   /* limit the maximum size to avoid overload */
   if (link_size > MAX_LINK_SIZE)
@@ -1120,6 +1111,8 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       else
 	{
 	  /* scale color down to 10% at link timeout */
+          struct timeval diff;
+          diff = substract_times (now, link->link_stats.last_time);
 	  scale =
 	    pow (0.10,
 		 (diff.tv_sec * 1000.0 +
@@ -1201,6 +1194,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 {
   static GnomeAppBar *appbar;
   gchar *str;
+  const link_t *link=NULL;
 
   if (!appbar)
     appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
@@ -1209,11 +1203,11 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
     {
 
     case GDK_ENTER_NOTIFY:
-      if (canvas_link && canvas_link->link
-	  && canvas_link->link->main_prot[pref.stack_level])
-	str =
-	  g_strdup_printf (_("Link main protocol: %s"),
-			   canvas_link->link->main_prot[pref.stack_level]);
+      if (canvas_link)
+        link = links_catalog_find(&canvas_link->canvas_link_id);
+      if (link && link->main_prot[pref.stack_level])
+	str = g_strdup_printf (_("Link main protocol: %s"),
+			   link->main_prot[pref.stack_level]);
       else
 	str = g_strdup_printf (_("Link main protocol unknown"));
       gnome_appbar_push (appbar, str);
@@ -1238,12 +1232,8 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 {
 
   gdouble item_x, item_y;
+  const node_t *node = NULL;
   static GnomeAppBar *appbar;
-#if 0
-  gchar *str;
-  static gint popup = 0;
-  static struct popup_data pd = { NULL, NULL };
-#endif
 
   if (!appbar)
     appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
@@ -1257,13 +1247,15 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
     {
 
     case GDK_2BUTTON_PRESS:
-      if (!canvas_node || !canvas_node->node)
-	return FALSE;
-      node_info_window_create( &canvas_node->canvas_node_id );
-      g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
-                 nodes_catalog_size());
-      node_dump(canvas_node->node);
-
+      if (canvas_node)
+        node = nodes_catalog_find(&canvas_node->canvas_node_id);
+      if (node)
+        {
+          node_info_window_create( &canvas_node->canvas_node_id );
+          g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
+                     nodes_catalog_size());
+          node_dump(node);
+        }
       break;
     default:
       break;

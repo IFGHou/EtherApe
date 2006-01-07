@@ -57,7 +57,7 @@ protostack_t;
 
 /* protocol stack methods */
 void protocol_stack_open(protostack_t *pstk);
-void protocol_stack_close(protostack_t *pstk);
+void protocol_stack_reset(protostack_t *pstk);
 /* adds packet data to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */

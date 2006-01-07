@@ -77,42 +77,93 @@
 typedef int mode_t;		/* for win32 */
 #endif
 
-#ifdef HAVE_LIBPCAP
-
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
-
 #ifdef HAVE_SYS_IOCTL_H
 #include <sys/ioctl.h>
 #endif
-
 #ifdef HAVE_NET_IF_H
 #include <net/if.h>
 #endif
-
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
-
-
 #include <pcap.h> /*JTC*/
-#endif
-#ifdef HAVE_LIBPCAP
-/* JTC This define I copied from a different file from ethereal */
-#define MIN_PACKET_SIZE 68	/* minimum amount of packet data we can read */
-  struct search_user_data
-{
-  char *name;
-  int found;
-};
+
+/* uncomment to enable the older method of getting an interface list */
+/* #define OLDER_INTERFACE_LIST */
 
 
-static void interface_list_search_cb(gpointer data, gpointer user_data);
+
 static void interface_list_free_cb(gpointer data, gpointer user_data);
 
+#ifndef OLDER_INTERFACE_LIST
+
+/* use only pcap to obtain the interface list */
+
 GList *
-interface_list_create(int *err, char *err_str)
+interface_list_create(GString *err_str)
+{
+  GList *il = NULL;
+  pcap_if_t *pcap_devlist = NULL;
+  pcap_if_t *curdev;
+  char pcap_errstr[1024]="";
+
+  g_string_assign(err_str, "");
+
+  if (pcap_findalldevs(&pcap_devlist, pcap_errstr) < 0)
+    {
+      /* can't obtain interface list from pcap */
+      g_string_printf (err_str, "Getting interface list from pcap failed: %s",
+	       pcap_errstr);
+      return NULL;
+    }
+
+  /* We want to list the interfaces in order, but with loopbacks last. Since
+   * glist_append must iterate over all elements (!!!), we use g_list_prepend
+   * then reverse the list (stupid Glist!) */
+    
+  /* iterate on all pcap devices, skipping loopbacks*/
+  for (curdev = pcap_devlist ; curdev ; curdev = curdev->next)
+    {
+      if (PCAP_IF_LOOPBACK == curdev->flags)
+        continue; /* skip loopback */
+
+      il = g_list_prepend(il, g_strdup(curdev->name));
+    }
+
+  /* loopbacks added last */
+  for (curdev = pcap_devlist ; curdev ; curdev = curdev->next)
+    {
+      if (PCAP_IF_LOOPBACK != curdev->flags)
+        continue; /* only loopback */
+
+      il = g_list_prepend(il, g_strdup(curdev->name));
+    }
+
+  /* reverse list*/
+  il = g_list_reverse(il);
+
+  /* release pcap list */
+  pcap_freealldevs(pcap_devlist);
+
+  /* return ours */
+  return il;
+}
+
+
+#else /* OLDER_INTERFACE_LIST */
+
+  /* use the older method of obtaining the interface list */
+
+static gint interface_list_search_cb(const gchar *a, const gchar *b);
+
+/* JTC This define I copied from a different file from ethereal */
+#define MIN_PACKET_SIZE 68	/* minimum amount of packet data we can read */
+
+GList *
+interface_list_create(GString *err_str)
 {
   GList *il = NULL;
   gint nonloopback_pos = 0;
@@ -120,15 +171,14 @@ interface_list_create(int *err, char *err_str)
   struct ifconf ifc;
   struct ifreq ifrflags;
   int sock = socket (AF_INET, SOCK_DGRAM, 0);
-  struct search_user_data user_data;
   pcap_t *pch;
+  char pcap_errstr[1024];
 
-  *err = 0;
-  *err_str = '\0';
+  g_string_assign(err_str, "");
   
   if (sock < 0)
     {
-      sprintf (err_str, "Error opening socket: %s", strerror (errno));
+      g_string_printf (err_str, "Error opening socket: %s", strerror (errno));
       return NULL;
     }
 
@@ -142,7 +192,7 @@ interface_list_create(int *err, char *err_str)
   if (ioctl (sock, SIOCGIFCONF, &ifc) < 0 ||
       ifc.ifc_len < sizeof (struct ifreq))
     {
-      sprintf (err_str, "SIOCGIFCONF error getting list of interfaces: %s",
+      g_string_printf (err_str, "SIOCGIFCONF error getting list of interfaces: %s",
 	       strerror (errno));
       goto fail;
     }
@@ -169,10 +219,7 @@ interface_list_create(int *err, char *err_str)
        * if an interface has multiple addresses, we get multiple
        * entries for it).
        */
-      user_data.name = ifr->ifr_name;
-      user_data.found = FALSE;
-      g_list_foreach (il, interface_list_search_cb, &user_data);
-      if (user_data.found)
+      if (g_list_find_custom(il, ifr->ifr_name, (GCompareFunc)interface_list_search_cb))
         {
 	  g_my_debug(_("skipping already listed interface %s"), ifr->ifr_name);
 	  goto next;
@@ -190,7 +237,7 @@ interface_list_create(int *err, char *err_str)
 	      g_my_debug(_("skipping interface %s: got ENXIO"), ifr->ifr_name);
 	      goto next;
             }
-	  sprintf (err_str,
+	  g_string_printf (err_str,
 		   "SIOCGIFFLAGS error getting flags for interface %s: %s",
 		   ifr->ifr_name, strerror (errno));
 	  goto fail;
@@ -211,10 +258,10 @@ interface_list_create(int *err, char *err_str)
        * IRIX SIOCSNOOPLEN "ioctl" may fail if the capture length
        * supplied is too large, rather than just truncating it.
        */
-      pch = pcap_open_live (ifr->ifr_name, MIN_PACKET_SIZE, 0, 0, err_str);
+      pch = pcap_open_live (ifr->ifr_name, MIN_PACKET_SIZE, 0, 0, pcap_errstr);
       if (pch == NULL)
         {
-	  g_my_debug(_("skipping interface %s: can't be opened with libpcap (error %s)\n"), ifr->ifr_name, err_str);
+	  g_my_debug(_("skipping interface %s: can't be opened with libpcap (error %s)\n"), ifr->ifr_name, pcap_errstr);
 	  goto next;
         }
       pcap_close (pch);
@@ -250,32 +297,23 @@ interface_list_create(int *err, char *err_str)
   free (ifc.ifc_buf);
   close (sock);
 
-  if (il == NULL)
-    {
-      /*
-       * No interfaces found.
-       */
-      *err = NO_INTERFACES_FOUND;
-    }
   return il;
 
 fail:
   interface_list_free(il);
   free (ifc.ifc_buf);
   close (sock);
-  *err = CANT_GET_INTERFACE_LIST;
   return NULL;
 }
 
-
-static void
-interface_list_search_cb(gpointer data, gpointer user_data)
+static gint
+interface_list_search_cb(const gchar *a, const gchar *b)
 {
-  struct search_user_data *search_user_data = user_data;
-
-  if (strcmp ((char *) data, search_user_data->name) == 0)
-    search_user_data->found = TRUE;
+  return strcmp(a, b);
 }
+
+#endif /* OLDER_INTERFACE_LIST */
+
 
 static void
 interface_list_free_cb(gpointer data, gpointer user_data)
@@ -286,14 +324,12 @@ interface_list_free_cb(gpointer data, gpointer user_data)
 void
 interface_list_free(GList * if_list)
 {
-  while (if_list != NULL)
+  if (if_list)
     {
       g_list_foreach (if_list, interface_list_free_cb, NULL);
       g_list_free (if_list);
     }
 }
-
-#endif /* HAVE_LIBPCAP */
 
 
 const char *

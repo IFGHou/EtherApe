@@ -66,7 +66,6 @@ static void add_node_packet (const guint8 * packet,
 			     packet_info_t * packet_info,
                              const node_id_t *node_id,
 			     packet_direction direction);
-static void add_link_packet (const link_id_t *link_id, packet_info_t * packet_info);
 
 static void set_node_name (node_t * node, const gchar * preferences);
 
@@ -204,6 +203,7 @@ init_capture (void)
   device = pref.interface;
   if (!device && !pref.input_file)
     {
+      *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       device = g_strdup (pcap_lookupdev (ebuf));
       if (device == NULL)
 	{
@@ -221,12 +221,13 @@ init_capture (void)
   end_of_file = FALSE;
   if (!pref.input_file)
     {
+      *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       if (!
 	  (pch_struct = 
 	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
 	{
 	  sprintf (errorbuf,
-		   _("Error opening %s : %s - perhaps you need to be root?"),
+		   _("Error opening %s : %s\n- perhaps you need to be root?"),
 		   device, ebuf);
 	  return errorbuf;
 	}
@@ -243,6 +244,7 @@ init_capture (void)
 		   pref.input_file, device);
 	  return errorbuf;
 	}
+      *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       if (!(pch_struct = pcap_open_offline (pref.input_file, ebuf)))
 	{
 	  sprintf (errorbuf, _("Error opening %s : %s"), pref.input_file,
@@ -741,7 +743,7 @@ packet_acquired(guint8 * raw_packet, guint raw_size)
   /* And now we update link traffic information for this packet */
   link_id.src = src_node_id;
   link_id.dst = dst_node_id;
-  add_link_packet (&link_id, packet);
+  links_catalog_add_packet(&link_id, packet);
 }
 
 
@@ -755,7 +757,6 @@ add_node_packet (const guint8 * raw_packet,
 		 packet_direction direction)
 {
   node_t *node;
-  packet_list_item_t *newit;
 
   node = nodes_catalog_find(node_id);
   if (node == NULL)
@@ -771,81 +772,19 @@ add_node_packet (const guint8 * raw_packet,
       g_string_free(node_id_str, TRUE);
     }
 
-  /* We add a packet to the list of packets to/from that host which we want
-   * to account for */
-  newit = g_malloc( sizeof(packet_list_item_t) );
-
-  /* increments refcount of packet */
-  packet->ref_count++;
-
-  /* fills item, adding it to pkt list */
-  newit->info = packet;
-  newit->direction = direction;
-  node->packets = g_list_prepend (node->packets, newit);
-
-  /* We update the node's protocol stack with the protocol
-   * information this packet is bearing */
-  protocol_stack_add_pkt(&node->node_protos, packet);
-
-  /* We update node info */
-  node->accumulated += packet->size;
-  if (direction == INBOUND)
-    node->accumulated_in += packet->size;
-  else
-    node->accumulated_out += packet->size;
-  node->aver_accu += packet->size;
-  if (direction == INBOUND)
-    node->aver_accu_in += packet->size;
-  else
-    node->aver_accu_out += packet->size;
-  node->last_time = now;
-  node->n_packets++;
+  traffic_stats_add_packet(&node->node_stats, packet, direction);
 
   /* If this is the first packet we've heard from the node in a while, 
    * we add it to the list of new nodes so that the main app know this 
    * node is active again */
-  if (node->n_packets == 1)
+  if (node->node_stats.n_packets == 1)
     new_nodes_add(node);
 
   /* Update names list for this node */
-  get_packet_names (&node->node_protos, raw_packet, packet->size,
+  get_packet_names (&node->node_stats.stats_protos, raw_packet, packet->size,
 		    packet->prot_desc, direction);
 
 }				/* add_node_packet */
-
-
-/* Save as above plus we update protocol aggregate information */
-static void
-add_link_packet (const link_id_t *link_id, packet_info_t * packet)
-{
-  link_t *link;
-  packet_list_item_t *newit;
-
-  /* retrieves link from catalog, creating a new one if necessary */
-  link = links_catalog_find_create(link_id);
-
-  newit = g_malloc( sizeof(packet_list_item_t) );
-
-  /* increments refcount of packet */
-  packet->ref_count++;
-
-  /* fills item, adding it to pkt list */
-  newit->info = packet;
-  newit->direction = EITHERBOUND;
-  link->link_packets = g_list_prepend (link->link_packets, newit);
-
-  /* We update the link's protocol stack with the protocol
-   * information this packet is bearing */
-  protocol_stack_add_pkt(&link->link_protos, packet);
-
-  /* update link info */
-  link->accumulated += packet->size;
-  link->last_time = now;
-  link->n_packets++;
-
-}				/* add_link_packet */
-
-
 
 /* Callback function everytime a dns_lookup function is finished */
 static void
@@ -853,8 +792,6 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 {
   dns_ack ();
 }
-
-
 
 /* removes a packet from a list of packets, destroying it if necessary
  * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
@@ -918,24 +855,23 @@ packet_list_remove(GList *item_to_remove)
 void
 update_node_names (node_t * node)
 {
+  GList *protocol_item;
+  protocol_t *protocol;
   guint i = STACK_SIZE;
 
   /* TODO Check if it's while i or while i+1. 
    * Then fix it in other places */
   while (i + 1)
     {
-      if (node->node_protos.protostack[i])
-	{
-          GList *protocol_item = NULL;
-          protocol_t *protocol = NULL;
-	  protocol_item = node->node_protos.protostack[i];
-	  for (; protocol_item; protocol_item = protocol_item->next)
-	    {
-	      protocol = (protocol_t *) (protocol_item->data);
-	      protocol->node_names
-		= g_list_sort (protocol->node_names, node_name_freq_compare);
-	    }
-	}
+      for ( protocol_item = node->node_stats.stats_protos.protostack[i]; 
+            protocol_item; 
+            protocol_item = protocol_item->next)
+        {
+          protocol = (protocol_t *) (protocol_item->data);
+          protocol->node_names
+            = g_list_sort (protocol->node_names, node_name_freq_compare);
+        }
+
       i--;
     }
 
@@ -986,7 +922,7 @@ set_node_name (node_t * node, const gchar * preferences)
       /* We don't do level 0, which has the topmost prot */
       for (j = STACK_SIZE; j && cont; j--)
 	{
-	  protocol = protocol_stack_find(&node->node_protos, j, tokens[0]);
+	  protocol = protocol_stack_find(&node->node_stats.stats_protos, j, tokens[0]);
 	  if (protocol)
 	    {
 	      name_item = protocol->node_names;
