@@ -481,7 +481,6 @@ update_protocols_window (void)
   GtkListStore *gs = NULL;
   GList *item = NULL;
   const protocol_t *protocol = NULL;
-  struct timeval diff;
   gchar *str = NULL;
   gboolean res;
   GtkTreeIter it;
@@ -527,8 +526,7 @@ update_protocols_window (void)
 			       protocol_compare))
 	{
 	  info_protocols = g_list_remove (info_protocols, protocol);
-	  g_free (protocol->name);
-	  g_free ( (protocol_t *)protocol);
+          protocol_t_delete((protocol_t *)protocol);
 
 	  /* remove row - after, iter points to next row if res = TRUE */
 #if GTK_CHECK_VERSION(2,2,0)
@@ -545,7 +543,8 @@ update_protocols_window (void)
 
   /* Update rows */
   for (res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
-       res; res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it))
+       res; 
+       res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it))
     {
       protocol_t *nproto = NULL;
       gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &nproto, -1);
@@ -565,28 +564,33 @@ update_protocols_window (void)
 	  return;
 	}
 
-      diff = substract_times (nproto->last_heard, protocol->last_heard);
-      if ((diff.tv_usec < 0) || (diff.tv_sec < 0))
-	{
+      if (nproto->accumulated != protocol->accumulated)
+        {
 	  nproto->accumulated = protocol->accumulated;
-	  nproto->last_heard = protocol->last_heard;
-	  nproto->proto_packets = protocol->proto_packets;
-	  nproto->color = protocol->color;
-
 	  str = traffic_to_str (protocol->accumulated, FALSE);
 	  gtk_list_store_set (gs, &it, 2, str, 6, &nproto->color, -1);
+        }
 
+      if (nproto->proto_packets != protocol->proto_packets)
+        {
+	  nproto->proto_packets = protocol->proto_packets;
 	  str = g_strdup_printf ("%d", protocol->proto_packets);
 	  gtk_list_store_set (gs, &it, 4, str, -1);
 	  g_free (str);
+        }
 
-	}
-      /*str = ctime (&(protocol->last_heard.tv_sec)); */
-      nproto->average = protocol->average;
-      str = traffic_to_str (protocol->average, TRUE);
-      gtk_list_store_set (gs, &it, 1, str, -1);
+      if (nproto->average != protocol->average)
+        {
+          nproto->average = protocol->average;
+          str = traffic_to_str (protocol->average, TRUE);
+          gtk_list_store_set (gs, &it, 1, str, -1);
+        }
+
+      /* values updated every time */
+      nproto->last_heard = protocol->last_heard;
       str = timeval_to_str (protocol->last_heard);
       gtk_list_store_set (gs, &it, 3, str, -1);
+      nproto->color = protocol->color;
     }
 }				/* update_protocols_window */
 

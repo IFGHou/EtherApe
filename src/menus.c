@@ -68,12 +68,14 @@ init_menus (void)
   GString *err_str = g_string_new ("");
 
   interfaces = interface_list_create(err_str);
-  g_my_info (_("get_interface result: '%s'"), err_str);
+  g_my_info (_("get_interface result: '%s'"), err_str->str);
   if (!interfaces)
     {
       g_my_info (_("No suitables interfaces for capture have been found"));
+      g_string_free(err_str, TRUE);
       return;
     }
+  g_string_free(err_str, TRUE);
 
   widget = glade_xml_get_widget (xml, "interfaces_menu");
 
@@ -103,8 +105,8 @@ init_menus (void)
       interfaces = interfaces->next;
     }
 
-
   g_my_info (info_string->str);
+  g_string_free(info_string, TRUE);
 
   interface_list_free(interfaces);
 }				/* init_menus */

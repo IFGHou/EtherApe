@@ -20,6 +20,12 @@
 #include "globals.h"
 #include "traffic_stats.h"
 
+/* removes a packet from a list of packets, destroying it if necessary
+ * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
+ * if the list is empty */
+static GList *
+packet_list_remove(GList *item_to_remove);
+
 /***************************************************************************
  *
  * utility functions
@@ -222,7 +228,8 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_tim
       pkt_stat->stats.average = 0;
       pkt_stat->stats_in.average = 0;
       pkt_stat->stats_out.average = 0;
-      protocol_stack_reset(&pkt_stat->stats_protos);
+      if (purge_protos)
+        protocol_stack_reset(&pkt_stat->stats_protos);
     }
 }
 
@@ -237,11 +244,10 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean pur
     {
       struct timeval diff;
       gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-      GList *packet_l_e;	/* Packets is a list of packets.
-                                 * packet_l_e is always the latest (oldest)
-                                 * list element */
+      GList *packet_l_e;
       packet_list_item_t *packet;
 
+      /* the last packet of the list is the oldest */
       packet_l_e = g_list_last (pkt_stat->pkt_list);
       packet = (packet_list_item_t *) packet_l_e->data;
 
@@ -253,9 +259,68 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean pur
       basic_stats_avg(&pkt_stat->stats_in, usecs_from_oldest);
       basic_stats_avg(&pkt_stat->stats_out, usecs_from_oldest);
 
+      protocol_stack_avg(&pkt_stat->stats_protos, usecs_from_oldest);
+
       return TRUE; /* there are packets active */
     }
 
   /* no packet active remaining */
   return FALSE;
+}
+
+/* removes a packet from a list of packets, destroying it if necessary
+ * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
+ * if the list is empty */
+GList *
+packet_list_remove(GList *item_to_remove)
+{
+  packet_list_item_t *litem;
+
+  g_assert(item_to_remove);
+  
+  litem = (packet_list_item_t *) item_to_remove->data;
+  if (litem)
+    {
+      packet_info_t *packet = litem->info;
+
+      if (packet)
+        {
+          /* packet exists, decrement ref count */
+          packet->ref_count--;
+    
+          if (!packet->ref_count)
+            {
+              /* packet now unused, delete it */
+              if (packet->prot_desc)
+                {
+                  g_free (packet->prot_desc);
+                  packet->prot_desc = NULL;
+                }
+              g_free (packet);
+
+              n_mem_packets--;
+            }
+          litem->info = NULL;
+        }
+
+      g_free(litem);
+      item_to_remove->data = NULL;
+    }
+
+  /* TODO I have to come back here and make sure I can't make
+   * this any simpler */
+  if (item_to_remove->prev)
+    {
+      /* current packet is not at head */
+      GList *item = item_to_remove;
+      item_to_remove = item_to_remove->prev; 
+      g_list_delete_link (item_to_remove, item);
+    }
+  else
+    {
+      /* packet is head of list */
+      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
+    }
+
+  return item_to_remove;
 }

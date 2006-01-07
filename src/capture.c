@@ -60,9 +60,10 @@ static guint get_offline_packet (void);
 static void cap_t_o_destroy (gpointer data);
 static void read_packet_live(gpointer dummy, gint source,
 			 GdkInputCondition condition);
-static void packet_acquired(guint8 * packet, guint raw_size);
+static void packet_acquired(guint8 * packet, guint raw_size, guint pkt_size);
 
 static void add_node_packet (const guint8 * packet,
+                             guint raw_size,
 			     packet_info_t * packet_info,
                              const node_id_t *node_id,
 			     packet_direction direction);
@@ -645,7 +646,7 @@ get_offline_packet (void)
   if (packet)
   {
     gettimeofday (&now, NULL);
-    packet_acquired(packet, phdr.len);
+    packet_acquired(packet, phdr.caplen, phdr.len);
   }
 
   packet = (guint8 *) pcap_next (pch_struct, &phdr);
@@ -699,15 +700,16 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
   now.tv_usec = phdr.ts.tv_usec;
 
   if (packet)
-    packet_acquired(packet, phdr.len);
+    packet_acquired(packet, phdr.caplen, phdr.len);
 
 }				/* packet_read */
 
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information
- * for the appropriate nodes and links */
+ * for the appropriate nodes and links 
+ * Receives both the captured (raw) size and the real packet size */
 static void
-packet_acquired(guint8 * raw_packet, guint raw_size)
+packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 {
   packet_info_t *packet;
   gchar *prot_desc = NULL;
@@ -716,34 +718,35 @@ packet_acquired(guint8 * raw_packet, guint raw_size)
   link_id_t link_id;
 
   /* Get a string with the protocol tree */
-  prot_desc = get_packet_prot (raw_packet, phdr.len);
+  prot_desc = get_packet_prot (raw_packet, raw_size);
 
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));
-  packet->size = raw_size;
+  packet->size = pkt_size;
   packet->timestamp = now;
   packet->prot_desc = g_strdup (prot_desc);
   packet->ref_count = 0;
 
   /* If there is no node with that id, create it. Otherwise 
    * just use the one available */
-  src_node_id = get_node_id (raw_packet, packet->size, SRC);
-  dst_node_id = get_node_id (raw_packet, packet->size, DST);
+  src_node_id = get_node_id (raw_packet, raw_size, SRC);
+  dst_node_id = get_node_id (raw_packet, raw_size, DST);
 
   n_packets++;
   n_mem_packets++;
 
-  protocol_summary_add_packet(packet);
-
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
-  add_node_packet (raw_packet, packet, &src_node_id, OUTBOUND);
-  add_node_packet (raw_packet, packet, &dst_node_id, INBOUND);
+  add_node_packet (raw_packet, raw_size, packet, &src_node_id, OUTBOUND);
+  add_node_packet (raw_packet, raw_size, packet, &dst_node_id, INBOUND);
 
   /* And now we update link traffic information for this packet */
   link_id.src = src_node_id;
   link_id.dst = dst_node_id;
   links_catalog_add_packet(&link_id, packet);
+
+  /* finally, update global protocol stats */
+  protocol_summary_add_packet(packet);
 }
 
 
@@ -752,6 +755,7 @@ packet_acquired(guint8 * raw_packet, guint raw_size)
  * create it. */
 static void
 add_node_packet (const guint8 * raw_packet,
+                 guint raw_size,
 		 packet_info_t * packet,
                  const node_id_t *node_id,
 		 packet_direction direction)
@@ -781,7 +785,7 @@ add_node_packet (const guint8 * raw_packet,
     new_nodes_add(node);
 
   /* Update names list for this node */
-  get_packet_names (&node->node_stats.stats_protos, raw_packet, packet->size,
+  get_packet_names (&node->node_stats.stats_protos, raw_packet, raw_size,
 		    packet->prot_desc, direction);
 
 }				/* add_node_packet */
@@ -791,63 +795,6 @@ static void
 dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 {
   dns_ack ();
-}
-
-/* removes a packet from a list of packets, destroying it if necessary
- * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
- * if the list is empty */
-GList *
-packet_list_remove(GList *item_to_remove)
-{
-  packet_list_item_t *litem;
-
-  g_assert(item_to_remove);
-  
-  litem = (packet_list_item_t *) item_to_remove->data;
-  if (litem)
-    {
-      packet_info_t *packet = litem->info;
-
-      if (packet)
-        {
-          /* packet exists, decrement ref count */
-          packet->ref_count--;
-    
-          if (!packet->ref_count)
-            {
-              /* packet now unused, delete it */
-              if (packet->prot_desc)
-                {
-                  g_free (packet->prot_desc);
-                  packet->prot_desc = NULL;
-                }
-              g_free (packet);
-
-              n_mem_packets--;
-            }
-          litem->info = NULL;
-        }
-
-      g_free(litem);
-      item_to_remove->data = NULL;
-    }
-
-  /* TODO I have to come back here and make sure I can't make
-   * this any simpler */
-  if (item_to_remove->prev)
-    {
-      /* current packet is not at head */
-      GList *item = item_to_remove;
-      item_to_remove = item_to_remove->prev; 
-      g_list_delete_link (item_to_remove, item);
-    }
-  else
-    {
-      /* packet is head of list */
-      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
-    }
-
-  return item_to_remove;
 }
 
 /* Sets the node->name and node->numeric_name to the most used of 

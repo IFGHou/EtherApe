@@ -33,7 +33,7 @@ typedef struct
   gdouble average;		/* Average bytes in or out in the last x ms */
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
-  guint proto_packets;		/* Number of packets containing this protocol */
+  guint proto_packets;		/* Number of packets seen with this protocol */
   GdkColor color;		/* The color associated with this protocol. It's here
 				 * so that I can use the same structure and lookup functions
 				 * in capture.c and diagram.c */
@@ -62,19 +62,14 @@ void protocol_stack_reset(protostack_t *pstk);
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */
 void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry);
+/* calculates averages */
+void protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs);
 /* finds named protocol in the requested level of protostack*/
 const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname);
 /* sorts on the most used protocol in the requested level and returns it */
 gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
 
 
-
-typedef struct 
-{
-  guint n_packets;		/* Number of active packets linked to some proto*/
-  GList *packets;		/* List of active packets */
-  protostack_t protos;          /* the protocol stack */
-} protocol_summary_t;
 
 /* protocol summary method */
 void protocol_summary_open(void); /* initializes the summary */

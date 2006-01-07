@@ -56,9 +56,5 @@ void traffic_stats_add_packet( traffic_stats_t *pkt_stat,
                               packet_direction dir); /* adds a packet */
 void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
-/* removes a packet from a list of packets, destroying it if necessary
- * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
- * if the list is empty */
-GList *packet_list_remove(GList *item_to_remove);
 
 #endif

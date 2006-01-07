@@ -138,16 +138,14 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gb
 
       if (protocol->aver_accu<=0)
         {
-          /* no traffic active */
+          /* no traffic active on this proto */
           protocol->aver_accu = 0;
           protocol->average = 0;
 
           if (purge_entry)
             {
-              /* purge entry requested */
-              g_free (protocol->name);
-              g_free (protocol);
-    
+              /* requested purge of expired protos */
+              protocol_t_delete(protocol);
               pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
             }
         }
@@ -155,6 +153,32 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gb
     }
   g_strfreev (tokens);
 }
+
+/* calculates averages on protocol stack items */
+void
+protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
+{
+  GList *item;
+  protocol_t *protocol;
+  guint i;
+
+  g_assert(pstk);
+
+  for (i = 0; i <= STACK_SIZE; i++)
+    {
+      item = pstk->protostack[i];
+      while (item)
+        {
+          protocol = (protocol_t *)item->data;
+
+          protocol->average =
+            8000000 * protocol->aver_accu / avg_usecs;
+
+          item = item->next;
+        }
+    }
+}
+
 
 /* finds named protocol in the level protocols of protostack*/
 const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname)
@@ -210,174 +234,6 @@ protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
 
 /***************************************************************************
  *
- * protocol_summary_t implementation
- *
- **************************************************************************/
-static protocol_summary_t *protosummary = NULL;
-
-/* initializes the summary */
-void protocol_summary_open(void)
-{
-  if (protosummary)
-    protocol_summary_close();
-
-  protosummary = g_malloc( sizeof(protocol_summary_t) );
-  protosummary->n_packets = 0;
-  protosummary->packets = NULL;
-  protocol_stack_open(&protosummary->protos);
-}
-
-/* frees summary, releasing resources */
-void protocol_summary_close(void)
-{
-  if (protosummary)
-    {
-      while (protosummary->packets)
-        protosummary->packets = packet_list_remove(protosummary->packets);
-      protosummary->packets = NULL;
-      protosummary->n_packets = 0;
-      protocol_stack_reset(&protosummary->protos);
-      g_free(protosummary);
-      protosummary = NULL;
-    }
-}
-
-/* adds a new packet to summary */
-void protocol_summary_add_packet(packet_info_t *packet)
-{
-  packet_list_item_t *newit;
-  
-  if (!protosummary)
-    protocol_summary_open();
-
-  newit = g_malloc( sizeof(packet_list_item_t) );
-  packet->ref_count++;
-  newit->info = packet;
-  newit->direction = EITHERBOUND;
-  protosummary->packets = g_list_prepend (protosummary->packets, newit);
-  ++protosummary->n_packets;
-
-  protocol_stack_add_pkt(&protosummary->protos, packet);
-}
-
-static void
-protocol_summary_purge_expired_packets()
-{
-  struct timeval result;
-  double time_comparison;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
-
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. */
-  if (pref.node_timeout_time)
-    time_comparison = (pref.node_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.node_timeout_time;
-  else
-    time_comparison = pref.averaging_time;
-
-  packet_l_e = g_list_last (protosummary->packets);
-  while (packet_l_e)
-  {
-    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
-
-    result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, time_comparison) && (status != STOP))
-      break; /* packet valid, subsequent packets are younger, no need to go further */
-
-    /* TODO: insert proto expiration. Right a proto is never removed */
-    /* packet expired, remove WITHOUT removing the proto entry, because the 
-     * proto legend/window can't cope */
-    protocol_stack_sub_pkt(&protosummary->protos, packet->info, FALSE);
-
-    /* packet expired, remove from list - gets the new check position 
-     * if this packet is the first of the list, all the previous packets
-     * should be already destroyed. We check that remove never returns a
-     * NEXT packet */
-    GList *next=packet_l_e->next;
-    packet_l_e = packet_list_remove(packet_l_e);
-    g_assert(packet_l_e == NULL || packet_l_e != next );
-    protosummary->n_packets--;
-  }
-
-  if (!packet_l_e)
-    {
-      /* removed all packets */
-      protosummary->n_packets = 0;
-      protosummary->packets=NULL;
-    }
-}
-
-/* update stats on protocol summary */
-void protocol_summary_update_all(void)
-{
-  if (!protosummary)
-    return;
-
-  protocol_summary_purge_expired_packets();
-
-  if (protosummary->packets)
-    {
-      /* ok, we have active packets, update stats */
-      GList *item = NULL;
-      protocol_t *protocol = NULL;
-      guint i = 0;
-      struct timeval difference;
-      packet_list_item_t *packet;
-      gdouble usecs_from_oldest;	/* usecs since the oldest valid packet */
-
-      item = g_list_last (protosummary->packets);
-      packet = (packet_list_item_t *) item->data;
-
-      difference = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = difference.tv_sec * 1000000 + difference.tv_usec;
-
-      for (i = 0; i <= STACK_SIZE; i++)
-        {
-          item = protosummary->protos.protostack[i];
-          while (item)
-            {
-              protocol = (protocol_t *)item->data;
-
-              protocol->average =
-                8000000 * protocol->aver_accu / usecs_from_oldest;
-
-              item = item->next;
-            }
-        }
-    }
-}
-
-/* number of protos at specified level */
-guint protocol_summary_size(size_t level)
-{
-  if (!protosummary || level > STACK_SIZE)
-    return 0;
-  return g_list_length(protosummary->protos.protostack[level]);
-}
-
-
-/* calls func for every protocol at the specified level */
-void protocol_summary_foreach(size_t level, GFunc func, gpointer data)
-{
-  if (!protosummary || level > STACK_SIZE)
-    return;
-  g_list_foreach (protosummary->protos.protostack[level], func, data);
-}
-
-
-/* finds named protocol in the level protocols of protostack*/
-const protocol_t *protocol_summary_find(size_t level, const gchar *protoname)
-{
-  if (!protosummary)
-    return NULL;
-  return protocol_stack_find(&protosummary->protos, level, protoname);
-}
-
-/***************************************************************************
- *
  * protocol_t implementation
  *
  **************************************************************************/
@@ -398,6 +254,7 @@ protocol_t *protocol_t_create(const gchar *protocol_name)
   pr->color.blue = 0;
   pr->last_heard.tv_sec = 0;
   pr->last_heard.tv_usec = 0;
+  
 
   return pr;
 }
@@ -428,4 +285,88 @@ protocol_compare (gconstpointer a, gconstpointer b)
   g_assert (b != NULL);
 
   return strcmp (((protocol_t *) a)->name, (gchar *) b);
+}
+
+/***************************************************************************
+ *
+ * protocol_summary_t implementation
+ *
+ **************************************************************************/
+static traffic_stats_t *protosummary_stats = NULL;
+
+/* initializes the summary */
+void protocol_summary_open(void)
+{
+  if (protosummary_stats)
+    protocol_summary_close();
+
+  protosummary_stats = g_malloc( sizeof(traffic_stats_t) );
+  traffic_stats_init(protosummary_stats);
+}
+
+/* frees summary, releasing resources */
+void protocol_summary_close(void)
+{
+  if (protosummary_stats)
+    {
+      traffic_stats_reset(protosummary_stats);
+      g_free(protosummary_stats);
+      protosummary_stats = NULL;
+    }
+}
+
+/* adds a new packet to summary */
+void protocol_summary_add_packet(packet_info_t *packet)
+{
+  if (!protosummary_stats)
+    protocol_summary_open();
+
+  traffic_stats_add_packet( protosummary_stats, packet, EITHERBOUND); 
+}
+
+/* update stats on protocol summary */
+void protocol_summary_update_all(void)
+{
+  double pkt_expire_time;
+
+  if (!protosummary_stats)
+    return;
+
+  /* If this packet is older than the averaging time,
+   * then it is removed, and the process continues.
+   * Else, we are done. */
+  if (pref.node_timeout_time)
+    pkt_expire_time = (pref.node_timeout_time > pref.averaging_time) ?
+      pref.averaging_time : pref.node_timeout_time;
+  else
+    pkt_expire_time = pref.averaging_time;
+
+  /* for now protocols doesn't age on summary */
+  traffic_stats_update(protosummary_stats, pkt_expire_time, FALSE);
+}
+
+/* number of protos at specified level */
+guint protocol_summary_size(size_t level)
+{
+  if (!protosummary_stats || level > STACK_SIZE)
+    return 0;
+  return g_list_length(protosummary_stats->stats_protos.protostack[level]);
+}
+
+
+/* calls func for every protocol at the specified level */
+void protocol_summary_foreach(size_t level, GFunc func, gpointer data)
+{
+  if (!protosummary_stats || level > STACK_SIZE)
+    return;
+  g_list_foreach (protosummary_stats->stats_protos.protostack[level], func, data);
+}
+
+
+/* finds named protocol in the level protocols of protostack*/
+const protocol_t *protocol_summary_find(size_t level, const gchar *protoname)
+{
+  if (!protosummary_stats)
+    return NULL;
+  return protocol_stack_find(&protosummary_stats->stats_protos, level, protoname);
 }

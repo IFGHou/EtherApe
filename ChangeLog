@@ -1,3 +1,12 @@
+2006-01-07 09:59  bchiara
+
+	* ChangeLog, NEWS, src/Makefile.am, src/capture.c, src/diagram.c,
+	src/info_windows.c, src/links.c, src/links.h, src/menus.c,
+	src/node.c, src/node.h, src/protocols.c, src/protocols.h,
+	src/traffic_stats.c, src/traffic_stats.h, src/util.c, src/util.h:
+	Unified traffic statistic routines. Rewritten interface listing
+	code to use pcap_findalldevs.
+
 2006-01-06 17:41  bchiara
 
 	* ChangeLog, NEWS, src/capture.c, src/links.c, src/node.c,

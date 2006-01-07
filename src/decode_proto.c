@@ -97,7 +97,7 @@ static guint16 global_dst_port;
  * Implementation
  * ------------------------------------------------------------*/
 gchar *
-get_packet_prot (const guint8 * p, guint len)
+get_packet_prot (const guint8 * p, guint raw_size)
 {
   gchar **tokens = NULL;
   gchar *top_prot = NULL;
@@ -115,7 +115,7 @@ get_packet_prot (const guint8 * p, guint len)
   prot = g_string_new ("");
 
   packet = p;
-  capture_len = len;
+  capture_len = raw_size;
 
   switch (linktype)
     {
