@@ -1,3 +1,11 @@
+2006-01-07 18:17  bchiara
+
+	* ChangeLog, src/capture.c, src/decode_proto.c, src/decode_proto.h,
+	src/info_windows.c, src/menus.c, src/protocols.c, src/protocols.h,
+	src/traffic_stats.c, src/traffic_stats.h: Upgraded protocols to
+	unified statistics. Small fixes to protocol window.  Better
+	separation between real packet size and captured size.
+
 2006-01-07 09:59  bchiara
 
 	* ChangeLog, NEWS, src/Makefile.am, src/capture.c, src/diagram.c,

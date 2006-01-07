@@ -57,10 +57,10 @@ load_config (const char *prefix)
   pref.antialias =
     gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
   pref.name_res =
-    gnome_config_get_bool_with_default ("Diagram/name_res=FALSE", &u);
+    gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
     gnome_config_get_float_with_default
-    ("Diagram/node_timeout_time=3600000.0", &u);
+    ("Diagram/node_timeout_time=3600000.0", &u); 
   pref.gui_node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/gui_node_timeout_time=60000.0", &u);
