@@ -100,7 +100,7 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 }				/* add_protocol */
 
 
-void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry)
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, double expire_time)
 {
   guint i = 0;
   gchar **tokens = NULL;
@@ -142,11 +142,16 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gb
           protocol->aver_accu = 0;
           protocol->average = 0;
 
-          if (purge_entry)
+          if (expire_time>0)
             {
               /* requested purge of expired protos */
-              protocol_t_delete(protocol);
-              pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
+              struct timeval result;
+              result = substract_times (now, protocol->last_heard);
+              if (IS_OLDER (result, expire_time) || (status == STOP))
+                {
+                  protocol_t_delete(protocol);
+                  pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
+                }
             }
         }
       i++;
@@ -175,6 +180,39 @@ protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
             8000000 * protocol->aver_accu / avg_usecs;
 
           item = item->next;
+        }
+    }
+}
+
+/* checks for protocol expiration ... */
+void
+protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
+{
+
+  g_assert(pstk);
+
+  if (expire_time>0)
+    {
+      GList *item;
+      GList *next_item;
+      protocol_t *protocol;
+      struct timeval result;
+      guint i;
+      for (i = 0; i <= STACK_SIZE; i++)
+        {
+          item = pstk->protostack[i];
+          while (item)
+            {
+              protocol = (protocol_t *)item->data;
+              result = substract_times (now, protocol->last_heard);
+              next_item = item->next;
+              if (IS_OLDER (result, expire_time) || (status == STOP))
+                {
+                  protocol_t_delete(protocol);
+                  pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
+                }
+              item = next_item;
+            }
         }
     }
 }

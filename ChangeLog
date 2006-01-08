@@ -1,3 +1,9 @@
+2006-01-07 21:39  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/info_windows.c,
+	src/preferences.c: Small fix on preferences, initial attempt at a
+	combined node+protocol window
+
 2006-01-07 18:17  bchiara
 
 	* ChangeLog, src/capture.c, src/decode_proto.c, src/decode_proto.h,

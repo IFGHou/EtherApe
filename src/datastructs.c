@@ -106,7 +106,14 @@ protohash_get(const gchar *protoname)
   color = (GdkColor *)g_hash_table_lookup(protohash, protoname);
   if (!color)
     {
+      /* color not found, take from cycle list */
       color = (GdkColor *)current_cycle->data;
+
+      /* add to hash */
+      g_hash_table_insert(protohash, g_strdup(protoname), 
+                         g_memdup(color, sizeof(GdkColor)));
+
+      /* advance cycle */
       current_cycle = current_cycle->next;
       if (!current_cycle)
         current_cycle = cycle_color_list;

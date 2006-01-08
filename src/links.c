@@ -129,20 +129,24 @@ gfunc_remove_link(gpointer data, gpointer user_data)
 static gint
 update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
 {
-  double pkt_expire_time;
+  double pkt_expire_time, proto_expire_time;
   struct timeval diff;
 
   g_assert(delete_list_ptr);
 
   /* calculate the right expiration interval */
-  if (pref.link_timeout_time)
-    pkt_expire_time = (pref.link_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.link_timeout_time;
+  if (pref.link_timeout_time && pref.link_timeout_time < pref.averaging_time)
+    pkt_expire_time = pref.link_timeout_time;
   else
     pkt_expire_time = pref.averaging_time;
 
+  if (pref.proto_link_timeout_time && pref.proto_link_timeout_time < pref.link_timeout_time)
+    proto_expire_time = pref.proto_link_timeout_time;
+  else
+    proto_expire_time = pref.link_timeout_time;
+
   /* update stats - returns true if there are active packets */
-  if (traffic_stats_update(&link->link_stats, pkt_expire_time, TRUE))
+  if (traffic_stats_update(&link->link_stats, pkt_expire_time, proto_expire_time))
     {
       /* packet(s) active, update the most used protocols for this link */
       guint i = STACK_SIZE;

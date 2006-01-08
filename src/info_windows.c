@@ -27,6 +27,7 @@
 #include "info_windows.h"
 #include "diagram.h"
 #include "node.h"
+#include "datastructs.h"
 #include "protocols.h"
 
 /* private static vars */
@@ -41,6 +42,7 @@ static void update_prot_info_window (prot_info_window_t * prot_info_window);
 static gint node_info_window_compare (gconstpointer a, gconstpointer b);
 static gint prot_info_compare (gconstpointer a, gconstpointer b);
 static void update_node_info_windows (void);
+static void update_node_protocols_window (node_info_window_t * node_info_window);
 
 /* 
   
@@ -91,12 +93,24 @@ timeval_to_str (struct timeval last_heard)
 			     broken_time.tm_hour, broken_time.tm_min);
     }
 
-
-
   return str;
-
-
 }				/* timeval_to_str */
+
+/* registers the named glade widget on the specified object */
+static void
+register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName)
+{
+  GtkWidget *widget;
+  widget = glade_xml_get_widget (xm, widgetName);
+  g_object_set_data (tgt, widgetName, widget);
+}
+
+static void
+update_gtklabel(GtkWidget *window, const gchar *lblname, const gchar *value)
+{
+  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
+  gtk_label_set_text (GTK_LABEL (widget), value);
+}
 
 /* ----------------------------------------------------------
 
@@ -388,8 +402,6 @@ static void
 create_protocols_list (GtkTreeView *gv)
 {
   GtkListStore *gs;
-  GList *item = NULL;
-  GtkTreeIter it;
   GtkTreeViewColumn *gc;
 
   /* create the store  - it uses 7 values, five displayable, one ptr, and there
@@ -455,16 +467,6 @@ create_protocols_list (GtkTreeView *gv)
   gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs), 0,
 					GTK_SORT_ASCENDING);
 
-  /* re-adds the current protocols */
-  item = info_protocols;
-  while (item)
-    {
-      protocol_t *nproto = (protocol_t *) (item->data);
-      gtk_list_store_prepend (gs, &it);
-      gtk_list_store_set (gs, &it, 0, nproto->name, 5, nproto, -1);
-      item = item->next;
-    }
-
 }
 
 
@@ -490,6 +492,16 @@ update_protocols_window (void)
       gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
       if (!gs)
         return;			/* error */
+
+      /* re-adds the current protocols */
+      item = info_protocols;
+      while (item)
+        {
+          protocol_t *nproto = (protocol_t *) (item->data);
+          gtk_list_store_prepend (gs, &it);
+          gtk_list_store_set (gs, &it, 0, nproto->name, 5, nproto, -1);
+          item = item->next;
+        }
     }
   inited = TRUE;
 
@@ -762,7 +774,6 @@ node_info_window_create(const node_id_t * node_id)
   GtkWidget *window;
   node_info_window_t *node_info_window;
   GladeXML *xml_info_window;
-  GtkWidget *widget;
   GList *list_item;
   node_info_window_t key;
 
@@ -784,28 +795,16 @@ node_info_window_create(const node_id_t * node_id)
       window = glade_xml_get_widget (xml_info_window, "node_info");
       gtk_widget_show (window);
 
-      widget = glade_xml_get_widget (xml_info_window, "node_info_name_label");
-      g_object_set_data (G_OBJECT (window), "name_label", widget);
-      widget =
-	glade_xml_get_widget (xml_info_window,
+      /* register the widgets in the window */
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_name_label");
+      register_glade_widget(xml_info_window, G_OBJECT (window), 
 			      "node_info_numeric_name_label");
-      g_object_set_data (G_OBJECT (window), "numeric_name_label", widget);
-      widget = glade_xml_get_widget (xml_info_window, "node_info_average");
-      g_object_set_data (G_OBJECT (window), "average", widget);
-      widget = glade_xml_get_widget (xml_info_window, "node_info_average_in");
-      g_object_set_data (G_OBJECT (window), "average_in", widget);
-      widget =
-	glade_xml_get_widget (xml_info_window, "node_info_average_out");
-      g_object_set_data (G_OBJECT (window), "average_out", widget);
-      widget =
-	glade_xml_get_widget (xml_info_window, "node_info_accumulated");
-      g_object_set_data (G_OBJECT (window), "accumulated", widget);
-      widget =
-	glade_xml_get_widget (xml_info_window, "node_info_accumulated_in");
-      g_object_set_data (G_OBJECT (window), "accumulated_in", widget);
-      widget =
-	glade_xml_get_widget (xml_info_window, "node_info_accumulated_out");
-      g_object_set_data (G_OBJECT (window), "accumulated_out", widget);
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_average");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_average_in");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_average_out");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_accumulated");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_accumulated_in");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_accumulated_out");
 
       g_object_unref (xml_info_window);
       node_info_window = g_malloc (sizeof (node_info_window_t));
@@ -851,7 +850,10 @@ update_node_info_windows (void)
 	}
       else
 	{
-	  update_node_info_window (node_info_window);
+          if (pref.new_infodlg)
+            update_node_protocols_window (node_info_window);
+          else
+            update_node_info_window (node_info_window);
 	  list_item = list_item->next;
 	}
     }
@@ -867,7 +869,7 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
 			   gpointer user_data)
 {
   GList *item = NULL;
-  node_id_t *node_id = NULL;
+  node_id_t *node_id;
   node_info_window_t *node_info_window = NULL;
   node_info_window_t key;
   
@@ -888,17 +890,11 @@ on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
 
   node_info_window = item->data;
   gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
-  node_info_windows = g_list_remove_link (node_info_windows, item);
+  node_info_windows = g_list_delete_link (node_info_windows, item);
+  g_free(node_id);
 
   return FALSE;
 }				/* on_node_info_delete_event */
-
-static void
-update_gtklabel(GtkWidget *window, const gchar *lblname, const gchar *value)
-{
-  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
-  gtk_label_set_text (GTK_LABEL (widget), value);
-}
 
 static void
 update_node_info_window (node_info_window_t * node_info_window)
@@ -909,153 +905,222 @@ update_node_info_window (node_info_window_t * node_info_window)
   window = node_info_window->window;
   if (!(node = nodes_catalog_find(&node_info_window->node_id)))
     {
-      update_gtklabel(window, "numeric_name_label", _("No info available"));
-      update_gtklabel(window, "average", "X");
-      update_gtklabel(window, "average_in", "X");
-      update_gtklabel(window, "average_out", "X");
-      update_gtklabel(window, "accumulated", "X");
-      update_gtklabel(window, "accumulated_in", "X");
-      update_gtklabel(window, "accumulated_out", "X");
+      update_gtklabel(window, "node_info_numeric_name_label", _("Node timed out"));
+      update_gtklabel(window, "node_info_average", "X");
+      update_gtklabel(window, "node_info_average_in", "X");
+      update_gtklabel(window, "node_info_average_out", "X");
+      update_gtklabel(window, "node_info_accumulated", "X");
+      update_gtklabel(window, "node_info_accumulated_in", "X");
+      update_gtklabel(window, "node_info_accumulated_out", "X");
       gtk_widget_queue_resize (GTK_WIDGET (window));
       return;
     }
 
   gtk_window_set_title (GTK_WINDOW (window), node->name->str);
   
-  update_gtklabel(window, "name_label", node->name->str);
-  update_gtklabel(window, "numeric_name_label", node->numeric_name->str);
-  update_gtklabel(window, "average",
+  update_gtklabel(window, "node_info_name_label", node->name->str);
+  update_gtklabel(window, "node_info_numeric_name_label", node->numeric_name->str);
+  update_gtklabel(window, "node_info_average",
 		      traffic_to_str (node->node_stats.stats.average, TRUE));
-  update_gtklabel(window, "average_in",
+  update_gtklabel(window, "node_info_average_in",
 		      traffic_to_str (node->node_stats.stats_in.average, TRUE));
-  update_gtklabel(window, "average_out",
+  update_gtklabel(window, "node_info_average_out",
 		      traffic_to_str (node->node_stats.stats_out.average, TRUE));
-  update_gtklabel(window, "accumulated",
+  update_gtklabel(window, "node_info_accumulated",
 		      traffic_to_str (node->node_stats.stats.accumulated, FALSE));
-  update_gtklabel(window, "accumulated_in",
+  update_gtklabel(window, "node_info_accumulated_in",
 		      traffic_to_str (node->node_stats.stats_in.accumulated, FALSE));
-  update_gtklabel(window, "accumulated_out",
+  update_gtklabel(window, "node_info_accumulated_out",
 		      traffic_to_str (node->node_stats.stats_out.accumulated, FALSE));
   gtk_widget_queue_resize (GTK_WIDGET (window));
 }				/* update_node_info_window */
 
+/****************************************************************************
+ *
+ * node protocols display
+ *
+ ***************************************************************************/
+void
+node_protocols_window_create(const node_id_t * node_id)
+{
+  GtkWidget *window;
+  node_info_window_t *node_info_window;
+  GladeXML *xml_info_window;
+  GList *list_item;
+  node_info_window_t key;
+  GtkTreeView *gv;
+
+  key.node_id = *node_id;
+
+  /* If there is already a window, we don't need to create it again */
+  if (!(list_item =
+	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
+    {
+      xml_info_window =
+	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_proto_info", NULL);
+      if (!xml_info_window)
+	{
+	  g_error (_("We could not load the interface! (%s)"),
+		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
+	  return;
+	}
+      glade_xml_signal_autoconnect (xml_info_window);
+      window = glade_xml_get_widget (xml_info_window, "node_proto_info");
+      gtk_widget_show (window);
+
+      /* register the widgets in the window */
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name");
+      register_glade_widget(xml_info_window, G_OBJECT (window), 
+			      "node_iproto_numeric_name");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_in");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_out");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
+      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_proto");
+
+      /* create columns of proto list */
+      gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
+      create_protocols_list (gv);
+
+      g_object_unref (xml_info_window);
+      node_info_window = g_malloc (sizeof (node_info_window_t));
+      node_info_window->node_id = *node_id;
+      g_object_set_data (G_OBJECT (window), "node_id",
+			 g_memdup(&node_info_window->node_id, sizeof(node_id_t)));
+      node_info_window->window = window;
+      node_info_windows = g_list_prepend (node_info_windows, node_info_window);
+    }
+  else
+    node_info_window = (node_info_window_t *) list_item->data;
+  update_node_protocols_window (node_info_window);
+}				/* node_info_window_create */
 
 static void
-update_node_protocols_window (void)
+update_node_protocols_window (node_info_window_t * node_info_window)
 {
   GtkListStore *gs = NULL;
   GList *item = NULL;
-  const protocol_t *protocol = NULL;
   gchar *str = NULL;
   gboolean res;
   GtkTreeIter it;
-
+  GtkWidget *widget;
+  GtkTreeView *gv;
+  node_t *node = NULL;
+  GtkWidget *window;
+  const protostack_t *pstk;
+  
+  window = node_info_window->window;
   /* retrieve view and model (store) */
-  GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
-  if (!gv || !GTK_WIDGET_VISIBLE (gv))
+  widget = g_object_get_data (G_OBJECT (window), "node_iproto_proto");
+  gv = GTK_TREE_VIEW (widget);
+  if (!gv)
     return;			/* error or hidden */
   gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
   if (!gs)
+     return;			/* error */
+
+  if (!(node = nodes_catalog_find(&node_info_window->node_id)))
     {
-      create_protocols_list (gv);
-      gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-      if (!gs)
-        return;			/* error */
+      /* node expired, remove */
+      update_gtklabel(window, "node_iproto_numeric_name", _("Node timed out"));
+      update_gtklabel(window, "node_iproto_avg", "X");
+      update_gtklabel(window, "node_iproto_avg_in", "X");
+      update_gtklabel(window, "node_iproto_avg_out", "X");
+      update_gtklabel(window, "node_iproto_accum", "X");
+      update_gtklabel(window, "node_iproto_accum_in", "X");
+      update_gtklabel(window, "node_iproto_accum_out", "X");
+      gtk_list_store_clear(gs);
+      gtk_widget_queue_resize (GTK_WIDGET (window));
+      return;
     }
 
-  /* Add any new protocols in the legend */
-  item = legend_protocols;
-  while (item)
+  gtk_window_set_title (GTK_WINDOW (window), node->name->str);
+  
+  update_gtklabel(window, "node_iproto_name", node->name->str);
+  update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
+  update_gtklabel(window, "node_iproto_avg",
+		      traffic_to_str (node->node_stats.stats.average, TRUE));
+  update_gtklabel(window, "node_iproto_avg_in",
+		      traffic_to_str (node->node_stats.stats_in.average, TRUE));
+  update_gtklabel(window, "node_iproto_avg_out",
+		      traffic_to_str (node->node_stats.stats_out.average, TRUE));
+  update_gtklabel(window, "node_iproto_accum",
+		      traffic_to_str (node->node_stats.stats.accumulated, FALSE));
+  update_gtklabel(window, "node_iproto_accum_in",
+		      traffic_to_str (node->node_stats.stats_in.accumulated, FALSE));
+  update_gtklabel(window, "node_iproto_accum_out",
+		      traffic_to_str (node->node_stats.stats_out.accumulated, FALSE));
+
+  /* update protocol table */
+  pstk = &node->node_stats.stats_protos;
+  item = pstk->protostack[pref.stack_level];
+  res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
+  while (res || item)
     {
-      protocol = item->data;
-      if (!g_list_find_custom (info_protocols, protocol->name,
-			       protocol_compare))
-	{
-	  protocol_t *nproto = protocol_t_create(protocol->name);
-	  info_protocols = g_list_prepend (info_protocols, nproto);
-	  nproto->color = protocol->color;
+      const protocol_t *stack_proto = NULL;
+      protocol_t *row_proto = NULL;
 
-	  gtk_list_store_prepend (gs, &it);
-	  gtk_list_store_set (gs, &it, 0, nproto->name, 5, nproto, 6,
-			      &nproto->color, -1);
+      /* retrieve current row proto (if present) */
+      if (res)
+        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &row_proto, -1);
 
-	}
+      if ( !item )
+        {
+          /* no more protos on stack, current row (remove moves to next) */
+          protocol_t_delete(row_proto);
+          res = gtk_list_store_remove (gs, &it);
+          continue;
+        }
+
+      /* retrieve current stack proto */
+      stack_proto = item->data;
+
+      if (!res)
+        {
+          /* current protocol missing on list, create a new row */
+	  row_proto = protocol_t_create(stack_proto->name);
+	  row_proto->color = protohash_get(stack_proto->name);
+
+	  gtk_list_store_append(gs, &it);
+	  gtk_list_store_set (gs, &it, 
+                              0, row_proto->name, 
+                              5, row_proto, 
+                              6, &row_proto->color, 
+                              -1);
+        }
+      else
+        {
+          /* we have both items, check names */
+          if (strcmp(row_proto->name, stack_proto->name))
+            {
+              /* names not identical, delete current row  (remove moves to next) */
+              protocol_t_delete(row_proto);
+              res = gtk_list_store_remove (gs, &it);
+              continue;
+            }
+        }
+
+      /* everything ok, update stats */
+      str = traffic_to_str (stack_proto->accumulated, FALSE);
+      gtk_list_store_set (gs, &it, 2, str, -1);
+
+      str = g_strdup_printf ("%d", stack_proto->proto_packets);
+      gtk_list_store_set (gs, &it, 4, str, -1);
+      g_free (str);
+
+      str = traffic_to_str (stack_proto->average, TRUE);
+      gtk_list_store_set (gs, &it, 1, str, -1);
+
+      str = timeval_to_str (stack_proto->last_heard);
+      gtk_list_store_set (gs, &it, 3, str, -1);
+
+      if (res)
+        res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);
+
       item = item->next;
     }
 
-  /* Delete protocols not in the legend */
-  res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
-  while (res)
-    {
-      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &protocol, -1);
-      if (!g_list_find_custom (legend_protocols, protocol->name,
-			       protocol_compare))
-	{
-	  info_protocols = g_list_remove (info_protocols, protocol);
-          protocol_t_delete((protocol_t *)protocol);
-
-	  /* remove row - after, iter points to next row if res = TRUE */
-#if GTK_CHECK_VERSION(2,2,0)
-	  res = gtk_list_store_remove (gs, &it);
-#else
-	  /* gtk < 2.2 had gtk_list_store_remove void */
-	  gtk_list_store_remove (gs, &it);
-	  res = FALSE;		/* to be sure, act like remove() returned FALSE */
-#endif
-	}
-      else
-	res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);
-    }
-
-  /* Update rows */
-  for (res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
-       res; 
-       res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it))
-    {
-      protocol_t *nproto = NULL;
-      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &nproto, -1);
-
-      if (!nproto)
-	{
-	  g_my_critical
-	    ("Unable to extract protocol structure from table in update_protocols_window");
-	  return;
-	}
-
-      protocol = protocol_summary_find(pref.stack_level, nproto->name);
-      if (!protocol)
-	{
-	  g_my_critical
-	    ("Global protocol not found in update_protocols_window");
-	  return;
-	}
-
-      if (nproto->accumulated != protocol->accumulated)
-        {
-	  nproto->accumulated = protocol->accumulated;
-	  str = traffic_to_str (protocol->accumulated, FALSE);
-	  gtk_list_store_set (gs, &it, 2, str, 6, &nproto->color, -1);
-        }
-
-      if (nproto->proto_packets != protocol->proto_packets)
-        {
-	  nproto->proto_packets = protocol->proto_packets;
-	  str = g_strdup_printf ("%d", protocol->proto_packets);
-	  gtk_list_store_set (gs, &it, 4, str, -1);
-	  g_free (str);
-        }
-
-      if (nproto->average != protocol->average)
-        {
-          nproto->average = protocol->average;
-          str = traffic_to_str (protocol->average, TRUE);
-          gtk_list_store_set (gs, &it, 1, str, -1);
-        }
-
-      /* values updated every time */
-      nproto->last_heard = protocol->last_heard;
-      str = timeval_to_str (protocol->last_heard);
-      gtk_list_store_set (gs, &it, 3, str, -1);
-      nproto->color = protocol->color;
-    }
+  gtk_widget_queue_resize (GTK_WIDGET (window));
 }				/* update_protocols_window */

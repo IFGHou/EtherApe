@@ -184,7 +184,7 @@ traffic_stats_add_packet(traffic_stats_t *pkt_stat,
 }
 
 void
-traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_protos)
+traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
 {
   struct timeval result;
   GList *packet_l_e = NULL;	/* Packets is a list of packets.
@@ -197,7 +197,7 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_tim
     packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
 
     result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, expire_time) && (status != STOP))
+    if (!IS_OLDER (result, pkt_expire_time) && (status != STOP))
       break; /* packet valid, subsequent packets are younger, no need to go further */
 
     /* packet expired, remove from stats */
@@ -208,7 +208,7 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_tim
       basic_stats_sub(&pkt_stat->stats_out, packet->info->size);/* out or either */
 
     /* and protocol stack */
-    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info, purge_protos);
+    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info, proto_expire_time);
 
     /* and, finally from packet list - gets the new check position 
      * if this packet is the first of the list, all the previous packets
@@ -228,17 +228,17 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_tim
       pkt_stat->stats.average = 0;
       pkt_stat->stats_in.average = 0;
       pkt_stat->stats_out.average = 0;
-      if (purge_protos)
-        protocol_stack_reset(&pkt_stat->stats_protos);
+      if (proto_expire_time>0)
+        protocol_stack_purge_expired(&pkt_stat->stats_protos, proto_expire_time);
     }
 }
 
 /* Update stats, purging expired packets - returns FALSE if there are no 
  * active packets */
 gboolean
-traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean purge_expired_protos)
+traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
 {
-  traffic_stats_purge_expired_packets(pkt_stat, expire_time, purge_expired_protos);
+  traffic_stats_purge_expired_packets(pkt_stat, pkt_expire_time, proto_expire_time);
 
   if (pkt_stat->pkt_list)
     {

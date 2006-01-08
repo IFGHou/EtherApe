@@ -149,7 +149,7 @@ struct
   gboolean cycle;		/* Weather to reuse colors that are assigned to certain
 				 * protocols */
   gboolean stationary;		/* Use alternative algorith for node placing */
-  guint32 refresh_period;	/* Time between diagram refreshes */
+  gboolean new_infodlg;		/* Use new-style info dialogs */
   gdouble node_radius_multiplier;	/* used to calculate the radius of the
 					 * displayed nodes. So that the user can
 					 * select with certain precision this
@@ -166,23 +166,44 @@ struct
 				 * we will concentrate on */
   gint node_limit;		/* Max number of nodes to show. If <0 it's not
 				 * limited */
-  gdouble gui_node_timeout_time;	/* After this time has passed with no traffic
-					 * for a node, it disappears from the diagram */
+
+  /* after this time has passed without traffic on a protocol, it's removed
+   * from the global protocol stats */
+  gdouble proto_timeout_time;
+
+  /* After this time has passed with no traffic for a node, it 
+   * disappears from the diagram */
+  gdouble gui_node_timeout_time;
+
+  /* After this time has passed with no traffic for a node, it 
+  * is deleted from memory */
+  gdouble node_timeout_time;
+
+  /* after this time has passed without traffic on a protocol, it's removed
+   * from the node protocol stats */
+  gdouble proto_node_timeout_time;
+
   gint n_colors;		/* Numbers of colors to be used on the diagram */
   gchar **colors;		/* list of colors to be used on the diagram. Format is
 				 * color[;protocol] [color[;protocol] ...
 				 * where color is represented by sis hex digits (RGB) */
 
-/* Capture settings */
+  /* After this time has passed with no traffic for a link, it 
+   * disappears from the diagram */
+  gdouble gui_link_timeout_time;
+  
+  /* After this time has passed with no traffic for a link, it 
+  * is deleted from memory */
+  gdouble link_timeout_time;
 
+  /* after this time has passed without traffic on a protocol, it's removed
+   * from the link protocol stats */
+  gdouble proto_link_timeout_time;
+
+  guint32 refresh_period;	/* Time between diagram refreshes */
   gdouble averaging_time;	/* Microseconds of time we consider to
 				 * calculate traffic averages */
-  gdouble link_timeout_time;	/* After this time
-				 * has passed with no traffic in a 
-				 * link, it disappears */
-  gdouble node_timeout_time;	/* After this time has passed 
-				 * with no traffic in/out a
-				 * node, it is deleted from memory */
+
   gchar *interface;		/* Network interface to listen to */
   gchar *filter;		/* Pcap filter to be used */
 

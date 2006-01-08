@@ -1116,7 +1116,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
 	  scale =
 	    pow (0.10,
 		 (diff.tv_sec * 1000.0 +
-		  diff.tv_usec / 1000) / pref.link_timeout_time);
+		  diff.tv_usec / 1000) / pref.gui_link_timeout_time);
 	}
 
       scaledColor =
@@ -1251,7 +1251,10 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
         node = nodes_catalog_find(&canvas_node->canvas_node_id);
       if (node)
         {
-          node_info_window_create( &canvas_node->canvas_node_id );
+          if (pref.new_infodlg)
+            node_protocols_window_create( &canvas_node->canvas_node_id );
+          else
+            node_info_window_create( &canvas_node->canvas_node_id );
           g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
                      nodes_catalog_size());
           node_dump(node);

@@ -51,27 +51,30 @@ load_config (const char *prefix)
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.nofade =
-    gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
+  pref.nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
+  pref.new_infodlg = gnome_config_get_bool_with_default ("Diagram/new_infodlg=TRUE", &u);
   pref.antialias =
     gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
-    gnome_config_get_float_with_default
-    ("Diagram/node_timeout_time=3600000.0", &u); 
+  gnome_config_get_float_with_default("Diagram/node_timeout_time=3600000.0", &u); 
   pref.gui_node_timeout_time =
-    gnome_config_get_float_with_default
-    ("Diagram/gui_node_timeout_time=60000.0", &u);
-  if (pref.nofade)
-    pref.link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=5000.0", &u);
-  else
-    pref.link_timeout_time =
-      gnome_config_get_float_with_default
-      ("Diagram/link_timeout_time=20000.0", &u);
+    gnome_config_get_float_with_default("Diagram/gui_node_timeout_time=60000.0", &u);
+  pref.proto_node_timeout_time =
+    gnome_config_get_float_with_default("Diagram/proto_node_timeout_time=60000.0", &u);
+
+  pref.link_timeout_time =
+      gnome_config_get_float_with_default("Diagram/link_timeout_time=60000.0", &u);
+  pref.gui_link_timeout_time =
+      gnome_config_get_float_with_default("Diagram/gui_link_timeout_time=20000.0", &u);
+  pref.proto_link_timeout_time =
+      gnome_config_get_float_with_default("Diagram/proto_link_timeout_time=20000.0", &u);
+
+  pref.proto_timeout_time =
+      gnome_config_get_float_with_default("Diagram/proto_timeout_time=86400000.0", &u);
+
   pref.averaging_time =
     gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
   pref.node_radius_multiplier =
@@ -134,12 +137,21 @@ save_config (const char *prefix)
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
   gnome_config_set_bool ("Diagram/antialias", pref.antialias);
   gnome_config_set_bool ("Diagram/name_res", pref.name_res);
+  gnome_config_set_bool ("Diagram/new_infodlg", pref.new_infodlg);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",
 			  pref.gui_node_timeout_time);
+  gnome_config_set_float ("Diagram/proto_node_timeout_time",
+			  pref.proto_node_timeout_time);
   gnome_config_set_float ("Diagram/link_timeout_time",
 			  pref.link_timeout_time);
+  gnome_config_set_float ("Diagram/gui_link_timeout_time",
+			  pref.gui_link_timeout_time);
+  gnome_config_set_float ("Diagram/proto_link_timeout_time",
+			  pref.proto_link_timeout_time);
+  gnome_config_set_float ("Diagram/proto_timeout_time",
+			  pref.proto_timeout_time);
   gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
   gnome_config_set_float ("Diagram/node_radius_multiplier",
 			  pref.node_radius_multiplier);
@@ -190,12 +202,22 @@ initialize_pref_controls(void)
   gtk_spin_button_set_value (spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
   gtk_spin_button_set_value (spin, pref.refresh_period);
-  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
   gtk_spin_button_set_value (spin, pref.node_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
+  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_node_to_spin"));
+  gtk_spin_button_set_value (spin, pref.proto_node_timeout_time);
+
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
   gtk_spin_button_set_value (spin, pref.link_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_link_to_spin"));
+  gtk_spin_button_set_value (spin, pref.gui_link_timeout_time);
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_link_to_spin"));
+  gtk_spin_button_set_value (spin, pref.proto_link_timeout_time);
+
+  spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_to_spin"));
+  gtk_spin_button_set_value (spin, pref.proto_timeout_time);
 
   widget = glade_xml_get_widget (xml, "diagram_only_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
@@ -210,6 +232,8 @@ initialize_pref_controls(void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.antialias);
   widget = glade_xml_get_widget (xml, "name_res_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
+  widget = glade_xml_get_widget (xml, "new_infodlg_check");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.new_infodlg);
 
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
@@ -257,11 +281,31 @@ initialize_pref_controls(void)
 		    "value_changed",
 		    GTK_SIGNAL_FUNC
 		    (on_gui_node_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "proto_node_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_proto_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_to_spin");
   g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		    "value_changed",
 		    GTK_SIGNAL_FUNC
 		    (on_link_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "gui_link_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_gui_link_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "proto_link_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_proto_link_to_spin_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (xml, "proto_to_spin");
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_proto_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "size_mode_menu");
   g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
 		    "deactivate",
@@ -343,12 +387,36 @@ void
 on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
   pref.gui_node_timeout_time = adj->value;	/* Control and value in ms */
-}				/* on_gui_node_to_spin_adjustment_changed */
+}
+
+void
+on_proto_node_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.proto_node_timeout_time = adj->value;	/* Control and value in ms */
+}
 
 void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
   pref.link_timeout_time = adj->value;	/* Control and value in ms */
+}
+
+void
+on_gui_link_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.gui_link_timeout_time = adj->value;	/* Control and value in ms */
+}
+
+void
+on_proto_link_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.proto_link_timeout_time = adj->value;	/* Control and value in ms */
+}
+
+void
+on_proto_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.proto_timeout_time = adj->value;	/* Control and value in ms */
 }
 
 void
@@ -577,6 +645,12 @@ on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
   pref.name_res = gtk_toggle_button_get_active (togglebutton);
 }				/* on_numeric_toggle_toggled */
+
+void
+on_new_infodlg_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+  pref.new_infodlg = gtk_toggle_button_get_active (togglebutton);
+}
 
 /* ----------------------------------------------------------
 

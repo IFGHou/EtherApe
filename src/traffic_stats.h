@@ -54,7 +54,7 @@ void traffic_stats_reset(traffic_stats_t *pkt_stat); /* releases memory */
 void traffic_stats_add_packet( traffic_stats_t *pkt_stat, 
                               packet_info_t *new_pkt, 
                               packet_direction dir); /* adds a packet */
-void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
-gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double expire_time, gboolean remove_expired_protos);
+void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
+gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
 
 #endif

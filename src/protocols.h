@@ -61,9 +61,11 @@ void protocol_stack_reset(protostack_t *pstk);
 /* adds packet data to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */
-void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, gboolean purge_entry);
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, double expire_time);
 /* calculates averages */
 void protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs);
+/* checks for protocol expiration ... */
+void protocol_stack_purge_expired(protostack_t *pstk, double expire_time);
 /* finds named protocol in the requested level of protostack*/
 const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname);
 /* sorts on the most used protocol in the requested level and returns it */

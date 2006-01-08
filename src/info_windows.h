@@ -31,6 +31,7 @@ node_info_window_t;
 void node_info_window_create(const node_id_t * node_id);
 guint update_info_windows (void);
 
+void node_protocols_window_create(const node_id_t * node_id);
 
 
 typedef struct
