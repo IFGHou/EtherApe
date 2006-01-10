@@ -16,8 +16,8 @@ AC_DEFINE([GETTEXT_PACKAGE],[],[cmt])
 #AC_DEFINE([HAVE_STPCPY],[],[cmt])
 AC_DEFINE([HAVE_LIBSM],[],[cmt])
 #AC_DEFINE([PACKAGE_LOCALE_DIR],[],[cmt])
-AC_DEFINE([PACKAGE_DATA_DIR],[],[cmt])
-AC_DEFINE([PACKAGE_SOURCE_DIR],[],[cmt])
+#AC_DEFINE([PACKAGE_DATA_DIR],[],[cmt])
+#AC_DEFINE([PACKAGE_SOURCE_DIR],[],[cmt])
 #AC_DEFINE([DATAFILE_DIR],[],[Directory of data files])
 #AC_DEFINE([PIXMAPS_DIR],[],[cmt])
 AC_DEFINE([HAVE_LIBPCAP],[],[cmt])
@@ -141,16 +141,16 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale",[package locale directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale",[package locale directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",[package locale directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale",[package locale directory])
 fi
 
 dnl Set PIXMAPS_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/share/pixmaps",[pixmaps directory])
 else
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/pixmaps",[pixmaps directory])
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
 

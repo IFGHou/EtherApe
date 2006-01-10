@@ -165,17 +165,11 @@
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
-/* cmt */
-#undef PACKAGE_DATA_DIR
-
 /* package locale directory */
 #undef PACKAGE_LOCALE_DIR
 
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
-
-/* cmt */
-#undef PACKAGE_SOURCE_DIR
 
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING

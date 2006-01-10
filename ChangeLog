@@ -1,3 +1,12 @@
+2006-01-10 07:43  bchiara
+
+	* ChangeLog, NEWS, src/datastructs.c, src/datastructs.h,
+	src/diagram.c, src/globals.h, src/info_windows.c,
+	src/info_windows.h, src/preferences.c, src/protocols.c,
+	src/protocols.h: Fixed a bug when closing the preferences window. 
+	Improvments to new node info dialog.  Refactored standard protocol
+	dialog, simplified proto legend code.
+
 2006-01-08 21:33  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/datastructs.c,

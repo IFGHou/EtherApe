@@ -104,6 +104,7 @@ main (int argc, char *argv[])
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+  bind_textdomain_codeset(PACKAGE, "UTF-8"); /* force UTF-8 conversion */
   textdomain (PACKAGE);
 #endif
 
