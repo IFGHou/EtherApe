@@ -21,25 +21,10 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkcheckmenuitem.h>
 
-typedef struct
-{
-  node_id_t node_id;
-  GtkWidget *window;
-}
-node_info_window_t;
-
 void node_info_window_create(const node_id_t * node_id);
 guint update_info_windows (void);
-
 void node_protocols_window_create(const node_id_t * node_id);
 
-
-typedef struct
-{
-  gchar *prot_name;
-  GtkWidget *window;
-}
-prot_info_window_t;
 
 /* callbacks */
 gboolean on_prot_table_button_press_event (GtkWidget * widget,

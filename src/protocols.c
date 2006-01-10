@@ -408,3 +408,11 @@ const protocol_t *protocol_summary_find(size_t level, const gchar *protoname)
     return NULL;
   return protocol_stack_find(&protosummary_stats->stats_protos, level, protoname);
 }
+
+ /* access directly the stack (only for proto windows) */
+const protostack_t *protocol_summary_stack(void)
+{
+  if (!protosummary_stats)
+    return NULL;
+  return &protosummary_stats->stats_protos;
+}

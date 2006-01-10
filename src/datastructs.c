@@ -95,6 +95,13 @@ protohash_set(gchar *protoname, GdkColor protocolor)
    return TRUE;
 }
 
+/* resets the cycle color to start of list */
+void
+protohash_reset_cycle(void)
+{
+  current_cycle = cycle_color_list;
+}
+
 /* returns the proto color if exists, NULL otherwise */
 GdkColor
 protohash_get(const gchar *protoname)

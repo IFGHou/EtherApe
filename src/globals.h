@@ -128,7 +128,6 @@ gboolean end_of_file;		/* Marks that the end of the offline file
 gboolean need_reposition;	/* Force a diagram relayout */
 gint diagram_timeout;		/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
-GList *legend_protocols;
 
 struct
 {

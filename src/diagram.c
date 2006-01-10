@@ -94,11 +94,12 @@ static GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * that info on the nodes tree itself */
 static GTree *canvas_links;		/* See canvas_nodes */
 
+static GList *legend_protocols = NULL;
+static guint known_protocols = 0;
+
+
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
-
-static guint prot_color_index = 0;
-static guint known_protocols[STACK_SIZE + 1];
 static GdkColor black_color;
 
 /***************************************************************************
@@ -109,7 +110,7 @@ static GdkColor black_color;
 static void diagram_update_nodes(GtkWidget * canvas); /* updates ALL nodes */
 static void diagram_update_links(GtkWidget * canvas); /* updates ALL links */
 
-static void check_new_protocol (protocol_t * protocol, GtkWidget * canvas);
+static void check_new_protocol (protocol_t * protocol, gpointer unused);
 static gint check_new_node (node_t * node, GtkWidget * canvas);
 static gboolean display_node (node_t * node);
 static void limit_nodes (void);
@@ -130,6 +131,7 @@ static gint link_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_link_t * canvas_link);
 static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
+static void update_legend(void);
 
 
 /* It updates controls from values of variables, and connects control
@@ -342,10 +344,8 @@ update_diagram (GtkWidget * canvas)
   already_updating = TRUE;
   gettimeofday (&now, NULL);
 
-  /* We search for new protocols */
-  while (known_protocols[pref.stack_level] < protocol_summary_size(pref.stack_level))
-    protocol_summary_foreach(pref.stack_level, (GFunc) check_new_protocol,
-		    canvas);
+  /* update proto legend */
+  update_legend();
 
   /* update nodes */
   diagram_update_nodes(canvas);
@@ -416,11 +416,41 @@ update_diagram (GtkWidget * canvas)
   return TRUE;			/* Keep on calling this function */
 }				/* update_diagram */
 
+static void
+check_legend_protocol(GtkWidget *widget, gpointer data)
+{
+  GtkLabel *lab = GTK_LABEL(widget);
+  if (lab &&
+      !protocol_summary_find(pref.stack_level, gtk_label_get_label(lab)))
+    {
+      /* protocol expired, remove */
+      gtk_widget_destroy(widget);
+      known_protocols--;
+    }
+}
+
+/* updates the legend */
+static void
+update_legend()
+{
+  GtkWidget *prot_table;
+  
+  /* first, check if there are expired protocols */
+  prot_table = glade_xml_get_widget (xml, "prot_table");
+  gtk_container_foreach(GTK_CONTAINER(prot_table), 
+                        (GtkCallback)check_legend_protocol, NULL);
+
+  /* We search for new protocols */
+  while (known_protocols < protocol_summary_size(pref.stack_level))
+    protocol_summary_foreach(pref.stack_level, 
+                              (GFunc) check_new_protocol, NULL);
+}
+
 
 /* Checks whether there is already a legend entry for each known 
  * protocol. If not, create it */
 static void
-check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
+check_new_protocol (protocol_t * protocol, gpointer unused)
 {
   GList *protocol_item = NULL;
   protocol_t *legend_protocol = NULL;
@@ -448,8 +478,10 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
   prot_table = glade_xml_get_widget (xml, "prot_table");
-  g_object_get (G_OBJECT (prot_table), "n_rows", &n_rows, "n_columns",
-		&n_columns, NULL);
+  g_object_get (G_OBJECT (prot_table), 
+                "n_rows", &n_rows,
+                "n_columns", &n_columns,
+                NULL);
 
   /* Glade won't let me define a 0 row table
    * I feel this is ugly, but it's late and I don't feel like
@@ -467,9 +499,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   g_object_set_data_full (G_OBJECT (app1), protocol->name, label,
 			  (GtkDestroyNotify) gtk_widget_unref);
 
-
   gtk_widget_show (label);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_table_attach (GTK_TABLE (prot_table), label,
 		    0, 1, n_rows - 1, n_rows,
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -478,7 +509,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 
-  /*protocol->color = get_prot_color (protocol->name);*/
+  /* protocol->color = get_prot_color (protocol->name); */
   protocol->color = protohash_get(protocol->name);
   if (!gdk_colormap_alloc_color
       (gdk_colormap_get_system (), &protocol->color, FALSE, TRUE))
@@ -495,7 +526,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   legend_protocol->color = protocol->color;
   legend_protocols = g_list_prepend (legend_protocols, legend_protocol);
 
-  known_protocols[pref.stack_level]++;
+  known_protocols++;
 
 }				/* check_new_protocol */
 
@@ -503,14 +534,13 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 void
 delete_gui_protocols (void)
 {
-  GList *item = NULL;
-  protocol_t *protocol = NULL;
-  GtkWidget *prot_table = NULL;
-  guint i = 0;
-  guint n_rows = 1, n_columns = 1;
+  GList *item;
+  protocol_t *protocol;
+  GtkWidget *prot_table;
+  guint n_columns;
 
+  /* empty list of displayed protos */
   item = legend_protocols;
-
   while (item)
     {
       protocol = item->data;
@@ -518,26 +548,24 @@ delete_gui_protocols (void)
       g_free (protocol);
       item = item->next;
     }
-
   g_list_free (legend_protocols);
   legend_protocols = NULL;
-  prot_color_index = 0;
-  for (; i <= STACK_SIZE; i++)
-    known_protocols[i] = 0;
+  known_protocols = 0;
 
+  /* restart color cycle */
+  protohash_reset_cycle();
+
+  /* remove proto labels from legend */
   prot_table = glade_xml_get_widget (xml, "prot_table");
-
   item = gtk_container_get_children (GTK_CONTAINER (prot_table));
-
   while (item)
     {
-      gtk_container_remove (GTK_CONTAINER (prot_table),
-			    (GtkWidget *) item->data);
+      gtk_container_remove (GTK_CONTAINER (prot_table), (GtkWidget *) item->data);
       item = item->next;
     }
 
-  g_object_get (G_OBJECT (prot_table), "n_rows", &n_rows, "n_columns",
-		&n_columns, NULL);
+  /* resize legend */
+  g_object_get (G_OBJECT (prot_table), "n_columns", &n_columns, NULL);
   gtk_table_resize (GTK_TABLE (prot_table), 1, n_columns );
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 }				/* delete_gui_protocols */

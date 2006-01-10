@@ -73,7 +73,7 @@ load_config (const char *prefix)
       gnome_config_get_float_with_default("Diagram/proto_link_timeout_time=20000.0", &u);
 
   pref.proto_timeout_time =
-      gnome_config_get_float_with_default("Diagram/proto_timeout_time=86400000.0", &u);
+      gnome_config_get_float_with_default("Diagram/proto_timeout_time=3600000.0", &u);
 
   pref.averaging_time =
     gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
@@ -250,6 +250,11 @@ initialize_pref_controls(void)
   load_color_list ();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
+  widget = glade_xml_get_widget (xml, "diag_pref");
+  g_signal_connect (G_OBJECT (widget),
+		    "delete_event",
+		    GTK_SIGNAL_FUNC
+		    (on_cancel_pref_button_clicked ), NULL);
   widget = glade_xml_get_widget (xml, "node_radius_slider");
   g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
 		    "value_changed",
@@ -568,7 +573,6 @@ on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   on_apply_pref_button_clicked (button, NULL);
   gtk_widget_hide (diag_pref);
-
 }				/* on_ok_pref_button_clicked */
 
 void

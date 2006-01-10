@@ -81,5 +81,6 @@ void protocol_summary_update_all(void); /* update stats on protocol summary */
 guint protocol_summary_size(size_t level); /* number of protos at specified level */
 void protocol_summary_foreach(size_t level, GFunc func, gpointer data); /* calls func for every proto at level */
 const protocol_t *protocol_summary_find(size_t level, const gchar *protoname); /* finds named protocol */
+const protostack_t *protocol_summary_stack(void); /* access directly the stack (only for proto windows) */
 
 #endif

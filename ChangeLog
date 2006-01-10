@@ -1,3 +1,13 @@
+2006-01-08 21:33  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/datastructs.c,
+	src/diagram.c, src/globals.h, src/info_windows.c,
+	src/info_windows.h, src/links.c, src/node.c, src/preferences.c,
+	src/preferences.h, src/protocols.c, src/protocols.h,
+	src/traffic_stats.c, src/traffic_stats.h: Completed new style node
+	info dialogs (with protocol statistics). Added gui and protocol
+	specific timeouts.
+
 2006-01-07 21:39  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/info_windows.c,
