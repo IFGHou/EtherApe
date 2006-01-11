@@ -29,6 +29,8 @@ typedef struct
   gdouble average;		/* Average bytes in or out in the last x ms */
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated bytes */
+  gdouble accu_packets;         /* Accumulated number of packets */
+  struct timeval last_time;	/* Timestamp of the last packet added */
 }
 basic_stats_t;
 void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
@@ -41,7 +43,6 @@ typedef struct
 {
   GList *pkt_list;              /* list of packet_list_item_t - private */
   gdouble n_packets;		/* Number of packets in the list */
-  struct timeval last_time;	/* Timestamp of the last packet added */
   basic_stats_t stats;        /* total traffic stats */
   basic_stats_t stats_in;     /* inbound traffic stats */
   basic_stats_t stats_out;    /* outbound traffic stats */

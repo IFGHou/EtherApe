@@ -155,10 +155,10 @@ static void decode_next(name_add_t *nt)
   if (next_func)
     {
       /* before calling the next decoder, we check for size overflow 
-       * To continue, we must have at least 4 bytes remaining ... */
-      if (nt->packet_size <= nt->offset + 4)
+       * To continue, we must have at least 2 bytes remaining ... */
+      if (nt->packet_size <= nt->offset + 2)
         {
-          g_critical(_("detected undersize packet, aborting protocol decode"));
+          g_critical(_("captured data insufficient, aborting protocol decode"));
           return;
         }
   
@@ -208,7 +208,11 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
 
   if (nt->packet_size < nt->offset + disp + sz ||
      nt->packet_size < nt->offset + portdisp + sz)
-    g_error (_("Packet overflow"));
+    {
+      g_error(_("captured data insufficient, aborting fill_node_id"));
+      return;
+    }
+
 
   if (TCP == apemode)
   {
@@ -394,6 +398,12 @@ get_arp_name (name_add_t *nt)
   if (nt->dir == INBOUND)
     return;
 
+  if (nt->packet_size <= nt->offset + 4)
+    {
+      g_critical(_("captured data insufficient, aborting get_arp_name"));
+      return;
+    }
+
   /* We only know about IP ARP queries */
   protocol_type = pntohs ((nt->p + nt->offset + 2));
   if (protocol_type != ARPTYPE_IP)
@@ -401,7 +411,7 @@ get_arp_name (name_add_t *nt)
 
   if (nt->packet_size <= nt->offset + 7)
     {
-      g_critical(_("detected undersize packet, aborting get_arp_name"));
+      g_critical(_("captured data insufficient, aborting get_arp_name"));
       return;
     }
 
@@ -488,7 +498,7 @@ get_tcp_name (name_add_t *nt)
 
   if (nt->packet_size <= nt->offset + 14)
     {
-      g_critical(_("detected undersize packet, aborting get_tcp_name"));
+      g_critical(_("captured data insufficient, aborting get_tcp_name"));
       return;
     }
 
@@ -532,7 +542,7 @@ get_ipxsap_name (name_add_t *nt)
     }
   if (curpos >= nt->packet_size)
     {
-      g_critical(_("detected undersize packet, aborting get_sap_name"));
+      g_critical(_("captured data insufficient, aborting get_sap_name"));
       return;
     }
     
@@ -555,28 +565,44 @@ get_nbss_name (name_add_t *nt)
 {
 #define SESSION_REQUEST 0x81
 
-  guint i = 0;
   guint8 mesg_type;
-  guint16 length;
-  gchar *numeric_name = NULL;
-  gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
-  guint name_len;
-  int name_type;		/* TODO I hate to use an int here, while I have been
-				 * using glib data types all the time. But I just don't
-				 * know what it might mean in the ethereal implementation */
 
+  if (nt->packet_size <= nt->offset + 2)
+    {
+      g_critical(_("captured data insufficient, aborting get_nbss_name "));
+      return;
+    }
   mesg_type = *(guint8 *) (nt->p + nt->offset);
-  length = pntohs ((nt->p + nt->offset + 2));
-
-  nt->offset += 4;
+  nt->offset += 2;
 
   if (mesg_type == SESSION_REQUEST)
     {
-      name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
-      if (nt->dir == OUTBOUND)
-	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + name_len, nt->offset + name_len, name,
-			    &name_type);
+      guint i = 0;
+      guint16 length;
+      gchar *numeric_name = NULL;
+      gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
+      guint name_len;
+      int name_type;		/* TODO I hate to use an int here, while I have been
+                                     * using glib data types all the time. But I just don't
+                                     * know what it might mean in the ethereal implementation */
+      if (nt->packet_size <= nt->offset + 2)
+        {
+          g_critical(_("captured data insufficient, aborting get_nbss_name "));
+          return;
+        }
+      length = pntohs ((nt->p + nt->offset + 2));
 
+      nt->offset += 2;
+      if (nt->packet_size <= nt->offset + length)
+        {
+          g_critical(_("captured data insufficient, aborting get_nbss_name "));
+          return;
+        }
+
+      name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
+      if (nt->dir == OUTBOUND)
+	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + name_len, 
+                            nt->packet_size, name, &name_type);
 
       /* We just want the name, not the space padding behind it */
 
@@ -597,9 +623,8 @@ get_nbss_name (name_add_t *nt)
 	  g_free (numeric_name);
 	}
 
+      nt->offset += length;
     }
-
-  nt->offset += length;
 
   decode_next(nt);
 }				/* get_nbss_name */
@@ -624,10 +649,10 @@ get_nbdgm_name (name_add_t *nt)
   if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
     {
       nt->offset += 4;
-      len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
+      len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
 
       if (nt->dir == INBOUND)
-	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + len, nt->offset + len, name, &name_type);
+	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + len, nt->packet_size, name, &name_type);
       name_found = TRUE;
 
     }
@@ -635,7 +660,7 @@ get_nbdgm_name (name_add_t *nt)
     {
       if (nt->dir == INBOUND)
 	{
-	  len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->offset, name, &name_type);
+	  len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
 	  name_found = TRUE;
 	}
     }

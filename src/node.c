@@ -231,7 +231,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
   else
     {
       /* no packet remaining on node */
-      diff = substract_times (now, node->node_stats.last_time);
+      diff = substract_times (now, node->node_stats.stats.last_time);
 
       /* Remove node if node is too old or if capture is stopped */
       if ((IS_OLDER (diff, pref.node_timeout_time)

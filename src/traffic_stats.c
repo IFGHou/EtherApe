@@ -71,6 +71,8 @@ void basic_stats_reset(basic_stats_t *tf_stat)
   tf_stat->average = 0;
   tf_stat->accumulated = 0;
   tf_stat->aver_accu = 0;
+  tf_stat->accu_packets = 0;
+  tf_stat->last_time = now;
 }
 
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
@@ -78,6 +80,8 @@ void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
   g_assert(tf_stat);
   tf_stat->accumulated += val;
   tf_stat->aver_accu += val;
+  tf_stat->accu_packets++;
+  tf_stat->last_time = now;
   /* averages are calculated by basic_stats_avg */
 }
 
@@ -117,7 +121,6 @@ void traffic_stats_init(traffic_stats_t *pkt_stat)
 
   pkt_stat->pkt_list = NULL;
   pkt_stat->n_packets = 0;
-  pkt_stat->last_time = now;
 
   basic_stats_reset(&pkt_stat->stats);
   basic_stats_reset(&pkt_stat->stats_in);
@@ -139,7 +142,6 @@ void traffic_stats_reset(traffic_stats_t *pkt_stat)
   /* resets everything */
   pkt_stat->pkt_list = NULL;
   pkt_stat->n_packets = 0;
-  pkt_stat->last_time = now;
 
   basic_stats_reset(&pkt_stat->stats);
   basic_stats_reset(&pkt_stat->stats_in);
@@ -169,7 +171,6 @@ traffic_stats_add_packet(traffic_stats_t *pkt_stat,
   pkt_stat->pkt_list = g_list_prepend (pkt_stat->pkt_list, newit);
 
   pkt_stat->n_packets++;
-  pkt_stat->last_time = now;
 
   basic_stats_add(&pkt_stat->stats, newit->info->size);
   if (newit->direction != OUTBOUND)

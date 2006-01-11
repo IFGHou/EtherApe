@@ -763,7 +763,7 @@ display_node (node_t * node)
   if (!node)
     return FALSE;
 
-  diff = substract_times (now, node->node_stats.last_time);
+  diff = substract_times (now, node->node_stats.stats.last_time);
 
   /* There are problems if a canvas_node is deleted if it still
    * has packets, so we have to check that as well */
@@ -1125,7 +1125,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
 	{
 	  /* scale color down to 10% at link timeout */
           struct timeval diff;
-          diff = substract_times (now, link->link_stats.last_time);
+          diff = substract_times (now, link->link_stats.stats.last_time);
 	  scale =
 	    pow (0.10,
 		 (diff.tv_sec * 1000.0 +

@@ -41,6 +41,7 @@ typedef struct protocol_list_item_t_tag
 {
   gchar *name; /* protocol name */
   GdkColor color; /* protocol color */
+  basic_stats_t rowstats; 
 } protocol_list_item_t;
 
 
@@ -323,7 +324,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
   GtkSortType order;
 
   /* reads the proto ptr from 6th columns */
-  protocol_t *prot1, *prot2;
+  const protocol_list_item_t *prot1, *prot2;
   gtk_tree_model_get (gs, a, 5, &prot1, -1);
   gtk_tree_model_get (gs, b, 5, &prot2, -1);
   if (!prot1 || !prot2)
@@ -341,8 +342,8 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       ret = strcmp (prot1->name, prot2->name);
       break;
     case 1:
-      t1 = prot1->average;
-      t2 = prot2->average;
+      t1 = prot1->rowstats.average;
+      t2 = prot2->rowstats.average;
       if (t1 == t2)
 	ret = 0;
       else if (t1 < t2)
@@ -351,8 +352,8 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case 2:
-      t1 = prot1->accumulated;
-      t2 = prot2->accumulated;
+      t1 = prot1->rowstats.accumulated;
+      t2 = prot2->rowstats.accumulated;
       if (t1 == t2)
 	ret = 0;
       else if (t1 < t2)
@@ -361,8 +362,8 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case 3:
-      time1 = prot1->last_heard;
-      time2 = prot2->last_heard;
+      time1 = prot1->rowstats.last_time;
+      time2 = prot2->rowstats.last_time;
       diff = substract_times (time1, time2);
       if ((diff.tv_sec == 0) && (diff.tv_usec == 0))
 	ret = 0;
@@ -372,9 +373,9 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case 4:
-      if (prot1->proto_packets == prot2->proto_packets)
+      if (prot1->rowstats.accu_packets == prot2->rowstats.accu_packets)
 	ret = 0;
-      else if (prot1->proto_packets < prot2->proto_packets)
+      else if (prot1->rowstats.accu_packets < prot2->rowstats.accu_packets)
 	ret = -1;
       else
 	ret = 1;
@@ -516,17 +517,22 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
         }
 
       /* everything ok, update stats */
-      str = traffic_to_str (stack_proto->accumulated, FALSE);
+      row_proto->rowstats.accumulated = stack_proto->accumulated;
+      row_proto->rowstats.accu_packets = stack_proto->proto_packets;
+      row_proto->rowstats.average = stack_proto->average;
+      row_proto->rowstats.last_time = stack_proto->last_heard;
+
+      str = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
       gtk_list_store_set (gs, &it, 2, str, -1);
 
-      str = g_strdup_printf ("%d", stack_proto->proto_packets);
+      str = g_strdup_printf ("%f.0", row_proto->rowstats.accu_packets);
       gtk_list_store_set (gs, &it, 4, str, -1);
       g_free (str);
 
-      str = traffic_to_str (stack_proto->average, TRUE);
+      str = traffic_to_str (row_proto->rowstats.average, TRUE);
       gtk_list_store_set (gs, &it, 1, str, -1);
 
-      str = timeval_to_str (stack_proto->last_heard);
+      str = timeval_to_str (row_proto->rowstats.last_time);
       gtk_list_store_set (gs, &it, 3, str, -1);
 
       if (res)

@@ -38,7 +38,7 @@
 
 
 int ethereal_nbns_name (const gchar * pd, int offset,
-			int nbns_data_offset,
+                        int pd_len,
 			char *name_ret, int *name_type_ret);
 
 

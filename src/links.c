@@ -163,7 +163,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
   else
     {
       /* no packets remaining on link */
-      diff = substract_times (now, link->link_stats.last_time);
+      diff = substract_times (now, link->link_stats.stats.last_time);
 
       /* Remove link if it is too old or if capture is stopped */
       if ((IS_OLDER (diff, pref.link_timeout_time)

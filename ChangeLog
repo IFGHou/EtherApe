@@ -1,3 +1,10 @@
+2006-01-11 20:05  bchiara
+
+	* ChangeLog, NEWS, configure.in, glade/etherape.glade2,
+	html/NEWS.html, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
+	po/tr.po, src/diagram.c, src/info_windows.c, src/info_windows.h,
+	src/protocols.c, src/protocols.h: New feature: link detail dialog
+
 2006-01-10 18:06  bchiara
 
 	* ChangeLog, NEWS, config.h.in, configure.in, po/POTFILES.in,

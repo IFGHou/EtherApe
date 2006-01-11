@@ -32,8 +32,7 @@
 #include "names_netbios.h"
 
 #define NBNAME_BUF_LEN   128
-#define BYTES_ARE_IN_FRAME(a,b) 1
-/* TODO Find a way to get capture_len here so that I can actually use this macro */
+#define BYTES_ARE_IN_FRAME(a,b,c) (((a)+(b))<(c))
 
 
 typedef struct
@@ -85,8 +84,7 @@ static const value_string name_type_vals[] = {
  * local function definitions
  *
  **************************************************************************/
-static int get_dns_name (const gchar * pd, int offset, int dns_data_offset,
-		  char *name, int maxname);
+static int get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname);
 static int process_netbios_name (const gchar * name_ptr, char *name_ret);
 
 
@@ -96,19 +94,24 @@ static int process_netbios_name (const gchar * name_ptr, char *name_ret);
  *
  **************************************************************************/
 static int
-get_dns_name (const gchar * pd, int offset, int dns_data_offset,
-	      char *name, int maxname)
+get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname)
 {
   const gchar *dp = pd + offset;
   const gchar *dptr = dp;
   char *np = name;
   int len = -1;
   u_int component_len;
+  int dns_data_offset;
+
+  if (offset >= pd_len)
+    goto overflow;
+  
+  dns_data_offset = offset;
 
   maxname--;			/* reserve space for the trailing '\0' */
   for (;;)
     {
-      if (!BYTES_ARE_IN_FRAME (offset, 1))
+      if (!BYTES_ARE_IN_FRAME (offset, 1, pd_len))
 	goto overflow;
       component_len = *dp++;
       offset++;
@@ -128,7 +131,7 @@ get_dns_name (const gchar * pd, int offset, int dns_data_offset,
 		  maxname--;
 		}
 	    }
-	  if (!BYTES_ARE_IN_FRAME (offset, component_len))
+	  if (!BYTES_ARE_IN_FRAME (offset, component_len, pd_len))
 	    goto overflow;
 	  while (component_len > 0)
 	    {
@@ -153,7 +156,7 @@ get_dns_name (const gchar * pd, int offset, int dns_data_offset,
 	     of how many characters are in the DNS packet, and of how many
 	     characters we've looked at, and quitting if the latter
 	     becomes bigger than the former. */
-	  if (!BYTES_ARE_IN_FRAME (offset, 1))
+	  if (!BYTES_ARE_IN_FRAME (offset, 1, pd_len))
 	    goto overflow;
 	  offset =
 	    dns_data_offset + (((component_len & ~0xc0) << 8) | (*dp++));
@@ -216,7 +219,7 @@ process_netbios_name (const gchar * name_ptr, char *name_ret)
 }
 
 int
-ethereal_nbns_name (const gchar * pd, int offset, int nbns_data_offset,
+ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
 		    char *name_ret, int *name_type_ret)
 {
   int name_len;
@@ -225,7 +228,7 @@ ethereal_nbns_name (const gchar * pd, int offset, int nbns_data_offset,
   char *pname, *pnbname, cname, cnbname;
   int name_type;
 
-  name_len = get_dns_name (pd, offset, nbns_data_offset, name, sizeof (name));
+  name_len = get_dns_name (pd, offset, pd_len, name, sizeof (name));
 
   /* OK, now undo the first-level encoding. */
   pname = &name[0];
