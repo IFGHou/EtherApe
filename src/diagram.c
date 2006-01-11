@@ -110,7 +110,7 @@ static GdkColor black_color;
 static void diagram_update_nodes(GtkWidget * canvas); /* updates ALL nodes */
 static void diagram_update_links(GtkWidget * canvas); /* updates ALL links */
 
-static void check_new_protocol (protocol_t * protocol, gpointer unused);
+static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk);
 static gint check_new_node (node_t * node, GtkWidget * canvas);
 static gboolean display_node (node_t * node);
 static void limit_nodes (void);
@@ -417,7 +417,7 @@ update_diagram (GtkWidget * canvas)
 }				/* update_diagram */
 
 static void
-check_legend_protocol(GtkWidget *widget, gpointer data)
+purge_expired_legend_protocol(GtkWidget *widget, gpointer data)
 {
   GtkLabel *lab = GTK_LABEL(widget);
   if (lab &&
@@ -434,100 +434,101 @@ static void
 update_legend()
 {
   GtkWidget *prot_table;
-  
+
   /* first, check if there are expired protocols */
   prot_table = glade_xml_get_widget (xml, "prot_table");
-  gtk_container_foreach(GTK_CONTAINER(prot_table), 
-                        (GtkCallback)check_legend_protocol, NULL);
+  if (!prot_table)
+    return;
 
-  /* We search for new protocols */
-  while (known_protocols < protocol_summary_size(pref.stack_level))
-    protocol_summary_foreach(pref.stack_level, 
-                              (GFunc) check_new_protocol, NULL);
+  gtk_container_foreach(GTK_CONTAINER(prot_table), 
+                        (GtkCallback)purge_expired_legend_protocol, NULL);
+
+  if (known_protocols)
+    gtk_table_resize (GTK_TABLE (prot_table), known_protocols, 1 );
+  else
+    gtk_table_resize (GTK_TABLE (prot_table), 1, 1 );
+
+  /* then search for new protocols */
+  check_new_protocol(prot_table, protocol_summary_stack());
 }
 
 
 /* Checks whether there is already a legend entry for each known 
  * protocol. If not, create it */
 static void
-check_new_protocol (protocol_t * protocol, gpointer unused)
+check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 {
-  GList *protocol_item = NULL;
-  protocol_t *legend_protocol = NULL;
-  GtkWidget *prot_table;
-  GtkWidget *label;
+  const GList *protocol_item;
+  const protocol_t *protocol;
   GtkStyle *style;
-  guint n_rows = 1, n_columns = 1;
-  static gboolean first = TRUE;
+  GdkColor color;
+  GtkLabel *lab;
+  GtkWidget *newlab;
+  const GList *childlist;
 
-  /* First, we check whether the diagram already knows about this protocol,
-   * checking whether it is shown on the legend. */
-  /*  g_message ("Looking for %s", protocol->name); */
-  if ((protocol_item = g_list_find_custom (legend_protocols,
-					   protocol->name, protocol_compare)))
+  if (!pstk)
+    return; /* nothing to do */
+
+  protocol_item = pstk->protostack[pref.stack_level];
+  while (protocol_item)
     {
-      g_my_debug ("Protocol %s found in legend protocols list",
-		  protocol->name);
-      legend_protocol = (protocol_t *) (protocol_item->data);
-      protocol->color = legend_protocol->color;
-      return;
+      protocol = protocol_item->data;
+
+      /* prepare next */
+      protocol_item = protocol_item->next;
+
+      /* First, we check whether the diagram already knows about this protocol,
+       * checking whether it is shown on the legend. */
+      childlist = gtk_container_get_children(GTK_CONTAINER(prot_table));
+      while (childlist)
+        {
+          lab = GTK_LABEL(childlist->data);
+          if (lab && !strcmp(protocol->name, gtk_label_get_label(lab)))
+            break; /* found */
+          childlist = childlist->next;
+        }
+      
+      if (childlist)
+        {
+          g_my_debug ("Protocol %s found in legend protocols list",
+                      protocol->name);
+          continue; /* found, skip to next */
+        }
+
+      g_my_debug ("Protocol not found. Creating legend item");
+    
+      /* It's not, so we build a new entry on the legend */
+    
+      /* Then we add the new label widgets */
+      newlab = gtk_label_new (protocol->name);
+      gtk_widget_ref (newlab);
+      /* I'm not really sure what this exactly does. I just copied it from 
+       * interface.c, but what I'm trying to do is set the name of the widget */
+      g_object_set_data_full (G_OBJECT (app1), protocol->name, newlab,
+                              (GtkDestroyNotify) gtk_widget_unref);
+
+      gtk_widget_show (newlab);
+      gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
+      gtk_table_attach (GTK_TABLE (prot_table), newlab,
+                        0, 1, known_protocols, known_protocols + 1,
+                        (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                        (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+      gtk_table_resize (GTK_TABLE (prot_table), known_protocols + 1, 1 );
+      gtk_widget_queue_resize (GTK_WIDGET (app1));
+
+      color = protohash_get(protocol->name);
+      if (!gdk_colormap_alloc_color
+          (gdk_colormap_get_system (), &color, FALSE, TRUE))
+        g_warning (_("Unable to allocate color for new protocol %s"),
+                   protocol->name);
+
+      style = gtk_style_new ();
+      style->fg[GTK_STATE_NORMAL] = color;
+      gtk_widget_set_style (newlab, style);
+      g_object_unref (style);
+
+      known_protocols++;
     }
-
-  g_my_debug ("Protocol not found. Creating legend item");
-
-  /* It's not, so we build a new entry on the legend */
-  /* First, we add a new row to the table */
-  prot_table = glade_xml_get_widget (xml, "prot_table");
-  g_object_get (G_OBJECT (prot_table), 
-                "n_rows", &n_rows,
-                "n_columns", &n_columns,
-                NULL);
-
-  /* Glade won't let me define a 0 row table
-   * I feel this is ugly, but it's late and I don't feel like
-   * cleaning this up :-) */
-  if (!first)
-    n_rows++;
-
-  first = FALSE;
-
-  /* Then we add the new label widgets */
-  label = gtk_label_new (protocol->name);
-  gtk_widget_ref (label);
-  /* I'm not really sure what this exactly does. I just copied it from 
-   * interface.c, but what I'm trying to do is set the name of the widget */
-  g_object_set_data_full (G_OBJECT (app1), protocol->name, label,
-			  (GtkDestroyNotify) gtk_widget_unref);
-
-  gtk_widget_show (label);
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
-  gtk_table_attach (GTK_TABLE (prot_table), label,
-		    0, 1, n_rows - 1, n_rows,
-		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
-  gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns );
-  gtk_widget_queue_resize (GTK_WIDGET (app1));
-
-
-  /* protocol->color = get_prot_color (protocol->name); */
-  protocol->color = protohash_get(protocol->name);
-  if (!gdk_colormap_alloc_color
-      (gdk_colormap_get_system (), &protocol->color, FALSE, TRUE))
-    g_warning (_("Unable to allocate color for new protocol %s"),
-	       protocol->name);
-
-  style = gtk_style_new ();
-  style->fg[GTK_STATE_NORMAL] = protocol->color;
-  gtk_widget_set_style (label, style);
-  g_object_unref (style);
-
-  /* We create a legend protocol and add it to the list, to keep count */
-  legend_protocol = protocol_t_create(protocol->name);
-  legend_protocol->color = protocol->color;
-  legend_protocols = g_list_prepend (legend_protocols, legend_protocol);
-
-  known_protocols++;
-
 }				/* check_new_protocol */
 
 /* Frees the legend_protocols list and empties the table of protocols */
@@ -651,7 +652,6 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  const protocol_t *protocol = NULL;
   static clock_t start = 0;
   clock_t end;
   gdouble cpu_time_used;
@@ -667,13 +667,6 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
       g_my_debug ("Queing canvas node to remove.");
       need_reposition = TRUE;
       return FALSE;
-    }
-
-  if (node->main_prot[pref.stack_level])
-    {
-      protocol = protocol_summary_find(pref.stack_level, node->main_prot[pref.stack_level]);
-      if (!protocol)
-	g_warning (_("Main node protocol not found in update_canvas_nodes"));
     }
 
   switch (pref.node_size_variable)
@@ -705,9 +698,9 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
   if (node_size > MAX_NODE_SIZE)
     node_size = MAX_NODE_SIZE; 
 
-  if (protocol)
+  if (node->main_prot[pref.stack_level])
     {
-      canvas_node->color = protocol->color;
+      canvas_node->color = protohash_get(node->main_prot[pref.stack_level]);
 
       gnome_canvas_item_set (canvas_node->node_item,
 			     "x1", -node_size / 2,
@@ -1061,7 +1054,6 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   link_t *link;
   GnomeCanvasPoints *points;
   canvas_node_t *canvas_node;
-  const protocol_t *protocol = NULL;
   gdouble link_size, versorx, versory, modulus;
   guint32 scaledColor;
   gdouble scale;
@@ -1077,13 +1069,6 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       return FALSE;
     }
 
-
-  if (link->main_prot[pref.stack_level])
-    {
-      protocol = protocol_summary_find(pref.stack_level, link->main_prot[pref.stack_level]);
-      if (!protocol)
-	g_warning (_("Main link protocol not found in canvas_link_update"));
-    }
 
   points = gnome_canvas_points_new (3);
 
@@ -1130,9 +1115,9 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
 
   /* TODO What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
-  if (protocol)
+  if (link->main_prot[pref.stack_level])
     {
-      canvas_link->color = protocol->color;
+      canvas_link->color = protohash_get(link->main_prot[pref.stack_level]);
 
       if (pref.nofade)
         scale = 1.0;
@@ -1229,6 +1214,10 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
   switch (event->type)
     {
+    case GDK_2BUTTON_PRESS:
+      if (canvas_link)
+        link_info_window_create( &canvas_link->canvas_link_id );
+      break;
 
     case GDK_ENTER_NOTIFY:
       if (canvas_link)

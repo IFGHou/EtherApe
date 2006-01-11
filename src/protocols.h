@@ -34,9 +34,6 @@ typedef struct
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
   guint proto_packets;		/* Number of packets seen with this protocol */
-  GdkColor color;		/* The color associated with this protocol. It's here
-				 * so that I can use the same structure and lookup functions
-				 * in capture.c and diagram.c */
   GList *node_names;		/* Has a list of all node names used with this
 				 * protocol (used in node protocols) */
   struct timeval last_heard;	/* The last at which this protocol carried traffic */

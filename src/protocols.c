@@ -286,10 +286,6 @@ protocol_t *protocol_t_create(const gchar *protocol_name)
   pr->average = 0;
   pr->proto_packets = 0;
   pr->node_names = NULL;
-  pr->color.pixel = 0;
-  pr->color.red = 0;
-  pr->color.green = 0;
-  pr->color.blue = 0;
   pr->last_heard.tv_sec = 0;
   pr->last_heard.tv_usec = 0;
   
@@ -370,17 +366,13 @@ void protocol_summary_update_all(void)
   if (!protosummary_stats)
     return;
 
-  /* If this packet is older than the averaging time,
-   * then it is removed, and the process continues.
-   * Else, we are done. */
-  if (pref.node_timeout_time)
-    pkt_expire_time = (pref.node_timeout_time > pref.averaging_time) ?
-      pref.averaging_time : pref.node_timeout_time;
+  /* packet expiration timer */
+  if (pref.proto_timeout_time && pref.proto_timeout_time < pref.averaging_time)
+    pkt_expire_time = pref.proto_timeout_time;
   else
     pkt_expire_time = pref.averaging_time;
 
-  /* for now protocols doesn't age on summary */
-  traffic_stats_update(protosummary_stats, pkt_expire_time, FALSE);
+  traffic_stats_update(protosummary_stats, pkt_expire_time, pref.proto_timeout_time);
 }
 
 /* number of protos at specified level */

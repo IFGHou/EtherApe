@@ -1,913 +1,1513 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+
   <meta name="generator" content="HTML Tidy, see www.w3.org">
   <title>Changelog for EtherApe</title>
+
+
   <link rel="STYLESHEET" type="text/css" href="etherape.css">
+
 </head>
+
+
 <body>
+
 <h1>Changelog for EtherApe</h1>
-<div id="date"> $Date 2005/08/18 21:47:23 $ </div>
+
+<div id="date"> $Date 11/01/2006 07:53:21 $ </div>
+
+<h3>
+Overview of changes in EtherApe 0.9.4 (Wednesday Jan 11 2006): </h3>
+
+<ul>
+
+  <li> New feature: link info dialog. Shows traffic and protocol
+statistics for a given link.
+  </li>
+
+  <li> New feature: improved node info dialogs now display both
+traffic and protocol statistics per node.
+  </li>
+
+  <li> New feature: protocol ageing. Now protocols, like nodes
+and links, can expire and be purged automatically.
+  </li>
+
+  <li> Heavy refactoring to make sources easier to understand and
+maintain.
+  </li>
+
+  <li> Small performance enhancements due to refactoring.
+  </li>
+
+  <li> Better memory handling due to refactoring.
+  </li>
+
+  <li> Unified handling of traffic statistics. </li>
+
+  <li> Rewritten interface listing. Now uses directly
+pcap_findalldevs to list interfaces available for capturing. The
+interface submenu now list also the "any" device, if present. The older
+method is deprecated (at the moment it can be enabled with a #define)
+and will be removed in a future release. If someone needs it, please
+file a feature request.
+  </li>
+
+  <li> Tidied up preferences dialog, removing unneeded entries.
+  </li>
+
+  <li> Rewritten and improved node/link timeout handling.
+  </li>
+
+  <li> Fixes bug 1362426 (i8n issues). Thanks to Daniel Nylander
+for hunting down that and providing a detailed example.
+  </li>
+
+  <li> Fixes bug 1385105 (crash with double free). Thanks to
+goga_russian for the segnalation.
+  </li>
+
+  <li> Fixes bug 1372245 (crashes when node goes too big). Thanks
+to goga_russing for the segnalation.
+  </li>
+
+  <li> Fixes bug 1396236 ("force numeric" and "dns resolution"
+checkboxes not working).
+  </li>
+
+  <li> Fixes bug 1268291 (OSX net/if.h). Thanks to Eric Stewart
+for the patch.
+  </li>
+
+  <li> Legend labels now align to left.
+  </li>
+
+  <li> Fixed a bug when closing the preferences dialog.
+  </li>
+
+</ul>
+
 <h3>
 Overview of changes in EtherApe 0.9.3 (Thursday 8-18-2005): </h3>
+
 <ul>
+
   <li>Fixes bug 1083524 (deletion of all user colors)</li>
+
   <li>Fixes
-bug 1024944 (compilation on OSX).&nbsp; Thanks to Lars Eggert for the
+bug 1024944 (compilation on OSX).&nbsp; Thanks to Lars Eggert for
+the
 patch.</li>
-  <li>Fixes a bug with the legend handling (beware: on later gnomes the
+
+  <li>Fixes a bug with the legend handling (beware: on later
+gnomes the
 legend could behave strangely if you use a binary package built for an
 older gnome release)<br>
+
   </li>
+
 </ul>
+
 <h3>
 Overview of changes in EtherApe 0.9.2 (Saturday 8-13-2005): </h3>
+
 <ul>
-  <li> New multithreaded name resolution using the standard resolver
+
+  <li> New multithreaded name resolution using the standard
+resolver
 api. Works with dns, /etc/host, ... </li>
+
   <li> Small fixes for gcc 4</li>
+
   <li>cvs cleanup</li>
+
 </ul>
+
 <h3>
 Overview of changes in EtherApe 0.9.1 (Wednesday 8-11-2004): </h3>
+
 <ul>
+
   <li> Color-coded protocol dialog </li>
+
   <li> Some tweaks to compile with
 newer distros </li>
+
 </ul>
+
 <h3> Overview of changes in
 EtherApe 0.9.0(Saturday 01-03-2003): </h3>
+
 <ul>
+
   <li> Gnome 2 preliminary
 support, including a new option for an antialiased diagram. </li>
+
   <li> Gcc 3.2 compile support </li>
+
   <li> Some bug and potential bug
 fixes </li>
+
   <li> New Turkish translation, by
 G&ocirc;rkem Cetin </li>
+
   <li> Several fixes to assure
 proper compilation with newer autotools </li>
+
   <li> Resolved memory bug by
 limiting resolved names to 1024 entries and arranging them in a simple
 LRU cache </li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.8.2 (Sunday 08-12-2001):</h3>
+
 <ul>
+
   <li>Fix from Dave Yearke to
 bring back compilability to systems not defining DLT_LINUX_SLL</li>
+
   <li>Should fix node globbing on
 screen under heavy loads</li>
+
   <li>Added dialogs for name
 selection. The code behind the dialogs is not there yet, so don't
 expect it to work</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.8.1 (Monday 08-06-2001):</h3>
+
 <ul>
+
   <li>Added support for ISDN on
 Linux (added support for linux cooked sockets in general). Thanks to
 Ole Andreas Weel for providing the capture file.</li>
+
   <li>Removes some testing info
 that was showing up when adding a new color to the color-protocols table</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.8.0 (Friday 08-03-2001):</h3>
+
 <ul>
+
   <li>Added much requested color
 selection dialog, to set and save your preferences for protocol coloring</li>
+
   <li>Fixes program not behaving
 when using pause in live capture</li>
+
   <li>Fixes a potential crash when
 deleting the font selection window using the window manager</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.8 (Friday 07-06-2001):</h3>
+
 <ul>
+
   <li>Fixes device being left in
 promiscuous mode at exit</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.7 (Friday 06-22-2001):</h3>
+
 <ul>
+
   <li>Per mode name selection code
 was not working. For instance, /etc/ethers was not being used in
 ethernet mode. Fixed</li>
+
   <li>Fixes a crash triggered at
 times when changing modes or restarting a capture</li>
+
   <li>Should fix a cluttering of
 the display under heavy loads</li>
+
   <li>Removes a compilation
 warning about floor not being declared</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.6 (Sunday 05-13-2001):</h3>
+
 <ul>
+
   <li>Now you can decide if you
 want to group unknown TCP and udp ports or not</li>
+
   <li>Can show IPX SAP resource
 names in ethernet mode</li>
+
   <li>Added a good deal of new
 protocols: ICQ, napster, DEC, LAT, IPX and many, many more. Remember
 that you must set Ethernet mode in order to see non IP protocols</li>
+
   <li>You can select the columns
 to display in the protocols window</li>
+
   <li>Pausing a live capture
 doesn't drop packets (statistics will still be valid)</li>
+
   <li>Fixes mode setting from the
 command line</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.5 (Friday 05-10-2001):</h3>
+
 <ul>
+
   <li>Added more information to
 the protocols window: instantenous traffic, last heard and number of
 packets</li>
+
   <li>Greatly improves CPU usage,
 should drop less packets in heavy loaded networks (increase refresh
 period if you are more interested in truthful statistics)</li>
+
   <li>Double click a protocol in
 the protocols window to get an individual window for that protocol (yet
 to be filled with more data)</li>
+
   <li>Fixes a segfault introduced
 in 0.7.4 triggered under heavy loads</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.4 (Wednesday 05-09-2001):</h3>
+
 <ul>
+
   <li>Added support for RPC_REPLYs
 and passive FTP. That's because EtherApe now understands the notion of
 conversations</li>
+
   <li>Application is more
 responsive now under heavy loads</li>
+
   <li>Fixed the CPU problem and
 part of the leak that was introduced in 0.7.1</li>
+
   <li>Fixed CPU hogging when in
 pause</li>
+
   <li>Fixed a segfault triggered
 when a capture file was given first in the command line and later
 through the GUI</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.3 (Tuesday 05-08-2001):</h3>
+
 <ul>
+
   <li>Added ability to resize
 columns and sort rows in the protocols window table</li>
+
   <li>Added a toolbar button and a
 menu entry to call the protocols window</li>
+
   <li>Unregistered TCP and udp
 ports now show as an unique protocol, instead of being summed up in
 TCP_UNKNOWN and UDP_UNKNOWN</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.2 (Monday 05-07-2001):</h3>
+
 <ul>
+
   <li>Displays a protocol
 statistics window when you double click the protocols legend</li>
+
   <li>Fixes the problem with links
 not disappearing when stopping the capture</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.1 (Sunday 05-06-2001):</h3>
+
 <ul>
+
   <li>The protocol table is
 emptied after stopping a capture, and now only shows the relevant
 protocols when changing the stack level setting</li>
+
   <li>Better color behavior:
 removed repeated colors, and cycles color usage for further protocols</li>
+
   <li>Fixes token ring mode in
 token ring networks (IP mode was working already)</li>
+
   <li>Fixes a problem that showed
 up after a second offline capture in a row</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.7.0 (Saturday 05-05-2001):</h3>
+
 <ul>
+
   <li>New node cache timeout
 adjustment to avoid building on memory usage</li>
+
   <li>Some improvements to reduce
 CPU usage as time passes by</li>
+
   <li>Updated Dutch and Spanish
 translations</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.9 (Thursday 04-26-2001):</h3>
+
 <ul>
+
   <li>Added new node info window
 that pops up when a node is double clicked and is updated in real time.
 Since we have a proper window now, we can remove the hideous node pop
 up window</li>
+
   <li>Fixes nodes reappearing in
 the diagram after a while and never being timed out again</li>
+
   <li>Fixes the "** WARNING **:
 could not find signal handler" bug for architectures that were not
 automatically exporting symbols by adding libtool support</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.8 (Wednesday 04-25-2001):</h3>
+
 <ul>
+
   <li>Added support for Token Ring
 (Thanks to Robert Frank for the capture file)</li>
+
   <li>Squashed yet another memory
 leak. (I won't say it's the last, lest Jim Howards proves me wrong
 again :-) )</li>
+
   <li>Fixed more problems with
 names in FDDI mode</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.7 (Monday 04-23-2001):</h3>
+
 <ul>
+
   <li>RPM package finally works
 for RedHat users</li>
+
   <li>Choose node size from among
 (total|inbound|outbound) instantenous or accumulated traffic</li>
+
   <li>Tooltips show correct
 accumulated traffic value</li>
+
   <li>Node names are not forgotten
 when they timeout</li>
+
   <li>Removed interape binary and
 moved etherape to bin from sbin</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.6 (Saturday 04-21-2001):</h3>
+
 <ul>
+
   <li>Fixes a serious leak
 introduced in 0.6.1</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.5 (Saturday 04-21-2001):</h3>
+
 <ul>
+
   <li>Reports less false positive
 by giving priority to registered port numbers (below 1024) and fixing a
 bug that was causing etherape to only acknowledge RCP_REPLY messages</li>
+
   <li>Get extensive node info in
 console by double clicking it (use export DEBUG=INFO)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.4 (Friday 04-20-2001):</h3>
+
 <ul>
+
   <li>Better support for NetBIOS
 over IP name recognition (captures names from host announcements
 messages, besides the already supported session_request)</li>
+
   <li>Fixes the "Illegal" node
 name bug</li>
+
   <li>Compile fixes for platforms
 breaking at the libpcap check</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.3 (Thursday 04-19-2001):</h3>
+
 <ul>
+
   <li>Can find windows names in
 netbios over TCP session packets</li>
+
   <li>Fixed a couple of cases in
 which ethernet addresses were displayed instead of IP addresses</li>
+
   <li>Should report less false
 positive protocol identifications</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.2 (Wednesday 04-18-2001):</h3>
+
 <ul>
+
   <li>New interface setting menu:
 now you can set the device to capture from at run time</li>
+
   <li>Added support for RPC
 protocols. That means that NFS shows as such most of the time at last</li>
+
   <li>Fixed a bug introduced in
 0.6.0 that froze EtherApe</li>
+
   <li>Fixed a couple of references
 to null pointers which I believe where the cause of most crashes</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.1 (Tuesday 04-17-2001):</h3>
+
 <ul>
+
   <li>New mode setting menu: now
 you can choose among link layer, IP or TCP modes on the fly from whitin
 the GUI</li>
+
   <li>The status bar now shows an
 actually informative message</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.6.0 (Saturday 04-15-2001):</h3>
+
 <ul>
+
   <li>Play, pause and stop buttons
 now work as expected</li>
+
   <li>New open capture file menu
 item</li>
+
   <li>Fixed filter history</li>
+
   <li>Fixed ip addresses not
 showing in FDDI</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.9 (Thursday 04-12-2001):</h3>
+
 <ul>
+
   <li>Does not leak anymore.
 Formally tested! :-)</li>
+
   <li>Online documentation. At
 least you get the menu entries. I still need to finish writing the docs
 :-)</li>
+
   <li>Default operation mode is
 now IP. If you want to go back to ethernet mode, use <tt>-m
 ethernet</tt> at the command line</li>
+
   <li>Loopback device now
 supported (was needed to test non-leakage)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.8 (Thursday 04-05-2001):</h3>
+
 <ul>
+
   <li>Fixed non-displaying text on
 diagram. If you still see squares instead of text, go to preferences
 and choose a new font. Save your preferences.</li>
+
   <li>Application icon now shows
 on the window manager and the about box</li>
+
   <li>Rpm package does not require
 alsa anymore</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.7 (Tuesday 04-03-2001):</h3>
+
 <ul>
+
   <li>Dutch translation. (Thanks,
 Vincent)</li>
+
   <li>Fixed compilation problem
 with resolver library and newer libc</li>
+
   <li>Menu entries for Gnome and
 Debian systems</li>
+
   <li>Included application icon. I
 can't track who sent me the couple of icons I have. If anybody knows
 who the author is, please tell me so that I can properly credit him</li>
+
   <li>New version after eleven
 months! Development is retaken! :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.6 (Thursday 05-4-2000):</h3>
+
 <ul>
+
   <li>Fixed a stupid but serious
 bug introduced in 0.5.3 which caused the capture to stop for no good
 reason. This happened because I was away from home and I was developing
 using only capture files with no access to any live network. I'm sorry
 it took me this long to solve the problem... :-(</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.5 (Saturday 04-22-2000):</h3>
+
 <ul>
+
   <li>New Stack Level setting:
 "Topmost Recognized Protocol". This is probably what you want to have
 as default. If you have used any previous version of EtherApe and have
 saved your settings, you will probably want to change it.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.4 (Saturday 04-22-2000):</h3>
+
 <ul>
+
   <li>TCP and UDP protocols are
 read from a configuration file: services. I could use some help in
 trying to determine what's missing and what should not be in in the
 deafault services file. Unified diffs accepted. :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.3 (Friday 04-21-2000):</h3>
+
 <ul>
+
   <li>Added start and stop
 buttons. The toolbar is back, since it is now useful. :-)</li>
+
   <li>General menu cleanup</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.2 (Thursday 04-20-2000):</h3>
+
 <ul>
+
   <li>Added new -l option. You can
 use it to limit the nodes displayed only to the N most active. GUI
 configuration and more the ability to use more criteria will come next</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.1 (Wednesday 04-19-2000):</h3>
+
 <ul>
+
   <li>Fixed lots of memory leaks
 thanks to Owen Taylor and his fantastic memprof</li>
+
   <li>Should not hog the CPU in
 offline mode anymore</li>
+
   <li>Node size is zero again when
 the average traffic is zero</li>
+
   <li>Got rid of the toolbar by
 default</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.5.0 (Saturday 04-15-2000):</h3>
+
 <ul>
+
   <li>Fixed PPP and SLIP modes not
 showing any protocols nor names</li>
+
   <li> Moved code to libglade.
 This means:
     <ul>
+
       <li>You will need libglade
 to compile and run EtherApe</li>
+
       <li>No more GTK warnings</li>
+
       <li>The view menu is fixed.
 Check buttons work as expected</li>
+
       <li>You can change the
 interface by editing EtherApe.glade with glade without having to
 recompile</li>
+
       <li>All kinds of benefits
 for the developer. Now I can go back at dealing with the GUI</li>
+
     </ul>
+
   </li>
+
   <li>These are major changes.
 Please report any problems (see README.bugs)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.7 (Friday 04-14-2000):</h3>
+
 <ul>
+
   <li>Fixed segfault when applying
 preferences changes and a filter had been set up in the command line</li>
+
   <li>(Bill Barth) New, improved
 static mode</li>
+
   <li>Debug messages depend on the
 DEBUG environment variable. You can set it to DEBUG or INFO if you want
 to see them again. Added -q option too, to get rid of WARNINGS as well</li>
+
   <li>Refresh period is finally
 working the intended way (I hope). Should free up CPU in many cases</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.6 (Monday 04-10-2000):</h3>
+
 <ul>
+
   <li>Ports were not appearing in
 TCP mode</li>
+
   <li>Accumulated per name traffic
 was not properly updated</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.5 (Sunday 04-09-2000):</h3>
+
 <ul>
+
   <li>/etc/ethers is used again in
 Ethernet mode</li>
+
   <li>FQDN is again only used in
 IP or TCP mode</li>
+
   <li>Added new --stationary
 option, so that people getting sick of following nodes around can have
 a rest. :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.4 (Sunday 04-09-2000):</h3>
+
 <ul>
+
   <li>Nodes keep track of all
 names by which they are referenced. Right now only the most used one is
 displayed</li>
+
   <li>This breaks /etc/ethers
 usage for IP nodes. You'll see your router change names a lot in
 ethernet mode. :-) I'll try to solve this tonight.</li>
+
   <li>I changed quite a lot of
 things. Please test it and tell me any problems you find so that I can
 fix them</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.3 (Tuesday 04-04-2000):</h3>
+
 <ul>
+
   <li>Recognizes IP fragmentation.
 Should make up for unexpected protocols in your network</li>
+
   <li>Node colors are those of its
 most common protocol. This is a bonus on my way of handling several
 names per node.</li>
+
   <li>Fixed a bug by which
 actually the <b>least</b>
 common protocol had its color shown. Come on, guys... How come nobody
 reported this one? :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.2 (Tuesday 04-04-2000):</h3>
+
 <ul>
+
   <li>Initial FDDI support.</li>
+
   <li>Uploaded working RPM (for
 version 0.4.1).</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.1 (Monday 04-03-2000):</h3>
+
 <ul>
+
   <li>Hiding legend works again
 (for me, at least).</li>
+
   <li>Link directions were
 reversed in ethernet mode.</li>
+
   <li>New webpage (mostly copied
 from ethereal's :-) )</li>
+
   <li>First try at RPM
 distribution. Please report whether it works.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.4.0 (Wednesday 03-29-2000):</h3>
+
 <ul>
+
   <li>Node size is dependent on
 outbound traffic</li>
+
   <li>You can distinguish both
 directions of a link.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.9 (Wednesday 03-29-2000):</h3>
+
 <ul>
+
   <li>You may safely turn down
 refresh period to minimum. If CPU can't handle it, it will just do a
 best effort.</li>
+
   <li>Patch from Fabrice Bellet.
 Should fix more RedHat problems. Please report if it solves yours.</li>
+
   <li>Some more segfault fixing.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.8 (Wednesday 03-29-2000):</h3>
+
 <ul>
+
   <li>Filter entry has history.</li>
+
   <li>Prefs window is raised when
 called.</li>
+
   <li>I think I fixed almost all
 memory leaks.</li>
+
   <li>Some more segfaults fixed.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.7 (Friday 03-24-2000):</h3>
+
 <ul>
+
   <li>You can now "playback"
 tcpdump output files.</li>
+
   <li>The legend now has a
 scrollbar if there are more protocols than it can hold.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.6 (Friday 03-24-2000):</h3>
+
 <ul>
+
   <li>Recognizes level 5 UDP
 protocols.</li>
+
   <li>Default stack level is now 5</li>
+
   <li>Can anybody please send me
 the most complete /etc/services in Earth? Mine in debian is quite
 complete, but it's missing things like ICQ.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.5 (Thursday 03-23-2000):</h3>
+
 <ul>
+
   <li>Sorry. I forgot to include
 the new files in the distribution. :-(</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.4 (Thursday 03-23-2000):</h3>
+
 <ul>
+
   <li>Recognizes level 5 TCP
 protocols (Set stack level to 5) UDP protocols should be done tomorrow
 morning. (Can somebody explain me why 6000 is not a recognized protocol
 in standard /etc/services?)</li>
+
   <li>Fixed a compilation problem
 for people with libbind.a installed.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.3 (Thursday 03-23-2000):</h3>
+
 <ul>
+
   <li>Fixes a serious and stupid
 segfault.</li>
+
   <li>Recognizes level 4 IP
 protocols (set stack level to 4)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.2 (Wednesday 03-22-2000):</h3>
+
 <ul>
+
   <li>You may choose what level of
 the protocol stack to look at. Now I should be able to add more
 protocol decoding easyly.</li>
+
   <li>I think I have squashed the
 growing legend bug. Please report.</li>
+
   <li>Diagram tries to use most of
 the window.</li>
+
   <li>Got away with some other
 memory leaks, though I probably just introduced some others.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.1 (Monday 03-20-2000):</h3>
+
 <ul>
+
   <li>Capture filter may be set in
 the preferences dialog in runtime</li>
+
   <li>Warning! The above is just
 candy to have you all test some major code restructuring. Please report
 any problems.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.3.0 (Saturday 03-18-2000):</h3>
+
 <ul>
+
   <li>Preferences can be saved</li>
+
   <li>The status bar shows the
 main protocol when over a link, and the node name when over a node.</li>
+
   <li>EtherApe turns 1 month old!
 Thanks everybody for using this software. :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.11 (Friday 03-17-2000):</h3>
+
 <ul>
+
   <li>Fixed a segfault in linuxppc</li>
+
   <li>Fixed a minor bug in the
 protocols legend</li>
+
   <li>Translations to French and
 Spanish</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.10 (Thursday 03-16-2000):</h3>
+
 <ul>
+
   <li>Fixed several memory leaks
 (it's still leaking, though :-( )</li>
+
   <li>Added font picker to the
 diagram settings</li>
+
   <li>Size mode menu is now
 working.</li>
+
   <li>Should compile again in
 Solaris</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.9 (Thursday 03-16-2000):</h3>
+
 <ul>
+
   <li>Fix for bug introduced in
 0.2.8. Resetting the refresh rate eventually broght a SIGSEGV.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.8 (Wednesday 03-15-2000):</h3>
+
 <ul>
+
   <li> GUI enhancements suggested
 by mdf to save screen real state.
     <ul>
+
       <li>Diagram settings is a
 dialog under the preferences menu</li>
+
       <li>Legend becomes a
 dockable item</li>
+
       <li>Toolbar, legend and
 appbar may be hidden using the view menu.</li>
+
     </ul>
+
   </li>
+
   <li>GUI for two more sizing
 algorithms: log and sqrt. I'm afraid I still don't know how to get the
 menu item from an option_menu, though. Patch, anyone? :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.7 (Monday 03-13-2000):</h3>
+
 <ul>
+
   <li>Node info is now a popup.</li>
+
   <li>Popup window shows Name, IP
 address and MAC address again.</li>
+
   <li>Name is only FQDN in ip and
 tcp modes (more readable)</li>
+
   <li>Now links age the moment
 they are not used.</li>
+
   <li>Added 802.2 and 802.3 to
 ethernet protocols.</li>
+
   <li>Fix for sigsegv when small
 link timeouts.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.6 (Saturday 03-11-2000):</h3>
+
 <ul>
+
   <li>Ethernet protocols are
 recognized and presented in different colors.</li>
+
   <li>Links not in use are slowly
 faded out (patch by Ted Wright). Use --no-fade to avoid it.</li>
+
   <li>Finally found a way to set
 the diagram background to black.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.5 (Friday 03-10-2000):</h3>
+
 <ul>
+
   <li>Initial support for color
 coded protocols display</li>
+
   <li>Click on a link and a get a
 debug message with the most common ethernet protocol</li>
+
   <li>Released to test for bugs
 some major changes in the code. Go for 0.2.4 if you want some guarantee
 of a more stable version.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.4 (Thursday 03-09-2000):</h3>
+
 <ul>
+
   <li>Major bug fix.</li>
+
   <li>Added README.bugs with
 procedures for bug reporting.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.3 (Wednesday 03-08-2000):</h3>
+
 <ul>
+
   <li>Non blocking reverse
 lookups. I brought dns.c in from mtr to provide this functionality.
 This code is from Simon Kirby.</li>
+
   <li>Removed now unnecessary -r
 option.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.2 (Tuesday 03-07-2000):</h3>
+
 <ul>
+
   <li>Added ppp and slip devices
 support.</li>
+
   <li>Brought back IP address
 display in ethernet mode when no /etc/ethers is available</li>
+
   <li>Fixed another bug with
 RedHat 6.1. (I really have to find time to talk to this guy)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.1 (Monday 03-06-2000):</h3>
+
 <ul>
+
   <li>Added tcp mode. Run with
 etherape -m tcp</li>
+
   <li>Added fix from Ted Wright to
 provide a more readable display in crowded diagrams. Run with -o. Very
 useful for tcp.</li>
+
   <li>Cleaned up sources so that
 adding other modes should be trivial. Please have a look at the source.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.2.0 (Friday 03-03-2000):</h3>
+
 <ul>
+
   <li>RedHat 6.1 fix. Works around
 "featureful" redhat 6.1 libpcap.</li>
+
   <li>Fixed node-in-the-center bug.</li>
+
   <li>Timeout=0 means never
 timeout.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.9 (Thursday 03-02-2000):</h3>
+
 <ul>
+
   <li>Finally I'm properly
 calculating average traffic. (yeah, right :-)</li>
+
   <li>Node and link timeout work
 as expected as well.</li>
+
   <li>Should now compile cleanly
 in Solaris.</li>
+
   <li>Interape is a hardlinked to
 etherape. Runs as interape when called with that name.</li>
+
   <li>Minor changes to the naming
 algorithm.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.8 (Wednesday 03-01-2000):</h3>
+
 <ul>
+
   <li>First version of interape.
 Run as EtherApe -I. I guess I'll have to change the name to netape now.
 :-)</li>
+
   <li>Added node and link timeouts
 controls.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.7 (Tuesday 02-29-2000):</h3>
+
 <ul>
+
   <li>Pcap filtering added. Now
 you can use tcpdump style filtering (enclosed in quotes) with the -f
 option.</li>
+
   <li>Added libm to autoconf.in
 for systems with a separate math lib.</li>
+
   <li>First try at Debian
 packaging.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.6 (Monday 02-28-2000):</h3>
+
 <ul>
+
   <li>Refresh period spin,
 averaging time spin, and link width sliders now work. Time to get
 better than Quake frame rates! :-)</li>
+
   <li>Node, link and text colours
 can be set from the command line.</li>
+
   <li>The rest of the GUI is
 active, so that it can answer itself people's favourite question. :-)
 (Well, Control-Q does actually work!)</li>
+
   <li>Automated release process so
 that I can keep bombarding you with releases.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.5 (Sunday 02-27-2000):</h3>
+
 <ul>
+
   <li>More for readability: Click
 on a node and a pop-up window appears with all node data.</li>
+
   <li>You can change the network
 interface to listen to in the command line.</li>
+
   <li>Fixed a bug in the dotted
 quad ip number display</li>
+
   <li>Compiles without warnings</li>
+
   <li>Updated README</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.4 (Sunday 02-27-2000):</h3>
+
 <ul>
+
   <li>Now parses command line
 arguments:<br>
+
 etherape options<br>
+
 -n, --numeric don't convert addresses to names<br>
+
 -r, --with-dns-resolving use IP name resolving. Caution! Long timeouts!<br>
+
 -d, --diagram-only don't display any node text identification</li>
+
   <li>The resolver is turned off
 by default since it can potentially freeze your display for too long</li>
+
   <li>digram-only makes for a
 clearer display. It's intended to be practical whenever I have per-node
 pop-up windows ready.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.3 (Saturday 02-26-2000):</h3>
+
 <ul>
+
   <li>Links with no traffic
 disappear with time. Makes diagram more readable.</li>
+
   <li>IP host name displayed if no
 ether name available</li>
+
   <li>Oops! Was confusing ether
 dst and src addresses. Solved.</li>
+
   <li>Web page now has a much more
 interesting screenshot thanks to Nico Lumma</li>
+
   <li>Buttons are in English now.</li>
+
   <li>(This file I had to get out
 from download because it had the dangerous DNS behaviour by default.
 You see? That's what happens when you are rushed by deadlines! :-) )</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.2 (Saturday 02-26-2000):</h3>
+
 <ul>
+
   <li>James Wallace provided code
 to automatically detect proper network interface. It now compiles in
 NetBSD.</li>
+
   <li>IP number displayed if no
 /etc/ethers is available. IP host name will be there in the Saturday
 Night edition. :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.1 (Friday 02-25-2000):</h3>
+
 <ul>
+
   <li>First look at GUI side of
 things</li>
+
   <li>Now you can dynamically
 reset the node radius using a slider</li>
+
   <li>First users reports! Thanks
 R., Don!</li>
+
   <li> First improvements due to
 user feedback:
     <ul>
+
       <li>Solved configuration
 problem for some people</li>
+
       <li>Improved web page and
 README: reference to /etc/ethers</li>
+
     </ul>
+
   </li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.1.0 (Friday 02-25-2000):</h3>
+
 <ul>
+
   <li>Diagram resizes with window</li>
+
   <li>Basic functionality is all
 there now, and calls for a minor version upgrade. :-)</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.8 (Thursday 02-24-2000):</h3>
+
 <ul>
+
   <li>Correctly (I hope)
 calculates average traffic intensity for nodes and links. The proper
 constant multiplier should be user defined.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.7 (Thursday 02-24-2000):</h3>
+
 <ul>
+
   <li>First version showing links
 among nodes</li>
+
   <li>Aborts gracefully if run by
 non-root.</li>
+
   <li>http://etherape.sourceforge.net
 has a screenshot.</li>
+
   <li>Expect proper node size and
 link width calculation in 0.0.8</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.6 (Wednesday 02-23-2000):</h3>
+
 <ul>
+
   <li>Copied proper libpcap
 autoconfigure detection function from ethereal</li>
+
   <li>Added Ethernet address
 resolution functions from ethereal</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.5 (Wednesday 02-23-2000):</h3>
+
 <ul>
+
   <li>Now uses gnome_canvas to
 display the diagram</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.4 (Monday 02-21-2000):</h3>
+
 <ul>
+
   <li>Node size is now an average
 of the last ten seconds traffic.</li>
+
   <li>Proper distribution file.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.3 (Sunday 02-20-2000):</h3>
+
 <ul>
+
   <li>Added gnome support.</li>
+
   <li>Substituted hash table for
 binary tree to store nodes</li>
+
   <li>Correctly display hardware
 addresses.</li>
+
 </ul>
+
 <h3>Overview of changes in
 EtherApe 0.0.2 (Saturday 02-19-2000):</h3>
+
 <ul>
+
   <li>Displays circles
 representing nodes and text which will identify it eventually.</li>
+
 </ul>
+
 <h3>Overview of EtherApe 0.0.1
 (Friday 02-18-2000):</h3>
+
 <ul>
+
   <li>Initial version. Don't even
 expect it to run.</li>
+
 </ul>
+
 <hr>
 <p><i>$Id:
 NEWS.html,v 1.30 2000/04/04 14:01:20 toledo Exp $</i></p>
-<p><a href="http://sourceforge.net"><img alt="sourceforge"
- src="http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1" border="0"
- height="31" width="88"></a></p>
+
+<p><a href="http://sourceforge.net"><img alt="sourceforge" src="http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1" border="0" height="31" width="88"></a></p>
+
 </body>
 </html>

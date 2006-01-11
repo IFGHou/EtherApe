@@ -1,3 +1,10 @@
+2006-01-10 18:06  bchiara
+
+	* ChangeLog, NEWS, config.h.in, configure.in, po/POTFILES.in,
+	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
+	src/main.c: Fixes bug 1362426 (i8n issues). Thanks to Daniel
+	Nylander for hunting down that and providing a detailed example.
+
 2006-01-10 07:43  bchiara
 
 	* ChangeLog, NEWS, src/datastructs.c, src/datastructs.h,

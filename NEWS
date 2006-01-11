@@ -1,14 +1,12 @@
                             Changelog for EtherApe
 
-   $Date 2005/08/18 21:47:23 $
+   $Date 11/01/2006 07:53:21 $
 
-  Overview of changes in EtherApe 0.9.4 (????):
+  Overview of changes in EtherApe 0.9.4 (Wednesday Jan 11 2006):
 
-     * Fixes bug 1362426 (i8n issues). Thanks to Daniel Nylander for hunting down that and providing a detailed example.
-     * Fixes bug 1385105 (crash with double free). Thanks to goga_russian for the segnalation.
-     * Fixes bug 1372245 (crashes when node goes too big). Thanks to goga_russing for the segnalation.
-     * Fixes bug 1396236 ("force numeric" and "dns resolution" checkboxes not working)
-     * Fixes bug 1268291 (OSX net/if.h). Thanks to Eric Stewart for the patch.
+     * New feature: link info dialogs show traffic and protocol statistics for a given link.
+     * New feature: improved node info dialogs now display both traffic and protocol statistics per node.
+     * New feature: protocol ageing. Now protocols, like nodes and links, can expire and be purged automatically.
      * Heavy refactoring to make sources easier to understand and maintain.
      * Small performance enhancements due to refactoring.
      * Better memory handling due to refactoring.
@@ -16,7 +14,11 @@
      * Rewritten interface listing. Now uses directly pcap_findalldevs to list interfaces available for capturing. The interface submenu now list also the "any" device, if present. The older method is deprecated (at the moment it can be enabled with a #define) and will be removed in a future release. If someone needs it, please file a feature request.
      * Tidied up preferences dialog, removing unneeded entries.
      * Rewritten and improved node/link timeout handling.
-     * New node info dialogs: now display protocol statistics per node.
+     * Fixes bug 1362426 (i8n issues). Thanks to Daniel Nylander for hunting down that and providing a detailed example.
+     * Fixes bug 1385105 (crash with double free). Thanks to goga_russian for the segnalation.
+     * Fixes bug 1372245 (crashes when node goes too big). Thanks to goga_russing for the segnalation.
+     * Fixes bug 1396236 ("force numeric" and "dns resolution" checkboxes not working).
+     * Fixes bug 1268291 (OSX net/if.h). Thanks to Eric Stewart for the patch.
      * Legend labels now align to left.
      * Fixed a bug when closing the preferences dialog.
 

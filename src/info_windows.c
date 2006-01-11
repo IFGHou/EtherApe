@@ -32,13 +32,6 @@
 
 typedef struct
 {
-  node_id_t node_id;
-  GtkWidget *window;
-}
-node_info_window_t;
-
-typedef struct
-{
   gchar *prot_name;
   GtkWidget *window;
 }
@@ -51,20 +44,21 @@ typedef struct protocol_list_item_t_tag
 } protocol_list_item_t;
 
 
-/* list of active node info windows */
-static GList *node_info_windows = NULL;
+/* list of active node/link info windows */
+static GList *stats_info_windows = NULL;
 
 /* list of active protocol info windows */
 static GList *prot_info_windows = NULL;
 
 /* private functions */
 static void update_prot_info_windows (void);
-static void update_node_info_window (node_info_window_t * node_info_window);
+static void update_node_info_window (GtkWidget *node_window);
 static void update_prot_info_window (prot_info_window_t * prot_info_window);
 static gint node_info_window_compare (gconstpointer a, gconstpointer b);
 static gint prot_info_compare (gconstpointer a, gconstpointer b);
-static void update_node_info_windows (void);
-static void update_node_protocols_window (node_info_window_t * node_info_window);
+static void update_stats_info_windows (void);
+static void update_node_protocols_window (GtkWidget *node_window);
+static void update_link_info_window (GtkWidget *window);
 
 /* 
   
@@ -328,7 +322,6 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
   gint idcol;
   GtkSortType order;
 
-
   /* reads the proto ptr from 6th columns */
   protocol_t *prot1, *prot2;
   gtk_tree_model_get (gs, a, 5, &prot1, -1);
@@ -342,7 +335,8 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 
   switch (idcol)
     {
-    case 0:
+    case 0: /* name */
+    case 6: /* color */
     default:
       ret = strcmp (prot1->name, prot2->name);
       break;
@@ -385,34 +379,6 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
-    case 6:
-      /* compare color by luminosity first, then by rgb... */
-      if (LUMINANCE (prot1->color.red, prot1->color.green, prot1->color.blue)
-	  < LUMINANCE (prot2->color.red, prot2->color.green,
-		       prot2->color.blue))
-	ret = -1;
-      else
-	if (LUMINANCE
-	    (prot1->color.red, prot1->color.green,
-	     prot1->color.blue) > LUMINANCE (prot2->color.red,
-					     prot2->color.green,
-					     prot2->color.blue))
-	ret = +1;
-      else if (prot1->color.red < prot2->color.red)
-	ret = -1;
-      else if (prot1->color.red > prot2->color.red)
-	ret = +1;
-      else if (prot1->color.green < prot2->color.green)
-	ret = -1;
-      else if (prot1->color.green > prot2->color.green)
-	ret = +1;
-      if (prot1->color.blue < prot2->color.blue)
-	ret = -1;
-      else if (prot1->color.blue > prot2->color.blue)
-	ret = +1;
-      else
-	ret = 0;
-      break;
     }
 
   return ret;
@@ -424,8 +390,8 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
   GtkListStore *gs;
   GtkTreeViewColumn *gc;
 
-  /* create the store  - it uses 7 values, five displayable, one ptr, and there
-     node color */
+  /* create the store  - it uses 7 values, five displayable, one ptr, and the
+     proto color */
   gs = gtk_list_store_new (7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER,
 			   GDK_TYPE_COLOR);
@@ -436,7 +402,6 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
   gc = gtk_tree_view_column_new_with_attributes
     (" ", gtk_cell_renderer_text_new (), "background-gdk", 6, NULL);
   g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 6);
   gtk_tree_view_append_column (gv, gc);
 
   gc = gtk_tree_view_column_new_with_attributes
@@ -479,8 +444,6 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
   gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 3,
 				   protocols_table_compare, gs, NULL);
   gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 4,
-				   protocols_table_compare, gs, NULL);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 6,
 				   protocols_table_compare, gs, NULL);
 
   /* initial sort order is by protocol */
@@ -743,14 +706,19 @@ on_prot_list_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
    Node Info window functions
 
    ---------------------------------------------------------- */
-/* Comparison function used to compare node_info_windows */
+/* Comparison function used to compare stats_info_windows */
 static gint
 node_info_window_compare(gconstpointer a, gconstpointer b)
 {
+  const node_id_t *id_a;
   g_assert (a != NULL);
   g_assert (b != NULL);
-  return node_id_compare( & (((node_info_window_t *) a)->node_id), 
-                          & (((node_info_window_t *) b)->node_id));
+
+  id_a = g_object_get_data (G_OBJECT (a), "node_id");
+  if (!id_a)
+    return FALSE; /* not a node window */
+
+  return node_id_compare( id_a, b);
 }
 
 guint
@@ -762,28 +730,44 @@ update_info_windows (void)
   gettimeofday (&now, NULL);
 
   update_protocols_window ();
-  update_node_info_windows ();
+  update_stats_info_windows ();
   update_prot_info_windows ();
 
   return TRUE;			/* Keep on calling this function */
 
 }				/* update_info_windows */
 
+/* It's called when a node info window is closed by the user 
+ * It has to free memory and delete the window from the list
+ * of windows */
+gboolean
+on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
+			   gpointer user_data)
+{
+  stats_info_windows = g_list_remove(stats_info_windows, node_info);
+
+  g_free(g_object_get_data (G_OBJECT (node_info), "node_id"));
+  g_free(g_object_get_data (G_OBJECT (node_info), "link_id"));
+
+  gtk_widget_destroy (node_info);
+
+  return FALSE;
+}				/* on_node_info_delete_event */
+
+
 void
 node_info_window_create(const node_id_t * node_id)
 {
   GtkWidget *window;
-  node_info_window_t *node_info_window;
   GladeXML *xml_info_window;
   GList *list_item;
-  node_info_window_t key;
-
-  key.node_id = *node_id;
 
   /* If there is already a window, we don't need to create it again */
-  if (!(list_item =
-	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
+  list_item = g_list_find_custom (stats_info_windows, 
+                                  node_id, node_info_window_compare);
+  if (!list_item)
     {
+      /* not present, create */
       xml_info_window =
 	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_info", NULL);
       if (!xml_info_window)
@@ -808,25 +792,22 @@ node_info_window_create(const node_id_t * node_id)
       register_glade_widget(xml_info_window, G_OBJECT (window), "node_info_accumulated_out");
 
       g_object_unref (xml_info_window);
-      node_info_window = g_malloc (sizeof (node_info_window_t));
-      node_info_window->node_id = *node_id;
       g_object_set_data (G_OBJECT (window), "node_id",
-			 g_memdup(&node_info_window->node_id, sizeof(node_id_t)));
-      node_info_window->window = window;
-      node_info_windows =
-	g_list_prepend (node_info_windows, node_info_window);
+			 g_memdup(node_id, sizeof(node_id_t)));
+      stats_info_windows =
+	g_list_prepend (stats_info_windows, window);
     }
   else
-    node_info_window = (node_info_window_t *) list_item->data;
-  update_node_info_window (node_info_window);
+    window = list_item->data;
+  update_node_info_window (window);
 }				/* node_info_window_create */
 
 
 void
-update_node_info_windows (void)
+update_stats_info_windows (void)
 {
-  GList *list_item = NULL, *remove_item;
-  node_info_window_t *node_info_window = NULL;
+  GList *list_item;
+  GtkWidget *window;
   struct timeval diff;
   static struct timeval last_time = {
     0, 0
@@ -837,74 +818,48 @@ update_node_info_windows (void)
   if (pref.refresh_period < 500)
     if (!(IS_OLDER (diff, 500)))
       return;
-  list_item = node_info_windows;
+  list_item = stats_info_windows;
   while (list_item)
     {
-      node_info_window = (node_info_window_t *) list_item->data;
+      window = list_item->data;
       if (status == STOP)
 	{
-	  gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
-	  remove_item = list_item;
+          GList *remove_item = list_item;
 	  list_item = list_item->next;
-	  node_info_windows =
-	    g_list_remove_link (node_info_windows, remove_item);
+	  stats_info_windows =
+	    g_list_delete_link (stats_info_windows, remove_item);
+          g_free(g_object_get_data (G_OBJECT (window), "node_id"));
+          g_free(g_object_get_data (G_OBJECT (window), "link_id"));
+	  gtk_widget_destroy (GTK_WIDGET (window));
 	}
       else
 	{
-          if (pref.new_infodlg)
-            update_node_protocols_window (node_info_window);
+          if (g_object_get_data (G_OBJECT (window), "node_id"))
+            {
+              /* is a node info window */
+              if (pref.new_infodlg)
+                update_node_protocols_window (window);
+              else
+                update_node_info_window (window);
+            }
           else
-            update_node_info_window (node_info_window);
+            update_link_info_window (window);
 	  list_item = list_item->next;
 	}
     }
 
   last_time = now;
-}				/* update_node_info_windows */
-
-/* It's called when a node info window is closed by the user 
- * It has to free memory and delete the window from the list
- * of windows */
-gboolean
-on_node_info_delete_event (GtkWidget * node_info, GdkEvent * evt,
-			   gpointer user_data)
-{
-  GList *item = NULL;
-  node_id_t *node_id;
-  node_info_window_t *node_info_window = NULL;
-  node_info_window_t key;
-  
-  node_id = g_object_get_data (G_OBJECT (node_info), "node_id");
-  if (!node_id)
-    {
-      g_my_critical (_("No node_id in on_node_info_delete_event"));
-      return TRUE;		/* ignore signal */
-    }
-
-  key.node_id = *node_id;
-  if (!(item =
-	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
-    {
-      g_my_critical (_("No node_info_window in on_node_info_delete_event"));
-      return TRUE;		/* ignore signal */
-    }
-
-  node_info_window = item->data;
-  gtk_widget_destroy (GTK_WIDGET (node_info_window->window));
-  node_info_windows = g_list_delete_link (node_info_windows, item);
-  g_free(node_id);
-
-  return FALSE;
-}				/* on_node_info_delete_event */
+}				/* update_stats_info_windows */
 
 static void
-update_node_info_window (node_info_window_t * node_info_window)
+update_node_info_window (GtkWidget *window)
 {
-  node_t *node = NULL;
-  GtkWidget *window;
-  
-  window = node_info_window->window;
-  if (!(node = nodes_catalog_find(&node_info_window->node_id)))
+  const node_id_t *node_id;
+  const node_t *node;
+
+  node_id = g_object_get_data (G_OBJECT (window), "node_id");
+  node = nodes_catalog_find(node_id);
+  if (!node)
     {
       update_gtklabel(window, "node_info_numeric_name_label", _("Node timed out"));
       update_gtklabel(window, "node_info_average", "X");
@@ -941,73 +896,122 @@ update_node_info_window (node_info_window_t * node_info_window)
  * node protocols display
  *
  ***************************************************************************/
+static GtkWidget *
+stats_info_create(const gchar *idkey, gpointer key)
+{
+  GtkWidget *window;
+  GladeXML *xml_info_window;
+  GtkTreeView *gv;
+
+  xml_info_window =
+    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_proto_info", NULL);
+  if (!xml_info_window)
+    {
+      g_error (_("We could not load the interface! (%s)"),
+               GLADEDIR "/" ETHERAPE_GLADE_FILE);
+      return NULL;
+    }
+  glade_xml_signal_autoconnect (xml_info_window);
+  window = glade_xml_get_widget (xml_info_window, "node_proto_info");
+  gtk_widget_show (window);
+
+  /* register the widgets in the window */
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name");
+  register_glade_widget(xml_info_window, G_OBJECT (window), 
+                          "node_iproto_numeric_name");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name_b");
+  register_glade_widget(xml_info_window, G_OBJECT (window), 
+                          "node_iproto_numeric_name_b");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_in");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_out");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_proto");
+
+  /* create columns of proto list */
+  gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
+  create_protocols_table (window, gv);
+
+  g_object_unref (xml_info_window);
+  
+  /* register key info */
+  g_object_set_data (G_OBJECT (window), idkey, key);
+
+  /* insert into list */
+  stats_info_windows = g_list_prepend (stats_info_windows, window);
+
+  return window;
+}
+
+
+static void
+stats_info_update(GtkWidget *window, GtkListStore *gs, const traffic_stats_t *stats)
+{
+  if (!stats)
+    {
+      update_gtklabel(window, "node_iproto_avg", "X");
+      update_gtklabel(window, "node_iproto_avg_in", "X");
+      update_gtklabel(window, "node_iproto_avg_out", "X");
+      update_gtklabel(window, "node_iproto_accum", "X");
+      update_gtklabel(window, "node_iproto_accum_in", "X");
+      update_gtklabel(window, "node_iproto_accum_out", "X");
+      gtk_list_store_clear(gs);
+      gtk_widget_queue_resize (GTK_WIDGET (window));
+    }
+  else
+    {
+      update_gtklabel(window, "node_iproto_avg",
+                          traffic_to_str (stats->stats.average, TRUE));
+      update_gtklabel(window, "node_iproto_avg_in",
+                          traffic_to_str (stats->stats_in.average, TRUE));
+      update_gtklabel(window, "node_iproto_avg_out",
+                          traffic_to_str (stats->stats_out.average, TRUE));
+      update_gtklabel(window, "node_iproto_accum",
+                          traffic_to_str (stats->stats.accumulated, FALSE));
+      update_gtklabel(window, "node_iproto_accum_in",
+                          traffic_to_str (stats->stats_in.accumulated, FALSE));
+      update_gtklabel(window, "node_iproto_accum_out",
+                          traffic_to_str (stats->stats_out.accumulated, FALSE));
+    
+      /* update protocol table */
+      update_protocols_table(gs, &stats->stats_protos);
+    }
+}
+
+
 void
 node_protocols_window_create(const node_id_t * node_id)
 {
   GtkWidget *window;
-  node_info_window_t *node_info_window;
-  GladeXML *xml_info_window;
   GList *list_item;
-  node_info_window_t key;
-  GtkTreeView *gv;
-
-  key.node_id = *node_id;
 
   /* If there is already a window, we don't need to create it again */
-  if (!(list_item =
-	g_list_find_custom (node_info_windows, &key, node_info_window_compare)))
+  list_item = g_list_find_custom (stats_info_windows, 
+                                  node_id, node_info_window_compare);
+  if (!list_item)
     {
-      xml_info_window =
-	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_proto_info", NULL);
-      if (!xml_info_window)
-	{
-	  g_error (_("We could not load the interface! (%s)"),
-		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
-	  return;
-	}
-      glade_xml_signal_autoconnect (xml_info_window);
-      window = glade_xml_get_widget (xml_info_window, "node_proto_info");
-      gtk_widget_show (window);
+      window = stats_info_create("node_id", g_memdup(node_id, sizeof(node_id_t)));
+      if (!window)
+        return; /* creation failed */
 
-      /* register the widgets in the window */
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name");
-      register_glade_widget(xml_info_window, G_OBJECT (window), 
-			      "node_iproto_numeric_name");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_in");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_out");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
-      register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_proto");
-
-      /* create columns of proto list */
-      gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
-      create_protocols_table (window, gv);
-
-      g_object_unref (xml_info_window);
-      node_info_window = g_malloc (sizeof (node_info_window_t));
-      node_info_window->node_id = *node_id;
-      g_object_set_data (G_OBJECT (window), "node_id",
-			 g_memdup(&node_info_window->node_id, sizeof(node_id_t)));
-      node_info_window->window = window;
-      node_info_windows = g_list_prepend (node_info_windows, node_info_window);
+      /* nodes don't need secondary names */
+      update_gtklabel(window, "node_iproto_name_b", "");
+      update_gtklabel(window, "node_iproto_numeric_name_b", "");
     }
   else
-    node_info_window = (node_info_window_t *) list_item->data;
-  update_node_protocols_window (node_info_window);
+    window = list_item->data;
+  update_node_protocols_window (window);
 }				/* node_info_window_create */
 
-
 static void
-update_node_protocols_window (node_info_window_t * node_info_window)
+update_node_protocols_window (GtkWidget *window)
 {
   GtkListStore *gs;
   GtkTreeView *gv;
-  node_t *node;
-  GtkWidget *window;
-  
-  window = node_info_window->window;
+  const node_id_t *node_id;
+  const node_t *node;
 
   /* retrieve view and model (store) */
   gv = GTK_TREE_VIEW (g_object_get_data (G_OBJECT (window), "node_iproto_proto"));
@@ -1017,18 +1021,13 @@ update_node_protocols_window (node_info_window_t * node_info_window)
   if (!gs)
      return;			/* error */
 
-  if (!(node = nodes_catalog_find(&node_info_window->node_id)))
+  node_id = g_object_get_data (G_OBJECT (window), "node_id");
+  node = nodes_catalog_find(node_id);
+  if (!node)
     {
-      /* node expired, remove */
+      /* node expired, clear stats */
       update_gtklabel(window, "node_iproto_numeric_name", _("Node timed out"));
-      update_gtklabel(window, "node_iproto_avg", "X");
-      update_gtklabel(window, "node_iproto_avg_in", "X");
-      update_gtklabel(window, "node_iproto_avg_out", "X");
-      update_gtklabel(window, "node_iproto_accum", "X");
-      update_gtklabel(window, "node_iproto_accum_in", "X");
-      update_gtklabel(window, "node_iproto_accum_out", "X");
-      gtk_list_store_clear(gs);
-      gtk_widget_queue_resize (GTK_WIDGET (window));
+      stats_info_update(window, gs, NULL);
       return;
     }
 
@@ -1036,19 +1035,106 @@ update_node_protocols_window (node_info_window_t * node_info_window)
   
   update_gtklabel(window, "node_iproto_name", node->name->str);
   update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
-  update_gtklabel(window, "node_iproto_avg",
-		      traffic_to_str (node->node_stats.stats.average, TRUE));
-  update_gtklabel(window, "node_iproto_avg_in",
-		      traffic_to_str (node->node_stats.stats_in.average, TRUE));
-  update_gtklabel(window, "node_iproto_avg_out",
-		      traffic_to_str (node->node_stats.stats_out.average, TRUE));
-  update_gtklabel(window, "node_iproto_accum",
-		      traffic_to_str (node->node_stats.stats.accumulated, FALSE));
-  update_gtklabel(window, "node_iproto_accum_in",
-		      traffic_to_str (node->node_stats.stats_in.accumulated, FALSE));
-  update_gtklabel(window, "node_iproto_accum_out",
-		      traffic_to_str (node->node_stats.stats_out.accumulated, FALSE));
+  
+  stats_info_update(window, gs, &node->node_stats);
+}
 
-  /* update protocol table */
-  update_protocols_table(gs, &node->node_stats.stats_protos);
+/****************************************************************************
+ *
+ * link protocols display
+ *
+ ***************************************************************************/
+/* Comparison function used to compare stats_info_windows */
+static gint
+link_info_window_compare(gconstpointer a, gconstpointer b)
+{
+  const link_id_t *id_a;
+  g_assert (a != NULL);
+  g_assert (b != NULL);
+
+  id_a = g_object_get_data (G_OBJECT (a), "link_id");
+  if (!id_a)
+    return FALSE; /* not a link window */
+
+  return link_id_compare( id_a, b);
+}
+
+void
+link_info_window_create(const link_id_t * link_id)
+{
+  GtkWidget *window;
+  GList *list_item;
+
+  /* If there is already a window, we don't need to create it again */
+  list_item = g_list_find_custom (stats_info_windows, 
+                                  link_id, link_info_window_compare);
+  if (!list_item)
+    {
+      window = stats_info_create("link_id", g_memdup(link_id, sizeof(link_id_t)));
+      if (!window)
+        return; /* creation failed */
+    }
+  else
+    window = list_item->data;
+  update_link_info_window (window);
+}
+
+static void
+update_link_info_window (GtkWidget *window)
+{
+  GtkListStore *gs;
+  GtkTreeView *gv;
+  const link_id_t *link_id;
+  const link_t *link;
+  const node_t *node;
+  gchar *linkname;
+
+  /* retrieve view and model (store) */
+  gv = GTK_TREE_VIEW (g_object_get_data (G_OBJECT (window), "node_iproto_proto"));
+  if (!gv)
+    return;			/* error or hidden */
+  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
+  if (!gs)
+     return;			/* error */
+
+  link_id = g_object_get_data (G_OBJECT (window), "link_id");
+  link = links_catalog_find(link_id);
+  if (!link)
+    {
+      /* node expired, clear stats */
+      update_gtklabel(window, "node_iproto_numeric_name", _("Link timed out"));
+      update_gtklabel(window, "node_iproto_numeric_name_b", "");
+      stats_info_update(window, gs, NULL);
+      return;
+    }
+
+  linkname = link_id_node_names(link_id);
+  gtk_window_set_title (GTK_WINDOW (window), linkname);
+  g_free(linkname);
+
+  node = nodes_catalog_find(&link_id->src);
+  if (node)
+  {
+    update_gtklabel(window, "node_iproto_name", node->name->str);
+    update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
+  }
+  else
+  {
+    update_gtklabel(window, "node_iproto_name", _("Node timed out"));
+    update_gtklabel(window, "node_iproto_numeric_name", _("Node timed out"));
+  }
+
+  node = nodes_catalog_find(&link_id->dst);
+  if (node)
+  {
+    update_gtklabel(window, "node_iproto_name_b", node->name->str);
+    update_gtklabel(window, "node_iproto_numeric_name_b", node->numeric_name->str);
+  }
+  else
+  {
+    update_gtklabel(window, "node_iproto_name_b", _("Node timed out"));
+    update_gtklabel(window, "node_iproto_numeric_name_b", _("Node timed out"));
+  }
+
+  stats_info_update(window, gs, &link->link_stats);
 }

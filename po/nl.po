@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 18:59+0100\n"
+"POT-Creation-Date: 2006-01-11 07:48+0100\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -85,12 +85,12 @@ msgstr "kleur"
 msgid "set the text color"
 msgstr "kies de tekstkleur"
 
-#: src/main.c:188
+#: src/main.c:189
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Modus niet herkend. Type etherape --help voor een lijst."
 
-#: src/main.c:198 src/menus.c:52 src/menus.c:376 src/info_windows.c:169
-#: src/info_windows.c:791 src/info_windows.c:964
+#: src/main.c:199 src/menus.c:52 src/menus.c:376 src/info_windows.c:163
+#: src/info_windows.c:775 src/info_windows.c:910
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "We konden de interface niet laden! (%s)"
@@ -391,82 +391,68 @@ msgstr ". IDLE ."
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
-#: src/diagram.c:516
+#: src/diagram.c:522
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:627
+#: src/diagram.c:628
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:676
-msgid "Main node protocol not found in update_canvas_nodes"
-msgstr ""
-"Hoofdprotocol van het knooppunt niet gevonden bij de functie "
-"update_canvas_nodes"
-
-#: src/diagram.c:701
+#: src/diagram.c:694
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:1043
+#: src/diagram.c:1036
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1085
-#, fuzzy
-msgid "Main link protocol not found in canvas_link_update"
-msgstr ""
-"Hoofdprotocol van deze lijn niet gevonden bij de functie update_canvas_links"
-
-#: src/diagram.c:1237
+#: src/diagram.c:1226
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1240
+#: src/diagram.c:1229
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 
 #  Meaning "n seconds" ago
-#: src/info_windows.c:95
+#: src/info_windows.c:89
 #, c-format
 msgid "%d\" ago"
 msgstr "%d\" geleden"
 
-#: src/info_windows.c:101
+#: src/info_windows.c:95
 #, c-format
 msgid "%d'%d\" ago"
 msgstr "%d'%d\" geleden"
 
 #  Watch out! The first is month, the second day of the month
-#: src/info_windows.c:113
+#: src/info_windows.c:107
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"
 
-#: src/info_windows.c:219
+#: src/info_windows.c:213
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "Geen prot_name bij de functie on_prot_info_delete_event"
 
-#: src/info_windows.c:226
+#: src/info_windows.c:220
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "Geen prot_info_window bij de functie on_prot_info_delete_event"
 
-#: src/info_windows.c:880
-msgid "No node_id in on_node_info_delete_event"
-msgstr "Geen node_id bij de functie on_node_info_delete_event"
-
-#: src/info_windows.c:888
-msgid "No node_info_window in on_node_info_delete_event"
-msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
-
-#: src/info_windows.c:909 src/info_windows.c:1023
+#: src/info_windows.c:864 src/info_windows.c:1029 src/info_windows.c:1123
+#: src/info_windows.c:1124 src/info_windows.c:1135 src/info_windows.c:1136
 #, fuzzy
 msgid "Node timed out"
+msgstr "Knooppunt timeout (ms)"
+
+#: src/info_windows.c:1105
+#, fuzzy
+msgid "Link timed out"
 msgstr "Knooppunt timeout (ms)"
 
 #: src/decode_proto.c:1090
@@ -1105,11 +1091,10 @@ msgid "Name:"
 msgstr "Naam:"
 
 #: glade/etherape.glade2:2969 glade/etherape.glade2:3042
-#: glade/etherape.glade2:4338 glade/etherape.glade2:4394
 msgid "This is a test node name"
 msgstr "Dit is een testnaam"
 
-#: glade/etherape.glade2:3017 glade/etherape.glade2:4366
+#: glade/etherape.glade2:3017 glade/etherape.glade2:4338
 msgid "Numeric Name:"
 msgstr "Adres:"
 
@@ -1118,7 +1103,7 @@ msgid "Show traffic"
 msgstr "Laat verkeer zien"
 
 #: glade/etherape.glade2:3157 glade/etherape.glade2:3854
-#: glade/etherape.glade2:4612
+#: glade/etherape.glade2:4668
 msgid "Instantaneous"
 msgstr "Direct"
 
@@ -1130,7 +1115,7 @@ msgid "test label"
 msgstr "test label"
 
 #: glade/etherape.glade2:3223 glade/etherape.glade2:3920
-#: glade/etherape.glade2:4639
+#: glade/etherape.glade2:4695
 msgid "Accumulated"
 msgstr "Totaal"
 
@@ -1218,43 +1203,78 @@ msgid ""
 "Type the name of the protocol that will be assigned to the selected color"
 msgstr ""
 
-#: glade/etherape.glade2:4422
+#: glade/etherape.glade2:4366
 msgid "Resolved Name:"
 msgstr ""
 
-#: glade/etherape.glade2:4531
+#: glade/etherape.glade2:4394
+#, fuzzy
+msgid "src node name"
+msgstr "Verberg knooppuntsnamen"
+
+#: glade/etherape.glade2:4422
+msgid "src numeric node name"
+msgstr ""
+
+#: glade/etherape.glade2:4450
+#, fuzzy
+msgid "dst name"
+msgstr "naam"
+
+#: glade/etherape.glade2:4478
+msgid "dst num. name"
+msgstr ""
+
+#: glade/etherape.glade2:4587
 msgid "Total"
 msgstr ""
 
-#: glade/etherape.glade2:4558
+#: glade/etherape.glade2:4614
 #, fuzzy
 msgid "Inbound"
 msgstr "Totaal in"
 
-#: glade/etherape.glade2:4585
+#: glade/etherape.glade2:4641
 #, fuzzy
 msgid "Outbound"
 msgstr "Totaal uit"
 
-#: glade/etherape.glade2:4666
+#: glade/etherape.glade2:4722
 #, fuzzy
 msgid "label100"
 msgstr "label73"
 
-#: glade/etherape.glade2:4693
+#: glade/etherape.glade2:4749
 #, fuzzy
 msgid "label104"
 msgstr "label73"
 
-#: glade/etherape.glade2:4720
+#: glade/etherape.glade2:4776
 #, fuzzy
 msgid "label101"
 msgstr "label73"
 
-#: glade/etherape.glade2:4747
+#: glade/etherape.glade2:4803
 #, fuzzy
 msgid "label105"
 msgstr "label73"
+
+#~ msgid "Main node protocol not found in update_canvas_nodes"
+#~ msgstr ""
+#~ "Hoofdprotocol van het knooppunt niet gevonden bij de functie "
+#~ "update_canvas_nodes"
+
+#, fuzzy
+#~ msgid "Main link protocol not found in canvas_link_update"
+#~ msgstr ""
+#~ "Hoofdprotocol van deze lijn niet gevonden bij de functie "
+#~ "update_canvas_links"
+
+#~ msgid "No node_id in on_node_info_delete_event"
+#~ msgstr "Geen node_id bij de functie on_node_info_delete_event"
+
+#~ msgid "No node_info_window in on_node_info_delete_event"
+#~ msgstr "Geen node_info_window bij de functie on_node_info_delete_event"
 
 #~ msgid "Removing node: %s. Number of nodes %d"
 #~ msgstr "Knooppunt verwijderd: %s. Aantal knooppunten %d"

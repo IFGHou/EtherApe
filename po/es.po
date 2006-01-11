@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 18:59+0100\n"
+"POT-Creation-Date: 2006-01-11 07:48+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -105,15 +105,15 @@ msgid "set the text color"
 msgstr "fijar el color del texto"
 
 # src/main.c:157
-#: src/main.c:188
+#: src/main.c:189
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
 # src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 # src/menus.c:372
-#: src/main.c:198 src/menus.c:52 src/menus.c:376 src/info_windows.c:169
-#: src/info_windows.c:791 src/info_windows.c:964
+#: src/main.c:199 src/menus.c:52 src/menus.c:376 src/info_windows.c:163
+#: src/info_windows.c:775 src/info_windows.c:910
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -474,94 +474,80 @@ msgid ". TIMEOUT."
 msgstr ". EXPIRACIÓN."
 
 # src/diagram.c:437
-#: src/diagram.c:516
+#: src/diagram.c:522
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "No ha sido posible reservar un color para el nuevo protocolo %s"
 
 # src/diagram.c:579
-#: src/diagram.c:627
+#: src/diagram.c:628
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
-# src/diagram.c:656
-#: src/diagram.c:676
-msgid "Main node protocol not found in update_canvas_nodes"
-msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
-
 # src/diagram.c:681
-#: src/diagram.c:701
+#: src/diagram.c:694
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:1015
-#: src/diagram.c:1043
+#: src/diagram.c:1036
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
-# src/diagram.c:1081
-#: src/diagram.c:1085
-#, fuzzy
-msgid "Main link protocol not found in canvas_link_update"
-msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
-
 # src/diagram.c:1227
-#: src/diagram.c:1237
+#: src/diagram.c:1226
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1240
+#: src/diagram.c:1229
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
 # src/info_windows.c:754
 #  Meaning "n seconds" ago
-#: src/info_windows.c:95
+#: src/info_windows.c:89
 #, c-format
 msgid "%d\" ago"
 msgstr "hace %d\""
 
 # src/info_windows.c:760
-#: src/info_windows.c:101
+#: src/info_windows.c:95
 #, c-format
 msgid "%d'%d\" ago"
 msgstr "hace %d'%d\""
 
 # src/info_windows.c:772
 #  Watch out! The first is month, the second day of the month
-#: src/info_windows.c:113
+#: src/info_windows.c:107
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"
 
 # src/info_windows.c:352
-#: src/info_windows.c:219
+#: src/info_windows.c:213
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "No prot_name en on_prot_info_delete_event"
 
 # src/info_windows.c:359
-#: src/info_windows.c:226
+#: src/info_windows.c:220
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "No prot_info_window en on_prot_info_delete_event"
 
-# src/info_windows.c:323
-#: src/info_windows.c:880
-msgid "No node_id in on_node_info_delete_event"
-msgstr "No node_id en on_node_info_delete_event"
-
-# src/info_windows.c:330
-#: src/info_windows.c:888
-msgid "No node_info_window in on_node_info_delete_event"
-msgstr "No node_info_window en on_node_info_delete_event"
-
 # src/glade-strings:108
-#: src/info_windows.c:909 src/info_windows.c:1023
+#: src/info_windows.c:864 src/info_windows.c:1029 src/info_windows.c:1123
+#: src/info_windows.c:1124 src/info_windows.c:1135 src/info_windows.c:1136
 #, fuzzy
 msgid "Node timed out"
+msgstr "Expiración de nodo de captura (ms)"
+
+# src/glade-strings:108
+#: src/info_windows.c:1105
+#, fuzzy
+msgid "Link timed out"
 msgstr "Expiración de nodo de captura (ms)"
 
 # src/protocols.c:995
@@ -1326,12 +1312,11 @@ msgstr "Nombre:"
 
 # src/glade-strings:119 src/glade-strings:121
 #: glade/etherape.glade2:2969 glade/etherape.glade2:3042
-#: glade/etherape.glade2:4338 glade/etherape.glade2:4394
 msgid "This is a test node name"
 msgstr "Este es un nombre de nodo de prueba"
 
 # src/glade-strings:120
-#: glade/etherape.glade2:3017 glade/etherape.glade2:4366
+#: glade/etherape.glade2:3017 glade/etherape.glade2:4338
 msgid "Numeric Name:"
 msgstr "Nombre numérico"
 
@@ -1342,7 +1327,7 @@ msgstr "Mostrar tráfico"
 
 # src/glade-strings:124 src/glade-strings:151
 #: glade/etherape.glade2:3157 glade/etherape.glade2:3854
-#: glade/etherape.glade2:4612
+#: glade/etherape.glade2:4668
 msgid "Instantaneous"
 msgstr "Instantáneo"
 
@@ -1358,7 +1343,7 @@ msgstr "etiqueta de prueba"
 
 # src/glade-strings:126 src/glade-strings:153
 #: glade/etherape.glade2:3223 glade/etherape.glade2:3920
-#: glade/etherape.glade2:4639
+#: glade/etherape.glade2:4695
 msgid "Accumulated"
 msgstr "Acumulado"
 
@@ -1465,49 +1450,86 @@ msgid ""
 msgstr ""
 "Escriba el nombre del protocolo que será asignado al color seleccionado"
 
-#: glade/etherape.glade2:4422
+#: glade/etherape.glade2:4366
 msgid "Resolved Name:"
 msgstr ""
 
-#: glade/etherape.glade2:4531
+# src/glade-strings:88
+#: glade/etherape.glade2:4394
+#, fuzzy
+msgid "src node name"
+msgstr "Ocultar los nombres de los nodos"
+
+#: glade/etherape.glade2:4422
+msgid "src numeric node name"
+msgstr ""
+
+# src/glade-strings:52 src/glade-strings:148
+#: glade/etherape.glade2:4450
+#, fuzzy
+msgid "dst name"
+msgstr "nombre"
+
+#: glade/etherape.glade2:4478
+msgid "dst num. name"
+msgstr ""
+
+#: glade/etherape.glade2:4587
 msgid "Total"
 msgstr ""
 
 # src/glade-strings:132
-#: glade/etherape.glade2:4558
+#: glade/etherape.glade2:4614
 #, fuzzy
 msgid "Inbound"
 msgstr "Entrada acum."
 
 # src/glade-strings:130
-#: glade/etherape.glade2:4585
+#: glade/etherape.glade2:4641
 #, fuzzy
 msgid "Outbound"
 msgstr "Salida Acum."
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4666
+#: glade/etherape.glade2:4722
 #, fuzzy
 msgid "label100"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4693
+#: glade/etherape.glade2:4749
 #, fuzzy
 msgid "label104"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4720
+#: glade/etherape.glade2:4776
 #, fuzzy
 msgid "label101"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4747
+#: glade/etherape.glade2:4803
 #, fuzzy
 msgid "label105"
 msgstr "label73"
+
+# src/diagram.c:656
+#~ msgid "Main node protocol not found in update_canvas_nodes"
+#~ msgstr "Protocolo principal de nodo no encontrado en update_canvas_nodes"
+
+# src/diagram.c:1081
+#, fuzzy
+#~ msgid "Main link protocol not found in canvas_link_update"
+#~ msgstr "Protocolo principal de enlace no encontrado en update_canvas_links"
+
+# src/info_windows.c:323
+#~ msgid "No node_id in on_node_info_delete_event"
+#~ msgstr "No node_id en on_node_info_delete_event"
+
+# src/info_windows.c:330
+#~ msgid "No node_info_window in on_node_info_delete_event"
+#~ msgstr "No node_info_window en on_node_info_delete_event"
 
 # src/capture.c:1027
 #~ msgid "Removing node: %s. Number of nodes %d"
