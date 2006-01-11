@@ -525,7 +525,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
       str = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
       gtk_list_store_set (gs, &it, 2, str, -1);
 
-      str = g_strdup_printf ("%f.0", row_proto->rowstats.accu_packets);
+      str = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
       gtk_list_store_set (gs, &it, 4, str, -1);
       g_free (str);
 
