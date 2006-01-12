@@ -94,7 +94,6 @@ static GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to
 				 * that info on the nodes tree itself */
 static GTree *canvas_links;		/* See canvas_nodes */
 
-static GList *legend_protocols = NULL;
 static guint known_protocols = 0;
 
 
@@ -443,11 +442,6 @@ update_legend()
   gtk_container_foreach(GTK_CONTAINER(prot_table), 
                         (GtkCallback)purge_expired_legend_protocol, NULL);
 
-  if (known_protocols)
-    gtk_table_resize (GTK_TABLE (prot_table), known_protocols, 1 );
-  else
-    gtk_table_resize (GTK_TABLE (prot_table), 1, 1 );
-
   /* then search for new protocols */
   check_new_protocol(prot_table, protocol_summary_stack());
 }
@@ -475,7 +469,7 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       protocol = protocol_item->data;
 
       /* prepare next */
-      protocol_item = protocol_item->next;
+      protocol_item = protocol_item->next; 
 
       /* First, we check whether the diagram already knows about this protocol,
        * checking whether it is shown on the legend. */
@@ -499,22 +493,10 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
     
       /* It's not, so we build a new entry on the legend */
     
-      /* Then we add the new label widgets */
+      /* we add the new label widgets */
       newlab = gtk_label_new (protocol->name);
-      gtk_widget_ref (newlab);
-      /* I'm not really sure what this exactly does. I just copied it from 
-       * interface.c, but what I'm trying to do is set the name of the widget */
-      g_object_set_data_full (G_OBJECT (app1), protocol->name, newlab,
-                              (GtkDestroyNotify) gtk_widget_unref);
-
       gtk_widget_show (newlab);
       gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
-      gtk_table_attach (GTK_TABLE (prot_table), newlab,
-                        0, 1, known_protocols, known_protocols + 1,
-                        (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                        (GtkAttachOptions) (GTK_EXPAND), 0, 0);
-      gtk_table_resize (GTK_TABLE (prot_table), known_protocols + 1, 1 );
-      gtk_widget_queue_resize (GTK_WIDGET (app1));
 
       color = protohash_get(protocol->name);
       if (!gdk_colormap_alloc_color
@@ -527,47 +509,34 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       gtk_widget_set_style (newlab, style);
       g_object_unref (style);
 
+      gtk_container_add(GTK_CONTAINER(prot_table), newlab);
       known_protocols++;
     }
 }				/* check_new_protocol */
 
-/* Frees the legend_protocols list and empties the table of protocols */
+/* empties the table of protocols */
 void
 delete_gui_protocols (void)
 {
   GList *item;
-  protocol_t *protocol;
-  GtkWidget *prot_table;
-  guint n_columns;
+  GtkContainer *prot_table;
 
-  /* empty list of displayed protos */
-  item = legend_protocols;
-  while (item)
-    {
-      protocol = item->data;
-      g_free (protocol->name);
-      g_free (protocol);
-      item = item->next;
-    }
-  g_list_free (legend_protocols);
-  legend_protocols = NULL;
   known_protocols = 0;
 
   /* restart color cycle */
   protohash_reset_cycle();
 
   /* remove proto labels from legend */
-  prot_table = glade_xml_get_widget (xml, "prot_table");
+  prot_table = GTK_CONTAINER (glade_xml_get_widget (xml, "prot_table"));
   item = gtk_container_get_children (GTK_CONTAINER (prot_table));
   while (item)
     {
-      gtk_container_remove (GTK_CONTAINER (prot_table), (GtkWidget *) item->data);
+      gtk_container_remove (prot_table, item->data);
       item = item->next;
     }
 
   /* resize legend */
-  g_object_get (G_OBJECT (prot_table), "n_columns", &n_columns, NULL);
-  gtk_table_resize (GTK_TABLE (prot_table), 1, n_columns );
+  gtk_container_resize_children(prot_table);
   gtk_widget_queue_resize (GTK_WIDGET (app1));
 }				/* delete_gui_protocols */
 

@@ -1,3 +1,15 @@
+2006-01-11 21:37  bchiara
+
+	* src/info_windows.c: oops. Stupid format bug
+
+2006-01-11 21:26  bchiara
+
+	* ChangeLog, src/diagram.c, src/info_windows.c, src/links.c,
+	src/names.c, src/names_netbios.c, src/names_netbios.h, src/node.c,
+	src/traffic_stats.c, src/traffic_stats.h: Fixed compare function on
+	protocol table, improved packet lenght checking for netbios
+	packets.
+
 2006-01-11 20:05  bchiara
 
 	* ChangeLog, NEWS, configure.in, glade/etherape.glade2,
