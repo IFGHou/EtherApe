@@ -343,9 +343,6 @@ update_diagram (GtkWidget * canvas)
   already_updating = TRUE;
   gettimeofday (&now, NULL);
 
-  /* update proto legend */
-  update_legend();
-
   /* update nodes */
   diagram_update_nodes(canvas);
 
@@ -354,6 +351,9 @@ update_diagram (GtkWidget * canvas)
 
   /* Update protocol information */
   protocol_summary_update_all();
+
+  /* update proto legend */
+  update_legend();
 
   /* With this we make sure that we don't overload the
    * CPU with redraws */

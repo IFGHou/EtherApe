@@ -43,8 +43,6 @@ protocol_t;
 protocol_t *protocol_t_create(const gchar *protocol_name);
 void protocol_t_delete(protocol_t *prot);
 
-gint protocol_compare (gconstpointer a, gconstpointer b);
-
 typedef struct
 {
   GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
@@ -58,7 +56,7 @@ void protocol_stack_reset(protostack_t *pstk);
 /* adds packet data to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* subtracts packet data from stack */
-void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, double expire_time);
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet);
 /* calculates averages */
 void protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs);
 /* checks for protocol expiration ... */

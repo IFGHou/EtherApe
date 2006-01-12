@@ -722,7 +722,7 @@ node_info_window_compare(gconstpointer a, gconstpointer b)
 
   id_a = g_object_get_data (G_OBJECT (a), "node_id");
   if (!id_a)
-    return FALSE; /* not a node window */
+    return -1; /* not a node window */
 
   return node_id_compare( id_a, b);
 }
@@ -1060,7 +1060,7 @@ link_info_window_compare(gconstpointer a, gconstpointer b)
 
   id_a = g_object_get_data (G_OBJECT (a), "link_id");
   if (!id_a)
-    return FALSE; /* not a link window */
+    return -1; /* not a link window */
 
   return link_id_compare( id_a, b);
 }

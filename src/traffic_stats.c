@@ -209,7 +209,7 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
       basic_stats_sub(&pkt_stat->stats_out, packet->info->size);/* out or either */
 
     /* and protocol stack */
-    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info, proto_expire_time);
+    protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info);
 
     /* and, finally from packet list - gets the new check position 
      * if this packet is the first of the list, all the previous packets
@@ -229,9 +229,10 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
       pkt_stat->stats.average = 0;
       pkt_stat->stats_in.average = 0;
       pkt_stat->stats_out.average = 0;
-      if (proto_expire_time>0)
-        protocol_stack_purge_expired(&pkt_stat->stats_protos, proto_expire_time);
     }
+
+  /* purge expired protocols */
+  protocol_stack_purge_expired(&pkt_stat->stats_protos, proto_expire_time);
 }
 
 /* Update stats, purging expired packets - returns FALSE if there are no 

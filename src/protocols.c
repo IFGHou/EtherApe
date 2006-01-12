@@ -22,6 +22,9 @@
 #include <string.h>
 #include "protocols.h"
 
+static gint 
+protocol_compare (gconstpointer a, gconstpointer b);
+
 
 /***************************************************************************
  *
@@ -79,17 +82,19 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
       else
 	protocol_name = tokens[i];
 
-      /* If there is yet not such protocol, create it */
-      if (!(protocol_item = g_list_find_custom (pstk->protostack[i],
-						protocol_name,
-						protocol_compare)))
+      protocol_item = g_list_find_custom (pstk->protostack[i],
+                                          protocol_name,
+                                          protocol_compare);
+      if (protocol_item)
+        protocol_info = protocol_item->data;
+      else
 	{
+          /* If there is yet not such protocol, create it */
 	  protocol_info = protocol_t_create(protocol_name);
 	  pstk->protostack[i] = g_list_prepend (pstk->protostack[i], protocol_info);
 	}
-      else
-	protocol_info = protocol_item->data;
 
+      g_assert( !strcmp(protocol_info->name, protocol_name));
       protocol_info->last_heard = now;
       protocol_info->accumulated += packet->size;
       protocol_info->aver_accu += packet->size;
@@ -100,7 +105,7 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 }				/* add_protocol */
 
 
-void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, double expire_time)
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
 {
   guint i = 0;
   gchar **tokens = NULL;
@@ -134,25 +139,15 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet, do
           break;
         }
       protocol = item->data;
-      protocol->aver_accu -= packet->size;
 
+      g_assert( !strcmp(protocol->name, protocol_name));
+
+      protocol->aver_accu -= packet->size;
       if (protocol->aver_accu<=0)
         {
           /* no traffic active on this proto */
           protocol->aver_accu = 0;
           protocol->average = 0;
-
-          if (expire_time>0)
-            {
-              /* requested purge of expired protos */
-              struct timeval result;
-              result = substract_times (now, protocol->last_heard);
-              if (IS_OLDER (result, expire_time) || (status == STOP))
-                {
-                  protocol_t_delete(protocol);
-                  pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
-                }
-            }
         }
       i++;
     }
@@ -188,7 +183,6 @@ protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
 void
 protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
 {
-
   g_assert(pstk);
 
   if (expire_time>0)
@@ -204,12 +198,16 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
           while (item)
             {
               protocol = (protocol_t *)item->data;
-              result = substract_times (now, protocol->last_heard);
               next_item = item->next;
-              if (IS_OLDER (result, expire_time) || (status == STOP))
+              if (protocol->aver_accu<=0)
                 {
-                  protocol_t_delete(protocol);
-                  pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
+                  /* no traffic active on this proto, check purging */
+                  result = substract_times (now, protocol->last_heard);
+                  if (IS_OLDER (result, expire_time) || (status == STOP))
+                    {
+                      protocol_t_delete(protocol);
+                      pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
+                    }
                 }
               item = next_item;
             }
@@ -230,7 +228,7 @@ const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, co
   
   item = g_list_find_custom (pstk->protostack[level], protoname, protocol_compare);
   if (item && item->data)
-    return (const protocol_t *)item->data;
+    return item->data;
 
   return NULL;
 }
@@ -312,13 +310,13 @@ void protocol_t_delete(protocol_t *prot)
 }
 
 /* Comparison function used to compare two link protocols */
-gint
+static gint
 protocol_compare (gconstpointer a, gconstpointer b)
 {
   g_assert (a != NULL);
   g_assert (b != NULL);
 
-  return strcmp (((protocol_t *) a)->name, (gchar *) b);
+  return strcmp (((const protocol_t *) a)->name, b);
 }
 
 /***************************************************************************
