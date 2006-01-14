@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 10:46+0100\n"
+"POT-Creation-Date: 2006-01-14 21:13+0100\n"
 "PO-Revision-Date: 2001-08-12 16:37+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Görkem <gorkem@gelecek.com.tr>\n"
@@ -474,16 +474,16 @@ msgstr ""
 msgid "DDP protocols not supported in %s"
 msgstr ""
 
-#: src/links.c:177
+#: src/links.c:172
 msgid "Queuing link for remove"
 msgstr ""
 
-#: src/links.c:228
+#: src/links.c:223
 #, c-format
 msgid "New link: %s. Number of links %d"
 msgstr ""
 
-#: src/links.c:304
+#: src/links.c:299
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr ""
@@ -520,12 +520,12 @@ msgstr ""
 msgid "Unsopported ape mode in node_id_compare"
 msgstr ""
 
-#: src/node.c:243
+#: src/node.c:238
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:425
+#: src/node.c:420
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""

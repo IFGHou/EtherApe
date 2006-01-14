@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 10:46+0100\n"
+"POT-Creation-Date: 2006-01-14 21:13+0100\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -475,16 +475,16 @@ msgstr "Ik begrijp deze regel niet (%s)."
 msgid "DDP protocols not supported in %s"
 msgstr "DDP protocollen werken niet in %s"
 
-#: src/links.c:177
+#: src/links.c:172
 msgid "Queuing link for remove"
 msgstr ""
 
-#: src/links.c:228
+#: src/links.c:223
 #, fuzzy, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/links.c:304
+#: src/links.c:299
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr ""
@@ -523,12 +523,12 @@ msgstr ""
 msgid "Unsopported ape mode in node_id_compare"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/node.c:243
+#: src/node.c:238
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:425
+#: src/node.c:420
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 10:46+0100\n"
+"POT-Creation-Date: 2006-01-14 21:13+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -575,17 +575,17 @@ msgstr "Imposible analizar la línea %s"
 msgid "DDP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
 
-#: src/links.c:177
+#: src/links.c:172
 msgid "Queuing link for remove"
 msgstr ""
 
 # src/capture.c:882
-#: src/links.c:228
+#: src/links.c:223
 #, fuzzy, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 
-#: src/links.c:304
+#: src/links.c:299
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr ""
@@ -626,12 +626,12 @@ msgstr ""
 msgid "Unsopported ape mode in node_id_compare"
 msgstr "Modo no soportado en get_link_id"
 
-#: src/node.c:243
+#: src/node.c:238
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:425
+#: src/node.c:420
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""

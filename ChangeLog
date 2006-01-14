@@ -1,3 +1,15 @@
+2006-01-14 19:56  bchiara
+
+	* ChangeLog, NEWS, doc/C/appmain.png, doc/C/capture_file_dlg.png,
+	doc/C/color_select_dlg.png, doc/C/link_info.png,
+	doc/C/node_info.png, doc/C/pref_colors_dlg.png,
+	doc/C/pref_diagram_dlg.png, doc/C/pref_timings_dlg.png,
+	doc/C/proto_info.png, doc/C/protocol_edit_dlg.png, html/FAQ.html,
+	html/NEWS.html, html/bug-reporting.html, html/etherape.css,
+	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
+	src/links.c, src/node.c: Tweaked proto expiration, added some
+	images to documentation
+
 2006-01-12 21:13  bchiara
 
 	* ChangeLog, src/diagram.c, src/info_windows.c, src/protocols.c,
