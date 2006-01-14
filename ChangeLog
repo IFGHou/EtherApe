@@ -1,3 +1,10 @@
+2006-01-12 21:13  bchiara
+
+	* ChangeLog, src/diagram.c, src/info_windows.c, src/protocols.c,
+	src/protocols.h, src/traffic_stats.c: Fixed problem when both node
+	and link info windows where active.  Corrected bug on protocol
+	timeout expiration.
+
 2006-01-12 07:48  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/diagram.c: Simplified

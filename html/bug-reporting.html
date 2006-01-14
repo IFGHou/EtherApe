@@ -1,82 +1,75 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
-<html>
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org">
-    <link rel="STYLESHEET" type="text/css" href="etherape.css">
+<meta name="generator" content=
+"HTML Tidy for Linux/x86 (vers 1st December 2004), see www.w3.org">
+  <link rel="STYLESHEET" type="text/css" href="etherape.css">
 
-    <title>EtherApe: Reporting Bugs</title>
-  </head>
+  <title>EtherApe: Reporting Bugs</title>
 
-  <body>
-    <h2>Known bugs</h2>
+<h2>Known bugs</h2>
 
-    <p>For a list of known issues and bugs, point your browser to
-    <a href=
-    "http://sourceforge.net/bugs/?group_id=2712">http://sourceforge.net/bugs/?group_id=2712</a></p>
+  <p>For a list of known issues and bugs, point your browser to
+  <a href=
+  "http://sourceforge.net/bugs/?group_id=2712">http://sourceforge.net/bugs/?group_id=2712</a>
 
-    <h2>How to report a bug</h2>
+  <h2>How to report a bug</h2>
 
-    <p>Having users is great, not only because it is the purpose of
-    creating this program in the first place, but because they
-    stress your program in many different ways and help you make it
-    more robust.</p>
+  <p>Having users is great, not only because it is the purpose of
+  creating this program in the first place, but because they stress
+  your program in many different ways and help you make it more
+  robust.
 
-    <p>If you do encounter a problem with this program, plase write
-    a bug report at <a href=
-    "http://sourceforge.net/bugs/?group_id=2712">http://sourceforge.net/bugs/?group_id=2712</a></p>
+  <p>If you do encounter a problem with this program, plase write a
+  bug report at <a href=
+  "http://sourceforge.net/bugs/?group_id=2712">http://sourceforge.net/bugs/?group_id=2712</a>
 
-    <p>When you write your report, I'd be thankful if you could
-    follow these guidelines, in order of importance.</p>
+  <p>When you write your report, I'd be thankful if you could
+  follow these guidelines, in order of importance.
 
-    <ol>
-      <li>Make sure that the most current version does have the
-      bug. Not only does this mean to download the latest version,
-      but also making sure that you are _running_ the latest
-      version. Go to src and run as ./etherape</li>
+  <ol>
+    <li>Make sure that the most current version does have the bug.
+    Not only does this mean to download the latest version, but
+    also making sure that you are _running_ the latest version. Go
+    to src and run as ./etherape
 
-      <li>
-        Things to include: 
+    <li>Things to include:
 
-        <ul>
-          <li>Operating system and distribution</li>
+      <ul>
+        <li>Operating system and distribution
 
-          <li>EtherApe version (etherape --version, or check the
-          about box)</li>
+        <li>EtherApe version (etherape --version, or check the
+        about box)
 
-          <li>pcap version (and package version as well)</li>
+        <li>pcap version (and package version as well)
 
-          <li>gtk and gnome libs version (package version as
-          well)</li>
+        <li>gtk and gnome libs version (package version as well)
 
-          <li>If possible, a backtrace (See below)</li>
+        <li>If possible, a backtrace (See below)
 
-          <li>Please leave an email address or log in before
-          posting your bug, so that I can later get in contact with
-          you.</li>
-        </ul>
-      </li>
+        <li>Please leave an email address or log in before posting
+        your bug, so that I can later get in contact with you.
+      </ul>
 
-      <li>Read this link first <a href=
-      "http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">http://www.chiark.greenend.org.uk/~sgtatham/bugs.html</a>
-      It is really informative, and it will be really useful not
-      only for etherape.</li>
-    </ol>
+    <li>Read this link first <a href=
+    "http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">http://www.chiark.greenend.org.uk/~sgtatham/bugs.html</a>
+    It is really informative, and it will be really useful not only
+    for etherape.
+  </ol>
 
-    <p>Please understand that I _love_ to receive bug reports,
-    because that means that I will be improving the program, but
-    the more info you provide, the faster I'll be able to solve the
-    problem.</p>
+  <p>Please understand that I _love_ to receive bug reports,
+  because that means that I will be improving the program, but the
+  more info you provide, the faster I'll be able to solve the
+  problem.
 
-    <h2>How to provide a backtrace</h2>
+  <h2>How to provide a backtrace</h2>
 
-    <p>In cases in which etherape is crashing (not when it produces
-    bad results), it is most useful if I can see what was the
-    program doing when it crashed.</p>
+  <p>In cases in which etherape is crashing (not when it produces
+  bad results), it is most useful if I can see what was the program
+  doing when it crashed.
 
-    <p>It is actually simple, you just need to type four
-    instructions.</p>
-<pre>
+  <p>It is actually simple, you just need to type four
+  instructions.
+  <pre>
 
 # export GNOME_DISABLE_CRASH_DIALOG=1
 # gdb etherape
@@ -84,10 +77,10 @@
 (gdb) backtrace
 </pre>
 
-    <p>Here's an example of what it would look like. When you write
-    your report, you only need to send me from the "Program
-    received signal SIGSEGV" bit onwards.</p>
-<pre>
+  <p>Here's an example of what it would look like. When you write
+  your report, you only need to send me from the "Program received
+  signal SIGSEGV" bit onwards.
+  <pre>
 argos:~/etherape/src# gdb ./etherape
 GNU gdb 19990928
 Copyright 1998 Free Software Foundation, Inc.
@@ -130,14 +123,12 @@ canvas_node=0x80e2ab0, canvas=0x80d0cb0) at diagram.c:333
 #12 0x804e158 in main (argc=1, argv=0xbffffd34) at main.c:184
 
 </pre>
-    <hr>
+  <hr>
 
-    <p><i>$Id: bug-reporting.html,v 1.1 2000/03/22 07:21:36 toledo
-    Exp $</i></p>
+  <p><i>$Id: bug-reporting.html,v 1.1 2000/03/22 07:21:36 toledo
+  Exp $</i>
 
-    <p><a href="http://sourceforge.net"><img alt="sourceforge" src=
-    "http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1"
-    width="88" height="31" border="0"></a></p>
-  </body>
-</html>
+  <p><a href="http://sourceforge.net"><img alt="sourceforge" src=
+  "http://sourceforge.net/sflogo.php?group_id=2712&amp;type=1"
+  width="88" height="31" border="0"></a>
 

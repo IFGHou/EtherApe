@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-11 07:48+0100\n"
+"POT-Creation-Date: 2006-01-14 10:46+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -112,8 +112,8 @@ msgstr ""
 
 # src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 # src/menus.c:372
-#: src/main.c:199 src/menus.c:52 src/menus.c:376 src/info_windows.c:163
-#: src/info_windows.c:775 src/info_windows.c:910
+#: src/main.c:199 src/menus.c:52 src/menus.c:376 src/info_windows.c:164
+#: src/info_windows.c:781 src/info_windows.c:916
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
@@ -453,99 +453,99 @@ msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
 # src/diagram.c:318
-#: src/diagram.c:376
+#: src/diagram.c:375
 msgid "Number of nodes: "
 msgstr "Número de nodos: "
 
 # src/diagram.c:322
-#: src/diagram.c:380
+#: src/diagram.c:379
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ". Periodo de refresco: %d"
 
 # src/diagram.c:328
-#: src/diagram.c:386
+#: src/diagram.c:385
 msgid ". IDLE."
 msgstr ". OCIOSO."
 
 # src/diagram.c:330
-#: src/diagram.c:388
+#: src/diagram.c:387
 msgid ". TIMEOUT."
 msgstr ". EXPIRACIÓN."
 
 # src/diagram.c:437
-#: src/diagram.c:522
+#: src/diagram.c:504
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "No ha sido posible reservar un color para el nuevo protocolo %s"
 
 # src/diagram.c:579
-#: src/diagram.c:628
+#: src/diagram.c:597
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:681
-#: src/diagram.c:694
+#: src/diagram.c:663
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:1015
-#: src/diagram.c:1036
+#: src/diagram.c:1005
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s. Number of links %d"
 msgstr "Creando enlace de diagrama: %s-%s. Número de enlaces: %d"
 
 # src/diagram.c:1227
-#: src/diagram.c:1226
+#: src/diagram.c:1195
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1229
+#: src/diagram.c:1198
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
 # src/info_windows.c:754
 #  Meaning "n seconds" ago
-#: src/info_windows.c:89
+#: src/info_windows.c:90
 #, c-format
 msgid "%d\" ago"
 msgstr "hace %d\""
 
 # src/info_windows.c:760
-#: src/info_windows.c:95
+#: src/info_windows.c:96
 #, c-format
 msgid "%d'%d\" ago"
 msgstr "hace %d'%d\""
 
 # src/info_windows.c:772
 #  Watch out! The first is month, the second day of the month
-#: src/info_windows.c:107
+#: src/info_windows.c:108
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"
 
 # src/info_windows.c:352
-#: src/info_windows.c:213
+#: src/info_windows.c:214
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "No prot_name en on_prot_info_delete_event"
 
 # src/info_windows.c:359
-#: src/info_windows.c:220
+#: src/info_windows.c:221
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "No prot_info_window en on_prot_info_delete_event"
 
 # src/glade-strings:108
-#: src/info_windows.c:864 src/info_windows.c:1029 src/info_windows.c:1123
-#: src/info_windows.c:1124 src/info_windows.c:1135 src/info_windows.c:1136
+#: src/info_windows.c:870 src/info_windows.c:1035 src/info_windows.c:1129
+#: src/info_windows.c:1130 src/info_windows.c:1141 src/info_windows.c:1142
 #, fuzzy
 msgid "Node timed out"
 msgstr "Expiración de nodo de captura (ms)"
 
 # src/glade-strings:108
-#: src/info_windows.c:1105
+#: src/info_windows.c:1111
 #, fuzzy
 msgid "Link timed out"
 msgstr "Expiración de nodo de captura (ms)"
@@ -591,7 +591,7 @@ msgid "Updated links. Active links %d"
 msgstr ""
 
 #: src/names.c:161
-msgid "detected undersize packet, aborting protocol decode"
+msgid "captured data insufficient, aborting protocol decode"
 msgstr ""
 
 # src/capture.c:711
@@ -600,20 +600,24 @@ msgstr ""
 msgid "Unsopported ape mode in fill_node_id"
 msgstr "Modo no soportado en get_link_id"
 
-#: src/names.c:211
-msgid "Packet overflow"
+#: src/names.c:212
+msgid "captured data insufficient, aborting fill_node_id"
 msgstr ""
 
-#: src/names.c:404
-msgid "detected undersize packet, aborting get_arp_name"
+#: src/names.c:403 src/names.c:414
+msgid "captured data insufficient, aborting get_arp_name"
 msgstr ""
 
-#: src/names.c:491
-msgid "detected undersize packet, aborting get_tcp_name"
+#: src/names.c:501
+msgid "captured data insufficient, aborting get_tcp_name"
 msgstr ""
 
-#: src/names.c:535
-msgid "detected undersize packet, aborting get_sap_name"
+#: src/names.c:545
+msgid "captured data insufficient, aborting get_sap_name"
+msgstr ""
+
+#: src/names.c:572 src/names.c:590 src/names.c:598
+msgid "captured data insufficient, aborting get_nbss_name "
 msgstr ""
 
 # src/capture.c:711
@@ -889,12 +893,12 @@ msgid "Protocols"
 msgstr "Protocolos"
 
 # src/glade-strings:48
-#: glade/etherape.glade2:655
+#: glade/etherape.glade2:647
 msgid "Copyright 2001 Juan Toledo"
 msgstr "Copyright 2001 Juan Toledo"
 
 # src/glade-strings:49
-#: glade/etherape.glade2:656
+#: glade/etherape.glade2:648
 msgid ""
 "A Graphical Network Browser.\n"
 "Web: http://etherape.sourceforge.net"
@@ -903,70 +907,70 @@ msgstr ""
 "Web: http://etherape.sourceforge.net"
 
 # src/glade-strings:55
-#: glade/etherape.glade2:680
+#: glade/etherape.glade2:672
 #, fuzzy
 msgid "This message is not here yet. (Don't tell anybody you saw it ;-) )"
 msgstr "Este mensaje no está aquí todavía. (No se lo digas a nadie ;-) )"
 
 # src/glade-strings:56
-#: glade/etherape.glade2:681
+#: glade/etherape.glade2:673
 msgid "Information"
 msgstr "Información"
 
 # src/glade-strings:57
-#: glade/etherape.glade2:735
+#: glade/etherape.glade2:727
 msgid "EtherApe: Preferences"
 msgstr "EtherApe: Preferencias"
 
 # src/glade-strings:58
-#: glade/etherape.glade2:765
+#: glade/etherape.glade2:757
 msgid "Save"
 msgstr "Guardar"
 
 # src/glade-strings:61
-#: glade/etherape.glade2:853
+#: glade/etherape.glade2:845
 #, fuzzy
 msgid "Protocol Stack _Level"
 msgstr "Nivel de pila de protocolos"
 
 # src/glade-strings:62
-#: glade/etherape.glade2:878
+#: glade/etherape.glade2:870
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
 
 # src/glade-strings:63
-#: glade/etherape.glade2:889
+#: glade/etherape.glade2:881
 msgid "Topmost recognized protocol"
 msgstr "Protocolo más alto reconocido"
 
 # src/glade-strings:64
-#: glade/etherape.glade2:897
+#: glade/etherape.glade2:889
 msgid "Level 2 (Eg: ETH_II)"
 msgstr "Nivel 2 (ej. ETH_II)"
 
 # src/glade-strings:65
-#: glade/etherape.glade2:905
+#: glade/etherape.glade2:897
 msgid "Level 3 (Eg: IP)"
 msgstr "Nivel 3 (ej. IP)"
 
 # src/glade-strings:66
-#: glade/etherape.glade2:913
+#: glade/etherape.glade2:905
 msgid "Level 4 (Eg: TCP)"
 msgstr "Nivel 4 (ej. TCP)"
 
 # src/glade-strings:67
-#: glade/etherape.glade2:921
+#: glade/etherape.glade2:913
 msgid "Level 5 (Eg: HTTP)"
 msgstr "Nivel 5 (ej. HTTP)"
 
 # src/glade-strings:68
-#: glade/etherape.glade2:954
+#: glade/etherape.glade2:946
 #, fuzzy
 msgid "Node Size _Variable"
 msgstr "Variable de tamaño de nodo"
 
 # src/glade-strings:69
-#: glade/etherape.glade2:979
+#: glade/etherape.glade2:971
 msgid ""
 "Set the kind of instantenous or accumulated traffic that the node radius "
 "indicates"
@@ -974,51 +978,51 @@ msgstr ""
 "Fija el tipo de tráfico instantáneo o acumulado que indica el radio del nodo"
 
 # src/glade-strings:70
-#: glade/etherape.glade2:990
+#: glade/etherape.glade2:982
 msgid "Instant. traffic (In+Out)"
 msgstr "Tráfico inst. (Entrada/Salida)"
 
 # src/glade-strings:71
-#: glade/etherape.glade2:998
+#: glade/etherape.glade2:990
 msgid "Instant. traffic (Inbound)"
 msgstr "Tráfico inst. (Entrada)"
 
 # src/glade-strings:72
-#: glade/etherape.glade2:1006
+#: glade/etherape.glade2:998
 msgid "Instant. traffic (Outbound)"
 msgstr "Tráfico inst. (Salida)"
 
 # src/glade-strings:73
-#: glade/etherape.glade2:1014
+#: glade/etherape.glade2:1006
 msgid "Accum. traffic (In+Out)"
 msgstr "Tráfico acumulado (Entrada/Salida)"
 
 # src/glade-strings:74
-#: glade/etherape.glade2:1022
+#: glade/etherape.glade2:1014
 msgid "Accum. traffic (Inbound)"
 msgstr "Tráfico acumulado (Entrada)"
 
 # src/glade-strings:75
-#: glade/etherape.glade2:1030
+#: glade/etherape.glade2:1022
 msgid "Accum. traffic (Outbound)"
 msgstr "Tráfico acumulado (Salida)"
 
-#: glade/etherape.glade2:1063
+#: glade/etherape.glade2:1055
 msgid "Link _Width Multiplier"
 msgstr ""
 
-#: glade/etherape.glade2:1122
+#: glade/etherape.glade2:1114
 msgid "Node _Radius Multiplier"
 msgstr ""
 
 # src/glade-strings:82
-#: glade/etherape.glade2:1181
+#: glade/etherape.glade2:1173
 #, fuzzy
 msgid "Size _Mode"
 msgstr "Ajuste de tamaño"
 
 # src/glade-strings:83
-#: glade/etherape.glade2:1206
+#: glade/etherape.glade2:1198
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
@@ -1027,84 +1031,84 @@ msgstr ""
 "a partir del tráfico medio"
 
 # src/glade-strings:84
-#: glade/etherape.glade2:1217
+#: glade/etherape.glade2:1209
 msgid "Linear"
 msgstr "Lineal"
 
 # src/glade-strings:85
-#: glade/etherape.glade2:1225
+#: glade/etherape.glade2:1217
 msgid "Logarithmic"
 msgstr "Logarítmico"
 
 # src/glade-strings:86
-#: glade/etherape.glade2:1233
+#: glade/etherape.glade2:1225
 msgid "Square Root"
 msgstr "Raiz Cuadrada"
 
 # src/glade-strings:87
-#: glade/etherape.glade2:1266
+#: glade/etherape.glade2:1258
 msgid "Toggle whether the node names are displayed on top of the nodes"
 msgstr "Cambia si se han de mostrar o no los nombres de los nodos"
 
 # src/glade-strings:88
-#: glade/etherape.glade2:1268
+#: glade/etherape.glade2:1260
 #, fuzzy
 msgid "_Hide node names"
 msgstr "Ocultar los nombres de los nodos"
 
 # src/glade-strings:89
-#: glade/etherape.glade2:1288
+#: glade/etherape.glade2:1280
 #, fuzzy
 msgid "_Group unknown ports"
 msgstr "Agrupar puertos desconocidos"
 
-#: glade/etherape.glade2:1323
+#: glade/etherape.glade2:1315
 msgid ""
 "Enable name resolution. If unchecked, all addresses are in numeric form."
 msgstr ""
 
-#: glade/etherape.glade2:1325
+#: glade/etherape.glade2:1317
 #, fuzzy
 msgid "_Name Resolution"
 msgstr "Resolución DNS"
 
-#: glade/etherape.glade2:1345
+#: glade/etherape.glade2:1337
 msgid "Node _Anti Aliasing"
 msgstr ""
 
 # src/glade-strings:102
-#: glade/etherape.glade2:1380
+#: glade/etherape.glade2:1372
 msgid "Capture filter"
 msgstr "Filtro de captura"
 
 # src/glade-strings:59
-#: glade/etherape.glade2:1448
+#: glade/etherape.glade2:1440
 #, fuzzy
 msgid "_Font"
 msgstr "Tipo de fuente"
 
 # src/glade-strings:60
-#: glade/etherape.glade2:1473
+#: glade/etherape.glade2:1465
 msgid "Choose the font used to display text in the diagram"
 msgstr "Elegir el tipo de letra para mostrar texto en el diagrama"
 
-#: glade/etherape.glade2:1513
+#: glade/etherape.glade2:1505
 msgid "Show protocol informations on info dialogs"
 msgstr ""
 
 # src/glade-strings:123
-#: glade/etherape.glade2:1515 glade/etherape.glade2:3107
+#: glade/etherape.glade2:1507 glade/etherape.glade2:3099
 msgid "Show protocols"
 msgstr "Mostrar protocolos"
 
 # src/glade-strings:90
-#: glade/etherape.glade2:1561 glade/etherape.glade2:1955
-#: glade/etherape.glade2:2189
+#: glade/etherape.glade2:1553 glade/etherape.glade2:1947
+#: glade/etherape.glade2:2181
 msgid "Diagram"
 msgstr "Diagrama"
 
 # src/glade-strings:93
-#: glade/etherape.glade2:1631
+#: glade/etherape.glade2:1623
 msgid ""
 "Add a new color to the list of colors that can be used to represent protocols"
 msgstr ""
@@ -1112,70 +1116,70 @@ msgstr ""
 "representar protocolos"
 
 # src/glade-strings:94
-#: glade/etherape.glade2:1633
+#: glade/etherape.glade2:1625
 msgid "Add color"
 msgstr "Añadir color"
 
 # src/glade-strings:95
-#: glade/etherape.glade2:1650
+#: glade/etherape.glade2:1642
 msgid "Remove color"
 msgstr "Quitar color"
 
 # src/glade-strings:96
-#: glade/etherape.glade2:1667
+#: glade/etherape.glade2:1659
 msgid "Edit protocol"
 msgstr "Editar protocolo"
 
 # src/glade-strings:97
-#: glade/etherape.glade2:1704
+#: glade/etherape.glade2:1696
 msgid "Fade link colors to black when there is no traffic"
 msgstr "Hacer fundido a negro con los enlaces cuando no hay tráfico"
 
 # src/glade-strings:98
-#: glade/etherape.glade2:1706
+#: glade/etherape.glade2:1698
 msgid "Fade colors"
 msgstr "Fundido a negro"
 
 # src/glade-strings:99
-#: glade/etherape.glade2:1725
+#: glade/etherape.glade2:1717
 msgid "Whether or not to use assigned colors for unassigned protocols"
 msgstr ""
 "Si se debe o no usar colores ya asignados a protocolos para protocolos no "
 "asignados"
 
 # src/glade-strings:100
-#: glade/etherape.glade2:1727
+#: glade/etherape.glade2:1719
 msgid "Cycle assigned colors"
 msgstr "Reutilizar colores asignados"
 
 # src/glade-strings:101
-#: glade/etherape.glade2:1759
+#: glade/etherape.glade2:1751
 msgid "Colors"
 msgstr "Colores"
 
 # src/glade-strings:76
-#: glade/etherape.glade2:1804
+#: glade/etherape.glade2:1796
 #, fuzzy
 msgid "Diagram Refresh _Period (ms)"
 msgstr "Periodo de refresco (ms)"
 
 # src/glade-strings:77
-#: glade/etherape.glade2:1829
+#: glade/etherape.glade2:1821
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Refrescar el diagrama cada estos milisegundos"
 
 # src/glade-strings:104
-#: glade/etherape.glade2:1862
+#: glade/etherape.glade2:1854
 msgid "Averaging Time (ms)"
 msgstr "Tiempo de medida (ms)"
 
 # src/glade-strings:103
-#: glade/etherape.glade2:1887
+#: glade/etherape.glade2:1879
 msgid "Packet information is averaged for this amount of time"
 msgstr "Hacer media de la información durante este tiempo"
 
 # src/glade-strings:79
-#: glade/etherape.glade2:1980
+#: glade/etherape.glade2:1972
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
@@ -1184,14 +1188,14 @@ msgstr ""
 "expirar nunca"
 
 # src/glade-strings:139 src/glade-strings:144
-#: glade/etherape.glade2:2013 glade/etherape.glade2:2247
-#: glade/etherape.glade2:2423
+#: glade/etherape.glade2:2005 glade/etherape.glade2:2239
+#: glade/etherape.glade2:2415
 #, fuzzy
 msgid "Traffic"
 msgstr "Tráfico Instant."
 
 # src/glade-strings:107
-#: glade/etherape.glade2:2038
+#: glade/etherape.glade2:2030
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
@@ -1199,13 +1203,13 @@ msgstr ""
 "expirar nunca"
 
 # src/glade-strings:92 src/glade-strings:138 src/glade-strings:143
-#: glade/etherape.glade2:2071 glade/etherape.glade2:2305
+#: glade/etherape.glade2:2063 glade/etherape.glade2:2297
 #, fuzzy
 msgid "Protocol Info"
 msgstr "Protocolo"
 
 # src/glade-strings:105
-#: glade/etherape.glade2:2096 glade/etherape.glade2:2330
+#: glade/etherape.glade2:2088 glade/etherape.glade2:2322
 #, fuzzy
 msgid ""
 "Expire protocol statistics for a node after this much time. 0 means never "
@@ -1215,13 +1219,13 @@ msgstr ""
 "nunca"
 
 # src/glade-strings:108
-#: glade/etherape.glade2:2127
+#: glade/etherape.glade2:2119
 #, fuzzy
 msgid "<i>Node Timeouts (ms)</i>"
 msgstr "Expiración de nodo de captura (ms)"
 
 # src/glade-strings:79
-#: glade/etherape.glade2:2214
+#: glade/etherape.glade2:2206
 #, fuzzy
 msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
@@ -1231,7 +1235,7 @@ msgstr ""
 "expirar nunca"
 
 # src/glade-strings:107
-#: glade/etherape.glade2:2272
+#: glade/etherape.glade2:2264
 #, fuzzy
 msgid ""
 "Delete this link from memory after this much time. 0 means never timeout."
@@ -1240,276 +1244,276 @@ msgstr ""
 "expirar nunca"
 
 # src/glade-strings:106
-#: glade/etherape.glade2:2361
+#: glade/etherape.glade2:2353
 #, fuzzy
 msgid "<i>Link Timeouts (ms)</i>"
 msgstr "Expiración de enlaces (ms)"
 
 # src/glade-strings:107
-#: glade/etherape.glade2:2448
+#: glade/etherape.glade2:2440
 #, fuzzy
 msgid "Remove this protocol from memory after this much time. "
 msgstr ""
 "Borrar este nodo de la memoria después de pasado este tiempo. 0 significa no "
 "expirar nunca"
 
-#: glade/etherape.glade2:2529
+#: glade/etherape.glade2:2521
 msgid "<i>Global Protocol Timeouts (ms)</i>"
 msgstr ""
 
-#: glade/etherape.glade2:2566
+#: glade/etherape.glade2:2558
 msgid "Timings"
 msgstr ""
 
 # src/glade-strings:110
-#: glade/etherape.glade2:2598
+#: glade/etherape.glade2:2590
 msgid "Select Font"
 msgstr "Seleccione tipo de fuente"
 
-#: glade/etherape.glade2:2655
+#: glade/etherape.glade2:2647
 msgid "abcdefghijk ABCDEFGHIJK"
 msgstr ""
 
 # src/glade-strings:111
-#: glade/etherape.glade2:2666
+#: glade/etherape.glade2:2658
 msgid "EtherApe: Open Capture File"
 msgstr "EtherApe: Abrir archivo de captura"
 
 # src/glade-strings:112
-#: glade/etherape.glade2:2734
+#: glade/etherape.glade2:2726
 msgid "EtherApe: Select capture file"
 msgstr "EtherApe: Seleccione archivo de captura"
 
 # src/glade-strings:113
-#: glade/etherape.glade2:2772
+#: glade/etherape.glade2:2764
 msgid "EtherApe: Select Capture File"
 msgstr "EtherApe: Seleccione archivo de captura"
 
 # src/glade-strings:114
-#: glade/etherape.glade2:2781
+#: glade/etherape.glade2:2773
 msgid "Select capture file"
 msgstr "Seleccione archivo de captura"
 
 # src/glade-strings:115
-#: glade/etherape.glade2:2812
+#: glade/etherape.glade2:2804
 msgid "Optionally, set a capture filter"
 msgstr "Opcionalmente, defina un filtro de captura"
 
 # src/glade-strings:116
-#: glade/etherape.glade2:2836
+#: glade/etherape.glade2:2828
 msgid "File:"
 msgstr "Archivo:"
 
 # src/glade-strings:117
-#: glade/etherape.glade2:2864
+#: glade/etherape.glade2:2856
 msgid "Filter:"
 msgstr "Filtro:"
 
 # src/glade-strings:118
-#: glade/etherape.glade2:2944
+#: glade/etherape.glade2:2936
 msgid "Name:"
 msgstr "Nombre:"
 
 # src/glade-strings:119 src/glade-strings:121
-#: glade/etherape.glade2:2969 glade/etherape.glade2:3042
+#: glade/etherape.glade2:2961 glade/etherape.glade2:3034
 msgid "This is a test node name"
 msgstr "Este es un nombre de nodo de prueba"
 
 # src/glade-strings:120
-#: glade/etherape.glade2:3017 glade/etherape.glade2:4338
+#: glade/etherape.glade2:3009 glade/etherape.glade2:4330
 msgid "Numeric Name:"
 msgstr "Nombre numérico"
 
 # src/glade-strings:122
-#: glade/etherape.glade2:3089
+#: glade/etherape.glade2:3081
 msgid "Show traffic"
 msgstr "Mostrar tráfico"
 
 # src/glade-strings:124 src/glade-strings:151
-#: glade/etherape.glade2:3157 glade/etherape.glade2:3854
-#: glade/etherape.glade2:4668
+#: glade/etherape.glade2:3149 glade/etherape.glade2:3846
+#: glade/etherape.glade2:4660
 msgid "Instantaneous"
 msgstr "Instantáneo"
 
 # src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
 # src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
 # src/glade-strings:152 src/glade-strings:154
-#: glade/etherape.glade2:3182 glade/etherape.glade2:3248
-#: glade/etherape.glade2:3314 glade/etherape.glade2:3380
-#: glade/etherape.glade2:3446 glade/etherape.glade2:3512
-#: glade/etherape.glade2:3879 glade/etherape.glade2:3945
+#: glade/etherape.glade2:3174 glade/etherape.glade2:3240
+#: glade/etherape.glade2:3306 glade/etherape.glade2:3372
+#: glade/etherape.glade2:3438 glade/etherape.glade2:3504
+#: glade/etherape.glade2:3871 glade/etherape.glade2:3937
 msgid "test label"
 msgstr "etiqueta de prueba"
 
 # src/glade-strings:126 src/glade-strings:153
-#: glade/etherape.glade2:3223 glade/etherape.glade2:3920
-#: glade/etherape.glade2:4695
+#: glade/etherape.glade2:3215 glade/etherape.glade2:3912
+#: glade/etherape.glade2:4687
 msgid "Accumulated"
 msgstr "Acumulado"
 
 # src/glade-strings:128
-#: glade/etherape.glade2:3289
+#: glade/etherape.glade2:3281
 msgid "Inst. Inbound"
 msgstr "Entrada Inst."
 
 # src/glade-strings:130
-#: glade/etherape.glade2:3355
+#: glade/etherape.glade2:3347
 msgid "Accu. Outbound"
 msgstr "Salida Acum."
 
 # src/glade-strings:132
-#: glade/etherape.glade2:3421
+#: glade/etherape.glade2:3413
 msgid "Accu. Inbound"
 msgstr "Entrada acum."
 
 # src/glade-strings:134
-#: glade/etherape.glade2:3487
+#: glade/etherape.glade2:3479
 msgid "Inst. Outbound"
 msgstr "Salida Inst"
 
 # src/glade-strings:136
-#: glade/etherape.glade2:3557
+#: glade/etherape.glade2:3549
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Protocolos"
 
 # src/glade-strings:137
-#: glade/etherape.glade2:3591 glade/etherape.glade2:4226
+#: glade/etherape.glade2:3583 glade/etherape.glade2:4218
 msgid "Columns"
 msgstr "Columnas"
 
 # src/glade-strings:91
-#: glade/etherape.glade2:3600 glade/etherape.glade2:4235
+#: glade/etherape.glade2:3592 glade/etherape.glade2:4227
 #, fuzzy
 msgid "_Color"
 msgstr "Color"
 
 # src/glade-strings:30
-#: glade/etherape.glade2:3610 glade/etherape.glade2:4245
+#: glade/etherape.glade2:3602 glade/etherape.glade2:4237
 #, fuzzy
 msgid "_Protocol"
 msgstr "_Protocolos"
 
 # src/glade-strings:139 src/glade-strings:144
-#: glade/etherape.glade2:3620 glade/etherape.glade2:4255
+#: glade/etherape.glade2:3612 glade/etherape.glade2:4247
 #, fuzzy
 msgid "_Inst Traffic"
 msgstr "Tráfico Instant."
 
 # src/glade-strings:140 src/glade-strings:145
-#: glade/etherape.glade2:3630 glade/etherape.glade2:4265
+#: glade/etherape.glade2:3622 glade/etherape.glade2:4257
 #, fuzzy
 msgid "_Accum Traffic"
 msgstr "Tráfico Acumul."
 
 # src/glade-strings:141 src/glade-strings:146
-#: glade/etherape.glade2:3640 glade/etherape.glade2:4275
+#: glade/etherape.glade2:3632 glade/etherape.glade2:4267
 #, fuzzy
 msgid "_Last Heard"
 msgstr "Última vez"
 
 # src/glade-strings:142 src/glade-strings:147
-#: glade/etherape.glade2:3650 glade/etherape.glade2:4285
+#: glade/etherape.glade2:3642 glade/etherape.glade2:4277
 #, fuzzy
 msgid "Pac_kets"
 msgstr "Paquetes"
 
 # src/glade-strings:52 src/glade-strings:148
-#: glade/etherape.glade2:3732
+#: glade/etherape.glade2:3724
 msgid "name"
 msgstr "nombre"
 
 # src/glade-strings:149
-#: glade/etherape.glade2:3772
+#: glade/etherape.glade2:3764
 msgid "Last Heard: "
 msgstr "Última vez:"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:3797
+#: glade/etherape.glade2:3789
 msgid "label73"
 msgstr "label73"
 
 # src/glade-strings:156
-#: glade/etherape.glade2:3991
+#: glade/etherape.glade2:3983
 msgid "Select color"
 msgstr "Seleccione un color"
 
 # src/glade-strings:160
-#: glade/etherape.glade2:4046
+#: glade/etherape.glade2:4038
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: asignar protocolos"
 
 # src/glade-strings:161
-#: glade/etherape.glade2:4131
+#: glade/etherape.glade2:4123
 msgid "Type protocol name..."
 msgstr "Escriba el nombre del protocolo..."
 
 # src/glade-strings:162
-#: glade/etherape.glade2:4162
+#: glade/etherape.glade2:4154
 msgid ""
 "Type the name of the protocol that will be assigned to the selected color"
 msgstr ""
 "Escriba el nombre del protocolo que será asignado al color seleccionado"
 
-#: glade/etherape.glade2:4366
+#: glade/etherape.glade2:4358
 msgid "Resolved Name:"
 msgstr ""
 
 # src/glade-strings:88
-#: glade/etherape.glade2:4394
+#: glade/etherape.glade2:4386
 #, fuzzy
 msgid "src node name"
 msgstr "Ocultar los nombres de los nodos"
 
-#: glade/etherape.glade2:4422
+#: glade/etherape.glade2:4414
 msgid "src numeric node name"
 msgstr ""
 
 # src/glade-strings:52 src/glade-strings:148
-#: glade/etherape.glade2:4450
+#: glade/etherape.glade2:4442
 #, fuzzy
 msgid "dst name"
 msgstr "nombre"
 
-#: glade/etherape.glade2:4478
+#: glade/etherape.glade2:4470
 msgid "dst num. name"
 msgstr ""
 
-#: glade/etherape.glade2:4587
+#: glade/etherape.glade2:4579
 msgid "Total"
 msgstr ""
 
 # src/glade-strings:132
-#: glade/etherape.glade2:4614
+#: glade/etherape.glade2:4606
 #, fuzzy
 msgid "Inbound"
 msgstr "Entrada acum."
 
 # src/glade-strings:130
-#: glade/etherape.glade2:4641
+#: glade/etherape.glade2:4633
 #, fuzzy
 msgid "Outbound"
 msgstr "Salida Acum."
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4722
+#: glade/etherape.glade2:4714
 #, fuzzy
 msgid "label100"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4749
+#: glade/etherape.glade2:4741
 #, fuzzy
 msgid "label104"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4776
+#: glade/etherape.glade2:4768
 #, fuzzy
 msgid "label101"
 msgstr "label73"
 
 # src/glade-strings:150
-#: glade/etherape.glade2:4803
+#: glade/etherape.glade2:4795
 #, fuzzy
 msgid "label105"
 msgstr "label73"
