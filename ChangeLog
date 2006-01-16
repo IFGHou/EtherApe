@@ -1,3 +1,8 @@
+2006-01-14 20:16  bchiara
+
+	* ChangeLog, README.bugs, po/es.po, po/etherape.pot, po/fr.po,
+	po/nl.po, po/tr.po: release 0.9.4
+
 2006-01-14 19:56  bchiara
 
 	* ChangeLog, NEWS, doc/C/appmain.png, doc/C/capture_file_dlg.png,

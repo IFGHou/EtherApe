@@ -134,10 +134,13 @@ void
 delete_conversation_link(guint32 src_address, guint32 dst_address)
 {
   GList *item;
-  while ( (item = find_conversation_ptr(src_address, dst_address, 0, 0)) )
+  guint32 src, dst;
+
+  src = htonl (src_address);
+  dst = htonl (dst_address);
+  while ( (item = find_conversation_ptr(src, dst, 0, 0)) )
     {
       conversation_t *conv = NULL;
-      guint32 src, dst;
       conv = item->data;
       /* Because that is the way that ip_to_str works */
       src = htonl (conv->src_address);
