@@ -22,7 +22,7 @@
       user's guide
     </type>
     <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
-    <identifier url="file:/usr/local/share/gnome/help/etherape/C/main.xml"/>
+    <identifier url="file:/usr/local/share/gnome/help/etherape/C/etherape.xml"/>
     <language code="C"/>
     <relation seriesid="26207ade-85f9-11da-8825-c4740b431a42"/>
     <rights type="GNU FDL" license.version="1.1" holder="Riccardo Ghetta"/>

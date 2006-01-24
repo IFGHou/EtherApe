@@ -154,9 +154,8 @@ static void decode_next(name_add_t *nt)
   next_func = g_tree_lookup (prot_functions, nt->decoder.tokens[nt->decoder.level]);
   if (next_func)
     {
-      /* before calling the next decoder, we check for size overflow 
-       * To continue, we must have at least 2 bytes remaining ... */
-      if (nt->packet_size <= nt->offset + 2)
+      /* before calling the next decoder, we check for size overflow */
+      if (nt->packet_size <= nt->offset)
         {
           g_critical(_("captured data insufficient, aborting protocol decode"));
           return;
@@ -529,6 +528,11 @@ get_ipxsap_name (name_add_t *nt)
   guint16 curpos;
   gchar *name;
 
+  if (nt->packet_size <= nt->offset + 2)
+    {
+      g_critical(_("captured data insufficient, aborting get_ipxsap_name"));
+      return;
+    }
   sap_type = pntohs (nt->p + nt->offset);
 
   /* we want responses */
@@ -542,7 +546,7 @@ get_ipxsap_name (name_add_t *nt)
     }
   if (curpos >= nt->packet_size)
     {
-      g_critical(_("captured data insufficient, aborting get_sap_name"));
+      g_critical(_("captured data insufficient, aborting get_ipxsap_name"));
       return;
     }
     
@@ -640,6 +644,11 @@ get_nbdgm_name (name_add_t *nt)
   int len;
   guint i = 0;
 
+  if (nt->packet_size <= nt->offset + 2)
+    {
+      g_critical(_("captured data insufficient, aborting get_nbdgm_name "));
+      return;
+    }
   mesg_type = *(guint8 *) (nt->p + nt->offset);
 
   nt->offset += 10;
