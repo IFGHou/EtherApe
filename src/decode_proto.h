@@ -22,7 +22,7 @@
 #define DECODE_PROTO_H
 
 /* extracts the protocol stack from packet, and returs it as string */
-gchar *get_packet_prot (const guint8 * packet, guint raw_size);
+const gchar *get_packet_prot (const guint8 * packet, guint raw_size);
 
 
 #endif

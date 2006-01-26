@@ -83,7 +83,7 @@ static void append_etype_prot (etype_t etype);
 static GTree *tcp_services = NULL;
 static GTree *udp_services = NULL;
 static guint offset = 0;
-static GString *prot;
+static GString *prot = NULL;
 static const guint8 *packet;
 static guint capture_len = 0;
 
@@ -96,22 +96,17 @@ static guint16 global_dst_port;
 /* ------------------------------------------------------------
  * Implementation
  * ------------------------------------------------------------*/
-gchar *
+const gchar *
 get_packet_prot (const guint8 * p, guint raw_size)
 {
   gchar **tokens = NULL;
   gchar *top_prot = NULL;
-  gchar *str = NULL;
-
   guint i = 0;
 
   g_assert (p != NULL);
 
   if (prot)
-    {
-      g_string_free (prot, TRUE);
-      prot = NULL;
-    }
+    g_string_free (prot, TRUE);
   prot = g_string_new ("");
 
   packet = p;
@@ -160,7 +155,6 @@ get_packet_prot (const guint8 * p, guint raw_size)
       while ((tokens[i] != NULL) && i <= STACK_SIZE)
 	i++;
       g_strfreev (tokens);
-      tokens = NULL;
     }
   for (; i <= STACK_SIZE; i++)
     prot = g_string_append (prot, "/UNKNOWN");
@@ -170,12 +164,9 @@ get_packet_prot (const guint8 * p, guint raw_size)
     top_prot = tokens[i];
 
   g_assert (top_prot != NULL);
-  str = g_strdup_printf ("%s/", top_prot);
-  prot = g_string_prepend (prot, str);
-  g_free (str);
-  str = NULL;
+  prot = g_string_prepend (prot, "/");
+  prot = g_string_prepend (prot, top_prot);
   g_strfreev (tokens);
-  tokens = NULL;
 
   /* g_message ("Protocol stack is %s", prot->str); */
   return prot->str;

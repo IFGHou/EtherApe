@@ -67,7 +67,7 @@ static GList
 
 void
 add_conversation (guint32 src_address, guint32 dst_address,
-		  guint16 src_port, guint16 dst_port, gchar * data)
+		  guint16 src_port, guint16 dst_port, const gchar * data)
 {
   conversation_t *conv = NULL;
   gchar *old_data = NULL;
@@ -149,6 +149,7 @@ delete_conversation_link(guint32 src_address, guint32 dst_address)
 		  ip_to_str ((guint8 *) & src), conv->src_port,
 		  ip_to_str ((guint8 *) & dst), conv->dst_port, conv->data);
       g_free (conv->data);
+      g_free (conv);
       conversations = g_list_delete_link(conversations, item);
     }
 }
@@ -170,6 +171,7 @@ delete_conversations (void)
 		  ip_to_str ((guint8 *) & src), conv->src_port,
 		  ip_to_str ((guint8 *) & dst), conv->dst_port, conv->data);
       g_free (conv->data);
+      g_free (conv);
       item = item->next;
     }
 

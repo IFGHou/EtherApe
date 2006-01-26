@@ -59,6 +59,55 @@ substract_times (struct timeval a, struct timeval b)
   return result;
 }				/* substract_times */
 
+
+/***************************************************************************
+ *
+ * packet_list_item_t implementation
+ *
+ **************************************************************************/
+packet_list_item_t *
+packet_list_item_create(packet_info_t *i, packet_direction d)
+{
+  packet_list_item_t *newit;
+
+  g_assert(i);
+
+  newit = g_malloc( sizeof(packet_list_item_t) );
+
+  /* increments refcount of packet */
+  i->ref_count++;
+
+  /* fills item, adding it to pkt list */
+  newit->info = i;
+  newit->direction = d;
+
+  return newit;
+}
+
+void packet_list_item_delete(packet_list_item_t *pli)
+{
+  if (pli)
+    {
+      if (pli->info)
+        {
+          /* packet exists, decrement ref count */
+          pli->info->ref_count--;
+    
+          if (pli->info->ref_count < 1)
+            {
+              /* packet now unused, delete it */
+              g_free (pli->info->prot_desc);
+              g_free (pli->info);
+    
+              /* global packet stats */
+              n_mem_packets--;
+            }
+        }
+    
+      g_free(pli);
+    }
+}
+
 /***************************************************************************
  *
  * basic_stats_t implementation
@@ -111,7 +160,7 @@ basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
 
 static void traffic_stats_list_item_delete(gpointer data, gpointer dum)
 {
-  g_free(data); /* TODO: properly release memory */
+  g_free(data); 
 }
 
 /* initializes counters */
@@ -159,17 +208,11 @@ traffic_stats_add_packet(traffic_stats_t *pkt_stat,
   g_assert(pkt_stat);
   g_assert(new_pkt);
 
-  newit = g_malloc( sizeof(packet_list_item_t) );
+  /* creates a new item, incrementing refcount of new_pkt */
+  newit = packet_list_item_create(new_pkt, dir);
 
-  /* increments refcount of packet */
-  new_pkt->ref_count++;
-
-  /* fills item, adding it to pkt list */
-  newit->info = new_pkt;
-  newit->direction = dir;
-
+  /* adds to list */
   pkt_stat->pkt_list = g_list_prepend (pkt_stat->pkt_list, newit);
-
   pkt_stat->n_packets++;
 
   basic_stats_add(&pkt_stat->stats, newit->info->size);
@@ -280,34 +323,10 @@ packet_list_remove(GList *item_to_remove)
 
   g_assert(item_to_remove);
   
-  litem = (packet_list_item_t *) item_to_remove->data;
-  if (litem)
-    {
-      packet_info_t *packet = litem->info;
+  litem = item_to_remove->data;
 
-      if (packet)
-        {
-          /* packet exists, decrement ref count */
-          packet->ref_count--;
-    
-          if (!packet->ref_count)
-            {
-              /* packet now unused, delete it */
-              if (packet->prot_desc)
-                {
-                  g_free (packet->prot_desc);
-                  packet->prot_desc = NULL;
-                }
-              g_free (packet);
-
-              n_mem_packets--;
-            }
-          litem->info = NULL;
-        }
-
-      g_free(litem);
-      item_to_remove->data = NULL;
-    }
+  packet_list_item_delete(litem);
+  item_to_remove->data = NULL;
 
   /* TODO I have to come back here and make sure I can't make
    * this any simpler */

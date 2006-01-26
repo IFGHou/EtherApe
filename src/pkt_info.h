@@ -50,4 +50,7 @@ typedef struct
 }
 packet_list_item_t;
 
+packet_list_item_t *packet_list_item_create(packet_info_t *i, packet_direction d);
+void packet_list_item_delete(packet_list_item_t *pli);
+
 #endif
