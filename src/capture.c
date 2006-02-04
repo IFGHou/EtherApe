@@ -412,10 +412,9 @@ gint
 set_filter (gchar * filter_string, gchar * device)
 {
   gchar ebuf[300];
-  static bpf_u_int32 netnum, netmask;
-  static struct bpf_program fp;
-  gboolean ok = 1;
-
+  bpf_u_int32 netnum;
+  bpf_u_int32 netmask;
+  struct bpf_program fp;
 
   if (!pch_struct)
     return 1;
@@ -424,19 +423,14 @@ set_filter (gchar * filter_string, gchar * device)
   if (device && (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0))
     {
       g_warning (_
-		 ("Can't use filter:  Couldn't obtain netmask info (%s)."),
-		 ebuf);
-      ok = 0;
+                  ("Couldn't obtain netmask info (%s). Filters involving broadcast addresses could behave incorrectly."),
+                 ebuf);
+      netmask = 0;
     }
-  if (ok && (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0))
-    {
-      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
-      ok = 0;
-    }
-  if (ok && (pcap_setfilter (pch_struct, &fp) < 0))
-    {
-      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
-    }
+  if (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0)
+    g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
+  else if (pcap_setfilter (pch_struct, &fp) < 0)
+    g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
 
   return 0;
 #if 0
@@ -450,19 +444,14 @@ set_filter (gchar * filter_string, gchar * device)
       && (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0))
     {
       g_warning (_
-		 ("Can't use filter:  Couldn't obtain netmask info (%s)."),
+		 ("Couldn't obtain netmask info (%s). Filters involving broadcast addresses could behave incorrectly."),
 		 ebuf);
-      ok = 0;
+      netmask = 0;
     }
-  if (ok && (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0))
-    {
-      g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
-      ok = 0;
-    }
-  if (ok && (pcap_setfilter (pch_struct, &fp) < 0))
-    {
-      g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
-    }
+  if (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0)
+    g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
+  else if (pcap_setfilter (pch_struct, &fp) < 0)
+    g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
 #endif
 }				/* set_filter */
 
