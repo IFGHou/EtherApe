@@ -380,7 +380,7 @@ update_diagram (GtkWidget * canvas)
     
       g_string_sprintfa (status_string,
                          ". Total Packets %g, packets in memory: %g", n_packets,
-                         n_mem_packets);
+                         total_mem_packets);
       if (is_idle)
         status_string = g_string_append (status_string, _(". IDLE."));
       else
@@ -390,7 +390,7 @@ update_diagram (GtkWidget * canvas)
     }
 #if 0
   g_message ("Total Packets %g, packets in memory: %g", n_packets,
-	     n_mem_packets);
+	     total_mem_packets);
 #endif
 
   already_updating = FALSE;

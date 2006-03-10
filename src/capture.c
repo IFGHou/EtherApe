@@ -181,8 +181,6 @@ init_capture (void)
 
   if (!data_initialized)
     {
-      nodes_catalog_open();
-      links_catalog_open();
 
       if (pref.name_res)
 	{
@@ -198,7 +196,7 @@ init_capture (void)
       status = STOP;
       data_initialized = TRUE;
 
-      n_packets = n_mem_packets = 0;
+      n_packets = total_mem_packets = 0;
     }
 
   device = pref.interface;
@@ -466,8 +464,10 @@ start_capture (void)
       return FALSE;
     }
 
-  /* preparing protocol summary */
+  /* preparing protocol summary and nodes/links catalogs */
   protocol_summary_open();
+  nodes_catalog_open();
+  links_catalog_open();
 
   /*
    * See pause_capture for an explanation of why we don't always
@@ -570,12 +570,10 @@ stop_capture (void)
 
   status = STOP;
 
-  /* With status in STOP, all protocols, nodes and links will be deleted */
+  /* free nodes, protocols, links, conversations and packets */
   protocol_summary_close();
-  nodes_catalog_update_all();
-  links_catalog_update_all();
-
-  /* Free conversations */
+  nodes_catalog_close();
+  links_catalog_close();
   delete_conversations ();
 
   /* Free the list of new_nodes */
@@ -722,7 +720,7 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   dst_node_id = get_node_id (raw_packet, raw_size, DST);
 
   n_packets++;
-  n_mem_packets++;
+  total_mem_packets++;
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */

@@ -648,9 +648,6 @@ gui_stop_capture (void)
   /* Delete and free protocol information */
   delete_gui_protocols ();
 
-  /* By calling update_diagram, we are forcing node_update
-   * and link_update, thus deleting all nodes and links since
-   * status=STOP. Then the diagram is redrawn */
   widget = glade_xml_get_widget (xml, "canvas1");
   update_diagram (widget);
 

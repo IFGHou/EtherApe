@@ -117,7 +117,7 @@ GtkWidget *app1;		/* Pointer to the main app window */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 gdouble n_packets;		/* Number of total packets received */
-gdouble n_mem_packets;		/* Number of packets currently in memory */
+gdouble total_mem_packets;		/* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data

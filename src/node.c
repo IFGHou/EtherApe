@@ -225,29 +225,31 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
     }
   else
     {
-      /* no packet remaining on node */
-      diff = substract_times (now, node->node_stats.stats.last_time);
-
-      /* Remove node if node is too old or if capture is stopped */
-      if ((IS_OLDER (diff, pref.node_timeout_time)
-           && pref.node_timeout_time) || (status == STOP))
+      /* no packets remaining on node - if node expiration active, see if the
+       * node is expired */
+      if (pref.node_timeout_time)
         {
-          GList **delete_list = (GList **)delete_list_ptr;
-
-          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-                 _("Queuing node '%s' for remove"),node->name->str);
-
-          /* First thing we do is delete the node from the list of new_nodes,
-           * if it's there */
-          new_nodes_remove(node);
-
-          /* adds current to list of nodes to be delete */
-          *delete_list = g_list_prepend( *delete_list, node_id);
+          diff = substract_times (now, node->node_stats.stats.last_time);
+          if (IS_OLDER (diff, pref.node_timeout_time))
+            {
+              /* node expired, remove */
+              GList **delete_list = (GList **)delete_list_ptr;
+    
+              g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+                     _("Queuing node '%s' for remove"),node->name->str);
+    
+              /* First thing we do is delete the node from the list of new_nodes,
+               * if it's there */
+              new_nodes_remove(node);
+    
+              /* adds current to list of nodes to be delete */
+              *delete_list = g_list_prepend( *delete_list, node_id);
+            }
         }
     }
 
   return FALSE;
-}				/* node_update */
+}
 
 /***************************************************************************
  *
@@ -255,8 +257,8 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
  *
  **************************************************************************/
 
-static GList *new_nodes = NULL;	/* List that contains every new node not yet
-				 * acknowledged by the main app with
+static GList *new_nodes = NULL;	/* List that contains ptrs to every new node 
+				 * not yet acknowledged by the main app with
 				 * new_nodes_pop */
 
 void new_nodes_clear(void)
@@ -315,7 +317,7 @@ new_nodes_pop(void)
   g_list_free_1 (old_item);
 
   return node;
-}				/* ape_get_new_node */
+}
 
 /***************************************************************************
  *
@@ -368,8 +370,9 @@ void nodes_catalog_remove(const node_id_t *key)
 /* finds a node */
 node_t *nodes_catalog_find(const node_id_t *key)
 {
-  g_assert(all_nodes);
   g_assert(key);
+  if (!all_nodes)
+    return NULL;
 
   return g_tree_lookup (all_nodes, key);
 }
@@ -377,7 +380,8 @@ node_t *nodes_catalog_find(const node_id_t *key)
 /* returns the current number of nodes in catalog */
 gint nodes_catalog_size(void)
 {
-  g_assert(all_nodes);
+  if (!all_nodes)
+    return 0;
 
   return g_tree_nnodes (all_nodes);
 }
@@ -385,7 +389,8 @@ gint nodes_catalog_size(void)
  /* calls the func for every node */
 void nodes_catalog_foreach(GTraverseFunc func, gpointer data)
 {
-  g_assert(all_nodes);
+  if (!all_nodes)
+    return;
 
   return g_tree_foreach(all_nodes, func, data);
 }
@@ -404,6 +409,9 @@ void
 nodes_catalog_update_all(void)
 {
   GList *delete_list = NULL;
+
+  if (!all_nodes)
+    return;
 
   /* we can't delete nodes while traversing the catalog, so while updating we 
    * fill a list with the node_id's to remove */

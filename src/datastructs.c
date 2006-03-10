@@ -125,8 +125,8 @@ protohash_get(const gchar *protoname)
       if (!current_cycle)
         current_cycle = cycle_color_list;
     }
-  g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x", 
-              protoname, color->red, color->green, color->blue);
+/*  g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x", 
+              protoname, color->red, color->green, color->blue); */
   return *color;
 }
 

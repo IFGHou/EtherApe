@@ -100,7 +100,7 @@ void packet_list_item_delete(packet_list_item_t *pli)
               g_free (pli->info);
     
               /* global packet stats */
-              n_mem_packets--;
+              total_mem_packets--;
             }
         }
     
@@ -160,7 +160,7 @@ basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
 
 static void traffic_stats_list_item_delete(gpointer data, gpointer dum)
 {
-  g_free(data); 
+  packet_list_item_delete(data);
 }
 
 /* initializes counters */
@@ -186,11 +186,11 @@ void traffic_stats_reset(traffic_stats_t *pkt_stat)
   /* release items and free list */
   g_list_foreach(pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
   g_list_free(pkt_stat->pkt_list);
-  protocol_stack_reset(&pkt_stat->stats_protos);
-
-  /* resets everything */
   pkt_stat->pkt_list = NULL;
   pkt_stat->n_packets = 0;
+
+  /* purges protos */
+  protocol_stack_reset(&pkt_stat->stats_protos);
 
   basic_stats_reset(&pkt_stat->stats);
   basic_stats_reset(&pkt_stat->stats_in);
@@ -238,10 +238,10 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
   packet_l_e = g_list_last (pkt_stat->pkt_list);
   while (packet_l_e)
   {
-    packet_list_item_t * packet = (packet_list_item_t *)(packet_l_e->data);
+    packet_list_item_t * packet = packet_l_e->data;
 
     result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, pkt_expire_time) && (status != STOP))
+    if (!IS_OLDER (result, pkt_expire_time))
       break; /* packet valid, subsequent packets are younger, no need to go further */
 
     /* packet expired, remove from stats */

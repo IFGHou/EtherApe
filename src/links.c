@@ -157,20 +157,22 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
     }
   else
     {
-      /* no packets remaining on link */
-      diff = substract_times (now, link->link_stats.stats.last_time);
-
-      /* Remove link if it is too old or if capture is stopped */
-      if ((IS_OLDER (diff, pref.link_timeout_time)
-           && pref.link_timeout_time) || (status == STOP))
+      /* no packets remaining on link - if link expiration active, see if the
+       * link is expired */
+      if (pref.link_timeout_time)
         {
-          GList **delete_list = (GList **)delete_list_ptr;
+          diff = substract_times (now, link->link_stats.stats.last_time);
+          if (IS_OLDER (diff, pref.link_timeout_time))
+            {
+              /* link expired, remove */
+              GList **delete_list = (GList **)delete_list_ptr;
+        
+              /* adds current to list of links to delete */
+              *delete_list = g_list_prepend( *delete_list, link_id);
     
-          /* adds current to list of links to delete */
-          *delete_list = g_list_prepend( *delete_list, link_id);
-
-          g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,_("Queuing link for remove"));
-
+              g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,_("Queuing link for remove"));
+    
+            }
         }
     }
 
@@ -238,8 +240,9 @@ void links_catalog_remove(const link_id_t *key)
 /* finds a link */
 link_t *links_catalog_find(const link_id_t *key)
 {
-  g_assert(all_links);
   g_assert(key);
+  if (!all_links)
+    return NULL;
 
   return g_tree_lookup (all_links, key);
 }
@@ -263,7 +266,8 @@ link_t *links_catalog_find_create(const link_id_t *key)
 /* returns the current number of links in catalog */
 gint links_catalog_size(void)
 {
-  g_assert(all_links);
+  if (!all_links)
+    return 0;
 
   return g_tree_nnodes (all_links);
 }
@@ -271,7 +275,8 @@ gint links_catalog_size(void)
  /* calls the func for every link */
 void links_catalog_foreach(GTraverseFunc func, gpointer data)
 {
-  g_assert(all_links);
+  if (!all_links)
+    return;
 
   return g_tree_foreach(all_links, func, data);
 }
@@ -283,6 +288,9 @@ void
 links_catalog_update_all(void)
 {
   GList *delete_list = NULL;
+
+  if (!all_links)
+    return;
 
   /* we can't delete links while traversing the catalog, so while updating links
    * we fill a list with the expired link_id's */

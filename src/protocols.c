@@ -203,7 +203,7 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
                 {
                   /* no traffic active on this proto, check purging */
                   result = substract_times (now, protocol->last_heard);
-                  if (IS_OLDER (result, expire_time) || (status == STOP))
+                  if (IS_OLDER (result, expire_time))
                     {
                       protocol_t_delete(protocol);
                       pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);
