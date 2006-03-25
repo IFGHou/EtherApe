@@ -207,6 +207,9 @@ struct
   gchar *filter;		/* Pcap filter to be used */
 
   gboolean is_debug;    /* TRUE if DEBUG specified on environment */
+
+  gboolean zero_delay;  /* TRUE if delay processing tcpdump files is disabled */
+
 }
 pref;
 

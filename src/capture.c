@@ -650,7 +650,16 @@ get_offline_packet (void)
   this_time.tv_usec = phdr.ts.tv_usec;
 
   diff = substract_times (this_time, last_time);
-  ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+
+  if (pref.zero_delay)
+    {
+      ms_to_next = 0;
+    }
+  else
+    {
+      ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+    }
+
 
   last_time = this_time;
 

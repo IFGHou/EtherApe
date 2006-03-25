@@ -97,6 +97,9 @@ main (int argc, char *argv[])
      N_("set the node color"), N_("color")},
     {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
      N_("set the text color"), N_("color")},
+    {"zero-delay", 'z', POPT_ARG_NONE, &(pref.zero_delay), 0,
+     N_("zero delay for reading capture files [cli only]"), NULL},
+
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
