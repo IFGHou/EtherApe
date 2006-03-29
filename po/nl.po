@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 21:13+0100\n"
+"POT-Creation-Date: 2006-03-26 07:23+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -85,11 +85,15 @@ msgstr "kleur"
 msgid "set the text color"
 msgstr "kies de tekstkleur"
 
-#: src/main.c:189
+#: src/main.c:101
+msgid "zero delay for reading capture files [cli only]"
+msgstr ""
+
+#: src/main.c:192
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Modus niet herkend. Type etherape --help voor een lijst."
 
-#: src/main.c:199 src/menus.c:52 src/menus.c:376 src/info_windows.c:164
+#: src/main.c:202 src/menus.c:52 src/menus.c:376 src/info_windows.c:164
 #: src/info_windows.c:781 src/info_windows.c:916
 #, c-format
 msgid "We could not load the interface! (%s)"
@@ -119,158 +123,160 @@ msgstr ""
 msgid "Reached default in get_node_id"
 msgstr "Default bereikt in get_node_id"
 
-#: src/capture.c:211
+#: src/capture.c:209
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Fout bij het openen van het apparaat: %s"
 
-#: src/capture.c:231
+#: src/capture.c:229
 #, fuzzy, c-format
 msgid ""
 "Error opening %s : %s\n"
 "- perhaps you need to be root?"
 msgstr "Fout bij het openen van %s : %s - moet je geen root zijn?"
 
-#: src/capture.c:236
+#: src/capture.c:234
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr "Live apparaat %s geopend voor luisteren. pcap_fd: %d"
 
-#: src/capture.c:244
+#: src/capture.c:242
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr "Kan niet beide apparaten openen: %s, %s. Kies er één."
 
-#: src/capture.c:251
+#: src/capture.c:249
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Fout bij het openen van %s : %s"
 
-#: src/capture.c:255
+#: src/capture.c:253
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s is geopend voor offline luisteren"
 
-#: src/capture.c:267
+#: src/capture.c:265
 msgid "Link type is Ethernet"
 msgstr "Verbindingstype is Ethernet"
 
 #  The case for PPP or SLIP, for instance
-#: src/capture.c:275
+#: src/capture.c:273
 msgid "Link type is RAW"
 msgstr "Verbindingstype is RAW"
 
 #  We are assuming LLC async frames only
-#: src/capture.c:284
+#: src/capture.c:282
 msgid "Link type is FDDI"
 msgstr "Verbindingstype is FDDI"
 
 #  As far as I know IEEE802 is Token Ring
-#: src/capture.c:293
+#: src/capture.c:291
 msgid "Link type is Token Ring"
 msgstr "Verbindingstype is Token Ring"
 
 #  Loopback
-#: src/capture.c:301
+#: src/capture.c:299
 msgid "Link type is NULL"
 msgstr "Verbindingstype is NULL"
 
 #  Linux cooked sockets (I believe this
 #  * is used for ISDN on linux)
-#: src/capture.c:312
+#: src/capture.c:310
 #, fuzzy
 msgid "Link type is Linux cooked sockets"
 msgstr "Verbindingstype is Token Ring"
 
-#: src/capture.c:322
+#: src/capture.c:320
 #, c-format
 msgid "Link type not yet supported"
 msgstr "Linktype nog niet beschikbaar"
 
-#: src/capture.c:379
+#: src/capture.c:377
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Deze modus is niet beschikbaar bij dit apparaat"
 
-#: src/capture.c:401
+#: src/capture.c:399
 #, c-format
 msgid "Ape mode not yet supported"
 msgstr "Ape modus is nog niet beschikbaar"
 
-#: src/capture.c:427 src/capture.c:453
+#: src/capture.c:424 src/capture.c:445
 #, c-format
-msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
-msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
+msgid ""
+"Couldn't obtain netmask info (%s). Filters involving broadcast addresses "
+"could behave incorrectly."
+msgstr ""
 
-#: src/capture.c:433 src/capture.c:459
+#: src/capture.c:429 src/capture.c:450
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Ik begrijp het filter niet (%s)."
 
-#: src/capture.c:438 src/capture.c:464
+#: src/capture.c:431 src/capture.c:452
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Kan filter niet gebruiken (%s)."
 
-#: src/capture.c:476
+#: src/capture.c:463
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr "Status is geen PAUSE of STOP bij het starten van de capture"
 
-#: src/capture.c:489
+#: src/capture.c:478
 msgid "Starting live capture"
 msgstr "Live luisteren wordt gestart"
 
-#: src/capture.c:496
+#: src/capture.c:485
 msgid "Starting offline capture"
 msgstr "Offline luisteren wordt gestart"
 
-#: src/capture.c:517
+#: src/capture.c:506
 msgid "Status not PLAY at pause_capture"
 msgstr "Status is geen PLAY bij het pauzeren"
 
-#: src/capture.c:527
+#: src/capture.c:516
 msgid "Pausing live capture"
 msgstr "Live luisteren wordt gepauzeerd"
 
-#: src/capture.c:534
+#: src/capture.c:523
 msgid "Pausing offline capture"
 msgstr "Offline luisteren wordt gepauzeerd"
 
-#: src/capture.c:539
+#: src/capture.c:528
 msgid "Error while trying to pause capture"
 msgstr "Fout bij het pauzeren van het luisteren"
 
-#: src/capture.c:558
+#: src/capture.c:547
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr "Status is geen PLAY of PAUZE bij het stoppen van de capture"
 
-#: src/capture.c:564
+#: src/capture.c:553
 msgid "Stopping live capture"
 msgstr "Live luisteren wordt gestopt"
 
-#: src/capture.c:570
+#: src/capture.c:559
 msgid "Stopping offline capture"
 msgstr "Offline luisteren wordt gestopt"
 
-#: src/capture.c:576
+#: src/capture.c:565
 msgid "Error while removing capture source in stop_capture"
 msgstr "Fout bij het stoppen van het luisteren"
 
-#: src/capture.c:611
+#: src/capture.c:598
 msgid "Capture device stopped or file closed"
 msgstr "Apparaat gestopt of bestand gesloten"
 
-#: src/capture.c:774
+#: src/capture.c:770
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr "Nieuw knooppunt: %s. Aantal knooppunten %d"
 
-#: src/capture.c:940
+#: src/capture.c:936
 #, fuzzy
 msgid "Unsopported ape mode in print_mem"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/capture.c:944
+#: src/capture.c:940
 msgid "Invalid length in print_mem"
 msgstr ""
 
@@ -316,7 +322,7 @@ msgstr ""
 msgid "Reading data from "
 msgstr "Data wordt ingelezen vanuit "
 
-#: src/menus.c:523 src/menus.c:669
+#: src/menus.c:523 src/menus.c:666
 msgid "default interface"
 msgstr "standaardinterface"
 
@@ -366,11 +372,11 @@ msgid "Status not PLAY or PAUSE at gui_stop_capture"
 msgstr "Status is geen PLAY of PAUZE bij gui_stop_capture"
 
 #  Sets the appbar
-#: src/menus.c:662
+#: src/menus.c:659
 msgid "Ready to capture from "
 msgstr "Klaar om te luisteren naar "
 
-#: src/menus.c:674
+#: src/menus.c:671
 msgid "Diagram stopped"
 msgstr "Diagram gestopt"
 
@@ -391,31 +397,31 @@ msgstr ". IDLE ."
 msgid ". TIMEOUT."
 msgstr ". TIMEOUT."
 
-#: src/diagram.c:504
+#: src/diagram.c:500
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:597
+#: src/diagram.c:593
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Nieuw canvas_knooppunt: %s. Aantal knooppunten %d"
 
-#: src/diagram.c:663
+#: src/diagram.c:659
 msgid "Unknown value or node_size_variable"
 msgstr "Obekende waarde of node_size_variable"
 
-#: src/diagram.c:1005
+#: src/diagram.c:1001
 #, fuzzy, c-format
 msgid "Creating canvas_link: %s. Number of links %d"
 msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
 
-#: src/diagram.c:1195
+#: src/diagram.c:1191
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Hoofdprotocol van deze lijn: %s"
 
-#: src/diagram.c:1198
+#: src/diagram.c:1194
 msgid "Link main protocol unknown"
 msgstr "Hoofdprotocol van deze lijn is onbekend"
 
@@ -455,67 +461,71 @@ msgstr "Knooppunt timeout (ms)"
 msgid "Link timed out"
 msgstr "Knooppunt timeout (ms)"
 
-#: src/decode_proto.c:1090
+#: src/decode_proto.c:1081
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr "Kon %s niet openen. UDP en TCP typen zullen niet worden herkend"
 
-#: src/decode_proto.c:1096
+#: src/decode_proto.c:1087
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr "TCP en UDP wordt ingelezen vanuit %s"
 
-#: src/decode_proto.c:1142
+#: src/decode_proto.c:1133
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr "Ik begrijp deze regel niet (%s)."
 
-#: src/decode_proto.c:1166
+#: src/decode_proto.c:1157
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "DDP protocollen werken niet in %s"
 
-#: src/links.c:172
+#: src/links.c:173
 msgid "Queuing link for remove"
 msgstr ""
 
-#: src/links.c:223
+#: src/links.c:225
 #, fuzzy, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Nieuwe lijn: %s-%s. Aantal lijnen %d"
 
-#: src/links.c:299
+#: src/links.c:307
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr ""
 
-#: src/names.c:161
+#: src/names.c:160
 msgid "captured data insufficient, aborting protocol decode"
 msgstr ""
 
-#: src/names.c:206
+#: src/names.c:205
 #, fuzzy
 msgid "Unsopported ape mode in fill_node_id"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/names.c:212
+#: src/names.c:211
 msgid "captured data insufficient, aborting fill_node_id"
 msgstr ""
 
-#: src/names.c:403 src/names.c:414
+#: src/names.c:402 src/names.c:413
 msgid "captured data insufficient, aborting get_arp_name"
 msgstr ""
 
-#: src/names.c:501
+#: src/names.c:500
 msgid "captured data insufficient, aborting get_tcp_name"
 msgstr ""
 
-#: src/names.c:545
-msgid "captured data insufficient, aborting get_sap_name"
+#: src/names.c:533 src/names.c:549
+msgid "captured data insufficient, aborting get_ipxsap_name"
 msgstr ""
 
-#: src/names.c:572 src/names.c:590 src/names.c:598
+#: src/names.c:576 src/names.c:594 src/names.c:602
 msgid "captured data insufficient, aborting get_nbss_name "
+msgstr ""
+
+#: src/names.c:649
+msgid "captured data insufficient, aborting get_nbdgm_name "
 msgstr ""
 
 #: src/node.c:77
@@ -523,12 +533,12 @@ msgstr ""
 msgid "Unsopported ape mode in node_id_compare"
 msgstr "Ape modus in get_link_id is niet beschikbaar"
 
-#: src/node.c:238
+#: src/node.c:239
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:420
+#: src/node.c:428
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
@@ -1262,6 +1272,9 @@ msgstr "label73"
 #, fuzzy
 msgid "label105"
 msgstr "label73"
+
+#~ msgid "Can't use filter:  Couldn't obtain netmask info (%s)."
+#~ msgstr "Kan filter niet gebruiken: Kon geen netmasker vinden (%s)."
 
 #~ msgid "Main node protocol not found in update_canvas_nodes"
 #~ msgstr ""

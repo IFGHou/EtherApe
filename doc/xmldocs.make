@@ -42,7 +42,7 @@ docdir = $(datadir)/@PACKAGE@/doc/$(docname)/$(lang)
 xml_files = $(entities) $(docname).xml
 omf_dir=$(top_srcdir)/omf-install
 
-EXTRA_DIST = $(xml_files) $(omffile)
+EXTRA_DIST = $(xml_files) $(omffile) $(top_srcdir)/doc/omf.make
 CLEANFILES = omf_timestamp
 
 include $(top_srcdir)/doc/omf.make

@@ -2,13 +2,17 @@
 
    $Date 11/01/2006 07:53:21 $
 
+  Overview of changes in EtherApe 0.9.XXX (XXX):
+
+   Changes summary:
+     * Conversations now expire along with the containing link.
+
   Overview of changes in EtherApe 0.9.4 (Saturday Jan 14 2006):
 
    This  release  comes  after  a  first  round of extensive refactoring,
    needed  to clean up some of the cruft accumulated during the years and
    make  further  developments  easier.  While  still a work in progress,
-   memory  control  is  tighter  and  protocol  dissectors  more  robust,
-   especially against forged packets.
+   memory control is tighter and protocol dissectors more robust.
 
    EtherApe  calculates  an  extensive set of traffic statistics, even if
    only  a  small  part  is  always visible on the diagram.  For example,

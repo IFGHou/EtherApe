@@ -1,3 +1,61 @@
+2006-03-25 07:07  bchiara
+
+	* src/: capture.c, globals.h, main.c: Added Ben Allen's patch to
+	provide the 'zero-delay' when playing back capture files.
+
+2006-03-10 09:29  bchiara
+
+	* acinclude.m4, src/capture.c, src/datastructs.c, src/diagram.c,
+	src/globals.h, src/links.c, src/menus.c, src/node.c,
+	src/protocols.c, src/traffic_stats.c: minor changes. Rephrased
+	pcap-devel check to be more clear.
+
+2006-02-04 07:03  bchiara
+
+	* doc/etherape-C.omf, doc/omf.make, doc/xmldocs.make,
+	doc/C/Makefile.am, doc/C/etherape-C.omf, doc/C/etherape.sgml,
+	doc/C/topic.dat, src/capture.c: small changes to enhance
+	compatibility.	added scrollkeeper registration to new manual and
+	removed old one.
+
+2006-01-26 07:18  bchiara
+
+	* src/: capture.c, conversations.c, conversations.h,
+	decode_proto.c, decode_proto.h, pkt_info.h, traffic_stats.c: Small
+	tweaks, corrected conversation clearing
+
+2006-01-24 06:54  bchiara
+
+	* doc/etherape-C.omf, doc/C/appmain.png,
+	doc/C/capture_file_dlg.png, doc/C/color_select_dlg.png,
+	doc/C/etherape.xml, doc/C/link_info.png, doc/C/main.xml,
+	doc/C/node_info.png, doc/C/pref_colors_dlg.png,
+	doc/C/pref_diagram_dlg.png, doc/C/pref_timings_dlg.png,
+	doc/C/proto_info.png, doc/C/protocol_edit_dlg.png,
+	doc/C/figures/appmain.eps, doc/C/figures/appmain.png,
+	doc/C/figures/capture_file_dlg.eps,
+	doc/C/figures/capture_file_dlg.png,
+	doc/C/figures/color_select_dlg.eps,
+	doc/C/figures/color_select_dlg.png, doc/C/figures/eth_toolbar.eps,
+	doc/C/figures/eth_toolbar.png, doc/C/figures/link_info.eps,
+	doc/C/figures/link_info.png, doc/C/figures/node_info.eps,
+	doc/C/figures/node_info.png, doc/C/figures/pref_colors_dlg.eps,
+	doc/C/figures/pref_colors_dlg.png,
+	doc/C/figures/pref_diagram_dlg.eps,
+	doc/C/figures/pref_diagram_dlg.png,
+	doc/C/figures/pref_timings_dlg.eps,
+	doc/C/figures/pref_timings_dlg.png, doc/C/figures/proto_info.eps,
+	doc/C/figures/proto_info.png, doc/C/figures/protocol_edit_dlg.eps,
+	doc/C/figures/protocol_edit_dlg.png, html/NEWS.html, src/names.c:
+	More manual, reordering of figures, added eps files.
+
+2006-01-16 19:41  bchiara
+
+	* ChangeLog, old.version, doc/etherape-C.omf, doc/C/main.xml,
+	doc/C/pref_diagram_dlg.png, src/conversations.c, src/links.c: fixed
+	silly mistake in purging conversations.  First attempt at a docbook
+	XML manual.
+
 2006-01-14 20:16  bchiara
 
 	* ChangeLog, README.bugs, po/es.po, po/etherape.pot, po/fr.po,
@@ -308,37 +366,14 @@
 
 	* ChangeLog, Makefile.am, acconfig.h, autogen.sh, config.h.in,
 	configure.in, etherape.spec.in, glade/Makefile.am,
-	glade/etherape.glade, glade/etherape.glade2, intl/ChangeLog,
-	intl/Makefile, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
-	intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
-	intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
-	intl/eval-plural.h, intl/explodename.c, intl/finddomain.c,
-	intl/gettext.c, intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
-	intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
-	intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
-	intl/locale.alias, intl/localealias.c, intl/localename.c,
-	intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c,
-	intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y,
-	intl/ref-add.sin, intl/ref-del.sin, intl/textdomain.c,
-	m4/.cvsignore, m4/Makefile, m4/Makefile.am, m4/Makefile.in,
-	m4/compiler-flags.m4, macros/.cvsignore, macros/Makefile.am,
-	macros/aclocal-include.m4, macros/autogen.sh,
-	macros/compiler-flags.m4, macros/curses.m4,
-	macros/gnome-bonobo-check.m4, macros/gnome-common.m4,
-	macros/gnome-fileutils.m4, macros/gnome-gettext.m4,
-	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
-	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
-	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
-	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
-	macros/gnome-support.m4, macros/gnome-undelfs.m4,
-	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
-	macros/gnome-xml-check.m4, macros/gnome.m4, macros/linger.m4,
-	macros/need-declaration.m4, po/Makefile.in.in, src/Makefile.am,
-	src/capture.c, src/datastructs.c, src/datastructs.h, src/diagram.c,
-	src/dns.c, src/dns.h, src/globals.h, src/gnomesupport.h,
-	src/info_windows.c, src/info_windows.h, src/main.c, src/main.h,
-	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
-	src/protocols.c, src/util.c: 
+	glade/etherape.glade, glade/etherape.glade2, m4/.cvsignore,
+	m4/Makefile, m4/Makefile.am, m4/Makefile.in, m4/compiler-flags.m4,
+	po/Makefile.in.in, src/Makefile.am, src/capture.c,
+	src/datastructs.c, src/datastructs.h, src/diagram.c, src/dns.c,
+	src/dns.h, src/globals.h, src/gnomesupport.h, src/info_windows.c,
+	src/info_windows.h, src/main.c, src/main.h, src/menus.c,
+	src/menus.h, src/preferences.c, src/preferences.h, src/protocols.c,
+	src/util.c: 
 	Branch gnome2 merged back into main trunk
 
 2003-04-06 07:08  bchiara
@@ -469,35 +504,11 @@
 
 	* Makefile.am, acconfig.h, autogen.sh, configure.in,
 	etherape.spec.in, glade/Makefile.am, glade/etherape.glade,
-	glade/etherape.glade1, glade/etherape.glade2, intl/ChangeLog,
-	intl/Makefile, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
-	intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
-	intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
-	intl/eval-plural.h, intl/explodename.c, intl/finddomain.c,
-	intl/gettext.c, intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
-	intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
-	intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
-	intl/locale.alias, intl/localealias.c, intl/localename.c,
-	intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c,
-	intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y,
-	intl/ref-add.sin, intl/ref-del.sin, intl/textdomain.c,
-	m4/Makefile.am, m4/gnome-gettext.m4, macros/.cvsignore,
-	macros/Makefile.am, macros/aclocal-include.m4, macros/autogen.sh,
-	macros/compiler-flags.m4, macros/curses.m4,
-	macros/gnome-bonobo-check.m4, macros/gnome-common.m4,
-	macros/gnome-fileutils.m4, macros/gnome-gettext.m4,
-	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
-	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
-	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
-	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
-	macros/gnome-support.m4, macros/gnome-undelfs.m4,
-	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
-	macros/gnome-xml-check.m4, macros/gnome.m4, macros/linger.m4,
-	macros/need-declaration.m4, src/Makefile.am, src/capture.c,
-	src/diagram.c, src/dns.c, src/dns.h, src/globals.h,
-	src/info_windows.c, src/info_windows.h, src/main.c, src/main.h,
-	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
-	src/util.c: 
+	glade/etherape.glade1, glade/etherape.glade2, m4/Makefile.am,
+	m4/gnome-gettext.m4, src/Makefile.am, src/capture.c, src/diagram.c,
+	src/dns.c, src/dns.h, src/globals.h, src/info_windows.c,
+	src/info_windows.h, src/main.c, src/main.h, src/menus.c,
+	src/menus.h, src/preferences.c, src/preferences.h, src/util.c: 
 	Preliminary gnome2 support
 
 2003-02-22 09:36  bchiara
@@ -589,25 +600,13 @@
 
 2002-09-18 17:37  toledo
 
-	* README.CVS, mkinstalldirs, intl/ChangeLog, intl/Makefile,
-	intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
-	intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
-	intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
-	intl/eval-plural.h, intl/explodename.c, intl/finddomain.c,
-	intl/gettext.c, intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
-	intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
-	intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
-	intl/locale.alias, intl/localealias.c, intl/localename.c,
-	intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c,
-	intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y,
-	intl/ref-add.sin, intl/ref-del.sin, intl/textdomain.c,
-	m4/ChangeLog, m4/Makefile, m4/Makefile.am, m4/Makefile.in,
-	m4/codeset.m4, m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4,
-	m4/intdiv0.m4, m4/inttypes-pri.m4, m4/inttypes.m4,
-	m4/inttypes_h.m4, m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4,
-	m4/lib-link.m4, m4/lib-prefix.m4, m4/progtest.m4, m4/stdint_h.m4,
-	m4/uintmax_t.m4, m4/ulonglong.m4, po/ChangeLog: Adding m4 and intl
-	directories
+	* README.CVS, mkinstalldirs, m4/ChangeLog, m4/Makefile,
+	m4/Makefile.am, m4/Makefile.in, m4/codeset.m4, m4/gettext.m4,
+	m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4, m4/inttypes-pri.m4,
+	m4/inttypes.m4, m4/inttypes_h.m4, m4/isc-posix.m4, m4/lcmessage.m4,
+	m4/lib-ld.m4, m4/lib-link.m4, m4/lib-prefix.m4, m4/progtest.m4,
+	m4/stdint_h.m4, m4/uintmax_t.m4, m4/ulonglong.m4, po/ChangeLog:
+	Adding m4 and intl directories
 
 2002-09-18 17:09  toledo
 
@@ -660,10 +659,6 @@
 2002-09-15 17:30  toledo
 
 	* po/: ChangeLog, Makefile.in.in, fr.po: Upgrade to gettext 0.11.5
-
-2002-09-15 17:16  toledo
-
-	* macros/autogen.sh: Include --intl option to gettextize
 
 2002-09-15 07:20  bchiara
 
@@ -2300,10 +2295,10 @@
 
 2000-04-15 19:19  toledo
 
-	* Makefile.am, configure.in, etherape.glade, macros/gnome.m4,
-	po/cat-id-tbl.c, po/etherape.pot, src/Makefile.am, src/callbacks.c,
-	src/main.c: Proper installation of etherape.glade, and made sure
-	the code uses the right file
+	* Makefile.am, configure.in, etherape.glade, po/cat-id-tbl.c,
+	po/etherape.pot, src/Makefile.am, src/callbacks.c, src/main.c:
+	Proper installation of etherape.glade, and made sure the code uses
+	the right file
 
 2000-04-15 18:34  toledo
 
@@ -3094,16 +3089,16 @@
 
 2000-03-09 12:06  toledo
 
-	* macros/.cvsignore, po/.cvsignore: [no log message]
+	* po/.cvsignore: [no log message]
 
 2000-03-09 11:54  toledo
 
-	* .cvsignore, macros/.cvsignore, po/.cvsignore: 
+	* .cvsignore, po/.cvsignore: 
 	And some more cleanup
 
 2000-03-09 11:52  toledo
 
-	* macros/Makefile.in, po/Makefile.in, src/Makefile.in: 
+	* po/Makefile.in, src/Makefile.in: 
 	More cvs cleanup.
 
 2000-03-09 11:08  toledo
@@ -3282,8 +3277,8 @@
 
 2000-02-29 19:42  toledo
 
-	* Makefile.in, NEWS, NEWS.html, macros/Makefile.in, po/Makefile.in,
-	src/Makefile.in: [no log message]
+	* Makefile.in, NEWS, NEWS.html, po/Makefile.in, src/Makefile.in:
+	[no log message]
 
 2000-02-29 19:34  toledo
 
@@ -3293,8 +3288,7 @@
 2000-02-29 19:33  toledo
 
 	* ChangeLog, Makefile.am, Makefile.in, aclocal.m4, configure,
-	configure.in, macros/Makefile.in, po/cat-id-tbl.c, po/etherape.pot,
-	src/Makefile.in: 
+	configure.in, po/cat-id-tbl.c, po/etherape.pot, src/Makefile.in: 
 	Added pcap filtering and support for separate math library
 
 2000-02-29 11:53  toledo
@@ -3383,21 +3377,12 @@
 
 	* AUTHORS, Makefile, NEWS, README, aclocal.m4, config.cache,
 	config.h, config.log, config.status, configure, configure.in,
-	etherape.glade, stamp-h, macros/Makefile, po/Makefile,
-	po/cat-id-tbl.c, po/etherape.pot, src/Makefile, src/Makefile.am,
-	src/Makefile.in, src/callbacks.c, src/callbacks.h, src/capture.c,
-	src/capture.h, src/interface.c, src/main.c, src/resolv.c,
-	src/support.c, src/util.c: 
+	etherape.glade, stamp-h, po/Makefile, po/cat-id-tbl.c,
+	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
+	src/callbacks.c, src/callbacks.h, src/capture.c, src/capture.h,
+	src/interface.c, src/main.c, src/resolv.c, src/support.c,
+	src/util.c: 
 	Diagram resizes with window
-
-2000-02-25 13:09  toledo
-
-	* intl/: ChangeLog, Makefile, Makefile.in, VERSION, bindtextdom.c,
-	cat-compat.c, dcgettext.c, dgettext.c, explodename.c, finddomain.c,
-	gettext.c, gettext.h, gettextP.h, hash-string.h, intl-compat.c,
-	l10nflist.c, libgettext.h, linux-msg.sed, loadinfo.h, loadmsgcat.c,
-	localealias.c, po2tbl.sed, po2tbl.sed.in, textdomain.c,
-	xopen-msg.sed: [no log message]
 
 2000-02-25 01:24  toledo
 
@@ -3452,10 +3437,9 @@
 
 	* Makefile, Makefile.in, NEWS, README, acconfig.h, aclocal.m4,
 	config.cache, config.h, config.h.in, config.log, config.status,
-	configure, configure.in, etherape.glade, intl/Makefile,
-	macros/Makefile, macros/Makefile.in, po/Makefile, po/Makefile.in,
-	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in,
-	src/capture.c, src/interface.c: 
+	configure, configure.in, etherape.glade, po/Makefile,
+	po/Makefile.in, po/etherape.pot, src/Makefile, src/Makefile.am,
+	src/Makefile.in, src/capture.c, src/interface.c: 
 	Added ethernet address resolution. Proper pcap detection in
 	configure.
 
@@ -3476,26 +3460,25 @@
 2000-02-23 12:11  toledo
 
 	* Makefile, Makefile.in, config.status, etherape.glade,
-	macros/Makefile, po/cat-id-tbl.c, po/etherape.pot: 
+	po/cat-id-tbl.c, po/etherape.pot: 
 	
 	First gnome_canvas version.
 
 2000-02-22 18:43  toledo
 
 	* Makefile, config.cache, config.h, config.log, config.status,
-	configure, configure.in, etherape.glade, intl/Makefile,
-	macros/Makefile, po/Makefile, po/Makefile.in, src/Makefile,
-	src/callbacks.c, src/callbacks.h, src/capture.c, src/interface.c,
-	src/interface.h, src/main.c, src/support.c: 
+	configure, configure.in, etherape.glade, po/Makefile,
+	po/Makefile.in, src/Makefile, src/callbacks.c, src/callbacks.h,
+	src/capture.c, src/interface.c, src/interface.h, src/main.c,
+	src/support.c: 
 	
 	Susbstituting drawing_area for canvas. Added about box.
 
 2000-02-22 00:13  toledo
 
 	* Makefile, config.h, config.status, configure, configure.in,
-	intl/Makefile, macros/Makefile, po/Makefile, po/Makefile.in,
-	po/etherape.pot, src/Makefile, src/Makefile.am, src/Makefile.in:
-	[no log message]
+	po/Makefile, po/Makefile.in, po/etherape.pot, src/Makefile,
+	src/Makefile.am, src/Makefile.in: [no log message]
 
 2000-02-21 23:22  toledo
 
@@ -3518,29 +3501,9 @@
 
 2000-02-19 22:17  toledo
 
-	* ABOUT-NLS, intl/ChangeLog, intl/Makefile, intl/Makefile.in,
-	intl/VERSION, intl/bindtextdom.c, intl/cat-compat.c,
-	intl/dcgettext.c, intl/dgettext.c, intl/explodename.c,
-	intl/finddomain.c, intl/gettext.c, intl/gettext.h, intl/gettextP.h,
-	intl/hash-string.h, intl/intl-compat.c, intl/l10nflist.c,
-	intl/libgettext.h, intl/linux-msg.sed, intl/loadinfo.h,
-	intl/loadmsgcat.c, intl/localealias.c, intl/po2tbl.sed,
-	intl/po2tbl.sed.in, intl/textdomain.c, intl/xopen-msg.sed,
-	macros/Makefile, macros/Makefile.am, macros/Makefile.in,
-	macros/aclocal-include.m4, macros/autogen.sh,
-	macros/compiler-flags.m4, macros/curses.m4,
-	macros/gnome-bonobo-check.m4, macros/gnome-common.m4,
-	macros/gnome-fileutils.m4, macros/gnome-gettext.m4,
-	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
-	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
-	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
-	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
-	macros/gnome-support.m4, macros/gnome-undelfs.m4,
-	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
-	macros/gnome-xml-check.m4, macros/gnome.m4, macros/linger.m4,
-	macros/need-declaration.m4, po/ChangeLog, po/Makefile,
-	po/Makefile.in, po/Makefile.in.in, po/POTFILES, po/POTFILES.in,
-	po/POTFILES.in~, po/cat-id-tbl.c, po/etherape.pot, po/stamp-cat-id,
+	* ABOUT-NLS, po/ChangeLog, po/Makefile, po/Makefile.in,
+	po/Makefile.in.in, po/POTFILES, po/POTFILES.in, po/POTFILES.in~,
+	po/cat-id-tbl.c, po/etherape.pot, po/stamp-cat-id,
 	src/gnomesupport.h: 
 	Added gnome support in order to use gnome_canvas.
 

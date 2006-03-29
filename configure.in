@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.4])
+AC_INIT([etherape],[0.9.5])
 AC_CONFIG_SRCDIR(README)
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
 
 # defines
@@ -29,7 +29,6 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 #AC_PROG_INTLTOOL(0.27)
 

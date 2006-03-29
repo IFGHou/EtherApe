@@ -388,10 +388,6 @@ update_diagram (GtkWidget * canvas)
       g_my_debug (status_string->str);
       g_string_free (status_string, TRUE);
     }
-#if 0
-  g_message ("Total Packets %g, packets in memory: %g", n_packets,
-	     total_mem_packets);
-#endif
 
   already_updating = FALSE;
 
