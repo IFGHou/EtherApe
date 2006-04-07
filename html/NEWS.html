@@ -24,16 +24,46 @@
 <div id="date"> $Date 11/01/2006 07:53:21 $ </div>
 
 
-<h3>Overview of changes in EtherApe 0.9.XXX (XXX):</h3>
-<p></p>
+<h3>Overview of changes in EtherApe 0.9.5 (Wednesday Mar 29 2006):</h3>
+
+
+<p>After the recent changes the manual was really obsolete.
+&nbsp;This
+release features a completely rewritten one, properly integrated with
+the Gnome help browser. You'll find EtherApe under Applications -
+System tools.</p>
+
 <p>Changes summary:</p>
+
+
 <ul>
- <li>Conversations now expire along with the containing link.</li>
- </ul>
 
 
- 
+  <li>Manual completely rewritten with docbook-XML. Now registers
+with scrollkeeper. </li>
+
+
+  <li>Fixed a bug preventing conversations to expire properly. </li>
+
+
+  <li>Thanks to Ben Allen, added a new opzion, 'zero-delay' (-z) to
+play captured files without accounting for timestamp. &nbsp;Usually
+EtherApe uses the timestamp to playback packets as they came in when
+recording. This option essentially disables this, making as if all
+packets came in at once.&nbsp;<br>
+
+As Ben said 'It provides a QUICK way to generate a graph of all of the
+conversations in a capture file, without having to wait the length of
+the capture. This is helpful for visualizing data from long (hours to
+days) captures'.</li>
+
+
+</ul>
+
+
 <h3>Overview of changes in EtherApe 0.9.4 (Saturday Jan 14 2006):</h3>
+
+
 <p> This release comes after a first round of extensive
 refactoring, needed to clean up some of the cruft accumulated during
 the years and make further developments easier. While still a work in
@@ -43,7 +73,7 @@ robust.&nbsp;</p>
 
 <p>EtherApe calculates an extensive set of traffic statistics,
 even if only a small part is always visible on the diagram.
-&nbsp;For example, every node and link maintains complete data for
+For example, every node and link maintains complete data for
 every protocol seen, even if only the most active is displayed.
 &nbsp;Thus, the detail dialogs now show also traffic breakdown by
 protocol.</p>
@@ -53,6 +83,8 @@ protocol.</p>
 
 
 <ul>
+
+
   <li>New feature: link info dialog. Double-clicking on a link
 shows traffic and protocol
 statistics. </li>
@@ -1859,7 +1891,8 @@ identify it eventually. </li>
 
 
 <hr>
-<p><i>$Id$</i>
+<p><i>$Id: NEWS.html,v 1.79 2006/01/14 20:10:59 bchiara Exp
+$</i>
 </p>
 
 

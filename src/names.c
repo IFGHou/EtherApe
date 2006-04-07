@@ -571,7 +571,7 @@ get_nbss_name (name_add_t *nt)
 
   guint8 mesg_type;
 
-  if (nt->packet_size <= nt->offset + 2)
+  if (nt->packet_size < nt->offset + 2)
     {
       g_critical(_("captured data insufficient, aborting get_nbss_name "));
       return;
@@ -644,7 +644,7 @@ get_nbdgm_name (name_add_t *nt)
   int len;
   guint i = 0;
 
-  if (nt->packet_size <= nt->offset + 2)
+  if (nt->packet_size < nt->offset + 2)
     {
       g_critical(_("captured data insufficient, aborting get_nbdgm_name "));
       return;
