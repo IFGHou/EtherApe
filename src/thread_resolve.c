@@ -53,7 +53,6 @@
 #include <ip-cache.h>
 #include <thread_resolve.h>
 
-
 #define ETHERAPE_THREAD_POOL_SIZE 6
 
 /* to-resolve-items linked list */
@@ -145,12 +144,18 @@ thread_pool_routine(void *dt)
          free(el); /* item saved, link elem now useless, freeing */
          
          addr.s_addr = htonl (curitem->ip);
+#ifdef FORCE_SINGLE_THREAD
+         /* if forced single thread, uses gethostbyaddr */
+         result=0;
+         resultptr = gethostbyaddr (&addr, sizeof(addr), AF_INET);
+#else
+         /* full multithreading, use thread safe gethostbyaddr_r */
          result = gethostbyaddr_r (&addr, sizeof(addr), AF_INET, 
                           &resultbuf, extrabuf, sizeof(extrabuf), 
                           &resultptr, &errnovar);
-         
          if (result != 0)
             dbgprint("Insufficient memory allocated to gethostbyaddr_r\n");
+#endif
 
          /* resolving completed or failed, lock again and notify ip-cache */
          pthread_mutex_lock(&resolvemtx);
@@ -178,8 +183,12 @@ start_threads()
 
    /* reset stop flag */
    request_stop_thread = 0;
-   
+
+  /* if single thread resolving is forced, then start only a single thread,
+     else start ETHERAPE_THREAD_POOL_SIZE threads */
+#ifndef FORCE_SINGLE_THREAD
    for (i=0; i<ETHERAPE_THREAD_POOL_SIZE ; ++i)
+#endif
    {
        if (pthread_create ( &curth, &attr, thread_pool_routine, NULL))
        {

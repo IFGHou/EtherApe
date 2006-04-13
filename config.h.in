@@ -7,6 +7,10 @@
    language is requested. */
 #undef ENABLE_NLS
 
+/* found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving
+   is restricted to single thread. */
+#undef FORCE_SINGLE_THREAD
+
 /* cmt */
 #undef GETTEXT_PACKAGE
 
@@ -31,12 +35,6 @@
 
 /* Define to 1 if you have the `floor' function. */
 #undef HAVE_FLOOR
-
-/* Define to 1 if you have the `gethostbyaddr' function. */
-#undef HAVE_GETHOSTBYADDR
-
-/* Define to 1 if you have the `gethostbyname' function. */
-#undef HAVE_GETHOSTBYNAME
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
