@@ -41,8 +41,7 @@ etherape_SOURCES = \
 	datastructs.c datastructs.h
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
-etherape_LDFLAGS = -Wl,--export-dynamic
-etherape_LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+etherape_LDFLAGS = 
 
 .indent: $(etherape_SOURCES)
 	indent $? 

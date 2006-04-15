@@ -42,7 +42,7 @@ docdir = $(datadir)/@PACKAGE@/doc/$(docname)/$(lang)
 xml_files = $(entities) $(docname).xml
 omf_dir=$(top_srcdir)/omf-install
 
-EXTRA_DIST = $(xml_files) $(omffile) $(top_srcdir)/doc/omf.make
+EXTRA_DIST = $(xml_files) $(omffile)
 CLEANFILES = omf_timestamp
 
 include $(top_srcdir)/doc/omf.make
@@ -84,7 +84,7 @@ uninstall-local-doc:
 	-if test "$(figdir)"; then \
 	  for file in $(srcdir)/$(figdir)/*.png; do \
 	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	    rm -f $(docdir)/$(figdir)/$$basefile; \
+	    rm -f $(DESTDIR)$(docdir)/$(figdir)/$$basefile; \
 	  done; \
 	  rmdir $(DESTDIR)$(docdir)/$(figdir); \
 	fi
@@ -92,4 +92,3 @@ uninstall-local-doc:
 	  rm -f $(DESTDIR)$(docdir)/$$file; \
 	done
 	-rmdir $(DESTDIR)$(docdir)
-

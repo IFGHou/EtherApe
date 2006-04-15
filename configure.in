@@ -165,6 +165,15 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
+dnl see if the linker allows "--export-dynamic"
+#AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
+#tmp_LDFLAGS=$LDFLAGS
+#LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
+#AC_LINK_IFELSE([int main(int argc, char *argv[]){return 0;}],
+#  AC_MSG_RESULT([yes]),
+#  AC_MSG_RESULT([no])
+#  LDFLAGS=$tmp_LDFLAGS)
+
 
 AC_CONFIG_FILES([Makefile
 	   po/Makefile.in

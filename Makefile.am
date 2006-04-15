@@ -6,10 +6,15 @@ SUBDIRS = src doc glade m4 po
 # standard props
 DATADIR=.
 
+# ignore bogus distcheck errors caused by scrollkeeper lazyness
+distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
+
+# clean scrollkeeper output files
+distcleancheck_listfiles = find . -type -f print | grep -v 'omf_timestamp'
 
 indent:
 	cd src && make indent
-	
+
 NEWS: html/NEWS.html
 	lynx --dump html/NEWS.html > NEWS
 
@@ -40,14 +45,14 @@ Development_DATA =			\
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA =				\
 	etherape.png
-	
+
 purge:
 	rm -f *~ *.bak *.tar.gz
 	cd src && make purge
 
 splint:
 	cd src && make splint
-	
+
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.thanks 		\
 	README.help		\
@@ -76,7 +81,6 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 
 
 full-dist :
-
 	test `whoami` = toledo
 	test `echo ${VERSION}` != `cat old.version`
 	jed html/NEWS.html
@@ -111,15 +115,7 @@ full-dist :
 #	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 
 
-dist-hook:
-	if test -d pixmaps; then \
-	  mkdir $(distdir)/pixmaps; \
-	  for pixmap in pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      cp -p $$pixmap $(distdir)/pixmaps; \
-	    fi \
-	  done \
-	fi
-
+dist-hook: etherape.spec
+	cp etherape.spec $(distdir)
 
 ACLOCAL_AMFLAGS = -I m4

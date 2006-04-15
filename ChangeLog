@@ -1,3 +1,21 @@
+2006-04-13 19:52  bchiara
+
+	* config.h.in, configure.in, src/thread_resolve.c: Tweakings to
+	better handle systems without gethostbyaddr_r (OSX). Thanks to
+	Jeffrey G. Gomberg for pointing out.
+
+2006-04-07 18:20  bchiara
+
+	* NEWS, etherape.1, html/FAQ.html, html/NEWS.html, src/names.c:
+	fixed an overzealous warning on netbios name decoding, added some
+	faqs
+
+2006-03-29 19:12  bchiara
+
+	* ChangeLog, NEWS, configure.in, doc/omf.make, doc/xmldocs.make,
+	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
+	src/diagram.c: preparing for new release
+
 2006-03-25 07:07  bchiara
 
 	* src/: capture.c, globals.h, main.c: Added Ben Allen's patch to
