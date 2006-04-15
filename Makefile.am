@@ -9,9 +9,6 @@ DATADIR=.
 # ignore bogus distcheck errors caused by scrollkeeper lazyness
 distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
 
-# clean scrollkeeper output files
-distcleancheck_listfiles = find . -type -f print | grep -v 'omf_timestamp'
-
 indent:
 	cd src && make indent
 

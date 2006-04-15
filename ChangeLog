@@ -1,3 +1,9 @@
+2006-04-15 17:27  bchiara
+
+	* ChangeLog, Makefile.am, configure.in, doc/Makefile.am,
+	doc/omf.make, doc/xmldocs.make, src/Makefile.am: Changes to go
+	around scrollkeeper oddities and other cross-platform fixes.
+
 2006-04-13 19:52  bchiara
 
 	* config.h.in, configure.in, src/thread_resolve.c: Tweakings to
