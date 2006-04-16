@@ -4,6 +4,9 @@ Juan Toledo	<toledo@users.sourceforge.net>
 Vincent van Adrighem	<vincent@dirck.mine.nu>
   Dutch translation
 
+Ben Allen
+  Patch for -z option
+
 Bill Barth	<bbarth@users.sourceforge.net>
   Code for static mode
 
@@ -16,8 +19,11 @@ Gôrkem Cetin	<gorkem@gelecek.com.tr>
 Laurent Deniel	<deniel@worldnet.fr>
   resolv.c
 
+Lars Eggert
+  OSX patches
+
 Riccardo Ghetta <bchiara@users.sourceforge.net>
-  Patches
+  developer
 
 Simon Kirby	<sim@neato.org>
   dns.c
@@ -27,7 +33,10 @@ Eran Mann	<eran@nbase.co.il>
   
 Frederic Peters	<fpeters@debian.org>
   Debian package, french translation, man page
-  
+
+Eric Stewart
+  OSX patches
+ 
 Jasper Wallace	<jasper@pointless.net>
   pcap device autodetection
 

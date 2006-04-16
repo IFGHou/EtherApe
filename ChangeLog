@@ -1,3 +1,12 @@
+2006-04-16 09:06  bchiara
+
+	* doc/xmldocs.make: another scrollkeeper fix
+
+2006-04-15 18:19  bchiara
+
+	* ChangeLog, Makefile.am, configure.in: Check for
+	gethostbyaddr,gethostbyaddr_r also in libnsl (solaris).
+
 2006-04-15 17:27  bchiara
 
 	* ChangeLog, Makefile.am, configure.in, doc/Makefile.am,

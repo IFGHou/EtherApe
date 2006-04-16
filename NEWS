@@ -1,8 +1,8 @@
                             Changelog for EtherApe
 
-   $Date 11/01/2006 07:53:21 $
+   $Date$
 
-  Overview of changes in EtherApe 0.9.5 (Wednesday Mar 29 2006):
+  Overview of changes in EtherApe 0.9.5 (Monday Apr 17 2006):
 
    After the recent changes the manual was really obsolete.  This release
    features  a  completely  rewritten  one,  properly integrated with the
@@ -12,7 +12,8 @@
    Changes summary:
      * Manual  completely  rewritten with docbook-XML. Now registers with
        scrollkeeper.
-     * Fixed a bug preventing conversations to expire properly.
+     * Thanks  to  Jeffrey  G.  Gomberg, who had the patience to test and
+       identify problems, this release features improved OSX support.
      * Thanks to Ben Allen, added a new opzion, 'zero-delay' (-z) to play
        captured files without accounting for timestamp.  Usually EtherApe
        uses  the  timestamp  to  playback  packets  as  they came in when
@@ -22,6 +23,7 @@
        the  conversations  in  a capture file, without having to wait the
        length  of  the capture. This is helpful for visualizing data from
        long (hours to days) captures'.
+     * Fixed a bug preventing conversations to expire properly.
 
   Overview of changes in EtherApe 0.9.4 (Saturday Jan 14 2006):
 
@@ -32,9 +34,9 @@
 
    EtherApe  calculates  an  extensive set of traffic statistics, even if
    only a small part is always visible on the diagram. For example, every
-   node and link maintains complete data for every protocol seen, even if
-   only  the most active is displayed.  Thus, the detail dialogs now show
-   also traffic breakdown by protocol.
+   node  and  link  maintains  complete data for every protocol seen, but
+   only  the  most active one is displayed.  Thus, the detail dialogs now
+   show also traffic breakdown by protocol.
 
    Changes summary:
      * New  feature:  link  info  dialog. Double-clicking on a link shows
