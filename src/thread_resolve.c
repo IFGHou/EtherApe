@@ -50,8 +50,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <pthread.h>
-#include <ip-cache.h>
-#include <thread_resolve.h>
+#include "ip-cache.h"
+#include "thread_resolve.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
 
