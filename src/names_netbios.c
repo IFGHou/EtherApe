@@ -30,6 +30,7 @@
  */
 
 #include "names_netbios.h"
+#include "util.h"
 
 #define NBNAME_BUF_LEN   128
 #define BYTES_ARE_IN_FRAME(a,b,c) (((a)+(b))<(c))
@@ -85,7 +86,7 @@ static const value_string name_type_vals[] = {
  *
  **************************************************************************/
 static int get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname);
-static int process_netbios_name (const gchar * name_ptr, char *name_ret);
+static int process_netbios_name (const gchar * name_ptr, char *name_ret, size_t maxname);
 
 
 /***************************************************************************
@@ -148,7 +149,7 @@ get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname)
 
 	case 0x40:
 	case 0x80:
-	  goto error;		/* error */
+	  goto dns_name_terminated;		/* error */
 
 	case 0xc0:
 	  /* Pointer. */
@@ -170,7 +171,7 @@ get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname)
 	}
     }
 
-error:
+dns_name_terminated:
   *np = '\0';
   /* If "len" is negative, we haven't seen a pointer, and thus haven't
      set the length, so set it. */
@@ -178,12 +179,12 @@ error:
     len = dp - dptr;
   /* Zero-length name means "root server" */
   if (*name == '\0')
-    strcpy (name, "<Root>");
+    safe_strncpy(name, "<Root>", maxname);
   return len;
 
 overflow:
   /* We ran past the end of the captured data in the packet. */
-  strcpy (name, "<Name goes past end of captured data in packet>");
+  safe_strncpy(name, "<Name goes past end of captured data in packet>", maxname);
   /* If "len" is negative, we haven't seen a pointer, and thus haven't
      set the length, so set it. */
   if (len < 0)
@@ -192,14 +193,16 @@ overflow:
 }
 
 static int
-process_netbios_name (const gchar * name_ptr, char *name_ret)
+process_netbios_name (const gchar * name_ptr, char *outname, size_t outname_size)
 {
   int i;
   int name_type = *(name_ptr + NETBIOS_NAME_LEN - 1);
   gchar name_char;
+  char *name_ret;
   static const char hex_digits[16] = "0123456780abcdef";
 
-  for (i = 0; i < NETBIOS_NAME_LEN - 1; i++)
+  name_ret = outname;
+  for (i = 0; i < NETBIOS_NAME_LEN - 1 && name_ret-outname<outname_size-1 ; i++)
     {
       name_char = *name_ptr++;
       if (name_char >= ' ' && name_char <= '~')
@@ -220,15 +223,20 @@ process_netbios_name (const gchar * name_ptr, char *name_ret)
 
 int
 ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
-		    char *name_ret, int *name_type_ret)
+		    char *outname, size_t outname_size,
+                    int *name_type_ret)
 {
   int name_len;
   char name[MAXDNAME];
   char nbname[NBNAME_BUF_LEN];
+  char buf[16];
   char *pname, *pnbname, cname, cnbname;
+  char *name_ret;
   int name_type;
 
   name_len = get_dns_name (pd, offset, pd_len, name, sizeof (name));
+
+  name_ret = outname;
 
   /* OK, now undo the first-level encoding. */
   pname = &name[0];
@@ -245,8 +253,9 @@ ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
       if (cname < 'A' || cname > 'Z')
 	{
 	  /* Not legal. */
-	  strcpy (nbname,
-		  "Illegal NetBIOS name (character not between A and Z in first-level encoding)");
+	  safe_strncpy(nbname,
+		  "Illegal NetBIOS name (character not between A and Z in first-level encoding)",
+                  sizeof(nbname));
 	  goto bad;
 	}
       cname -= 'A';
@@ -258,14 +267,15 @@ ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
 	{
 	  /* No more characters in the name - but we're in
 	   * the middle of a pair.  Not legal. */
-	  strcpy (nbname, "Illegal NetBIOS name (odd number of bytes)");
+	  safe_strncpy(nbname, "Illegal NetBIOS name (odd number of bytes)",sizeof(nbname));
 	  goto bad;
 	}
       if (cname < 'A' || cname > 'Z')
 	{
 	  /* Not legal. */
-	  strcpy (nbname,
-		  "Illegal NetBIOS name (character not between A and Z in first-level encoding)");
+	  safe_strncpy(nbname,
+		  "Illegal NetBIOS name (character not between A and Z in first-level encoding)",
+                  sizeof(nbname));
 	  goto bad;
 	}
       cname -= 'A';
@@ -288,21 +298,21 @@ ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
   if (pnbname - nbname != NETBIOS_NAME_LEN)
     {
       /* It's not. */
-      sprintf (nbname, "Illegal NetBIOS name (%ld bytes long)",
+      snprintf(nbname, sizeof(nbname),"Illegal NetBIOS name (%ld bytes long)",
 	       (long) (pnbname - nbname));
       goto bad;
     }
 
   /* This one is; make its name printable. */
-  name_type = process_netbios_name (nbname, name_ret);
-  name_ret += strlen (name_ret);
-  sprintf (name_ret, "<%02x>", name_type);
-  name_ret += 4;
+  name_type = process_netbios_name (nbname, outname, outname_size);
+  snprintf(buf, sizeof(buf), "<%02x>", name_type);
+
+  safe_strncat(outname, buf, outname_size);
   if (cname == '.')
     {
       /* We have a scope ID, starting at "pname"; append that to
        * the decoded host name. */
-      strcpy (name_ret, pname);
+      safe_strncat(outname, pname, outname_size);
     }
   if (name_type_ret != NULL)
     *name_type_ret = name_type;
@@ -311,7 +321,7 @@ ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
 bad:
   if (name_type_ret != NULL)
     *name_type_ret = -1;
-  strcpy (name_ret, nbname);
+  safe_strncpy(outname, nbname, outname_size);
   return name_len;
 }
 

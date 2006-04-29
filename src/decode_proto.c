@@ -24,6 +24,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "prot_types.h"
+#include "util.h"
 #include "decode_proto.h"
 #include "conversations.h"
 
@@ -1071,10 +1072,10 @@ load_services (void)
 
   tcp_type_t port_number;	/* udp and tcp are the same */
 
-  strcpy (filename, CONFDIR "/services");
+  safe_strncpy(filename, CONFDIR "/services", sizeof(filename));
   if (!(services = fopen (filename, "r")))
     {
-      strcpy (filename, "/etc/services");
+      safe_strncpy(filename, "/etc/services", sizeof(filename));
       if (!(services = fopen (filename, "r")))
 	{
 	  g_my_critical (_

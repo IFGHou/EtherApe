@@ -206,7 +206,7 @@ init_capture (void)
       device = g_strdup (pcap_lookupdev (ebuf));
       if (device == NULL)
 	{
-	  sprintf (errorbuf, _("Error getting device: %s"), ebuf);
+	  snprintf (errorbuf, sizeof(errorbuf), _("Error getting device: %s"), ebuf);
 	  return errorbuf;
 	}
       /* TODO I should probably tidy this up, I probably don't
@@ -225,7 +225,7 @@ init_capture (void)
 	  (pch_struct = 
 	   pcap_open_live (device, MAXSIZE, TRUE, PCAP_TIMEOUT, ebuf)))
 	{
-	  sprintf (errorbuf,
+	  snprintf (errorbuf, sizeof(errorbuf),
 		   _("Error opening %s : %s\n- perhaps you need to be root?"),
 		   device, ebuf);
 	  return errorbuf;
@@ -238,7 +238,7 @@ init_capture (void)
     {
       if (device)
 	{
-	  sprintf (errorbuf,
+	  snprintf (errorbuf, sizeof(errorbuf),
 		   _("Can't open both %s and device %s. Please choose one."),
 		   pref.input_file, device);
 	  return errorbuf;
@@ -246,8 +246,8 @@ init_capture (void)
       *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       if (!(pch_struct = pcap_open_offline (pref.input_file, ebuf)))
 	{
-	  sprintf (errorbuf, _("Error opening %s : %s"), pref.input_file,
-		   ebuf);
+	  snprintf (errorbuf, sizeof(errorbuf), 
+                  _("Error opening %s : %s"), pref.input_file, ebuf);
 	  return errorbuf;
 	}
       g_my_info (_("%s opened for offline capture"), pref.input_file);
@@ -317,7 +317,7 @@ init_capture (void)
       break;
 #endif
     default:
-      sprintf (errorbuf, _("Link type not yet supported"));
+      snprintf (errorbuf, sizeof(errorbuf), _("Link type not yet supported"));
       return errorbuf;
     }
 
@@ -374,7 +374,7 @@ init_capture (void)
 
   if (error)
     {
-      sprintf (errorbuf, _("Mode not available in this device"));
+      snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
       return errorbuf;
     }
 
@@ -396,7 +396,7 @@ init_capture (void)
       node_id_length = 6;
       break;
     default:
-      sprintf (errorbuf, _("Ape mode not yet supported"));
+      snprintf (errorbuf, sizeof(errorbuf), _("Ape mode not yet supported"));
       return errorbuf;
     }
 

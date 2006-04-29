@@ -129,7 +129,7 @@ AC_ETHEREAL_PCAP_CHECK
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
-AC_CHECK_FUNCS([alarm floor gettimeofday inet_ntoa localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr])
+AC_CHECK_FUNCS([snprintf alarm floor gettimeofday inet_ntoa localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr])
 
 # Create DATAFILE_DIR #define for config.h
 DATAFILE_DIR=$sysconfdir

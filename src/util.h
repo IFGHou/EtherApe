@@ -41,6 +41,9 @@ extern "C"
   GList *interface_list_create(GString *err_str);
   void interface_list_free(GList * if_list);
 
+  char *safe_strncpy (char *dst, const char *src, size_t maxlen);
+  char *safe_strncat (char *dst, const char *src, size_t maxlen);
+
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

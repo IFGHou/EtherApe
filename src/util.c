@@ -373,3 +373,28 @@ get_home_dir (void)
 
   return home;
 }
+
+/* safe strncpy */
+char *
+safe_strncpy (char *dst, const char *src, size_t maxlen)
+{
+  
+if (maxlen < 1)
+    return dst;
+  strncpy (dst, src, maxlen - 1);	/* no need to copy that last char */
+  dst[maxlen - 1] = '\0';
+  return dst;
+}
+
+/* safe strncat */
+char *
+safe_strncat (char *dst, const char *src, size_t maxlen)
+{
+  
+size_t lendst = strlen (dst);
+  if (lendst >= maxlen)
+    return dst;			/* already full, nothing to do */
+  strncat (dst, src, maxlen - strlen (dst));
+  dst[maxlen - 1] = '\0';
+  return dst;
+}

@@ -39,7 +39,8 @@
 
 int ethereal_nbns_name (const gchar * pd, int offset,
                         int pd_len,
-			char *name_ret, int *name_type_ret);
+			char *outname, size_t outname_size,
+                        int *name_type_ret);
 
 
 gchar *get_netbios_host_type (int type);

@@ -177,7 +177,7 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
   size_t sz = 0;
 
   memset(node_id, 0, sizeof(node_id_t));
-  node_id->node_type = apemode;
+  node_id->node_type = apemode; 
   
   switch (apemode)
   {
@@ -529,10 +529,8 @@ get_ipxsap_name (name_add_t *nt)
   gchar *name;
 
   if (nt->packet_size <= nt->offset + 2)
-    {
-      g_critical(_("captured data insufficient, aborting get_ipxsap_name"));
-      return;
-    }
+      return; /* not a real ipxsap packet */
+
   sap_type = pntohs (nt->p + nt->offset);
 
   /* we want responses */
@@ -571,11 +569,9 @@ get_nbss_name (name_add_t *nt)
 
   guint8 mesg_type;
 
-  if (nt->packet_size < nt->offset + 2)
-    {
-      g_critical(_("captured data insufficient, aborting get_nbss_name "));
-      return;
-    }
+  if (nt->packet_size < nt->offset + 1)
+      return; /* not a netbios packet */
+
   mesg_type = *(guint8 *) (nt->p + nt->offset);
   nt->offset += 2;
 
@@ -591,7 +587,7 @@ get_nbss_name (name_add_t *nt)
                                      * know what it might mean in the ethereal implementation */
       if (nt->packet_size <= nt->offset + 2)
         {
-          g_critical(_("captured data insufficient, aborting get_nbss_name "));
+          g_critical(_("captured data insufficient, aborting get_nbss_name (on decoding netbios lenght)"));
           return;
         }
       length = pntohs ((nt->p + nt->offset + 2));
@@ -599,14 +595,14 @@ get_nbss_name (name_add_t *nt)
       nt->offset += 2;
       if (nt->packet_size <= nt->offset + length)
         {
-          g_critical(_("captured data insufficient, aborting get_nbss_name "));
+          g_critical(_("captured data insufficient, aborting get_nbss_name (on decoding name)"));
           return;
         }
 
-      name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
+      name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
       if (nt->dir == OUTBOUND)
 	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + name_len, 
-                            nt->packet_size, name, &name_type);
+                            nt->packet_size, name, sizeof(name), &name_type);
 
       /* We just want the name, not the space padding behind it */
 
@@ -644,11 +640,9 @@ get_nbdgm_name (name_add_t *nt)
   int len;
   guint i = 0;
 
-  if (nt->packet_size < nt->offset + 2)
-    {
-      g_critical(_("captured data insufficient, aborting get_nbdgm_name "));
-      return;
-    }
+  if (nt->packet_size < nt->offset + 1)
+    return; /* not a real nbgdm packet */
+
   mesg_type = *(guint8 *) (nt->p + nt->offset);
 
   nt->offset += 10;
@@ -658,10 +652,10 @@ get_nbdgm_name (name_add_t *nt)
   if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
     {
       nt->offset += 4;
-      len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
+      len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
 
       if (nt->dir == INBOUND)
-	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + len, nt->packet_size, name, &name_type);
+	ethereal_nbns_name ((const gchar *)nt->p, nt->offset + len, nt->packet_size, name, sizeof(name), &name_type);
       name_found = TRUE;
 
     }
@@ -669,7 +663,7 @@ get_nbdgm_name (name_add_t *nt)
     {
       if (nt->dir == INBOUND)
 	{
-	  len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, &name_type);
+	  len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
 	  name_found = TRUE;
 	}
     }

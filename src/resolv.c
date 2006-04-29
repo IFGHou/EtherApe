@@ -65,7 +65,7 @@
 #include "inet_v6defs.h"
 #endif
 
-#include <glib.h>		/* JTC */
+#include <glib.h> 
 #include "globals.h"
 #include "eth_resolv.h"		/* JTC name space conflict */
 #include "util.h"
@@ -207,13 +207,10 @@ serv_name_lookup (u_int port, u_int proto)
   if ((servp = getservbyport (htons (port), serv_proto)) == NULL)
     {
       /* unknown port */
-      sprintf (tp->name, "%d", port);
+      snprintf (tp->name, MAXNAMELEN, "%d", port);
     }
   else
-    {
-      strncpy (tp->name, servp->s_name, MAXNAMELEN);
-      tp->name[MAXNAMELEN - 1] = '\0';
-    }
+    safe_strncpy (tp->name, servp->s_name, MAXNAMELEN);
 
   return (tp->name);
 
@@ -356,8 +353,7 @@ parse_ether_line (char *line, ether_t * eth, int six_bytes)
       eth->addr[5] = 0;
     }
 
-  strncpy (eth->name, cp, MAXNAMELEN);
-  eth->name[MAXNAMELEN - 1] = '\0';
+  safe_strncpy (eth->name, cp, MAXNAMELEN);
 
   return 0;
 
@@ -463,8 +459,7 @@ add_manuf_name (u_char * addr, char * name)
     }
 
   memcpy (tp->addr, addr, sizeof (tp->addr));
-  strncpy (tp->name, name, MAXMANUFLEN);
-  tp->name[MAXMANUFLEN - 1] = '\0';
+  safe_strncpy (tp->name, name, MAXMANUFLEN);
   tp->next = NULL;
 
 }				/* add_manuf_name */
@@ -505,9 +500,7 @@ initialize_ethers (void)
    */
   if (g_pethers_path == NULL)
     {
-      g_pethers_path = g_malloc (strlen (get_home_dir ()) +
-				 strlen (EPATH_PERSONAL_ETHERS) + 2);
-      sprintf (g_pethers_path, "%s/%s",
+      g_strdup_printf (g_pethers_path, "%s/%s",
 	       get_home_dir (), EPATH_PERSONAL_ETHERS);
     }
 
@@ -571,9 +564,9 @@ eth_name_lookup (const u_char * addr)
       /* unknown name */
 
       if ((manufp = manuf_name_lookup (addr)) == NULL)
-	sprintf (tp->name, "%s", ether_to_str ((guint8 *) addr));
+	snprintf (tp->name, MAXNAMELEN, "%s", ether_to_str ((guint8 *) addr));
       else
-	sprintf (tp->name, "%s_%02x:%02x:%02x",
+	snprintf (tp->name, MAXNAMELEN, "%s_%02x:%02x:%02x",
 		 manufp->name, addr[3], addr[4], addr[5]);
 
       tp->is_name_from_file = FALSE;
@@ -581,12 +574,11 @@ eth_name_lookup (const u_char * addr)
     }
   else
     {
-      strncpy (tp->name, eth->name, MAXNAMELEN);
-      tp->name[MAXNAMELEN - 1] = '\0';
+      safe_strncpy (tp->name, eth->name, MAXNAMELEN);
       tp->is_name_from_file = TRUE;
     }
 
-  return (tp->name);
+  return (tp->name); 
 
 }				/* eth_name_lookup */
 
@@ -611,7 +603,7 @@ get_udp_port (u_int port)
 	{
 	  cur = &str[0][0];
 	}
-      sprintf (cur, "%d", port);
+      snprintf (cur, MAXNAMELEN, "%d", port);
       return cur;
     }
 
@@ -639,7 +631,7 @@ get_tcp_port (u_int port)
 	{
 	  cur = &str[0][0];
 	}
-      sprintf (cur, "%d", port);
+      snprintf (cur, MAXNAMELEN, "%d", port);
       return cur;
     }
 
@@ -691,7 +683,7 @@ get_manuf_name (u_char * addr)
 	{
 	  cur = &str[0][0];
 	}
-      sprintf (cur, "%02x:%02x:%02x", addr[0], addr[1], addr[2]);
+      snprintf (cur, MAXMANUFLEN, "%02x:%02x:%02x", addr[0], addr[1], addr[2]);
       return cur;
     }
 

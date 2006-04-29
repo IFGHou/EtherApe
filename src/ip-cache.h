@@ -62,7 +62,5 @@ void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
 struct ipcache_item *ipcache_findid (unsigned short id);
 
 
-char *safe_strncpy (char *dst, const char *src, size_t maxlen);
-char *safe_strncat (char *dst, const char *src, size_t maxlen);
 char *strtdiff (char *d, size_t lend, long signeddiff);
 char *strlongip (unsigned int ip);

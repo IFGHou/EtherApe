@@ -60,8 +60,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <ip-cache.h>
-#include <direct_resolve.h>
+#include "ip-cache.h"
+#include "util.h"
+#include "direct_resolve.h"
 
 
 

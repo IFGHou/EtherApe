@@ -94,6 +94,9 @@
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
 
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 

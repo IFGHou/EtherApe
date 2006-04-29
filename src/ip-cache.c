@@ -47,6 +47,7 @@
 #include <errno.h>
 #include "globals.h"
 #include "ip-cache.h"
+#include "util.h"
 
 #ifdef NO_STRERROR
 extern int sys_nerr;
@@ -82,31 +83,6 @@ static void ipcache_unlinkresolve (struct ipcache_item *rp);
 	-----------------------------------------   
 */
 
-
-/* safe strncpy */
-char *
-safe_strncpy (char *dst, const char *src, size_t maxlen)
-{
-  
-if (maxlen < 1)
-    return dst;
-  strncpy (dst, src, maxlen - 1);	/* no need to copy that last char */
-  dst[maxlen - 1] = '\0';
-  return dst;
-}
-
-/* safe strncat */
-char *
-safe_strncat (char *dst, const char *src, size_t maxlen)
-{
-  
-size_t lendst = strlen (dst);
-  if (lendst >= maxlen)
-    return dst;			/* already full, nothing to do */
-  strncat (dst, src, maxlen - strlen (dst));
-  dst[maxlen - 1] = '\0';
-  return dst;
-}
 
 /* converts a long containing a time value expressed in second to a (passed) string buffer and returns it */
 char *
@@ -571,15 +547,14 @@ ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
   /* first, copies the resolved (fqdn) name */ 
   if (ipname)
      {
-        rp->fq_hostname =
-          (char *) malloc (strlen (ipname) + 1);
+        rp->fq_hostname = (char *) malloc (strlen (ipname) + 1);
         if (!rp->fq_hostname)
           {
             fprintf (stderr, "malloc() error: %s\n",
                      strerror (errno));
             exit (-1);
           }
-        strcpy (rp->fq_hostname, ipname);
+        strcpy (rp->fq_hostname, ipname); /* safe - buffer allocated */
     }
   /* extracting the base name from fqdn */
   if (rp->fq_hostname && !rp->only_hostname)
@@ -592,9 +567,8 @@ ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
 	  if (rp->only_hostname)
 	    {
 	      /* copies only basename */
-	      strncpy (rp->only_hostname, rp->fq_hostname,
+	      safe_strncpy (rp->only_hostname, rp->fq_hostname,
 		       tmp - rp->fq_hostname);
-	      rp->only_hostname[tmp - rp->fq_hostname] = '\0';
 	    }
 	}
     }
