@@ -390,8 +390,7 @@ if (maxlen < 1)
 char *
 safe_strncat (char *dst, const char *src, size_t maxlen)
 {
-  
-size_t lendst = strlen (dst);
+  size_t lendst = strlen (dst);
   if (lendst >= maxlen)
     return dst;			/* already full, nothing to do */
   strncat (dst, src, maxlen - strlen (dst));

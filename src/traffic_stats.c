@@ -108,6 +108,39 @@ void packet_list_item_delete(packet_list_item_t *pli)
     }
 }
 
+/* removes a packet from a list of packets, destroying it if necessary
+ * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
+ * if the list is empty */
+GList *
+packet_list_remove(GList *item_to_remove)
+{
+  packet_list_item_t *litem;
+
+  g_assert(item_to_remove);
+  
+  litem = item_to_remove->data;
+
+  packet_list_item_delete(litem);
+  item_to_remove->data = NULL;
+
+  /* TODO I have to come back here and make sure I can't make
+   * this any simpler */
+  if (item_to_remove->prev)
+    {
+      /* current packet is not at head */
+      GList *item = item_to_remove;
+      item_to_remove = item_to_remove->prev; 
+      g_list_delete_link (item_to_remove, item);
+    }
+  else
+    {
+      /* packet is head of list */
+      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
+    }
+
+  return item_to_remove;
+}
+
 /***************************************************************************
  *
  * basic_stats_t implementation
@@ -150,6 +183,22 @@ basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
 
   /* average in bps, so we multiply by 8 and 1000000 */
   tf_stat->average = 8000000 * tf_stat->aver_accu / avg_usecs;
+}
+
+/* dumps to file the current stats */
+void
+basic_stats_dump(basic_stats_t *tf_stat, FILE *fout)
+{
+  g_assert(tf_stat);
+  g_assert(fout);
+
+  fprintf(fout, 
+    "<stats><avg>%f</avg><tot_avg>%f</tot_avg><total>%f</total><pkts>%f</pkts></stats>",
+  tf_stat->average,
+  tf_stat->aver_accu,
+  tf_stat->accumulated,
+  tf_stat->accu_packets);
+  /*struct timeval last_time; */
 }
 
 /***************************************************************************
@@ -311,37 +360,4 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double p
 
   /* no packet active remaining */
   return FALSE;
-}
-
-/* removes a packet from a list of packets, destroying it if necessary
- * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
- * if the list is empty */
-GList *
-packet_list_remove(GList *item_to_remove)
-{
-  packet_list_item_t *litem;
-
-  g_assert(item_to_remove);
-  
-  litem = item_to_remove->data;
-
-  packet_list_item_delete(litem);
-  item_to_remove->data = NULL;
-
-  /* TODO I have to come back here and make sure I can't make
-   * this any simpler */
-  if (item_to_remove->prev)
-    {
-      /* current packet is not at head */
-      GList *item = item_to_remove;
-      item_to_remove = item_to_remove->prev; 
-      g_list_delete_link (item_to_remove, item);
-    }
-  else
-    {
-      /* packet is head of list */
-      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
-    }
-
-  return item_to_remove;
 }

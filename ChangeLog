@@ -1,3 +1,12 @@
+2006-04-29 07:58  bchiara
+
+	* ChangeLog, config.h.in, configure.in, src/capture.c,
+	src/decode_proto.c, src/direct_resolve.c, src/ip-cache.c,
+	src/ip-cache.h, src/names.c, src/names_netbios.c,
+	src/names_netbios.h, src/resolv.c, src/util.c, src/util.h: better
+	control of netbios name decoding, configure tweaks, enhanced space
+	checks
+
 2006-04-25 07:08  bchiara
 
 	* configure.in, src/Makefile.am, src/thread_resolve.c: changes to
