@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-26 07:23+0200\n"
+"POT-Creation-Date: 2006-05-06 09:43+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -145,7 +145,7 @@ msgstr "Live apparaat %s geopend voor luisteren. pcap_fd: %d"
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr "Kan niet beide apparaten openen: %s, %s. Kies er één."
 
-#: src/capture.c:249
+#: src/capture.c:250
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Fout bij het openen van %s : %s"
@@ -461,22 +461,22 @@ msgstr "Knooppunt timeout (ms)"
 msgid "Link timed out"
 msgstr "Knooppunt timeout (ms)"
 
-#: src/decode_proto.c:1081
+#: src/decode_proto.c:1082
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr "Kon %s niet openen. UDP en TCP typen zullen niet worden herkend"
 
-#: src/decode_proto.c:1087
+#: src/decode_proto.c:1088
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr "TCP en UDP wordt ingelezen vanuit %s"
 
-#: src/decode_proto.c:1133
+#: src/decode_proto.c:1134
 #, c-format
 msgid "Unable to  parse line %s"
 msgstr "Ik begrijp deze regel niet (%s)."
 
-#: src/decode_proto.c:1157
+#: src/decode_proto.c:1158
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr "DDP protocollen werken niet in %s"
@@ -516,16 +516,18 @@ msgstr ""
 msgid "captured data insufficient, aborting get_tcp_name"
 msgstr ""
 
-#: src/names.c:533 src/names.c:549
+#: src/names.c:547
 msgid "captured data insufficient, aborting get_ipxsap_name"
 msgstr ""
 
-#: src/names.c:576 src/names.c:594 src/names.c:602
-msgid "captured data insufficient, aborting get_nbss_name "
+#: src/names.c:590
+msgid ""
+"captured data insufficient, aborting get_nbss_name (on decoding netbios "
+"lenght)"
 msgstr ""
 
-#: src/names.c:649
-msgid "captured data insufficient, aborting get_nbdgm_name "
+#: src/names.c:598
+msgid "captured data insufficient, aborting get_nbss_name (on decoding name)"
 msgstr ""
 
 #: src/node.c:77

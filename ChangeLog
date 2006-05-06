@@ -1,3 +1,8 @@
+2006-04-30 07:25  bchiara
+
+	* ChangeLog, src/traffic_stats.c, src/traffic_stats.h, src/util.c:
+	beginning of file dump of stats
+
 2006-04-29 07:58  bchiara
 
 	* ChangeLog, config.h.in, configure.in, src/capture.c,

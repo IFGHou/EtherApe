@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-26 07:23+0200\n"
+"POT-Creation-Date: 2006-05-06 09:43+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -169,7 +169,7 @@ msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 
 # src/capture.c:922
-#: src/capture.c:249
+#: src/capture.c:250
 #, fuzzy, c-format
 msgid "Error opening %s : %s"
 msgstr "Erreur au périphérique: %s"
@@ -520,23 +520,23 @@ msgstr "Timeout pour les noeuds (ms)"
 msgid "Link timed out"
 msgstr "Timeout pour les noeuds (ms)"
 
-#: src/decode_proto.c:1081
+#: src/decode_proto.c:1082
 #, c-format
 msgid "Failed to open %s. No TCP or UDP services will be recognized"
 msgstr ""
 
-#: src/decode_proto.c:1087
+#: src/decode_proto.c:1088
 #, c-format
 msgid "Reading TCP and UDP services from %s"
 msgstr ""
 
 # src/capture.c:948
-#: src/decode_proto.c:1133
+#: src/decode_proto.c:1134
 #, fuzzy, c-format
 msgid "Unable to  parse line %s"
 msgstr "Impossible d'analyser le filtre (%s)."
 
-#: src/decode_proto.c:1157
+#: src/decode_proto.c:1158
 #, c-format
 msgid "DDP protocols not supported in %s"
 msgstr ""
@@ -578,16 +578,18 @@ msgstr ""
 msgid "captured data insufficient, aborting get_tcp_name"
 msgstr ""
 
-#: src/names.c:533 src/names.c:549
+#: src/names.c:547
 msgid "captured data insufficient, aborting get_ipxsap_name"
 msgstr ""
 
-#: src/names.c:576 src/names.c:594 src/names.c:602
-msgid "captured data insufficient, aborting get_nbss_name "
+#: src/names.c:590
+msgid ""
+"captured data insufficient, aborting get_nbss_name (on decoding netbios "
+"lenght)"
 msgstr ""
 
-#: src/names.c:649
-msgid "captured data insufficient, aborting get_nbdgm_name "
+#: src/names.c:598
+msgid "captured data insufficient, aborting get_nbss_name (on decoding name)"
 msgstr ""
 
 # src/capture.c:749
