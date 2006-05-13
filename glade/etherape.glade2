@@ -44,8 +44,7 @@
 	      <child>
 		<widget class="GtkMenuItem" id="file1">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">_File</property>
-		  <property name="use_underline">True</property>
+		  <property name="stock_item">GNOMEUIINFO_MENU_FILE_TREE</property>
 
 		  <child>
 		    <widget class="GtkMenu" id="file1_menu">
@@ -67,7 +66,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkMenuItem" id="separador2">
+			<widget class="GtkSeparatorMenuItem" id="separador2">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -142,7 +141,7 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkMenuItem" id="separator3">
+				<widget class="GtkSeparatorMenuItem" id="separator3">
 				  <property name="visible">True</property>
 				</widget>
 			      </child>
@@ -197,13 +196,14 @@
 
 			  <child>
 			    <widget class="GtkMenu" id="interfaces_menu">
+
 			    </widget>
 			  </child>
 			</widget>
 		      </child>
 
 		      <child>
-			<widget class="GtkMenuItem" id="separator2">
+			<widget class="GtkSeparatorMenuItem" id="separator2">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -218,7 +218,7 @@
 			  <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image3">
+			    <widget class="GtkImage" id="image9">
 			      <property name="visible">True</property>
 			      <property name="pixbuf">play.xpm</property>
 			      <property name="xalign">0.5</property>
@@ -240,7 +240,7 @@
 			  <signal name="activate" handler="on_pause_menuitem_activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image4">
+			    <widget class="GtkImage" id="image10">
 			      <property name="visible">True</property>
 			      <property name="pixbuf">pause.xpm</property>
 			      <property name="xalign">0.5</property>
@@ -263,7 +263,7 @@
 			  <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image5">
+			    <widget class="GtkImage" id="image11">
 			      <property name="visible">True</property>
 			      <property name="pixbuf">stop.xpm</property>
 			      <property name="xalign">0.5</property>
@@ -282,8 +282,7 @@
 	      <child>
 		<widget class="GtkMenuItem" id="view1">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">_View</property>
-		  <property name="use_underline">True</property>
+		  <property name="stock_item">GNOMEUIINFO_MENU_VIEW_TREE</property>
 
 		  <child>
 		    <widget class="GtkMenu" id="view1_menu">
@@ -300,7 +299,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkMenuItem" id="separator2">
+			<widget class="GtkSeparatorMenuItem" id="separator2">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -345,8 +344,7 @@
 	      <child>
 		<widget class="GtkMenuItem" id="help1">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">_Help</property>
-		  <property name="use_underline">True</property>
+		  <property name="stock_item">GNOMEUIINFO_MENU_HELP_TREE</property>
 
 		  <child>
 		    <widget class="GtkMenu" id="help1_menu">
