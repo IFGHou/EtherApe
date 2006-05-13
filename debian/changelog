@@ -1,12 +1,190 @@
-etherape (0.5.6-4unoff) unstable; urgency=low
+etherape (0.9.4-1) unstable; urgency=low
 
-  * (unofficial package, check the version number)
+  * New upstream release. (closes: #360001)
 
- -- Your Name <your.name@your.domain>  Sun, 26 Mar 2000 18:21:58 +0200
+ -- Frederic Peters <fpeters@debian.org>  Thu, 30 Mar 2006 08:40:00 +0200
+
+etherape (0.9.0-9) unstable; urgency=low
+
+  * glade/etherape.glade2: reverted to original glade-2 file since libglade2
+    got fixed. (closes: #295154)
+  * glade/etherape.glade2: manually edited to switch top-leve menu elements to
+    stock GTK.
+  * po/*.po: switched to UTF-8 (closes: #284722)
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 14 Feb 2005 10:26:26 +0100
+
+etherape (0.9.0-8) unstable; urgency=low
+
+  * glade/etherape.glade2: load/save in glade-2 to get it working with new
+    libglade2 version. (closes: #293106)
+  * glade/etherape.glade2: switched top-level menu elements to stock GTK.
+  * src/capture.c: applied patch from Andreas Jochens to compile with gcc 4.0.
+    (closes: #284792)
+  * debian/control: lower-cased first letter of description synopsis
+  * debian/control: explicit over libpcap-dev package -> libpcap0.7-dev
+  * debian/control: upped policy version to 3.6.1
+  * po/fr.po: switched to UTF-8 and filled some missing translations (enough
+    to closes: #284722)
+  * debian/rules: moved from dh_installmanpages to dh_installman
+
+ -- Frederic Peters <fpeters@debian.org>  Sat,  5 Feb 2005 18:43:11 +0100
+
+etherape (0.9.0-7) unstable; urgency=low
+
+  * src/main.c: fixed gnome_program_init call (thanks to Matthew Mueller)
+    (closes: #255637)
+
+ -- Frederic Peters <fpeters@debian.org>  Tue, 22 Jun 2004 08:52:15 +0200
+
+etherape (0.9.0-6) unstable; urgency=low
+
+  * Check for __res_mkquery in libc; patch from Goswin von Brederlow.
+    (closes: #249809)
+  * debian/menu: quote some strings
+
+ -- Frederic Peters <fpeters@debian.org>  Fri, 28 May 2004 06:33:13 +0000
+
+etherape (0.9.0-5) unstable; urgency=low
+
+  * Added .desktop file to launch etherape as root (through gksu) (only shown
+    if gksu is available) (closes: #150787)
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 17 May 2004 10:26:41 +0200
+
+etherape (0.9.0-4) unstable; urgency=low
+
+  * debian/control: Changed section to gnome.
+  * etherape.desktop: Added category (closes: #207921)
+  * Makefile.am: changed directory for .desktop files to conform to
+    the freedesktop.org Desktop Menu Specification.
+
+ -- Frederic Peters <fpeters@debian.org>  Sat, 30 Aug 2003 22:59:11 +0200
+
+etherape (0.9.0-3) unstable; urgency=low
+
+  * Applied patch from Nathan R. Valentine to provide a fullscreen option.
+    (closes: #206582)
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 21 Aug 2003 19:15:46 +0200
+
+etherape (0.9.0-2) unstable; urgency=low
+
+  * The Makefile could produce a package without binary.  Since I can't test
+    this (only happens on m68k) and can't see what to change in autoconf/make
+    I changed debian/rules (target install) to fail if no /usr/bin/etherape
+    is found.  (closes: #189159)
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 16 Apr 2003 10:04:47 +0200
+
+etherape (0.9.0-1) unstable; urgency=low
+
+  * New upstream release. (closes: #183743)
+
+ -- Frederic Peters <fpeters@debian.org>  Sat,  8 Mar 2003 00:13:56 +0100
+
+etherape (0.8.2-4) unstable; urgency=low
+
+  * Rebuilt with new libpcap0.7. (closes: #156188)
+
+ -- Frederic Peters <fpeters@debian.org>  Sat, 10 Aug 2002 19:19:07 +0200
+
+etherape (0.8.2-3) unstable; urgency=low
+
+  * debian/control: Fixed typo in description. (closes: #135419)
+
+ -- Frederic Peters <fpeters@debian.org>  Sun, 24 Feb 2002 00:51:32 +0100
+
+etherape (0.8.2-2) unstable; urgency=low
+
+  * configure.in, src/Makefile.am: explicitely talks about libglade since
+    it moved due to Gnome 2 transition. (closes: #133713)
+  * debian/changelog: removed emacs lines at the end of the file.
+  * debian/copyright: fixed link to GPL.
+  * debian/control: bumped Standard-Versions to 3.5.6.
+  * doc/Makefile.am: removed build of manual since it was hardly finished
+    (see bug #118573) and no longer builds with current docbook tools.
+    I'll convert it to DocBook XML and clean it up for the next upload.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 13 Feb 2002 13:55:47 +0100
+
+etherape (0.8.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed,  8 Aug 2001 11:50:29 +0200
+
+etherape (0.7.4-1) unstable; urgency=low
+
+  * Yet Another New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 10 May 2001 09:01:12 +0200
+
+etherape (0.7.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed,  9 May 2001 09:23:13 +0200
+
+etherape (0.7.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Tue,  8 May 2001 09:26:44 +0200
+
+etherape (0.7.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Mon,  7 May 2001 15:51:58 +0200
+
+etherape (0.6.9-3) unstable; urgency=low
+
+  * Removed libdb2-dev from build dependencies since libgnome-dev already
+    depends upon libdb-dev. (closes: #96407)
+
+ -- Frederic Peters <fpeters@debian.org>  Mon,  7 May 2001 12:52:05 +0200
+
+etherape (0.6.9-2) unstable; urgency=low
+
+  * Added libdb2-dev to build dependencies. (closes: #96038)
+
+ -- Frederic Peters <fpeters@debian.org>  Wed,  2 May 2001 13:27:50 +0200
+
+etherape (0.6.9-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Fri, 27 Apr 2001 11:17:26 +0200
+
+etherape (0.6.7-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Tue, 24 Apr 2001 11:09:14 +0200
+
+etherape (0.6.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 23 Apr 2001 11:31:50 +0200
+
+etherape (0.6.1-1) unstable; urgency=low
+
+  * New upstream release. (closes: #80958)
+
+ -- Frederic Peters <fpeters@debian.org>  Tue, 17 Apr 2001 12:35:10 +0200
+
+etherape (0.5.7-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed,  4 Apr 2001 11:25:53 +0200
 
 etherape (0.5.6-4) unstable; urgency=low
 
   * debian/rules: added dh_installmenu so that menu entry is installed.
+  * (never uploaded)
 
  -- Frederic Peters <fpeters@debian.org>  Tue,  3 Apr 2001 10:08:53 +0200
 
@@ -111,6 +289,3 @@ etherape (0.2.9-1) unstable; urgency=low
 
  -- Frederic Peters <fpeters@debian.org>  Thu, 16 Mar 2000 23:35:05 +0100
  
-Local variables:
-mode: debian-changelog
-End:

@@ -1,5 +1,5 @@
-?package(etherape):needs=X11 section=Apps/Net\
+?package(etherape):needs="X11" section="Apps/Net"\
   title="EtherApe" \
   longtitle="EtherApe: graphical network monitor" \
   command="/usr/bin/etherape" \
-  icon="/usr/share/pixmaps/etherape.png"
+  icon="/usr/share/pixmaps/etherape.xpm"
