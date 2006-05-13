@@ -84,7 +84,7 @@ init_menus (void)
   /* Set up a hidden dummy interface to set when there is no active
    * interface */
   item = gtk_radio_menu_item_new_with_label (group, "apedummy");
-  group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+  group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
   gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
 
   /* Set up the real interfaces menu entries */
@@ -93,7 +93,7 @@ init_menus (void)
       item =
 	gtk_radio_menu_item_new_with_label (group,
 					    (gchar *) (interfaces->data));
-      group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+      group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
       gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
       gtk_widget_show (item);
       g_signal_connect_swapped (G_OBJECT (item), "activate",
@@ -320,6 +320,14 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 /* View menu */
 
+void
+on_full_screen_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+{
+  if (menuitem->active)
+    gtk_window_fullscreen((GtkWindow *)app1);
+  else
+    gtk_window_unfullscreen((GtkWindow *)app1);
+} /* on_full_screen_activate */
 
 
 void

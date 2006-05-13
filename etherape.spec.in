@@ -1,24 +1,31 @@
 # Note that this is NOT a relocatable package
-%define ver      @VERSION@
+
+# scrollkeeper creates additional *private* files on first call, and I 
+# found no way of purging them, so to build correctly, I must disable
+# the useful unpackaged files check
+%define _unpackaged_files_terminate_build 0
+
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
 %define confdir /etc
 
-Summary: Graphical network viewer modeled after etherman.
-Name: etherape
-Version: %ver
-Release: %rel
-License: GPL
-Group: Applications/Networking
-Source: http://download.sourceforge.net/etherape/etherape-%{ver}.tar.gz
-# Source1: ee-stdimg-new.xpm
+Summary: 	Graphical network viewer modeled after etherman.
+Name: 		etherape
+Version: 	@VERSION@
+Release: 	%rel
+License: 	GPL
+Group: 		Applications/Networking
+URL: 		http://etherape.sourceforge.net/
+Source: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 
 BuildRoot: /var/tmp/etherape-%{PACKAGE_VERSION}-root
-URL: http://etherape.sourceforge.net/
 Docdir: %{prefix}/doc
+BuildRequires: scrollkeeper
 #Requires: gnome-libs >= 1.0.0
 #Requires: libglade >= 0.11
+Requires(post): scrollkeeper
+Requires(postun): scrollkeeper
 
 %description
 Etherape is a graphical network monitor for Unix modeled after
@@ -29,14 +36,14 @@ devices. It can filter traffic to be shown, and can read traffic
 from a file as well as live from the network. 
 
 %changelog
+* Sat May 6 2006 R.Ghetta <bchiara@users.sf.net>
+- a bit of modernization
+
 * Mon Apr 3 2000 Juan Toledo <toledo@sourceforge.net>
 - Initial spec file copied from electric eyes
 
 %prep
 %setup -q
-
-# insert new rh logo image
-#cp %{SOURCE1} stdimg.xpm
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=%{confdir} --enable-static-pcap
@@ -51,6 +58,12 @@ strip $RPM_BUILD_ROOT%{prefix}/bin/* ||:
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+if [ -x %{_bindir}/scrollkeeper-update ]; then %{_bindir}/scrollkeeper-update -q || true ; fi
+
+%postun 
+if [ -x %{_bindir}/scrollkeeper-update ]; then %{_bindir}/scrollkeeper-update -q|| true ; fi
 
 %files
 %defattr(-, root, root)

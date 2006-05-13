@@ -35,7 +35,7 @@ confdir = $(sysconfdir)/etherape
 conf_DATA =					\
 	services
 
-Developmentdir = $(datadir)/gnome/apps/Applications
+Developmentdir = $(datadir)/applications
 Development_DATA =			\
 	etherape.desktop
 
@@ -59,6 +59,7 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	ChangeLog		\
 	etherape.spec		\
 	etherape.spec.in	\
+	etherape.desktop.in	\
 	html/NEWS.html		\
 	html/FAQ.html		\
 	html/bug-reporting.html \

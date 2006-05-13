@@ -1,3 +1,19 @@
+2006-05-13 20:27  bchiara
+
+	* glade/etherape.glade2: use stock objects for std menu names.
+	Borrowed by debian package, thanks to F.Peters
+
+2006-05-13 19:44  bchiara
+
+	* debian/: changelog, control, copyright, etherape-root.desktop,
+	etherape.xpm, files, manpages, menu, rules, watch: aligned to
+	latest debian package (maintaner F.Peters)
+
+2006-05-06 08:02  bchiara
+
+	* ChangeLog, NEWS, html/NEWS.html, po/es.po, po/etherape.pot,
+	po/fr.po, po/nl.po, po/tr.po: release 0.9.5
+
 2006-04-30 07:25  bchiara
 
 	* ChangeLog, src/traffic_stats.c, src/traffic_stats.h, src/util.c:

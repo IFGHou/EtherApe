@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.5])
+AC_INIT([etherape],[0.9.6])
 AC_CONFIG_SRCDIR(README)
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
@@ -180,6 +180,7 @@ dnl see if the linker allows "--export-dynamic"
 AC_CONFIG_FILES([Makefile
 	   po/Makefile.in
            etherape.spec
+           etherape.desktop
            glade/Makefile
            src/Makefile
 	   m4/Makefile
