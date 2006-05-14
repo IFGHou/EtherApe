@@ -129,7 +129,7 @@ gboolean need_reposition;	/* Force a diagram relayout */
 gint diagram_timeout;		/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
 
-struct
+struct pref_struct
 {
 
 /* General settings */

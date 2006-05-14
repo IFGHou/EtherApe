@@ -196,7 +196,6 @@
 
 			  <child>
 			    <widget class="GtkMenu" id="interfaces_menu">
-
 			    </widget>
 			  </child>
 			</widget>
@@ -750,6 +749,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	  <child>
 	    <widget class="GtkButton" id="save_pref_button">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Saves changes to preferences file</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Save</property>
@@ -764,6 +764,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	  <child>
 	    <widget class="GtkButton" id="ok_pref_button">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Confirm changes</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-ok</property>
@@ -776,22 +777,9 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="ok_apply_button">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-apply</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">0</property>
-	      <signal name="clicked" handler="on_apply_pref_button_clicked"/>
-	    </widget>
-	  </child>
-
-	  <child>
 	    <widget class="GtkButton" id="cancel_pref_button">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Cancel changes</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-cancel</property>

@@ -31,7 +31,9 @@ static gint version_compare (const gchar * a, const gchar * b);
 
 
 static gboolean colors_changed = FALSE;
+static gboolean restarted_capture = FALSE; /* true if the capture was restarted */
 static GtkWidget *diag_pref = NULL;		/* Pointer to the diagram configuration window */
+static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
 
 
 /* loads configuration from .gnome/Etherape */
@@ -178,6 +180,149 @@ save_config (const char *prefix)
   g_my_info (_("Preferences saved"));
 
 }				/* save_config */
+
+/* duplicates a config */
+struct pref_struct *
+duplicate_config(const struct pref_struct *src)
+{
+  struct pref_struct *t;
+
+  t = g_malloc(sizeof(struct pref_struct));
+
+  t->input_file = NULL;
+  t->node_color=NULL;
+  t->text_color=NULL;
+  t->fontname=NULL;
+  t->n_colors=0;
+  t->colors = NULL;
+  t->interface=NULL;
+  t->filter=NULL;
+
+  copy_config(t, src);
+
+  return t;
+}
+
+/* releases all memory allocated for internal fields */
+void 
+empty_config(struct pref_struct *t)
+{
+  g_free(t->input_file);
+  t->input_file = NULL;
+  g_free(t->node_color);
+  t->node_color=NULL;
+  g_free(t->text_color);
+  t->text_color=NULL;
+  g_free(t->fontname);
+  t->fontname=NULL;
+
+  while (t->colors && t->n_colors)
+    {
+      g_free (t->colors[t->n_colors - 1]);
+      t->n_colors--;
+    }
+  g_free (t->colors);
+  t->colors = NULL;
+
+  g_free(t->interface);
+  t->interface=NULL;
+  g_free(t->filter);
+  t->filter=NULL;
+}
+
+/* copies a configuration from src to tgt */
+void 
+copy_config(struct pref_struct *tgt, const struct pref_struct *src)
+{
+  /* first, reset old data */
+  empty_config(tgt);
+
+  /* then copy */
+  tgt->input_file = g_strdup(src->input_file);
+  tgt->name_res=src->name_res;
+  tgt->mode=src->mode;
+  tgt->diagram_only = src->diagram_only;
+  tgt->group_unk = src->group_unk;
+  tgt->nofade = src->nofade;
+  tgt->antialias = src->antialias;
+  tgt->cycle = src->cycle;
+  tgt->stationary = src->stationary;
+  tgt->new_infodlg = src->new_infodlg;
+  tgt->node_radius_multiplier = src->node_radius_multiplier;
+  tgt->link_width_multiplier = src->link_width_multiplier;
+  tgt->size_mode = src->size_mode;
+  tgt->node_size_variable = src->node_size_variable;
+  tgt->node_color=g_strdup(src->node_color);
+  tgt->text_color=g_strdup(src->text_color);
+  tgt->fontname=g_strdup(src->fontname);
+  tgt->stack_level = src->stack_level;
+  tgt->node_limit = src->node_limit;
+
+  tgt->n_colors = src->n_colors;
+  if (tgt->n_colors)
+    {
+      gint i;
+      tgt->colors = g_malloc (sizeof (gchar *) * tgt->n_colors);
+      for (i=0; i<src->n_colors ; ++i)
+        tgt->colors[i] = g_strdup(src->colors[i]);
+    }
+
+  tgt->proto_timeout_time = src->proto_timeout_time;     
+  tgt->gui_node_timeout_time = src->gui_node_timeout_time;
+  tgt->node_timeout_time = src->node_timeout_time;
+  tgt->proto_node_timeout_time = src->proto_node_timeout_time;
+  tgt->gui_link_timeout_time = src->gui_link_timeout_time;
+  tgt->link_timeout_time = src->link_timeout_time;
+  tgt->proto_link_timeout_time = src->proto_link_timeout_time;
+
+  tgt->refresh_period = src->refresh_period;
+  tgt->averaging_time = src->averaging_time;
+
+  tgt->interface = g_strdup(src->interface);
+  tgt->filter = g_strdup(src->filter);
+
+  tgt->is_debug = src->is_debug;
+  tgt->zero_delay = src->zero_delay;
+}
+
+static void
+confirm_changes(void)
+{
+  GtkWidget *widget = NULL;
+
+  widget = glade_xml_get_widget (xml, "filter_entry");
+  on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
+  widget = glade_xml_get_widget (xml, "");
+
+  /* add proto name to history */
+  gnome_entry_append_history (GNOME_ENTRY
+			      (glade_xml_get_widget
+			       (xml, "filter_gnome_entry")), FALSE,
+			      pref.filter);
+
+  if (colors_changed)
+    {
+      color_list_to_pref ();
+      delete_gui_protocols ();
+      colors_changed = FALSE;
+    }
+}				/* confirm_changes */
+
+static void
+hide_pref_dialog(void)
+{
+  /* purge temporary */
+  empty_config(tmp_pref);
+  g_free(tmp_pref);
+  tmp_pref = NULL;
+
+  /* reset flags */
+  colors_changed = FALSE;
+  restarted_capture = FALSE;
+
+  /* hide dialog */
+  gtk_widget_hide (diag_pref);
+}
 
 void
 initialize_pref_controls(void)
@@ -330,6 +475,9 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkEditable *entry;
   gint position = 0;
+
+  /* saves current prefs to a temporary */
+  tmp_pref = duplicate_config(&pref);
 
   entry = GTK_EDITABLE (glade_xml_get_widget (xml, "filter_entry"));
   gtk_editable_delete_text (entry, 0, -1);
@@ -539,6 +687,9 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 {
   enum status_t old_status = status;
 
+  /* record the restart */
+  restarted_capture = TRUE;
+
   if ((status == PLAY) || (status == PAUSE))
     gui_stop_capture ();
 
@@ -554,6 +705,9 @@ on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
   enum status_t old_status = status;
 
+  /* record the restart */
+  restarted_capture = TRUE;
+
   if ((status == PLAY) || (status == PAUSE))
     gui_stop_capture ();
 
@@ -564,52 +718,44 @@ on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 }				/* on_group_unk_check_toggled */
 
 /*
- * TODO
- * I have to change the whole preferences workings, so that OK, apply and 
- * cancel have all the proper semantics
+ * confirm changes
  */
 void
 on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  on_apply_pref_button_clicked (button, NULL);
-  gtk_widget_hide (diag_pref);
+  confirm_changes();
+  hide_pref_dialog();
 }				/* on_ok_pref_button_clicked */
 
-void
-on_apply_pref_button_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *widget = NULL;
 
-  widget = glade_xml_get_widget (xml, "filter_entry");
-  on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = glade_xml_get_widget (xml, "");
-
-  /* add proto name to history */
-  gnome_entry_append_history (GNOME_ENTRY
-			      (glade_xml_get_widget
-			       (xml, "filter_gnome_entry")), FALSE,
-			      pref.filter);
-
-  if (colors_changed)
-    {
-      color_list_to_pref ();
-      delete_gui_protocols ();
-      colors_changed = FALSE;
-    }
-}				/* on_apply_pref_button_clicked */
-
+/* reset configuration to saved and close dialog */
 void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  gtk_widget_hide (diag_pref);
+  enum status_t old_status = status;
 
+  if (restarted_capture)
+    {
+      /* user changed options who can be changed only with capture stopped ... */
+      if ((status == PLAY) || (status == PAUSE))
+        gui_stop_capture ();
+    }
+  
+  /* reset configuration to saved */
+  copy_config(&pref, tmp_pref);
+  
+  if (restarted_capture && old_status == PLAY)
+    gui_start_capture ();
+
+  hide_pref_dialog();
 }				/* on_cancel_pref_button_clicked */
 
 void
 on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  on_apply_pref_button_clicked (button, user_data);	/* to save we simulate apply */
+  confirm_changes();	/* to save we simulate confirmation */
   save_config ("/Etherape/");
+  hide_pref_dialog();
 }				/* on_save_pref_button_clicked */
 
 

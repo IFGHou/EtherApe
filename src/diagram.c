@@ -274,7 +274,7 @@ diagram_update_nodes(GtkWidget * canvas)
       g_tree_foreach(canvas_nodes,
 		       (GTraverseFunc) reposition_canvas_nodes,
 		       canvas);
-      need_reposition = 0;
+      need_reposition = FALSE;
     }
 }
 

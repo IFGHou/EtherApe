@@ -1,3 +1,14 @@
+2006-05-14 06:41  bchiara
+
+	* patches/: README.patch, fade.patch: Etherape already does fading
+	(even if differently from this patch)
+
+2006-05-13 20:31  bchiara
+
+	* ChangeLog, Makefile.am, configure.in, etherape.desktop,
+	etherape.desktop.in, etherape.spec.in, src/menus.c, src/menus.h:
+	updated .desktop file to standard format, updated spec file
+
 2006-05-13 20:27  bchiara
 
 	* glade/etherape.glade2: use stock objects for std menu names.

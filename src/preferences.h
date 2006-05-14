@@ -28,6 +28,10 @@
 void load_config (const char *prefix);
 void save_config (const char * prefix);
 
+struct pref_struct *duplicate_config(const struct pref_struct *src);
+void empty_config(struct pref_struct *t);
+void copy_config(struct pref_struct *tgt, const struct pref_struct *src);
+
 void initialize_pref_controls(void);
 
 /* callbacks */
@@ -56,7 +60,6 @@ void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				     gpointer user_data);
 void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
-void on_apply_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
 
