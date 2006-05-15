@@ -63,7 +63,6 @@ AC_CHECK_HEADERS([net/if.h], [], [],
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-AC_TYPE_MODE_T
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
@@ -128,6 +127,7 @@ AC_ETHEREAL_PCAP_CHECK
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
+AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([snprintf alarm floor gettimeofday inet_ntoa localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr])
 
@@ -168,14 +168,13 @@ else
 fi
 
 dnl see if the linker allows "--export-dynamic"
-#AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
-#tmp_LDFLAGS=$LDFLAGS
-#LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
-#AC_LINK_IFELSE([int main(int argc, char *argv[]){return 0;}],
-#  AC_MSG_RESULT([yes]),
-#  AC_MSG_RESULT([no])
-#  LDFLAGS=$tmp_LDFLAGS)
-
+AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
+tmp_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
+AC_LINK_IFELSE([int main(int argc, char *argv[]){return 0;}],
+  AC_MSG_RESULT([yes]),
+  AC_MSG_RESULT([no])
+  LDFLAGS=$tmp_LDFLAGS)
 
 AC_CONFIG_FILES([Makefile
 	   po/Makefile.in

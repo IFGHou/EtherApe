@@ -5,7 +5,7 @@
 # the useful unpackaged files check
 %define _unpackaged_files_terminate_build 0
 
-%define  RELEASE 1
+%define  RELEASE 2
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
 %define confdir /etc

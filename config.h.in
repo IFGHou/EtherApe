@@ -30,6 +30,9 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
+#undef HAVE_DOPRNT
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -160,6 +163,9 @@
 /* Define to 1 if the system has the type `u_short'. */
 #undef HAVE_U_SHORT
 
+/* Define to 1 if you have the `vprintf' function. */
+#undef HAVE_VPRINTF
+
 /* Name of package */
 #undef PACKAGE
 
@@ -207,9 +213,6 @@
 
 /* Define to rpl_malloc if the replacement function should be used. */
 #undef malloc
-
-/* Define to `int' if <sys/types.h> does not define. */
-#undef mode_t
 
 /* Define to `unsigned' if <sys/types.h> does not define. */
 #undef size_t
