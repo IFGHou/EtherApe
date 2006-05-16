@@ -2,6 +2,19 @@
 
    $Date$
 
+  Overview of changes in EtherApe 0.9.6 (Tuesday May 16 2006):
+
+   Some  distributions  had  trouble  linking  correctly  EtherApe.  This
+   release should fix that.
+
+   Changes summary:
+     * On  newer  distros  (like  FC5)  the  linker  was  called  without
+       --export-dynamic, making EtherApe unusable.
+     * Fixed  bug  1488215, "cancel" button on preferences dialog doesn't
+       work.
+     * Updated .desktop and .spec files
+     * Updated debian files. Thanks to F.Peters (debian maintainer).
+
   Overview of changes in EtherApe 0.9.5 (Saturday May 06 2006):
 
    After the recent changes the manual was really obsolete.  This release
