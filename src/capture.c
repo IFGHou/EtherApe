@@ -464,10 +464,13 @@ start_capture (void)
       return FALSE;
     }
 
-  /* preparing protocol summary and nodes/links catalogs */
-  protocol_summary_open();
-  nodes_catalog_open();
-  links_catalog_open();
+  /* if it's a new capture, we prepare protocol summary and nodes/links catalogs */
+  if (STOP == status)
+    {
+      protocol_summary_open();
+      nodes_catalog_open();
+      links_catalog_open();
+    }
 
   /*
    * See pause_capture for an explanation of why we don't always
