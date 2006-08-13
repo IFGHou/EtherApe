@@ -500,7 +500,7 @@ initialize_ethers (void)
    */
   if (g_pethers_path == NULL)
     {
-      g_strdup_printf (g_pethers_path, "%s/%s",
+      g_pethers_path=g_strdup_printf ("%s/%s",
 	       get_home_dir (), EPATH_PERSONAL_ETHERS);
     }
 
