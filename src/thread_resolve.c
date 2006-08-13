@@ -54,6 +54,8 @@
 #include "thread_resolve.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
+static pthread_t resolver_threads[ETHERAPE_THREAD_POOL_SIZE];
+static int resolver_threads_num = 0;
 
 /* to-resolve-items linked list */
 struct ipresolve_link
@@ -116,21 +118,23 @@ thread_pool_routine(void *dt)
    while (!request_stop_thread)
    {
       pthread_mutex_lock(&resolvemtx);
+
+      if (!request_stop_thread && !resolveListHead)
+      {
+         /* list empty, wait on condition releasing mutex */
+         pthread_cond_wait (&resolvecond, &resolvemtx);
+      }
+
+      /* from now on, mutex is locked */
+
       if (request_stop_thread)
       {
          /* must exit */
          pthread_mutex_unlock(&resolvemtx);
          break;
       }
-     
-      if (!resolveListHead)
-      {
-         /* list empty, wait on condition releasing mutex */
-         pthread_cond_wait (&resolvecond, &resolvemtx);
-      }
 
-      /* if we came here the mutex is locked and head should be filled,
-         but a check doesn't hurt ... */
+      /* if we come here head should be filled, but a check doesn't hurt ... */
       if (resolveListHead)
       {
          /* there is something to resolve, take out from head */
@@ -174,36 +178,47 @@ static void
 start_threads()
 {
    pthread_t curth;
-   pthread_attr_t attr;
    int i;
-   
-   /* prepare thread data */
-   pthread_attr_init (&attr);
-   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+   int maxth = ETHERAPE_THREAD_POOL_SIZE;
 
    /* reset stop flag */
    request_stop_thread = 0;
 
   /* if single thread resolving is forced, then start only a single thread,
      else start ETHERAPE_THREAD_POOL_SIZE threads */
-#ifndef FORCE_SINGLE_THREAD
-   for (i=0; i<ETHERAPE_THREAD_POOL_SIZE ; ++i)
+#ifdef FORCE_SINGLE_THREAD
+   maxth = 1;
 #endif
+   for (i=0; i<maxth ; ++i)
    {
-       if (pthread_create ( &curth, &attr, thread_pool_routine, NULL))
+       if (pthread_create ( &curth, NULL, thread_pool_routine, NULL))
        {
-          // error
+          // error, stop creating threads
+          break;
        }
+       resolver_threads[i] = curth;
    }
+
+   resolver_threads_num = i;
 }
 
 static void
 stop_threads()
 {
+  int i;
+
+   /* take mutex, to make sure other thread will be waiting */
    pthread_mutex_lock(&resolvemtx);
+
+   /* activate variable */
    request_stop_thread = 1;
    pthread_cond_broadcast(&resolvecond); /* wake all threads */
    pthread_mutex_unlock(&resolvemtx);
+
+  /* wait for cancellation */
+   for (i=0; i<resolver_threads_num ; ++i)
+     pthread_join(resolver_threads[i], NULL);
+   resolver_threads_num = 0;
 }
 
 /* creates a request, placing in the queue 
