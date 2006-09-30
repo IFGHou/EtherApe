@@ -1,3 +1,23 @@
+2006-08-13 06:03  bchiara
+
+	* src/thread_resolve.c: Rewrite thread termination to fix 1496607.
+	Thanks to Pav Lucistnik for reporting the bug.
+
+2006-08-13 05:26  bchiara
+
+	* src/capture.c: fixes 1496621. Thanks to Pav Lucistnik for the
+	patch
+
+2006-08-13 05:21  bchiara
+
+	* src/resolv.c: Fixed 1496614. Thanks to Pav Lucistnik for the
+	patch.
+
+2006-05-16 18:40  bchiara
+
+	* ChangeLog, NEWS, html/NEWS.html, po/es.po, po/etherape.pot,
+	po/fr.po, po/nl.po, po/tr.po: release 0.9.6
+
 2006-05-15 18:48  bchiara
 
 	* config.h.in, configure.in, etherape.spec.in, html/NEWS.html,

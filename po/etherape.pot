@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-16 20:38+0200\n"
+"POT-Creation-Date: 2006-09-01 07:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,60 +218,60 @@ msgstr ""
 msgid "Status not PAUSE or STOP at start_capture"
 msgstr ""
 
-#: src/capture.c:478
+#: src/capture.c:481
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:485
+#: src/capture.c:488
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:506
+#: src/capture.c:509
 msgid "Status not PLAY at pause_capture"
 msgstr ""
 
-#: src/capture.c:516
+#: src/capture.c:519
 msgid "Pausing live capture"
 msgstr ""
 
-#: src/capture.c:523
+#: src/capture.c:526
 msgid "Pausing offline capture"
 msgstr ""
 
-#: src/capture.c:528
+#: src/capture.c:531
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:547
+#: src/capture.c:550
 msgid "Status not PLAY or PAUSE at stop_capture"
 msgstr ""
 
-#: src/capture.c:553
+#: src/capture.c:556
 msgid "Stopping live capture"
 msgstr ""
 
-#: src/capture.c:559
+#: src/capture.c:562
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:565
+#: src/capture.c:568
 msgid "Error while removing capture source in stop_capture"
 msgstr ""
 
-#: src/capture.c:598
+#: src/capture.c:601
 msgid "Capture device stopped or file closed"
 msgstr ""
 
-#: src/capture.c:770
+#: src/capture.c:773
 #, c-format
 msgid "Creating node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/capture.c:936
+#: src/capture.c:939
 msgid "Unsopported ape mode in print_mem"
 msgstr ""
 
-#: src/capture.c:940
+#: src/capture.c:943
 msgid "Invalid length in print_mem"
 msgstr ""
 
@@ -372,48 +372,48 @@ msgstr ""
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:375
+#: src/diagram.c:374
 msgid "Number of nodes: "
 msgstr ""
 
-#: src/diagram.c:379
+#: src/diagram.c:378
 #, c-format
 msgid ". Refresh Period: %d"
 msgstr ""
 
-#: src/diagram.c:385
+#: src/diagram.c:384
 msgid ". IDLE."
 msgstr ""
 
-#: src/diagram.c:387
+#: src/diagram.c:386
 msgid ". TIMEOUT."
 msgstr ""
 
-#: src/diagram.c:500
+#: src/diagram.c:499
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:593
+#: src/diagram.c:592
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:659
+#: src/diagram.c:658
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1001
+#: src/diagram.c:1000
 #, c-format
 msgid "Creating canvas_link: %s. Number of links %d"
 msgstr ""
 
-#: src/diagram.c:1191
+#: src/diagram.c:1190
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1194
+#: src/diagram.c:1193
 msgid "Link main protocol unknown"
 msgstr ""
 

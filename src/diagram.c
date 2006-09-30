@@ -290,8 +290,7 @@ diagram_update_links(GtkWidget * canvas)
   links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
 
   /* Update links look 
-   * We also delete timedout links, and when we do that we stop
-   * traversing, so we need to go on until we have finished updating */
+   * We also queue timedout links for deletion */
   delete_list = NULL;
   g_tree_foreach(canvas_links,
                    (GTraverseFunc) canvas_link_update,
