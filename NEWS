@@ -2,6 +2,18 @@
 
    $Date$
 
+  Overview of changes in EtherApe 0.9.7 (Saturday Sep 30 2006):
+
+   Bugfix  release. Special thanks to Pav Lucistnik for providing patches
+   and bug reports.
+
+   Changes summary:
+     * Fixed  bug  1496607, thread termination failure (Bug report by Pav
+       Lucistnik).
+     * Fixed bug 1496621, crash after pausing (Fix by Pav Lucistnik).
+     * Fixed  bug  1496614,  crash  in  initialize_ethers()  (Fix  by Pav
+       Lucistnik).
+
   Overview of changes in EtherApe 0.9.6 (Tuesday May 16 2006):
 
    Some  distributions  had  trouble  linking  correctly  EtherApe.  This

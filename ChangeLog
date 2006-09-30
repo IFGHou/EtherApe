@@ -1,3 +1,9 @@
+2006-09-30 05:57  bchiara
+
+	* ChangeLog, configure.in, etherape.spec.in, po/es.po,
+	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po, src/diagram.c:
+	release 0.9.7
+
 2006-08-13 06:03  bchiara
 
 	* src/thread_resolve.c: Rewrite thread termination to fix 1496607.
