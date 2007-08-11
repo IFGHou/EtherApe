@@ -39,7 +39,7 @@ substract_times (struct timeval a, struct timeval b)
 {
   struct timeval result;
 
-  /* Perform the carry for the later subtraction by updating Y. */
+  /* Perform the carry for the later subtraction by updating b. */
   if (a.tv_usec < b.tv_usec)
     {
       int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
@@ -53,9 +53,9 @@ substract_times (struct timeval a, struct timeval b)
       b.tv_sec -= nsec;
     }
 
+  /* result.tv_usec is positive. */ 
   result.tv_sec = a.tv_sec - b.tv_sec;
   result.tv_usec = a.tv_usec - b.tv_usec;
-
   return result;
 }				/* substract_times */
 

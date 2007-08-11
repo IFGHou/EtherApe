@@ -22,6 +22,8 @@
 
 #include "protocols.h"
 
+/* Returns a timeval structure with the time difference between to
+ * other timevals. result = a - b */
 struct timeval substract_times (struct timeval a, struct timeval b);
 
 typedef struct

@@ -42,7 +42,4 @@ extern char *get_tcp_port (u_int port);
    "%02x:%02x:%02x:%02x:%02x:%02x" */
 extern char *get_ether_name (const u_char * addr);
 
-/* get_manuf_name returns the vendor name or "%02x:%02x:%02x" if not known */
-extern char *get_manuf_name (u_char * addr);
-
 #endif /* __ETH_RESOLV_H__ */

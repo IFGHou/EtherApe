@@ -48,7 +48,7 @@ static struct pcap_pkthdr phdr;
 static gint pcap_fd;			/* The file descriptor used by libpcap */
 static gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
-static guint32 ms_to_next;	/* Used for offline mode to store the amount
+static guint ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
 static guint node_id_length;		/* Length of the node_id key. Depends
@@ -654,15 +654,12 @@ get_offline_packet (void)
 
   diff = substract_times (this_time, last_time);
 
-  if (pref.zero_delay)
-    {
-      ms_to_next = 0;
-    }
-  else
-    {
+  /* diff can be negative when listening to multiple interfaces.
+   * In that case the delay is zeroed */
+  if (pref.zero_delay || diff.tv_sec < 0)
+      ms_to_next = 0; 
+  else 
       ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
-    }
-
 
   last_time = this_time;
 

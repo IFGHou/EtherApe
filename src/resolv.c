@@ -656,37 +656,3 @@ get_ether_name (const u_char * addr)
 
 }				/* get_ether_name */
 
-extern char *
-get_manuf_name (u_char * addr)
-{
-  static gchar str[3][MAXMANUFLEN];
-  static gchar *cur;
-  hashmanuf_t *manufp;
-
-  if (g_resolving_actif && !eth_resolution_initialized)
-    {
-      initialize_ethers ();
-      eth_resolution_initialized = 1;
-    }
-
-  if (!g_resolving_actif || ((manufp = manuf_name_lookup (addr)) == NULL))
-    {
-      if (cur == &str[0][0])
-	{
-	  cur = &str[1][0];
-	}
-      else if (cur == &str[1][0])
-	{
-	  cur = &str[2][0];
-	}
-      else
-	{
-	  cur = &str[0][0];
-	}
-      snprintf (cur, MAXMANUFLEN, "%02x:%02x:%02x", addr[0], addr[1], addr[2]);
-      return cur;
-    }
-
-  return manufp->name;
-
-}				/* get_manuf_name */

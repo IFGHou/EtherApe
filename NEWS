@@ -2,6 +2,15 @@
 
    $Date$
 
+
+  Overview of changes in EtherApe 0.9.8 ():
+
+   Bugfix and cleanup release. No user visible changes.
+
+   Changes summary:
+     * Fixed  bug 1713590, bad replaying of out-of-order packets (Bug 
+       report by "haywire_dk")
+
   Overview of changes in EtherApe 0.9.7 (Saturday Sep 30 2006):
 
    Bugfix  release. Special thanks to Pav Lucistnik for providing patches
