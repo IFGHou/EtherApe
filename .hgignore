@@ -1,0 +1,22 @@
+syntax: glob
+
+*.m4
+Makefile.in
+Makefile
+autom4te.cache/*
+.deps/*
+config.*
+configure
+depcomp
+install-sh
+ltmain.sh
+missing
+etherape.spec
+POTFILES
+libtool
+stamp-h1
+*.o
+*.gmo
+*.out
+omf_timestamp
+src/etherape
