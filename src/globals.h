@@ -210,6 +210,7 @@ struct pref_struct
 
   gboolean zero_delay;  /* TRUE if delay processing tcpdump files is disabled */
 
+  gchar *glade_file;    /* fullspec of xml glade file */
 }
 pref;
 

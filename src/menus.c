@@ -45,12 +45,12 @@ on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkWidget *messagebox;
   GladeXML *xml_messagebox;
   xml_messagebox =
-    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "messagebox1", NULL);
+    glade_xml_new (pref.glade_file, "messagebox1", NULL);
   messagebox = glade_xml_get_widget (xml_messagebox, "messagebox1");
   if (!xml)
     {
       g_error (_("We could not load the interface! (%s)"),
-	       GLADEDIR "/" ETHERAPE_GLADE_FILE);
+	       pref.glade_file);
       return;
     }
   gtk_widget_show (messagebox);
@@ -378,11 +378,11 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GladeXML *xml_about;
 
   xml_about =
-    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "about2", NULL);
+    glade_xml_new (pref.glade_file, "about2", NULL);
   if (!xml_about)
     {
       g_error (_("We could not load the interface! (%s)"),
-	       GLADEDIR "/" ETHERAPE_GLADE_FILE);
+	       pref.glade_file);
       return;
     }
   about = glade_xml_get_widget (xml_about, "about2");

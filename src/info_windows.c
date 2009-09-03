@@ -158,11 +158,11 @@ create_prot_info_window (protocol_t * protocol)
 			    protocol->name, prot_info_compare)))
     {
       xml_info_window =
-	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "prot_info", NULL);
+	glade_xml_new (pref.glade_file, "prot_info", NULL);
       if (!xml_info_window)
 	{
 	  g_error (_("We could not load the interface! (%s)"),
-		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
+		   pref.glade_file);
 	  return;
 	}
       glade_xml_signal_autoconnect (xml_info_window);
@@ -775,11 +775,11 @@ node_info_window_create(const node_id_t * node_id)
     {
       /* not present, create */
       xml_info_window =
-	glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_info", NULL);
+	glade_xml_new (pref.glade_file, "node_info", NULL);
       if (!xml_info_window)
 	{
 	  g_error (_("We could not load the interface! (%s)"),
-		   GLADEDIR "/" ETHERAPE_GLADE_FILE);
+		   pref.glade_file);
 	  return;
 	}
       glade_xml_signal_autoconnect (xml_info_window);
@@ -910,11 +910,11 @@ stats_info_create(const gchar *idkey, gpointer key)
   GtkTreeView *gv;
 
   xml_info_window =
-    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_proto_info", NULL);
+    glade_xml_new (pref.glade_file, "node_proto_info", NULL);
   if (!xml_info_window)
     {
       g_error (_("We could not load the interface! (%s)"),
-               GLADEDIR "/" ETHERAPE_GLADE_FILE);
+               pref.glade_file);
       return NULL;
     }
   glade_xml_signal_autoconnect (xml_info_window);

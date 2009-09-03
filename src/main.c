@@ -94,11 +94,13 @@ main (int argc, char *argv[])
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
      N_("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &(pref.node_color), 0,
-     N_("set the node color"), N_("color")},
+     N_("set the node color"), N_("<color>")},
     {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
-     N_("set the text color"), N_("color")},
+     N_("set the text color"), N_("<color>")},
     {"zero-delay", 'z', POPT_ARG_NONE, &(pref.zero_delay), 0,
      N_("zero delay for reading capture files [cli only]"), NULL},
+    {"glade-file", NULL, POPT_ARG_STRING, &(pref.glade_file), 0,
+     N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
@@ -196,11 +198,14 @@ main (int argc, char *argv[])
 
   glade_gnome_init ();
 
-  xml = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL, NULL);
+  if (!pref.glade_file)
+    pref.glade_file = GLADEDIR "/" ETHERAPE_GLADE_FILE;
+
+  xml = glade_xml_new (pref.glade_file, NULL, NULL);
   if (!xml)
     {
-      g_error (_("We could not load the interface! (%s)"),
-	       GLADEDIR "/" ETHERAPE_GLADE_FILE);
+      g_error (_("We could not load glade interface file! (%s)"),
+	       pref.glade_file);
       return 1;
     }
   glade_xml_signal_autoconnect (xml);
