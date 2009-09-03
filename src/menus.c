@@ -144,15 +144,15 @@ on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data)
 
 }				/* on_file_combo_entry_changed */
 
+/* open file dlg ok button */
 void
 on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *widget;
   gchar *str = NULL;
 
-  if (status != STOP)
-    if (!gui_stop_capture ())
-      return;
+  if (!gui_stop_capture ())
+     return;
 
   if (pref.interface)
     {
@@ -199,9 +199,8 @@ on_interface_radio_activate (gchar * gui_device)
 				 * of interface look change from
 				 * start_capture */
 
-  if (status != STOP)
-    if (!gui_stop_capture ())
-      return;
+  if (!gui_stop_capture ())
+     return;
 
   if (pref.input_file)
     g_free (pref.input_file);
@@ -284,9 +283,9 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     default:
       return;
     }
-  if (status != STOP)
-    if (!gui_stop_capture ())
-      return;
+
+  if (!gui_stop_capture ())
+     return;
   pref.mode = new_mode;
   g_my_info (_("Mode set to %s in GUI"), (gchar *) menuitem);
   gui_start_capture ();
@@ -313,7 +312,6 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   g_my_debug ("on_stop_menuitem_activate called");
   gui_stop_capture ();
-
 }				/* on_stop_menuitem_activate */
 
 
@@ -378,14 +376,14 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GladeXML *xml_about;
 
   xml_about =
-    glade_xml_new (pref.glade_file, "about2", NULL);
+    glade_xml_new (pref.glade_file, "about1", NULL);
   if (!xml_about)
     {
       g_error (_("We could not load the interface! (%s)"),
 	       pref.glade_file);
       return;
     }
-  about = glade_xml_get_widget (xml_about, "about2");
+  about = glade_xml_get_widget (xml_about, "about1");
   g_object_unref (xml_about);
 
   gtk_widget_show (about);
@@ -404,18 +402,19 @@ gui_start_capture (void)
   gchar *errorbuf = NULL;
   GString *status_string = NULL;
 
-  if ((status == PAUSE) && end_of_file)
+
+  if (get_capture_status() == PAUSE && end_of_file)
     if (!gui_stop_capture ())
       return;
 
-  if (status == STOP)
+  if (get_capture_status() == STOP)
     if ((errorbuf = init_capture ()) != NULL)
       {
 	fatal_error_dialog (errorbuf);
 	return;
       }
 
-  if (status == PLAY)
+  if (get_capture_status() == PLAY)
     {
       g_warning (_("Status not STOP or PAUSE at gui_start_capture"));
       return;
@@ -571,12 +570,6 @@ gui_pause_capture (void)
   GtkWidget *widget;
   GString *status_string = NULL;
 
-  if (status == PAUSE)
-    {
-      g_warning (_("Status not PLAY at gui_pause_capture"));
-      return;
-    }
-
   /*
    * Make sure the data in the info windows is updated
    * so that it is consistent
@@ -619,6 +612,8 @@ gui_stop_capture (void)
   GtkWidget *widget;
   GString *status_string = NULL;
 
+  if (get_capture_status() == STOP)
+    return TRUE;
 
   /*
    * gui_stop_capture needs to call update_diagram in order to
@@ -627,15 +622,8 @@ gui_stop_capture (void)
    * might end up being called below another update_diagram. We can't
    * allow two simultaneous calls, so we fail
    */
-
   if (already_updating)
     return FALSE;
-
-  if (status == STOP)
-    {
-      g_warning (_("Status not PLAY or PAUSE at gui_stop_capture"));
-      return FALSE;
-    }
 
   if (!stop_capture ())
     return FALSE;
@@ -723,32 +711,5 @@ set_active_interface ()
 
       menu_items = menu_items->next;
     }
-
-#if 0
-  GList *entry_items = NULL;
-  gboolean is_new = TRUE, normal_case = TRUE;
-
-  /* The combo fills up even if there are duplicate values. I think
-   * this is a bug in gnome and might be fixed in the future, but
-   * right now I'll just make sure the history is fine and reload that*/
-
-  /* TODO There really should be a better way of getting all values from
-   * the drop down list than this casting mess :-( */
-
-  /* The file entry introduces a copy of the file name at the end of the
-   * list if the browse button has been used. There goes another hack to
-   * work around it */
-  entry_items = GTK_LIST (GTK_COMBO (gentry)->list)->children;
-  while (entry_items)
-    {
-      gchar *history_value;
-      history_value = GTK_LABEL (GTK_BIN (entry_items->data)->child)->label;
-      if (!strcmp (history_value, str) && !is_fileentry
-	  && (entry_items->next != NULL))
-	is_new = FALSE;
-      normal_case = !(is_fileentry && !(entry_items->next));
-      entry_items = g_list_next (entry_items);
-    }
-#endif
 
 }				/* set_active_interface */

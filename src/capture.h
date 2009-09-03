@@ -19,6 +19,14 @@
 #ifndef ETHERAPE_CAPTURE_H
 #define ETHERAPE_CAPTURE_H
 
+/* Possible states of capture status */
+enum status_t
+{
+  STOP = 0, PLAY = 1, PAUSE = 2
+};
+
+enum status_t get_capture_status(void);
+
 gchar *init_capture (void);
 gboolean start_capture (void);
 gboolean pause_capture (void);

@@ -103,13 +103,6 @@ typedef enum
 }
 node_size_variable_t;
 
-/* Possible states of capture status */
-enum status_t
-{
-  STOP = 0, PLAY = 1, PAUSE = 2
-};
-
-
 /* Variables */
 
 GladeXML *xml;
@@ -122,7 +115,6 @@ gdouble total_mem_packets;		/* Number of packets currently in memory */
 link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
-enum status_t status;		/* Keeps capture status (playing, stopped, paused) */
 gboolean end_of_file;		/* Marks that the end of the offline file
 				 * has been reached */
 gboolean need_reposition;	/* Force a diagram relayout */
@@ -214,16 +206,6 @@ struct pref_struct
 }
 pref;
 
-
-/* Global functions declarations */
-
-/* From menus.c */
-void init_menus (void);
-void fatal_error_dialog (const gchar * message);
-void gui_start_capture (void);
-void gui_pause_capture (void);
-gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
-					 * it can't run if diagram_update is running */
 
 /* Macros */
 

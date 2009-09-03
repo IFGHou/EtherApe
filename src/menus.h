@@ -46,3 +46,11 @@ void on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
 				   gpointer user_data);
 
 void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
+
+void init_menus (void);
+void fatal_error_dialog (const gchar * message);
+void gui_start_capture (void);
+void gui_pause_capture (void);
+gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
+					 * it can't run if diagram_update is running */
+

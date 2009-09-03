@@ -685,13 +685,12 @@ void
 on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 			    gpointer user_data)
 {
-  enum status_t old_status = status;
+  enum status_t old_status = get_capture_status();
 
   /* record the restart */
   restarted_capture = TRUE;
 
-  if ((status == PLAY) || (status == PAUSE))
-    gui_stop_capture ();
+  gui_stop_capture ();
 
   pref.group_unk = gtk_toggle_button_get_active (togglebutton);
 
@@ -703,13 +702,12 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 void
 on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-  enum status_t old_status = status;
+  enum status_t old_status = get_capture_status();
 
   /* record the restart */
   restarted_capture = TRUE;
 
-  if ((status == PLAY) || (status == PAUSE))
-    gui_stop_capture ();
+  gui_stop_capture ();
 
   pref.antialias = gtk_toggle_button_get_active (togglebutton);
 
@@ -732,13 +730,12 @@ on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  enum status_t old_status = status;
+  enum status_t old_status = get_capture_status();
 
   if (restarted_capture)
     {
       /* user changed options who can be changed only with capture stopped ... */
-      if ((status == PLAY) || (status == PAUSE))
-        gui_stop_capture ();
+      gui_stop_capture ();
     }
   
   /* reset configuration to saved */

@@ -631,7 +631,7 @@
   </child>
 </widget>
 
-<widget class="GnomeAbout" id="about2">
+<widget class="GnomeAbout" id="about1">
   <property name="border_width">5</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>

@@ -29,6 +29,7 @@
 #include "node.h"
 #include "datastructs.h"
 #include "protocols.h"
+#include "capture.h"
 
 typedef struct
 {
@@ -275,6 +276,9 @@ update_prot_info_windows (void)
 {
   GList *list_item = NULL, *remove_item;
   prot_info_window_t *prot_info_window = NULL;
+  enum status_t status;
+
+  status = get_capture_status();
 
   list_item = prot_info_windows;
   while (list_item)
@@ -730,7 +734,7 @@ node_info_window_compare(gconstpointer a, gconstpointer b)
 guint
 update_info_windows (void)
 {
-  if (status == PAUSE)
+  if (get_capture_status() == PAUSE)
     return TRUE;
 
   gettimeofday (&now, NULL);
@@ -814,10 +818,13 @@ update_stats_info_windows (void)
 {
   GList *list_item;
   GtkWidget *window;
+  enum status_t status;
   struct timeval diff;
   static struct timeval last_time = {
     0, 0
   };
+
+  status = get_capture_status();
 
   diff = substract_times (now, last_time);
   /* Update info windows at most twice a second */

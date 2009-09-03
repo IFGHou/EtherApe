@@ -24,7 +24,7 @@
 gboolean already_updating;	/* True while an instance of update_diagram is running */
 
 guint update_diagram (GtkWidget * canvas);
-void init_diagram (void);
+void init_diagram (GladeXML *xml);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
 void set_appbar_status (gchar * str);

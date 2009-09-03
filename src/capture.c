@@ -53,7 +53,7 @@ static guint ms_to_next;	/* Used for offline mode to store the amount
 				 * one packet and the next */
 static guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
-
+static enum status_t capture_status = STOP;
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);
@@ -162,6 +162,11 @@ get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node
   return node_id;
 }				/* get_node_id */
 
+enum status_t get_capture_status(void)
+{
+  return capture_status;
+}
+
 /* Sets up the pcap device
  * Sets up the mode and related variables
  * Sets up dns if needed
@@ -193,7 +198,7 @@ init_capture (void)
              }
 	}
 
-      status = STOP;
+      capture_status = STOP;
       data_initialized = TRUE;
 
       n_packets = total_mem_packets = 0;
@@ -458,14 +463,11 @@ start_capture (void)
 {
   GnomeCanvas *gc;
 
-  if ((status != PAUSE) && (status != STOP))
-    {
-      g_warning (_("Status not PAUSE or STOP at start_capture"));
-      return FALSE;
-    }
+  if (capture_status == PLAY)
+    return TRUE;
 
   /* if it's a new capture, we prepare protocol summary and nodes/links catalogs */
-  if (STOP == status)
+  if (STOP == capture_status)
     {
       protocol_summary_open();
       nodes_catalog_open();
@@ -476,7 +478,7 @@ start_capture (void)
    * See pause_capture for an explanation of why we don't always
    * add the source
    */
-  if (pref.interface && (status == STOP))
+  if (pref.interface && (capture_status == STOP))
     {
       g_my_debug (_("Starting live capture"));
       capture_source = gdk_input_add (pcap_fd,
@@ -498,15 +500,15 @@ start_capture (void)
   if (gc)
     gc->aa = pref.antialias;
 
-  status = PLAY;
+  capture_status = PLAY;
   return TRUE;
 }				/* start_capture */
 
 gboolean
 pause_capture (void)
 {
-  if (status != PLAY)
-    g_warning (_("Status not PLAY at pause_capture"));
+  if (capture_status != PLAY)
+    return TRUE;
 
   if (pref.interface)
     {
@@ -534,7 +536,7 @@ pause_capture (void)
 	}
     }
 
-  status = PAUSE;
+  capture_status = PAUSE;
   return TRUE;
 
 }
@@ -544,12 +546,8 @@ gboolean
 stop_capture (void)
 {
   struct pcap_stat ps;
-
-  if ((status != PLAY) && (status != PAUSE))
-    {
-      g_warning (_("Status not PLAY or PAUSE at stop_capture"));
-      return FALSE;
-    }
+  if (capture_status == STOP)
+      return TRUE;
 
   if (pref.interface)
     {
@@ -571,7 +569,7 @@ stop_capture (void)
 	}
     }
 
-  status = STOP;
+  capture_status = STOP;
 
   /* free nodes, protocols, links, conversations and packets */
   protocol_summary_close();
@@ -611,8 +609,7 @@ stop_capture (void)
 void
 cleanup_capture (void)
 {
-  if (status != STOP)
-    stop_capture ();
+  stop_capture ();
   dns_close(); /* closes the dns resolver, if opened */
 }
 
@@ -626,7 +623,7 @@ get_offline_packet (void)
   static guint8 *packet = NULL;
   static struct timeval last_time = { 0, 0 }, this_time, diff;
 
-  if (status == STOP)
+  if (capture_status == STOP)
     {
       packet = NULL;
       last_time.tv_usec = last_time.tv_sec = 0;
@@ -671,7 +668,7 @@ static void
 cap_t_o_destroy (gpointer data)
 {
 
-  if ((status == PLAY) && !end_of_file)
+  if ((capture_status == PLAY) && !end_of_file)
     capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					 ms_to_next,
 					 (GtkFunction) get_offline_packet,

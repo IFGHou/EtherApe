@@ -32,6 +32,7 @@
 #include "info_windows.h"
 #include "protocols.h"
 #include "datastructs.h"
+#include "capture.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000
@@ -136,7 +137,7 @@ static void update_legend(void);
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
 void
-init_diagram ()
+init_diagram (GladeXML *xml)
 {
   GtkStyle *style;
   GtkWidget *canvas;
@@ -315,7 +316,9 @@ update_diagram (GtkWidget * canvas)
 {
   static struct timeval last_time = { 0, 0 }, diff;
   guint32 diff_msecs;
+  enum status_t status;
 
+  status = get_capture_status();
   if (status == PAUSE)
     return FALSE;
 

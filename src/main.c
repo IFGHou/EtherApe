@@ -132,7 +132,6 @@ main (int argc, char *argv[])
   pref.name_res = TRUE;
   pref.mode = IP;
   pref.filter = NULL;
-  status = STOP;
   pref.refresh_period = 800;	/* ms */
 
   /* TODO Besides the fact that this probably makes little sense nowadays
@@ -213,7 +212,7 @@ main (int argc, char *argv[])
   app1 = glade_xml_get_widget (xml, "app1");
 
   /* Sets controls to the values of variables and connects signals */
-  init_diagram ();
+  init_diagram (xml);
 
   /* Session handling */
   client = gnome_master_client ();
