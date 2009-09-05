@@ -28,6 +28,9 @@ static gboolean get_version_levels (const gchar * version_string,
 				    guint * major, guint * minor,
 				    guint * patch);
 static gint version_compare (const gchar * a, const gchar * b);
+static void on_stack_level_changed(GtkComboBox * combo, gpointer data);
+static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
+static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 
 
 static gboolean colors_changed = FALSE;
@@ -48,10 +51,8 @@ void init_config(struct pref_struct *p)
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
   p->nofade = FALSE;
-  p->antialias = TRUE;
   p->cycle = TRUE;
   p->stationary = FALSE;
-  p->new_infodlg = TRUE;
   p->node_radius_multiplier = 0.0005;
   p->link_width_multiplier = 0.0005;
   p->size_mode = LINEAR;
@@ -77,7 +78,6 @@ void init_config(struct pref_struct *p)
   p->filter=NULL;
   p->is_debug=FALSE;
   p->zero_delay=FALSE;
-  p->glade_file = NULL;
 }
 
 
@@ -100,9 +100,6 @@ load_config (const char *prefix)
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
   pref.nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
-  pref.new_infodlg = gnome_config_get_bool_with_default ("Diagram/new_infodlg=TRUE", &u);
-  pref.antialias =
-    gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
@@ -182,9 +179,7 @@ save_config (const char *prefix)
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
   gnome_config_set_bool ("Diagram/nofade", pref.nofade);
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
-  gnome_config_set_bool ("Diagram/antialias", pref.antialias);
   gnome_config_set_bool ("Diagram/name_res", pref.name_res);
-  gnome_config_set_bool ("Diagram/new_infodlg", pref.new_infodlg);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",
@@ -270,8 +265,6 @@ free_config(struct pref_struct *t)
   t->interface=NULL;
   g_free(t->filter);
   t->filter=NULL;
-  g_free(t->glade_file);
-  t->glade_file=NULL;
 }
 
 /* copies a configuration from src to tgt */
@@ -291,10 +284,8 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->diagram_only = src->diagram_only;
   tgt->group_unk = src->group_unk;
   tgt->nofade = src->nofade;
-  tgt->antialias = src->antialias;
   tgt->cycle = src->cycle;
   tgt->stationary = src->stationary;
-  tgt->new_infodlg = src->new_infodlg;
   tgt->node_radius_multiplier = src->node_radius_multiplier;
   tgt->link_width_multiplier = src->link_width_multiplier;
   tgt->size_mode = src->size_mode;
@@ -419,24 +410,20 @@ initialize_pref_controls(void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
   widget = glade_xml_get_widget (xml, "cycle_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
-  widget = glade_xml_get_widget (xml, "aa_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.antialias);
   widget = glade_xml_get_widget (xml, "name_res_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
-  widget = glade_xml_get_widget (xml, "new_infodlg_check");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.new_infodlg);
+  widget = glade_xml_get_widget (xml, "stack_level");
+  gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.stack_level);
+  widget = glade_xml_get_widget (xml, "size_variable");
+  gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.node_size_variable);
+  widget = glade_xml_get_widget (xml, "size_mode");
+  gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.size_mode);
 
-  widget = glade_xml_get_widget (xml, "size_mode_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.size_mode);
-  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget),
-			       pref.node_size_variable);
-  widget = glade_xml_get_widget (xml, "stack_level_menu");
-  gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
   widget = glade_xml_get_widget (xml, "file_filter_entry");
   widget = glade_xml_get_widget (xml, "fileentry");
   widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
+
 
   load_color_list ();		/* Updates the color preferences table with pref.colors */
 
@@ -502,18 +489,18 @@ initialize_pref_controls(void)
 		    "value_changed",
 		    GTK_SIGNAL_FUNC
 		    (on_proto_to_spin_adjustment_changed), NULL);
-  widget = glade_xml_get_widget (xml, "size_mode_menu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
-  widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected), NULL);
-  widget = glade_xml_get_widget (xml, "stack_level_menu");
-  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		    "deactivate",
-		    GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
+  widget = glade_xml_get_widget (xml, "stack_level");
+  g_signal_connect (G_OBJECT (widget), 
+                    "changed",
+		    GTK_SIGNAL_FUNC (on_stack_level_changed), NULL);
+  widget = glade_xml_get_widget (xml, "size_variable");
+  g_signal_connect (G_OBJECT (widget), 
+                    "changed",
+		    GTK_SIGNAL_FUNC (on_size_variable_changed), NULL);
+  widget = glade_xml_get_widget (xml, "size_mode");
+  g_signal_connect (G_OBJECT (widget), 
+                    "changed",
+		    GTK_SIGNAL_FUNC (on_size_mode_changed), NULL);
 }
 
 void
@@ -681,41 +668,25 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
     }
 }				/* on_apply_button1_clicked */
 
-void
-on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data)
+static void on_size_mode_changed(GtkComboBox * combo, gpointer data)
 {
-  GtkWidget *active_item;
-
-  active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
   /* Beware! Size mode is an enumeration. The menu options
    * must much the enumaration values */
-  pref.size_mode = g_list_index (menu_shell->children, active_item);
+  pref.size_mode = (size_mode_t)gtk_combo_box_get_active (combo);
+}
 
-}				/* on_size_mode_menu_selected */
-
-void
-on_node_size_optionmenu_selected (GtkMenuShell * menu_shell, gpointer data)
+static void on_size_variable_changed(GtkComboBox * combo, gpointer data)
 {
-  GtkWidget *active_item;
-
-  active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
-  /* Beware! Size mode is an enumeration. The menu options
+  /* Beware! Size variable is an enumeration. The menu options
    * must much the enumaration values */
-  pref.node_size_variable = g_list_index (menu_shell->children, active_item);
+  pref.node_size_variable = (node_size_variable_t)gtk_combo_box_get_active (combo);
+}
 
-}				/* on_node_size_optionmenu_selected */
-
-void
-on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data)
+static void on_stack_level_changed(GtkComboBox * combo, gpointer data)
 {
-  GtkWidget *active_item;
-
-  active_item = gtk_menu_get_active (GTK_MENU (menu_shell));
-  pref.stack_level = g_list_index (menu_shell->children, active_item);
-
+  pref.stack_level = gtk_combo_box_get_active (combo);
   delete_gui_protocols ();
-
-}				/* on_stack_level_menu_selected */
+}
 
 void
 on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
@@ -743,22 +714,6 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
   if (old_status == PLAY)
     gui_start_capture ();
 
-}				/* on_group_unk_check_toggled */
-
-void
-on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-  enum status_t old_status = get_capture_status();
-
-  /* record the restart */
-  restarted_capture = TRUE;
-
-  gui_stop_capture ();
-
-  pref.antialias = gtk_toggle_button_get_active (togglebutton);
-
-  if (old_status == PLAY)
-    gui_start_capture ();
 }				/* on_group_unk_check_toggled */
 
 /*
@@ -838,12 +793,6 @@ on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
   pref.name_res = gtk_toggle_button_get_active (togglebutton);
 }				/* on_numeric_toggle_toggled */
-
-void
-on_new_infodlg_check_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-  pref.new_infodlg = gtk_toggle_button_get_active (togglebutton);
-}
 
 /* ----------------------------------------------------------
 

@@ -89,7 +89,7 @@ main (int argc, char *argv[])
      N_("Don't show warnings"), NULL},
     {"zero-delay", 'z', POPT_ARG_NONE, &(pref.zero_delay), 0,
      N_("zero delay for reading capture files [cli only]"), NULL},
-    {"glade-file", NULL, POPT_ARG_STRING, &(pref.glade_file), NULL,
+    {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
 

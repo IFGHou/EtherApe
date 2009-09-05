@@ -561,15 +561,17 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkOptionMenu" id="stack_level_menu">
+                      <widget class="GtkComboBox" id="stack_level">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
+                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">Set what level of the protocol stack is displayed in the legend</property>
+                        <property name="items" translatable="yes">Topmost recognized protocol
+Level 2 (Eg: ETH_II)
+Level 3 (Eg: IP)
+Level 4 (Eg: TCP)
+Level 5 (Eg: HTTP)</property>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -596,15 +598,19 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkOptionMenu" id="node_size_optionmenu">
+                      <widget class="GtkComboBox" id="size_variable">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
+                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">Set the kind of instantenous or accumulated traffic that the node radius indicates</property>
+                        <property name="items" translatable="yes">Instant. traffic (In+Out)
+Instant. traffic (Inbound)
+Instant. traffic (Outbound)
+Accum. traffic (In+Out)
+Accum. traffic (Inbound)
+Accum. traffic (Outbound)
+</property>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -709,15 +715,15 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkOptionMenu" id="size_mode_menu">
+                      <widget class="GtkComboBox" id="size_mode">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Choose how node radius and link width are calculated as a function of average traffic</property>
+                        <property name="items" translatable="yes">Linear
+Logarithmic
+Square Root</property>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -796,21 +802,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="aa_check">
-                        <property name="label" translatable="yes">Node _Anti Aliasing</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_aa_check_toggled"/>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                   </widget>
                   <packing>
@@ -911,21 +903,7 @@
                       <widget class="GtkVBox" id="vbox52">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkCheckButton" id="new_infodlg_check">
-                            <property name="label" translatable="yes">Show protocols</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="tooltip" translatable="yes">Show protocol informations on info dialogs</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="on_new_infodlg_check_toggled"/>
-                          </widget>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
+                          <placeholder/>
                         </child>
                         <child>
                           <placeholder/>
@@ -1690,380 +1668,6 @@
         <property name="receives_default">False</property>
         <property name="use_stock">True</property>
         <signal name="clicked" handler="on_ok_button1_clicked"/>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkWindow" id="node_info">
-    <signal name="delete_event" handler="on_node_info_delete_event"/>
-    <child>
-      <widget class="GtkVBox" id="vbox17">
-        <property name="visible">True</property>
-        <child>
-          <widget class="GtkFrame" id="frame3">
-            <property name="visible">True</property>
-            <property name="label_xalign">0</property>
-            <child>
-              <widget class="GtkVBox" id="vbox18">
-                <property name="visible">True</property>
-                <property name="border_width">1</property>
-                <child>
-                  <widget class="GtkLabel" id="label39">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Name:</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="node_info_name_label">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">This is a test node name</property>
-                    <property name="justify">center</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkFrame" id="frame4">
-            <property name="visible">True</property>
-            <property name="label_xalign">0</property>
-            <child>
-              <widget class="GtkVBox" id="vbox19">
-                <property name="visible">True</property>
-                <property name="border_width">1</property>
-                <child>
-                  <widget class="GtkLabel" id="label41">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Numeric Name:</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="node_info_numeric_name_label">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">This is a test node name</property>
-                    <property name="justify">center</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkFrame" id="frame5">
-            <property name="label_xalign">0</property>
-            <child>
-              <widget class="GtkHBox" id="hbox1">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkCheckButton" id="node_info_traffic_check">
-                    <property name="label" translatable="yes">Show traffic</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="draw_indicator">True</property>
-                  </widget>
-                  <packing>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkCheckButton" id="node_info_protocols_check">
-                    <property name="label" translatable="yes">Show protocols</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="draw_indicator">True</property>
-                  </widget>
-                  <packing>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkFrame" id="frame6">
-            <property name="visible">True</property>
-            <property name="label_xalign">0</property>
-            <child>
-              <widget class="GtkTable" id="table5">
-                <property name="visible">True</property>
-                <property name="border_width">1</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">3</property>
-                <child>
-                  <widget class="GtkVBox" id="vbox20">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label43">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Instantaneous</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_average">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox21">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label45">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Accumulated</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_accumulated">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox23">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label49">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Inst. Inbound</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_average_in">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox25">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label53">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Accu. Outbound</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_accumulated_out">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox22">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label47">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Accu. Inbound</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_accumulated_in">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox24">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label51">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Inst. Outbound</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="node_info_average_out">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">test label</property>
-                        <property name="justify">center</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
       </widget>
     </child>
   </widget>
@@ -2926,176 +2530,12 @@ Frederic Peters &lt;fpeters@debian.org&gt;
             <property name="layout_style">end</property>
           </widget>
           <packing>
+            <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
       </widget>
-    </child>
-  </widget>
-  <widget class="GnomeApp" id="app2">
-    <child internal-child="dock">
-      <widget class="BonoboDock" id="app2-dock1">
-        <child>
-          <widget class="BonoboDockItem" id="dockitem1">
-            <property name="visible">True</property>
-            <child>
-              <widget class="GtkMenuBar" id="menubar1">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkMenuItem" id="menuitem1">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">_File</property>
-                    <property name="use_underline">True</property>
-                    <child>
-                      <widget class="GtkMenu" id="menu1">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem1">
-                            <property name="label">gtk-new</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem2">
-                            <property name="label">gtk-open</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem3">
-                            <property name="label">gtk-save</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem4">
-                            <property name="label">gtk-save-as</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
-                            <property name="visible">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem5">
-                            <property name="label">gtk-quit</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-                <child>
-                  <widget class="GtkMenuItem" id="menuitem2">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">_Edit</property>
-                    <property name="use_underline">True</property>
-                    <child>
-                      <widget class="GtkMenu" id="menu2">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem6">
-                            <property name="label">gtk-cut</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem7">
-                            <property name="label">gtk-copy</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem8">
-                            <property name="label">gtk-paste</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem9">
-                            <property name="label">gtk-delete</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-                <child>
-                  <widget class="GtkMenuItem" id="menuitem3">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">_View</property>
-                    <property name="use_underline">True</property>
-                  </widget>
-                </child>
-                <child>
-                  <widget class="GtkMenuItem" id="menuitem4">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">_Help</property>
-                    <property name="use_underline">True</property>
-                    <child>
-                      <widget class="GtkMenu" id="menu3">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="imagemenuitem10">
-                            <property name="label">gtk-about</property>
-                            <property name="visible">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="behavior">BONOBO_DOCK_ITEM_BEH_EXCLUSIVE | BONOBO_DOCK_ITEM_BEH_NEVER_VERTICAL | BONOBO_DOCK_ITEM_BEH_LOCKED</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </widget>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-      </packing>
-    </child>
-    <child internal-child="appbar">
-      <widget class="GnomeAppBar" id="app2-appbar1">
-        <property name="visible">True</property>
-        <property name="spacing">4</property>
-        <property name="has_progress">True</property>
-        <property name="has_status">True</property>
-      </widget>
-      <packing>
-        <property name="position">1</property>
-      </packing>
     </child>
   </widget>
 </glade-interface>

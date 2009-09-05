@@ -21,7 +21,6 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkcheckmenuitem.h>
 
-void node_info_window_create(const node_id_t * node_id);
 guint update_info_windows (void);
 void node_protocols_window_create(const node_id_t * node_id);
 void link_info_window_create(const link_id_t * link_id);

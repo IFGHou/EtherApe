@@ -1229,10 +1229,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
         node = nodes_catalog_find(&canvas_node->canvas_node_id);
       if (node)
         {
-          if (pref.new_infodlg)
-            node_protocols_window_create( &canvas_node->canvas_node_id );
-          else
-            node_info_window_create( &canvas_node->canvas_node_id );
+          node_protocols_window_create( &canvas_node->canvas_node_id );
           g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
                      nodes_catalog_size());
           node_dump(node);

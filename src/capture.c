@@ -493,7 +493,7 @@ start_capture (void)
   /* set the antialiasing */
   gc = GNOME_CANVAS (glade_xml_get_widget (xml, "canvas1"));
   if (gc)
-    gc->aa = pref.antialias;
+    gc->aa = TRUE;
 
   capture_status = PLAY;
   return TRUE;

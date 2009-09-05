@@ -53,10 +53,6 @@ void on_font_button_clicked (GtkButton * button, gpointer user_data);
 void on_ok_button1_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_button1_clicked (GtkButton * button, gpointer user_data);
 void on_apply_button1_clicked (GtkButton * button, gpointer user_data);
-void on_size_mode_menu_selected (GtkMenuShell * menu_shell, gpointer data);
-void on_node_size_optionmenu_selected (GtkMenuShell * menu_shell,
-				       gpointer data);
-void on_stack_level_menu_selected (GtkMenuShell * menu_shell, gpointer data);
 void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				     gpointer user_data);
@@ -65,11 +61,9 @@ void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
 
 void on_group_unk_check_toggled (GtkToggleButton * togglebutton, gpointer);
-void on_aa_check_toggled (GtkToggleButton * togglebutton, gpointer user_data);
 void on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
-void on_new_infodlg_check_toggled(GtkToggleButton * togglebutton, gpointer user_data);
 
 /* proto color tab callbacks */
 void on_color_add_button_clicked (GtkButton * button, gpointer user_data);
