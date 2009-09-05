@@ -22,4 +22,4 @@ src/thread_resolve.c
 src/traffic_stats.c
 src/util.c
 #src/glade-strings
-glade/etherape.glade2
+glade/etherape.glade

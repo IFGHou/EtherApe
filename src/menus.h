@@ -27,9 +27,6 @@
 #include "globals.h"
 
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
-void on_file_cancel_button_clicked (GtkButton * button, gpointer user_data);
-void on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data);
-void on_file_ok_button_clicked (GtkButton * button, gpointer user_data);
 
 void on_interface_radio_activate (gchar * gui_device);
 void on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data);

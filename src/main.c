@@ -196,6 +196,9 @@ main (int argc, char *argv[])
   /* Glade */
 
   glade_gnome_init ();
+  glade_require("gnome");
+  glade_require("canvas");
+  glade_require("bonobo");
 
   if (!pref.glade_file)
     pref.glade_file = GLADEDIR "/" ETHERAPE_GLADE_FILE;

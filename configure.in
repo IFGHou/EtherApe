@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.7])
+AC_INIT([etherape],[0.9.8])
 AC_CONFIG_SRCDIR(README)
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
@@ -36,7 +36,7 @@ AC_PROG_LIBTOOL
 GNOME_COMPILE_WARNINGS
 
 # Checks for libraries.
-PKG_CHECK_MODULES(ETHERAPE, libglade-2.0 libgnomeui-2.0)
+PKG_CHECK_MODULES(ETHERAPE, libglade-2.0 libgnomeui-2.0 libbonoboui-2.0)
 AC_SUBST(ETHERAPE_CFLAGS)
 AC_SUBST(ETHERAPE_LIBS)
 

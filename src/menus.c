@@ -31,33 +31,6 @@ static gboolean in_start_capture = FALSE;
 
 static void set_active_interface (void);
 
-
-#if 0
-static GnomeUIInfo help_submenu[] = {
-  GNOMEUIINFO_HELP ("etherape"),
-  GNOMEUIINFO_END
-};
-
-/* This is here just as an example in case I need it again */
-void
-on_file1_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-  GtkWidget *messagebox;
-  GladeXML *xml_messagebox;
-  xml_messagebox =
-    glade_xml_new (pref.glade_file, "messagebox1", NULL);
-  messagebox = glade_xml_get_widget (xml_messagebox, "messagebox1");
-  if (!xml)
-    {
-      g_error (_("We could not load the interface! (%s)"),
-	       pref.glade_file);
-      return;
-    }
-  gtk_widget_show (messagebox);
-  gtk_object_unref (GTK_OBJECT (xml_messagebox));
-}
-#endif
-
 void
 init_menus (void)
 {
@@ -116,73 +89,38 @@ init_menus (void)
 void
 on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  static GtkWidget *open_file_dialog = NULL;
-  if (!open_file_dialog)
-    open_file_dialog = glade_xml_get_widget (xml, "open_file_dialog");
-  gtk_widget_show (open_file_dialog);
-}				/* on_open_activate */
-
-void
-on_file_cancel_button_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *open_file_dialog;
-  open_file_dialog = glade_xml_get_widget (xml, "open_file_dialog");
-  gtk_widget_hide (open_file_dialog);
-}				/* on_file_cancel_button_clicked */
-
-/* Sets up the new input capture file */
-void
-on_file_combo_entry_changed (GtkEditable * editable, gpointer user_data)
-{
-  gchar *str;
-  str = gtk_editable_get_chars (editable, 0, -1);
-  if (pref.input_file)
-    g_free (pref.input_file);
-
-  pref.input_file = g_strdup (str);
-  g_free (str);
-
-}				/* on_file_combo_entry_changed */
-
-/* open file dlg ok button */
-void
-on_file_ok_button_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *widget;
-  gchar *str = NULL;
+  GtkWidget *dialog;
 
   if (!gui_stop_capture ())
-     return;
+    return;
 
-  if (pref.interface)
+  dialog = gtk_file_chooser_dialog_new ("Open Capture File",
+				      NULL,
+				      GTK_FILE_CHOOSER_ACTION_OPEN,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      NULL);
+  if (pref.input_file)
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), pref.input_file);
+
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
+      GtkRecentManager *manager;
+      manager = gtk_recent_manager_get_default ();
+      gtk_recent_manager_add_item (manager, gtk_file_chooser_get_uri(GTK_FILE_CHOOSER (dialog)));
+
+      g_free(pref.input_file);
+      pref.input_file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+      gtk_widget_destroy (dialog);
+
       g_free (pref.interface);
       pref.interface = NULL;
+      
+      gui_start_capture ();
     }
-
-  widget = glade_xml_get_widget (xml, "file_combo_entry");
-  str = gtk_editable_get_chars (GTK_EDITABLE (widget), 0, -1);
-
-  widget = glade_xml_get_widget (xml, "open_file_dialog");
-  gtk_widget_hide (widget);
-
-
-  if (pref.input_file)
-    g_free (pref.input_file);
-  pref.input_file = g_strdup (str);
-  if (str)
-    g_free (str);
-
-  gnome_entry_append_history (GNOME_ENTRY
-			      (gnome_file_entry_gnome_entry
-			       (GNOME_FILE_ENTRY
-				(glade_xml_get_widget (xml, "fileentry")))),
-			      TRUE, pref.input_file);
-
-  gui_start_capture ();
-
-}				/* on_file_ok_button_clicked */
-
+  else
+    gtk_widget_destroy (dialog);
+}				/* on_open_activate */
 
 /* Capture menu */
 
@@ -373,23 +311,12 @@ void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
-  GladeXML *xml_about;
+  about = glade_xml_get_widget (xml, "about1");
 
-  xml_about =
-    glade_xml_new (pref.glade_file, "about1", NULL);
-  if (!xml_about)
-    {
-      g_error (_("We could not load the interface! (%s)"),
-	       pref.glade_file);
-      return;
-    }
-  about = glade_xml_get_widget (xml_about, "about1");
-  g_object_unref (xml_about);
+  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
 
   gtk_widget_show (about);
-
 }				/* on_about1_activate */
-
 
 
 /* Helper functions */

@@ -1,3 +1,46 @@
+2009-09-03  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade2, src/capture.c, src/capture.h, src/diagram.c,
+	src/diagram.h, src/globals.h, src/info_windows.c, src/main.c,
+	src/menus.c, src/menus.h, src/preferences.c:
+	small cleanup.
+	[60dcb44f3662] 
+
+	* .hgignore:
+	ignore build artifacts
+	[965574c4b19b]
+
+	* INSTALL, config.h.in, mkinstalldirs:
+	update to latest GNU tools
+	[23b56cab6eb5]
+
+	* src/globals.h, src/info_windows.c, src/main.c, src/menus.c:
+	Added --glade-file
+	[53b6374c4312]
+
+2009-06-22  bchiara  <bchiara>
+
+	* .hgtags:
+	removed tags related to ignored branches. Note: due to limitations
+	of hg convert, history is not complete. If you really need to access
+	older revisions, use cvs.
+	[a68ab3169338]
+
+2009-06-22  convert-repo  <convert-repo>
+
+	* .hgtags:
+	update tags
+	[f2f0df2a0383]
+
+2007-08-11  bchiara  <bchiara>
+
+	* INSTALL, NEWS, config.h.in, mkinstalldirs, src/capture.c,
+	src/eth_resolv.h, src/resolv.c, src/traffic_stats.c,
+	src/traffic_stats.h:
+	Fixed bug 1713590 (bad replaying of out-of-order packets). Reported
+	by haywire_dk. Removed unused function.
+	[04deabe7cdff]
+
 2006-09-30 05:57  bchiara
 
 	* ChangeLog, configure.in, etherape.spec.in, po/es.po,

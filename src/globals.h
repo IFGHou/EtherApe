@@ -31,7 +31,7 @@
 #include <arpa/nameser.h>
 #include "links.h"
 
-#define ETHERAPE_GLADE_FILE "etherape.glade2"	// glade 2 file
+#define ETHERAPE_GLADE_FILE "etherape.glade"	// glade 3 file
 
 #ifndef MAXDNAME
 #define MAXDNAME        1025	/* maximum domain name length */
