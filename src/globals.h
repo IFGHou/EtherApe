@@ -115,8 +115,6 @@ gdouble total_mem_packets;		/* Number of packets currently in memory */
 link_type_t linktype;		/* Type of device we are listening to */
 guint l3_offset;		/* Offset to the level 3 protocol data
 				 * Depends of the linktype */
-gboolean end_of_file;		/* Marks that the end of the offline file
-				 * has been reached */
 gboolean need_reposition;	/* Force a diagram relayout */
 gint diagram_timeout;		/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
@@ -151,7 +149,7 @@ struct pref_struct
 				 * link width calculation */
   node_size_variable_t node_size_variable;	/* Default variable that sets the node
 						 * size */
-  gchar *node_color, *text_color;	/* Default colors */
+  gchar *text_color;		/* Default text color */
   gchar *fontname;		/* Font to be used for text display */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */

@@ -73,33 +73,23 @@ main (int argc, char *argv[])
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
-    {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
-     N_("mode of operation"), N_("<ethernet|fddi|ip|tcp>")},
-    {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
-     N_("set interface to listen to"), N_("<interface name>")},
-    {"filter", 'f', POPT_ARG_STRING, &cl_filter, 0,
-     N_("set capture filter"), N_("<capture filter>")},
-    {"infile", 'r', POPT_ARG_STRING, &cl_input_file, 0,
-     N_("set input file"), N_("<file name>")},
-    {"numeric", 'n', POPT_ARG_NONE, &cl_numeric, 0,
-     N_("don't convert addresses to names"), NULL},
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
-    {"no-fade", 'F', POPT_ARG_NONE, &(pref.nofade), 0,
-     N_("do not fade old links"), NULL},
-    {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,
-     N_("don't move nodes around"), NULL},
+    {"filter", 'f', POPT_ARG_STRING, &cl_filter, 0,
+     N_("set capture filter"), N_("<capture filter>")},
+    {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
+     N_("set interface to listen to"), N_("<interface name>")},
     {"node_limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
+    {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
+     N_("mode of operation"), N_("<ethernet|fddi|ip|tcp>")},
+    {"numeric", 'n', POPT_ARG_NONE, &cl_numeric, 0,
+     N_("don't convert addresses to names"), NULL},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
      N_("Don't show warnings"), NULL},
-    {"node-color", 'N', POPT_ARG_STRING, &(pref.node_color), 0,
-     N_("set the node color"), N_("<color>")},
-    {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
-     N_("set the text color"), N_("<color>")},
     {"zero-delay", 'z', POPT_ARG_NONE, &(pref.zero_delay), 0,
      N_("zero delay for reading capture files [cli only]"), NULL},
-    {"glade-file", NULL, POPT_ARG_STRING, &(pref.glade_file), 0,
+    {"glade-file", NULL, POPT_ARG_STRING, &(pref.glade_file), NULL,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
 
@@ -127,19 +117,7 @@ main (int argc, char *argv[])
    * First, absolute defaults
    * Second, values saved in the config file
    * Third, whatever given in the command line */
-
-  /* Absolute defaults */
-  pref.name_res = TRUE;
-  pref.mode = IP;
-  pref.filter = NULL;
-  pref.refresh_period = 800;	/* ms */
-
-  /* TODO Besides the fact that this probably makes little sense nowadays
-   * (at least for node color) it probably leads to a segfault
-   * See how it is done for filter, for instance */
-  pref.node_color = g_strdup ("brown");
-  pref.text_color = g_strdup ("yellow");
-  pref.node_limit = -1;
+  init_config(&pref);
 
   set_debug_level ();
 
@@ -224,7 +202,6 @@ main (int argc, char *argv[])
   g_signal_connect (G_OBJECT (client), "die",
 		    GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (app1);
-
 
   /* 
    * Signal handling

@@ -1,3 +1,4 @@
+
 /* EtherApe
  * Copyright (C) 2001 Juan Toledo
  * $Id$
@@ -44,7 +45,6 @@ typedef enum
 create_node_type_t;
 
 static pcap_t *pch_struct;		/* pcap structure */
-static struct pcap_pkthdr phdr;
 static gint pcap_fd;			/* The file descriptor used by libpcap */
 static gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
@@ -175,14 +175,12 @@ enum status_t get_capture_status(void)
 gchar *
 init_capture (void)
 {
-
   gchar *device;
   gchar ebuf[300];
   gchar *str = NULL;
   gboolean error = FALSE;
   static gchar errorbuf[300];
   static gboolean data_initialized = FALSE;
-
 
   if (!data_initialized)
     {
@@ -222,7 +220,6 @@ init_capture (void)
     }
 
 
-  end_of_file = FALSE;
   if (!pref.input_file)
     {
       *ebuf = '\0'; /* reset error buffer before calling pcap functions */
@@ -376,7 +373,6 @@ init_capture (void)
   if (pref.filter)
     set_filter (pref.filter, device);
 
-
   if (error)
     {
       snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
@@ -404,7 +400,6 @@ init_capture (void)
       snprintf (errorbuf, sizeof(errorbuf), _("Ape mode not yet supported"));
       return errorbuf;
     }
-
 
   return NULL;
 }				/* init_capture */
@@ -526,14 +521,11 @@ pause_capture (void)
   else
     {
       g_my_debug (_("Pausing offline capture"));
-      if (!end_of_file)
-	{
-	  if (!g_source_remove (capture_source))
-	    {
-	      g_warning (_("Error while trying to pause capture"));
-	      return FALSE;
-	    }
-	}
+      if (!g_source_remove (capture_source))
+        {
+          g_warning (_("Error while trying to pause capture"));
+          return FALSE;
+        }
     }
 
   capture_status = PAUSE;
@@ -558,7 +550,7 @@ stop_capture (void)
   else
     {
       g_my_debug (_("Stopping offline capture"));
-      if (!end_of_file)
+      if (capture_status != CAP_EOF)
 	{
 	  if (!g_source_remove (capture_source))
 	    {
@@ -620,46 +612,55 @@ cleanup_capture (void)
 static guint
 get_offline_packet (void)
 {
-  static guint8 *packet = NULL;
+  static struct pcap_pkthdr *pkt_header = NULL;
+  static const u_char *pkt_data = NULL;
   static struct timeval last_time = { 0, 0 }, this_time, diff;
+  int result;
 
   if (capture_status == STOP)
     {
-      packet = NULL;
+      pkt_header = NULL;
+      pkt_data = NULL;
       last_time.tv_usec = last_time.tv_sec = 0;
       return FALSE;
     }
 
-  if (packet)
+  if (pkt_data)
   {
     gettimeofday (&now, NULL);
-    packet_acquired(packet, phdr.caplen, phdr.len);
+    packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
   }
 
-  packet = (guint8 *) pcap_next (pch_struct, &phdr);
-  if (!packet)
-    end_of_file = TRUE;
-
-  if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
+  result = pcap_next_ex(pch_struct, &pkt_header, &pkt_data);
+  switch (result)
     {
-      last_time.tv_sec = phdr.ts.tv_sec;
-      last_time.tv_usec = phdr.ts.tv_usec;
+    case 1:
+      if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
+        {
+          last_time.tv_sec = pkt_header->ts.tv_sec;
+          last_time.tv_usec = pkt_header->ts.tv_usec;
+        }
+
+      this_time.tv_sec = pkt_header->ts.tv_sec;
+      this_time.tv_usec = pkt_header->ts.tv_usec;
+
+      diff = substract_times (this_time, last_time);
+
+      /* diff can be negative when listening to multiple interfaces.
+       * In that case the delay is zeroed */
+      if (pref.zero_delay || diff.tv_sec < 0)
+        ms_to_next = 0; 
+      else 
+        ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+
+      last_time = this_time;
+      break;
+    case -2:
+      capture_status = CAP_EOF;
+      break;
+    default:
+      ms_to_next=0; /* error or timeout, ignore packet */
     }
-
-  this_time.tv_sec = phdr.ts.tv_sec;
-  this_time.tv_usec = phdr.ts.tv_usec;
-
-  diff = substract_times (this_time, last_time);
-
-  /* diff can be negative when listening to multiple interfaces.
-   * In that case the delay is zeroed */
-  if (pref.zero_delay || diff.tv_sec < 0)
-      ms_to_next = 0; 
-  else 
-      ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
-
-  last_time = this_time;
-
   return FALSE;
 }				/* get_offline_packet */
 
@@ -668,34 +669,35 @@ static void
 cap_t_o_destroy (gpointer data)
 {
 
-  if ((capture_status == PLAY) && !end_of_file)
+  if (capture_status == PLAY)
     capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					 ms_to_next,
 					 (GtkFunction) get_offline_packet,
 					 data,
 					 (GDestroyNotify) cap_t_o_destroy);
 
-}				/* capture_t_o_destroy */
+}				/* cap_t_o_destroy */
 
 
 /* This function is the gdk callback called when the capture socket holds data */
 static void
 read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
 {
-  guint8 * packet = NULL;
+  struct pcap_pkthdr *pkt_header = NULL;
+  const u_char *pkt_data = NULL;
+  int result;
 
   /* Get next packet */
-  packet = (guint8 *) pcap_next (pch_struct, &phdr);
+  result = pcap_next_ex(pch_struct, &pkt_header, &pkt_data);
 
-  /* Redhat's phdr.ts is not a timeval, so I can't
+  /* Redhat's pkt_header.ts is not a timeval, so I can't
    * just copy the structures */
-  now.tv_sec = phdr.ts.tv_sec;
-  now.tv_usec = phdr.ts.tv_usec;
-
-  if (packet)
-    packet_acquired(packet, phdr.caplen, phdr.len);
-
-}				/* packet_read */
+  now.tv_sec = pkt_header->ts.tv_sec;
+  now.tv_usec = pkt_header->ts.tv_usec;
+ 
+  if (pkt_data)
+    packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
+}
 
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information

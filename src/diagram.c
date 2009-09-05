@@ -322,12 +322,12 @@ update_diagram (GtkWidget * canvas)
   if (status == PAUSE)
     return FALSE;
 
-  if (end_of_file && status != STOP)
+  if (status == CAP_EOF)
     {
-      g_my_debug ("End of file and status != STOP. Pausing.");
-      gui_pause_capture ();
+      gui_eof_capture ();
+      return FALSE;
     }
-
+  
   /* 
    * It could happen that during an intensive calculation, in order
    * to update the GUI and make the application responsive gtk_main_iteration
@@ -396,18 +396,12 @@ update_diagram (GtkWidget * canvas)
   if (!is_idle)
     {
       if (diff_msecs > pref.refresh_period * 1.2)
-	{
-/* 	  g_message ("Timeout about to be removed"); */
 	  return FALSE;		/* Removes the timeout */
-	}
     }
   else
     {
       if (diff_msecs < pref.refresh_period)
-	{
-/*	  g_message ("Idle about to be removed"); */
 	  return FALSE;		/* removes the idle */
-	}
     }
 
   return TRUE;			/* Keep on calling this function */
@@ -569,7 +563,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 				 "x2", 0.0,
 				 "y1", 0.0,
 				 "y2", 0.0,
-				 "fill_color", pref.node_color,
+				 "fill_color", "white",
 				 "outline_color", "black",
 				 "width_pixels", 0, NULL);
       g_object_ref (G_OBJECT (new_canvas_node->node_item));

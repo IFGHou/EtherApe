@@ -35,6 +35,51 @@ static gboolean restarted_capture = FALSE; /* true if the capture was restarted 
 static GtkWidget *diag_pref = NULL;		/* Pointer to the diagram configuration window */
 static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
 
+void init_config(struct pref_struct *p)
+{
+  p->input_file = NULL;
+  p->name_res = TRUE;
+  p->mode = IP;
+  p->filter = NULL;
+  p->refresh_period = 800;	/* ms */
+  p->text_color = g_strdup ("yellow");
+  p->node_limit = -1;
+
+  p->diagram_only = FALSE;
+  p->group_unk = TRUE;
+  p->nofade = FALSE;
+  p->antialias = TRUE;
+  p->cycle = TRUE;
+  p->stationary = FALSE;
+  p->new_infodlg = TRUE;
+  p->node_radius_multiplier = 0.0005;
+  p->link_width_multiplier = 0.0005;
+  p->size_mode = LINEAR;
+  p->node_size_variable = INST_OUTBOUND;
+  p->stack_level = 0;
+  p->node_limit = -1;
+  p->proto_timeout_time=0;
+  p->gui_node_timeout_time=0;
+  p->node_timeout_time=0;
+  p->proto_node_timeout_time=0;
+  p->gui_link_timeout_time=0;
+  p->link_timeout_time=0;
+  p->proto_link_timeout_time=0;
+  p->refresh_period=0;	
+
+  p->text_color=g_strdup("yellow");
+  p->fontname=NULL;
+  p->n_colors=0;
+  p->colors=NULL;
+  
+  p->averaging_time=3000;	
+  p->interface=NULL;
+  p->filter=NULL;
+  p->is_debug=FALSE;
+  p->zero_delay=FALSE;
+  p->glade_file = NULL;
+}
+
 
 /* loads configuration from .gnome/Etherape */
 void
@@ -190,7 +235,6 @@ duplicate_config(const struct pref_struct *src)
   t = g_malloc(sizeof(struct pref_struct));
 
   t->input_file = NULL;
-  t->node_color=NULL;
   t->text_color=NULL;
   t->fontname=NULL;
   t->n_colors=0;
@@ -205,12 +249,10 @@ duplicate_config(const struct pref_struct *src)
 
 /* releases all memory allocated for internal fields */
 void 
-empty_config(struct pref_struct *t)
+free_config(struct pref_struct *t)
 {
   g_free(t->input_file);
   t->input_file = NULL;
-  g_free(t->node_color);
-  t->node_color=NULL;
   g_free(t->text_color);
   t->text_color=NULL;
   g_free(t->fontname);
@@ -228,14 +270,19 @@ empty_config(struct pref_struct *t)
   t->interface=NULL;
   g_free(t->filter);
   t->filter=NULL;
+  g_free(t->glade_file);
+  t->glade_file=NULL;
 }
 
 /* copies a configuration from src to tgt */
 void 
 copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 {
+  if (tgt == src)
+	return;
+
   /* first, reset old data */
-  empty_config(tgt);
+  free_config(tgt);
 
   /* then copy */
   tgt->input_file = g_strdup(src->input_file);
@@ -252,7 +299,6 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->link_width_multiplier = src->link_width_multiplier;
   tgt->size_mode = src->size_mode;
   tgt->node_size_variable = src->node_size_variable;
-  tgt->node_color=g_strdup(src->node_color);
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);
   tgt->stack_level = src->stack_level;
@@ -312,7 +358,7 @@ static void
 hide_pref_dialog(void)
 {
   /* purge temporary */
-  empty_config(tmp_pref);
+  free_config(tmp_pref);
   g_free(tmp_pref);
   tmp_pref = NULL;
 

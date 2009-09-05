@@ -734,7 +734,10 @@ node_info_window_compare(gconstpointer a, gconstpointer b)
 guint
 update_info_windows (void)
 {
-  if (get_capture_status() == PAUSE)
+  enum status_t status;
+
+  status = get_capture_status();
+  if (status != PLAY && status != STOP)
     return TRUE;
 
   gettimeofday (&now, NULL);

@@ -329,8 +329,7 @@ gui_start_capture (void)
   gchar *errorbuf = NULL;
   GString *status_string = NULL;
 
-
-  if (get_capture_status() == PAUSE && end_of_file)
+  if (get_capture_status() == CAP_EOF)
     if (!gui_stop_capture ())
       return;
 
@@ -343,7 +342,7 @@ gui_start_capture (void)
 
   if (get_capture_status() == PLAY)
     {
-      g_warning (_("Status not STOP or PAUSE at gui_start_capture"));
+      g_warning (_("Status already PLAY at gui_start_capture"));
       return;
     }
 
@@ -489,8 +488,6 @@ gui_start_capture (void)
   g_my_info (_("Diagram started"));
 }				/* gui_start_capture */
 
-
-
 void
 gui_pause_capture (void)
 {
@@ -519,17 +516,43 @@ gui_pause_capture (void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
-
-  /* Sets the appbar */
-
-  status_string = g_string_new (_("Paused"));
-
-  set_appbar_status (status_string->str);
-  g_string_free (status_string, TRUE);
+  set_appbar_status (_("Paused"));
 
   g_my_info (_("Diagram paused"));
 
 }				/* gui_pause_capture */
+
+
+/* reached eof on a file replay */
+void gui_eof_capture(void)
+{
+  GtkWidget *widget;
+  GString *status_string = NULL;
+
+  if (get_capture_status() == STOP)
+    return;
+
+  widget = glade_xml_get_widget (xml, "start_button");
+  gtk_widget_set_sensitive (widget, TRUE);
+  widget = glade_xml_get_widget (xml, "start_menuitem");
+  gtk_widget_set_sensitive (widget, TRUE);
+  widget = glade_xml_get_widget (xml, "stop_button");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "stop_menuitem");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "pause_button");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "pause_menuitem");
+  gtk_widget_set_sensitive (widget, FALSE);
+
+  /* Sets the appbar */
+  status_string = g_string_new ("");
+  g_string_printf(status_string, _("Replay from file '%s' completed."), pref.input_file);
+  set_appbar_status (status_string->str);
+  g_string_free (status_string, TRUE);
+
+  g_my_info (_("Diagram stopped"));
+}				/* gui_stop_capture */
 
 
 /* Sets up the GUI to reflect changes and calls stop_capture() */

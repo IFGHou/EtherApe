@@ -28,8 +28,9 @@
 void load_config (const char *prefix);
 void save_config (const char * prefix);
 
+void init_config(struct pref_struct *cfg);
 struct pref_struct *duplicate_config(const struct pref_struct *src);
-void empty_config(struct pref_struct *t);
+void free_config(struct pref_struct *t);
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src);
 
 void initialize_pref_controls(void);
