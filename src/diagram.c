@@ -1161,17 +1161,13 @@ get_link_size (gdouble average)
 
 
 /* Called for every event a link receives. Right now it's used to 
- * set a message in the appbar */
+ * set a message in the statusbar */
 static gint
 link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 		 canvas_link_t * canvas_link)
 {
-  static GnomeAppBar *appbar;
   gchar *str;
   const link_t *link=NULL;
-
-  if (!appbar)
-    appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
 
   switch (event->type)
     {
@@ -1188,11 +1184,11 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 			   link->main_prot[pref.stack_level]);
       else
 	str = g_strdup_printf (_("Link main protocol unknown"));
-      gnome_appbar_push (appbar, str);
+      gtk_statusbar_push(statusbar, 1, str);
       g_free (str);
       break;
     case GDK_LEAVE_NOTIFY:
-      gnome_appbar_pop (appbar);
+      gtk_statusbar_pop(statusbar, 1);
       break;
     default:
       break;
@@ -1203,7 +1199,7 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
 
 /* Called for every event a node receives. Right now it's used to 
- * set a message in the appbar and launch the popup timeout */
+ * set a message in the statusbar and launch the popup timeout */
 static gint
 node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 		 canvas_node_t * canvas_node)
@@ -1211,10 +1207,6 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
   gdouble item_x, item_y;
   const node_t *node = NULL;
-  static GnomeAppBar *appbar;
-
-  if (!appbar)
-    appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
 
   /* This is not used yet, but it will be. */
   item_x = event->button.x;
@@ -1243,12 +1235,10 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 
 }				/* node_item_event */
 
-/* Pushes a string into the appbar status area */
-
+/* Pushes a string into the statusbar stack */
 void
-set_appbar_status (gchar * str)
+set_statusbar_msg (gchar * str)
 {
-  static GnomeAppBar *appbar = NULL;
   static gchar *status_string = NULL;
 
   if (status_string)
@@ -1256,13 +1246,9 @@ set_appbar_status (gchar * str)
 
   status_string = g_strdup (str);
 
-  if (!appbar)
-    appbar = GNOME_APPBAR (glade_xml_get_widget (xml, "appbar1"));
-
-  gnome_appbar_pop (appbar);
-  gnome_appbar_push (appbar, status_string);
-
-}				/* set_appbar_status */
+  gtk_statusbar_pop(statusbar, 0);
+  gtk_statusbar_push(statusbar, 0, status_string);
+}				/* set_statusbar_msg */
 
 gchar *
 traffic_to_str (gdouble traffic, gboolean is_speed)

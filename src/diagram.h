@@ -27,6 +27,6 @@ guint update_diagram (GtkWidget * canvas);
 void init_diagram (GladeXML *xml);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
-void set_appbar_status (gchar * str);
+void set_statusbar_msg (gchar * str);
 void delete_gui_protocols (void);
 gchar *traffic_to_str (gdouble traffic, gboolean is_speed);

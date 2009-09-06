@@ -180,7 +180,6 @@ main (int argc, char *argv[])
   glade_gnome_init ();
   glade_require("gnome");
   glade_require("canvas");
-  glade_require("bonobo");
 
   if (!pref.glade_file)
     pref.glade_file = GLADEDIR "/" ETHERAPE_GLADE_FILE;
@@ -195,7 +194,8 @@ main (int argc, char *argv[])
   glade_xml_signal_autoconnect (xml);
 
   app1 = glade_xml_get_widget (xml, "app1");
-
+  statusbar = GTK_STATUSBAR(glade_xml_get_widget (xml, "statusbar1"));
+  
   /* Sets controls to the values of variables and connects signals */
   init_diagram (xml);
 

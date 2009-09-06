@@ -20,10 +20,10 @@
 #ifndef ETHERAPE_GLOBALS_H
 #define ETHERAPE_GLOBALS_H
 
+#include <gtk/gtk.h>
 #include <gnome.h>
 #include <glib.h>
-#include <libgnomecanvas/gnome-canvas.h>
-#include <libgnomeui/gnome-entry.h>
+//#include <libgnomecanvas/gnome-canvas.h>
 #include <sys/time.h>
 #include <pcap.h>
 #include <glade/glade.h>
@@ -107,6 +107,7 @@ node_size_variable_t;
 
 GladeXML *xml;
 GtkWidget *app1;		/* Pointer to the main app window */
+GtkStatusbar *statusbar;        /* Main window statusbar */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 gdouble n_packets;		/* Number of total packets received */

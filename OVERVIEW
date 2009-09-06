@@ -43,7 +43,7 @@ src/util.c
 
 src/diagram.c
 	Updates the diagram, which is a gnome_canvas widget.
-	Takes care of appbar information and node pop-ups.
+	Takes care of statusbar information and node pop-ups.
 
 src/callbacks.c
 	Handles GUI interaction. Buttons clicked, adjustments

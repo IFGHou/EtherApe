@@ -271,7 +271,7 @@ on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
 
-  widget = glade_xml_get_widget (xml, "dock_toolbar");
+  widget = glade_xml_get_widget (xml, "handlebox_toolbar");
   if (menuitem->active)
     gtk_widget_show (widget);
   else
@@ -283,7 +283,7 @@ on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
 
-  widget = glade_xml_get_widget (xml, "dock_legend");
+  widget = glade_xml_get_widget (xml, "handlebox_legend");
   if (menuitem->active)
     gtk_widget_show (widget);
   else
@@ -293,12 +293,10 @@ on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 void
 on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  GtkWidget *widget;
-  widget = glade_xml_get_widget (xml, "appbar1");
   if (menuitem->active)
-    gtk_widget_show (widget);
+    gtk_widget_show (GTK_WIDGET(statusbar));
   else
-    gtk_widget_hide (widget);
+    gtk_widget_hide (GTK_WIDGET(statusbar));
 }				/* on_status_bar_check_activate */
 
 
@@ -444,8 +442,7 @@ gui_start_capture (void)
   /* Set the interface in GUI */
   set_active_interface ();
 
-  /* Sets the appbar */
-
+  /* Sets the statusbar */
   status_string = g_string_new (_("Reading data from "));
 
   if (pref.input_file)
@@ -480,7 +477,7 @@ gui_start_capture (void)
       return;
     }
 
-  set_appbar_status (status_string->str);
+  set_statusbar_msg (status_string->str);
   g_string_free (status_string, TRUE);
 
   in_start_capture = FALSE;
@@ -516,7 +513,7 @@ gui_pause_capture (void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
-  set_appbar_status (_("Paused"));
+  set_statusbar_msg (_("Paused"));
 
   g_my_info (_("Diagram paused"));
 
@@ -545,10 +542,10 @@ void gui_eof_capture(void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
-  /* Sets the appbar */
+  /* Sets the statusbar */
   status_string = g_string_new ("");
   g_string_printf(status_string, _("Replay from file '%s' completed."), pref.input_file);
-  set_appbar_status (status_string->str);
+  set_statusbar_msg (status_string->str);
   g_string_free (status_string, TRUE);
 
   g_my_info (_("Diagram stopped"));
@@ -600,8 +597,7 @@ gui_stop_capture (void)
   /* Now update info windows */
   update_info_windows ();
 
-  /* Sets the appbar */
-
+  /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));
 
   if (pref.input_file)
@@ -611,7 +607,7 @@ gui_stop_capture (void)
   else
     g_string_append (status_string, _("default interface"));
 
-  set_appbar_status (status_string->str);
+  set_statusbar_msg (status_string->str);
   g_string_free (status_string, TRUE);
 
   g_my_info (_("Diagram stopped"));
