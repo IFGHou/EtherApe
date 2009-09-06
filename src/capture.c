@@ -431,26 +431,6 @@ set_filter (gchar * filter_string, gchar * device)
     g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
 
   return 0;
-#if 0
-  /* TODO pending to be more general, since we want to be able 
-   * to change the capturing device in runtime. */
-  if (!current_device)
-    current_device = g_strdup (device);
-
-  /* A capture filter was specified; set it up. */
-  if (current_device
-      && (pcap_lookupnet (current_device, &netnum, &netmask, ebuf) < 0))
-    {
-      g_warning (_
-		 ("Couldn't obtain netmask info (%s). Filters involving broadcast addresses could behave incorrectly."),
-		 ebuf);
-      netmask = 0;
-    }
-  if (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0)
-    g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
-  else if (pcap_setfilter (pch_struct, &fp) < 0)
-    g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
-#endif
 }				/* set_filter */
 
 gboolean

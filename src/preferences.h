@@ -56,12 +56,10 @@ void on_apply_button1_clicked (GtkButton * button, gpointer user_data);
 void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				     gpointer user_data);
-void on_filter_entry_changed (GtkEditable * editable, gpointer user_data);
 void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
 
 void on_group_unk_check_toggled (GtkToggleButton * togglebutton, gpointer);
-void on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer udata);
 void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
 

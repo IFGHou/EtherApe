@@ -149,7 +149,6 @@ init_diagram (GladeXML *xml)
                             NULL, NULL, (GDestroyNotify)canvas_link_delete);
 
   initialize_pref_controls();
-
   
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
@@ -1080,18 +1079,13 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
     {
       canvas_link->color = protohash_get(link->main_prot[pref.stack_level]);
 
-      if (pref.nofade)
-        scale = 1.0;
-      else
-	{
-	  /* scale color down to 10% at link timeout */
-          struct timeval diff;
-          diff = substract_times (now, link->link_stats.stats.last_time);
-	  scale =
-	    pow (0.10,
-		 (diff.tv_sec * 1000.0 +
-		  diff.tv_usec / 1000) / pref.gui_link_timeout_time);
-	}
+      /* scale color down to 10% at link timeout */
+      struct timeval diff;
+      diff = substract_times (now, link->link_stats.stats.last_time);
+      scale =
+        pow (0.10,
+             (diff.tv_sec * 1000.0 +
+              diff.tv_usec / 1000) / pref.gui_link_timeout_time);
 
       scaledColor =
         (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |

@@ -32,6 +32,8 @@ static void on_stack_level_changed(GtkComboBox * combo, gpointer data);
 static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
+static void on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data);
+static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
 
 static gboolean colors_changed = FALSE;
@@ -51,7 +53,6 @@ void init_config(struct pref_struct *p)
 
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
-  p->nofade = FALSE;
   p->cycle = TRUE;
   p->stationary = FALSE;
   p->node_radius_multiplier = 0.0005;
@@ -99,7 +100,6 @@ load_config (const char *prefix)
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.nofade = gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
@@ -179,7 +179,6 @@ save_config (const char *prefix)
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
-  gnome_config_set_bool ("Diagram/nofade", pref.nofade);
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
   gnome_config_set_bool ("Diagram/name_res", pref.name_res);
   gnome_config_set_float ("Diagram/node_timeout_time",
@@ -283,7 +282,6 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->mode=src->mode;
   tgt->diagram_only = src->diagram_only;
   tgt->group_unk = src->group_unk;
-  tgt->nofade = src->nofade;
   tgt->cycle = src->cycle;
   tgt->stationary = src->stationary;
   tgt->node_radius_multiplier = src->node_radius_multiplier;
@@ -327,15 +325,8 @@ confirm_changes(void)
 {
   GtkWidget *widget = NULL;
 
-  widget = glade_xml_get_widget (xml, "filter_entry");
-  on_filter_entry_changed (GTK_EDITABLE (widget), NULL);
-  widget = glade_xml_get_widget (xml, "");
-
-  /* add proto name to history */
-  gnome_entry_append_history (GNOME_ENTRY
-			      (glade_xml_get_widget
-			       (xml, "filter_gnome_entry")), FALSE,
-			      pref.filter);
+  widget = glade_xml_get_widget (xml, "filter_combo");
+  on_filter_entry_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
 
   if (colors_changed)
     {
@@ -367,6 +358,7 @@ initialize_pref_controls(void)
   GtkWidget *widget;
   GtkSpinButton *spin;
   GdkColor color;
+  GtkTreeModel *model;
 
   diag_pref = glade_xml_get_widget (xml, "diag_pref");
 
@@ -407,8 +399,6 @@ initialize_pref_controls(void)
 				pref.diagram_only);
   widget = glade_xml_get_widget (xml, "group_unk_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
-  widget = glade_xml_get_widget (xml, "fade_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), !pref.nofade);
   widget = glade_xml_get_widget (xml, "cycle_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
   widget = glade_xml_get_widget (xml, "name_res_check");
@@ -425,11 +415,15 @@ initialize_pref_controls(void)
     gdk_color_parse("#ffff00", &color);
   gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), &color);
 
-  widget = glade_xml_get_widget (xml, "filter_gnome_entry");
-  widget = glade_xml_get_widget (xml, "file_filter_entry");
-  widget = glade_xml_get_widget (xml, "fileentry");
-  widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
-
+  widget = glade_xml_get_widget (xml, "filter_combo");
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+  if (!model)
+    {
+      GtkListStore *list_store;
+  printf("gogogo\n");
+      list_store=gtk_list_store_new (1, G_TYPE_STRING);
+      gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
+    }
 
   load_color_list ();		/* Updates the color preferences table with pref.colors */
 
@@ -516,19 +510,15 @@ initialize_pref_controls(void)
 void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  GtkEditable *entry;
+  GtkComboBoxEntry *cbox;
   gint position = 0;
 
   /* saves current prefs to a temporary */
   tmp_pref = duplicate_config(&pref);
 
-  entry = GTK_EDITABLE (glade_xml_get_widget (xml, "filter_entry"));
-  gtk_editable_delete_text (entry, 0, -1);
-  if (pref.filter)
-    gtk_editable_insert_text (entry, pref.filter, strlen (pref.filter),
-			      &position);
-  else
-    gtk_editable_insert_text (entry, "", 0, &position);
+  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (xml, "filter_combo"));
+  cbox_add_select(cbox, pref.filter);
+
   gtk_widget_show (diag_pref);
   gdk_window_raise (diag_pref->window);
 }
@@ -774,27 +764,22 @@ on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 
 
 /* Makes a new filter */
-void
-on_filter_entry_changed (GtkEditable * editable, gpointer user_data)
+static void
+on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data)
 {
   gchar *str;
   /* TODO should make sure that for each mode the filter is set up
    * correctly */
-  str = gtk_editable_get_chars (editable, 0, -1);
+  str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
   if (pref.filter)
     g_free (pref.filter);
   pref.filter = g_strdup (str);
-  g_free (str);
   /* TODO We should look at the error code from set_filter and pop
    * up a window accordingly */
   set_filter (pref.filter, NULL);
+  g_free (str);
+  cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */
-
-void
-on_fade_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-  pref.nofade = !gtk_toggle_button_get_active (togglebutton);
-}				/* on_fade_toggle_toggled */
 
 void
 on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
@@ -974,7 +959,7 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
-  GtkWidget *protocol_entry = NULL;
+  GtkComboBoxEntry *cbox;
   int pos = 0;
   EATreePos ep;
   if (!get_color_store (&ep))
@@ -990,11 +975,8 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
 
   gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 2, &protocol_string, -1);
 
-  protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
-
-  gtk_editable_delete_text (GTK_EDITABLE (protocol_entry), 0, -1);
-  gtk_editable_insert_text (GTK_EDITABLE (protocol_entry), protocol_string,
-			    strlen (protocol_string), &pos);
+  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (xml, "protocol_entry"));
+  cbox_add_select(cbox, protocol_string);
 
   g_free (protocol_string);
 }
@@ -1007,7 +989,7 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
-  GtkWidget *protocol_entry = NULL;
+  GtkComboBoxEntry *cbox;
   EATreePos ep;
   if (!get_color_store (&ep))
     return;
@@ -1020,19 +1002,12 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;			/* path not found */
 
-
-  protocol_entry = glade_xml_get_widget (xml, "protocol_entry");
-  proto_string =
-    gtk_editable_get_chars (GTK_EDITABLE (protocol_entry), 0, -1);
+  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (xml, "protocol_entry"));
+  proto_string = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
   proto_string = g_utf8_strup (proto_string, -1);
-
+  cbox_add_select(cbox, proto_string);
+  
   gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
-
-  /* add proto name to history */
-  gnome_entry_append_history (GNOME_ENTRY
-			      (glade_xml_get_widget
-			       (xml, "protocol_gnome_entry")), FALSE,
-			      proto_string);
 
   g_free (proto_string);
 
@@ -1170,4 +1145,37 @@ get_version_levels (const gchar * version_string,
 			 && sscanf (tokens[2], "%d", patch)), FALSE);
   g_strfreev (tokens);
   return TRUE;
+}
+
+/* adds a string to the combo if not already present and loads it in the
+   edit box. If str is "" simply clears the edit box */
+static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str)
+{
+  GtkTreeModel *model;
+  GtkTreeIter iter,iter3;
+  gboolean res;
+  gchar *modelstr;
+  GtkWidget *entry;
+
+  if (!str)
+     str = "";
+  
+  entry = gtk_bin_get_child (GTK_BIN (cbox));
+  gtk_entry_set_text (GTK_ENTRY (entry), str);
+
+  if (*str)
+    {
+      model = gtk_combo_box_get_model(GTK_COMBO_BOX(cbox));
+      for (res=gtk_tree_model_get_iter_first (model, &iter);
+           res;
+           res=gtk_tree_model_iter_next (model, &iter))
+        {
+          gtk_tree_model_get (model, &iter, 0, &modelstr, -1);
+          if (strcmp (str, modelstr) == 0)
+            return; /* already present */
+        }
+
+      gtk_list_store_insert_with_values(GTK_LIST_STORE(model), 
+                                        &iter3, 0, 0, str, -1);
+    }
 }
