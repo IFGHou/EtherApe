@@ -65,16 +65,20 @@ log_handler (gchar * log_domain,
 int
 main (int argc, char *argv[])
 {
-  gchar *mode_string = NULL;
   GtkWidget *widget;
   GnomeClient *client;
-  gchar *cl_filter = NULL, *cl_interface = NULL, *cl_input_file = NULL;
+  gchar *mode_string = NULL;
+  gchar *cl_filter = NULL;
+  gchar *cl_interface = NULL;
+  gchar *cl_input_file = NULL;
   gboolean cl_numeric = FALSE;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
+    {"replay-file", 'r', POPT_ARG_STRING, &cl_input_file, 0,
+     N_("replay packets from file"), N_("<file to replay>")},
     {"filter", 'f', POPT_ARG_STRING, &cl_filter, 0,
      N_("set capture filter"), N_("<capture filter>")},
     {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,

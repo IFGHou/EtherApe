@@ -31,6 +31,7 @@ static gint version_compare (const gchar * a, const gchar * b);
 static void on_stack_level_changed(GtkComboBox * combo, gpointer data);
 static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
+static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
 
 
 static gboolean colors_changed = FALSE;
@@ -68,7 +69,7 @@ void init_config(struct pref_struct *p)
   p->proto_link_timeout_time=0;
   p->refresh_period=0;	
 
-  p->text_color=g_strdup("yellow");
+  p->text_color=NULL;
   p->fontname=NULL;
   p->n_colors=0;
   p->colors=NULL;
@@ -151,6 +152,7 @@ load_config (const char *prefix)
   pref.fontname =
     gnome_config_get_string_with_default
     ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
+  pref.text_color = gnome_config_get_string_with_default("Diagram/text_color=#ffff00", &u);
   gnome_config_get_vector_with_default
     ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
      &(pref.n_colors), &(pref.colors), &u);
@@ -199,15 +201,13 @@ save_config (const char *prefix)
 			  pref.node_radius_multiplier);
   gnome_config_set_float ("Diagram/link_width_multiplier",
 			  pref.link_width_multiplier);
-#if 0				/* TODO should we save this? */
-  gnome_config_set_int ("General/mode", pref.mode);
-#endif
   gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
   gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
   gnome_config_set_int ("Diagram/node_size_variable",
 			pref.node_size_variable);
   gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
   gnome_config_set_string ("Diagram/fontname", pref.fontname);
+  gnome_config_set_string ("Diagram/text_color", pref.text_color);
 
   gnome_config_set_vector ("Diagram/colors", pref.n_colors,
 			   (const gchar * const *) pref.colors);
@@ -366,6 +366,7 @@ initialize_pref_controls(void)
 {
   GtkWidget *widget;
   GtkSpinButton *spin;
+  GdkColor color;
 
   diag_pref = glade_xml_get_widget (xml, "diag_pref");
 
@@ -418,6 +419,11 @@ initialize_pref_controls(void)
   gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.node_size_variable);
   widget = glade_xml_get_widget (xml, "size_mode");
   gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.size_mode);
+
+  widget = glade_xml_get_widget (xml, "text_color");
+  if (!gdk_color_parse(pref.text_color, &color))
+    gdk_color_parse("#ffff00", &color);
+  gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), &color);
 
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
   widget = glade_xml_get_widget (xml, "file_filter_entry");
@@ -501,6 +507,10 @@ initialize_pref_controls(void)
   g_signal_connect (G_OBJECT (widget), 
                     "changed",
 		    GTK_SIGNAL_FUNC (on_size_mode_changed), NULL);
+  widget = glade_xml_get_widget (xml, "text_color");
+  g_signal_connect (G_OBJECT (widget), 
+                    "color_set",
+		    GTK_SIGNAL_FUNC (on_text_color_changed), NULL);
 }
 
 void
@@ -688,14 +698,20 @@ static void on_stack_level_changed(GtkComboBox * combo, gpointer data)
   delete_gui_protocols ();
 }
 
+static void on_text_color_changed(GtkColorButton * wdg, gpointer data)
+{
+  GdkColor new_color;
+  gtk_color_button_get_color(wdg, &new_color);
+  g_free(pref.text_color);
+  pref.text_color = gdk_color_to_string(&new_color);
+}
+
 void
 on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
-
   pref.diagram_only = gtk_toggle_button_get_active (togglebutton);
   need_reposition = TRUE;
-
 }				/* on_diagram_only_toggle_toggled */
 
 void
