@@ -38,6 +38,7 @@
 #define MAX_NODE_SIZE 5000
 #define MAX_LINK_SIZE (MAX_NODE_SIZE/4)
 
+
 /***************************************************************************
  *
  * canvas_node_t definition and methods
@@ -89,11 +90,11 @@ static gint canvas_link_update(link_id_t * link_id,
  **************************************************************************/
 
 
-static GTree *canvas_nodes;		/* We don't use the nodes tree directly in order to 
+static GTree *canvas_nodes;	/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
-static GTree *canvas_links;		/* See canvas_nodes */
+static GTree *canvas_links;	/* See canvas_nodes */
 
 static guint known_protocols = 0;
 
@@ -101,6 +102,9 @@ static guint known_protocols = 0;
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
 static GdkColor black_color;
+static gboolean need_reposition = TRUE;	/* Force a diagram relayout */
+static gint diagram_timeout;	/* Descriptor of the diagram timeout function
+				 * (Used to change the refresh_period in the callback */
 
 /***************************************************************************
  *
@@ -133,6 +137,11 @@ static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
 static void update_legend(void);
 
+
+void ask_reposition(void)
+{
+  need_reposition = TRUE;
+}
 
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
@@ -170,6 +179,17 @@ init_diagram (GladeXML *xml)
   already_updating = FALSE;
 }				/* init_diagram */
 
+
+void change_refresh_period(guint32 newperiod)
+{
+  pref.refresh_period = newperiod;
+  /* When removing the source (which could either be an idle or a timeout
+   * function, I'm also forcing the callback for the corresponding 
+   * destroying function, which in turn will install a timeout or idle
+   * function using the new refresh_period. It might take a while for it
+   * to settle down, but I think it works now */
+  g_source_remove (diagram_timeout);
+}
 
 void
 destroying_timeout (gpointer data)

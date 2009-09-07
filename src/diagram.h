@@ -30,3 +30,5 @@ void destroying_idle (gpointer data);
 void set_statusbar_msg (gchar * str);
 void delete_gui_protocols (void);
 gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
+void ask_reposition(void); /* request diagram relayout */
+void change_refresh_period(guint32 newperiod); 

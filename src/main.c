@@ -231,11 +231,7 @@ main (int argc, char *argv[])
    * then it will just do a best effort */
 
   widget = glade_xml_get_widget (xml, "canvas1");
-  diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
-					pref.refresh_period,
-					(GtkFunction) update_diagram,
-					widget,
-					(GDestroyNotify) destroying_timeout);
+  destroying_idle (widget);
 
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add (500, (GtkFunction) update_info_windows, NULL);

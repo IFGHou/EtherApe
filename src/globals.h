@@ -35,9 +35,6 @@ gdouble n_packets;		/* Number of total packets received */
 gdouble total_mem_packets;		/* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
-gboolean need_reposition;	/* Force a diagram relayout */
-gint diagram_timeout;		/* Descriptor of the diagram timeout function
-				 * (Used to change the refresh_period in the callback */
 
 struct pref_struct
 {
@@ -66,7 +63,7 @@ struct pref_struct
 				 * link width calculation */
   node_size_variable_t node_size_variable;	/* Default variable that sets the node
 						 * size */
-  gchar *text_color;		/* Default text color */
+  gchar *text_color;		/* text color */
   gchar *fontname;		/* Font to be used for text display */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */

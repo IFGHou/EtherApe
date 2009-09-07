@@ -105,7 +105,7 @@ load_config (const char *prefix)
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
-  gnome_config_get_float_with_default("Diagram/node_timeout_time=3600000.0", &u); 
+  gnome_config_get_float_with_default("Diagram/node_timeout_time=120000.0", &u); 
   pref.gui_node_timeout_time =
     gnome_config_get_float_with_default("Diagram/gui_node_timeout_time=60000.0", &u);
   pref.proto_node_timeout_time =
@@ -119,10 +119,10 @@ load_config (const char *prefix)
       gnome_config_get_float_with_default("Diagram/proto_link_timeout_time=20000.0", &u);
 
   pref.proto_timeout_time =
-      gnome_config_get_float_with_default("Diagram/proto_timeout_time=3600000.0", &u);
+      gnome_config_get_float_with_default("Diagram/proto_timeout_time=600000.0", &u);
 
   pref.averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=3000.0", &u);
+    gnome_config_get_float_with_default ("Diagram/averaging_time=2000.0", &u);
   pref.node_radius_multiplier =
     gnome_config_get_float_with_default
     ("Diagram/node_radius_multiplier=0.0005", &u);
@@ -134,12 +134,8 @@ load_config (const char *prefix)
   if (u)
     pref.link_width_multiplier = 0.0005;
   pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
-  if (pref.mode == IP || pref.mode == TCP)
-    pref.refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=3000", &u);
-  else
-    pref.refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=800", &u);
+  pref.refresh_period =
+      gnome_config_get_int_with_default ("Diagram/refresh_period=100", &u);
 
   pref.size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
   pref.node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
@@ -555,13 +551,7 @@ on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 void
 on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 {
-  pref.refresh_period = adj->value;
-  /* When removing the source (which could either be an idle or a timeout
-   * function, I'm also forcing the callback for the corresponding 
-   * destroying function, which in turn will install a timeout or idle
-   * function using the new refresh_period. It might take a while for it
-   * to settle down, but I think it works now */
-  g_source_remove (diagram_timeout);
+  change_refresh_period(adj->value);
 }
 
 void
@@ -633,7 +623,7 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 	g_free (pref.fontname);
       pref.fontname = g_strdup (str);
       g_free (str);
-      need_reposition = TRUE;
+      ask_reposition();
     }
 
   gtk_widget_hide (fontsel);
@@ -665,7 +655,7 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 	g_free (pref.fontname);
       pref.fontname = g_strdup (str);
       g_free (str);
-      need_reposition = TRUE;
+      ask_reposition();
     }
 }				/* on_apply_button1_clicked */
 
@@ -702,7 +692,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
   pref.diagram_only = gtk_toggle_button_get_active (togglebutton);
-  need_reposition = TRUE;
+  ask_reposition();
 }				/* on_diagram_only_toggle_toggled */
 
 void
