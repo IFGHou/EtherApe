@@ -1633,6 +1633,7 @@ Square Root</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">src numeric node name</property>
+                        <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
                       <packing>
@@ -1649,6 +1650,7 @@ Square Root</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">dst num. name</property>
+                        <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
                       <packing>
@@ -1665,6 +1667,7 @@ Square Root</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">dst name</property>
+                        <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
                       <packing>
@@ -1681,6 +1684,7 @@ Square Root</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">src node name</property>
+                        <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
                       <packing>

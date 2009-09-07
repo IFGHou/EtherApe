@@ -86,6 +86,8 @@ main (int argc, char *argv[])
      N_("set capture filter"), N_("<capture filter>")},
     {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
      N_("set interface to listen to"), N_("<interface name>")},
+    {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
+     N_("don't move nodes around"), NULL}, 
     {"node_limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
