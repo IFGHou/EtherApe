@@ -632,7 +632,7 @@ Square Root</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip" translatable="yes">Refresh diagram every this many miliseconds</property>
-                            <property name="adjustment">800 50 10000 10 100 100</property>
+                            <property name="adjustment">100 20 10000 10 100 100</property>
                             <property name="climb_rate">1</property>
                             <property name="update_policy">if-valid</property>
                           </widget>
