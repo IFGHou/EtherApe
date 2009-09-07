@@ -1149,7 +1149,7 @@ get_node_size (gdouble average)
       result = sqrt (average + 1);
       break;
     }
-  return (double) (5 + pref.node_radius_multiplier * result);
+  return 5.0 + pref.node_radius_multiplier * result;
 }
 
 /* Returs the width in pixels given average traffic and size mode */
@@ -1169,7 +1169,7 @@ get_link_size (gdouble average)
       result = sqrt (average + 1);
       break;
     }
-  return (double) (1 + pref.link_width_multiplier * result);
+  return 1.0 + pref.node_radius_multiplier * pref.link_node_ratio * result;
 }				/* get_link_size */
 
 

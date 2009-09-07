@@ -58,7 +58,7 @@ struct pref_struct
 					 * select with certain precision this
 					 * value, the GUI uses the log10 of the
 					 * multiplier */
-  gdouble link_width_multiplier;	/* Same explanation as above */
+  gdouble link_node_ratio;	/* link width to node radius ratio */
   size_mode_t size_mode;	/* Default mode for node size and
 				 * link width calculation */
   node_size_variable_t node_size_variable;	/* Default variable that sets the node

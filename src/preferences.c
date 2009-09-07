@@ -57,7 +57,7 @@ void init_config(struct pref_struct *p)
   p->cycle = TRUE;
   p->stationary = FALSE;
   p->node_radius_multiplier = 0.0005;
-  p->link_width_multiplier = 0.0005;
+  p->link_node_ratio = 1;
   p->size_mode = LINEAR;
   p->node_size_variable = INST_OUTBOUND;
   p->stack_level = 0;
@@ -128,11 +128,11 @@ load_config (const char *prefix)
     ("Diagram/node_radius_multiplier=0.0005", &u);
   if (u)
     pref.node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
-  pref.link_width_multiplier =
+  pref.link_node_ratio =
     gnome_config_get_float_with_default
-    ("Diagram/link_width_multiplier=0.0005", &u);
+    ("Diagram/link_node_ratio=1.0", &u);
   if (u)
-    pref.link_width_multiplier = 0.0005;
+    pref.link_node_ratio = 1.0;
   pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
   pref.refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=100", &u);
@@ -195,8 +195,8 @@ save_config (const char *prefix)
   gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
   gnome_config_set_float ("Diagram/node_radius_multiplier",
 			  pref.node_radius_multiplier);
-  gnome_config_set_float ("Diagram/link_width_multiplier",
-			  pref.link_width_multiplier);
+  gnome_config_set_float ("Diagram/link_node_ratio",
+			  pref.link_node_ratio);
   gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
   gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
   gnome_config_set_int ("Diagram/node_size_variable",
@@ -282,7 +282,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->cycle = src->cycle;
   tgt->stationary = src->stationary;
   tgt->node_radius_multiplier = src->node_radius_multiplier;
-  tgt->link_width_multiplier = src->link_width_multiplier;
+  tgt->link_node_ratio = src->link_node_ratio;
   tgt->size_mode = src->size_mode;
   tgt->node_size_variable = src->node_size_variable;
   tgt->text_color=g_strdup(src->text_color);
@@ -367,7 +367,7 @@ initialize_pref_controls(void)
 			 "changed");
   widget = glade_xml_get_widget (xml, "link_width_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
-			    log (pref.link_width_multiplier) / log (10));
+			    pref.link_node_ratio);
   g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			 "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
@@ -535,10 +535,10 @@ void
 on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 {
 
-  pref.link_width_multiplier = exp ((double) adj->value * log (10));
+  pref.link_node_ratio = adj->value;
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Adjustment value: %g. Radius multiplier %g"),
-	 adj->value, pref.link_width_multiplier);
+	 _("Adjustment value: %g. Link-node ratio %g"),
+	 adj->value, pref.link_node_ratio);
 
 }
 
