@@ -17,8 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gnome.h>
 #include <netinet/in.h>
+#include "globals.h"
 #include "dns.h"
 #include "eth_resolv.h"
 #include "names_netbios.h"
@@ -540,7 +540,7 @@ get_ipxsap_name (name_add_t *nt)
   for (curpos = nt->offset + 4; curpos < nt->packet_size ; ++curpos)
     {
       if ( ! *((gchar *) (nt->p + curpos)) )
-        break; // found termination
+        break; /* found termination */
     }
   if (curpos >= nt->packet_size)
     {
@@ -700,8 +700,11 @@ add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved,
   name_t *name = NULL;
   name_t key;
 
-  /* Find the protocol entry */
-  protocol = protocol_stack_find(nt->decoder.protos,
+  /* Find the protocol entry
+     note: protocol_stack_find returns a const ptr, but this function
+     modifies it. At this point, is safe
+   */
+  protocol = (protocol_t *)protocol_stack_find(nt->decoder.protos,
                                  nt->decoder.level,
 			         nt->decoder.tokens[nt->decoder.level]);
 

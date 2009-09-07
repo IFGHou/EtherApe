@@ -26,6 +26,7 @@
 #include "prot_types.h"
 #include "util.h"
 #include "decode_proto.h"
+#include "protocols.h"
 #include "conversations.h"
 
 
@@ -55,15 +56,15 @@ enum rpc_program
 
 /* Functions declarations */
 
-static void get_eth_type (void);
-static void get_fddi_type (void);
-static void get_ieee802_type (void);
-static void get_eth_II (etype_t etype);
+static void get_eth_type (guint l3_offset);
+static void get_fddi_type (guint l3_offset);
+static void get_ieee802_type (guint l3_offset);
+static void get_eth_II (etype_t etype, guint l3_offset);
 static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
-static void get_linux_sll_type (void);
+static void get_linux_sll_type (guint l3_offset);
 
 static void get_llc (void);
-static void get_ip (void);
+static void get_ip (guint l3_offset);
 static void get_ipx (void);
 static void get_tcp (void);
 static gint tcp_compare (gconstpointer a, gconstpointer b);
@@ -98,7 +99,8 @@ static guint16 global_dst_port;
  * Implementation
  * ------------------------------------------------------------*/
 const gchar *
-get_packet_prot (const guint8 * p, guint raw_size)
+get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type, 
+                 guint l3_offset)
 {
   gchar **tokens = NULL;
   gchar *top_prot = NULL;
@@ -113,31 +115,31 @@ get_packet_prot (const guint8 * p, guint raw_size)
   packet = p;
   capture_len = raw_size;
 
-  switch (linktype)
+  switch (link_type)
     {
     case L_EN10MB:
-      get_eth_type ();
+      get_eth_type (l3_offset);
       break;
     case L_FDDI:
       prot = g_string_new ("FDDI");
-      get_fddi_type ();
+      get_fddi_type (l3_offset);
       break;
     case L_IEEE802:
       prot = g_string_append (prot, "Token Ring");
-      get_ieee802_type ();
+      get_ieee802_type (l3_offset);
       break;
     case L_RAW:		/* Both for PPP and SLIP */
       prot = g_string_append (prot, "RAW/IP");
-      get_ip ();
+      get_ip (l3_offset);
       break;
     case L_NULL:
       prot = g_string_append (prot, "NULL/IP");
-      get_ip ();
+      get_ip (l3_offset);
       break;
 #ifdef DLT_LINUX_SLL
     case L_LINUX_SLL:
       prot = g_string_append (prot, "LINUX-SLL");
-      get_linux_sll_type ();
+      get_linux_sll_type (l3_offset);
       break;
 #endif
     default:
@@ -178,7 +180,7 @@ get_packet_prot (const guint8 * p, guint raw_size)
  * ------------------------------------------------------------*/
 
 static void
-get_eth_type (void)
+get_eth_type (guint l3_offset)
 {
   etype_t etype;
   ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
@@ -233,7 +235,7 @@ get_eth_type (void)
   /* Else, it's ETHERNET_II */
 
   prot = g_string_append (prot, "ETH_II");
-  get_eth_II (etype);
+  get_eth_II (etype, l3_offset);
   return;
 
 }				/* get_eth_type */
@@ -259,7 +261,7 @@ get_eth_802_3 (ethhdrtype_t ethhdr_type)
 }				/* get_eth_802_3 */
 
 static void
-get_fddi_type (void)
+get_fddi_type (guint l3_offset)
 {
   prot = g_string_append (prot, "/LLC");
   /* Ok, this is only temporary while I truly dissect LLC 
@@ -267,13 +269,13 @@ get_fddi_type (void)
   if ((packet[19] == 0x08) && (packet[20] == 0x00))
     {
       prot = g_string_append (prot, "/IP");
-      get_ip ();
+      get_ip (l3_offset);
     }
 
 }				/* get_fddi_type */
 
 static void
-get_ieee802_type (void)
+get_ieee802_type (guint l3_offset)
 {
   /* As with FDDI, we only support LLC by now */
   prot = g_string_append (prot, "/LLC");
@@ -281,18 +283,18 @@ get_ieee802_type (void)
   if ((packet[20] == 0x08) && (packet[21] == 0x00))
     {
       prot = g_string_append (prot, "/IP");
-      get_ip ();
+      get_ip (l3_offset);
     }
 
 }
 
 static void
-get_eth_II (etype_t etype)
+get_eth_II (etype_t etype, guint l3_offset)
 {
   append_etype_prot (etype);
 
   if (etype == ETHERTYPE_IP)
-    get_ip ();
+    get_ip (l3_offset);
   if (etype == ETHERTYPE_IPX)
     get_ipx ();
 
@@ -303,7 +305,7 @@ get_eth_II (etype_t etype)
  * I have no real idea of what can be there, but since IP
  * is 0x800 I guess it follows ethernet specifications */
 static void
-get_linux_sll_type (void)
+get_linux_sll_type (guint l3_offset)
 {
   etype_t etype;
 
@@ -311,7 +313,7 @@ get_linux_sll_type (void)
   append_etype_prot (etype);
 
   if (etype == ETHERTYPE_IP)
-    get_ip ();
+    get_ip (l3_offset);
   if (etype == ETHERTYPE_IPX)
     get_ipx ();
 
@@ -440,7 +442,7 @@ get_llc (void)
 }				/* get_llc */
 
 static void
-get_ip (void)
+get_ip (guint l3_offset)
 {
   guint16 fragment_offset;
   iptype_t ip_type;

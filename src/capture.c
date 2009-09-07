@@ -53,6 +53,8 @@ static guint ms_to_next;	/* Used for offline mode to store the amount
 				 * one packet and the next */
 static guint node_id_length;		/* Length of the node_id key. Depends
 				 * on the mode of operation */
+static guint l3_offset;		/* Offset to the level 3 protocol data
+				 * Depends of the linktype */
 static enum status_t capture_status = STOP;
 
 /* Local funtions declarations */
@@ -693,7 +695,7 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   link_id_t link_id;
 
   /* Get a string with the protocol tree */
-  prot_desc = get_packet_prot (raw_packet, raw_size);
+  prot_desc = get_packet_prot (raw_packet, raw_size, linktype, l3_offset);
 
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));

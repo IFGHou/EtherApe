@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gnome.h>
 #include "preferences.h"
 #include "diagram.h"
 #include "capture.h"
@@ -93,7 +94,7 @@ load_config (const char *prefix)
   gnome_config_push_prefix (prefix);
 
   config_file_version =
-    gnome_config_get_string_with_default ("General/version=0.5.4", &u);
+    gnome_config_get_string_with_default("General/version=0.5.4", &u);
   pref.diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
   pref.group_unk =

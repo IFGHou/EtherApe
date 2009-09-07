@@ -21,8 +21,6 @@
 #include <config.h>
 #endif
 
-#include <libgnomeui/gnome-popup-menu.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <gtk/gtk.h>
 #include "globals.h"
 

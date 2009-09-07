@@ -21,6 +21,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "protocols.h"
+#include "node.h"
 
 static gint 
 protocol_compare (gconstpointer a, gconstpointer b);

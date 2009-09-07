@@ -20,6 +20,8 @@
 #ifndef PKT_INFO_H
 #define PKT_INFO_H
 
+#include "common.h"
+
 /* Flag used in node packets to indicate whether this packet was
  * inbound or outbound for the node. Links and protocols use
  * "eitherbound" */

@@ -22,19 +22,6 @@
 
 #include "traffic_stats.h"
 
-typedef enum
-{
-  DEFAULT = -1,
-  ETHERNET = 0,
-  FDDI = 1,
-  IEEE802 = 2,
-  IP = 3,
-  IPX = 4,
-  TCP = 5,
-  UDP = 6
-}
-apemode_t;
-
 /* address union */
 typedef union __attribute__ ((packed))
 {
@@ -105,6 +92,7 @@ typedef struct
   gdouble n_packets;
 }
 name_t;
+
 name_t * node_name_create(const node_id_t *node_id);
 void node_name_delete(name_t * name);
 void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 

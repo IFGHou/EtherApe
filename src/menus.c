@@ -17,10 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "menus.h"
 #include <string.h>
-#include <libgnomeui/gnome-file-entry.h>
 #include <gtk/gtkcontainer.h>
+#include <glib.h>
+#include "menus.h"
 #include "util.h"
 #include "diagram.h"
 #include "info_windows.h"

@@ -19,6 +19,8 @@
 #ifndef ETHERAPE_CAPTURE_H
 #define ETHERAPE_CAPTURE_H
 
+#include "links.h"
+
 /* Possible states of capture status */
 enum status_t
 {

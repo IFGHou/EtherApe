@@ -33,8 +33,6 @@
 #endif
 
 #include <glib.h>
-#include <gnome.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

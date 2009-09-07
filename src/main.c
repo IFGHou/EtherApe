@@ -22,9 +22,10 @@
 #endif
 
 #include <netinet/in.h>
-#include "globals.h"
 #include <signal.h>
+#include <gnome.h>
 #include <libgnomeui/gnome-client.h>
+#include "globals.h"
 #include "ip-cache.h"
 #include "main.h"
 #include "diagram.h"
@@ -32,6 +33,8 @@
 #include "info_windows.h"
 #include "capture.h"
 #include "datastructs.h"
+
+#define ETHERAPE_GLADE_FILE "etherape.glade"	/* glade 3 file */
 
 /***************************************************************************
  *

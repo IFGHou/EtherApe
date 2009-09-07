@@ -16,6 +16,7 @@ INCLUDES = \
 bin_PROGRAMS = etherape
 
 etherape_SOURCES = \
+	common.h \
 	resolv.c eth_resolv.h \
 	util.c util.h \
 	dns.c dns.h \
