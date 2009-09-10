@@ -691,10 +691,6 @@ get_tcp (void)
 
   offset += tcp_len;
 
-  if (offset >= capture_len)
-    return;			/* Continue only if there is room
-				 * for data in the packet */
-
   src_service = g_tree_lookup (tcp_services, &src_port);
   dst_service = g_tree_lookup (tcp_services, &dst_port);
 
@@ -727,8 +723,7 @@ get_tcp (void)
 
   if (!src_service && !dst_service)
     {
-      prot = g_string_append (prot, "/TCP-Port ");
-      str = g_strdup_printf ("%d", chosen_port);
+      str = g_strdup_printf ("/TCP-Port-%d", chosen_port);
       prot = g_string_append (prot, str);
       g_free (str);
       return;
