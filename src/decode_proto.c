@@ -30,8 +30,8 @@
 #include "conversations.h"
 
 
-#define IS_PORT(p) ( (src_service && src_service->number==p) \
-		       || (dst_service && dst_service->number==p) )
+#define IS_PORT(p) ( (src_service && src_service->port==p) \
+		       || (dst_service && dst_service->port==p) )
 #define LINESIZE 1024
 
 /* Enums */
@@ -67,9 +67,9 @@ static void get_llc (void);
 static void get_ip (guint l3_offset);
 static void get_ipx (void);
 static void get_tcp (void);
-static gint tcp_compare (gconstpointer a, gconstpointer b);
+static gint port_compare (gconstpointer a, gconstpointer b, gpointer unused);
+static void service_tree_free(gpointer p);
 static void get_udp (void);
-static gint udp_compare (gconstpointer a, gconstpointer b);
 
 static void get_netbios (void);
 static void get_netbios_ssn (void);
@@ -82,6 +82,7 @@ static guint16 choose_port (guint16 a, guint16 b);
 static void append_etype_prot (etype_t etype);
 
 /* Variables */
+static GTree *service_names = NULL;
 static GTree *tcp_services = NULL;
 static GTree *udp_services = NULL;
 static guint offset = 0;
@@ -675,8 +676,8 @@ static void
 get_tcp (void)
 {
 
-  tcp_service_t *src_service, *dst_service, *chosen_service;
-  tcp_type_t src_port, dst_port, chosen_port;
+  port_service_t *src_service, *dst_service, *chosen_service;
+  port_type_t src_port, dst_port, chosen_port;
   guint8 th_off_x2;
   guint8 tcp_len;
   gchar *str;
@@ -734,30 +735,16 @@ get_tcp (void)
   else
     chosen_service = dst_service;
 
-#if 0
-  /* Give priority to registered ports */
-  if ((src_port < 1024) && (dst_port >= 1024))
-    chosen_service = src_service;
-  else if ((src_port >= 1024) && (dst_port < 1024))
-    chosen_service = dst_service;
-  else if (!dst_service)	/* Give priority to dst_service just because */
-    chosen_service = src_service;
-  else
-    chosen_service = dst_service;
-#endif
-
   str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
-  str = NULL;
-  return;
 }				/* get_tcp */
 
 static void
 get_udp (void)
 {
-  udp_service_t *src_service, *dst_service, *chosen_service;
-  udp_type_t src_port, dst_port, chosen_port;
+  port_service_t *src_service, *dst_service, *chosen_service;
+  port_type_t src_port, dst_port, chosen_port;
   gchar *str;
 
   if (!udp_services)
@@ -767,9 +754,6 @@ get_udp (void)
   global_dst_port = dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
-
-  /* TODO We should check up the size of the packet the same
-   * way it is done in TCP */
 
   src_service = g_tree_lookup (udp_services, &src_port);
   dst_service = g_tree_lookup (udp_services, &dst_port);
@@ -801,23 +785,9 @@ get_udp (void)
   else
     chosen_service = dst_service;
 
-#if 0
-  /* Give priority to registered ports */
-  if ((src_port < 1024) && (dst_port >= 1024))
-    chosen_service = src_service;
-  else if ((src_port >= 1024) && (dst_port < 1024))
-    chosen_service = dst_service;
-  else if (!dst_service)	/* Give priority to dst_service just because */
-    chosen_service = src_service;
-  else
-    chosen_service = dst_service;
-#endif
-
   str = g_strdup_printf ("/%s", chosen_service->name);
   prot = g_string_append (prot, str);
   g_free (str);
-  str = NULL;
-  return;
 }				/* get_udp */
 
 static gboolean
@@ -1020,38 +990,28 @@ get_ftp (void)
   return;
 }
 
-/* Comparison function to sort tcp services port number */
+/* Comparison function to sort tcp/udp services by port number */
 static gint
-tcp_compare (gconstpointer a, gconstpointer b)
+port_compare (gconstpointer a, gconstpointer b, gpointer unused)
 {
-  tcp_type_t port_a, port_b;
+  port_type_t port_a, port_b;
 
-  port_a = *(tcp_type_t *) a;
-  port_b = *(tcp_type_t *) b;
+  port_a = *(port_type_t *) a;
+  port_b = *(port_type_t *) b;
 
   if (port_a > port_b)
     return 1;
   if (port_a < port_b)
     return -1;
   return 0;
-}				/* tcp_compare */
+}				/* port_compare */
 
-/* Comparison function to sort udp services port number */
+/* Comparison function to sort service names */
 static gint
-udp_compare (gconstpointer a, gconstpointer b)
+service_compare (gconstpointer a, gconstpointer b, gpointer unused)
 {
-  udp_type_t port_a, port_b;
-
-  port_a = *(tcp_type_t *) a;
-  port_b = *(tcp_type_t *) b;
-
-  if (port_a > port_b)
-    return 1;
-  if (port_a < port_b)
-    return -1;
-  return 0;
-}				/* udp_compare */
-
+  return g_strcasecmp((const gchar *)a, (const gchar *)b);
+}				
 
 /* TODO this is probably this single piece of code I am most ashamed of.
  * I should learn how to use flex or yacc and do this The Right Way (TM)*/
@@ -1062,12 +1022,11 @@ load_services (void)
   gchar *line;
   gchar **t1 = NULL, **t2 = NULL;
   gchar *str;
-  tcp_service_t *tcp_service;
-  udp_service_t *udp_service;
+  port_service_t *port_service;
   guint i;
   char filename[PATH_MAX];
 
-  tcp_type_t port_number;	/* udp and tcp are the same */
+  port_type_t port_number;	/* udp and tcp are the same */
 
   safe_strncpy(filename, CONFDIR "/services", sizeof(filename));
   if (!(services = fopen (filename, "r")))
@@ -1084,8 +1043,9 @@ load_services (void)
 
   g_my_info (_("Reading TCP and UDP services from %s"), filename);
 
-  tcp_services = g_tree_new ((GCompareFunc) tcp_compare);
-  udp_services = g_tree_new ((GCompareFunc) udp_compare);
+  service_names = g_tree_new_full(service_compare, NULL, NULL, service_tree_free);
+  tcp_services = g_tree_new_full(port_compare, NULL, NULL, service_tree_free);
+  udp_services = g_tree_new_full(port_compare, NULL, NULL, service_tree_free);
 
   line = g_malloc (LINESIZE);
 
@@ -1124,7 +1084,8 @@ load_services (void)
 
 	  if (error
 	      || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1])
-		  && g_strcasecmp ("ddp", t2[1])))
+		  && g_strcasecmp ("ddp", t2[1]) && g_strcasecmp ("sctp", t2[1])
+                  ))
 	    error = TRUE;
 
 	  if (error)
@@ -1135,25 +1096,26 @@ load_services (void)
 	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
 			  port_number);
 #endif
-	      if (!g_strcasecmp ("tcp", t2[1]))
-		{
-		  tcp_service = g_malloc (sizeof (tcp_service_t));
-		  tcp_service->number = port_number;
-		  tcp_service->name = g_strdup (t1[0]);
-		  g_tree_insert (tcp_services,
-				 &(tcp_service->number), tcp_service);
-		}
-	      else if (!g_strcasecmp ("udp", t2[1]))
-		{
-		  udp_service = g_malloc (sizeof (udp_service_t));
-		  udp_service->number = port_number;
-		  udp_service->name = g_strdup (t1[0]);
-		  g_tree_insert (udp_services,
-				 &(udp_service->number), udp_service);
-		}
-	      else
+	      if (!g_strcasecmp ("ddp", t2[1]))
 		g_my_info (_("DDP protocols not supported in %s"), line);
+	      else if (!g_strcasecmp ("sctp", t2[1]))
+		g_my_info (_("SCTP protocols not supported in %s"), line);
+              else
+                {
+                  /* first, map name to port (same for udp and tcp) */
+		  port_service = port_service_new(port_number, t1[0]);
+                  g_tree_replace(service_names,
+                                 port_service->name, port_service);
 
+                  /* next, map port to name, to two trees */
+		  port_service = port_service_new(port_number, t1[0]);
+                  if (!g_strcasecmp ("tcp", t2[1]))
+                    g_tree_replace(tcp_services, 
+                                   &(port_service->port), port_service);
+                  else if (!g_strcasecmp ("udp", t2[1]))
+                    g_tree_replace(udp_services,
+                                   &(port_service->port), port_service);
+		}
 	    }
 
 	  g_strfreev (t2);
@@ -1290,3 +1252,35 @@ append_etype_prot (etype_t etype)
 
   return;
 }				/* append_etype_prot */
+
+/* ---------------------- port_service_t functions -------------------- */
+port_service_t *port_service_new(port_type_t port, const gchar *name)
+{
+  port_service_t *p;
+  p = g_malloc (sizeof (port_service_t));
+  p->port = port; 
+  p->name = g_strdup(name);
+  return p;
+}
+
+void port_service_free(port_service_t *p)
+{
+  if (p)
+    g_free(p->name);
+  g_free(p);
+}
+
+const port_service_t *port_service_find(const gchar *name)
+{
+  if (!name || !service_names)
+    return NULL;
+
+  return (const port_service_t *)g_tree_lookup (service_names, name);
+}
+
+
+static void service_tree_free(gpointer p)
+{
+  port_service_free( (port_service_t *)p);
+}
+

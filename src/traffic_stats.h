@@ -33,8 +33,8 @@ typedef struct
   gdouble accumulated;		/* Accumulated bytes */
   gdouble accu_packets;         /* Accumulated number of packets */
   struct timeval last_time;	/* Timestamp of the last packet added */
-}
-basic_stats_t;
+} basic_stats_t;
+
 void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val); 
 void basic_stats_sub(basic_stats_t *tf_stat, gdouble val); 

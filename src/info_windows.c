@@ -30,6 +30,19 @@
 #include "datastructs.h"
 #include "protocols.h"
 #include "capture.h"
+#include "prot_types.h"
+
+typedef enum 
+{
+  PROTO_COLUMN_COLOR = 0,
+  PROTO_COLUMN_NAME,
+  PROTO_COLUMN_PORT,
+  PROTO_COLUMN_INSTANTANEOUS,
+  PROTO_COLUMN_ACCUMULATED,
+  PROTO_COLUMN_LASTHEARD,
+  PROTO_COLUMN_PACKETS,
+  PROTO_COLUMN_N        /* must be the last entry */
+} PROTO_COLUMN;
 
 typedef struct
 {
@@ -41,6 +54,7 @@ prot_info_window_t;
 typedef struct protocol_list_item_t_tag
 {
   gchar *name; /* protocol name */
+  uint port;     /* protocol port */
   GdkColor color; /* protocol color */
   basic_stats_t rowstats; 
 } protocol_list_item_t;
@@ -339,8 +353,8 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 
   /* reads the proto ptr from 6th columns */
   const protocol_list_item_t *prot1, *prot2;
-  gtk_tree_model_get (gs, a, 5, &prot1, -1);
-  gtk_tree_model_get (gs, b, 5, &prot2, -1);
+  gtk_tree_model_get (gs, a, PROTO_COLUMN_N, &prot1, -1);
+  gtk_tree_model_get (gs, b, PROTO_COLUMN_N, &prot2, -1);
   if (!prot1 || !prot2)
     return 0;			/* error */
 
@@ -350,12 +364,13 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 
   switch (idcol)
     {
-    case 0: /* name */
-    case 6: /* color */
+    case PROTO_COLUMN_COLOR: /* color */
+    case PROTO_COLUMN_PORT: /* port */
+    case PROTO_COLUMN_NAME: /* name */
     default:
       ret = strcmp (prot1->name, prot2->name);
       break;
-    case 1:
+    case PROTO_COLUMN_INSTANTANEOUS:
       t1 = prot1->rowstats.average;
       t2 = prot2->rowstats.average;
       if (t1 == t2)
@@ -365,7 +380,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
-    case 2:
+    case PROTO_COLUMN_ACCUMULATED:
       t1 = prot1->rowstats.accumulated;
       t2 = prot2->rowstats.accumulated;
       if (t1 == t2)
@@ -375,7 +390,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
-    case 3:
+    case PROTO_COLUMN_LASTHEARD:
       time1 = prot1->rowstats.last_time;
       time2 = prot2->rowstats.last_time;
       diff = substract_times (time1, time2);
@@ -386,7 +401,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
-    case 4:
+    case PROTO_COLUMN_PACKETS:
       if (prot1->rowstats.accu_packets == prot2->rowstats.accu_packets)
 	ret = 0;
       else if (prot1->rowstats.accu_packets < prot2->rowstats.accu_packets)
@@ -399,70 +414,69 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
   return ret;
 }
 
+static void create_add_text_column(GtkTreeView *gv, const gchar *title, 
+                                   PROTO_COLUMN colno, gboolean isnum)
+{
+  GtkTreeViewColumn *gc;
+  GtkCellRenderer *gr;
+
+  gr = gtk_cell_renderer_text_new ();
+  if (isnum)
+    g_object_set (G_OBJECT (gr), "xalign", 1.0, NULL);
+  
+  gc = gtk_tree_view_column_new_with_attributes(title, gr, "text", colno, NULL);
+  g_object_set (G_OBJECT (gc), "resizable", TRUE, 
+                               "reorderable", TRUE, 
+                               NULL);
+  gtk_tree_view_column_set_sort_column_id(gc, colno);
+  gtk_tree_view_append_column (gv, gc);
+}
+
+
 static void
 create_protocols_table (GtkWidget *window, GtkTreeView *gv)
 {
   GtkListStore *gs;
   GtkTreeViewColumn *gc;
+  int i;
 
-  /* create the store  - it uses 7 values, five displayable, one ptr, and the
-     proto color */
-  gs = gtk_list_store_new (7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER,
-			   GDK_TYPE_COLOR);
+  /* create the store  - it uses 8 values, six displayable, one proto color 
+     and the data pointer */
+  gs = gtk_list_store_new (8, GDK_TYPE_COLOR, G_TYPE_STRING, G_TYPE_STRING,
+			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
+			   G_TYPE_STRING, G_TYPE_POINTER);
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (gs));
 
   /* the view columns and cell renderers must be also created ... 
-     the first column is the proto color  */
+     the first column is the proto color; is a text column wich renders
+     only a space with a colored background. We must set some special properties
+   */
+  
   gc = gtk_tree_view_column_new_with_attributes
-    (" ", gtk_cell_renderer_text_new (), "background-gdk", 6, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
+    (" ", gtk_cell_renderer_text_new(), "background-gdk", PROTO_COLUMN_COLOR, 
+     NULL);
+  g_object_set (G_OBJECT (gc), "resizable", TRUE, 
+                               "reorderable", TRUE, 
+                               NULL);
+//  gtk_tree_view_column_set_sort_column_id(gc, PROTO_COLUMN_COLOR);
   gtk_tree_view_append_column (gv, gc);
 
-  gc = gtk_tree_view_column_new_with_attributes
-    ("Protocol", gtk_cell_renderer_text_new (), "text", 0, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 0);
-  gtk_tree_view_append_column (gv, gc);
 
-  gc = gtk_tree_view_column_new_with_attributes
-    ("Inst Traffic", gtk_cell_renderer_text_new (), "text", 1, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 1);
-  gtk_tree_view_append_column (gv, gc);
-
-  gc = gtk_tree_view_column_new_with_attributes
-    ("Accum Traffic", gtk_cell_renderer_text_new (), "text", 2, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 2);
-  gtk_tree_view_append_column (gv, gc);
-
-  gc = gtk_tree_view_column_new_with_attributes
-    ("Last Heard", gtk_cell_renderer_text_new (), "text", 3, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 3);
-  gtk_tree_view_append_column (gv, gc);
-
-  gc = gtk_tree_view_column_new_with_attributes
-    ("Packets", gtk_cell_renderer_text_new (), "text", 4, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, "reorderable", TRUE, NULL);
-  gtk_tree_view_column_set_sort_column_id (gc, 4);
-  gtk_tree_view_append_column (gv, gc);
+  create_add_text_column(gv, "Protocol", PROTO_COLUMN_NAME, FALSE);
+  create_add_text_column(gv, "Port", PROTO_COLUMN_PORT, TRUE);
+  create_add_text_column(gv, "Inst Traffic", PROTO_COLUMN_INSTANTANEOUS, FALSE);
+  create_add_text_column(gv, "Accum Traffic", PROTO_COLUMN_ACCUMULATED, FALSE);
+  create_add_text_column(gv, "Last Heard", PROTO_COLUMN_LASTHEARD, FALSE);
+  create_add_text_column(gv, "Packets", PROTO_COLUMN_PACKETS, FALSE);
 
   /* the sort functions ... */
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 0,
-				   protocols_table_compare, gs, NULL);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 1,
-				   protocols_table_compare, gs, NULL);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 2,
-				   protocols_table_compare, gs, NULL);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 3,
-				   protocols_table_compare, gs, NULL);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), 4,
-				   protocols_table_compare, gs, NULL);
+  for (i = 0 ; i < PROTO_COLUMN_N ; ++i)
+    gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (gs), i,
+                                    protocols_table_compare, gs, NULL);
 
   /* initial sort order is by protocol */
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs), 0,
+  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs), 
+                                        PROTO_COLUMN_NAME,
 					GTK_SORT_ASCENDING);
 
   /* register the treeview in the window */
@@ -476,6 +490,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
   gchar *str;
   gboolean res;
   GtkTreeIter it;
+  const port_service_t *ps;
 
   if (!gs || !pstk)
     return; /* nothing to do */
@@ -489,7 +504,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 
       /* retrieve current row proto (if present) */
       if (res)
-        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &row_proto, -1);
+        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, &row_proto, -1);
 
       if ( !item )
         {
@@ -512,9 +527,9 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 
 	  gtk_list_store_append(gs, &it);
 	  gtk_list_store_set (gs, &it, 
-                              0, row_proto->name, 
-                              5, row_proto, 
-                              6, &row_proto->color, 
+                              PROTO_COLUMN_NAME, row_proto->name, 
+                              PROTO_COLUMN_COLOR, &row_proto->color, 
+                              PROTO_COLUMN_N, row_proto, 
                               -1);
         }
       else
@@ -537,17 +552,25 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
       row_proto->rowstats.last_time = stack_proto->last_heard;
 
       str = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
-      gtk_list_store_set (gs, &it, 2, str, -1);
+      gtk_list_store_set (gs, &it, PROTO_COLUMN_ACCUMULATED, str, -1);
 
       str = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
-      gtk_list_store_set (gs, &it, 4, str, -1);
+      gtk_list_store_set (gs, &it, PROTO_COLUMN_PACKETS, str, -1);
+      g_free (str);
+
+      ps = port_service_find(row_proto->name);
+      if (ps)
+        str = g_strdup_printf ("%d", ps->port);
+      else
+        str = g_strdup("-");
+      gtk_list_store_set (gs, &it, PROTO_COLUMN_PORT, str, -1);
       g_free (str);
 
       str = traffic_to_str (row_proto->rowstats.average, TRUE);
-      gtk_list_store_set (gs, &it, 1, str, -1);
+      gtk_list_store_set (gs, &it, PROTO_COLUMN_INSTANTANEOUS, str, -1);
 
       str = timeval_to_str (row_proto->rowstats.last_time);
-      gtk_list_store_set (gs, &it, 3, str, -1);
+      gtk_list_store_set (gs, &it, PROTO_COLUMN_LASTHEARD, str, -1);
 
       if (res)
         res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);
@@ -574,41 +597,48 @@ activate_protocols_info_column (GtkMenuItem * gm, guint column)
 				    (GTK_CHECK_MENU_ITEM (gm)));
 }				/* on_prot_column_view_activate */
 
+//  PROTO_COLUMN_PORT,
 
 void
 on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 0);
+  activate_protocols_info_column (gm, PROTO_COLUMN_COLOR);
 }
 
 void
 on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 1);
+  activate_protocols_info_column (gm, PROTO_COLUMN_NAME);
+}
+
+void
+on_port_column_activate (GtkMenuItem * gm, gpointer * user_data)
+{
+  activate_protocols_info_column (gm, PROTO_COLUMN_PORT);
 }
 
 void
 on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 2);
+  activate_protocols_info_column (gm, PROTO_COLUMN_INSTANTANEOUS);
 }
 
 void
 on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 3);
+  activate_protocols_info_column (gm, PROTO_COLUMN_ACCUMULATED);
 }
 
 void
 on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 4);
+  activate_protocols_info_column (gm, PROTO_COLUMN_LASTHEARD);
 }
 
 void
 on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
 {
-  activate_protocols_info_column (gm, 5);
+  activate_protocols_info_column (gm, PROTO_COLUMN_PACKETS);
 }
 
 
@@ -712,7 +742,7 @@ on_prot_list_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (gs), &it, gpath))
     return FALSE;		/* path not found */
 
-  gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 5, &protocol, -1);
+  gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, &protocol, -1);
   create_prot_info_window (protocol);
 
   return TRUE;

@@ -5,11 +5,44 @@
 
   Overview of changes in EtherApe 0.9.8 ():
 
-   Bugfix and cleanup release. No user visible changes.
+   Switched to glade-3 removing bonobo dock and several other deprecated
+   widgets in the process. Most of the ui now uses directly Gtk+ instead
+   of Gnome.
+   Removed several outdated preferences: diagram is always anti-aliased,
+   links always fade on timeout and info windows show protocol data.
 
    Changes summary:
-     * Fixed  bug 1713590, bad replaying of out-of-order packets (Bug 
+     * Fixed bug 1713590, bad replaying of out-of-order packets (Bug 
        report by "haywire_dk")
+     * Fixed bug 1435271, about box doesn't report version (Bug report
+       by Cullen Newsom, who had to wait more than three years for this
+       fix).
+     * fixed a bug causing no-data tcp packets to have incorrect port.
+     * Added --glade-file option to load a different glade file
+     * Renamed --infile to --replay-file to be more consistent with the 
+       shortcut (-r).
+     * Added preference for diagram text color.
+     * Added port column to protocol infos.
+     
+
+  Development repository switched to Mercurial (Tuesday Sep 08 2009):
+
+   Now that SourceForge officially supports Mercurial, there's no reason 
+   to still use CVS.
+   DVCs are faster, have much more features and imho much better suited 
+   to open source work.
+   Using hg should also lower the barrier for anyone wishing to hack on
+   Etherape.
+   The old CVS repo will be occasionally (e.g. on releases) synchronized
+   for a while to make life easier for packagers. Full history will be 
+   available only on hg, however.
+   Note:
+   The new mercurial repo contains almost all the past project history, 
+   but since it's a conversion between two very different systems (for 
+   example, CVS doesn't have changesets, so the converter must infer them
+   from timestamps and commit messages), there are some differences. 
+   So, if you really want to know how the project evolved before release 
+   0.9.7, please consult the CVS repo.  
 
   Overview of changes in EtherApe 0.9.7 (Saturday Sep 30 2006):
 

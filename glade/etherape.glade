@@ -1197,7 +1197,7 @@ Square Root</property>
   </widget>
   <widget class="GtkWindow" id="protocols_window">
     <property name="title" translatable="yes">EtherApe: Protocols</property>
-    <property name="default_width">450</property>
+    <property name="default_width">550</property>
     <property name="default_height">300</property>
     <signal name="delete_event" handler="on_delete_protocol_window"/>
     <child>
@@ -1233,6 +1233,15 @@ Square Root</property>
                             <property name="use_underline">True</property>
                             <property name="active">True</property>
                             <signal name="activate" handler="on_protocol_column_activate"/>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkCheckMenuItem" id="prot_port_check">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">_Port</property>
+                            <property name="use_underline">True</property>
+                            <property name="active">True</property>
+                            <signal name="activate" handler="on_port_column_activate"/>
                           </widget>
                         </child>
                         <child>
@@ -1607,7 +1616,7 @@ Square Root</property>
     </child>
   </widget>
   <widget class="GtkWindow" id="node_proto_info">
-    <property name="default_width">450</property>
+    <property name="default_width">500</property>
     <property name="default_height">300</property>
     <signal name="delete_event" handler="on_node_info_delete_event"/>
     <child>
@@ -1933,6 +1942,7 @@ Square Root</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="enable_search">False</property>
+                <property name="search_column">5</property>
               </widget>
             </child>
           </widget>

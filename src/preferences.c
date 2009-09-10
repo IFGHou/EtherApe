@@ -417,7 +417,6 @@ initialize_pref_controls(void)
   if (!model)
     {
       GtkListStore *list_store;
-  printf("gogogo\n");
       list_store=gtk_list_store_new (1, G_TYPE_STRING);
       gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
     }

@@ -37,8 +37,7 @@ typedef struct
   GList *node_names;		/* Has a list of all node names used with this
 				 * protocol (used in node protocols) */
   struct timeval last_heard;	/* The last at which this protocol carried traffic */
-}
-protocol_t;
+} protocol_t;
 
 protocol_t *protocol_t_create(const gchar *protocol_name);
 void protocol_t_delete(protocol_t *prot);
@@ -47,8 +46,7 @@ typedef struct
 {
   GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
                                          * all protocol_t heard at that level */
-}
-protostack_t;
+} protostack_t;
 
 /* protocol stack methods */
 void protocol_stack_open(protostack_t *pstk);

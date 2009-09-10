@@ -186,25 +186,21 @@ typedef enum
   IP_PROTO_PIM = 103,		/* Protocol Independent Mcast */
   IP_PROTO_IPCOMP = 108,	/* IP payload compression */
   IP_PROTO_VRRP = 112		/* Virtual Router Redundancy Protocol */
-}
-iptype_t;
+} iptype_t;
 
-typedef guint16 tcp_type_t;
-typedef guint16 udp_type_t;
+typedef guint16 port_type_t;
 
 typedef struct
 {
-  tcp_type_t number;
+  port_type_t port;
   gchar *name;
-}
-tcp_service_t;
+} port_service_t;
 
-typedef struct
-{
-  udp_type_t number;
-  gchar *name;
-}
-udp_service_t;
+port_service_t *port_service_new(port_type_t port, const gchar *name);
+void port_service_free(port_service_t *);
+const port_service_t *port_service_find(const gchar *name);
+
+
 
 #define TCP_FTP 21
 #define TCP_NETBIOS_SSN 139
