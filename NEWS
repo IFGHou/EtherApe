@@ -10,6 +10,10 @@
    of Gnome.
    Removed several outdated preferences: diagram is always anti-aliased,
    links always fade on timeout and info windows show protocol data.
+   Revised default timings, now geared toward instant monitoring. 
+   Previous timings where more suited for mid-term analisys.
+   Since sub-second timeouts aren't very useful, and reading milliseconds
+   timings less than ideal, all timeouts now are displayed in seconds.
 
    Changes summary:
      * Fixed bug 1713590, bad replaying of out-of-order packets (Bug 
@@ -21,8 +25,11 @@
      * Added --glade-file option to load a different glade file
      * Renamed --infile to --replay-file to be more consistent with the 
        shortcut (-r).
+     * Revised preferences dialog. Timeouts now expressed in seconds.
      * Added preference for diagram text color.
-     * Added port column to protocol infos.
+     * Added port column to protocol infos (Feature request 2818525).
+     * Made node name and ip selectable in node/link info (FR 2818525).
+
      
 
   Development repository switched to Mercurial (Tuesday Sep 08 2009):

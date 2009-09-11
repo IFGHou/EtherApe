@@ -725,7 +725,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Remove this node from the diagram after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -759,7 +759,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Delete this node from memory after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -793,7 +793,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Expire protocol statistics for a node after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -815,7 +815,7 @@ Square Root</property>
                     <child>
                       <widget class="GtkLabel" id="label106">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Node Timeouts (ms)&lt;/i&gt;</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Node Timeouts (s)&lt;/i&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
@@ -864,7 +864,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Remove this link from the diagram after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -898,7 +898,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Delete this link from memory after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -932,7 +932,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Expire protocol statistics for a node after this much time. 0 means never timeout.</property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -954,7 +954,7 @@ Square Root</property>
                     <child>
                       <widget class="GtkLabel" id="label118">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Link Timeouts (ms)&lt;/i&gt;</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Link Timeouts (s)&lt;/i&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
@@ -1004,7 +1004,7 @@ Square Root</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">Remove this protocol from memory after this much time. </property>
-                                    <property name="adjustment">10000 0 36000000 100 1000 10000</property>
+                                    <property name="adjustment">10 0 36000 1 10 100</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                   </widget>
@@ -1046,7 +1046,7 @@ Square Root</property>
                     <child>
                       <widget class="GtkLabel" id="label114">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Global Protocol Timeouts (ms)&lt;/i&gt;</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Global Protocol Timeouts (s)&lt;/i&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>

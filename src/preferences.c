@@ -23,6 +23,8 @@
 #include "capture.h"
 #include "datastructs.h"
 
+#define MILLI   (1000.0)
+
 static void color_list_to_pref (void);
 static void load_color_list (void);
 static gboolean get_version_levels (const gchar * version_string,
@@ -376,21 +378,21 @@ initialize_pref_controls(void)
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
   gtk_spin_button_set_value (spin, pref.refresh_period);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.node_timeout_time);
+  gtk_spin_button_set_value (spin, pref.node_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time);
+  gtk_spin_button_set_value (spin, pref.gui_node_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_node_to_spin"));
-  gtk_spin_button_set_value (spin, pref.proto_node_timeout_time);
+  gtk_spin_button_set_value (spin, pref.proto_node_timeout_time/MILLI);
 
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "link_to_spin"));
-  gtk_spin_button_set_value (spin, pref.link_timeout_time);
+  gtk_spin_button_set_value (spin, pref.link_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "gui_link_to_spin"));
-  gtk_spin_button_set_value (spin, pref.gui_link_timeout_time);
+  gtk_spin_button_set_value (spin, pref.gui_link_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_link_to_spin"));
-  gtk_spin_button_set_value (spin, pref.proto_link_timeout_time);
+  gtk_spin_button_set_value (spin, pref.proto_link_timeout_time/MILLI);
 
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "proto_to_spin"));
-  gtk_spin_button_set_value (spin, pref.proto_timeout_time);
+  gtk_spin_button_set_value (spin, pref.proto_timeout_time/MILLI);
 
   widget = glade_xml_get_widget (xml, "diagram_only_toggle");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
@@ -564,43 +566,43 @@ on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 void
 on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.node_timeout_time = adj->value;	/* Control and value in ms */
+  pref.node_timeout_time = adj->value*MILLI;	/* value in ms */
 }				/* on_node_to_spin_adjustment_changed */
 
 void
 on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.gui_node_timeout_time = adj->value;	/* Control and value in ms */
+  pref.gui_node_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 void
 on_proto_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_node_timeout_time = adj->value;	/* Control and value in ms */
+  pref.proto_node_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 void
 on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.link_timeout_time = adj->value;	/* Control and value in ms */
+  pref.link_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 void
 on_gui_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.gui_link_timeout_time = adj->value;	/* Control and value in ms */
+  pref.gui_link_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 void
 on_proto_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_link_timeout_time = adj->value;	/* Control and value in ms */
+  pref.proto_link_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 void
 on_proto_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_timeout_time = adj->value;	/* Control and value in ms */
+  pref.proto_timeout_time = adj->value*MILLI;	/* value in ms */
 }
 
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data)
