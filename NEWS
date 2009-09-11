@@ -11,9 +11,9 @@
    Removed several outdated preferences: diagram is always anti-aliased,
    links always fade on timeout and info windows show protocol data.
    Revised default timings, now geared toward instant monitoring. 
-   Previous timings where more suited for mid-term analisys.
+   Previous values where more suited for mid-term analisys.
    Since sub-second timeouts aren't very useful, and reading milliseconds
-   timings less than ideal, all timeouts now are displayed in seconds.
+   less than ideal, all timeouts now are displayed in seconds.
 
    Changes summary:
      * Fixed bug 1713590, bad replaying of out-of-order packets (Bug 

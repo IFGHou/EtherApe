@@ -612,7 +612,8 @@ Square Root</property>
                 <child>
                   <widget class="GtkHBox" id="hbox8">
                     <property name="visible">True</property>
-                    <property name="spacing">5</property>
+                    <property name="spacing">10</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <widget class="GtkVBox" id="vbox4">
                         <property name="visible">True</property>
@@ -655,6 +656,7 @@ Square Root</property>
                         <child>
                           <widget class="GtkLabel" id="label6">
                             <property name="visible">True</property>
+                            <property name="xalign">0</property>
                             <property name="label" translatable="yes">Averaging Time (ms)</property>
                           </widget>
                           <packing>
@@ -703,7 +705,8 @@ Square Root</property>
                         <child>
                           <widget class="GtkHBox" id="hbox5">
                             <property name="visible">True</property>
-                            <property name="spacing">5</property>
+                            <property name="spacing">10</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <widget class="GtkVBox" id="vbox40">
                                 <property name="visible">True</property>
@@ -746,6 +749,7 @@ Square Root</property>
                                 <child>
                                   <widget class="GtkLabel" id="label104">
                                     <property name="visible">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Traffic</property>
                                   </widget>
                                   <packing>
@@ -780,6 +784,7 @@ Square Root</property>
                                 <child>
                                   <widget class="GtkLabel" id="label105">
                                     <property name="visible">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Protocol Info</property>
                                   </widget>
                                   <packing>
@@ -842,7 +847,8 @@ Square Root</property>
                         <child>
                           <widget class="GtkHBox" id="hbox9">
                             <property name="visible">True</property>
-                            <property name="spacing">5</property>
+                            <property name="spacing">10</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <widget class="GtkVBox" id="vbox48">
                                 <property name="visible">True</property>
@@ -885,6 +891,7 @@ Square Root</property>
                                 <child>
                                   <widget class="GtkLabel" id="label116">
                                     <property name="visible">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Traffic</property>
                                   </widget>
                                   <packing>
@@ -919,6 +926,7 @@ Square Root</property>
                                 <child>
                                   <widget class="GtkLabel" id="label117">
                                     <property name="visible">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Protocol Info</property>
                                   </widget>
                                   <packing>
