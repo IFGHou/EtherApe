@@ -49,10 +49,6 @@ void on_link_to_spin_adjustment_changed (GtkAdjustment * adj);
 void on_gui_link_to_spin_adjustment_changed (GtkAdjustment * adj);
 void on_proto_link_to_spin_adjustment_changed (GtkAdjustment * adj);
 void on_proto_to_spin_adjustment_changed (GtkAdjustment * adj);
-void on_font_button_clicked (GtkButton * button, gpointer user_data);
-void on_ok_button1_clicked (GtkButton * button, gpointer user_data);
-void on_cancel_button1_clicked (GtkButton * button, gpointer user_data);
-void on_apply_button1_clicked (GtkButton * button, gpointer user_data);
 void on_save_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				     gpointer user_data);

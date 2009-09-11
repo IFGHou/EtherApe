@@ -33,6 +33,7 @@ static void on_stack_level_changed(GtkComboBox * combo, gpointer data);
 static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
+static void on_text_font_changed(GtkFontButton * wdg, gpointer data);
 static void on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data);
 static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
@@ -147,8 +148,8 @@ load_config (const char *prefix)
 		 "Please check in the preferences dialog that this is what "
 		 "you really want"));
   pref.fontname =
-    gnome_config_get_string_with_default
-    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u);
+    gnome_config_get_string_with_default("Diagram/fontname=Sans 8", &u);
+/*    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u); */
   pref.text_color = gnome_config_get_string_with_default("Diagram/text_color=#ffff00", &u);
   gnome_config_get_vector_with_default
     ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
@@ -406,7 +407,8 @@ initialize_pref_controls(void)
   gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.node_size_variable);
   widget = glade_xml_get_widget (xml, "size_mode");
   gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.size_mode);
-
+  widget = glade_xml_get_widget (xml, "text_font");
+  gtk_font_button_set_font_name(GTK_FONT_BUTTON(widget), pref.fontname);
   widget = glade_xml_get_widget (xml, "text_color");
   if (!gdk_color_parse(pref.text_color, &color))
     gdk_color_parse("#ffff00", &color);
@@ -421,7 +423,7 @@ initialize_pref_controls(void)
       gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
     }
 
-  load_color_list ();		/* Updates the color preferences table with pref.colors */
+  load_color_list();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "diag_pref");
@@ -497,6 +499,10 @@ initialize_pref_controls(void)
   g_signal_connect (G_OBJECT (widget), 
                     "changed",
 		    GTK_SIGNAL_FUNC (on_size_mode_changed), NULL);
+  widget = glade_xml_get_widget (xml, "text_font");
+  g_signal_connect (G_OBJECT (widget), 
+                    "font_set",
+		    GTK_SIGNAL_FUNC (on_text_font_changed), NULL);
   widget = glade_xml_get_widget (xml, "text_color");
   g_signal_connect (G_OBJECT (widget), 
                     "color_set",
@@ -512,6 +518,8 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   /* saves current prefs to a temporary */
   tmp_pref = duplicate_config(&pref);
 
+  initialize_pref_controls();
+  
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (xml, "filter_combo"));
   cbox_add_select(cbox, pref.filter);
 
@@ -595,69 +603,6 @@ on_proto_to_spin_adjustment_changed (GtkAdjustment * adj)
   pref.proto_timeout_time = adj->value;	/* Control and value in ms */
 }
 
-void
-on_font_button_clicked (GtkButton * button, gpointer user_data)
-{
-  static GtkWidget *fontsel = NULL;
-  if (!fontsel)
-    fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
-  gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					   (fontsel), pref.fontname);
-  gtk_widget_show (fontsel);
-}
-
-
-void
-on_ok_button1_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *fontsel;
-  gchar *str;
-  fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
-  str =
-    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
-					     (fontsel));
-  if (str)
-    {
-      if (pref.fontname)
-	g_free (pref.fontname);
-      pref.fontname = g_strdup (str);
-      g_free (str);
-      ask_reposition(TRUE); /* reposition and update font */
-    }
-
-  gtk_widget_hide (fontsel);
-}
-
-
-void
-on_cancel_button1_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *fontsel;
-  fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
-  gtk_widget_hide (fontsel);
-}				/* on_cancel_button1_clicked */
-
-
-void
-on_apply_button1_clicked (GtkButton * button, gpointer user_data)
-{
-  GtkWidget *fontsel;
-  gchar *str;
-
-  fontsel = glade_xml_get_widget (xml, "fontselectiondialog1");
-  str =
-    gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
-					     (fontsel));
-  if (str)
-    {
-      if (pref.fontname)
-	g_free (pref.fontname);
-      pref.fontname = g_strdup (str);
-      g_free (str);
-      ask_reposition(TRUE); /* reposition and update font */
-    }
-}				/* on_apply_button1_clicked */
-
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data)
 {
   /* Beware! Size mode is an enumeration. The menu options
@@ -676,6 +621,18 @@ static void on_stack_level_changed(GtkComboBox * combo, gpointer data)
 {
   pref.stack_level = gtk_combo_box_get_active (combo);
   delete_gui_protocols ();
+}
+
+static void on_text_font_changed(GtkFontButton * wdg, gpointer data)
+{
+  const gchar *str = gtk_font_button_get_font_name(wdg);
+  if (str)
+    {
+      if (pref.fontname)
+	g_free (pref.fontname);
+      pref.fontname = g_strdup (str);
+      ask_reposition(TRUE); /* reposition and update font */
+    }
 }
 
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data)
@@ -738,7 +695,8 @@ on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
   
   /* reset configuration to saved */
   copy_config(&pref, tmp_pref);
-  
+
+  ask_reposition(TRUE);
   if (restarted_capture && old_status == PLAY)
     gui_start_capture ();
 
