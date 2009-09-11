@@ -702,21 +702,6 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     gtk_widget_hide (protocols_window);
 }				/* on_protocols_check_activate */
 
-
-/* Displays the protocols window when the legend is double clicked */
-gboolean
-on_prot_table_button_press_event (GtkWidget * widget,
-				  GdkEventButton * event, gpointer user_data)
-{
-  if (GDK_2BUTTON_PRESS == event->type)
-    {
-      toggle_protocols_window ();
-      return TRUE;
-    }
-
-  return FALSE;
-}				/* on_prot_table_button_press_event */
-
 /* opens a protocol detail window when the user clicks a proto row */
 gboolean
 on_prot_list_select_row (GtkTreeView * gv, gboolean arg1, gpointer user_data)

@@ -1012,6 +1012,18 @@ service_compare (gconstpointer a, gconstpointer b, gpointer unused)
   return g_strcasecmp((const gchar *)a, (const gchar *)b);
 }				
 
+/* traverse function to map names to ports */
+static gboolean port_traverse(gpointer key, gpointer value, gpointer data)
+{
+  const port_service_t *svc = (const port_service_t *)value;
+  GTree *tree = (GTree *)data;
+  port_service_t *new_el;
+  
+  new_el = port_service_new(svc->port, svc->name);
+  g_tree_replace(tree, new_el->name, new_el);
+  return FALSE;
+}
+
 /* TODO this is probably this single piece of code I am most ashamed of.
  * I should learn how to use flex or yacc and do this The Right Way (TM)*/
 static void
@@ -1101,12 +1113,7 @@ load_services (void)
 		g_my_info (_("SCTP protocols not supported in %s"), line);
               else
                 {
-                  /* first, map name to port (same for udp and tcp) */
-		  port_service = port_service_new(port_number, t1[0]);
-                  g_tree_replace(service_names,
-                                 port_service->name, port_service);
-
-                  /* next, map port to name, to two trees */
+                  /* map port to name, to two trees */
 		  port_service = port_service_new(port_number, t1[0]);
                   if (!g_strcasecmp ("tcp", t2[1]))
                     g_tree_replace(tcp_services, 
@@ -1127,6 +1134,10 @@ load_services (void)
 
   fclose (services);
   g_free (line);
+
+  /* now traverse port->name trees to fill the name->port tree */
+  g_tree_foreach(udp_services, port_traverse, service_names);
+  g_tree_foreach(tcp_services, port_traverse, service_names);
 }				/* load_services */
 
 /* Given two port numbers, it returns the 
