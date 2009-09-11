@@ -622,7 +622,7 @@ on_ok_button1_clicked (GtkButton * button, gpointer user_data)
 	g_free (pref.fontname);
       pref.fontname = g_strdup (str);
       g_free (str);
-      ask_reposition();
+      ask_reposition(TRUE); /* reposition and update font */
     }
 
   gtk_widget_hide (fontsel);
@@ -654,7 +654,7 @@ on_apply_button1_clicked (GtkButton * button, gpointer user_data)
 	g_free (pref.fontname);
       pref.fontname = g_strdup (str);
       g_free (str);
-      ask_reposition();
+      ask_reposition(TRUE); /* reposition and update font */
     }
 }				/* on_apply_button1_clicked */
 
@@ -684,6 +684,7 @@ static void on_text_color_changed(GtkColorButton * wdg, gpointer data)
   gtk_color_button_get_color(wdg, &new_color);
   g_free(pref.text_color);
   pref.text_color = gdk_color_to_string(&new_color);
+  ask_reposition(TRUE);
 }
 
 void
@@ -691,7 +692,7 @@ on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				gpointer user_data)
 {
   pref.diagram_only = gtk_toggle_button_get_active (togglebutton);
-  ask_reposition();
+  ask_reposition(FALSE);
 }				/* on_diagram_only_toggle_toggled */
 
 void

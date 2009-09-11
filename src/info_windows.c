@@ -480,7 +480,7 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
 					GTK_SORT_ASCENDING);
 
   /* register the treeview in the window */
-  g_object_set_data ( G_OBJECT(window), "proto_clist", gv);
+  g_object_set_data ( G_OBJECT(window), "prot_clist", gv);
 }
 
 static void
@@ -585,7 +585,6 @@ activate_protocols_info_column (GtkMenuItem * gm, guint column)
 {
   GtkTreeViewColumn *gc;
   GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
-//  GtkTreeView *gv = GTK_TREE_VIEW (g_object_get_data (window, "proto_clist"));
   if (!gv)
     return;			/* no window, no handling */
 

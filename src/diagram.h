@@ -22,6 +22,7 @@
 
 
 gboolean already_updating;	/* True while an instance of update_diagram is running */
+gboolean stop_requested;	/* True if there is a pending stop request */
 
 guint update_diagram (GtkWidget * canvas);
 void init_diagram (GladeXML *xml);
@@ -30,5 +31,5 @@ void destroying_idle (gpointer data);
 void set_statusbar_msg (gchar * str);
 void delete_gui_protocols (void);
 gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
-void ask_reposition(void); /* request diagram relayout */
+void ask_reposition(gboolean refresh_font); /* request diagram relayout */
 void change_refresh_period(guint32 newperiod); 

@@ -103,6 +103,7 @@ static gboolean is_idle = FALSE;
 static guint displayed_nodes;
 static GdkColor black_color;
 static gboolean need_reposition = TRUE;	/* Force a diagram relayout */
+static gboolean need_font_refresh = TRUE;/* Force font refresh during layout */
 static gint diagram_timeout;	/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
 
@@ -138,9 +139,10 @@ static gint node_item_event (GnomeCanvasItem * item,
 static void update_legend(void);
 
 
-void ask_reposition(void)
+void ask_reposition(gboolean r_font)
 {
   need_reposition = TRUE;
+  need_font_refresh = r_font;
 }
 
 /* It updates controls from values of variables, and connects control
@@ -177,6 +179,7 @@ init_diagram (GladeXML *xml)
 
   /* Set the already_updating global flag */
   already_updating = FALSE;
+  stop_requested = FALSE;
 }				/* init_diagram */
 
 
@@ -295,6 +298,7 @@ diagram_update_nodes(GtkWidget * canvas)
 		       (GTraverseFunc) reposition_canvas_nodes,
 		       canvas);
       need_reposition = FALSE;
+      need_font_refresh = FALSE;
     }
 }
 
@@ -423,6 +427,9 @@ update_diagram (GtkWidget * canvas)
 	  return FALSE;		/* removes the idle */
     }
 
+  if (stop_requested)
+    gui_stop_capture();
+  
   return TRUE;			/* Keep on calling this function */
 }				/* update_diagram */
 
@@ -564,16 +571,17 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
   if (display_node (node) && !g_tree_lookup (canvas_nodes, &node->node_id))
     {
-      group = gnome_canvas_root (GNOME_CANVAS (canvas));
-
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       new_canvas_node->canvas_node_id = node->node_id;
 
+      /* Create a new group to hold the node and its labels */
+      group = gnome_canvas_root (GNOME_CANVAS (canvas));
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
-							 gnome_canvas_group_get_type
-							 (), "x", 100.0, "y",
-							 100.0, NULL));
-      g_object_ref (G_OBJECT (group));
+							 GNOME_TYPE_CANVAS_GROUP,
+							 "x", 100.0, 
+                                                         "y", 100.0, NULL));
+      g_object_ref_sink(G_OBJECT (group));
+      new_canvas_node->group_item = group;
 
       new_canvas_node->node_item
 	= gnome_canvas_item_new (group,
@@ -585,7 +593,8 @@ check_new_node (node_t * node, GtkWidget * canvas)
 				 "fill_color", "white",
 				 "outline_color", "black",
 				 "width_pixels", 0, NULL);
-      g_object_ref (G_OBJECT (new_canvas_node->node_item));
+      g_object_ref_sink(G_OBJECT (new_canvas_node->node_item));
+
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
 			       "text", node->name->str,
@@ -594,20 +603,16 @@ check_new_node (node_t * node, GtkWidget * canvas)
 			       "anchor", GTK_ANCHOR_CENTER,
 			       "font", pref.fontname,
 			       "fill_color", pref.text_color, NULL);
-      g_object_ref (G_OBJECT (new_canvas_node->text_item));
-      new_canvas_node->group_item = group;
+      g_object_ref_sink(G_OBJECT (new_canvas_node->text_item));
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
       g_signal_connect (G_OBJECT (new_canvas_node->group_item), "event",
 			(GtkSignalFunc) node_item_event, new_canvas_node);
 
-      g_tree_insert (canvas_nodes,
-		     &new_canvas_node->canvas_node_id, new_canvas_node);
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	     _("Creating canvas_node: %s. Number of nodes %d"),
-	     node->name->str, g_tree_nnodes (canvas_nodes));
-
+      if (!new_canvas_node->node_item || !new_canvas_node->text_item)
+        g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, _("Canvas node null"));
+      
       /*
        * We hide them until we are sure that they will get a proper position
        * in reposition_nodes
@@ -615,9 +620,15 @@ check_new_node (node_t * node, GtkWidget * canvas)
       gnome_canvas_item_hide (new_canvas_node->node_item);
       gnome_canvas_item_hide (new_canvas_node->text_item);
 
-
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
+
+      g_tree_insert (canvas_nodes,
+		     &new_canvas_node->canvas_node_id, new_canvas_node);
+      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	     _("Creating canvas_node: %s. Number of nodes %d"),
+	     node->name->str, g_tree_nnodes (canvas_nodes));
+
       need_reposition = TRUE;
     }
 
@@ -932,15 +943,20 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 
   if (!pref.stationary || canvas_node->is_new)
     {
-      /* g_message ("%g %g", x, y); */
       gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
 			     "x", x, "y", y, NULL);
       canvas_node->is_new = FALSE;
     }
 
-  /* We update the text font */
-  gnome_canvas_item_set (canvas_node->text_item, "font", pref.fontname, NULL);
-
+  if (need_font_refresh)
+    {
+      /* We update the text font */
+      gnome_canvas_item_set (canvas_node->text_item, 
+                             "font", pref.fontname, 
+                             "fill_color", pref.text_color, 
+                             NULL);
+    }
+  
   if (pref.diagram_only)
     {
       gnome_canvas_item_hide (canvas_node->text_item);

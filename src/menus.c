@@ -547,8 +547,6 @@ void gui_eof_capture(void)
   g_string_printf(status_string, _("Replay from file '%s' completed."), pref.input_file);
   set_statusbar_msg (status_string->str);
   g_string_free (status_string, TRUE);
-
-  g_my_info (_("Diagram stopped"));
 }				/* gui_stop_capture */
 
 
@@ -559,6 +557,7 @@ gui_stop_capture (void)
   GtkWidget *widget;
   GString *status_string = NULL;
 
+  stop_requested = FALSE;
   if (get_capture_status() == STOP)
     return TRUE;
 
@@ -570,7 +569,10 @@ gui_stop_capture (void)
    * allow two simultaneous calls, so we fail
    */
   if (already_updating)
-    return FALSE;
+    {
+      stop_requested = TRUE;
+      return FALSE;
+    }
 
   if (!stop_capture ())
     return FALSE;

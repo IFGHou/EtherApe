@@ -680,10 +680,10 @@ get_tcp (void)
   port_type_t src_port, dst_port, chosen_port;
   guint8 th_off_x2;
   guint8 tcp_len;
-  gchar *str;
+  const gchar *str;
 
   if (!tcp_services)
-    load_services ();
+    load_services();
 
   global_src_port = src_port = pntohs (packet + offset);
   global_dst_port = dst_port = pntohs (packet + offset + 2);
@@ -724,9 +724,10 @@ get_tcp (void)
 
   if (!src_service && !dst_service)
     {
-      str = g_strdup_printf ("/TCP-Port-%d", chosen_port);
-      prot = g_string_append (prot, str);
-      g_free (str);
+      if (chosen_port == src_port)
+        g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, dst_port);
+      else
+        g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, src_port);
       return;
     }
 
@@ -735,9 +736,7 @@ get_tcp (void)
   else
     chosen_service = dst_service;
 
-  str = g_strdup_printf ("/%s", chosen_service->name);
-  prot = g_string_append (prot, str);
-  g_free (str);
+  g_string_append_printf(prot, "/%s", chosen_service->name);
 }				/* get_tcp */
 
 static void
@@ -745,7 +744,6 @@ get_udp (void)
 {
   port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
-  gchar *str;
 
   if (!udp_services)
     load_services ();
@@ -773,10 +771,10 @@ get_udp (void)
 
   if (!dst_service && !src_service)
     {
-      prot = g_string_append (prot, "/UDP-Port ");
-      str = g_strdup_printf ("%d", chosen_port);
-      prot = g_string_append (prot, str);
-      g_free (str);
+      if (chosen_port == src_port)
+        g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, dst_port);
+      else
+        g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, src_port);
       return;
     }
 
@@ -784,10 +782,7 @@ get_udp (void)
     chosen_service = src_service;
   else
     chosen_service = dst_service;
-
-  str = g_strdup_printf ("/%s", chosen_service->name);
-  prot = g_string_append (prot, str);
-  g_free (str);
+  g_string_append_printf(prot, "/%s", chosen_service->name);
 }				/* get_udp */
 
 static gboolean
@@ -795,7 +790,7 @@ get_rpc (gboolean is_udp)
 {
   enum rpc_type msg_type;
   enum rpc_program msg_program;
-  gchar *rpc_prot = NULL;
+  const gchar *rpc_prot = NULL;
 
   /* Determine whether this is an RPC packet */
 
@@ -834,43 +829,41 @@ get_rpc (gboolean is_udp)
       switch (msg_program)
 	{
 	case BOOTPARAMS_PROGRAM:
-	  rpc_prot = g_strdup ("/BOOTPARAMS");
+	  prot = g_string_append(prot, "/BOOTPARAMS");
 	  break;
 	case MOUNT_PROGRAM:
-	  rpc_prot = g_strdup ("/MOUNT");
+	  prot = g_string_append(prot, "/MOUNT");
 	  break;
 	case NLM_PROGRAM:
-	  rpc_prot = g_strdup ("/NLM");
+	  prot = g_string_append(prot, "/NLM");
 	  break;
 	case PORTMAP_PROGRAM:
-	  rpc_prot = g_strdup ("/PORTMAP");
+	  prot = g_string_append(prot, "/PORTMAP");
 	  break;
 	case STAT_PROGRAM:
-	  rpc_prot = g_strdup ("/STAT");
+	  prot = g_string_append(prot, "/STAT");
 	  break;
 	case NFS_PROGRAM:
-	  rpc_prot = g_strdup ("/NFS");
+	  prot = g_string_append(prot, "/NFS");
 	  break;
 	case YPBIND_PROGRAM:
-	  rpc_prot = g_strdup ("/YPBIND");
+	  prot = g_string_append(prot, "/YPBIND");
 	  break;
 	case YPSERV_PROGRAM:
-	  rpc_prot = g_strdup ("/YPSERV");
+	  prot = g_string_append(prot, "/YPSERV");
 	  break;
 	case YPXFR_PROGRAM:
-	  rpc_prot = g_strdup ("/YPXFR");
+	  prot = g_string_append(prot, "/YPXFR");
 	  break;
 	default:
 	  return FALSE;
 	}
-      prot = g_string_append (prot, rpc_prot);
 
       /* Search for an already existing conversation, if not, create one */
       if (!find_conversation (global_src_address, 0, global_src_port, 0))
 	add_conversation (global_src_address, 0,
 			  global_src_port, 0, rpc_prot);
 
-      g_free (rpc_prot);
       return TRUE;
     default:
       return FALSE;
@@ -941,15 +934,12 @@ get_ftp (void)
 {
   gchar *mesg = NULL;
   guint size = capture_len - offset;
-  gchar *hi_str = NULL, *low_str = NULL;
+  gchar *str;
   guint hi_byte, low_byte;
   guint16 server_port;
   guint i = 0;
 
-
   prot = g_string_append (prot, "/FTP");
-
-
   if ((offset + 3) > capture_len)
     return;			/* not big enough */
 
@@ -965,19 +955,30 @@ get_ftp (void)
 
   g_my_debug ("Found FTP passive command: %s", mesg);
 
-  g_my_debug ("FTP Token: %s", strtok (mesg, "(,)"));
-  for (i = 1; i <= 4; i++)
-    g_my_debug ("FTP Token: %s", strtok (NULL, "(,)"));
+  str = strtok (mesg, "(,)");
+  g_my_debug ("FTP Token: %s", str ? str : "NULL");
+  for (i = 0; i < 4 && str; i++)
+    {
+      str = strtok (NULL, "(,)");
+      g_my_debug ("FTP Token: %s", str ? str : "NULL");
+    }
 
-  g_my_debug ("FTP Token: %s", hi_str = strtok (NULL, "(,)"));
-  if (!hi_str || !sscanf (hi_str, "%d", &hi_byte))
-    return;
-  g_my_debug ("FTP Token: %s", low_str = strtok (NULL, "(,)"));
-  if (!low_str || !sscanf (low_str, "%d", &low_byte))
-    return;
+  str = strtok (NULL, "(,)");
+  g_my_debug ("FTP Token: %s", str ? str : "NULL");
+  if (!str || !sscanf (str, "%d", &hi_byte))
+    {
+      g_free(mesg);
+      return;
+    }
+  str = strtok (NULL, "(,)");
+  g_my_debug ("FTP Token: %s", str ? str : "NULL");
+  if (!str || !sscanf (str, "%d", &low_byte))
+    {
+      g_free(mesg);
+      return;
+    }
 
   server_port = hi_byte * 256 + low_byte;
-
   g_my_debug ("FTP Hi: %d. Low: %d. Passive port is %d", hi_byte, low_byte,
 	      server_port);
 
@@ -986,8 +987,6 @@ get_ftp (void)
 		    server_port, 0, "/FTP-PASSIVE");
 
   g_free (mesg);
-
-  return;
 }
 
 /* Comparison function to sort tcp/udp services by port number */
@@ -1126,9 +1125,8 @@ load_services (void)
 	}
     }
 
-  g_free (line);
-  line = NULL;
   fclose (services);
+  g_free (line);
 }				/* load_services */
 
 /* Given two port numbers, it returns the 
@@ -1272,6 +1270,9 @@ void port_service_free(port_service_t *p)
 
 const port_service_t *port_service_find(const gchar *name)
 {
+  if (service_names)
+    load_services();
+
   if (!name || !service_names)
     return NULL;
 

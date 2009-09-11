@@ -70,7 +70,7 @@ add_conversation (guint32 src_address, guint32 dst_address,
 		  guint16 src_port, guint16 dst_port, const gchar * data)
 {
   conversation_t *conv = NULL;
-  gchar *old_data = NULL;
+  const gchar *old_data = NULL;
   guint32 src, dst;
 
   /* Because that is the way that ip_to_str works */
@@ -113,7 +113,7 @@ add_conversation (guint32 src_address, guint32 dst_address,
 /* Returns the data if there is any matching conversation in any of the
  * two directions */
 /* A zero in any of the ports matches any port number */
-gchar* 
+const gchar* 
 find_conversation (guint32 src_address, guint32 dst_address,
 		       guint16 src_port, guint16 dst_port)
 {
