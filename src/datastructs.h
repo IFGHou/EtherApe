@@ -31,7 +31,7 @@ void  protohash_clear(void);
 GdkColor protohash_get(const gchar *protoname);
 
 /* fills the hash from a pref vector */
-gboolean protohash_read_prefvect(gchar **colors, gint n_colors);
+gboolean protohash_read_prefvect(gchar **colors);
 
 /* resets the cycle color to start of list */
 void protohash_reset_cycle(void);

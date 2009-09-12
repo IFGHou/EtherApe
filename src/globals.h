@@ -86,10 +86,9 @@ struct pref_struct
    * from the node protocol stats */
   gdouble proto_node_timeout_time;
 
-  gint n_colors;		/* Numbers of colors to be used on the diagram */
-  gchar **colors;		/* list of colors to be used on the diagram. Format is
-				 * color[;protocol] [color[;protocol] ...
-				 * where color is represented by sis hex digits (RGB) */
+  gchar **colors;       /* list of colors to be used on the diagram. Format is
+			 * color[;protocol[,protocol ...]] [color[;protocol] ...
+			 * where color is represented by sis hex digits (RGB) */
 
   /* After this time has passed with no traffic for a link, it 
    * disappears from the diagram */

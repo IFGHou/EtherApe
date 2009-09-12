@@ -132,7 +132,7 @@ protohash_get(const gchar *protoname)
 
 /* fills the hash from a pref vector */
 gboolean 
-protohash_read_prefvect(gchar **colors, gint n_colors)
+protohash_read_prefvect(gchar **colors)
 {
   int i;
   GdkColor gdk_color;
@@ -140,26 +140,102 @@ protohash_read_prefvect(gchar **colors, gint n_colors)
   protohash_clear();
 
   /* fills with colors */
-  for (i = n_colors; i >0; --i)
+  for (i = 0; colors[i]; ++i)
     {
-      gchar **colors_protocols = NULL;
+      gchar **colors_protocols, **protos;
+      int j;
 
-      colors_protocols = g_strsplit (colors[i-1], ";", 0);
+      colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
 
       /* converting color */
       gdk_color_parse (colors_protocols[0], &gdk_color);
 
-      protohash_set(colors_protocols[1], gdk_color);
-
+      if (!colors_protocols[1] || !strlen(colors_protocols[1]))
+        protohash_set(colors_protocols[1], gdk_color);
+      else
+        {
+          /* multiple protos, split them */
+          protos = g_strsplit_set(colors_protocols[1], ", \t\n", 0);
+          for (j = 0 ; protos[j] ; ++j)
+            protohash_set(protos[j], gdk_color);
+          g_strfreev(protos);
+        }
       g_strfreev(colors_protocols);
-
     }
 
   if (!cycle_color_list)
     {
-      /* the list of color available for cycling is empty, so we add a grey */
+      /* the list of color available for unmapped protocols is empty, 
+       * so we add a grey */
       gdk_color_parse ("#7f7f7f", &gdk_color);
       protohash_set(NULL, gdk_color);
     }
-    return TRUE;
+  else
+    cycle_color_list = g_list_reverse(cycle_color_list); /* list was reversed */
+  return TRUE;
+}
+
+
+
+/* compacts the array of colors/protocols mappings by collapsing identical
+ * colors */
+gchar **protohash_compact(const gchar **colors)
+{
+   int i;
+   gchar **compacted;
+   GList *work;
+   GList *el;
+
+   /* constructs a list with unique colors. We use a list to maintain the
+      fill order of the dialog. This is less surprising for the user. */
+   work = NULL;
+   for (i = 0; colors[i] ; ++i)
+    {
+      gchar **colors_protocols;
+
+      colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
+
+      colors_protocols[1] = remove_spaces(colors_protocols[1]);
+      
+      for (el = g_list_first(work) ; el ; el = g_list_next(el) )
+        {
+          gchar **col=(gchar **)(el->data);
+          if (!g_ascii_strcasecmp(col[0], colors_protocols[0]))
+            {
+              /* found same color, append protocol */
+              gchar *old = col[1];
+              if (old)
+                col[1] = g_strjoin(",", old, colors_protocols[1], NULL);
+              else
+                col[1] = g_strdup(colors_protocols[1]);
+              g_free(old);
+              break;
+            }
+        }
+
+      if (el)
+        g_strfreev(colors_protocols); /* found, free temporary */
+      else
+        {
+          /* color not found, adds to list - no need to free here */
+          work = g_list_prepend(work, colors_protocols); 
+        }    
+    }
+
+  /* reverse list to match original order (with GList, prepend+reverse is more 
+     efficient than append */
+  work = g_list_reverse(work);
+  
+  /* now scans the list filling the protostring */
+  compacted = malloc( sizeof(gchar *) * (g_list_length(work) + 1) );
+  i = 0;
+  for (el = g_list_first(work) ; el ; el = g_list_next(el) )
+    {
+      gchar **col=(gchar **)(el->data);
+      compacted[i++] = g_strjoin(";", col[0], col[1], NULL);
+      g_strfreev(col);
+    }
+  compacted[i] = NULL;
+  g_list_free(work);
+  return compacted;
 }

@@ -180,3 +180,17 @@ safe_strncat (char *dst, const char *src, size_t maxlen)
   dst[maxlen - 1] = '\0';
   return dst;
 }
+
+char *remove_spaces(char *str)
+{
+  char *out = str;
+  char *cur = str;
+  if (str)
+    {
+      for (cur = str ; *cur ; ++cur)
+        if ( !g_ascii_isspace((guchar)(*cur)))
+          *out++ = *cur;
+      *out = '\0';
+    }
+  return str;
+}

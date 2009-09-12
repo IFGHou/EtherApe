@@ -57,7 +57,7 @@ void init_config(struct pref_struct *p)
 
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
-  p->cycle = TRUE;
+  p->cycle = FALSE;
   p->stationary = FALSE;
   p->node_radius_multiplier = 0.0005;
   p->link_node_ratio = 1;
@@ -76,7 +76,6 @@ void init_config(struct pref_struct *p)
 
   p->text_color=NULL;
   p->fontname=NULL;
-  p->n_colors=0;
   p->colors=NULL;
   
   p->averaging_time=3000;	
@@ -92,7 +91,7 @@ void
 load_config (const char *prefix)
 {
   gboolean u;
-  gchar *config_file_version;
+  gchar *config_file_version, *tmpstr;
 
   gnome_config_push_prefix (prefix);
 
@@ -104,7 +103,7 @@ load_config (const char *prefix)
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
+  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=FALSE", &u);
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
@@ -153,22 +152,18 @@ load_config (const char *prefix)
     gnome_config_get_string_with_default("Diagram/fontname=Sans 8", &u);
 /*    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u); */
   pref.text_color = gnome_config_get_string_with_default("Diagram/text_color=#ffff00", &u);
-  gnome_config_get_vector_with_default
-    ("Diagram/colors=#ff0000;WWW #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
-     &(pref.n_colors), &(pref.colors), &u);
 
-  if (!pref.n_colors || !pref.colors || !strlen(pref.colors[0]))
-  {
-     /* color array defined in prefs, but empty */
-     pref.n_colors = 1;
-     g_free(pref.colors[0]);
-     pref.colors[0] = g_strdup("#7f7f7f");
-  }
+  tmpstr = gnome_config_get_string_with_default
+    ("Diagram/colors=#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
+    &u);
+  pref.colors = g_strsplit(tmpstr, " ", 0);
+  if (!pref.colors)
+     pref.colors = g_strsplit("#7f7f7f", " ", 0); /* color array was empty */
 
   g_free (config_file_version);
   gnome_config_pop_prefix ();
 
-  protohash_read_prefvect(pref.colors, pref.n_colors);
+  protohash_read_prefvect(pref.colors);
 }				/* load_config */
 
 /* saves configuration to .gnome/Etherape */
@@ -176,6 +171,8 @@ load_config (const char *prefix)
 void
 save_config (const char *prefix)
 {
+  gchar *tmp;
+  
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
@@ -208,8 +205,9 @@ save_config (const char *prefix)
   gnome_config_set_string ("Diagram/fontname", pref.fontname);
   gnome_config_set_string ("Diagram/text_color", pref.text_color);
 
-  gnome_config_set_vector ("Diagram/colors", pref.n_colors,
-			   (const gchar * const *) pref.colors);
+  tmp = g_strjoinv(" ", pref.colors);
+  gnome_config_set_string("Diagram/colors", tmp);
+  g_free(tmp);
 
   gnome_config_set_string ("General/version", VERSION);
 
@@ -231,7 +229,6 @@ duplicate_config(const struct pref_struct *src)
   t->input_file = NULL;
   t->text_color=NULL;
   t->fontname=NULL;
-  t->n_colors=0;
   t->colors = NULL;
   t->interface=NULL;
   t->filter=NULL;
@@ -252,12 +249,7 @@ free_config(struct pref_struct *t)
   g_free(t->fontname);
   t->fontname=NULL;
 
-  while (t->colors && t->n_colors)
-    {
-      g_free (t->colors[t->n_colors - 1]);
-      t->n_colors--;
-    }
-  g_free (t->colors);
+  g_strfreev(t->colors);
   t->colors = NULL;
 
   g_free(t->interface);
@@ -292,15 +284,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->fontname=g_strdup(src->fontname);
   tgt->stack_level = src->stack_level;
   tgt->node_limit = src->node_limit;
-
-  tgt->n_colors = src->n_colors;
-  if (tgt->n_colors)
-    {
-      gint i;
-      tgt->colors = g_malloc (sizeof (gchar *) * tgt->n_colors);
-      for (i=0; i<src->n_colors ; ++i)
-        tgt->colors[i] = g_strdup(src->colors[i]);
-    }
+  tgt->colors = g_strdupv(src->colors);
 
   tgt->proto_timeout_time = src->proto_timeout_time;     
   tgt->gui_node_timeout_time = src->gui_node_timeout_time;
@@ -956,8 +940,9 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (xml, "protocol_entry"));
   proto_string = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
   proto_string = g_utf8_strup (proto_string, -1);
-  cbox_add_select(cbox, proto_string);
+  proto_string = remove_spaces(proto_string);
   
+  cbox_add_select(cbox, proto_string);
   gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
 
   g_free (proto_string);
@@ -979,7 +964,7 @@ load_color_list (void)
   /* clear list */
   gtk_list_store_clear (ep.gs);
 
-  for (i = 0; i < pref.n_colors; i++)
+  for (i = 0; pref.colors[i]; ++i)
     {
       GdkColor gdk_color;
       gchar **colors_protocols = NULL;
@@ -1003,6 +988,7 @@ load_color_list (void)
       /* adds a new row */
       gtk_list_store_append (ep.gs, &it);
       gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, protocol, -1);
+      g_strfreev(colors_protocols);
     }
 }
 
@@ -1012,26 +998,21 @@ static void
 color_list_to_pref (void)
 {
   gint i;
+  gint ncolors;
   GtkTreeIter it;
 
   EATreePos ep;
   if (!get_color_store (&ep))
     return;
 
-  while (pref.colors && pref.n_colors)
-    {
-      g_free (pref.colors[pref.n_colors - 1]);
-      pref.n_colors--;
-    }
-  g_free (pref.colors);
+  g_strfreev(pref.colors);
   pref.colors = NULL;
 
-  pref.n_colors =
-    gtk_tree_model_iter_n_children (GTK_TREE_MODEL (ep.gs), NULL);
-  pref.colors = g_malloc (sizeof (gchar *) * pref.n_colors);
+  ncolors = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (ep.gs), NULL);
+  pref.colors = g_malloc (sizeof (gchar *) * (ncolors+1) );
 
   gtk_tree_model_get_iter_first (GTK_TREE_MODEL (ep.gs), &it);
-  for (i = 0; i < pref.n_colors; i++)
+  for (i = 0; i < ncolors; i++)
     {
       gchar *color, *protocol;
 
@@ -1049,8 +1030,9 @@ color_list_to_pref (void)
 
       gtk_tree_model_iter_next (GTK_TREE_MODEL (ep.gs), &it);
     }
-
-  protohash_read_prefvect(pref.colors, pref.n_colors);
+  pref.colors[ncolors] = NULL;
+  
+  protohash_read_prefvect(pref.colors);
 }
 
 static gint

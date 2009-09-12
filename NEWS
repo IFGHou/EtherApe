@@ -13,7 +13,11 @@
    Revised default timings, now geared toward instant monitoring. 
    Previous values where more suited for mid-term analisys.
    Since sub-second timeouts aren't very useful, and reading milliseconds
-   less than ideal, all timeouts now are displayed in seconds.
+   less than ideal, all expire periods now are entered in seconds.
+   Etherape could map multiple protocols to a single color, but you had to
+   create multiple row with the same color. Now the preferences dialog
+   accepts protocols separated by ',' for the same color and also compacts
+   automatically previously distinct rows.
 
    Changes summary:
      * Fixed bug 1713590, bad replaying of out-of-order packets (Bug 
@@ -29,7 +33,7 @@
      * Added preference for diagram text color.
      * Added port column to protocol infos (Feature request 2818525).
      * Made node name and ip selectable in node/link info (FR 2818525).
-
+     * preference dialog now accepts multiple protocols for a color.
      
 
   Development repository switched to Mercurial (Tuesday Sep 08 2009):
