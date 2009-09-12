@@ -130,7 +130,7 @@ packet_list_remove(GList *item_to_remove)
       /* current packet is not at head */
       GList *item = item_to_remove;
       item_to_remove = item_to_remove->prev; 
-      g_list_delete_link (item_to_remove, item);
+      item_to_remove = g_list_delete_link (item_to_remove, item);
     }
   else
     {

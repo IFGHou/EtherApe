@@ -79,13 +79,13 @@ protohash_set(gchar *protoname, GdkColor protocolor)
    /* N.B. hash tables and lists operate only on ptr's externally allocated ... */
 
    /* if a protocol is specified, we put the pair (proto,color) in the hash */
-   if (protoname)
+   if (protoname && *protoname)
      g_hash_table_insert(protohash, g_strdup(protoname), 
                          g_memdup(&protocolor, sizeof(GdkColor)));
 
-   /* Without protocol, or if we want also registered colors in the cycle
+  /* Without protocol, or if we want also registered colors in the cycle
     * list, we add the color to the cycle list */
-   if (!protoname || pref.cycle)
+   if (!protoname || !*protoname || pref.cycle)
      {
        cycle_color_list = g_list_prepend(cycle_color_list, 
                                    g_memdup(&protocolor, sizeof(GdkColor)));
@@ -157,7 +157,8 @@ protohash_read_prefvect(gchar **colors)
           /* multiple protos, split them */
           protos = g_strsplit_set(colors_protocols[1], ", \t\n", 0);
           for (j = 0 ; protos[j] ; ++j)
-            protohash_set(protos[j], gdk_color);
+            if (protos[j] && *protos[j])
+              protohash_set(protos[j], gdk_color);
           g_strfreev(protos);
         }
       g_strfreev(colors_protocols);
@@ -204,11 +205,14 @@ gchar **protohash_compact(gchar **colors)
             {
               /* found same color, append protocol */
               gchar *old = col[1];
-              if (old)
-                col[1] = g_strjoin(",", old, colors_protocols[1], NULL);
-              else
-                col[1] = g_strdup(colors_protocols[1]);
-              g_free(old);
+              if (colors_protocols[1] && *colors_protocols[1])
+                {
+                  if (old)
+                    col[1] = g_strjoin(",", old, colors_protocols[1], NULL);
+                  else
+                    col[1] = g_strdup(colors_protocols[1]);
+                  g_free(old);
+                }
               break;
             }
         }

@@ -24,6 +24,7 @@
 #include "datastructs.h"
 
 #define MILLI   (1000.0)
+#define COLSPACES   "        "
 
 static void color_list_to_pref (void);
 static void pref_to_color_list (void);
@@ -851,7 +852,6 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *colorsel, *colorseldiag;
   GdkColor gdk_color;
-  gchar tmp[64];
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
@@ -897,15 +897,11 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   gdk_color.green = (gdk_color.green >> 8) << 8;
   gdk_color.blue = (gdk_color.blue >> 8) << 8;
 
-  /* converting color */
-  g_snprintf (tmp, sizeof (tmp), "#%02x%02x%02x", gdk_color.red >> 8,
-	      gdk_color.green >> 8, gdk_color.blue >> 8);
-
   /* fill data */
   if (isadd)
-    gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, "", -1);
+    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, 2, "", -1);
   else
-    gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, -1);
+    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, -1);
 
   gtk_widget_hide (colorseldiag);
 
@@ -1006,16 +1002,13 @@ pref_to_color_list (void)
       GdkColor gdk_color;
       gchar **colors_protocols = NULL;
       gchar *protocol = NULL;
-      gchar tmp[64];
       GtkTreeIter it;
 
       colors_protocols = g_strsplit (pref.colors[i], ";", 0);
 
       /* converting color */
       gdk_color_parse (colors_protocols[0], &gdk_color);
-      g_snprintf (tmp, sizeof (tmp), "#%02x%02x%02x", gdk_color.red >> 8,
-		  gdk_color.green >> 8, gdk_color.blue >> 8);
-
+      
       /* converting proto name */
       if (!colors_protocols[1])
 	protocol = "";
@@ -1024,7 +1017,8 @@ pref_to_color_list (void)
 
       /* adds a new row */
       gtk_list_store_append (ep.gs, &it);
-      gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, protocol, -1);
+      gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, 
+                          2, protocol, -1);
       g_strfreev(colors_protocols);
     }
 }
@@ -1051,15 +1045,18 @@ color_list_to_pref (void)
   gtk_tree_model_get_iter_first (GTK_TREE_MODEL (ep.gs), &it);
   for (i = 0; i < ncolors; i++)
     {
-      gchar *color, *protocol;
+      gchar *protocol;
+      GdkColor *gdk_color;
 
       /* reads the list */
       gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it,
-                          0, &color, 2, &protocol, -1);
+                          1, &gdk_color, 2, &protocol, -1);
 
-      pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
-
-      g_free (color);
+      pref.colors[i] = g_strdup_printf ("#%02x%02x%02x;%s", 
+                                        gdk_color->red >> 8, 
+                                        gdk_color->green >> 8, 
+                                        gdk_color->blue >> 8,
+                                        protocol);
       g_free (protocol);
 
       gtk_tree_model_iter_next (GTK_TREE_MODEL (ep.gs), &it);
