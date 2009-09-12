@@ -61,8 +61,13 @@ void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_da
 
 /* proto color tab callbacks */
 void on_color_add_button_clicked (GtkButton * button, gpointer user_data);
+void on_color_change_button_clicked (GtkButton * button, gpointer user_data);
 void on_color_remove_button_clicked (GtkButton * button, gpointer user_data);
 void on_colordiag_ok_clicked (GtkButton * button, gpointer user_data);
 void on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data);
 void on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data);
 void on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data);
+
+/* removes all spaces from str (in place). Returns str */
+gchar *remove_spaces(gchar *str);
+  

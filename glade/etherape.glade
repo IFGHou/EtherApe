@@ -497,6 +497,7 @@ Square Root</property>
                     <child>
                       <widget class="GtkVBox" id="vbox31">
                         <property name="visible">True</property>
+                        <property name="homogeneous">True</property>
                         <child>
                           <widget class="GtkButton" id="color_add_button">
                             <property name="label" translatable="yes">Add color</property>
@@ -527,6 +528,20 @@ Square Root</property>
                           </packing>
                         </child>
                         <child>
+                          <widget class="GtkButton" id="color_change_button">
+                            <property name="label" translatable="yes">Change color</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip" translatable="yes">Changes selected row color</property>
+                            <signal name="clicked" handler="on_color_change_button_clicked"/>
+                          </widget>
+                          <packing>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <widget class="GtkButton" id="protocol_edit_button">
                             <property name="label" translatable="yes">Edit protocol</property>
                             <property name="visible">True</property>
@@ -537,7 +552,7 @@ Square Root</property>
                           </widget>
                           <packing>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </widget>

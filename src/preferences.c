@@ -26,7 +26,7 @@
 #define MILLI   (1000.0)
 
 static void color_list_to_pref (void);
-static void load_color_list (void);
+static void pref_to_color_list (void);
 static gboolean get_version_levels (const gchar * version_string,
 				    guint * major, guint * minor,
 				    guint * patch);
@@ -41,7 +41,6 @@ static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
 
 static gboolean colors_changed = FALSE;
-static gboolean restarted_capture = FALSE; /* true if the capture was restarted */
 static GtkWidget *diag_pref = NULL;		/* Pointer to the diagram configuration window */
 static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
 
@@ -316,7 +315,6 @@ confirm_changes(void)
     {
       color_list_to_pref ();
       delete_gui_protocols ();
-      colors_changed = FALSE;
     }
 }				/* confirm_changes */
 
@@ -330,7 +328,6 @@ hide_pref_dialog(void)
 
   /* reset flags */
   colors_changed = FALSE;
-  restarted_capture = FALSE;
 
   /* hide dialog */
   gtk_widget_hide (diag_pref);
@@ -409,7 +406,7 @@ initialize_pref_controls(void)
       gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
     }
 
-  load_color_list();		/* Updates the color preferences table with pref.colors */
+  pref_to_color_list();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "diag_pref");
@@ -606,7 +603,7 @@ static void on_size_variable_changed(GtkComboBox * combo, gpointer data)
 static void on_stack_level_changed(GtkComboBox * combo, gpointer data)
 {
   pref.stack_level = gtk_combo_box_get_active (combo);
-  delete_gui_protocols ();
+  delete_gui_protocols();
 }
 
 static void on_text_font_changed(GtkFontButton * wdg, gpointer data)
@@ -642,18 +639,7 @@ void
 on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 			    gpointer user_data)
 {
-  enum status_t old_status = get_capture_status();
-
-  /* record the restart */
-  restarted_capture = TRUE;
-
-  gui_stop_capture ();
-
   pref.group_unk = gtk_toggle_button_get_active (togglebutton);
-
-  if (old_status == PLAY)
-    gui_start_capture ();
-
 }				/* on_group_unk_check_toggled */
 
 /*
@@ -671,20 +657,15 @@ on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
-  enum status_t old_status = get_capture_status();
-
-  if (restarted_capture)
-    {
-      /* user changed options who can be changed only with capture stopped ... */
-      gui_stop_capture ();
-    }
-  
   /* reset configuration to saved */
   copy_config(&pref, tmp_pref);
 
   ask_reposition(TRUE);
-  if (restarted_capture && old_status == PLAY)
-    gui_start_capture ();
+  if (colors_changed)
+    {
+      protohash_read_prefvect(pref.colors);
+      delete_gui_protocols ();
+    }
 
   hide_pref_dialog();
 }				/* on_cancel_pref_button_clicked */
@@ -786,10 +767,47 @@ get_color_store (EATreePos * ep)
 void
 on_color_add_button_clicked (GtkButton * button, gpointer user_data)
 {
-  GtkWidget *colorseldiag =
+  GtkWidget *dlg =
     glade_xml_get_widget (xml, "colorselectiondialog");
-  gtk_widget_show (colorseldiag);
+  g_object_set_data( G_OBJECT(dlg), "isadd", GINT_TO_POINTER(TRUE));
+  gtk_widget_show (dlg);
 }				/* on_color_add_button_clicked */
+
+void
+on_color_change_button_clicked (GtkButton * button, gpointer user_data)
+{
+  GtkTreePath *gpath;
+  GtkTreeViewColumn *gcol;
+  GtkTreeIter it;
+  GdkColor *gdk_color;
+  GtkColorSelectionDialog *dlg;
+  GtkColorSelection *csel;
+  EATreePos ep;
+  gchar *u;
+  if (!get_color_store (&ep))
+    return;
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
+  if (!gpath)
+    return;			/* no row selected */
+
+  /* get iterator from path */
+  if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
+    return;
+
+  gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 1, &gdk_color, -1);
+
+  dlg = GTK_COLOR_SELECTION_DIALOG
+          (glade_xml_get_widget (xml, "colorselectiondialog"));
+
+  csel = GTK_COLOR_SELECTION(dlg->colorsel);
+  gtk_color_selection_set_current_color(csel, gdk_color);
+  gtk_color_selection_set_previous_color(csel, gdk_color);
+  
+  g_object_set_data( G_OBJECT(dlg), "isadd", GINT_TO_POINTER(FALSE));
+  gtk_widget_show (GTK_WIDGET(dlg));
+}				/* on_color_change_button_clicked */
 
 void
 on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
@@ -824,6 +842,7 @@ on_color_remove_button_clicked (GtkButton * button, gpointer user_data)
 #endif
 
   colors_changed = TRUE;
+  color_list_to_pref ();
 }				/* on_color_remove_button_clicked */
 
 void
@@ -835,26 +854,38 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
+  gint isadd;
   EATreePos ep;
   if (!get_color_store (&ep))
     return;
 
+  colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
+  isadd = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(colorseldiag), "isadd"));
+
   /* gets the row (path) at cursor */
   gtk_tree_view_get_cursor (ep.gv, &gpath, &gcol);
-  if (gpath)
+  if (isadd)
     {
-      /* row sel, add before */
-      GtkTreeIter itsibling;
-      if (!gtk_tree_model_get_iter
-	  (GTK_TREE_MODEL (ep.gs), &itsibling, gpath))
-	return;			/* path not found */
-      gtk_list_store_insert_before (ep.gs, &it, &itsibling);
+      if (gpath)
+        {
+          /* row sel, add/change color */
+          GtkTreeIter itsibling;
+          if (!gtk_tree_model_get_iter
+              (GTK_TREE_MODEL (ep.gs), &itsibling, gpath))
+            return;			/* path not found */
+            gtk_list_store_insert_before (ep.gs, &it, &itsibling);
+        }
+      else
+        gtk_list_store_append (ep.gs, &it);	/* no row selected, append */
     }
   else
-    gtk_list_store_append (ep.gs, &it);	/* no row selected, append */
+    {
+      if (!gpath || 
+          !gtk_tree_model_get_iter(GTK_TREE_MODEL (ep.gs), &it, gpath))
+	return;			/* path not found */
+    }
 
   /* get the selected color */
-  colorseldiag = glade_xml_get_widget (xml, "colorselectiondialog");
   colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
   gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (colorsel),
 					 &gdk_color);
@@ -870,10 +901,14 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 	      gdk_color.green >> 8, gdk_color.blue >> 8);
 
   /* fill data */
-  gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, "", -1);
+  if (isadd)
+    gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, 2, "", -1);
+  else
+    gtk_list_store_set (ep.gs, &it, 0, tmp, 1, &gdk_color, -1);
 
   gtk_widget_hide (colorseldiag);
 
+  color_list_to_pref ();
   colors_changed = TRUE;
 }				/* on_colordiag_ok_clicked */
 
@@ -946,15 +981,16 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
 
   g_free (proto_string);
+  gtk_widget_hide (glade_xml_get_widget (xml, "protocol_edit_dialog"));
 
   colors_changed = TRUE;
-  gtk_widget_hide (glade_xml_get_widget (xml, "protocol_edit_dialog"));
+  color_list_to_pref ();
 }				/* on_protocol_edit_ok_clicked */
 
 
 
 static void
-load_color_list (void)
+pref_to_color_list (void)
 {
   gint i;
   EATreePos ep;
@@ -1020,10 +1056,7 @@ color_list_to_pref (void)
       gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it,
                           0, &color, 2, &protocol, -1);
 
-      if (strcmp ("", protocol))
-	pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
-      else
-	pref.colors[i] = g_strdup (color);
+      pref.colors[i] = g_strdup_printf ("%s;%s", color, protocol);
 
       g_free (color);
       g_free (protocol);
@@ -1105,10 +1138,29 @@ static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str)
         {
           gtk_tree_model_get (model, &iter, 0, &modelstr, -1);
           if (strcmp (str, modelstr) == 0)
-            return; /* already present */
+            {
+              /* already present */
+              g_free(modelstr);
+              return; 
+            }
+          g_free(modelstr);
         }
 
       gtk_list_store_insert_with_values(GTK_LIST_STORE(model), 
                                         &iter3, 0, 0, str, -1);
     }
+}
+
+gchar *remove_spaces(gchar *str)
+{
+  char *out = str;
+  char *cur = str;
+  if (str)
+    {
+      for (cur = str ; *cur ; ++cur)
+        if ( !g_ascii_isspace((guchar)(*cur)))
+          *out++ = *cur;
+      *out = '\0';
+    }
+  return str;
 }

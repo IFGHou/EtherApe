@@ -44,12 +44,8 @@ extern "C"
   char *safe_strncpy (char *dst, const char *src, size_t maxlen);
   char *safe_strncat (char *dst, const char *src, size_t maxlen);
 
-  /* removes all spaces from str (in place). Returns str */
-  char *remove_spaces(char *str);
-  
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */
-
 
 #endif				/* __UTIL_H__ */
