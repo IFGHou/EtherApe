@@ -682,9 +682,6 @@ get_tcp (void)
   guint8 tcp_len;
   const gchar *str;
 
-  if (!tcp_services)
-    load_services();
-
   global_src_port = src_port = pntohs (packet + offset);
   global_dst_port = dst_port = pntohs (packet + offset + 2);
   th_off_x2 = *(guint8 *) (packet + offset + 12);
@@ -692,8 +689,6 @@ get_tcp (void)
 
   offset += tcp_len;
 
-  src_service = g_tree_lookup (tcp_services, &src_port);
-  dst_service = g_tree_lookup (tcp_services, &dst_port);
 
   /* Check whether this packet belongs to a registered conversation */
   if ((str = find_conversation (global_src_address, global_dst_address,
@@ -722,6 +717,14 @@ get_tcp (void)
 
   chosen_port = choose_port (src_port, dst_port);
 
+  if (tcp_services)
+    {
+      src_service = g_tree_lookup (tcp_services, &src_port);
+      dst_service = g_tree_lookup (tcp_services, &dst_port);
+    }
+  else
+    src_service = dst_service = NULL;
+
   if (!src_service && !dst_service)
     {
       if (chosen_port == src_port)
@@ -745,16 +748,11 @@ get_udp (void)
   port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
 
-  if (!udp_services)
-    load_services ();
-
   global_src_port = src_port = pntohs (packet + offset);
   global_dst_port = dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
 
-  src_service = g_tree_lookup (udp_services, &src_port);
-  dst_service = g_tree_lookup (udp_services, &dst_port);
 
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
@@ -768,6 +766,14 @@ get_udp (void)
     }
 
   chosen_port = choose_port (src_port, dst_port);
+
+  if (udp_services)
+    {
+      src_service = g_tree_lookup (udp_services, &src_port);
+      dst_service = g_tree_lookup (udp_services, &dst_port);
+    }
+  else
+    src_service = dst_service = NULL;
 
   if (!dst_service && !src_service)
     {
@@ -1281,9 +1287,6 @@ void port_service_free(port_service_t *p)
 
 const port_service_t *port_service_find(const gchar *name)
 {
-  if (service_names)
-    load_services();
-
   if (!name || !service_names)
     return NULL;
 
@@ -1294,5 +1297,12 @@ const port_service_t *port_service_find(const gchar *name)
 static void service_tree_free(gpointer p)
 {
   port_service_free( (port_service_t *)p);
+}
+
+
+void initialize_decoders(void)
+{
+  if (!tcp_services)
+    load_services();
 }
 

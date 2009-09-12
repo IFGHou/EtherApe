@@ -34,3 +34,5 @@ const gchar *find_conversation (guint32 src_address, guint32 dst_address,
 			  guint16 src_port, guint16 dst_port);
 void delete_conversation_link(guint32 src_address, guint32 dst_address);
 void delete_conversations (void);
+
+long active_conversations(void);

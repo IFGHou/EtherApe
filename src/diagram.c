@@ -284,8 +284,6 @@ diagram_update_nodes(GtkWidget * canvas)
   /* free the list - list items are already destroyed */
   g_list_free(delete_list);
 
-  g_my_debug ("Number of nodes %d", g_tree_nnodes (canvas_nodes));
-
   /* Limit the number of nodes displayed, if a limit has been set */
   /* TODO check whether this is the right function to use, now that we have a more
    * general display_node called in update_canvas_nodes */
@@ -325,8 +323,6 @@ diagram_update_links(GtkWidget * canvas)
 
   /* free the list - list items are already destroyed */
   g_list_free(delete_list);
-
-  g_my_debug ("Number of links %d", g_tree_nnodes (canvas_links));
 }
 
 /* Refreshes the diagram. Called each refresh_period ms
@@ -397,19 +393,16 @@ update_diagram (GtkWidget * canvas)
 
   if (pref.is_debug)
     {
-      GString *status_string= g_string_new (_("Number of nodes: "));
-      g_string_sprintfa (status_string, "%d", g_tree_nnodes(canvas_nodes));
-    
-      g_string_sprintfa (status_string,
-                         _(". Refresh Period: %d"), (int) diff_msecs);
-    
-      g_string_sprintfa (status_string,
-                         ". Total Packets %g, packets in memory: %g", n_packets,
-                         total_mem_packets);
-      if (is_idle)
-        status_string = g_string_append (status_string, _(". IDLE."));
-      else
-        status_string = g_string_append (status_string, _(". TIMEOUT."));
+      GString *status_string= g_string_new ("");
+      g_string_printf (status_string,
+        _("Nodes: %d (shown: %d), Links: %d, Conversations: %ld. "
+          "Refresh Period: %d. Total Packets seen: %g, packets in memory: %g. "
+          "Called by: %s."),
+        nodes_catalog_size(), g_tree_nnodes(canvas_nodes), 
+        links_catalog_size(), active_conversations(),
+        (int) diff_msecs, n_packets, total_mem_packets,
+         (is_idle) ? _("IDLE") : _("TIMER"));
+      
       g_my_debug (status_string->str);
       g_string_free (status_string, TRUE);
     }
@@ -501,13 +494,10 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
         }
       
       if (childlist)
-        {
-          g_my_debug ("Protocol %s found in legend protocols list",
-                      protocol->name);
           continue; /* found, skip to next */
-        }
 
-      g_my_debug ("Protocol not found. Creating legend item");
+      g_my_debug ("Protocol '%s' not found. Creating legend item", 
+                  protocol->name);
     
       /* It's not, so we build a new entry on the legend */
     
@@ -1028,9 +1018,6 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
       if (pref.is_debug)
       {
         gchar *str = link_id_node_names(link_id);
-        g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-               _("Creating canvas_link: %s. Number of links %d"),
-               str, g_tree_nnodes (canvas_links));
         g_free(str);
       }
 

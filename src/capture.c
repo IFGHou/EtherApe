@@ -487,20 +487,7 @@ pause_capture (void)
   if (capture_status != PLAY)
     return TRUE;
 
-  if (pref.interface)
-    {
-      /* Why would we want to miss packets while pausing to 
-       * better analyze a moment in time? If we wanted
-       * to do this it should be optional at least.
-       * In order for this to work, start_capture should only
-       * add the source if the pause was for an offline capture */
-#if 0
-      g_my_debug (_("Pausing live capture"));
-      gdk_input_remove (capture_source);	/* gdk_input_remove does not
-						 * return an error code */
-#endif
-    }
-  else
+  if (!pref.interface)
     {
       g_my_debug (_("Pausing offline capture"));
       if (!g_source_remove (capture_source))
@@ -530,18 +517,7 @@ stop_capture (void)
 						 * return an error code */
     }
   else
-    {
       g_my_debug (_("Stopping offline capture"));
-      if (capture_status != CAP_EOF)
-	{
-	  if (!g_source_remove (capture_source))
-	    {
-	      g_warning (_
-			 ("Error while removing capture source in stop_capture"));
-	      return FALSE;
-	    }
-	}
-    }
 
   capture_status = STOP;
 
@@ -746,10 +722,6 @@ add_node_packet (const guint8 * raw_packet,
       GString *node_id_str = print_mem (node_id);
       node = node_create(node_id, node_id_str->str);
       nodes_catalog_insert(node);
-    
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-             _("Creating node: %s. Number of nodes %d"),
-             node_id_str->str, nodes_catalog_size());
       g_string_free(node_id_str, TRUE);
     }
 

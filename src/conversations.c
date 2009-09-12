@@ -27,8 +27,15 @@
 #include "conversations.h"
 #include "dns.h"
 
-static GList *conversations = NULL;	/* Some protocols add an item here to help identify
-				 * further packets of the same protocol */
+/* Some protocols add an item here to help identify further packets of the 
+ * same protocol */
+static GList *conversations = NULL;
+static long n_conversations = 0;
+
+long active_conversations(void)
+{
+  return n_conversations;
+}
 
 /* Returns the item ptr if there is any matching conversation in any of the
  * two directions */
@@ -106,7 +113,7 @@ add_conversation (guint32 src_address, guint32 dst_address,
   conv->data = g_strdup (data);
 
   conversations = g_list_prepend (conversations, conv);
-
+  n_conversations++;
 }				/* add_conversation */
 
 
@@ -151,6 +158,7 @@ delete_conversation_link(guint32 src_address, guint32 dst_address)
       g_free (conv->data);
       g_free (conv);
       conversations = g_list_delete_link(conversations, item);
+      n_conversations--;
     }
 }
 
@@ -173,6 +181,7 @@ delete_conversations (void)
       g_free (conv->data);
       g_free (conv);
       item = item->next;
+      n_conversations--;
     }
 
   g_list_free (conversations);

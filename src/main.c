@@ -200,6 +200,9 @@ main (int argc, char *argv[])
 
   app1 = glade_xml_get_widget (xml, "app1");
   statusbar = GTK_STATUSBAR(glade_xml_get_widget (xml, "statusbar1"));
+
+  /* prepare decoders */
+  initialize_decoders();
   
   /* Sets controls to the values of variables and connects signals */
   init_diagram (xml);
@@ -226,7 +229,6 @@ main (int argc, char *argv[])
     signal (SIGHUP, oldhandler);
 #endif
 
-
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
@@ -242,7 +244,7 @@ main (int argc, char *argv[])
   g_timeout_add (10000, (GtkFunction) ipcache_tick, NULL);
 
   init_menus ();
-
+  
   gui_start_capture ();
 
 

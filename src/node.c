@@ -356,6 +356,11 @@ void nodes_catalog_insert(node_t *new_node)
   g_assert(new_node);
  
   g_tree_insert (all_nodes, &new_node->node_id, new_node);
+
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+          _("New node: %s. Number of nodes %d"),
+          new_node->name->str ? new_node->name->str : "", 
+          nodes_catalog_size());
 }
 
 /* removes AND DESTROYS the named node from catalog */

@@ -32,7 +32,7 @@ GtkStatusbar *statusbar;        /* Main window statusbar */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 gdouble n_packets;		/* Number of total packets received */
-gdouble total_mem_packets;		/* Number of packets currently in memory */
+gdouble total_mem_packets;	/* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
 

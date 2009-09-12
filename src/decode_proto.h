@@ -25,5 +25,6 @@
 const gchar *get_packet_prot (const guint8 * packet, guint raw_size, 
                               link_type_t link_type, guint l3_offset);
 
+void initialize_decoders(void);
 
 #endif
