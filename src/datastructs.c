@@ -178,8 +178,8 @@ protohash_read_prefvect(gchar **colors)
 
 
 /* compacts the array of colors/protocols mappings by collapsing identical
- * colors */
-gchar **protohash_compact(const gchar **colors)
+ * colors - frees the input array */
+gchar **protohash_compact(gchar **colors)
 {
    int i;
    gchar **compacted;
@@ -237,5 +237,20 @@ gchar **protohash_compact(const gchar **colors)
     }
   compacted[i] = NULL;
   g_list_free(work);
+  g_strfreev(colors);
   return compacted;
+}
+
+gchar *remove_spaces(gchar *str)
+{
+  char *out = str;
+  char *cur = str;
+  if (str)
+    {
+      for (cur = str ; *cur ; ++cur)
+        if ( !g_ascii_isspace((guchar)(*cur)))
+          *out++ = *cur;
+      *out = '\0';
+    }
+  return str;
 }

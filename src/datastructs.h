@@ -36,4 +36,11 @@ gboolean protohash_read_prefvect(gchar **colors);
 /* resets the cycle color to start of list */
 void protohash_reset_cycle(void);
 
+/* compacts the array of colors/protocols mappings by collapsing identical
+ * colors - frees the input array */
+gchar **protohash_compact(gchar **colors);
+
+/* removes all spaces from str (in place). Returns str */
+gchar *remove_spaces(gchar *str);
+  
 #endif

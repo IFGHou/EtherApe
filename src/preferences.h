@@ -68,6 +68,3 @@ void on_protocol_edit_button_clicked (GtkButton * button, gpointer user_data);
 void on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data);
 void on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data);
 
-/* removes all spaces from str (in place). Returns str */
-gchar *remove_spaces(gchar *str);
-  

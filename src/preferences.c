@@ -158,6 +158,7 @@ load_config (const char *prefix)
   pref.colors = g_strsplit(tmpstr, " ", 0);
   if (!pref.colors)
      pref.colors = g_strsplit("#7f7f7f", " ", 0); /* color array was empty */
+  pref.colors = protohash_compact(pref.colors);
 
   g_free (config_file_version);
   gnome_config_pop_prefix ();
@@ -1065,6 +1066,7 @@ color_list_to_pref (void)
     }
   pref.colors[ncolors] = NULL;
   
+  pref.colors = protohash_compact(pref.colors);
   protohash_read_prefvect(pref.colors);
 }
 
@@ -1151,16 +1153,3 @@ static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str)
     }
 }
 
-gchar *remove_spaces(gchar *str)
-{
-  char *out = str;
-  char *cur = str;
-  if (str)
-    {
-      for (cur = str ; *cur ; ++cur)
-        if ( !g_ascii_isspace((guchar)(*cur)))
-          *out++ = *cur;
-      *out = '\0';
-    }
-  return str;
-}
