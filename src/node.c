@@ -107,9 +107,6 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
 
   node->node_id = *node_id;
 
-  node->name = NULL;
-  node->numeric_name = NULL;
-
   node->name = g_string_new(node_id_str);
   node->numeric_name = g_string_new(node_id_str);
 

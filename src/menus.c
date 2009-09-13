@@ -596,9 +596,6 @@ gui_stop_capture (void)
   widget = glade_xml_get_widget (xml, "canvas1");
   update_diagram (widget);
 
-  /* Now update info windows */
-  update_info_windows ();
-
   /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));
 

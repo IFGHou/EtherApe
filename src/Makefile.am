@@ -36,10 +36,12 @@ etherape_SOURCES = \
 	info_windows.c info_windows.h \
 	ip-cache.c ip-cache.h \
 	node.c node.h \
+	node_windows.c node_windows.h \
 	links.c links.h \
 	conversations.c conversations.h \
 	traffic_stats.c traffic_stats.h \
-	datastructs.c datastructs.h
+	datastructs.c datastructs.h \
+	ui_utils.c ui_utils.h
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
 etherape_LDFLAGS = 

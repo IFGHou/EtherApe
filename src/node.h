@@ -63,12 +63,11 @@ void node_delete(node_t *node); /* destroys a node, releasing memory */
 void node_dump(const node_t * node);
 gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
-/* methods to handle every new node not yest handled in the main app */
+/* methods to handle every new node not yet handled in the main app */
 void new_nodes_clear(void);
 void new_nodes_add(node_t *node);
 void new_nodes_remove(node_t *node);
 node_t *new_nodes_pop(void);	/* Returns a new node that hasn't been heard of */
-
 
 /* nodes catalog methods */
 void nodes_catalog_open(void); /* initializes the catalog */

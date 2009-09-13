@@ -31,6 +31,8 @@
 #include "protocols.h"
 #include "capture.h"
 #include "prot_types.h"
+#include "ui_utils.h"
+#include "node_windows.h"
 
 typedef enum 
 {
@@ -74,85 +76,6 @@ static gint prot_info_compare (gconstpointer a, gconstpointer b);
 static void update_stats_info_windows (void);
 static void update_node_protocols_window (GtkWidget *node_window);
 static void update_link_info_window (GtkWidget *window);
-
-/* 
-  
-  Helper functions 
-
-*/
-
-static gchar *
-timeval_to_str (struct timeval last_heard)
-{
-  static gchar *str = NULL;
-  struct timeval diff;
-  struct tm broken_time;
-
-  if (str)
-    g_free (str);
-
-  diff = substract_times (now, last_heard);
-  if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
-    {
-      g_my_critical ("Time conversion failed in timeval_to_str");
-      return NULL;
-    }
-
-  if (diff.tv_sec <= 60)
-    {
-      /* Meaning "n seconds" ago */
-      str = g_strdup_printf (_("%d\" ago"), (int) diff.tv_sec);
-    }
-  else if (diff.tv_sec < 600)
-    {
-      /* Meaning "m minutes, n seconds ago" */
-      str =
-	g_strdup_printf (_("%d'%d\" ago"),
-			 (int) floor ((double) diff.tv_sec / 60),
-			 (int) diff.tv_sec % 60);
-    }
-  else if (diff.tv_sec < 3600 * 24)
-    {
-      str =
-	g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
-    }
-  else
-    {
-      /* Watch out! The first is month, the second day of the month */
-      str = g_strdup_printf (_("%d/%d %d:%d"),
-			     broken_time.tm_mon, broken_time.tm_mday,
-			     broken_time.tm_hour, broken_time.tm_min);
-    }
-
-  return str;
-}				/* timeval_to_str */
-
-/* registers the named glade widget on the specified object */
-static void
-register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName)
-{
-  GtkWidget *widget;
-  widget = glade_xml_get_widget (xm, widgetName);
-  g_object_set_data (tgt, widgetName, widget);
-}
-
-static void
-update_gtklabel(GtkWidget *window, const gchar *lblname, const gchar *value)
-{
-  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
-  gtk_label_set_text (GTK_LABEL (widget), value);
-}
-
-static void show_widget(GtkWidget *window, const gchar *lblname)
-{
-  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
-  gtk_widget_show(widget);
-}
-static void hide_widget(GtkWidget *window, const gchar *lblname)
-{
-  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
-  gtk_widget_hide(widget);
-}
 
 /* ----------------------------------------------------------
 
@@ -324,7 +247,6 @@ update_prot_info_windows (void)
 	}
     }
 
-  return;
 }				/* update_prot_info_windows */
 
 
@@ -413,25 +335,6 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 
   return ret;
 }
-
-static void create_add_text_column(GtkTreeView *gv, const gchar *title, 
-                                   PROTO_COLUMN colno, gboolean isnum)
-{
-  GtkTreeViewColumn *gc;
-  GtkCellRenderer *gr;
-
-  gr = gtk_cell_renderer_text_new ();
-  if (isnum)
-    g_object_set (G_OBJECT (gr), "xalign", 1.0, NULL);
-  
-  gc = gtk_tree_view_column_new_with_attributes(title, gr, "text", colno, NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, 
-                               "reorderable", TRUE, 
-                               NULL);
-  gtk_tree_view_column_set_sort_column_id(gc, colno);
-  gtk_tree_view_append_column (gv, gc);
-}
-
 
 static void
 create_protocols_table (GtkWidget *window, GtkTreeView *gv)
@@ -595,8 +498,6 @@ activate_protocols_info_column (GtkMenuItem * gm, guint column)
 				    gtk_check_menu_item_get_active
 				    (GTK_CHECK_MENU_ITEM (gm)));
 }				/* on_prot_column_view_activate */
-
-//  PROTO_COLUMN_PORT,
 
 void
 on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data)
@@ -769,6 +670,7 @@ update_info_windows (void)
   update_protocols_window ();
   update_stats_info_windows ();
   update_prot_info_windows ();
+  nodes_wnd_update();
 
   return TRUE;			/* Keep on calling this function */
 

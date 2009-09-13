@@ -2237,6 +2237,15 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                           </widget>
                         </child>
                         <child>
+                          <widget class="GtkCheckMenuItem" id="nodes_check">
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">Show or hide the nodes window	</property>
+                            <property name="label" translatable="yes">_Nodes</property>
+                            <property name="use_underline">True</property>
+                            <signal name="toggled" handler="on_nodes_check_toggled"/>
+                          </widget>
+                        </child>
+                        <child>
                           <widget class="GtkSeparatorMenuItem" id="separator1">
                             <property name="visible">True</property>
                           </widget>
@@ -2507,6 +2516,62 @@ Frederic Peters &lt;fpeters@debian.org&gt;
           <packing>
             <property name="expand">False</property>
             <property name="position">3</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="nodes_wnd">
+    <property name="title" translatable="yes">Nodes</property>
+    <property name="default_width">500</property>
+    <property name="default_height">200</property>
+    <signal name="delete_event" handler="on_nodes_wnd_delete_event"/>
+    <child>
+      <widget class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <widget class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkCheckButton" id="show_all_nodes">
+                <property name="label" translatable="yes">_Show all nodes</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
+                <property name="tooltip" translatable="yes">Controls display of nodes timed out from diagram, but still in memory</property>
+                <property name="use_underline">True</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+              </widget>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <widget class="GtkTreeView" id="nodes_table">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <signal name="row_activated" handler="on_nodes_table_row_activated"/>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

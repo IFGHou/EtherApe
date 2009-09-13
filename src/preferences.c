@@ -114,7 +114,7 @@ load_config (const char *prefix)
     gnome_config_get_float_with_default("Diagram/proto_node_timeout_time=60000.0", &u);
 
   pref.link_timeout_time =
-      gnome_config_get_float_with_default("Diagram/link_timeout_time=60000.0", &u);
+      gnome_config_get_float_with_default("Diagram/link_timeout_time=20000.0", &u);
   pref.gui_link_timeout_time =
       gnome_config_get_float_with_default("Diagram/gui_link_timeout_time=20000.0", &u);
   pref.proto_link_timeout_time =

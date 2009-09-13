@@ -23,8 +23,6 @@
 
 #include <gnome.h>
 
-#include "math.h"
-
 #include "globals.h"
 #include "diagram.h"
 #include "preferences.h"
@@ -375,6 +373,9 @@ update_diagram (GtkWidget * canvas)
 
   /* update proto legend */
   update_legend();
+
+  /* Now update info windows */
+  update_info_windows ();
 
   /* With this we make sure that we don't overload the
    * CPU with redraws */
@@ -1267,39 +1268,6 @@ set_statusbar_msg (gchar * str)
   gtk_statusbar_push(statusbar, 0, status_string);
 }				/* set_statusbar_msg */
 
-gchar *
-traffic_to_str (gdouble traffic, gboolean is_speed)
-{
-  static gchar *str = NULL;
-
-  if (str)
-    g_free (str);
-
-  if (is_speed)
-    {
-      if (traffic > 1000000)
-	str = g_strdup_printf ("%.3f Mbps", traffic / 1000000);
-      else if (traffic > 1000)
-	str = g_strdup_printf ("%.3f Kbps", traffic / 1000);
-      else
-	str = g_strdup_printf ("%.0f bps", traffic);
-    }
-  else
-    {
-      /* Debug code for sanity check */
-      if (traffic && traffic < 1)
-	g_warning ("Ill traffic value in traffic_to_str");
-
-      if (traffic > 1024 * 1024)
-	str = g_strdup_printf ("%.3f Mbytes", traffic / 1024 / 1024);
-      else if (traffic > 1024)
-	str = g_strdup_printf ("%.3f Kbytes", traffic / 1024);
-      else
-	str = g_strdup_printf ("%.0f bytes", traffic);
-    }
-
-  return str;
-}				/* traffic_to_str */
 
 static gint canvas_node_compare(const node_id_t *a, const node_id_t *b,
                                 gpointer dummy)

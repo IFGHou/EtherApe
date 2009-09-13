@@ -20,6 +20,7 @@
 #ifndef TRAFFIC_STATS_H
 #define TRAFFIC_STATS_H
 
+#include <sys/time.h>
 #include "protocols.h"
 
 /* Returns a timeval structure with the time difference between to
