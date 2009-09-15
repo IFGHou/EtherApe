@@ -60,7 +60,8 @@ char *ipcache_getnameip(uint32_t ip, int fqdn, int *is_expired);
 void ipcache_request_failed(struct ipcache_item *rp);
 void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
 struct ipcache_item *ipcache_findid (unsigned short id);
-
+long ipcache_active_entries(void);
+void ipcache_clear(void);
 
 char *strtdiff (char *d, size_t lend, long signeddiff);
 char *strlongip (unsigned int ip);

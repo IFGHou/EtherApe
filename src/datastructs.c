@@ -36,7 +36,10 @@ static GList *current_cycle = NULL; /* current ptr to free color */
 /* adds or replaces the protoname item */
 static gboolean protohash_set(gchar *protoname, GdkColor protocolor);
 
-
+static void freehash(gpointer data)
+{
+  g_free(data);
+}
 
 static gboolean 
 protohash_init(void)
@@ -46,8 +49,8 @@ protohash_init(void)
    
    protohash = g_hash_table_new_full(g_str_hash,
                                      g_str_equal,
-                                     g_free,
-                                     g_free);
+                                     freehash,
+                                     freehash);
    return protohash != NULL;
 }
 

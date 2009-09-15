@@ -60,6 +60,21 @@ static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
 
+
+void init_memwatch()
+{
+#ifdef MEMWATCH
+  GMemVTable gmt;
+  gmt.malloc = mwMalloc_;
+  gmt.realloc = mwRealloc_;
+  gmt.free = mwFree_;
+  gmt.calloc = mwCalloc_;
+  gmt.try_malloc = NULL;
+  gmt.try_realloc = NULL;
+  g_mem_set_vtable(&gmt);
+#endif
+}
+
 /***************************************************************************
  *
  * implementation
@@ -77,6 +92,8 @@ main (int argc, char *argv[])
   gboolean cl_numeric = FALSE;
   poptContext poptcon;
 
+  init_memwatch();
+    
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
@@ -252,12 +269,10 @@ main (int argc, char *argv[])
   gtk_main ();
 
   protohash_clear();
+  ipcache_clear();
+  free_decoders();
   return 0;
 }				/* main */
-
-
-
-
 
 
 static void
@@ -343,5 +358,8 @@ void
 cleanup (int signum)
 {
   cleanup_capture ();
+  protohash_clear();
+  ipcache_clear();
+  free_decoders();
   gtk_exit (0);
 }

@@ -195,6 +195,10 @@ ipcache_init(void)
     }
 }
 
+long ipcache_active_entries(void)
+{
+  return num_active;
+}
 
 static unsigned short
 ipcache_getidbash (unsigned short id)
@@ -563,12 +567,12 @@ ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
       tmp = strpbrk (rp->fq_hostname, ".");
       if (tmp)
 	{
-	  rp->only_hostname = (char *) malloc ((tmp - rp->fq_hostname) + 1);
+	  rp->only_hostname = (char *) malloc ((tmp - rp->fq_hostname) + 2);
 	  if (rp->only_hostname)
 	    {
 	      /* copies only basename */
 	      safe_strncpy (rp->only_hostname, rp->fq_hostname,
-		       tmp - rp->fq_hostname);
+		       tmp - rp->fq_hostname + 1);
 	    }
 	}
     }
@@ -620,4 +624,15 @@ ipcache_getnameip(uint32_t ip, int fqdn, int *is_expired)
     
    /* item not found or still without name */ 
    return strlongip(ip);
+}
+
+/* fully clear the cache */
+void ipcache_clear(void)
+{
+    while (active_list && num_active > 0)
+      {
+        struct ipcache_item *rp = active_list->previous_active; // tail
+        ipcache_unlinkresolve (rp);
+        free (rp);
+      }
 }

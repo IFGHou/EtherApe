@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #elif HAVE_TIME_H
@@ -45,6 +46,10 @@
 
 #ifndef MAXDNAME
 #define MAXDNAME        1025	/* maximum domain name length */
+#endif
+
+#ifdef MEMWATCH
+#include "memwatch/memwatch.h"
 #endif
 
 /* Enumerations */

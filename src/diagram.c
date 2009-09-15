@@ -398,10 +398,11 @@ update_diagram (GtkWidget * canvas)
       g_string_printf (status_string,
         _("Nodes: %d (shown: %d), Links: %d, Conversations: %ld. "
           "Refresh Period: %d. Total Packets seen: %g, packets in memory: %g. "
-          "Called by: %s."),
+          "IP cache entries %ld - Called by: %s."),
         nodes_catalog_size(), g_tree_nnodes(canvas_nodes), 
         links_catalog_size(), active_conversations(),
         (int) diff_msecs, n_packets, total_mem_packets,
+         ipcache_active_entries(),
          (is_idle) ? _("IDLE") : _("TIMER"));
       
       g_my_debug (status_string->str);

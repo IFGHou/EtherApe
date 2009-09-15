@@ -1306,3 +1306,9 @@ void initialize_decoders(void)
     load_services();
 }
 
+void free_decoders(void)
+{
+  g_tree_destroy(service_names);
+  g_tree_destroy(tcp_services);
+  g_tree_destroy(udp_services);
+}
