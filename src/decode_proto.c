@@ -704,6 +704,14 @@ get_tcp (void)
   if (get_rpc (FALSE))
     return;
 
+  if (tcp_services)
+    {
+      src_service = g_tree_lookup (tcp_services, &src_port);
+      dst_service = g_tree_lookup (tcp_services, &dst_port);
+    }
+  else
+    src_service = dst_service = NULL;
+
   if (IS_PORT (TCP_NETBIOS_SSN))
     {
       get_netbios_ssn ();
@@ -716,14 +724,6 @@ get_tcp (void)
     }
 
   chosen_port = choose_port (src_port, dst_port);
-
-  if (tcp_services)
-    {
-      src_service = g_tree_lookup (tcp_services, &src_port);
-      dst_service = g_tree_lookup (tcp_services, &dst_port);
-    }
-  else
-    src_service = dst_service = NULL;
 
   if (!src_service && !dst_service)
     {
@@ -759,14 +759,6 @@ get_udp (void)
   if (get_rpc (TRUE))
     return;
 
-  if (IS_PORT (UDP_NETBIOS_NS))
-    {
-      get_netbios_dgm ();
-      return;
-    }
-
-  chosen_port = choose_port (src_port, dst_port);
-
   if (udp_services)
     {
       src_service = g_tree_lookup (udp_services, &src_port);
@@ -774,6 +766,14 @@ get_udp (void)
     }
   else
     src_service = dst_service = NULL;
+
+  if (IS_PORT (UDP_NETBIOS_NS))
+    {
+      get_netbios_dgm ();
+      return;
+    }
+
+  chosen_port = choose_port (src_port, dst_port);
 
   if (!dst_service && !src_service)
     {
@@ -1015,7 +1015,7 @@ port_compare (gconstpointer a, gconstpointer b, gpointer unused)
 static gint
 service_compare (gconstpointer a, gconstpointer b, gpointer unused)
 {
-  return g_strcasecmp((const gchar *)a, (const gchar *)b);
+  return g_ascii_strcasecmp((const gchar *)a, (const gchar *)b);
 }				
 
 /* traverse function to map names to ports */
@@ -1079,8 +1079,11 @@ load_services (void)
 	  if (error || !(t1 = g_strsplit (line, " ", 0)))
 	    error = TRUE;
 	  if (!error && t1[0])
-	    g_strup (t1[0]);
-
+            {
+              gchar *told = t1[0];
+              t1[0] = g_ascii_strup (told, -1);
+              g_free(told);
+            }
 	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
 	    ;
 
@@ -1100,8 +1103,8 @@ load_services (void)
 	    error = TRUE;
 
 	  if (error
-	      || (g_strcasecmp ("udp", t2[1]) && g_strcasecmp ("tcp", t2[1])
-		  && g_strcasecmp ("ddp", t2[1]) && g_strcasecmp ("sctp", t2[1])
+	      || (g_ascii_strcasecmp ("udp", t2[1]) && g_ascii_strcasecmp ("tcp", t2[1])
+		  && g_ascii_strcasecmp ("ddp", t2[1]) && g_ascii_strcasecmp ("sctp", t2[1])
                   ))
 	    error = TRUE;
 
@@ -1113,18 +1116,18 @@ load_services (void)
 	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
 			  port_number);
 #endif
-	      if (!g_strcasecmp ("ddp", t2[1]))
+	      if (!g_ascii_strcasecmp ("ddp", t2[1]))
 		g_my_info (_("DDP protocols not supported in %s"), line);
-	      else if (!g_strcasecmp ("sctp", t2[1]))
+	      else if (!g_ascii_strcasecmp ("sctp", t2[1]))
 		g_my_info (_("SCTP protocols not supported in %s"), line);
               else
                 {
                   /* map port to name, to two trees */
 		  port_service = port_service_new(port_number, t1[0]);
-                  if (!g_strcasecmp ("tcp", t2[1]))
+                  if (!g_ascii_strcasecmp ("tcp", t2[1]))
                     g_tree_replace(tcp_services, 
                                    &(port_service->port), port_service);
-                  else if (!g_strcasecmp ("udp", t2[1]))
+                  else if (!g_ascii_strcasecmp ("udp", t2[1]))
                     g_tree_replace(udp_services,
                                    &(port_service->port), port_service);
 		}

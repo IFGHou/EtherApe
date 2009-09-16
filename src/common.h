@@ -20,6 +20,9 @@
 #ifndef ETHERAPE_COMMON_H
 #define ETHERAPE_COMMON_H
 
+/* disable deprecated gnome functions */
+/* #define G_DISABLE_DEPRECATED 1 */
+
 #include "config.h"
 
 
@@ -46,10 +49,6 @@
 
 #ifndef MAXDNAME
 #define MAXDNAME        1025	/* maximum domain name length */
-#endif
-
-#ifdef MEMWATCH
-#include "memwatch/memwatch.h"
 #endif
 
 /* Enumerations */

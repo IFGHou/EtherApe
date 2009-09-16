@@ -24,15 +24,6 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
-#ifdef MEMWATCH
-#define g_malloc(n)       mwMalloc(n,__FILE__,__LINE__)
-#define g_strdup(p)       mwStrdup(p,__FILE__,__LINE__)
-#define g_realloc(p,n)    mwRealloc(p,n,__FILE__,__LINE__)
-#define g_calloc(n,m)     mwCalloc(n,m,__FILE__,__LINE__)
-#define g_free(p)         mwFree(p,__FILE__,__LINE__)
-#endif
-
-
 /* Variables */
 
 GladeXML *xml;

@@ -50,6 +50,7 @@ static void (*oldhandler) (int);
  * internal functions
  *
  **************************************************************************/
+static void free_static_data(void);
 static void set_debug_level (void);
 static void session_die (GnomeClient * client, gpointer client_data);
 static gint
@@ -59,21 +60,6 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
-
-
-void init_memwatch()
-{
-#ifdef MEMWATCH
-  GMemVTable gmt;
-  gmt.malloc = mwMalloc_;
-  gmt.realloc = mwRealloc_;
-  gmt.free = mwFree_;
-  gmt.calloc = mwCalloc_;
-  gmt.try_malloc = NULL;
-  gmt.try_realloc = NULL;
-  g_mem_set_vtable(&gmt);
-#endif
-}
 
 /***************************************************************************
  *
@@ -92,8 +78,6 @@ main (int argc, char *argv[])
   gboolean cl_numeric = FALSE;
   poptContext poptcon;
 
-  init_memwatch();
-    
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
      N_("don't display any node text identification"), NULL},
@@ -268,26 +252,34 @@ main (int argc, char *argv[])
   /* MAIN LOOP */
   gtk_main ();
 
+  free_static_data();
+  return 0;
+}				/* main */
+
+/* releases all static and cached data. Called just before exiting. Obviously 
+ * it's not stricly needed, since the memory will be returned to the OS anyway,
+ * but makes finding memory leaks much easier. */
+static void free_static_data(void)
+{
   protohash_clear();
   ipcache_clear();
   free_decoders();
-  return 0;
-}				/* main */
+}
 
 
 static void
 set_debug_level (void)
 {
   const gchar *env_debug;
-  env_debug = g_getenv ("DEBUG");
+  env_debug = g_getenv("APE_DEBUG");
 
   debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
 
   if (env_debug)
     {
-      if (!strcmp (env_debug, "INFO"))
+      if (!g_ascii_strcasecmp(env_debug, "INFO"))
 	debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
-      else if (!strcmp (env_debug, "DEBUG"))
+      else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
 	debug_mask = G_LOG_LEVEL_MASK;
     }
 
@@ -344,7 +336,6 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 
   gnome_client_set_clone_command (client, argc, argv);
   gnome_client_set_restart_command (client, argc, argv);
-
   return TRUE;
 }				/* save_session */
 
@@ -358,8 +349,6 @@ void
 cleanup (int signum)
 {
   cleanup_capture ();
-  protohash_clear();
-  ipcache_clear();
-  free_decoders();
+  free_static_data();
   gtk_exit (0);
 }

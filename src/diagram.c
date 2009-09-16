@@ -471,7 +471,6 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
   GdkColor color;
   GtkLabel *lab;
   GtkWidget *newlab;
-  const GList *childlist;
 
   if (!pstk)
     return; /* nothing to do */
@@ -479,6 +478,8 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
   protocol_item = pstk->protostack[pref.stack_level];
   while (protocol_item)
     {
+      GList *childlist;
+      const GList *cur;
       protocol = protocol_item->data;
 
       /* prepare next */
@@ -487,15 +488,17 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       /* First, we check whether the diagram already knows about this protocol,
        * checking whether it is shown on the legend. */
       childlist = gtk_container_get_children(GTK_CONTAINER(prot_table));
-      while (childlist)
+      cur = childlist;
+      while (cur)
         {
-          lab = GTK_LABEL(childlist->data);
+          lab = GTK_LABEL(cur->data);
           if (lab && !strcmp(protocol->name, gtk_label_get_label(lab)))
             break; /* found */
-          childlist = childlist->next;
+          cur = cur->next;
         }
+      g_list_free(childlist);
       
-      if (childlist)
+      if (cur)
           continue; /* found, skip to next */
 
       g_my_debug ("Protocol '%s' not found. Creating legend item", 

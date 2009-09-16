@@ -221,7 +221,7 @@ void links_catalog_insert(link_t *new_link)
   {
     gchar *str = link_id_node_names(&new_link->link_id);
 
-    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_INFO,
             _("New link: %s. Number of links %d"),
             str, links_catalog_size());
     g_free(str);
