@@ -76,9 +76,9 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 
   for (i = 0; i <= STACK_SIZE; i++)
     {
-      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+      if (pref.group_unk && strstr (tokens[i], "TCP:"))
 	protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+      else if (pref.group_unk && strstr (tokens[i], "UDP:"))
 	protocol_name = "UDP-Unknown";
       else
 	protocol_name = tokens[i];
@@ -123,9 +123,9 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
   tokens = g_strsplit (packet->prot_desc, "/", 0);
   while ((i <= STACK_SIZE) && tokens[i])
     {
-      if (pref.group_unk && strstr (tokens[i], "TCP-Port"))
+      if (pref.group_unk && strstr (tokens[i], "TCP:"))
         protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP-Port"))
+      else if (pref.group_unk && strstr (tokens[i], "UDP:"))
         protocol_name = "UDP-Unknown";
       else
         protocol_name = tokens[i];
