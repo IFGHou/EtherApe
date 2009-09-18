@@ -232,7 +232,8 @@ static void nodes_table_clear(GtkWidget *window)
 {
   /* releases the datastore */
   GtkTreeView *gv;
-  GtkListStore *gs;
+  GtkTreeModel *sort_model;
+  GtkTreeModel *gls;
   GtkTreeIter it;
   gboolean res;
 
@@ -240,18 +241,24 @@ static void nodes_table_clear(GtkWidget *window)
   if (!gv)
     return; /* gv not registered, store doesn't exists */
   
-  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-  if (!gs)
-    return; /* nothing to do */
+  /* parameters came from sorted model; we need to convert to liststore*/
+  sort_model = gtk_tree_view_get_model(gv);
+  if (!sort_model)
+    return;
 
-  res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
+  /* liststore from sorted model */
+  gls = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(sort_model));
+  if (!gls)
+    return; 
+
+  res = gtk_tree_model_get_iter_first (gls, &it);
   while (res)
     {
       node_id_t *rowitem = NULL;
-      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, 
+      gtk_tree_model_get (gls, &it, 
                           NODES_COLUMN_N, &rowitem, -1);
       g_free(rowitem);
-      res = gtk_list_store_remove (gs, &it);
+      res = gtk_list_store_remove (GTK_LIST_STORE(gls), &it);
     }
 }
 

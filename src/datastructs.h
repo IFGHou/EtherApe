@@ -23,12 +23,24 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include "globals.h"
+#include "prot_types.h"
+
+typedef struct
+{
+  GdkColor color;
+  gboolean preferred;
+} ColorHashItem;
+
 
 /* clears the proto hash */
 void  protohash_clear(void);
 
-/* returns the proto color if exists, NULL otherwise */
-GdkColor protohash_get(const gchar *protoname);
+/* returns the proto color */
+GdkColor protohash_color(const gchar *protoname);
+
+/* returns the preferred flag */
+gboolean protohash_is_preferred(const gchar *protoname);
 
 /* fills the hash from a pref vector */
 gboolean protohash_read_prefvect(gchar **colors);
@@ -42,5 +54,20 @@ gchar **protohash_compact(gchar **colors);
 
 /* removes all spaces from str (in place). Returns str */
 gchar *remove_spaces(gchar *str);
-  
+
+typedef struct
+{
+  port_type_t port;
+  gchar *name;
+  gboolean preferred;   /* true if has to be favored when choosing proto name */
+} port_service_t;
+
+/* service mappers */
+void services_init(void);
+void services_clear(void);
+
+const port_service_t *services_tcp_find(port_type_t port);
+const port_service_t *services_udp_find(port_type_t port);
+const port_service_t *services_port_find(const gchar *name);
+
 #endif

@@ -22,13 +22,26 @@
 #include "datastructs.h"
 #include "globals.h"
 
-/*
- ***********************************************************************
+#define LINESIZE 1024
+
+
+/************************************************************************
+ *
+ * services and port_service_t data and functions
+ *
+ ************************************************************************/
+static GTree *service_names = NULL;
+static GTree *tcp_services = NULL;
+static GTree *udp_services = NULL;
+static void services_fill_preferred(void);
+static port_service_t *port_service_new(port_type_t port, const gchar *name);
+static void port_service_free(port_service_t *);
+
+/************************************************************************
  *
  * proto->color hash table support functions
  *
- ***********************************************************************
-*/
+ ************************************************************************/
 static GHashTable *protohash = NULL; /* the hash table containing proto,color pairs*/
 static GList *cycle_color_list = NULL; /* the list of colors without protocol */
 static GList *current_cycle = NULL; /* current ptr to free color */
@@ -76,22 +89,28 @@ protohash_clear(void)
 static gboolean 
 protohash_set(gchar *protoname, GdkColor protocolor)
 {
-   if (!protohash && ! protohash_init())
-      return FALSE;
+  ColorHashItem item;
+  if (!protohash && ! protohash_init())
+    return FALSE;
 
-   /* N.B. hash tables and lists operate only on ptr's externally allocated ... */
+  item.color = protocolor;
 
-   /* if a protocol is specified, we put the pair (proto,color) in the hash */
-   if (protoname && *protoname)
-     g_hash_table_insert(protohash, g_strdup(protoname), 
-                         g_memdup(&protocolor, sizeof(GdkColor)));
+  /* if a protocol is specified, we put the pair (proto,color) in the hash,
+   * marking it as preferred (a color obtained from user mappings) */
+  if (protoname && *protoname)
+    {
+      item.preferred = TRUE;
+      g_hash_table_insert(protohash, g_strdup(protoname), 
+                       g_memdup(&item, sizeof(ColorHashItem)));
+    }
 
   /* Without protocol, or if we want also registered colors in the cycle
-    * list, we add the color to the cycle list */
+    * list, we add the color to the cycle list. Cycle colors aren't preferred */
    if (!protoname || !*protoname || pref.cycle)
      {
+       item.preferred = FALSE;
        cycle_color_list = g_list_prepend(cycle_color_list, 
-                                   g_memdup(&protocolor, sizeof(GdkColor)));
+                            g_memdup(&item, sizeof(ColorHashItem)));
        current_cycle = cycle_color_list;
      }
 
@@ -105,23 +124,22 @@ protohash_reset_cycle(void)
   current_cycle = cycle_color_list;
 }
 
-/* returns the proto color if exists, NULL otherwise */
-GdkColor
-protohash_get(const gchar *protoname)
+/* returns the proto color */
+GdkColor protohash_color(const gchar *protoname)
 {
-  GdkColor *color;
+  const ColorHashItem *item;
   g_assert(protoname); /* proto must be valid - note: empty IS valid, NULL no*/
   g_assert(protohash);
 
-  color = (GdkColor *)g_hash_table_lookup(protohash, protoname);
-  if (!color)
+  item = (ColorHashItem *)g_hash_table_lookup(protohash, protoname);
+  if (!item)
     {
       /* color not found, take from cycle list */
-      color = (GdkColor *)current_cycle->data;
+      item = (ColorHashItem *)current_cycle->data;
 
       /* add to hash */
       g_hash_table_insert(protohash, g_strdup(protoname), 
-                         g_memdup(color, sizeof(GdkColor)));
+                         g_memdup(item, sizeof(ColorHashItem)));
 
       /* advance cycle */
       current_cycle = current_cycle->next;
@@ -130,7 +148,21 @@ protohash_get(const gchar *protoname)
     }
 /*  g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x", 
               protoname, color->red, color->green, color->blue); */
-  return *color;
+  return item->color;
+}
+
+/* returns the preferred flag */
+gboolean protohash_is_preferred(const gchar *protoname)
+{
+  const ColorHashItem *item;
+  g_assert(protoname); /* proto must be valid - note: empty IS valid, NULL no*/
+  g_assert(protohash);
+
+  item = (ColorHashItem *)g_hash_table_lookup(protohash, protoname);
+  if (!item)
+    return FALSE;
+
+  return item->preferred;
 }
 
 /* fills the hash from a pref vector */
@@ -176,6 +208,9 @@ protohash_read_prefvect(gchar **colors)
     }
   else
     cycle_color_list = g_list_reverse(cycle_color_list); /* list was reversed */
+
+  /* update preferred flag on services tree */
+  services_fill_preferred();
   return TRUE;
 }
 
@@ -248,6 +283,13 @@ gchar **protohash_compact(gchar **colors)
   return compacted;
 }
 
+/*
+ ***********************************************************************
+ *
+ * compacting function
+ *
+ ***********************************************************************
+*/
 gchar *remove_spaces(gchar *str)
 {
   char *out = str;
@@ -261,3 +303,238 @@ gchar *remove_spaces(gchar *str)
     }
   return str;
 }
+
+
+/************************************************************************
+ *
+ * proto name mappers
+ *
+ ************************************************************************/
+
+/* Comparison function to sort tcp/udp services by port number */
+static gint services_port_cmp(gconstpointer a, gconstpointer b, gpointer unused)
+{
+  port_type_t port_a, port_b;
+
+  port_a = *(port_type_t *) a;
+  port_b = *(port_type_t *) b;
+
+  if (port_a > port_b)
+    return 1;
+  if (port_a < port_b)
+    return -1;
+  return 0;
+}				/* port_compare */
+
+/* Comparison function to sort service names */
+static gint services_name_cmp(gconstpointer a, gconstpointer b, gpointer unused)
+{
+  return g_ascii_strcasecmp((const gchar *)a, (const gchar *)b);
+}				
+
+static void services_tree_free(gpointer p)
+{
+  port_service_free( (port_service_t *)p);
+}
+
+/* traverse function to map names to ports */
+static gboolean services_port_trv(gpointer key, gpointer value, gpointer data)
+{
+  const port_service_t *svc = (const port_service_t *)value;
+  GTree *tree = (GTree *)data;
+  port_service_t *new_el;
+  
+  new_el = port_service_new(svc->port, svc->name);
+  g_tree_replace(tree, new_el->name, new_el);
+  return FALSE;
+}
+
+/* traverse function to fill preferred field */
+static gboolean services_pref_trv(gpointer key, gpointer value, gpointer data)
+{
+  port_service_t *svc = (port_service_t *)value;
+  svc->preferred = protohash_is_preferred(svc->name);
+  return FALSE;
+}
+static void services_fill_preferred(void)
+{
+  g_tree_foreach(udp_services, services_pref_trv, NULL);
+  g_tree_foreach(tcp_services, services_pref_trv, NULL);
+}                                      
+
+                                    /* TODO this is probably this single piece of code I am most ashamed of.
+ * I should learn how to use flex or yacc and do this The Right Way (TM)*/
+void services_init(void)
+{
+  FILE *services = NULL;
+  gchar *line;
+  gchar **t1 = NULL, **t2 = NULL;
+  gchar *str;
+  port_service_t *port_service;
+  guint i;
+  char filename[PATH_MAX];
+  port_type_t port_number;	/* udp and tcp are the same */
+
+  if (tcp_services)
+    return; /* already loaded */
+  
+  safe_strncpy(filename, CONFDIR "/services", sizeof(filename));
+  if (!(services = fopen (filename, "r")))
+    {
+      safe_strncpy(filename, "/etc/services", sizeof(filename));
+      if (!(services = fopen (filename, "r")))
+	{
+	  g_my_critical (_
+			 ("Failed to open %s. No TCP or UDP services will be recognized"),
+			 filename);
+	  return;
+	}
+    }
+
+  g_my_info (_("Reading TCP and UDP services from %s"), filename);
+
+  service_names = g_tree_new_full(services_name_cmp, NULL, NULL, services_tree_free);
+  tcp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
+  udp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
+
+  line = g_malloc (LINESIZE);
+
+  while (fgets (line, LINESIZE, services))
+    {
+      if (line[0] != '#' && line[0] != ' ' && line[0] != '\n'
+	  && line[0] != '\t')
+	{
+	  gboolean error = FALSE;
+
+	  if (!g_strdelimit (line, " \t\n", ' '))
+	    error = TRUE;
+
+	  if (error || !(t1 = g_strsplit (line, " ", 0)))
+	    error = TRUE;
+	  if (!error && t1[0])
+            {
+              gchar *told = t1[0];
+              t1[0] = g_ascii_strup (told, -1);
+              g_free(told);
+            }
+	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
+	    ;
+
+	  if (!error && (str = t1[i]))
+	    if (!(t2 = g_strsplit (str, "/", 0)))
+	      error = TRUE;
+
+	  if (error || !t2 || !t2[0])
+	    error = TRUE;
+
+	  /* TODO The h here is not portable */
+	  if (error || !sscanf (t2[0], "%hd", &port_number)
+	      || (port_number < 1))
+	    error = TRUE;
+
+	  if (error || !t2[1])
+	    error = TRUE;
+
+	  if (error
+	      || (g_ascii_strcasecmp ("udp", t2[1]) && g_ascii_strcasecmp ("tcp", t2[1])
+		  && g_ascii_strcasecmp ("ddp", t2[1]) && g_ascii_strcasecmp ("sctp", t2[1])
+                  ))
+	    error = TRUE;
+
+	  if (error)
+	    g_warning (_("Unable to  parse line %s"), line);
+	  else
+	    {
+#if DEBUG
+	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
+			  port_number);
+#endif
+	      if (!g_ascii_strcasecmp ("ddp", t2[1]))
+		g_my_info (_("DDP protocols not supported in %s"), line);
+	      else if (!g_ascii_strcasecmp ("sctp", t2[1]))
+		g_my_info (_("SCTP protocols not supported in %s"), line);
+              else
+                {
+                  /* map port to name, to two trees */
+		  port_service = port_service_new(port_number, t1[0]);
+                  if (!g_ascii_strcasecmp ("tcp", t2[1]))
+                    g_tree_replace(tcp_services, 
+                                   &(port_service->port), port_service);
+                  else if (!g_ascii_strcasecmp ("udp", t2[1]))
+                    g_tree_replace(udp_services,
+                                   &(port_service->port), port_service);
+		}
+	    }
+
+	  g_strfreev (t2);
+	  t2 = NULL;
+	  g_strfreev (t1);
+	  t1 = NULL;
+
+	}
+    }
+
+  fclose (services);
+  g_free (line);
+
+  /* now traverse port->name trees to fill the name->port tree */
+  g_tree_foreach(udp_services, services_port_trv, service_names);
+  g_tree_foreach(tcp_services, services_port_trv, service_names);
+
+  /* and finally assign preferred services */
+  services_fill_preferred();
+}				/* load_services */
+
+void services_clear(void)
+{
+  g_tree_destroy(service_names);
+  g_tree_destroy(tcp_services);
+  g_tree_destroy(udp_services);
+}
+
+const port_service_t *services_tcp_find(port_type_t port)
+{
+  if (tcp_services)
+      return (port_service_t *)g_tree_lookup (tcp_services, &port);
+  else
+    return NULL;
+}
+
+const port_service_t *services_udp_find(port_type_t port)
+{
+  if (udp_services)
+      return (port_service_t *)g_tree_lookup (udp_services, &port);
+  else
+    return NULL;
+}
+
+/************************************************************************
+ *
+ * port_service_t functions
+ *
+ ************************************************************************/
+port_service_t *port_service_new(port_type_t port, const gchar *name)
+{
+  port_service_t *p;
+  p = g_malloc (sizeof (port_service_t));
+  p->port = port; 
+  p->name = g_strdup(name);
+  p->preferred = FALSE;
+  return p;
+}
+
+void port_service_free(port_service_t *p)
+{
+  if (p)
+    g_free(p->name);
+  g_free(p);
+}
+
+const port_service_t *services_port_find(const gchar *name)
+{
+  if (!name || !service_names)
+    return NULL;
+
+  return (const port_service_t *)g_tree_lookup (service_names, name);
+}
+

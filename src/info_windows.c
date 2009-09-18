@@ -426,7 +426,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
           /* current protocol missing on list, create a new row */
 	  row_proto = g_malloc(sizeof(protocol_list_item_t));
           row_proto->name = g_strdup(stack_proto->name);
-	  row_proto->color = protohash_get(stack_proto->name);
+	  row_proto->color = protohash_color(stack_proto->name);
 
 	  gtk_list_store_append(gs, &it);
 	  gtk_list_store_set (gs, &it, 
@@ -461,7 +461,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
       gtk_list_store_set (gs, &it, PROTO_COLUMN_PACKETS, str, -1);
       g_free (str);
 
-      ps = port_service_find(row_proto->name);
+      ps = services_port_find(row_proto->name);
       if (ps)
         str = g_strdup_printf ("%d", ps->port);
       else

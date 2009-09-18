@@ -28,11 +28,11 @@
 #include "decode_proto.h"
 #include "protocols.h"
 #include "conversations.h"
+#include "datastructs.h"
 
-
-#define IS_PORT(p) ( (src_service && src_service->port==p) \
-		       || (dst_service && dst_service->port==p) )
-#define LINESIZE 1024
+#define TCP_FTP 21
+#define TCP_NETBIOS_SSN 139
+#define UDP_NETBIOS_NS 138
 
 /* Enums */
 enum rpc_type
@@ -82,9 +82,6 @@ static guint16 choose_port (guint16 a, guint16 b);
 static void append_etype_prot (etype_t etype);
 
 /* Variables */
-static GTree *service_names = NULL;
-static GTree *tcp_services = NULL;
-static GTree *udp_services = NULL;
 static guint offset = 0;
 static GString *prot = NULL;
 static const guint8 *packet;
@@ -676,11 +673,13 @@ static void
 get_tcp (void)
 {
 
-  port_service_t *src_service, *dst_service, *chosen_service;
+  const port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
   guint8 th_off_x2;
   guint8 tcp_len;
   const gchar *str;
+  gboolean src_pref = FALSE;
+  gboolean dst_pref = FALSE;
 
   global_src_port = src_port = pntohs (packet + offset);
   global_dst_port = dst_port = pntohs (packet + offset + 2);
@@ -704,25 +703,19 @@ get_tcp (void)
   if (get_rpc (FALSE))
     return;
 
-  if (tcp_services)
-    {
-      src_service = g_tree_lookup (tcp_services, &src_port);
-      dst_service = g_tree_lookup (tcp_services, &dst_port);
-    }
-  else
-    src_service = dst_service = NULL;
-
-  if (IS_PORT (TCP_NETBIOS_SSN))
+  if (src_port==TCP_NETBIOS_SSN || dst_port==TCP_NETBIOS_SSN)
     {
       get_netbios_ssn ();
       return;
     }
-  else if (IS_PORT (TCP_FTP))
+  else if (src_port==TCP_FTP || dst_port == TCP_FTP)
     {
       get_ftp ();
       return;
     }
 
+  src_service = services_tcp_find(src_port);
+  dst_service = services_tcp_find(dst_port);
   chosen_port = choose_port (src_port, dst_port);
 
   if (!src_service && !dst_service)
@@ -734,7 +727,18 @@ get_tcp (void)
       return;
     }
 
-  if (!dst_service || ((src_port == chosen_port) && src_service))
+  /* if one of the services has user-defined color, then we favor it,
+   * otherwise chosen_port wins */
+  if (src_service)
+    src_pref = src_service->preferred;
+  if (dst_service)
+    dst_pref = dst_service->preferred;
+  
+  if (src_pref && !dst_pref)
+    chosen_service = src_service;
+  else if (!src_pref && dst_pref)
+    chosen_service = dst_service;
+  else if (!dst_service || ((src_port == chosen_port) && src_service))
     chosen_service = src_service;
   else
     chosen_service = dst_service;
@@ -745,33 +749,29 @@ get_tcp (void)
 static void
 get_udp (void)
 {
-  port_service_t *src_service, *dst_service, *chosen_service;
+  const port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
+  gboolean src_pref = FALSE;
+  gboolean dst_pref = FALSE;
 
   global_src_port = src_port = pntohs (packet + offset);
   global_dst_port = dst_port = pntohs (packet + offset + 2);
 
   offset += 8;
 
-
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
   if (get_rpc (TRUE))
     return;
 
-  if (udp_services)
-    {
-      src_service = g_tree_lookup (udp_services, &src_port);
-      dst_service = g_tree_lookup (udp_services, &dst_port);
-    }
-  else
-    src_service = dst_service = NULL;
-
-  if (IS_PORT (UDP_NETBIOS_NS))
+  if (src_port==UDP_NETBIOS_NS || dst_port==UDP_NETBIOS_NS)
     {
       get_netbios_dgm ();
       return;
     }
+
+  src_service = services_udp_find(src_port);
+  dst_service = services_udp_find(dst_port);
 
   chosen_port = choose_port (src_port, dst_port);
 
@@ -784,7 +784,18 @@ get_udp (void)
       return;
     }
 
-  if (!dst_service || ((src_port == chosen_port) && src_service))
+  /* if one of the services has user-defined color, then we favor it,
+   * otherwise chosen_port wins */
+  if (src_service)
+    src_pref = src_service->preferred;
+  if (dst_service)
+    dst_pref = dst_service->preferred;
+  
+  if (src_pref && !dst_pref)
+    chosen_service = src_service;
+  else if (!src_pref && dst_pref)
+    chosen_service = dst_service;
+  else if (!dst_service || ((src_port == chosen_port) && src_service))
     chosen_service = src_service;
   else
     chosen_service = dst_service;
@@ -995,160 +1006,6 @@ get_ftp (void)
   g_free (mesg);
 }
 
-/* Comparison function to sort tcp/udp services by port number */
-static gint
-port_compare (gconstpointer a, gconstpointer b, gpointer unused)
-{
-  port_type_t port_a, port_b;
-
-  port_a = *(port_type_t *) a;
-  port_b = *(port_type_t *) b;
-
-  if (port_a > port_b)
-    return 1;
-  if (port_a < port_b)
-    return -1;
-  return 0;
-}				/* port_compare */
-
-/* Comparison function to sort service names */
-static gint
-service_compare (gconstpointer a, gconstpointer b, gpointer unused)
-{
-  return g_ascii_strcasecmp((const gchar *)a, (const gchar *)b);
-}				
-
-/* traverse function to map names to ports */
-static gboolean port_traverse(gpointer key, gpointer value, gpointer data)
-{
-  const port_service_t *svc = (const port_service_t *)value;
-  GTree *tree = (GTree *)data;
-  port_service_t *new_el;
-  
-  new_el = port_service_new(svc->port, svc->name);
-  g_tree_replace(tree, new_el->name, new_el);
-  return FALSE;
-}
-
-/* TODO this is probably this single piece of code I am most ashamed of.
- * I should learn how to use flex or yacc and do this The Right Way (TM)*/
-static void
-load_services (void)
-{
-  FILE *services = NULL;
-  gchar *line;
-  gchar **t1 = NULL, **t2 = NULL;
-  gchar *str;
-  port_service_t *port_service;
-  guint i;
-  char filename[PATH_MAX];
-
-  port_type_t port_number;	/* udp and tcp are the same */
-
-  safe_strncpy(filename, CONFDIR "/services", sizeof(filename));
-  if (!(services = fopen (filename, "r")))
-    {
-      safe_strncpy(filename, "/etc/services", sizeof(filename));
-      if (!(services = fopen (filename, "r")))
-	{
-	  g_my_critical (_
-			 ("Failed to open %s. No TCP or UDP services will be recognized"),
-			 filename);
-	  return;
-	}
-    }
-
-  g_my_info (_("Reading TCP and UDP services from %s"), filename);
-
-  service_names = g_tree_new_full(service_compare, NULL, NULL, service_tree_free);
-  tcp_services = g_tree_new_full(port_compare, NULL, NULL, service_tree_free);
-  udp_services = g_tree_new_full(port_compare, NULL, NULL, service_tree_free);
-
-  line = g_malloc (LINESIZE);
-
-  while (fgets (line, LINESIZE, services))
-    {
-      if (line[0] != '#' && line[0] != ' ' && line[0] != '\n'
-	  && line[0] != '\t')
-	{
-	  gboolean error = FALSE;
-
-	  if (!g_strdelimit (line, " \t\n", ' '))
-	    error = TRUE;
-
-	  if (error || !(t1 = g_strsplit (line, " ", 0)))
-	    error = TRUE;
-	  if (!error && t1[0])
-            {
-              gchar *told = t1[0];
-              t1[0] = g_ascii_strup (told, -1);
-              g_free(told);
-            }
-	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
-	    ;
-
-	  if (!error && (str = t1[i]))
-	    if (!(t2 = g_strsplit (str, "/", 0)))
-	      error = TRUE;
-
-	  if (error || !t2 || !t2[0])
-	    error = TRUE;
-
-	  /* TODO The h here is not portable */
-	  if (error || !sscanf (t2[0], "%hd", &port_number)
-	      || (port_number < 1))
-	    error = TRUE;
-
-	  if (error || !t2[1])
-	    error = TRUE;
-
-	  if (error
-	      || (g_ascii_strcasecmp ("udp", t2[1]) && g_ascii_strcasecmp ("tcp", t2[1])
-		  && g_ascii_strcasecmp ("ddp", t2[1]) && g_ascii_strcasecmp ("sctp", t2[1])
-                  ))
-	    error = TRUE;
-
-	  if (error)
-	    g_warning (_("Unable to  parse line %s"), line);
-	  else
-	    {
-#if DEBUG
-	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
-			  port_number);
-#endif
-	      if (!g_ascii_strcasecmp ("ddp", t2[1]))
-		g_my_info (_("DDP protocols not supported in %s"), line);
-	      else if (!g_ascii_strcasecmp ("sctp", t2[1]))
-		g_my_info (_("SCTP protocols not supported in %s"), line);
-              else
-                {
-                  /* map port to name, to two trees */
-		  port_service = port_service_new(port_number, t1[0]);
-                  if (!g_ascii_strcasecmp ("tcp", t2[1]))
-                    g_tree_replace(tcp_services, 
-                                   &(port_service->port), port_service);
-                  else if (!g_ascii_strcasecmp ("udp", t2[1]))
-                    g_tree_replace(udp_services,
-                                   &(port_service->port), port_service);
-		}
-	    }
-
-	  g_strfreev (t2);
-	  t2 = NULL;
-	  g_strfreev (t1);
-	  t1 = NULL;
-
-	}
-    }
-
-  fclose (services);
-  g_free (line);
-
-  /* now traverse port->name trees to fill the name->port tree */
-  g_tree_foreach(udp_services, port_traverse, service_names);
-  g_tree_foreach(tcp_services, port_traverse, service_names);
-}				/* load_services */
-
 /* Given two port numbers, it returns the 
  * one that is a privileged port if the other
  * is not. If not, just returns the lower numbered */
@@ -1271,47 +1128,3 @@ append_etype_prot (etype_t etype)
   return;
 }				/* append_etype_prot */
 
-/* ---------------------- port_service_t functions -------------------- */
-port_service_t *port_service_new(port_type_t port, const gchar *name)
-{
-  port_service_t *p;
-  p = g_malloc (sizeof (port_service_t));
-  p->port = port; 
-  p->name = g_strdup(name);
-  return p;
-}
-
-void port_service_free(port_service_t *p)
-{
-  if (p)
-    g_free(p->name);
-  g_free(p);
-}
-
-const port_service_t *port_service_find(const gchar *name)
-{
-  if (!name || !service_names)
-    return NULL;
-
-  return (const port_service_t *)g_tree_lookup (service_names, name);
-}
-
-
-static void service_tree_free(gpointer p)
-{
-  port_service_free( (port_service_t *)p);
-}
-
-
-void initialize_decoders(void)
-{
-  if (!tcp_services)
-    load_services();
-}
-
-void free_decoders(void)
-{
-  g_tree_destroy(service_names);
-  g_tree_destroy(tcp_services);
-  g_tree_destroy(udp_services);
-}

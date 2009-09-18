@@ -467,8 +467,8 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 {
   const GList *protocol_item;
   const protocol_t *protocol;
-  GtkStyle *style;
   GdkColor color;
+  GtkStyle *style;
   GtkLabel *lab;
   GtkWidget *newlab;
 
@@ -511,9 +511,9 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       gtk_widget_show (newlab);
       gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
 
-      color = protohash_get(protocol->name);
+      color = protohash_color(protocol->name);
       if (!gdk_colormap_alloc_color
-          (gdk_colormap_get_system (), &color, FALSE, TRUE))
+          (gdk_colormap_get_system(), &color, FALSE, TRUE))
         g_warning (_("Unable to allocate color for new protocol %s"),
                    protocol->name);
 
@@ -686,7 +686,7 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
 
   if (node->main_prot[pref.stack_level])
     {
-      canvas_node->color = protohash_get(node->main_prot[pref.stack_level]);
+      canvas_node->color = protohash_color(node->main_prot[pref.stack_level]);
 
       gnome_canvas_item_set (canvas_node->node_item,
 			     "x1", -node_size / 2,
@@ -1105,7 +1105,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
    * I have to initialize canvas_link->color to a known value */
   if (link->main_prot[pref.stack_level])
     {
-      canvas_link->color = protohash_get(link->main_prot[pref.stack_level]);
+      canvas_link->color = protohash_color(link->main_prot[pref.stack_level]);
 
       /* scale color down to 10% at link timeout */
       struct timeval diff;

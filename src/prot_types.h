@@ -77,7 +77,6 @@ typedef enum
   ETHERTYPE_LOOP = 0x9000,	/* used for layer 2 testing (do i see my own frames on the wire) */
 }
 etype_t;
-#endif
 
 typedef enum
 {
@@ -190,18 +189,4 @@ typedef enum
 
 typedef guint16 port_type_t;
 
-typedef struct
-{
-  port_type_t port;
-  gchar *name;
-} port_service_t;
-
-port_service_t *port_service_new(port_type_t port, const gchar *name);
-void port_service_free(port_service_t *);
-const port_service_t *port_service_find(const gchar *name);
-
-
-
-#define TCP_FTP 21
-#define TCP_NETBIOS_SSN 139
-#define UDP_NETBIOS_NS 138
+#endif  /* __ETYPES_H__ */

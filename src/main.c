@@ -203,7 +203,7 @@ main (int argc, char *argv[])
   statusbar = GTK_STATUSBAR(glade_xml_get_widget (xml, "statusbar1"));
 
   /* prepare decoders */
-  initialize_decoders();
+  services_init();
   
   /* Sets controls to the values of variables and connects signals */
   init_diagram (xml);
@@ -263,9 +263,8 @@ static void free_static_data(void)
 {
   protohash_clear();
   ipcache_clear();
-  free_decoders();
+  services_clear();
 }
-
 
 static void
 set_debug_level (void)
