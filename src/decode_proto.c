@@ -720,10 +720,15 @@ get_tcp (void)
 
   if (!src_service && !dst_service)
     {
-      if (chosen_port == src_port)
-        g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, dst_port);
+      if (pref.group_unk)
+        g_string_append(prot, "/TCP-unknown");
       else
-        g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, src_port);
+        {
+          if (chosen_port == src_port)
+            g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, dst_port);
+          else
+            g_string_append_printf(prot, "/TCP:%d-%d", chosen_port, src_port);
+        }
       return;
     }
 
@@ -777,10 +782,15 @@ get_udp (void)
 
   if (!dst_service && !src_service)
     {
-      if (chosen_port == src_port)
-        g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, dst_port);
+      if (pref.group_unk)
+        g_string_append(prot, "/UDP-unknown");
       else
-        g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, src_port);
+        {
+          if (chosen_port == src_port)
+            g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, dst_port);
+          else
+            g_string_append_printf(prot, "/UDP:%d-%d", chosen_port, src_port);
+        }
       return;
     }
 

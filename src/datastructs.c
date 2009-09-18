@@ -358,8 +358,10 @@ static gboolean services_pref_trv(gpointer key, gpointer value, gpointer data)
 }
 static void services_fill_preferred(void)
 {
-  g_tree_foreach(udp_services, services_pref_trv, NULL);
-  g_tree_foreach(tcp_services, services_pref_trv, NULL);
+  if (udp_services)
+    g_tree_foreach(udp_services, services_pref_trv, NULL);
+  if (tcp_services)
+    g_tree_foreach(tcp_services, services_pref_trv, NULL);
 }                                      
 
                                     /* TODO this is probably this single piece of code I am most ashamed of.

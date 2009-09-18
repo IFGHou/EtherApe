@@ -67,7 +67,6 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
   protocol_t *protocol_info;
   gchar **tokens = NULL;
   guint i;
-  gchar *protocol_name;
 
   g_assert(packet);
   g_assert(pstk);
@@ -76,26 +75,19 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 
   for (i = 0; i <= STACK_SIZE; i++)
     {
-      if (pref.group_unk && strstr (tokens[i], "TCP:"))
-	protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP:"))
-	protocol_name = "UDP-Unknown";
-      else
-	protocol_name = tokens[i];
-
       protocol_item = g_list_find_custom (pstk->protostack[i],
-                                          protocol_name,
+                                          tokens[i],
                                           protocol_compare);
       if (protocol_item)
         protocol_info = protocol_item->data;
       else
 	{
           /* If there is yet not such protocol, create it */
-	  protocol_info = protocol_t_create(protocol_name);
+	  protocol_info = protocol_t_create(tokens[i]);
 	  pstk->protostack[i] = g_list_prepend (pstk->protostack[i], protocol_info);
 	}
 
-      g_assert( !strcmp(protocol_info->name, protocol_name));
+      g_assert( !strcmp(protocol_info->name, tokens[i]));
       protocol_info->last_heard = now;
       protocol_info->accumulated += packet->size;
       protocol_info->aver_accu += packet->size;
@@ -112,7 +104,6 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
   gchar **tokens = NULL;
   GList *item = NULL;
   protocol_t *protocol = NULL;
-  gchar *protocol_name = NULL;
 
   g_assert(pstk);
 
@@ -123,15 +114,8 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
   tokens = g_strsplit (packet->prot_desc, "/", 0);
   while ((i <= STACK_SIZE) && tokens[i])
     {
-      if (pref.group_unk && strstr (tokens[i], "TCP:"))
-        protocol_name = "TCP-Unknown";
-      else if (pref.group_unk && strstr (tokens[i], "UDP:"))
-        protocol_name = "UDP-Unknown";
-      else
-        protocol_name = tokens[i];
-
       item = g_list_find_custom (pstk->protostack[i],
-                                 protocol_name,
+                                 tokens[i],
                                  protocol_compare);
       if (!item)
         {
@@ -141,7 +125,7 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
         }
       protocol = item->data;
 
-      g_assert( !strcmp(protocol->name, protocol_name));
+      g_assert( !strcmp(protocol->name, tokens[i]));
 
       protocol->aver_accu -= packet->size;
       if (protocol->aver_accu<=0)

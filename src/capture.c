@@ -339,7 +339,7 @@ init_capture (void)
 	}
       break;
     case TCP:
-      if (pref.filter)
+      if (pref.filter && *pref.filter)
 	str = g_strconcat ("tcp and ", pref.filter, NULL);
       else
 	{
@@ -349,7 +349,7 @@ init_capture (void)
 	}
       break;
     case UDP:
-      if (pref.filter)
+      if (pref.filter && *pref.filter)
 	str = g_strconcat ("udp and ", pref.filter, NULL);
       else
 	{

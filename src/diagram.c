@@ -471,14 +471,15 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
   GtkStyle *style;
   GtkLabel *lab;
   GtkWidget *newlab;
+  GList *childlist;
 
   if (!pstk)
     return; /* nothing to do */
 
+  childlist = gtk_container_get_children(GTK_CONTAINER(prot_table));
   protocol_item = pstk->protostack[pref.stack_level];
   while (protocol_item)
     {
-      GList *childlist;
       const GList *cur;
       protocol = protocol_item->data;
 
@@ -487,7 +488,6 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 
       /* First, we check whether the diagram already knows about this protocol,
        * checking whether it is shown on the legend. */
-      childlist = gtk_container_get_children(GTK_CONTAINER(prot_table));
       cur = childlist;
       while (cur)
         {
@@ -496,7 +496,6 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
             break; /* found */
           cur = cur->next;
         }
-      g_list_free(childlist);
       
       if (cur)
           continue; /* found, skip to next */
@@ -525,6 +524,7 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       gtk_container_add(GTK_CONTAINER(prot_table), newlab);
       known_protocols++;
     }
+  g_list_free(childlist);
 }				/* check_new_protocol */
 
 /* empties the table of protocols */
