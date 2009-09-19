@@ -21,7 +21,8 @@
 #ifndef PROTOCOLS_H
 #define PROTOCOLS_H
 
-#include "pkt_info.h"
+#include "basic_stats.h"
+#include "node_id.h"
 
 #define STACK_SIZE 5		/* How many protocol levels to keep
 				 * track of (+1) */
@@ -30,17 +31,15 @@
 typedef struct
 {
   gchar *name;			/* Name of the protocol */
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble accumulated;		/* Accumulated traffic in bytes for this protocol */
-  guint proto_packets;		/* Number of packets seen with this protocol */
-  GList *node_names;		/* Has a list of all node names used with this
-				 * protocol (used in node protocols) */
-  struct timeval last_heard;	/* The last at which this protocol carried traffic */
+  basic_stats_t stats;
+  GList *node_names;		/* A list of all node names (name_t) used with
+				 * this protocol (used in node protocols) */
 } protocol_t;
 
 protocol_t *protocol_t_create(const gchar *protocol_name);
 void protocol_t_delete(protocol_t *prot);
+/* returns a new string with a dump of prot */
+gchar *protocol_t_dump(const protocol_t *prot);
 
 typedef struct
 {
@@ -63,7 +62,8 @@ void protocol_stack_purge_expired(protostack_t *pstk, double expire_time);
 const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname);
 /* sorts on the most used protocol in the requested level and returns it */
 gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
-
+/* returns a newly allocated string with a dump of pstk */
+gchar *protocol_stack_dump(const protostack_t *pstk);
 
 
 /* protocol summary method */

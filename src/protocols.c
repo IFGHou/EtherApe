@@ -88,11 +88,7 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 	}
 
       g_assert( !strcmp(protocol_info->name, tokens[i]));
-      protocol_info->last_heard = now;
-      protocol_info->accumulated += packet->size;
-      protocol_info->aver_accu += packet->size;
-      protocol_info->proto_packets++;
-
+      basic_stats_add(&protocol_info->stats, packet->size);
     }
   g_strfreev (tokens);
 }				/* add_protocol */
@@ -126,14 +122,7 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
       protocol = item->data;
 
       g_assert( !strcmp(protocol->name, tokens[i]));
-
-      protocol->aver_accu -= packet->size;
-      if (protocol->aver_accu<=0)
-        {
-          /* no traffic active on this proto */
-          protocol->aver_accu = 0;
-          protocol->average = 0;
-        }
+      basic_stats_sub(&protocol->stats, packet->size);
       i++;
     }
   g_strfreev (tokens);
@@ -155,10 +144,7 @@ protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
       while (item)
         {
           protocol = (protocol_t *)item->data;
-
-          protocol->average =
-            8000000 * protocol->aver_accu / avg_usecs;
-
+          basic_stats_avg(&protocol->stats, avg_usecs);
           item = item->next;
         }
     }
@@ -184,10 +170,10 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
             {
               protocol = (protocol_t *)item->data;
               next_item = item->next;
-              if (protocol->aver_accu<=0)
+              if (protocol->stats.aver_accu<=0)
                 {
                   /* no traffic active on this proto, check purging */
-                  result = substract_times (now, protocol->last_heard);
+                  result = substract_times (now, protocol->stats.last_time);
                   if (IS_OLDER (result, expire_time))
                     {
                       protocol_t_delete(protocol);
@@ -222,17 +208,17 @@ const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, co
 static gint
 prot_freq_compare (gconstpointer a, gconstpointer b)
 {
-  protocol_t *prot_a, *prot_b;
+  const protocol_t *prot_a, *prot_b;
 
   g_assert (a != NULL);
   g_assert (b != NULL);
 
-  prot_a = (protocol_t *) a;
-  prot_b = (protocol_t *) b;
+  prot_a = (const protocol_t *) a;
+  prot_b = (const protocol_t *) b;
 
-  if (prot_a->accumulated > prot_b->accumulated)
+  if (prot_a->stats.accumulated > prot_b->stats.accumulated)
     return -1;
-  if (prot_a->accumulated < prot_b->accumulated)
+  if (prot_a->stats.accumulated < prot_b->stats.accumulated)
     return 1;
   return 0;
 }				/* prot_freq_compare */
@@ -253,6 +239,53 @@ protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
   return g_strdup (protocol->name);
 }				/* get_main_prot */
 
+/* returns a newly allocated string with a dump of pstk */
+gchar *protocol_stack_dump(const protostack_t *pstk)
+{
+  guint i;
+  gchar *msg;
+
+  if (!pstk)
+    return g_strdup("protostack_t NULL");
+
+  msg = g_strdup("");
+  for (i = 0 ; i <= STACK_SIZE ; ++i)
+    {
+      gchar *msg_level;
+      gchar *tmp;
+      if (!pstk->protostack[i])
+        msg_level = g_strdup("-none-");
+      else
+        {
+          const GList *cur_el = pstk->protostack[i];
+          msg_level = NULL;
+          while (cur_el)
+            {
+              gchar *msg_proto;
+              const protocol_t *p = (const protocol_t *)(cur_el->data);
+              g_assert(p);
+
+              msg_proto = protocol_t_dump(p);
+              if (!msg_level)
+                msg_level = msg_proto;
+              else
+                {
+                  tmp = msg_level;
+                  msg_level = g_strdup_printf("%s,[%s]", tmp, msg_proto);
+                  g_free(tmp);
+                  g_free(msg_proto);
+                }
+              cur_el = cur_el->next;
+            }
+        }
+      tmp = msg;
+      msg = g_strdup_printf("%slevel %d: [%s]\n", tmp, i, msg_level);
+      g_free(tmp);
+      g_free(msg_level);
+    }
+  return msg;
+}
+
 /***************************************************************************
  *
  * protocol_t implementation
@@ -264,14 +297,8 @@ protocol_t *protocol_t_create(const gchar *protocol_name)
 
   pr = g_malloc (sizeof (protocol_t));
   pr->name = g_strdup (protocol_name);
-  pr->accumulated = 0;
-  pr->aver_accu = 0;
-  pr->average = 0;
-  pr->proto_packets = 0;
+  basic_stats_reset(&pr->stats);
   pr->node_names = NULL;
-  pr->last_heard.tv_sec = 0;
-  pr->last_heard.tv_usec = 0;
-  
 
   return pr;
 }
@@ -293,6 +320,55 @@ void protocol_t_delete(protocol_t *prot)
 
   g_free (prot);
 }
+
+/* returns a new string with a dump of prot */
+gchar *protocol_t_dump(const protocol_t *prot)
+{
+  gchar *msg;
+  gchar *msg_stats;
+  gchar *msg_names;
+
+  if (!prot)
+    return g_strdup("protocol_t NULL");
+
+  msg_stats = basic_stats_dump(&prot->stats);
+
+  if (!prot->node_names)
+    msg_names = g_strdup("-- no names --");
+  else
+    {
+      const GList *cur_el;
+      msg_names = NULL;
+      cur_el = prot->node_names;
+      while (cur_el)
+        {
+          gchar *str_name;
+          const name_t *cur_name;
+
+          cur_name = (const name_t *)(cur_el->data);
+          str_name = node_name_dump(cur_name);
+          if (!msg_names)
+            msg_names = str_name;
+          else
+            {
+              gchar *tmp = msg_names;
+              msg_names = g_strjoin(",", tmp, str_name);
+              g_free(tmp);
+              g_free(str_name);
+            }
+          cur_el = cur_el->next;
+        }
+    }
+  
+  msg = g_strdup_printf("protocol name: %s, stats [%s], "
+                         "node_names [%s]",
+                         prot->name, msg_stats, msg_names);
+                         
+  g_free(msg_stats);
+  g_free(msg_names);
+  return msg;
+}
+
 
 /* Comparison function used to compare two link protocols */
 static gint

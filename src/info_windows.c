@@ -185,6 +185,7 @@ update_prot_info_window (prot_info_window_t * prot_info_window)
   const protocol_t *prot;
   GtkWidget *window;
   GtkWidget *widget;
+  gchar *str;
 
   window = prot_info_window->window;
   if (!window)
@@ -206,13 +207,17 @@ update_prot_info_window (prot_info_window_t * prot_info_window)
   widget = g_object_get_data (G_OBJECT (window), "name_label");
   gtk_label_set_text (GTK_LABEL (widget), prot_info_window->prot_name);
   widget = g_object_get_data (G_OBJECT (window), "last_heard_label");
-  gtk_label_set_text (GTK_LABEL (widget), timeval_to_str (prot->last_heard));
+  str = timeval_to_str (prot->stats.last_time);
+  gtk_label_set_text (GTK_LABEL (widget), str);
+  g_free(str);
   widget = g_object_get_data (G_OBJECT (window), "average");
-  gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (prot->average, TRUE));
+  str = traffic_to_str (prot->stats.average, TRUE);
+  gtk_label_set_text (GTK_LABEL (widget), str);
+  g_free(str);
   widget = g_object_get_data (G_OBJECT (window), "accumulated");
-  gtk_label_set_text (GTK_LABEL (widget),
-		      traffic_to_str (prot->accumulated, FALSE));
+  str = traffic_to_str (prot->stats.accumulated, FALSE);
+  gtk_label_set_text (GTK_LABEL (widget), str);
+  g_free(str);
   gtk_widget_queue_resize (GTK_WIDGET (prot_info_window->window));
 
 }				/* update_prot_info_window */
@@ -449,13 +454,11 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
         }
 
       /* everything ok, update stats */
-      row_proto->rowstats.accumulated = stack_proto->accumulated;
-      row_proto->rowstats.accu_packets = stack_proto->proto_packets;
-      row_proto->rowstats.average = stack_proto->average;
-      row_proto->rowstats.last_time = stack_proto->last_heard;
+      row_proto->rowstats = stack_proto->stats;
 
       str = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
       gtk_list_store_set (gs, &it, PROTO_COLUMN_ACCUMULATED, str, -1);
+      g_free(str);
 
       str = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
       gtk_list_store_set (gs, &it, PROTO_COLUMN_PACKETS, str, -1);
@@ -471,9 +474,11 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 
       str = traffic_to_str (row_proto->rowstats.average, TRUE);
       gtk_list_store_set (gs, &it, PROTO_COLUMN_INSTANTANEOUS, str, -1);
+      g_free(str);
 
       str = timeval_to_str (row_proto->rowstats.last_time);
       gtk_list_store_set (gs, &it, PROTO_COLUMN_LASTHEARD, str, -1);
+      g_free(str);
 
       if (res)
         res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);
@@ -823,20 +828,27 @@ stats_info_update(GtkWidget *window, GtkListStore *gs, const traffic_stats_t *st
     }
   else
     {
-      update_gtklabel(window, "node_iproto_avg",
-                          traffic_to_str (stats->stats.average, TRUE));
-      update_gtklabel(window, "node_iproto_accum",
-                          traffic_to_str (stats->stats.accumulated, FALSE));
+      gchar *str;
+      str = traffic_to_str (stats->stats.average, TRUE);
+      update_gtklabel(window, "node_iproto_avg", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats.accumulated, FALSE);
+      update_gtklabel(window, "node_iproto_accum", str);
+      g_free(str);
       if (!totals_only)
         {
-          update_gtklabel(window, "node_iproto_avg_in",
-                              traffic_to_str (stats->stats_in.average, TRUE));
-          update_gtklabel(window, "node_iproto_avg_out",
-                              traffic_to_str (stats->stats_out.average, TRUE));
-          update_gtklabel(window, "node_iproto_accum_in",
-                              traffic_to_str (stats->stats_in.accumulated, FALSE));
-          update_gtklabel(window, "node_iproto_accum_out",
-                              traffic_to_str (stats->stats_out.accumulated, FALSE));
+          str = traffic_to_str (stats->stats_in.average, TRUE);
+          update_gtklabel(window, "node_iproto_avg_in", str);
+          g_free(str);
+          str = traffic_to_str (stats->stats_out.average, TRUE);
+          update_gtklabel(window, "node_iproto_avg_out", str);
+          g_free(str);
+          str = traffic_to_str (stats->stats_in.accumulated, FALSE);
+          update_gtklabel(window, "node_iproto_accum_in", str);
+          g_free(str);
+          str = traffic_to_str (stats->stats_out.accumulated, FALSE);
+          update_gtklabel(window, "node_iproto_accum_out", str);
+          g_free(str);
         }
       /* update protocol table */
       update_protocols_table(gs, &stats->stats_protos);

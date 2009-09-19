@@ -1246,7 +1246,12 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
           node_protocols_window_create( &canvas_node->canvas_node_id );
           g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
                      nodes_catalog_size());
-          node_dump(node);
+          if (pref.is_debug)
+            {
+              gchar *msg = node_dump(node);
+              g_my_debug(msg);
+              g_free(msg);
+            }
         }
       break;
     default:

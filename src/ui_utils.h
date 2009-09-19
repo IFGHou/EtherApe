@@ -35,8 +35,11 @@
                                   (double)(b)/0xFFFF))) / 2.0)
 
 
-/* convert a timeval to a string */
+/* returns a newly allocated string with a timeval in human readable form */
 gchar *timeval_to_str (struct timeval last_heard);
+
+/* returns a newly allocated string with a formatted traffic  */
+gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
 
 /* registers the named glade widget on the specified object */
 void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName);
@@ -52,7 +55,5 @@ void hide_widget(GtkWidget *wnd, const gchar *lblname);
  * adds it to treeview gv.  If r_just true the column is right justified */
 void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno, 
                             gboolean r_just);
-
-gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
 
 #endif

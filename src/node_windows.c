@@ -1,5 +1,5 @@
 /* EtherApe
- * Copyright (C) 2001 Juan Toledo
+ * Copyright (C) 2009 Juan Toledo, Riccardo Ghetta
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
@@ -53,6 +53,13 @@ void nodes_wnd_show(void)
 
   if (!nodes_wnd || GTK_WIDGET_VISIBLE (nodes_wnd))
     return;
+
+  if (pref.is_debug)
+    {
+      gchar *nodemsg = nodes_catalog_dump();
+      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, nodemsg);
+      g_free(nodemsg);
+    }
   
   gtk_widget_show (nodes_wnd);
   gdk_window_raise (nodes_wnd->window);
@@ -64,6 +71,14 @@ void nodes_wnd_hide(void)
 {
   if (!nodes_wnd || !GTK_WIDGET_VISIBLE (nodes_wnd))
     return;
+
+  if (pref.is_debug)
+    {
+      gchar *nodemsg = nodes_catalog_dump();
+      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, nodemsg);
+      g_free(nodemsg);
+    }
+  
   gtk_widget_hide (nodes_wnd);
   nodes_table_clear(nodes_wnd);
   if (nodes_check && gtk_check_menu_item_get_active(nodes_check))
@@ -281,7 +296,10 @@ static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it,
                       NODES_COLUMN_PACKETS, sc,
                       NODES_COLUMN_LASTHEARD, sd,
                       -1);
+  g_free (sa);
+  g_free (sb);
   g_free (sc);
+  g_free (sd);
 }
 
 struct NTTraverse
@@ -296,7 +314,7 @@ static gboolean nodes_table_iterate(gpointer key, gpointer value, gpointer data)
   const node_t *node = (const node_t *)value;
   struct NTTraverse *tt = (struct NTTraverse *)data;
   node_id_t *rowitem;
-
+ 
   while (tt->res)
     {
       gtk_tree_model_get (GTK_TREE_MODEL (tt->gs), &(tt->it), 

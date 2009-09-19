@@ -21,6 +21,7 @@
 #define ETHERAPE_GLOBALS_H
 
 #include "common.h"
+#include <glib/gprintf.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 

@@ -440,13 +440,14 @@ get_ip_name (name_add_t *nt)
     fill_node_id(&nt->node_id, IP, nt, 12, 0);
 
   if (!pref.name_res)
-    add_name (ip_to_str (nt->node_id.addr.ip4), ip_to_str (nt->node_id.addr.ip4), FALSE, &nt->node_id, nt);
+    add_name (ip_to_str (nt->node_id.addr.ip4), 
+              ip_to_str (nt->node_id.addr.ip4), FALSE, &nt->node_id, nt);
   else
     {
-      if (pref.mode == ETHERNET)
-	add_name (ip_to_str(nt->node_id.addr.ip4), dns_lookup(pntohl (nt->node_id.addr.ip4), FALSE), TRUE, &nt->node_id, nt);
-      else
-	add_name (ip_to_str(nt->node_id.addr.ip4), dns_lookup(pntohl (nt->node_id.addr.ip4), TRUE), TRUE, &nt->node_id, nt);
+      add_name (ip_to_str(nt->node_id.addr.ip4), 
+                dns_lookup(pntohl (nt->node_id.addr.ip4), 
+                           pref.mode != ETHERNET), 
+                TRUE, &nt->node_id, nt);
     }
 
   /* TODO I don't like the fact that the gdk_input for dns.c is not

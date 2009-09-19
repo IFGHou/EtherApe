@@ -26,6 +26,8 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C"
 {

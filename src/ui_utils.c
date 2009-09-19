@@ -33,14 +33,12 @@
 
 */
 
+/* returns a newly allocated string with a timeval in human readable form */
 gchar *timeval_to_str (struct timeval last_heard)
 {
-  static gchar *str = NULL;
+  gchar *str;
   struct timeval diff;
   struct tm broken_time;
-
-  if (str)
-    g_free (str);
 
   diff = substract_times (now, last_heard);
   if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
@@ -125,14 +123,10 @@ void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno,
   gtk_tree_view_append_column (gv, gc);
 }
 
-gchar *
-traffic_to_str (gdouble traffic, gboolean is_speed)
+/* returns a newly allocated string with a formatted traffic  */
+gchar *traffic_to_str (gdouble traffic, gboolean is_speed)
 {
-  static gchar *str = NULL;
-
-  if (str)
-    g_free (str);
-
+  gchar *str;
   if (is_speed)
     {
       if (traffic > 1000000)

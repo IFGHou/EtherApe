@@ -25,74 +25,6 @@ static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
 /***************************************************************************
  *
- * node_id_t implementation
- *
- **************************************************************************/
-
-/* Comparison function used to order the (GTree *) nodes
- * and canvas_nodes heard on the network */
-gint
-node_id_compare (const node_id_t * na, const node_id_t * nb)
-{
-  const guint8 *ga = NULL;
-  const guint8 *gb = NULL;
-  int i = 0;
-
-  g_assert (na != NULL);
-  g_assert (nb != NULL);
-  if (na->node_type < nb->node_type)
-    return -1;
-  else if (na->node_type > nb->node_type)
-    return 1;
-
-  /* same node type, compare */
-  switch (na->node_type)
-    {
-    case ETHERNET:
-      ga = na->addr.eth;
-      gb = nb->addr.eth;
-      i = sizeof(na->addr.eth);
-      break;
-    case FDDI:
-      ga = na->addr.fddi;
-      gb = nb->addr.fddi;
-      i = sizeof(na->addr.fddi);
-      break;
-    case IEEE802:
-      ga = na->addr.i802;
-      gb = nb->addr.i802;
-      i = sizeof(na->addr.i802);
-      break;
-    case IP:
-      ga = na->addr.ip4;
-      gb = nb->addr.ip4;
-      i = sizeof(na->addr.ip4);
-      break;
-    case TCP:
-      ga = na->addr.tcp4.host;
-      gb = nb->addr.tcp4.host;
-      i = sizeof(na->addr.tcp4.host)+sizeof(na->addr.tcp4.port); /* full struct size */
-      break;
-    default:
-      g_error (_("Unsopported ape mode in node_id_compare"));
-    }
-
-  while (i)
-    {
-      if (ga[i] < gb[i])
-	{
-	  return -1;
-	}
-      else if (ga[i] > gb[i])
-	return 1;
-      --i;
-    }
-
-  return 0;
-}				/* node_id_compare */
-
-/***************************************************************************
- *
  * node_t implementation
  *
  **************************************************************************/
@@ -146,49 +78,42 @@ void node_delete(node_t *node)
   g_free (node);
 }
 
-void
-node_dump(const node_t * node)
+gchar *node_dump(const node_t * node)
 {
-  GList *protocol_item = NULL, *name_item = NULL;
-  protocol_t *protocol = NULL;
-  name_t *name = NULL;
+  gchar *msg;
+  gchar *msg_id;
+  gchar *msg_stats;
+  gchar *msg_mprot;
   guint i;
 
   if (!node)
-    return;
+    return g_strdup("node_t NULL");
 
-  if (node->name)
-    g_my_info ("NODE %s INFORMATION", node->name->str);
+  msg_id = node_id_dump(&node->node_id);
+  msg_stats = traffic_stats_dump(&node->node_stats);
 
-  /* we skip level 0 */
+  msg_mprot=g_strdup_printf("top: [%s], stack:", 
+                            (node->main_prot[0]) ? 
+                            node->main_prot[0] : "-none-");
+  
   for (i = 1; i <= STACK_SIZE; i++)
     {
-      protocol_item = node->node_stats.stats_protos.protostack[i];
-      if (protocol_item)
-        g_my_info ("Protocol level %d information", i);
-      while (protocol_item)
-        {
-          protocol = protocol_item->data;
-          g_my_info ("\tProtocol %s", protocol->name);
-          if ((name_item = protocol->node_names))
-            {
-              GString *names = NULL;
-              while (name_item)
-                {
-                  if (!names)
-                    names = g_string_new ("");
-                  name = name_item->data;
-                  names = g_string_append (names, name->name->str);
-                  names = g_string_append (names, " ");
-                  name_item = name_item->next;
-                }
-              g_my_info ("\t\tName: %s", names->str);
-              g_string_free (names, TRUE);
-            }
-          protocol_item = protocol_item->next;
-        }
+      gchar *tmp = msg_mprot;
+      msg_mprot = g_strdup_printf("%s %d:>%s<", msg_mprot, i, 
+                           (node->main_prot[i]) ? 
+                           node->main_prot[i] : "-none-");
+      g_free(tmp);
     }
 
+  msg = g_strdup_printf("id: %s, name: %s, numeric_name: %s, main_prot: [%s], "
+                        "stats [%s]",
+                        msg_id, node->name->str, node->numeric_name->str,
+                        msg_mprot, msg_stats);
+  g_free(msg_id);
+  g_free(msg_stats);
+  g_free(msg_mprot);
+
+  return msg;
 }
 
 /* This function is called to discard packets from the list 
@@ -430,78 +355,26 @@ nodes_catalog_update_all(void)
          _("Updated nodes. Active nodes %d"), nodes_catalog_size());
 }				/* update_nodes */
 
-/***************************************************************************
- *
- * name_t implementation
- *
- **************************************************************************/
-name_t * node_name_create(const node_id_t *node_id)
+static gboolean node_dump_tvs(gpointer key, gpointer value, gpointer data)
 {
-  name_t *name;
+  gchar *msg_node;
+  gchar *tmp;
+  gchar **msg = (gchar **)data;
+  const node_t *node = (const node_t *)value;
   
-  g_assert(node_id);
-  name = g_malloc (sizeof (name_t));
-  name->node_id = *node_id;
-  name->n_packets = 0;
-  name->accumulated = 0;
-  name->numeric_name = NULL;
-  name->name = NULL;
-  return name;
+  msg_node = node_dump(node);
+  tmp = *msg;
+  *msg = g_strdup_printf("%snode %p:\n%s\n", tmp, node, msg_node);
+  g_free(tmp);
+  g_free(msg_node);
+  return FALSE;
 }
 
-void node_name_delete(name_t * name)
+gchar *nodes_catalog_dump(void)
 {
-  if (name)
-  {
-    g_string_free (name->name, TRUE);
-    g_string_free (name->numeric_name, TRUE);
-    g_free (name);
-  }
-}
+  gchar *msg;
 
-void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
-                 gboolean slv, gdouble sz)
-{
-  g_assert(name);
-  if (!name->numeric_name)
-    name->numeric_name = g_string_new (num_nm);
-  else
-    g_string_assign (name->numeric_name, num_nm);
-
-  if (!name->name)
-    name->name = g_string_new (nm);
-  else
-    g_string_assign (name->name, nm);
-  
-  name->solved = slv;
-  name->n_packets++;
-  name->accumulated += sz;
-}
-
-/* compares by node id */
-gint 
-node_name_id_compare(const name_t *a, const name_t *b)
-{
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-  return node_id_compare(&a->node_id, &b->node_id);
-}
-
-/* Comparison function to sort protocols by their accumulated traffic */
-gint
-node_name_freq_compare (gconstpointer a, gconstpointer b)
-{
-  const name_t *name_a, *name_b;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  name_a = (const name_t *) a;
-  name_b = (const name_t *) b;
-
-  if (name_a->accumulated > name_b->accumulated)
-    return -1;
-  if (name_a->accumulated < name_b->accumulated)
-    return 1;
-  return 0;
+  msg = g_strdup("");
+  nodes_catalog_foreach(node_dump_tvs, &msg);
+  return msg;
 }

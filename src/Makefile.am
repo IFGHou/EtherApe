@@ -35,10 +35,12 @@ etherape_SOURCES = \
 	prot_types.h pkt_info.h \
 	info_windows.c info_windows.h \
 	ip-cache.c ip-cache.h \
+	node_id.c node_id.h \
 	node.c node.h \
 	node_windows.c node_windows.h \
 	links.c links.h \
 	conversations.c conversations.h \
+	basic_stats.c basic_stats.h \
 	traffic_stats.c traffic_stats.h \
 	datastructs.c datastructs.h \
 	ui_utils.c ui_utils.h

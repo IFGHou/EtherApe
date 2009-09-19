@@ -23,26 +23,6 @@
 #include <sys/time.h>
 #include "protocols.h"
 
-/* Returns a timeval structure with the time difference between to
- * other timevals. result = a - b */
-struct timeval substract_times (struct timeval a, struct timeval b);
-
-typedef struct
-{
-  gdouble average;		/* Average bytes in or out in the last x ms */
-  gdouble aver_accu;		/* Accumulated bytes in the last x ms */
-  gdouble accumulated;		/* Accumulated bytes */
-  gdouble accu_packets;         /* Accumulated number of packets */
-  struct timeval last_time;	/* Timestamp of the last packet added */
-} basic_stats_t;
-
-void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
-void basic_stats_add(basic_stats_t *tf_stat, gdouble val); 
-void basic_stats_sub(basic_stats_t *tf_stat, gdouble val); 
-void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs);
-void basic_stats_dump(basic_stats_t *tf_stat, FILE *fout);
-
-
 typedef struct
 {
   GList *pkt_list;              /* list of packet_list_item_t - private */
@@ -61,5 +41,6 @@ void traffic_stats_add_packet( traffic_stats_t *pkt_stat,
                               packet_direction dir); /* adds a packet */
 void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
+gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat); 
 
 #endif
