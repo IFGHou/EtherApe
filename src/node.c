@@ -201,21 +201,25 @@ node_name_update(node_t * node)
       i--;
     }
 
+  /* in the following strings, entries are separated by ';'
+   * An entry is composed of two parts: a protocol name and a resolver flags
+   * separated by ',' If the resolved flag is 'S' the protocol must be resolved
+   * to be usable. */
   switch (pref.mode)
     {
     case ETHERNET:
       set_node_name (node,
-		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;"
+		     "ETH_II,S;802.2,S;803.3,S;"
 		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;"
 		     "IPX-SAP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
       break;
     case FDDI:
       set_node_name (node,
-		     "FDDI,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
+		     "FDDI,S;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
       break;
     case IEEE802:
       set_node_name (node,
-		     "IEEE802,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
+		     "IEEE802,S;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
       break;
     case IP:
       set_node_name (node, "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n");
@@ -239,7 +243,7 @@ set_node_name (node_t * node, const gchar * preferences)
   if (pref.is_debug)
     {
       gchar *msgid = node_id_dump(&node->node_id);
-      g_my_debug("set_node_name: %s, %s\n", msgid, preferences);
+      g_my_debug("set_node_name: node id [%s], pr: %s", msgid, preferences);
       g_free(msgid);
     }
 
@@ -258,22 +262,34 @@ set_node_name (node_t * node, const gchar * preferences)
       /* We don't do level 0, which has the topmost prot */
       for (j = STACK_SIZE; j && cont; j--)
 	{
+          g_my_debug(" Searching %s at stack level %d",tokens[0], j);
 	  protocol = protocol_stack_find(&node->node_stats.stats_protos, j, tokens[0]);
-          g_my_debug("  %s, j: %d, protocol %p\n",tokens[0], j, protocol);
 	  if (!protocol || strcmp (protocol->name, tokens[0]))
             continue;
-          
+
           name_item = protocol->node_names;
           if (!name_item)
-            continue;
+            {
+              g_my_debug("  found protocol without names, ignore");
+              continue;
+            }
 
           name = (const name_t *) (name_item->data);
+          if (pref.is_debug)
+            {
+              gchar *msgname = node_name_dump(name);
+              if (name->solved || tokens[1][0] != 'S')
+                g_my_debug("  found protocol with name [%s]", msgname);
+              else
+                g_my_debug("  found protocol with UNRESOLVED name [%s], ignored", 
+                           msgname);
+              g_free(msgname);
+            }
+
           /* If we require this protocol to be solved and it's not,
            * the we have to go on */
-          if (name->solved || strcmp (tokens[1], "SOLVED"))
+          if (name->solved || tokens[1][0] != 'S')
             {
-              g_my_debug("  found: %s (%s)\n",name->name->str,
-                                           name->numeric_name->str);
               if (!node->name || strcmp (node->name->str, name->name->str))
                 {
                   g_my_debug ("  set node name from %s to %s",
@@ -296,6 +312,7 @@ set_node_name (node_t * node, const gchar * preferences)
       g_strfreev (tokens);
     }
   g_strfreev (prots);
+  g_my_debug("set_node_name END --");
 }				/* set_node_name */
 
 
