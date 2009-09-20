@@ -21,6 +21,59 @@
 #include "node.h"
 #include "capture.h"
 
+typedef struct
+{
+  gchar *protocol;
+  gboolean must_resolve;
+} name_decode_t;
+
+static name_decode_t ethernet_sequence[] = { 
+    {"ETH_II", TRUE},
+    {"802.2",TRUE},
+    {"803.3",TRUE},
+    {"NETBIOS-DGM",FALSE},
+    {"NETBIOS-SSN",FALSE}, 
+    {"IP",FALSE},
+    {"IPX-SAP",FALSE},
+    {"ARP",FALSE},
+    {"ETH_II",FALSE},
+    {"802.2",FALSE},
+    {"802.3",FALSE},
+    {NULL, FALSE}
+};
+
+static name_decode_t fddi_sequence[] = { 
+    {"FDDI", TRUE},
+    {"NETBIOS-DGM",FALSE},
+    {"NETBIOS-SSN",FALSE}, 
+    {"IP",FALSE},
+    {"ARP",FALSE},
+    {"FDDI",FALSE},
+    {NULL, FALSE}
+};
+
+static name_decode_t ieee802_sequence[] = { 
+    {"IEEE802", TRUE},
+    {"NETBIOS-DGM",FALSE},
+    {"NETBIOS-SSN",FALSE}, 
+    {"IP",FALSE},
+    {"ARP",FALSE},
+    {"IEEE802",FALSE},
+    {NULL, FALSE}
+};
+
+static name_decode_t ip_sequence[] = { 
+    {"NETBIOS-DGM",FALSE},
+    {"NETBIOS-SSN",FALSE}, 
+    {"IP",FALSE},
+    {NULL, FALSE}
+};
+
+static name_decode_t tcp_sequence[] = { 
+    {"TCP",FALSE},
+    {NULL, FALSE}
+};
+
 static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
 
 /***************************************************************************
@@ -29,7 +82,7 @@ static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
  *
  **************************************************************************/
 static void node_name_update(node_t * node);
-static void set_node_name (node_t * node, const gchar * preferences);
+static void set_node_name (node_t * node, const name_decode_t *sequence);
 
 /* Allocates a new node structure */
 node_t *
@@ -185,9 +238,9 @@ node_name_update(node_t * node)
   protocol_t *protocol;
   guint i = STACK_SIZE;
 
-  /* TODO Check if it's while i or while i+1. 
-   * Then fix it in other places */
-  while (i + 1)
+  /* for each level and each protocol at that level, sort names by traffic,
+   * placing the busiest at front */
+  for (i = 0 ; i <= STACK_SIZE ; ++i)
     {
       for ( protocol_item = node->node_stats.stats_protos.protostack[i]; 
             protocol_item; 
@@ -197,76 +250,62 @@ node_name_update(node_t * node)
           protocol->node_names
             = g_list_sort (protocol->node_names, node_name_freq_compare);
         }
-
-      i--;
     }
 
-  /* in the following strings, entries are separated by ';'
-   * An entry is composed of two parts: a protocol name and a resolver flags
-   * separated by ',' If the resolved flag is 'S' the protocol must be resolved
-   * to be usable. */
   switch (pref.mode)
     {
     case ETHERNET:
-      set_node_name (node,
-		     "ETH_II,S;802.2,S;803.3,S;"
-		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;"
-		     "IPX-SAP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
+      set_node_name (node, ethernet_sequence);
       break;
     case FDDI:
-      set_node_name (node,
-		     "FDDI,S;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
+      set_node_name (node, fddi_sequence);
       break;
     case IEEE802:
-      set_node_name (node,
-		     "IEEE802,S;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
+      set_node_name (node, ieee802_sequence);
       break;
     case IP:
-      set_node_name (node, "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n");
+      set_node_name (node, ip_sequence);
       break;
     case TCP:
-      set_node_name (node, "TCP,n");
-      break;
-    default:
+      set_node_name (node, tcp_sequence);
       break;
     }
 }				/* update_node_names */
 
 
 static void
-set_node_name (node_t * node, const gchar * preferences)
+set_node_name (node_t * node, const name_decode_t *sequence)
 {
-  gchar **prots;
+  const name_decode_t *iter;
   guint i;
   gboolean cont;
 
   if (pref.is_debug)
     {
       gchar *msgid = node_id_dump(&node->node_id);
-      g_my_debug("set_node_name: node id [%s], pr: %s", msgid, preferences);
+      g_my_debug("set_node_name: node id [%s]", msgid);
       g_free(msgid);
     }
 
   cont = TRUE;
-  prots = g_strsplit (preferences, ";", 0);
-  for (i=0; prots[i] && cont; i++)
+  
+  for (iter = sequence; iter->protocol && cont; ++iter)
     {
       const GList *name_item;
       const name_t *name;
       const protocol_t *protocol;
       guint j;
-      gchar **tokens;
-
-      tokens = g_strsplit (prots[i], ",", 0);
 
       /* We don't do level 0, which has the topmost prot */
       for (j = STACK_SIZE; j && cont; j--)
 	{
-          g_my_debug(" Searching %s at stack level %d",tokens[0], j);
-	  protocol = protocol_stack_find(&node->node_stats.stats_protos, j, tokens[0]);
-	  if (!protocol || strcmp (protocol->name, tokens[0]))
+          g_my_debug(" Searching %s at stack level %d", iter->protocol, j);
+	  protocol = protocol_stack_find(&node->node_stats.stats_protos, 
+                                         j, iter->protocol);
+	  if (!protocol || strcmp (protocol->name, iter->protocol))
             continue;
 
+          /* protocol found, we take the first name (i.e. the most used one) */
           name_item = protocol->node_names;
           if (!name_item)
             {
@@ -278,7 +317,7 @@ set_node_name (node_t * node, const gchar * preferences)
           if (pref.is_debug)
             {
               gchar *msgname = node_name_dump(name);
-              if (name->solved || tokens[1][0] != 'S')
+              if (name->solved || !iter->must_resolve)
                 g_my_debug("  found protocol with name [%s]", msgname);
               else
                 g_my_debug("  found protocol with UNRESOLVED name [%s], ignored", 
@@ -288,7 +327,7 @@ set_node_name (node_t * node, const gchar * preferences)
 
           /* If we require this protocol to be solved and it's not,
            * the we have to go on */
-          if (name->solved || tokens[1][0] != 'S')
+          if (name->solved || !iter->must_resolve)
             {
               if (!node->name || strcmp (node->name->str, name->name->str))
                 {
@@ -309,12 +348,9 @@ set_node_name (node_t * node, const gchar * preferences)
               cont = FALSE;
             }
 	}
-      g_strfreev (tokens);
     }
-  g_strfreev (prots);
   g_my_debug("set_node_name END --");
 }				/* set_node_name */
-
 
 
 /***************************************************************************
