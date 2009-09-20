@@ -31,9 +31,6 @@
 
 /* Functions in resolv.c */
 
-/* get_udp_port returns the UDP port name or "%d" if not found */
-extern char *get_udp_port (u_int port);
-
 /* get_tcp_port returns the TCP port name or "%d" if not found */
 extern char *get_tcp_port (u_int port);
 

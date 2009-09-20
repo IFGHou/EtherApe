@@ -53,7 +53,6 @@ typedef struct
   GString *numeric_name;
   gboolean solved;
   gdouble accumulated;
-  gdouble n_packets;
 }
 name_t;
 

@@ -39,6 +39,4 @@ gboolean stop_capture (void);
 void cleanup_capture (void);
 gint set_filter (gchar * filter, gchar * device);
 
-void update_node_names (node_t * node);
-
 #endif

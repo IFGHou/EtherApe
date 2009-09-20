@@ -261,16 +261,16 @@ get_linux_sll_name (name_add_t *nt)
   decode_next(nt);
 }				/* get_linux_sll_name */
 
-static void
-get_eth_name (name_add_t *nt)
+/* common handling for ethernet-like data */
+static void eth_name_common(apemode_t ethmode, name_add_t *nt)
 {
   gchar *numeric = NULL, *solved = NULL;
   gboolean found_in_ethers = FALSE;
 
   if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, ETHERNET, nt, 0, 0);
+    fill_node_id(&nt->node_id, ethmode, nt, ethmode, 0);
   else
-    fill_node_id(&nt->node_id, ETHERNET, nt, 6, 0);
+    fill_node_id(&nt->node_id, ethmode, nt, ethmode+6, 0);
 
   numeric = ether_to_str (nt->node_id.addr.eth);
   solved = get_ether_name (nt->node_id.addr.eth);
@@ -294,76 +294,24 @@ get_eth_name (name_add_t *nt)
   nt->offset += 14;
 
   decode_next(nt);
+}
+
+static void
+get_eth_name (name_add_t *nt)
+{
+  eth_name_common(ETHERNET, nt);
 }				/* get_eth_name */
 
 static void
 get_ieee802_name (name_add_t *nt)
 {
-  gchar *numeric = NULL, *solved = NULL;
-  gboolean found_in_ethers = FALSE;
-
-  if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, IEEE802, nt, 2, 0);
-  else
-    fill_node_id(&nt->node_id, IEEE802, nt, 8, 0);
-
-  numeric = ether_to_str (nt->node_id.addr.i802);
-  solved = get_ether_name (nt->node_id.addr.i802);
-
-  /* get_ether_name will return an ethernet address with
-   * the first three numbers substituted with the manufacter
-   * if it cannot find an /etc/ethers entry. If it is so,
-   * then the last 8 characters (for example ab:cd:ef) will
-   * be the same, and we will note that the name hasn't
-   * been solved */
-
-  if (numeric && solved)
-    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
-			      solved + strlen (solved) - 8);
-
-  if (found_in_ethers)
-    add_name (numeric, solved, TRUE, &nt->node_id, nt);
-  else
-    add_name (numeric, solved, FALSE, &nt->node_id, nt);
-
-  nt->offset += 14;
-
-  decode_next(nt);
+  eth_name_common(IEEE802, nt);
 }				/* get_ieee802_name */
 
 static void
 get_fddi_name (name_add_t *nt)
 {
-  gchar *numeric = NULL, *solved = NULL;
-  gboolean found_in_ethers = FALSE;
-
-  if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, FDDI, nt, 1, 0);
-  else
-    fill_node_id(&nt->node_id, FDDI, nt, 7, 0);
-
-  numeric = ether_to_str (nt->node_id.addr.fddi);
-  solved = get_ether_name (nt->node_id.addr.fddi);
-
-  /* get_ether_name will return an ethernet address with
-   * the first three numbers substituted with the manufacter
-   * if it cannot find an /etc/ethers entry. If it is so,
-   * then the last 8 characters (for example ab:cd:ef) will
-   * be the same, and we will note that the name hasn't
-   * been solved */
-
-  if (numeric && solved)
-    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
-			      solved + strlen (solved) - 8);
-
-  if (found_in_ethers)
-    add_name (numeric, solved, TRUE, &nt->node_id, nt);
-  else
-    add_name (numeric, solved, FALSE, &nt->node_id, nt);
-
-  nt->offset += 13;
-
-  decode_next(nt);
+  eth_name_common(FDDI, nt);
 }				/* get_fddi_name */
 
 /* LLC is the only supported FDDI link layer type */
@@ -419,12 +367,9 @@ get_arp_name (name_add_t *nt)
 
   fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0);
 
-  if (pref.mode == ETHERNET)
-    add_name (ip_to_str (nt->node_id.addr.ip4), dns_lookup (pntohl (nt->node_id.addr.ip4), 
-              FALSE), TRUE, &nt->node_id, nt);
-  else
-    add_name (ip_to_str (nt->node_id.addr.ip4), dns_lookup (pntohl (nt->node_id.addr.ip4), 
-              TRUE), TRUE, &nt->node_id, nt);
+  add_name (ip_to_str (nt->node_id.addr.ip4), 
+            dns_lookup (pntohl (nt->node_id.addr.ip4), TRUE), 
+            TRUE, &nt->node_id, nt);
 
   /* ARP doesn't carry any other protocol on top, so we return 
    * directly */
@@ -445,14 +390,9 @@ get_ip_name (name_add_t *nt)
   else
     {
       add_name (ip_to_str(nt->node_id.addr.ip4), 
-                dns_lookup(pntohl (nt->node_id.addr.ip4), 
-                           pref.mode != ETHERNET), 
+                dns_lookup(pntohl (nt->node_id.addr.ip4), TRUE), 
                 TRUE, &nt->node_id, nt);
     }
-
-  /* TODO I don't like the fact that the gdk_input for dns.c is not
-   * called in this function, because it means that it can't be used 
-   * as a library */
 
   nt->offset += 20;
 

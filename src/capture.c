@@ -70,8 +70,6 @@ static void add_node_packet (const guint8 * packet,
                              const node_id_t *node_id,
 			     packet_direction direction);
 
-static void set_node_name (node_t * node, const gchar * preferences);
-
 
 static GString *print_mem (const node_id_t *node_id);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
@@ -665,7 +663,7 @@ static void
 packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 {
   packet_info_t *packet;
-  const gchar *prot_desc = NULL;
+  gchar *prot_desc;
   node_id_t src_node_id;
   node_id_t dst_node_id;
   link_id_t link_id;
@@ -677,11 +675,9 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   packet = g_malloc (sizeof (packet_info_t));
   packet->size = pkt_size;
   packet->timestamp = now;
-  packet->prot_desc = g_strdup (prot_desc);
+  packet->prot_desc = prot_desc;
   packet->ref_count = 0;
 
-  /* If there is no node with that id, create it. Otherwise 
-   * just use the one available */
   src_node_id = get_node_id (raw_packet, raw_size, SRC);
   dst_node_id = get_node_id (raw_packet, raw_size, DST);
 
@@ -745,109 +741,6 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
 {
   dns_ack ();
 }
-
-/* Sets the node->name and node->numeric_name to the most used of 
- * the default name for the current mode */
-void
-update_node_names (node_t * node)
-{
-  GList *protocol_item;
-  protocol_t *protocol;
-  guint i = STACK_SIZE;
-
-  /* TODO Check if it's while i or while i+1. 
-   * Then fix it in other places */
-  while (i + 1)
-    {
-      for ( protocol_item = node->node_stats.stats_protos.protostack[i]; 
-            protocol_item; 
-            protocol_item = protocol_item->next)
-        {
-          protocol = (protocol_t *) (protocol_item->data);
-          protocol->node_names
-            = g_list_sort (protocol->node_names, node_name_freq_compare);
-        }
-
-      i--;
-    }
-
-  switch (pref.mode)
-    {
-    case ETHERNET:
-      set_node_name (node,
-		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;"
-		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;"
-		     "IPX-SAP,n;ARP,n;" "ETH_II,n;802.2,n;802.3,n");
-      break;
-    case FDDI:
-      set_node_name (node,
-		     "FDDI,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
-      break;
-    case IEEE802:
-      set_node_name (node,
-		     "IEEE802,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
-      break;
-    case IP:
-      set_node_name (node, "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n");
-      break;
-    case TCP:
-      set_node_name (node, "TCP,n");
-      break;
-    default:
-      break;
-    }
-}				/* update_node_names */
-
-
-static void
-set_node_name (node_t * node, const gchar * preferences)
-{
-  GList *name_item = NULL;
-  name_t *name = NULL;
-  const protocol_t *protocol = NULL;
-  gchar **prots, **tokens;
-  guint i = 0;
-  guint j = STACK_SIZE;
-  gboolean cont = TRUE;
-
-  prots = g_strsplit (preferences, ";", 0);
-  for (; prots[i] && cont; i++)
-    {
-      tokens = g_strsplit (prots[i], ",", 0);
-
-      /* We don't do level 0, which has the topmost prot */
-      for (j = STACK_SIZE; j && cont; j--)
-	{
-	  protocol = protocol_stack_find(&node->node_stats.stats_protos, j, tokens[0]);
-	  if (protocol)
-	    {
-	      name_item = protocol->node_names;
-	      if (!strcmp (protocol->name, tokens[0]) && name_item)
-		{
-		  name = (name_t *) (name_item->data);
-		  /* If we require this protocol to be solved and it's not,
-		   * the we have to go on */
-		  if (strcmp (tokens[1], "SOLVED") || name->solved)
-		    {
-		      if (node->name && strcmp (node->name->str, name->name->str))
-			  g_my_debug ("Switching node name from %s to %s",
-				      node->name->str, name->name->str);
-
-		      g_string_assign (node->name, name->name->str);
-		      g_string_assign (node->numeric_name,
-				       name->numeric_name->str);
-		      cont = FALSE;
-		    }
-		}
-	    }
-
-	}
-      g_strfreev (tokens);
-      tokens = NULL;
-    }
-  g_strfreev (prots);
-  prots = NULL;
-}				/* set_node_name */
 
 
 /* creates a new string from the given address */

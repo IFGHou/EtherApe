@@ -124,7 +124,6 @@ typedef struct _ether
 }
 ether_t;
 
-static hashname_t *udp_port_table[HASHPORTSIZE];
 static hashname_t *tcp_port_table[HASHPORTSIZE];
 static hashmanuf_t *manuf_table[HASHMANUFSIZE];
 static hashether_t *eth_table[HASHETHSIZE];
@@ -134,8 +133,6 @@ static int eth_resolution_initialized = 0;
 /*
  *  Global variables (original impl. changed them in GUI sections)
  */
-
-static int g_resolving_actif = 1;	/* routines are active by default */
 
 static gchar *g_ethers_path = EPATH_ETHERS;
 static gchar *g_pethers_path = NULL;	/* "$HOME"/EPATH_PERSONAL_ETHERS    */
@@ -159,10 +156,6 @@ serv_name_lookup (u_int port, u_int proto)
 
   switch (proto)
     {
-    case IPPROTO_UDP:
-      table = udp_port_table;
-      serv_proto = "udp";
-      break;
     case IPPROTO_TCP:
       table = tcp_port_table;
       serv_proto = "tcp";
@@ -582,70 +575,16 @@ eth_name_lookup (const u_char * addr)
 
 }				/* eth_name_lookup */
 
-
-extern char *
-get_udp_port (u_int port)
-{
-  static gchar str[3][MAXNAMELEN];
-  static gchar *cur;
-
-  if (!g_resolving_actif)
-    {
-      if (cur == &str[0][0])
-	{
-	  cur = &str[1][0];
-	}
-      else if (cur == &str[1][0])
-	{
-	  cur = &str[2][0];
-	}
-      else
-	{
-	  cur = &str[0][0];
-	}
-      snprintf (cur, MAXNAMELEN, "%d", port);
-      return cur;
-    }
-
-  return serv_name_lookup (port, IPPROTO_UDP);
-
-}				/* get_udp_port */
-
 extern char *
 get_tcp_port (u_int port)
 {
-  static gchar str[3][MAXNAMELEN];
-  static gchar *cur;
-
-  if (!g_resolving_actif)
-    {
-      if (cur == &str[0][0])
-	{
-	  cur = &str[1][0];
-	}
-      else if (cur == &str[1][0])
-	{
-	  cur = &str[2][0];
-	}
-      else
-	{
-	  cur = &str[0][0];
-	}
-      snprintf (cur, MAXNAMELEN, "%d", port);
-      return cur;
-    }
-
   return serv_name_lookup (port, IPPROTO_TCP);
-
 }				/* get_tcp_port */
 
 
 extern char *
 get_ether_name (const u_char * addr)
 {
-  if (!g_resolving_actif)
-    return ether_to_str ((guint8 *) addr);
-
   if (!eth_resolution_initialized)
     {
       initialize_ethers ();

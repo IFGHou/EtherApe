@@ -56,34 +56,31 @@ enum rpc_program
 
 /* Functions declarations */
 
-static void get_eth_type (guint l3_offset);
-static void get_fddi_type (guint l3_offset);
-static void get_ieee802_type (guint l3_offset);
-static void get_eth_II (etype_t etype, guint l3_offset);
-static void get_eth_802_3 (ethhdrtype_t ethhdr_type);
-static void get_linux_sll_type (guint l3_offset);
+static void get_eth_type (GString *prot, guint l3_offset);
+static void get_fddi_type (GString *prot, guint l3_offset);
+static void get_ieee802_type (GString *prot, guint l3_offset);
+static void get_eth_II (GString *prot, etype_t etype, guint l3_offset);
+static void get_eth_802_3 (GString *prot, ethhdrtype_t ethhdr_type);
+static void get_linux_sll_type (GString *prot, guint l3_offset);
 
-static void get_llc (void);
-static void get_ip (guint l3_offset);
-static void get_ipx (void);
-static void get_tcp (void);
-static gint port_compare (gconstpointer a, gconstpointer b, gpointer unused);
-static void service_tree_free(gpointer p);
-static void get_udp (void);
+static void get_llc (GString *prot);
+static void get_ip (GString *prot, guint l3_offset);
+static void get_ipx (GString *prot);
+static void get_tcp (GString *prot);
+static void get_udp (GString *prot);
 
-static void get_netbios (void);
-static void get_netbios_ssn (void);
-static void get_netbios_dgm (void);
+static void get_netbios (GString *prot);
+static void get_netbios_ssn (GString *prot);
+static void get_netbios_dgm (GString *prot);
 
-static void get_ftp (void);
-static gboolean get_rpc (gboolean is_udp);
-static void load_services (void);
+static void get_ftp (GString *prot);
+static gboolean get_rpc (GString *prot, gboolean is_udp);
 static guint16 choose_port (guint16 a, guint16 b);
-static void append_etype_prot (etype_t etype);
+static void append_etype_prot (GString *prot, etype_t etype);
 
 /* Variables */
 static guint offset = 0;
-static GString *prot = NULL;
+//static GString *prot = NULL;
 static const guint8 *packet;
 static guint capture_len = 0;
 
@@ -96,18 +93,15 @@ static guint16 global_dst_port;
 /* ------------------------------------------------------------
  * Implementation
  * ------------------------------------------------------------*/
-const gchar *
+gchar *
 get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type, 
                  guint l3_offset)
 {
-  gchar **tokens = NULL;
-  gchar *top_prot = NULL;
+  GString *prot;
   guint i = 0;
 
   g_assert (p != NULL);
 
-  if (prot)
-    g_string_free (prot, TRUE);
   prot = g_string_new ("");
 
   packet = p;
@@ -116,28 +110,28 @@ get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type,
   switch (link_type)
     {
     case L_EN10MB:
-      get_eth_type (l3_offset);
+      get_eth_type (prot, l3_offset);
       break;
     case L_FDDI:
-      prot = g_string_new ("FDDI");
-      get_fddi_type (l3_offset);
+      g_string_append(prot, "FDDI");
+      get_fddi_type (prot, l3_offset);
       break;
     case L_IEEE802:
-      prot = g_string_append (prot, "Token Ring");
-      get_ieee802_type (l3_offset);
+      g_string_append (prot, "Token Ring");
+      get_ieee802_type (prot, l3_offset);
       break;
     case L_RAW:		/* Both for PPP and SLIP */
-      prot = g_string_append (prot, "RAW/IP");
-      get_ip (l3_offset);
+      g_string_append (prot, "RAW/IP");
+      get_ip (prot, l3_offset);
       break;
     case L_NULL:
-      prot = g_string_append (prot, "NULL/IP");
-      get_ip (l3_offset);
+      g_string_append (prot, "NULL/IP");
+      get_ip (prot, l3_offset);
       break;
 #ifdef DLT_LINUX_SLL
     case L_LINUX_SLL:
-      prot = g_string_append (prot, "LINUX-SLL");
-      get_linux_sll_type (l3_offset);
+      g_string_append (prot, "LINUX-SLL");
+      get_linux_sll_type (prot, l3_offset);
       break;
 #endif
     default:
@@ -152,25 +146,22 @@ get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type,
   i = 0;
   if (prot)
     {
+      gchar **tokens;
+      gchar *top_prot = NULL;
+
       tokens = g_strsplit (prot->str, "/", 0);
       while ((tokens[i] != NULL) && i <= STACK_SIZE)
-	i++;
+          top_prot = tokens[i++];
+      g_assert (top_prot != NULL);
+      g_string_prepend (prot, "/");
+      g_string_prepend (prot, top_prot);
       g_strfreev (tokens);
     }
   for (; i <= STACK_SIZE; i++)
-    prot = g_string_append (prot, "/UNKNOWN");
+    g_string_append (prot, "/UNKNOWN");
 
-  tokens = g_strsplit (prot->str, "/", 0);
-  for (i = 0; (i <= STACK_SIZE) && strcmp (tokens[i], "UNKNOWN"); i++)
-    top_prot = tokens[i];
-
-  g_assert (top_prot != NULL);
-  prot = g_string_prepend (prot, "/");
-  prot = g_string_prepend (prot, top_prot);
-  g_strfreev (tokens);
-
-  /* g_message ("Protocol stack is %s", prot->str); */
-  return prot->str;
+  /* returns only the string buffer */
+  return g_string_free (prot, FALSE);
 }				/* get_packet_prot */
 
 /* ------------------------------------------------------------
@@ -178,7 +169,7 @@ get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type,
  * ------------------------------------------------------------*/
 
 static void
-get_eth_type (guint l3_offset)
+get_eth_type (GString *prot, guint l3_offset)
 {
   etype_t etype;
   ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
@@ -212,46 +203,42 @@ get_eth_type (guint l3_offset)
 	  && packet[3] == 0x00 && packet[4] == 0x00)
 	{
 	  /* TODO Analyze ISL frames */
-	  prot = g_string_append (prot, "ISL");
+	  g_string_append (prot, "ISL");
 	  return;
 	}
     }
 
   if (ethhdr_type == ETHERNET_802_3)
     {
-      prot = g_string_append (prot, "802.3-RAW");
+      g_string_append (prot, "802.3-RAW");
       return;
     }
 
   if (ethhdr_type == ETHERNET_802_2)
     {
-      prot = g_string_append (prot, "802.3");
-      get_eth_802_3 (ethhdr_type);
+      g_string_append (prot, "802.3");
+      get_eth_802_3 (prot, ethhdr_type);
       return;
     }
 
   /* Else, it's ETHERNET_II */
-
-  prot = g_string_append (prot, "ETH_II");
-  get_eth_II (etype, l3_offset);
-  return;
-
+  g_string_append (prot, "ETH_II");
+  get_eth_II (prot, etype, l3_offset);
 }				/* get_eth_type */
 
 static void
-get_eth_802_3 (ethhdrtype_t ethhdr_type)
+get_eth_802_3 (GString *prot, ethhdrtype_t ethhdr_type)
 {
-
   offset = 14;
 
   switch (ethhdr_type)
     {
     case ETHERNET_802_2:
-      prot = g_string_append (prot, "/LLC");
-      get_llc ();
+      g_string_append (prot, "/LLC");
+      get_llc (prot);
       break;
     case ETHERNET_802_3:
-      get_ipx ();
+      get_ipx (prot);
       break;
     default:
       break;
@@ -259,67 +246,63 @@ get_eth_802_3 (ethhdrtype_t ethhdr_type)
 }				/* get_eth_802_3 */
 
 static void
-get_fddi_type (guint l3_offset)
+get_fddi_type (GString *prot, guint l3_offset)
 {
-  prot = g_string_append (prot, "/LLC");
+  g_string_append (prot, "/LLC");
   /* Ok, this is only temporary while I truly dissect LLC 
    * and fddi */
   if ((packet[19] == 0x08) && (packet[20] == 0x00))
     {
-      prot = g_string_append (prot, "/IP");
-      get_ip (l3_offset);
+      g_string_append (prot, "/IP");
+      get_ip (prot, l3_offset);
     }
 
 }				/* get_fddi_type */
 
 static void
-get_ieee802_type (guint l3_offset)
+get_ieee802_type (GString *prot, guint l3_offset)
 {
   /* As with FDDI, we only support LLC by now */
-  prot = g_string_append (prot, "/LLC");
+  g_string_append (prot, "/LLC");
 
   if ((packet[20] == 0x08) && (packet[21] == 0x00))
     {
-      prot = g_string_append (prot, "/IP");
-      get_ip (l3_offset);
+      g_string_append (prot, "/IP");
+      get_ip (prot, l3_offset);
     }
 
 }
 
 static void
-get_eth_II (etype_t etype, guint l3_offset)
+get_eth_II (GString *prot, etype_t etype, guint l3_offset)
 {
-  append_etype_prot (etype);
+  append_etype_prot (prot, etype);
 
   if (etype == ETHERTYPE_IP)
-    get_ip (l3_offset);
+    get_ip (prot, l3_offset);
   if (etype == ETHERTYPE_IPX)
-    get_ipx ();
-
-  return;
+    get_ipx (prot);
 }				/* get_eth_II */
 
 /* Gets the protocol type out of the linux-sll header.
  * I have no real idea of what can be there, but since IP
  * is 0x800 I guess it follows ethernet specifications */
 static void
-get_linux_sll_type (guint l3_offset)
+get_linux_sll_type (GString *prot, guint l3_offset)
 {
   etype_t etype;
 
   etype = pntohs (&packet[14]);
-  append_etype_prot (etype);
+  append_etype_prot (prot, etype);
 
   if (etype == ETHERTYPE_IP)
-    get_ip (l3_offset);
+    get_ip (prot, l3_offset);
   if (etype == ETHERTYPE_IPX)
-    get_ipx ();
-
-  return;
+    get_ipx (prot);
 }				/* get_linux_sll_type */
 
 static void
-get_llc (void)
+get_llc (GString *prot)
 {
 #define SAP_SNAP 0xAA
 #define XDLC_I          0x00	/* Information frames */
@@ -358,89 +341,89 @@ get_llc (void)
       prot = g_string_append (prot, "/LLC-NULL");
       break;
     case SAP_LLC_SLMGMT:
-      prot = g_string_append (prot, "/LLC-SLMGMT");
+      g_string_append (prot, "/LLC-SLMGMT");
       break;
     case SAP_SNA_PATHCTRL:
-      prot = g_string_append (prot, "/PATHCTRL");
+      g_string_append (prot, "/PATHCTRL");
       break;
     case SAP_IP:
-      prot = g_string_append (prot, "/IP");
+      g_string_append (prot, "/IP");
       break;
     case SAP_SNA1:
-      prot = g_string_append (prot, "/SNA1");
+      g_string_append (prot, "/SNA1");
       break;
     case SAP_SNA2:
-      prot = g_string_append (prot, "/SNA2");
+      g_string_append (prot, "/SNA2");
       break;
     case SAP_PROWAY_NM_INIT:
-      prot = g_string_append (prot, "/PROWAY-NM-INIT");
+      g_string_append (prot, "/PROWAY-NM-INIT");
       break;
     case SAP_TI:
-      prot = g_string_append (prot, "/TI");
+      g_string_append (prot, "/TI");
       break;
     case SAP_BPDU:
-      prot = g_string_append (prot, "/BPDU");
+      g_string_append (prot, "/BPDU");
       break;
     case SAP_RS511:
-      prot = g_string_append (prot, "/RS511");
+      g_string_append (prot, "/RS511");
       break;
     case SAP_X25:
-      prot = g_string_append (prot, "/X25");
+      g_string_append (prot, "/X25");
       break;
     case SAP_XNS:
-      prot = g_string_append (prot, "/XNS");
+      g_string_append (prot, "/XNS");
       break;
     case SAP_NESTAR:
-      prot = g_string_append (prot, "/NESTAR");
+      g_string_append (prot, "/NESTAR");
       break;
     case SAP_PROWAY_ASLM:
-      prot = g_string_append (prot, "/PROWAY-ASLM");
+      g_string_append (prot, "/PROWAY-ASLM");
       break;
     case SAP_ARP:
-      prot = g_string_append (prot, "/ARP");
+      g_string_append (prot, "/ARP");
       break;
     case SAP_SNAP:
       /* We are not supposed to reach this point */
       g_warning ("Reached SNAP while checking for DSAP in get_llc");
-      prot = g_string_append (prot, "/LLC-SNAP");
+      g_string_append (prot, "/LLC-SNAP");
       break;
     case SAP_VINES1:
-      prot = g_string_append (prot, "/VINES1");
+      g_string_append (prot, "/VINES1");
       break;
     case SAP_VINES2:
-      prot = g_string_append (prot, "/VINES2");
+      g_string_append (prot, "/VINES2");
       break;
     case SAP_NETWARE:
-      get_ipx ();
+      get_ipx (prot);
       break;
     case SAP_NETBIOS:
-      prot = g_string_append (prot, "/NETBIOS");
-      get_netbios ();
+      g_string_append (prot, "/NETBIOS");
+      get_netbios (prot);
       break;
     case SAP_IBMNM:
-      prot = g_string_append (prot, "/IBMNM");
+      g_string_append (prot, "/IBMNM");
       break;
     case SAP_RPL1:
-      prot = g_string_append (prot, "/RPL1");
+      g_string_append (prot, "/RPL1");
       break;
     case SAP_UB:
-      prot = g_string_append (prot, "/UB");
+      g_string_append (prot, "/UB");
       break;
     case SAP_RPL2:
-      prot = g_string_append (prot, "/RPL2");
+      g_string_append (prot, "/RPL2");
       break;
     case SAP_OSINL:
-      prot = g_string_append (prot, "/OSINL");
+      g_string_append (prot, "/OSINL");
       break;
     case SAP_GLOBAL:
-      prot = g_string_append (prot, "/LLC-GLOBAL");
+      g_string_append (prot, "/LLC-GLOBAL");
       break;
     }
 
 }				/* get_llc */
 
 static void
-get_ip (guint l3_offset)
+get_ip (GString *prot, guint l3_offset)
 {
   guint16 fragment_offset;
   iptype_t ip_type;
@@ -457,112 +440,110 @@ get_ip (guint l3_offset)
   switch (ip_type)
     {
     case IP_PROTO_ICMP:
-      prot = g_string_append (prot, "/ICMP");
+      g_string_append (prot, "/ICMP");
       break;
     case IP_PROTO_TCP:
       if (fragment_offset)
-	prot = g_string_append (prot, "/TCP_FRAGMENT");
+	g_string_append (prot, "/TCP_FRAGMENT");
       else
 	{
-	  prot = g_string_append (prot, "/TCP");
-	  get_tcp ();
+	  g_string_append (prot, "/TCP");
+	  get_tcp (prot);
 	}
       break;
     case IP_PROTO_UDP:
       if (fragment_offset)
-	prot = g_string_append (prot, "/UDP_FRAGMENT");
+	g_string_append (prot, "/UDP_FRAGMENT");
       else
 	{
-	  prot = g_string_append (prot, "/UDP");
-	  get_udp ();
+	  g_string_append (prot, "/UDP");
+	  get_udp (prot);
 	}
       break;
     case IP_PROTO_IGMP:
-      prot = g_string_append (prot, "/IGMP");
+      g_string_append (prot, "/IGMP");
       break;
     case IP_PROTO_GGP:
-      prot = g_string_append (prot, "/GGP");
+      g_string_append (prot, "/GGP");
       break;
     case IP_PROTO_IPIP:
-      prot = g_string_append (prot, "/IPIP");
+      g_string_append (prot, "/IPIP");
       break;
 #if 0				/* TODO How come IPIP and IPV4 share the same number? */
     case IP_PROTO_IPV4:
-      prot = g_string_append (prot, "/IPV4");
+      g_string_append (prot, "/IPV4");
       break;
 #endif
     case IP_PROTO_EGP:
-      prot = g_string_append (prot, "/EGP");
+      g_string_append (prot, "/EGP");
       break;
     case IP_PROTO_PUP:
-      prot = g_string_append (prot, "/PUP");
+      g_string_append (prot, "/PUP");
       break;
     case IP_PROTO_IDP:
-      prot = g_string_append (prot, "/IDP");
+      g_string_append (prot, "/IDP");
       break;
     case IP_PROTO_TP:
-      prot = g_string_append (prot, "/TP");
+      g_string_append (prot, "/TP");
       break;
     case IP_PROTO_IPV6:
-      prot = g_string_append (prot, "/IPV6");
+      g_string_append (prot, "/IPV6");
       break;
     case IP_PROTO_ROUTING:
-      prot = g_string_append (prot, "/ROUTING");
+      g_string_append (prot, "/ROUTING");
       break;
     case IP_PROTO_FRAGMENT:
-      prot = g_string_append (prot, "/FRAGMENT");
+      g_string_append (prot, "/FRAGMENT");
       break;
     case IP_PROTO_RSVP:
-      prot = g_string_append (prot, "/RSVP");
+      g_string_append (prot, "/RSVP");
       break;
     case IP_PROTO_GRE:
-      prot = g_string_append (prot, "/GRE");
+      g_string_append (prot, "/GRE");
       break;
     case IP_PROTO_ESP:
-      prot = g_string_append (prot, "/ESP");
+      g_string_append (prot, "/ESP");
       break;
     case IP_PROTO_AH:
-      prot = g_string_append (prot, "/AH");
+      g_string_append (prot, "/AH");
       break;
     case IP_PROTO_ICMPV6:
-      prot = g_string_append (prot, "/ICPMPV6");
+      g_string_append (prot, "/ICPMPV6");
       break;
     case IP_PROTO_NONE:
-      prot = g_string_append (prot, "/NONE");
+      g_string_append (prot, "/NONE");
       break;
     case IP_PROTO_DSTOPTS:
-      prot = g_string_append (prot, "/DSTOPTS");
+      g_string_append (prot, "/DSTOPTS");
       break;
     case IP_PROTO_VINES:
-      prot = g_string_append (prot, "/VINES");
+      g_string_append (prot, "/VINES");
       break;
     case IP_PROTO_EIGRP:
-      prot = g_string_append (prot, "/EIGRP");
+      g_string_append (prot, "/EIGRP");
       break;
     case IP_PROTO_OSPF:
-      prot = g_string_append (prot, "/OSPF");
+      g_string_append (prot, "/OSPF");
       break;
     case IP_PROTO_ENCAP:
-      prot = g_string_append (prot, "/ENCAP");
+      g_string_append (prot, "/ENCAP");
       break;
     case IP_PROTO_PIM:
-      prot = g_string_append (prot, "/PIM");
+      g_string_append (prot, "/PIM");
       break;
     case IP_PROTO_IPCOMP:
-      prot = g_string_append (prot, "/IPCOMP");
+      g_string_append (prot, "/IPCOMP");
       break;
     case IP_PROTO_VRRP:
-      prot = g_string_append (prot, "/VRRP");
+      g_string_append (prot, "/VRRP");
       break;
     default:
-      prot = g_string_append (prot, "/IP_UNKNOWN");
+      g_string_append (prot, "/IP_UNKNOWN");
     }
-
-  return;
 }
 
 static void
-get_ipx ()
+get_ipx (GString *prot)
 {
   ipx_socket_t ipx_dsocket, ipx_ssocket;
   guint16 ipx_length;
@@ -572,7 +553,7 @@ get_ipx ()
   if ((offset + 30 > capture_len) || *(guint16 *) (packet + offset) != 0xffff)
     return;
 
-  prot = g_string_append (prot, "/IPX");
+  g_string_append (prot, "/IPX");
 
   ipx_dsocket = pntohs (packet + offset + 16);
   ipx_ssocket = pntohs (packet + offset + 28);
@@ -586,22 +567,22 @@ get_ipx ()
     case IPX_PACKET_TYPE_IPX:
       break;
     case IPX_PACKET_TYPE_RIP:
-      prot = g_string_append (prot, "/IPX-RIP");
+      g_string_append (prot, "/IPX-RIP");
       break;
     case IPX_PACKET_TYPE_ECHO:
-      prot = g_string_append (prot, "/IPX-ECHO");
+      g_string_append (prot, "/IPX-ECHO");
       break;
     case IPX_PACKET_TYPE_ERROR:
-      prot = g_string_append (prot, "/IPX-ERROR");
+      g_string_append (prot, "/IPX-ERROR");
       break;
     case IPX_PACKET_TYPE_SPX:
-      prot = g_string_append (prot, "/IPX-SPX");
+      g_string_append (prot, "/IPX-SPX");
       break;
     case IPX_PACKET_TYPE_NCP:
-      prot = g_string_append (prot, "/IPX-NCP");
+      g_string_append (prot, "/IPX-NCP");
       break;
     case IPX_PACKET_TYPE_WANBCAST:
-      prot = g_string_append (prot, "/IPX-NetBIOS");
+      g_string_append (prot, "/IPX-NetBIOS");
       break;
     }
 
@@ -610,42 +591,42 @@ get_ipx ()
     return;
 
   if ((ipx_dsocket == IPX_SOCKET_SAP) || (ipx_ssocket == IPX_SOCKET_SAP))
-    prot = g_string_append (prot, "/IPX-SAP");
+    g_string_append (prot, "/IPX-SAP");
   else if ((ipx_dsocket == IPX_SOCKET_ATTACHMATE_GW)
 	   || (ipx_ssocket == IPX_SOCKET_ATTACHMATE_GW))
-    prot = g_string_append (prot, "/ATTACHMATE-GW");
+    g_string_append (prot, "/ATTACHMATE-GW");
   else if ((ipx_dsocket == IPX_SOCKET_PING_NOVELL)
 	   || (ipx_ssocket == IPX_SOCKET_PING_NOVELL))
-    prot = g_string_append (prot, "/PING-NOVELL");
+    g_string_append (prot, "/PING-NOVELL");
   else if ((ipx_dsocket == IPX_SOCKET_NCP) || (ipx_ssocket == IPX_SOCKET_NCP))
-    prot = g_string_append (prot, "/IPX-NCP");
+    g_string_append (prot, "/IPX-NCP");
   else if ((ipx_dsocket == IPX_SOCKET_IPXRIP)
 	   || (ipx_ssocket == IPX_SOCKET_IPXRIP))
-    prot = g_string_append (prot, "/IPX-RIP");
+    g_string_append (prot, "/IPX-RIP");
   else if ((ipx_dsocket == IPX_SOCKET_NETBIOS)
 	   || (ipx_ssocket == IPX_SOCKET_NETBIOS))
-    prot = g_string_append (prot, "/IPX-NetBIOS");
+    g_string_append (prot, "/IPX-NetBIOS");
   else if ((ipx_dsocket == IPX_SOCKET_DIAGNOSTIC)
 	   || (ipx_ssocket == IPX_SOCKET_DIAGNOSTIC))
-    prot = g_string_append (prot, "/IPX-DIAG");
+    g_string_append (prot, "/IPX-DIAG");
   else if ((ipx_dsocket == IPX_SOCKET_SERIALIZATION)
 	   || (ipx_ssocket == IPX_SOCKET_SERIALIZATION))
-    prot = g_string_append (prot, "/IPX-SERIAL.");
+    g_string_append (prot, "/IPX-SERIAL.");
   else if ((ipx_dsocket == IPX_SOCKET_ADSM)
 	   || (ipx_ssocket == IPX_SOCKET_ADSM))
-    prot = g_string_append (prot, "/IPX-ADSM");
+    g_string_append (prot, "/IPX-ADSM");
   else if ((ipx_dsocket == IPX_SOCKET_EIGRP)
 	   || (ipx_ssocket == IPX_SOCKET_EIGRP))
-    prot = g_string_append (prot, "/EIGRP");
+    g_string_append (prot, "/EIGRP");
   else if ((ipx_dsocket == IPX_SOCKET_WIDE_AREA_ROUTER)
 	   || (ipx_ssocket == IPX_SOCKET_WIDE_AREA_ROUTER))
-    prot = g_string_append (prot, "/IPX W.A. ROUTER");
+    g_string_append (prot, "/IPX W.A. ROUTER");
   else if ((ipx_dsocket == IPX_SOCKET_TCP_TUNNEL)
 	   || (ipx_ssocket == IPX_SOCKET_TCP_TUNNEL))
-    prot = g_string_append (prot, "/IPX-TCP-TUNNEL");
+    g_string_append (prot, "/IPX-TCP-TUNNEL");
   else if ((ipx_dsocket == IPX_SOCKET_UDP_TUNNEL)
 	   || (ipx_ssocket == IPX_SOCKET_UDP_TUNNEL))
-    prot = g_string_append (prot, "/IPX-UDP-TUNNEL");
+    g_string_append (prot, "/IPX-UDP-TUNNEL");
   else if ((ipx_dsocket == IPX_SOCKET_NWLINK_SMB_SERVER)
 	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_SERVER)
 	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_NAMEQUERY)
@@ -658,19 +639,19 @@ get_ipx ()
 	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_MESSENGER)
 	   || (ipx_dsocket == IPX_SOCKET_NWLINK_SMB_BROWSE)
 	   || (ipx_ssocket == IPX_SOCKET_NWLINK_SMB_BROWSE))
-    prot = g_string_append (prot, "/IPX-SMB");
+    g_string_append (prot, "/IPX-SMB");
   else if ((ipx_dsocket == IPX_SOCKET_SNMP_AGENT)
 	   || (ipx_ssocket == IPX_SOCKET_SNMP_AGENT)
 	   || (ipx_dsocket == IPX_SOCKET_SNMP_SINK)
 	   || (ipx_ssocket == IPX_SOCKET_SNMP_SINK))
-    prot = g_string_append (prot, "/SNMP");
+    g_string_append (prot, "/SNMP");
   else
     g_my_debug ("Unknown IPX ports %d, %d", ipx_dsocket, ipx_ssocket);
 
 }				/* get_ipx */
 
 static void
-get_tcp (void)
+get_tcp (GString *prot)
 {
 
   const port_service_t *src_service, *dst_service, *chosen_service;
@@ -693,24 +674,24 @@ get_tcp (void)
   if ((str = find_conversation (global_src_address, global_dst_address,
 				src_port, dst_port)))
     {
-      prot = g_string_append (prot, str);
+      g_string_append (prot, str);
       return;
     }
 
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
   /* False means we are calling rpc from a TCP packet */
-  if (get_rpc (FALSE))
+  if (get_rpc (prot, FALSE))
     return;
 
   if (src_port==TCP_NETBIOS_SSN || dst_port==TCP_NETBIOS_SSN)
     {
-      get_netbios_ssn ();
+      get_netbios_ssn (prot);
       return;
     }
   else if (src_port==TCP_FTP || dst_port == TCP_FTP)
     {
-      get_ftp ();
+      get_ftp (prot);
       return;
     }
 
@@ -752,7 +733,7 @@ get_tcp (void)
 }				/* get_tcp */
 
 static void
-get_udp (void)
+get_udp (GString *prot)
 {
   const port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
@@ -766,12 +747,12 @@ get_udp (void)
 
   /* It's not possible to know in advance whether an UDP
    * packet is an RPC packet. We'll try */
-  if (get_rpc (TRUE))
+  if (get_rpc (prot, TRUE))
     return;
 
   if (src_port==UDP_NETBIOS_NS || dst_port==UDP_NETBIOS_NS)
     {
-      get_netbios_dgm ();
+      get_netbios_dgm (prot);
       return;
     }
 
@@ -813,7 +794,7 @@ get_udp (void)
 }				/* get_udp */
 
 static gboolean
-get_rpc (gboolean is_udp)
+get_rpc (GString *prot, gboolean is_udp)
 {
   enum rpc_type msg_type;
   enum rpc_program msg_program;
@@ -838,7 +819,7 @@ get_rpc (gboolean is_udp)
   if (msg_type != RPC_REPLY && msg_type != RPC_CALL)
     return FALSE;
 
-  prot = g_string_append (prot, "/RPC");
+  g_string_append (prot, "/RPC");
 
   switch (msg_type)
     {
@@ -850,7 +831,7 @@ get_rpc (gboolean is_udp)
       if (!(rpc_prot = find_conversation (global_dst_address, 0,
 					  global_dst_port, 0)))
 	return FALSE;
-      prot = g_string_append (prot, rpc_prot);
+      g_string_append (prot, rpc_prot);
       return TRUE;
     case RPC_CALL:
       switch (msg_program)
@@ -901,7 +882,7 @@ get_rpc (gboolean is_udp)
 /* This function is only called from a straight llc packet,
  * never from an IP packet */
 void
-get_netbios (void)
+get_netbios (GString *prot)
 {
   guint16 hdr_len;
 
@@ -915,49 +896,47 @@ get_netbios (void)
    * from Ethereal's packet-netbios.c */
 
   if (offset + hdr_len < capture_len)
-    prot = g_string_append (prot, "/SMB");
+    g_string_append (prot, "/SMB");
 
 }				/* get_netbios */
 
 void
-get_netbios_ssn (void)
+get_netbios_ssn (GString *prot)
 {
 #define SESSION_MESSAGE 0
   guint8 mesg_type;
 
-  prot = g_string_append (prot, "/NETBIOS-SSN");
+  g_string_append (prot, "/NETBIOS-SSN");
 
   mesg_type = *(guint8 *) (packet + offset);
 
   if (mesg_type == SESSION_MESSAGE)
-    prot = g_string_append (prot, "/SMB");
+    g_string_append (prot, "/SMB");
 
   /* TODO Calculate new offset whenever we have
    * a "dissector" for a higher protocol */
-  return;
 }				/* get_netbions_ssn */
 
 void
-get_netbios_dgm (void)
+get_netbios_dgm (GString *prot)
 {
   guint8 mesg_type;
 
-  prot = g_string_append (prot, "/NETBIOS-DGM");
+  g_string_append (prot, "/NETBIOS-DGM");
 
   mesg_type = *(guint8 *) (packet + offset);
 
   /* Magic numbers copied from ethereal, as usual
    * They mean Direct (unique|group|broadcast) datagram */
   if (mesg_type == 0x10 || mesg_type == 0x11 || mesg_type == 0x12)
-    prot = g_string_append (prot, "/SMB");
+    g_string_append (prot, "/SMB");
 
   /* TODO Calculate new offset whenever we have
    * a "dissector" for a higher protocol */
-  return;
 }				/* get_netbios_dgm */
 
 void
-get_ftp (void)
+get_ftp (GString *prot)
 {
   gchar *mesg = NULL;
   guint size = capture_len - offset;
@@ -966,7 +945,7 @@ get_ftp (void)
   guint16 server_port;
   guint i = 0;
 
-  prot = g_string_append (prot, "/FTP");
+  g_string_append (prot, "/FTP");
   if ((offset + 3) > capture_len)
     return;			/* not big enough */
 
@@ -1038,103 +1017,101 @@ choose_port (guint16 a, guint16 b)
 }				/* choose_port */
 
 static void
-append_etype_prot (etype_t etype)
+append_etype_prot (GString *prot, etype_t etype)
 {
   switch (etype)
     {
     case ETHERTYPE_IP:
-      prot = g_string_append (prot, "/IP");
+      g_string_append (prot, "/IP");
       break;
     case ETHERTYPE_ARP:
-      prot = g_string_append (prot, "/ARP");
+      g_string_append (prot, "/ARP");
       break;
     case ETHERTYPE_IPv6:
-      prot = g_string_append (prot, "/IPv6");
+      g_string_append (prot, "/IPv6");
       break;
     case ETHERTYPE_X25L3:
-      prot = g_string_append (prot, "/X25L3");
+      g_string_append (prot, "/X25L3");
       break;
     case ETHERTYPE_REVARP:
-      prot = g_string_append (prot, "/REVARP");
+      g_string_append (prot, "/REVARP");
       break;
     case ETHERTYPE_ATALK:
-      prot = g_string_append (prot, "/ATALK");
+      g_string_append (prot, "/ATALK");
       break;
     case ETHERTYPE_AARP:
-      prot = g_string_append (prot, "/AARP");
+      g_string_append (prot, "/AARP");
       break;
     case ETHERTYPE_IPX:
       break;
     case ETHERTYPE_VINES:
-      prot = g_string_append (prot, "/VINES");
+      g_string_append (prot, "/VINES");
       break;
     case ETHERTYPE_TRAIN:
-      prot = g_string_append (prot, "/TRAIN");
+      g_string_append (prot, "/TRAIN");
       break;
     case ETHERTYPE_LOOP:
-      prot = g_string_append (prot, "/LOOP");
+      g_string_append (prot, "/LOOP");
       break;
     case ETHERTYPE_PPPOED:
-      prot = g_string_append (prot, "/PPPOED");
+      g_string_append (prot, "/PPPOED");
       break;
     case ETHERTYPE_PPPOES:
-      prot = g_string_append (prot, "/PPPOES");
+      g_string_append (prot, "/PPPOES");
       break;
     case ETHERTYPE_VLAN:
-      prot = g_string_append (prot, "/VLAN");
+      g_string_append (prot, "/VLAN");
       break;
     case ETHERTYPE_SNMP:
-      prot = g_string_append (prot, "/SNMP");
+      g_string_append (prot, "/SNMP");
       break;
     case ETHERTYPE_DNA_DL:
-      prot = g_string_append (prot, "/DNA-DL");
+      g_string_append (prot, "/DNA-DL");
       break;
     case ETHERTYPE_DNA_RC:
-      prot = g_string_append (prot, "/DNA-RC");
+      g_string_append (prot, "/DNA-RC");
       break;
     case ETHERTYPE_DNA_RT:
-      prot = g_string_append (prot, "/DNA-RT");
+      g_string_append (prot, "/DNA-RT");
       break;
     case ETHERTYPE_DEC:
-      prot = g_string_append (prot, "/DEC");
+      g_string_append (prot, "/DEC");
       break;
     case ETHERTYPE_DEC_DIAG:
-      prot = g_string_append (prot, "/DEC-DIAG");
+      g_string_append (prot, "/DEC-DIAG");
       break;
     case ETHERTYPE_DEC_CUST:
-      prot = g_string_append (prot, "/DEC-CUST");
+      g_string_append (prot, "/DEC-CUST");
       break;
     case ETHERTYPE_DEC_SCA:
-      prot = g_string_append (prot, "/DEC-SCA");
+      g_string_append (prot, "/DEC-SCA");
       break;
     case ETHERTYPE_DEC_LB:
-      prot = g_string_append (prot, "/DEC-LB");
+      g_string_append (prot, "/DEC-LB");
       break;
     case ETHERTYPE_MPLS:
-      prot = g_string_append (prot, "/MPLS");
+      g_string_append (prot, "/MPLS");
       break;
     case ETHERTYPE_MPLS_MULTI:
-      prot = g_string_append (prot, "/MPLS-MULTI");
+      g_string_append (prot, "/MPLS-MULTI");
       break;
     case ETHERTYPE_LAT:
-      prot = g_string_append (prot, "/LAT");
+      g_string_append (prot, "/LAT");
       break;
     case ETHERTYPE_PPP:
-      prot = g_string_append (prot, "/PPP");
+      g_string_append (prot, "/PPP");
       break;
     case ETHERTYPE_WCP:
-      prot = g_string_append (prot, "/WCP");
+      g_string_append (prot, "/WCP");
       break;
     case ETHERTYPE_3C_NBP_DGRAM:
-      prot = g_string_append (prot, "/3C-NBP-DGRAM");
+      g_string_append (prot, "/3C-NBP-DGRAM");
       break;
     case ETHERTYPE_ETHBRIDGE:
-      prot = g_string_append (prot, "/ETHBRIDGE");
+      g_string_append (prot, "/ETHBRIDGE");
       break;
     case ETHERTYPE_UNK:
-      prot = g_string_append (prot, "/ETH_UNKNOWN");
+      g_string_append (prot, "/ETH_UNKNOWN");
     }
-
-  return;
 }				/* append_etype_prot */
 

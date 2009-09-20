@@ -130,7 +130,6 @@ name_t * node_name_create(const node_id_t *node_id)
   g_assert(node_id);
   name = g_malloc (sizeof (name_t));
   name->node_id = *node_id;
-  name->n_packets = 0;
   name->accumulated = 0;
   name->numeric_name = NULL;
   name->name = NULL;
@@ -150,6 +149,13 @@ void node_name_delete(name_t * name)
 void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
                  gboolean slv, gdouble sz)
 {
+  if (pref.is_debug)
+    {
+      gchar *msgid = node_id_dump(&name->node_id);
+      g_my_debug(" node_name_assign: id %s, name %s, num.name %s\n", 
+             msgid, nm, num_nm);
+      g_free(msgid);
+    }
   g_assert(name);
   if (!name->numeric_name)
     name->numeric_name = g_string_new (num_nm);
@@ -162,7 +168,6 @@ void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm,
     g_string_assign (name->name, nm);
   
   name->solved = slv;
-  name->n_packets++;
   name->accumulated += sz;
 }
 
@@ -171,13 +176,13 @@ gchar *node_name_dump(const name_t *name)
   gchar *msg;
   gchar *nid;
   if (!name)
-    return g_strdup("node_name_t NULL");
+    return g_strdup("name_t NULL");
   
   nid = node_id_dump(&name->node_id);
   msg = g_strdup_printf("node id: %s, name: %s, numeric_name: %s, solved: %d, "
-                        "accumulated %f, packets %f",
+                        "accumulated %f",
                         nid, name->name->str, name->numeric_name->str,
-                        name->solved, name->accumulated, name->n_packets);
+                        name->solved, name->accumulated);
   g_free(nid);
   return msg;
 }

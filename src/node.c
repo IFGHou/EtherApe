@@ -28,6 +28,9 @@ static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
  * node_t implementation
  *
  **************************************************************************/
+static void node_name_update(node_t * node);
+static void set_node_name (node_t * node, const gchar * preferences);
+
 /* Allocates a new node structure */
 node_t *
 node_create(const node_id_t * node_id, const gchar *node_id_str)
@@ -143,7 +146,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
           node->main_prot[i] = protocol_stack_sort_most_used(&node->node_stats.stats_protos, i);
           i--;
         }
-      update_node_names (node);
+      node_name_update (node);
     }
   else
     {
@@ -172,6 +175,130 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 
   return FALSE;
 }
+
+/* Sets the node->name and node->numeric_name to the most used of 
+ * the default name for the current mode */
+static void
+node_name_update(node_t * node)
+{
+  GList *protocol_item;
+  protocol_t *protocol;
+  guint i = STACK_SIZE;
+
+  /* TODO Check if it's while i or while i+1. 
+   * Then fix it in other places */
+  while (i + 1)
+    {
+      for ( protocol_item = node->node_stats.stats_protos.protostack[i]; 
+            protocol_item; 
+            protocol_item = protocol_item->next)
+        {
+          protocol = (protocol_t *) (protocol_item->data);
+          protocol->node_names
+            = g_list_sort (protocol->node_names, node_name_freq_compare);
+        }
+
+      i--;
+    }
+
+  switch (pref.mode)
+    {
+    case ETHERNET:
+      set_node_name (node,
+		     "ETH_II,SOLVED;802.2,SOLVED;803.3,SOLVED;"
+		     "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;"
+		     "IPX-SAP,n;ARP,n;ETH_II,n;802.2,n;802.3,n");
+      break;
+    case FDDI:
+      set_node_name (node,
+		     "FDDI,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;FDDI,n");
+      break;
+    case IEEE802:
+      set_node_name (node,
+		     "IEEE802,SOLVED;NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n;ARP,n;IEEE802,n");
+      break;
+    case IP:
+      set_node_name (node, "NETBIOS-DGM,n;NETBIOS-SSN,n;IP,n");
+      break;
+    case TCP:
+      set_node_name (node, "TCP,n");
+      break;
+    default:
+      break;
+    }
+}				/* update_node_names */
+
+
+static void
+set_node_name (node_t * node, const gchar * preferences)
+{
+  gchar **prots;
+  guint i;
+  gboolean cont;
+
+  if (pref.is_debug)
+    {
+      gchar *msgid = node_id_dump(&node->node_id);
+      g_my_debug("set_node_name: %s, %s\n", msgid, preferences);
+      g_free(msgid);
+    }
+
+  cont = TRUE;
+  prots = g_strsplit (preferences, ";", 0);
+  for (i=0; prots[i] && cont; i++)
+    {
+      const GList *name_item;
+      const name_t *name;
+      const protocol_t *protocol;
+      guint j;
+      gchar **tokens;
+
+      tokens = g_strsplit (prots[i], ",", 0);
+
+      /* We don't do level 0, which has the topmost prot */
+      for (j = STACK_SIZE; j && cont; j--)
+	{
+	  protocol = protocol_stack_find(&node->node_stats.stats_protos, j, tokens[0]);
+          g_my_debug("  %s, j: %d, protocol %p\n",tokens[0], j, protocol);
+	  if (!protocol || strcmp (protocol->name, tokens[0]))
+            continue;
+          
+          name_item = protocol->node_names;
+          if (!name_item)
+            continue;
+
+          name = (const name_t *) (name_item->data);
+          /* If we require this protocol to be solved and it's not,
+           * the we have to go on */
+          if (name->solved || strcmp (tokens[1], "SOLVED"))
+            {
+              g_my_debug("  found: %s (%s)\n",name->name->str,
+                                           name->numeric_name->str);
+              if (!node->name || strcmp (node->name->str, name->name->str))
+                {
+                  g_my_debug ("  set node name from %s to %s",
+                              (node->name) ? node->name->str : "none",
+                              name->name->str);
+                  g_string_assign (node->name, name->name->str);
+                }
+              if (!node->numeric_name || 
+                  strcmp(node->numeric_name->str, name->numeric_name->str))
+                  {
+                    g_my_debug ("  set node numeric_name from %s to %s",
+                                (node->numeric_name) ? 
+                                      node->numeric_name->str : "none",
+                                name->numeric_name->str);
+                    g_string_assign (node->numeric_name,name->numeric_name->str);
+                  }
+              cont = FALSE;
+            }
+	}
+      g_strfreev (tokens);
+    }
+  g_strfreev (prots);
+}				/* set_node_name */
+
+
 
 /***************************************************************************
  *

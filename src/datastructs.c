@@ -324,7 +324,7 @@ static gint services_port_cmp(gconstpointer a, gconstpointer b, gpointer unused)
   if (port_a < port_b)
     return -1;
   return 0;
-}				/* port_compare */
+}				/* services_port_cmp */
 
 /* Comparison function to sort service names */
 static gint services_name_cmp(gconstpointer a, gconstpointer b, gpointer unused)
@@ -485,7 +485,7 @@ void services_init(void)
 
   /* and finally assign preferred services */
   services_fill_preferred();
-}				/* load_services */
+}				/* services_init */
 
 void services_clear(void)
 {

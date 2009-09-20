@@ -51,9 +51,6 @@ void nodes_wnd_show(void)
   nodes_wnd = glade_xml_get_widget (xml, "nodes_wnd");
   nodes_check = GTK_CHECK_MENU_ITEM(glade_xml_get_widget (xml, "nodes_check"));
 
-  if (!nodes_wnd || GTK_WIDGET_VISIBLE (nodes_wnd))
-    return;
-
   if (pref.is_debug)
     {
       gchar *nodemsg = nodes_catalog_dump();
@@ -61,6 +58,9 @@ void nodes_wnd_show(void)
       g_free(nodemsg);
     }
   
+  if (!nodes_wnd || GTK_WIDGET_VISIBLE (nodes_wnd))
+    return;
+
   gtk_widget_show (nodes_wnd);
   gdk_window_raise (nodes_wnd->window);
   if (nodes_check && !gtk_check_menu_item_get_active(nodes_check))
@@ -72,13 +72,6 @@ void nodes_wnd_hide(void)
   if (!nodes_wnd || !GTK_WIDGET_VISIBLE (nodes_wnd))
     return;
 
-  if (pref.is_debug)
-    {
-      gchar *nodemsg = nodes_catalog_dump();
-      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, nodemsg);
-      g_free(nodemsg);
-    }
-  
   gtk_widget_hide (nodes_wnd);
   nodes_table_clear(nodes_wnd);
   if (nodes_check && gtk_check_menu_item_get_active(nodes_check))
