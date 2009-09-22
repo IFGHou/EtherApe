@@ -22,6 +22,9 @@
 
 #include "common.h"
 
+#define STACK_SIZE 5		/* How many protocol levels to keep
+				 * track of (+1 for the topmost one) */
+
 /* Flag used in node packets to indicate whether this packet was
  * inbound or outbound for the node. Links and protocols use
  * "eitherbound" */
@@ -30,6 +33,18 @@ typedef enum
   EITHERBOUND=-1, INBOUND = 0, OUTBOUND = 1
 }
 packet_direction;
+
+/* stack of protocol names, one protocol per level */
+typedef struct
+{
+  gchar *protonames[STACK_SIZE + 1];
+} 
+packet_protos_t;
+/* init/delete of a packet_protos_t */
+packet_protos_t *packet_protos_init(void);
+void packet_protos_delete(packet_protos_t *pt);
+/* returns a newly allocated string with a dump of pt */
+gchar *packet_protos_dump(const packet_protos_t *pt);
 
 /* Information about each packet heard on the network */
 typedef struct

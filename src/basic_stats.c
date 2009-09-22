@@ -57,6 +57,63 @@ substract_times (struct timeval a, struct timeval b)
 
 /***************************************************************************
  *
+ * packet_protos_t implementation
+ *
+ **************************************************************************/
+/* init/delete of a packet_protos_t */
+packet_protos_t *packet_protos_init(void)
+{
+  guint i;
+  packet_protos_t *pt = g_malloc(sizeof(packet_protos_t));
+  g_assert(pt);
+  if (pt)
+    {
+      for (i = 0; i<=STACK_SIZE ; ++i)
+        pt->protonames[i] = NULL;
+    }
+  return pt;
+}
+
+void packet_protos_delete(packet_protos_t *pt)
+{
+  guint i;
+  for (i = 0; i<=STACK_SIZE ; ++i)
+    g_free(pt->protonames[i]);
+  g_free(pt);
+}
+
+/* returns a newly allocated string with a dump of pt */
+gchar *packet_protos_dump(const packet_protos_t *pt)
+{
+  gint i;
+  GString *msg;
+
+  /* first position is top proto */
+  for (i = STACK_SIZE ; i>=0 ; --i)
+    {
+      if (pt->protonames[i])
+        {
+          msg = g_string_new(pt->protonames[i]);
+          break;
+        }
+    }
+  if (!msg)
+    msg = g_string_new("UNKNOWN");
+  
+  for (i = 0; i<=STACK_SIZE ; ++i)
+    {
+      if (pt->protonames[i])
+        g_string_append_printf(msg, "/%s", pt->protonames[i]);
+      else
+        g_string_append(msg, "/UNKNOWN");
+    }
+
+  /* returns only the string buffer, freeing the rest */
+  return g_string_free(msg, FALSE);
+}
+
+/***************************************************************************
+ *
  * packet_list_item_t implementation
  *
  **************************************************************************/

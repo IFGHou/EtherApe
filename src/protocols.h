@@ -24,9 +24,6 @@
 #include "basic_stats.h"
 #include "node_id.h"
 
-#define STACK_SIZE 5		/* How many protocol levels to keep
-				 * track of (+1) */
-
 /* Information about each protocol heard on a link */
 typedef struct
 {

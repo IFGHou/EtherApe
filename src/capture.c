@@ -668,15 +668,15 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   node_id_t dst_node_id;
   link_id_t link_id;
 
-  /* Get a string with the protocol tree */
-  prot_desc = get_packet_prot (raw_packet, raw_size, linktype, l3_offset);
-
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));
   packet->size = pkt_size;
   packet->timestamp = now;
-  packet->prot_desc = prot_desc;
   packet->ref_count = 0;
+
+  /* Get a string with the protocol tree */
+  packet->prot_desc = get_packet_prot (raw_packet, raw_size, 
+                                       linktype, l3_offset);
 
   src_node_id = get_node_id (raw_packet, raw_size, SRC);
   dst_node_id = get_node_id (raw_packet, raw_size, DST);
