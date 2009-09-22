@@ -36,7 +36,7 @@ typedef struct
   struct
   {
     guint8 level;       /* current decoder level */
-    gchar **tokens;     /* array of decoder names */
+    const packet_protos_t *tokens;     /* array of decoder names */
     protostack_t *protos;  /* protocol list */
   } decoder;
 }
@@ -100,7 +100,8 @@ void
 get_packet_names (protostack_t *pstk,
 		  const guint8 * packet,
 		  guint16 size,
-		  const gchar * prot_stack, packet_direction direction)
+		  const packet_protos_t * prot_stack, 
+                  packet_direction direction)
 {
   name_add_t nt;
 
@@ -117,13 +118,11 @@ get_packet_names (protostack_t *pstk,
    * We initialize as 0 because decode_next() preincrements
    */
   nt.decoder.level = 0;
-  nt.decoder.tokens = g_strsplit (prot_stack, "/", 0);
+  nt.decoder.tokens = prot_stack;
   nt.decoder.protos = pstk;
 
   /* starts decoding */
   decode_next(&nt);
-
-  g_strfreev (nt.decoder.tokens);
 }				/* get_packet_names */
 
 /* increments the level and calls the next name decoding function, if any */
@@ -144,14 +143,14 @@ static void decode_next(name_add_t *nt)
     }
 
   g_assert(nt);
-  g_assert(nt->decoder.tokens[nt->decoder.level]); /* current level must be valid */
+  g_assert(nt->decoder.tokens->protonames[nt->decoder.level]); /* current level must be valid */
 
   nt->decoder.level++;
 
-  if (!nt->decoder.tokens[nt->decoder.level])
-    return; /* no more decoders, exit */
+  if (!nt->decoder.tokens->protonames[nt->decoder.level])
+    return; /* no more levels, exit */
 
-  next_func = g_tree_lookup (prot_functions, nt->decoder.tokens[nt->decoder.level]);
+  next_func = g_tree_lookup (prot_functions, nt->decoder.tokens->protonames[nt->decoder.level]);
   if (next_func)
     {
       /* before calling the next decoder, we check for size overflow */
@@ -647,7 +646,7 @@ add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved,
    */
   protocol = (protocol_t *)protocol_stack_find(nt->decoder.protos,
                                  nt->decoder.level,
-			         nt->decoder.tokens[nt->decoder.level]);
+			         nt->decoder.tokens->protonames[nt->decoder.level]);
 
   key.node_id = *node_id;
   

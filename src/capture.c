@@ -663,7 +663,6 @@ static void
 packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 {
   packet_info_t *packet;
-  gchar *prot_desc;
   node_id_t src_node_id;
   node_id_t dst_node_id;
   link_id_t link_id;

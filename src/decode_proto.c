@@ -112,7 +112,7 @@ void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen)
   dp->capture_len = caplen;
   dp->pr = packet_protos_init();
   dp->offset = 0;
-  dp->cur_level = 0;
+  dp->cur_level = 1;
   dp->global_src_address = 0;
   dp->global_dst_address = 0;
   dp->global_src_port = 0;
@@ -133,12 +133,11 @@ void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...)
 }
 
 
-gchar *
-get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type, 
-                 guint l3_offset)
+packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size, 
+                                  link_type_t link_type, guint l3_offset)
 {
   decode_proto_t decp;
-  guint i = 0;
+  guint i;
   gchar *prot;
 
   g_assert (p != NULL);
@@ -176,9 +175,17 @@ get_packet_prot (const guint8 * p, guint raw_size, link_type_t link_type,
       break;
     }
 
-  prot = packet_protos_dump(decp.pr);
-  packet_protos_delete(decp.pr);
-  return prot;
+  /* first position is top proto */
+  for (i = STACK_SIZE ; i>0 ; --i)
+    {
+      if (decp.pr->protonames[i])
+        {
+          decp.pr->protonames[0] = g_strdup(decp.pr->protonames[i]);
+          break;
+        }
+    }
+
+  return decp.pr;
 }				/* get_packet_prot */
 
 /* ------------------------------------------------------------

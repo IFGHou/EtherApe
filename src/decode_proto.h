@@ -21,10 +21,12 @@
 #ifndef DECODE_PROTO_H
 #define DECODE_PROTO_H
 
+#include "pkt_info.h"
+
 /* extracts the protocol stack from packet, and returs it as a newly allocated
- * string */
-gchar *get_packet_prot (const guint8 * packet, guint raw_size, 
-                              link_type_t link_type, guint l3_offset);
+ * packet_protos_t */
+packet_protos_t *get_packet_prot (const guint8 * packet, guint raw_size, 
+                                  link_type_t link_type, guint l3_offset);
 
 
 #endif

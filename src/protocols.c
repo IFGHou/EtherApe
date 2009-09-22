@@ -65,39 +65,37 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 {
   GList *protocol_item;
   protocol_t *protocol_info;
-  gchar **tokens = NULL;
   guint i;
 
   g_assert(packet);
   g_assert(pstk);
 
-  tokens = g_strsplit (packet->prot_desc, "/", 0);
-
   for (i = 0; i <= STACK_SIZE; i++)
     {
+      if (!(packet->prot_desc->protonames[i]))
+        continue;
+      
       protocol_item = g_list_find_custom (pstk->protostack[i],
-                                          tokens[i],
+                                          packet->prot_desc->protonames[i],
                                           protocol_compare);
       if (protocol_item)
         protocol_info = protocol_item->data;
       else
 	{
           /* If there is yet not such protocol, create it */
-	  protocol_info = protocol_t_create(tokens[i]);
+	  protocol_info = protocol_t_create(packet->prot_desc->protonames[i]);
 	  pstk->protostack[i] = g_list_prepend (pstk->protostack[i], protocol_info);
 	}
 
-      g_assert( !strcmp(protocol_info->name, tokens[i]));
+      g_assert( !strcmp(protocol_info->name, packet->prot_desc->protonames[i]));
       basic_stats_add(&protocol_info->stats, packet->size);
     }
-  g_strfreev (tokens);
 }				/* add_protocol */
 
 
 void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
 {
   guint i = 0;
-  gchar **tokens = NULL;
   GList *item = NULL;
   protocol_t *protocol = NULL;
 
@@ -107,11 +105,10 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
     return;
 
   /* We remove protocol aggregate information */
-  tokens = g_strsplit (packet->prot_desc, "/", 0);
-  while ((i <= STACK_SIZE) && tokens[i])
+  while ((i <= STACK_SIZE) && packet->prot_desc->protonames[i])
     {
       item = g_list_find_custom (pstk->protostack[i],
-                                 tokens[i],
+                                 packet->prot_desc->protonames[i],
                                  protocol_compare);
       if (!item)
         {
@@ -121,11 +118,10 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
         }
       protocol = item->data;
 
-      g_assert( !strcmp(protocol->name, tokens[i]));
+      g_assert( !strcmp(protocol->name, packet->prot_desc->protonames[i]));
       basic_stats_sub(&protocol->stats, packet->size);
       i++;
     }
-  g_strfreev (tokens);
 }
 
 /* calculates averages on protocol stack items */

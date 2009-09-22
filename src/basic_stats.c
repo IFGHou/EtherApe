@@ -88,19 +88,12 @@ gchar *packet_protos_dump(const packet_protos_t *pt)
   gint i;
   GString *msg;
 
-  /* first position is top proto */
-  for (i = STACK_SIZE ; i>=0 ; --i)
-    {
-      if (pt->protonames[i])
-        {
-          msg = g_string_new(pt->protonames[i]);
-          break;
-        }
-    }
-  if (!msg)
+  msg=g_string_new("");
+  if (pt->protonames[0])
+    msg = g_string_new(pt->protonames[0]);
+  else
     msg = g_string_new("UNKNOWN");
-  
-  for (i = 0; i<=STACK_SIZE ; ++i)
+  for (i = 1; i<=STACK_SIZE ; ++i)
     {
       if (pt->protonames[i])
         g_string_append_printf(msg, "/%s", pt->protonames[i]);
@@ -148,7 +141,7 @@ void packet_list_item_delete(packet_list_item_t *pli)
           if (pli->info->ref_count < 1)
             {
               /* packet now unused, delete it */
-              g_free (pli->info->prot_desc);
+              packet_protos_delete(pli->info->prot_desc);
               g_free (pli->info);
     
               /* global packet stats */

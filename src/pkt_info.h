@@ -51,7 +51,7 @@ typedef struct
 {
   guint size;			/* Size in bytes of the packet */
   struct timeval timestamp;	/* Time at which the packet was heard */
-  gchar *prot_desc;		/* Packet protocol tree */
+  packet_protos_t *prot_desc;	/* Packet protocol tree */
   guint ref_count;		/* How many structures are referencing this 
 				 * packet. When the count reaches zero the packet
 				 * is deleted */

@@ -23,4 +23,5 @@
 void get_packet_names (protostack_t *pstk,
 		       const guint8 * packet,
 		       guint16 size,
-		       const gchar * prot_stack, packet_direction direction);
+		       const packet_protos_t * prot_stack, 
+                       packet_direction direction);
