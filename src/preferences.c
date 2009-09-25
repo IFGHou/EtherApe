@@ -226,6 +226,7 @@ duplicate_config(const struct pref_struct *src)
   struct pref_struct *t;
 
   t = g_malloc(sizeof(struct pref_struct));
+  g_assert(t);
 
   t->input_file = NULL;
   t->text_color=NULL;
@@ -1041,6 +1042,7 @@ color_list_to_pref (void)
 
   ncolors = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (ep.gs), NULL);
   pref.colors = g_malloc (sizeof (gchar *) * (ncolors+1) );
+  g_assert(pref.colors);
 
   gtk_tree_model_get_iter_first (GTK_TREE_MODEL (ep.gs), &it);
   for (i = 0; i < ncolors; i++)

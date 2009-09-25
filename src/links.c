@@ -81,7 +81,7 @@ link_t *link_create(const link_id_t *link_id)
   guint i = STACK_SIZE;
 
   link = g_malloc (sizeof (link_t));
-  
+  g_assert(link);
 
   link->link_id = *link_id;
 

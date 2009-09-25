@@ -765,7 +765,7 @@ Square Root</property>
                                   <widget class="GtkLabel" id="label104">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Traffic</property>
+                                    <property name="label" translatable="yes">Traffic Statistics</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -800,7 +800,7 @@ Square Root</property>
                                   <widget class="GtkLabel" id="label105">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Protocol Info</property>
+                                    <property name="label" translatable="yes">Protocol Statistics</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -907,7 +907,7 @@ Square Root</property>
                                   <widget class="GtkLabel" id="label116">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Traffic</property>
+                                    <property name="label" translatable="yes">Traffic Statistics</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -942,7 +942,7 @@ Square Root</property>
                                   <widget class="GtkLabel" id="label117">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Protocol Info</property>
+                                    <property name="label" translatable="yes">Protocol Statistics</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1010,19 +1010,6 @@ Square Root</property>
                               <widget class="GtkVBox" id="vbox46">
                                 <property name="visible">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label111">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Traffic</property>
-                                    <property name="use_underline">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <widget class="GtkSpinButton" id="proto_to_spin">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -1034,7 +1021,7 @@ Square Root</property>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
-                                    <property name="position">1</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                               </widget>

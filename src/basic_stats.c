@@ -118,6 +118,7 @@ packet_list_item_create(packet_info_t *i, packet_direction d)
   g_assert(i);
 
   newit = g_malloc( sizeof(packet_list_item_t) );
+  g_assert(newit);
 
   /* increments refcount of packet */
   i->ref_count++;

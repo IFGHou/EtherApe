@@ -319,6 +319,8 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 
   /* allocate 0-filled, so it will be NULL-terminated */
   argv = g_malloc0 (sizeof (gchar *) * 4);
+  g_assert(argv);
+
   argc = 1;
 
   argv[0] = client_data;

@@ -980,6 +980,8 @@ get_ftp (decode_proto_t *dp)
 
   /* We have a passive message. Get the port */
   mesg = g_malloc (size + 1);
+  g_assert(mesg);
+
   memcpy (mesg, dp->packet + dp->offset, size);
   mesg[size] = '\0';
 

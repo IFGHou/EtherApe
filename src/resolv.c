@@ -174,6 +174,7 @@ serv_name_lookup (u_int port, u_int proto)
     {
       tp = table[i & (HASHPORTSIZE - 1)] =
 	(hashname_t *) g_malloc (sizeof (hashname_t));
+      g_assert(tp);
     }
   else
     {
@@ -186,6 +187,7 @@ serv_name_lookup (u_int port, u_int proto)
 	  if (tp->next == NULL)
 	    {
 	      tp->next = (hashname_t *) g_malloc (sizeof (hashname_t));
+              g_assert(tp->next);
 	      tp = tp->next;
 	      break;
 	    }
@@ -436,6 +438,7 @@ add_manuf_name (u_char * addr, char * name)
     {
       tp = table[((int) addr[2]) & (HASHMANUFSIZE - 1)] =
 	(hashmanuf_t *) g_malloc (sizeof (hashmanuf_t));
+      g_assert(tp);
     }
   else
     {
@@ -444,6 +447,7 @@ add_manuf_name (u_char * addr, char * name)
 	  if (tp->next == NULL)
 	    {
 	      tp->next = (hashmanuf_t *) g_malloc (sizeof (hashmanuf_t));
+              g_assert(tp->next);
 	      tp = tp->next;
 	      break;
 	    }
@@ -528,6 +532,7 @@ eth_name_lookup (const u_char * addr)
     {
       tp = table[(i ^ j) & (HASHETHSIZE - 1)] =
 	(hashether_t *) g_malloc (sizeof (hashether_t));
+      g_assert(tp);
     }
   else
     {
@@ -540,6 +545,7 @@ eth_name_lookup (const u_char * addr)
 	  if (tp->next == NULL)
 	    {
 	      tp->next = (hashether_t *) g_malloc (sizeof (hashether_t));
+              g_assert(tp->next);
 	      tp = tp->next;
 	      break;
 	    }

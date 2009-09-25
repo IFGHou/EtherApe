@@ -92,6 +92,19 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"NETBIOS-DGM", get_nbdgm_name}
 };
 
+static void missing_data_msg(const name_add_t *nt, const char *pr)
+{
+  if (pr)
+    g_warning
+    (_("not enough captured data, terminating protocol decode for '%s' (level %d)"),
+    pr, nt->decoder.level);
+  else
+    g_warning
+    (_("not enough captured data, terminating protocol decode at level %d"),
+    nt->decoder.level);
+    
+}
+
 static void add_name (gchar * numeric, gchar * resolved, gboolean solved,
                       const node_id_t *node_id, const name_add_t *nt);
 static void decode_next(name_add_t *nt);
@@ -155,10 +168,7 @@ static void decode_next(name_add_t *nt)
     {
       /* before calling the next decoder, we check for size overflow */
       if (nt->packet_size <= nt->offset)
-        {
-          g_critical(_("captured data insufficient, aborting protocol decode"));
           return;
-        }
   
       next_func->function (nt);
     }
@@ -207,7 +217,7 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
   if (nt->packet_size < nt->offset + disp + sz ||
      nt->packet_size < nt->offset + portdisp + sz)
     {
-      g_error(_("captured data insufficient, aborting fill_node_id"));
+      missing_data_msg(nt, NULL);
       return;
     }
 
@@ -346,7 +356,7 @@ get_arp_name (name_add_t *nt)
 
   if (nt->packet_size <= nt->offset + 4)
     {
-      g_critical(_("captured data insufficient, aborting get_arp_name"));
+      missing_data_msg(nt, "ARP");
       return;
     }
 
@@ -357,7 +367,7 @@ get_arp_name (name_add_t *nt)
 
   if (nt->packet_size <= nt->offset + 7)
     {
-      g_critical(_("captured data insufficient, aborting get_arp_name"));
+      missing_data_msg(nt, "ARP");
       return;
     }
 
@@ -437,7 +447,7 @@ get_tcp_name (name_add_t *nt)
 
   if (nt->packet_size <= nt->offset + 14)
     {
-      g_critical(_("captured data insufficient, aborting get_tcp_name"));
+      missing_data_msg(nt, "TCP");
       return;
     }
 
@@ -484,7 +494,7 @@ get_ipxsap_name (name_add_t *nt)
     }
   if (curpos >= nt->packet_size)
     {
-      g_critical(_("captured data insufficient, aborting get_ipxsap_name"));
+      missing_data_msg(nt, "IPXSAP");
       return;
     }
     
@@ -527,7 +537,7 @@ get_nbss_name (name_add_t *nt)
                                      * know what it might mean in the ethereal implementation */
       if (nt->packet_size <= nt->offset + 2)
         {
-          g_critical(_("captured data insufficient, aborting get_nbss_name (on decoding netbios lenght)"));
+          missing_data_msg(nt, "NBSS");
           return;
         }
       length = pntohs ((nt->p + nt->offset + 2));
@@ -535,7 +545,7 @@ get_nbss_name (name_add_t *nt)
       nt->offset += 2;
       if (nt->packet_size <= nt->offset + length)
         {
-          g_critical(_("captured data insufficient, aborting get_nbss_name (on decoding name)"));
+          missing_data_msg(nt, "NBSS");
           return;
         }
 
@@ -625,10 +635,7 @@ get_nbdgm_name (name_add_t *nt)
       add_name (numeric_name, name, TRUE, &nt->node_id, nt);
       g_free (numeric_name);
     }
-
-
 }				/* get_nbdgm_name */
-
 
 
 static void

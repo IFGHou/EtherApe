@@ -143,6 +143,22 @@ void ask_reposition(gboolean r_font)
   need_font_refresh = r_font;
 }
 
+void dump_stats(guint32 diff_msecs)
+{
+  gchar *status_string;
+  status_string = g_strdup_printf (
+    _("Nodes: %d (shown: %d), Links: %d, Conversations: %ld, names %ld. "
+      "Total Packets seen: %g, packets in memory: %g, IP cache entries %ld. "
+      "Refreshed: %u ms"),
+    nodes_catalog_size(), g_tree_nnodes(canvas_nodes), 
+    links_catalog_size(), active_conversations(), active_names(),
+    n_packets, total_mem_packets, ipcache_active_entries(), 
+    (unsigned int) diff_msecs);
+  
+  g_my_info (status_string);
+  g_free(status_string);
+}
+
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
 void
@@ -392,23 +408,6 @@ update_diagram (GtkWidget * canvas)
   diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
   last_time = now;
 
-  if (pref.is_debug)
-    {
-      GString *status_string= g_string_new ("");
-      g_string_printf (status_string,
-        _("Nodes: %d (shown: %d), Links: %d, Conversations: %ld. "
-          "Refresh Period: %d. Total Packets seen: %g, packets in memory: %g. "
-          "IP cache entries %ld - Called by: %s."),
-        nodes_catalog_size(), g_tree_nnodes(canvas_nodes), 
-        links_catalog_size(), active_conversations(),
-        (int) diff_msecs, n_packets, total_mem_packets,
-         ipcache_active_entries(),
-         (is_idle) ? _("IDLE") : _("TIMER"));
-      
-      g_my_debug (status_string->str);
-      g_string_free (status_string, TRUE);
-    }
-
   already_updating = FALSE;
 
   if (!is_idle)
@@ -567,6 +566,8 @@ check_new_node (node_t * node, GtkWidget * canvas)
   if (display_node (node) && !g_tree_lookup (canvas_nodes, &node->node_id))
     {
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
+      g_assert(new_canvas_node);
+      
       new_canvas_node->canvas_node_id = node->node_id;
 
       /* Create a new group to hold the node and its labels */
@@ -995,6 +996,7 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
+      g_assert(new_canvas_link);
       new_canvas_link->canvas_link_id = *link_id;
 
       /* We set the lines position using groups positions */

@@ -391,6 +391,36 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
   g_object_set_data ( G_OBJECT(window), "prot_clist", gv);
 }
 
+static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it, 
+                                 const protocol_list_item_t *row_proto)
+{
+  gchar *ga, *gb, *gc, *gd, *ge;
+  const port_service_t *ps;
+  
+  ga = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
+  gb = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
+  ps = services_port_find(row_proto->name);
+  if (ps)
+    gc = g_strdup_printf ("%d", ps->port);
+  else
+    gc = g_strdup("-");
+  gd = traffic_to_str (row_proto->rowstats.average, TRUE);
+  ge = timeval_to_str (row_proto->rowstats.last_time);
+
+  gtk_list_store_set (gs, it, 
+                      PROTO_COLUMN_ACCUMULATED, ga, 
+                      PROTO_COLUMN_PACKETS, gb,
+                      PROTO_COLUMN_PORT, gc,
+                      PROTO_COLUMN_INSTANTANEOUS, gd,
+                      PROTO_COLUMN_LASTHEARD, ge, -1);
+
+  g_free(ga);
+  g_free(gb);
+  g_free(gc);
+  g_free(gd);
+  g_free(ge);
+}
+
 static void
 update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 {
@@ -398,7 +428,6 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
   gchar *str;
   gboolean res;
   GtkTreeIter it;
-  const port_service_t *ps;
 
   if (!gs || !pstk)
     return; /* nothing to do */
@@ -412,14 +441,18 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 
       /* retrieve current row proto (if present) */
       if (res)
-        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, &row_proto, -1);
+        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, 
+                            &row_proto, -1);
 
       if ( !item )
         {
-          /* no more protos on stack, current row (remove moves to next) */
-          g_free(row_proto->name);
-          g_free(row_proto);
-          res = gtk_list_store_remove (gs, &it);
+          /* no more protos on stack, del current row (remove moves to next) */
+          if (res)
+            {
+              g_free(row_proto->name);
+              g_free(row_proto);
+              res = gtk_list_store_remove (gs, &it);
+            }
           continue;
         }
 
@@ -430,6 +463,8 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
         {
           /* current protocol missing on list, create a new row */
 	  row_proto = g_malloc(sizeof(protocol_list_item_t));
+          g_assert(row_proto);
+          
           row_proto->name = g_strdup(stack_proto->name);
 	  row_proto->color = protohash_color(stack_proto->name);
 
@@ -455,30 +490,7 @@ update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
 
       /* everything ok, update stats */
       row_proto->rowstats = stack_proto->stats;
-
-      str = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
-      gtk_list_store_set (gs, &it, PROTO_COLUMN_ACCUMULATED, str, -1);
-      g_free(str);
-
-      str = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
-      gtk_list_store_set (gs, &it, PROTO_COLUMN_PACKETS, str, -1);
-      g_free (str);
-
-      ps = services_port_find(row_proto->name);
-      if (ps)
-        str = g_strdup_printf ("%d", ps->port);
-      else
-        str = g_strdup("-");
-      gtk_list_store_set (gs, &it, PROTO_COLUMN_PORT, str, -1);
-      g_free (str);
-
-      str = traffic_to_str (row_proto->rowstats.average, TRUE);
-      gtk_list_store_set (gs, &it, PROTO_COLUMN_INSTANTANEOUS, str, -1);
-      g_free(str);
-
-      str = timeval_to_str (row_proto->rowstats.last_time);
-      gtk_list_store_set (gs, &it, PROTO_COLUMN_LASTHEARD, str, -1);
-      g_free(str);
+      update_protocols_row(gs, &it, row_proto);
 
       if (res)
         res = gtk_tree_model_iter_next (GTK_TREE_MODEL (gs), &it);

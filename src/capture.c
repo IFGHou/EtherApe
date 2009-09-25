@@ -546,7 +546,6 @@ stop_capture (void)
   pcap_close (pch_struct);
   g_my_info (_("Capture device stopped or file closed"));
 
-  
   return TRUE;
 }				/* stop_capture */
 
@@ -669,6 +668,8 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));
+  g_assert(packet);
+  
   packet->size = pkt_size;
   packet->timestamp = now;
   packet->ref_count = 0;

@@ -92,6 +92,7 @@ node_create(const node_id_t * node_id, const gchar *node_id_str)
   guint i = STACK_SIZE;
 
   node = g_malloc (sizeof (node_t));
+  g_assert(node);
 
   node->node_id = *node_id;
 

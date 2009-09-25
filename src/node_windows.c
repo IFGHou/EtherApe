@@ -325,8 +325,10 @@ static gboolean nodes_table_iterate(gpointer key, gpointer value, gpointer data)
             /* current node name less than current row means node is new.
                Insert a new node in store before current (it moves to new node),
                fill it and move next */
-            gtk_list_store_prepend(tt->gs, &(tt->it));
+            gtk_list_store_insert_before(tt->gs, &(tt->it), &(tt->it));
             rowitem = g_malloc(sizeof(node_id_t));
+            g_assert(rowitem);
+            
             *rowitem = node->node_id;
             gtk_list_store_set (tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
             nodes_table_update_row(tt->gs, &(tt->it), node);
@@ -345,6 +347,7 @@ static gboolean nodes_table_iterate(gpointer key, gpointer value, gpointer data)
   /* coming here means node is new - append and move next */
   gtk_list_store_prepend(tt->gs, &(tt->it));
   rowitem = g_malloc(sizeof(node_id_t));
+  g_assert(rowitem);
   *rowitem = node->node_id;
   gtk_list_store_set (tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
   nodes_table_update_row(tt->gs, &(tt->it), node);

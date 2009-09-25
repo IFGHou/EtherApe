@@ -31,9 +31,9 @@
 gint
 node_id_compare (const node_id_t * na, const node_id_t * nb)
 {
-  const guint8 *ga = NULL;
-  const guint8 *gb = NULL;
-  int i = 0;
+  const guint8 *ga;
+  const guint8 *gb;
+  int i;
 
   g_assert (na != NULL);
   g_assert (nb != NULL);
@@ -68,24 +68,22 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
     case TCP:
       ga = na->addr.tcp4.host;
       gb = nb->addr.tcp4.host;
-      i = sizeof(na->addr.tcp4.host)+sizeof(na->addr.tcp4.port); /* full struct size */
+      i = sizeof(na->addr.tcp4.host)+sizeof(na->addr.tcp4.port); 
       break;
     default:
       g_error (_("Unsopported ape mode in node_id_compare"));
+      ga = na->addr.eth;
+      gb = nb->addr.eth;
+      i = sizeof(node_addr_t);
+      break;
     }
 
-  while (i)
-    {
-      if (ga[i] < gb[i])
-	{
-	  return -1;
-	}
-      else if (ga[i] > gb[i])
-	return 1;
-      --i;
-    }
-
-  return 0;
+  i = memcmp(ga, gb, i);
+  if (i>1)
+    i=1;
+  else if (i<-1)
+    i=-1;
+  return i;
 }				/* node_id_compare */
 
 gchar *node_id_dump(const node_id_t *id)
@@ -123,16 +121,27 @@ gchar *node_id_dump(const node_id_t *id)
  * name_t implementation
  *
  **************************************************************************/
+static long node_name_count = 0;
+
+long active_names(void)
+{
+  return node_name_count;
+}
+
 name_t * node_name_create(const node_id_t *node_id)
 {
   name_t *name;
   
   g_assert(node_id);
+
   name = g_malloc (sizeof (name_t));
+  g_assert(name);
+  
   name->node_id = *node_id;
   name->accumulated = 0;
   name->numeric_name = NULL;
   name->name = NULL;
+  ++node_name_count;
   return name;
 }
 
@@ -143,6 +152,7 @@ void node_name_delete(name_t * name)
     g_string_free (name->name, TRUE);
     g_string_free (name->numeric_name, TRUE);
     g_free (name);
+    --node_name_count;
   }
 }
 

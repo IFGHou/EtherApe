@@ -63,6 +63,6 @@ void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm,
 gint node_name_id_compare(const name_t *a, const name_t *b);
 gint node_name_freq_compare (gconstpointer a, gconstpointer b);
 gchar *node_name_dump(const name_t *name);
-
+long active_names(void);
 
 #endif

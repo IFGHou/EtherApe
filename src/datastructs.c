@@ -400,6 +400,7 @@ void services_init(void)
   udp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
 
   line = g_malloc (LINESIZE);
+  g_assert(line);
 
   while (fgets (line, LINESIZE, services))
     {
@@ -519,6 +520,8 @@ port_service_t *port_service_new(port_type_t port, const gchar *name)
 {
   port_service_t *p;
   p = g_malloc (sizeof (port_service_t));
+  g_assert(p);
+  
   p->port = port; 
   p->name = g_strdup(name);
   p->preferred = FALSE;

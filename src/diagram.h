@@ -32,3 +32,4 @@ void set_statusbar_msg (gchar * str);
 void delete_gui_protocols (void);
 void ask_reposition(gboolean refresh_font); /* request diagram relayout */
 void change_refresh_period(guint32 newperiod); 
+void dump_stats(guint32 diff_msecs);

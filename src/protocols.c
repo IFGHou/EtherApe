@@ -292,6 +292,7 @@ protocol_t *protocol_t_create(const gchar *protocol_name)
   protocol_t *pr = NULL;
 
   pr = g_malloc (sizeof (protocol_t));
+  g_assert(pr);
   pr->name = g_strdup (protocol_name);
   basic_stats_reset(&pr->stats);
   pr->node_names = NULL;
@@ -390,6 +391,7 @@ void protocol_summary_open(void)
     protocol_summary_close();
 
   protosummary_stats = g_malloc( sizeof(traffic_stats_t) );
+  g_assert(protosummary_stats);
   traffic_stats_init(protosummary_stats);
 }
 

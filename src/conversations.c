@@ -106,6 +106,8 @@ add_conversation (guint32 src_address, guint32 dst_address,
 	      ip_to_str ((guint8 *) & dst), dst_port, data);
 
   conv = g_malloc (sizeof (conversation_t));
+  g_assert(conv);
+  
   conv->src_address = src_address;
   conv->dst_address = dst_address;
   conv->src_port = src_port;

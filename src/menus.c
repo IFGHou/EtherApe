@@ -516,7 +516,7 @@ gui_pause_capture (void)
   set_statusbar_msg (_("Paused"));
 
   g_my_info (_("Diagram paused"));
-
+  dump_stats(0);
 }				/* gui_pause_capture */
 
 
@@ -610,7 +610,7 @@ gui_stop_capture (void)
   g_string_free (status_string, TRUE);
 
   g_my_info (_("Diagram stopped"));
-
+  dump_stats(0);
   return TRUE;
 }				/* gui_stop_capture */
 
