@@ -32,7 +32,7 @@ typedef struct
   gdouble average;		/* Average bytes in or out in the last x ms */
   gdouble aver_accu;		/* Accumulated bytes in the last x ms */
   gdouble accumulated;		/* Accumulated bytes */
-  gdouble accu_packets;         /* Accumulated number of packets */
+  unsigned long accu_packets;   /* Accumulated number of packets */
   struct timeval last_time;	/* Timestamp of the last packet added */
 } basic_stats_t;
 

@@ -146,14 +146,18 @@ void ask_reposition(gboolean r_font)
 void dump_stats(guint32 diff_msecs)
 {
   gchar *status_string;
+  long ipc=ipcache_active_entries();
   status_string = g_strdup_printf (
-    _("Nodes: %d (shown: %d), Links: %d, Conversations: %ld, names %ld. "
-      "Total Packets seen: %g, packets in memory: %g, IP cache entries %ld. "
-      "Refreshed: %u ms"),
-    nodes_catalog_size(), g_tree_nnodes(canvas_nodes), 
-    links_catalog_size(), active_conversations(), active_names(),
-    n_packets, total_mem_packets, ipcache_active_entries(), 
-    (unsigned int) diff_msecs);
+    _("Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, "
+      "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %d, "
+      "on list %ld). IP cache entries %ld. Refreshed: %u ms"),
+                                   nodes_catalog_size(), 
+                                   g_tree_nnodes(canvas_nodes), displayed_nodes, 
+                                   links_catalog_size(), active_conversations(), 
+                                   active_names(), protocol_summary_size(),
+                                   n_packets, total_mem_packets, 
+                                   packet_list_item_count(), ipc, 
+                                   (unsigned int) diff_msecs);
   
   g_my_info (status_string);
   g_free(status_string);
@@ -877,10 +881,7 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &xmin, &ymin, &xmax, &ymax);
   if (!n_nodes)
-    {
       n_nodes = node_i = displayed_nodes;
-      g_my_debug ("Displayed nodes = %d", displayed_nodes);
-    }
 
   xmin += text_compensation;
   xmax -= text_compensation;	/* Reduce the drawable area so that
@@ -966,7 +967,6 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   gnome_canvas_item_show (canvas_node->node_item);
   gnome_canvas_item_request_update (canvas_node->node_item);
 
-
   node_i--;
 
   if (node_i)
@@ -1020,13 +1020,6 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 
       g_signal_connect (G_OBJECT (new_canvas_link->link_item), "event",
 			(GtkSignalFunc) link_item_event, new_canvas_link);
-
-
-      if (pref.is_debug)
-      {
-        gchar *str = link_id_node_names(link_id);
-        g_free(str);
-      }
 
     }
 
@@ -1246,9 +1239,9 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
       if (node)
         {
           node_protocols_window_create( &canvas_node->canvas_node_id );
-          g_my_info ("Nodes: %d. Canvas nodes: %d", nodes_catalog_size(),
-                     nodes_catalog_size());
-          if (pref.is_debug)
+          g_my_info ("Nodes: %d (shown %u)", nodes_catalog_size(),
+                     displayed_nodes);
+          if (DEBUG_ENABLED)
             {
               gchar *msg = node_dump(node);
               g_my_debug(msg);

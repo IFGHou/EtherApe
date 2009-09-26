@@ -23,8 +23,9 @@
 
 typedef struct
 {
-  gchar *protocol;
-  gboolean must_resolve;
+  const gchar *protocol;
+  gboolean must_resolve; /* true if a name must be resolved to be used */
+  
 } name_decode_t;
 
 static name_decode_t ethernet_sequence[] = { 
@@ -213,9 +214,13 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
             {
               /* node expired, remove */
               GList **delete_list = (GList **)delete_list_ptr;
-    
-              g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-                     _("Queuing node '%s' for remove"),node->name->str);
+
+              if (DEBUG_ENABLED)
+                {
+                  gchar *msg = node_id_dump(&node->node_id);
+                  g_my_debug(_("Queuing node '%s' for remove"), msg);
+                  g_free(msg);
+                }
     
               /* First thing we do is delete the node from the list of new_nodes,
                * if it's there */
@@ -281,7 +286,7 @@ set_node_name (node_t * node, const name_decode_t *sequence)
   guint i;
   gboolean cont;
 
-  if (pref.is_debug)
+  if (DEBUG_ENABLED)
     {
       gchar *msgid = node_id_dump(&node->node_id);
       g_my_debug("set_node_name: node id [%s]", msgid);
@@ -315,7 +320,7 @@ set_node_name (node_t * node, const name_decode_t *sequence)
             }
 
           name = (const name_t *) (name_item->data);
-          if (pref.is_debug)
+          if (DEBUG_ENABLED)
             {
               gchar *msgname = node_name_dump(name);
               if (name->solved || !iter->must_resolve)
@@ -460,10 +465,13 @@ void nodes_catalog_insert(node_t *new_node)
  
   g_tree_insert (all_nodes, &new_node->node_id, new_node);
 
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_INFO,
-          _("New node: %s. Number of nodes %d"),
-          new_node->name->str ? new_node->name->str : "", 
-          nodes_catalog_size());
+  if (INFO_ENABLED)
+    {
+      gchar *msg = node_id_dump(&new_node->node_id);
+      g_my_info(_("New node: %s. Number of nodes %d"),
+                msg, nodes_catalog_size());
+      g_free(msg);
+    }
 }
 
 /* removes AND DESTROYS the named node from catalog */
@@ -472,6 +480,13 @@ void nodes_catalog_remove(const node_id_t *key)
   g_assert(all_nodes);
   g_assert(key);
 
+  if (INFO_ENABLED)
+    {
+      gchar *msg = node_id_dump(key);
+      g_my_info(_("About to remove node: %s. Number of nodes %d"),
+                msg, nodes_catalog_size());
+      g_free(msg);
+    }
   g_tree_remove (all_nodes, key);
 }
 
@@ -532,8 +547,7 @@ nodes_catalog_update_all(void)
   /* free the list - list items are already destroyed */
   g_list_free(delete_list);
 
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-         _("Updated nodes. Active nodes %d"), nodes_catalog_size());
+  g_my_debug(_("Updated nodes. Active nodes %d"), nodes_catalog_size());
 }				/* update_nodes */
 
 static gboolean node_dump_tvs(gpointer key, gpointer value, gpointer data)

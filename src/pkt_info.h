@@ -69,6 +69,7 @@ packet_list_item_t;
 
 packet_list_item_t *packet_list_item_create(packet_info_t *i, packet_direction d);
 void packet_list_item_delete(packet_list_item_t *pli);
+long packet_list_item_count(void);
 
 /* removes a packet from a list of packets, destroying it if necessary
  * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL

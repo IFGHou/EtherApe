@@ -32,8 +32,8 @@ GtkWidget *app1;		/* Pointer to the main app window */
 GtkStatusbar *statusbar;        /* Main window statusbar */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
-gdouble n_packets;		/* Number of total packets received */
-gdouble total_mem_packets;	/* Number of packets currently in memory */
+unsigned long n_packets;	/* Number of total packets received */
+gint total_mem_packets;	        /* Number of packets currently in memory */
 
 link_type_t linktype;		/* Type of device we are listening to */
 
@@ -45,7 +45,7 @@ struct pref_struct
   gchar *input_file;		/* Capture file to read from */
   gboolean name_res;		/* Whether dns lookups are performed */
   apemode_t mode;		/* Mode of operation. Can be
-				 * ETHERNET, IP, UDP or TCP */
+				 * T.RING/FDDI/ETHERNET, IP or TCP */
 
 /* Diagram settings */
 
@@ -110,12 +110,15 @@ struct pref_struct
   gchar *interface;		/* Network interface to listen to */
   gchar *filter;		/* Pcap filter to be used */
 
-  gboolean is_debug;    /* TRUE if DEBUG specified on environment */
+  GLogLevelFlags debug_mask;    /* debug mask active */
 
   gboolean zero_delay;  /* TRUE if delay processing tcpdump files is disabled */
 
   gchar *glade_file;    /* fullspec of xml glade file */
 }
 pref;
+
+#define DEBUG_ENABLED  (pref.debug_mask & G_LOG_LEVEL_DEBUG)
+#define INFO_ENABLED  (pref.debug_mask & G_LOG_LEVEL_INFO)
 
 #endif

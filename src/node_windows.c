@@ -51,7 +51,7 @@ void nodes_wnd_show(void)
   nodes_wnd = glade_xml_get_widget (xml, "nodes_wnd");
   nodes_check = GTK_CHECK_MENU_ITEM(glade_xml_get_widget (xml, "nodes_check"));
 
-  if (pref.is_debug)
+  if (DEBUG_ENABLED)
     {
       gchar *nodemsg = nodes_catalog_dump();
       g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, nodemsg);
@@ -278,7 +278,7 @@ static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it,
   
   sa = traffic_to_str (stats->average, TRUE);
   sb = traffic_to_str (stats->accumulated, FALSE);
-  sc = g_strdup_printf ("%.0f", stats->accu_packets);
+  sc = g_strdup_printf ("%lu", stats->accu_packets);
   sd = timeval_to_str (stats->last_time);
 
   gtk_list_store_set (gs, it, 

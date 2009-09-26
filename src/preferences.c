@@ -81,7 +81,7 @@ void init_config(struct pref_struct *p)
   p->averaging_time=3000;	
   p->interface=NULL;
   p->filter=NULL;
-  p->is_debug=FALSE;
+  p->debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
   p->zero_delay=FALSE;
 }
 
@@ -302,7 +302,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->interface = g_strdup(src->interface);
   tgt->filter = g_strdup(src->filter);
 
-  tgt->is_debug = src->is_debug;
+  tgt->debug_mask = src->debug_mask;
   tgt->zero_delay = src->zero_delay;
 }
 

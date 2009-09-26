@@ -42,7 +42,6 @@
  *
  **************************************************************************/
 static gboolean quiet = FALSE;
-static GLogLevelFlags debug_mask;
 static void (*oldhandler) (int);
 
 /***************************************************************************
@@ -248,7 +247,6 @@ main (int argc, char *argv[])
   
   gui_start_capture ();
 
-
   /* MAIN LOOP */
   gtk_main ();
 
@@ -272,31 +270,28 @@ set_debug_level (void)
   const gchar *env_debug;
   env_debug = g_getenv("APE_DEBUG");
 
-  debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
+  pref.debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
 
   if (env_debug)
     {
       if (!g_ascii_strcasecmp(env_debug, "INFO"))
-	debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
+	pref.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
       else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
-	debug_mask = G_LOG_LEVEL_MASK;
+	pref.debug_mask = G_LOG_LEVEL_MASK;
     }
 
   if (quiet)
-    debug_mask = 0;
-
-  /* if someone requested debug infos, enable the relevant flag */
-  pref.is_debug = (debug_mask & G_LOG_LEVEL_DEBUG) ? TRUE : FALSE;
+    pref.debug_mask = 0;
 
   g_log_set_handler (NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
-  g_my_debug ("debug_mask %d", debug_mask);
+  g_my_debug ("debug_mask %d", pref.debug_mask);
 }
 
 static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
 {
-  if (mask & debug_mask)
+  if (mask & pref.debug_mask)
     g_log_default_handler (NULL, mask, message, user_data);
 }
 

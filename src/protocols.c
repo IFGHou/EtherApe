@@ -433,11 +433,21 @@ void protocol_summary_update_all(void)
 }
 
 /* number of protos at specified level */
-guint protocol_summary_size(size_t level)
+long protocol_summary_size(void)
 {
-  if (!protosummary_stats || level > STACK_SIZE)
+  long totproto = 0;
+  gint i;
+  if (!protosummary_stats)
     return 0;
-  return g_list_length(protosummary_stats->stats_protos.protostack[level]);
+  for (i = 0; i <= STACK_SIZE ; ++i)
+    {
+      if (protosummary_stats->stats_protos.protostack[i])
+        {
+          totproto += 
+              g_list_length(protosummary_stats->stats_protos.protostack[i]);
+        }
+    }
+  return totproto;
 }
 
 

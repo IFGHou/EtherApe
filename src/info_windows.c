@@ -391,6 +391,26 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
   g_object_set_data ( G_OBJECT(window), "prot_clist", gv);
 }
 
+static void protocols_table_clear(GtkListStore *gs)
+{
+  gboolean res;
+  GtkTreeIter it;
+
+  res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
+  while (res)
+    {
+      protocol_list_item_t *row_proto = NULL;
+      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, 
+                          &row_proto, -1);
+      if (row_proto)
+        {
+          g_free(row_proto->name);
+          g_free(row_proto);
+          res = gtk_list_store_remove (gs, &it);
+        }
+    }
+}
+
 static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it, 
                                  const protocol_list_item_t *row_proto)
 {
@@ -398,7 +418,7 @@ static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it,
   const port_service_t *ps;
   
   ga = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
-  gb = g_strdup_printf ("%.0f", row_proto->rowstats.accu_packets);
+  gb = g_strdup_printf ("%lu", row_proto->rowstats.accu_packets);
   ps = services_port_find(row_proto->name);
   if (ps)
     gc = g_strdup_printf ("%d", ps->port);
@@ -572,7 +592,7 @@ update_protocols_window (void)
 
   /* retrieve view and model (store) */
   GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
-  if (!gv || !GTK_WIDGET_VISIBLE (gv))
+  if (!gv)
     return;			/* error or hidden */
   gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
   if (!gs)
@@ -584,7 +604,6 @@ update_protocols_window (void)
     }
 
   update_protocols_table(gs, protocol_summary_stack());
-
 }				/* update_protocols_window */
 
 void
@@ -606,8 +625,7 @@ on_delete_protocol_window (GtkWidget * wdg, GdkEvent * evt, gpointer ud)
 void
 on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  GtkWidget *protocols_window =
-    glade_xml_get_widget (xml, "protocols_window");
+  GtkWidget *protocols_window = glade_xml_get_widget (xml, "protocols_window");
   if (!protocols_window)
     return;
   if (gtk_check_menu_item_get_active (menuitem))
@@ -617,7 +635,18 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
       update_protocols_window ();
     }
   else
-    gtk_widget_hide (protocols_window);
+    {
+      /* retrieve view and model (store) */
+      GtkListStore *gs;
+      GtkTreeView *gv = GTK_TREE_VIEW(glade_xml_get_widget(xml, "prot_clist"));
+      if (gv)
+        {
+          gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
+          if (gs)
+             protocols_table_clear(gs);
+        }
+      gtk_widget_hide (protocols_window);
+    }
 }				/* on_protocols_check_activate */
 
 /* opens a protocol detail window when the user clicks a proto row */

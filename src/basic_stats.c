@@ -21,6 +21,8 @@
 #include "basic_stats.h"
 #include "ui_utils.h"
 
+static long packet_list_item_n = 0;
+
 /***************************************************************************
  *
  * utility functions
@@ -110,6 +112,11 @@ gchar *packet_protos_dump(const packet_protos_t *pt)
  * packet_list_item_t implementation
  *
  **************************************************************************/
+long packet_list_item_count(void)
+{
+  return packet_list_item_n;
+}
+
 packet_list_item_t *
 packet_list_item_create(packet_info_t *i, packet_direction d)
 {
@@ -126,7 +133,7 @@ packet_list_item_create(packet_info_t *i, packet_direction d)
   /* fills item, adding it to pkt list */
   newit->info = i;
   newit->direction = d;
-
+  ++packet_list_item_n;
   return newit;
 }
 
@@ -151,6 +158,7 @@ void packet_list_item_delete(packet_list_item_t *pli)
         }
     
       g_free(pli);
+      --packet_list_item_n;
     }
 }
 

@@ -136,6 +136,8 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
   if (!packet_l_e)
     {
       /* removed all packets */
+      if (pkt_stat->n_packets)
+        g_critical("n_packets != 0 in traffic_stats_purge_expired_packets");
       pkt_stat->n_packets = 0;
       pkt_stat->pkt_list=NULL;
       pkt_stat->stats.average = 0;
@@ -196,7 +198,7 @@ gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat)
   msg_in = basic_stats_dump(&pkt_stat->stats_in);
   msg_out = basic_stats_dump(&pkt_stat->stats_out);
   msg_proto = protocol_stack_dump(&pkt_stat->stats_protos);
-  msg = g_strdup_printf("active_packets: %f\n"
+  msg = g_strdup_printf("active_packets: %d\n"
                         "  in : [%s]\n"
                         "  out: [%s]\n"
                         "  tot: [%s]\n"

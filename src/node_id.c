@@ -142,6 +142,11 @@ name_t * node_name_create(const node_id_t *node_id)
   name->numeric_name = NULL;
   name->name = NULL;
   ++node_name_count;
+    {
+      gchar *gg = node_id_dump(node_id);
+      g_my_info("node name created (%p): >%s<, total %ld", name, gg, node_name_count);
+      g_free(gg);
+    }
   return name;
 }
 
@@ -149,6 +154,11 @@ void node_name_delete(name_t * name)
 {
   if (name)
   {
+    {
+      gchar *gg = node_id_dump(&name->node_id);
+      g_my_info("node name delete (%p): >%s<, total %ld", name, gg, node_name_count-1);
+      g_free(gg);
+    }
     g_string_free (name->name, TRUE);
     g_string_free (name->numeric_name, TRUE);
     g_free (name);
@@ -159,7 +169,7 @@ void node_name_delete(name_t * name)
 void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
                  gboolean slv, gdouble sz)
 {
-  if (pref.is_debug)
+  if (DEBUG_ENABLED)
     {
       gchar *msgid = node_id_dump(&name->node_id);
       g_my_debug(" node_name_assign: id %s, name %s, num.name %s\n", 

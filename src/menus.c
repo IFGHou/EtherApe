@@ -533,10 +533,10 @@ void gui_eof_capture(void)
   gtk_widget_set_sensitive (widget, TRUE);
   widget = glade_xml_get_widget (xml, "start_menuitem");
   gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (xml, "stop_button");
+/*  widget = glade_xml_get_widget (xml, "stop_button");
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "stop_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
+  gtk_widget_set_sensitive (widget, FALSE);*/
   widget = glade_xml_get_widget (xml, "pause_button");
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");

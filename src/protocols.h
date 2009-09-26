@@ -68,7 +68,7 @@ void protocol_summary_open(void); /* initializes the summary */
 void protocol_summary_close(void); /* frees summary, releasing resources */
 void protocol_summary_add_packet(packet_info_t *packet); /* adds a new packet to summary */
 void protocol_summary_update_all(void); /* update stats on protocol summary */
-guint protocol_summary_size(size_t level); /* number of protos at specified level */
+long protocol_summary_size(void); /* total number of protos */
 void protocol_summary_foreach(size_t level, GFunc func, gpointer data); /* calls func for every proto at level */
 const protocol_t *protocol_summary_find(size_t level, const gchar *protoname); /* finds named protocol */
 const protostack_t *protocol_summary_stack(void); /* access directly the stack (only for proto windows) */

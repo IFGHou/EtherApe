@@ -217,7 +217,7 @@ void links_catalog_insert(link_t *new_link)
  
   g_tree_insert (all_links, &new_link->link_id, new_link);
 
-  if (pref.is_debug)
+  if (DEBUG_ENABLED)
   {
     gchar *str = link_id_node_names(&new_link->link_id);
 
