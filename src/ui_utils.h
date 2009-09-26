@@ -56,4 +56,8 @@ void hide_widget(GtkWidget *wnd, const gchar *lblname);
 void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno, 
                             gboolean r_just);
 
+/* register/get a treeview to/from a window */
+void register_treeview(GtkWidget *window, GtkTreeView *gv);
+GtkTreeView *retrieve_treeview(GtkWidget *window);
+
 #endif

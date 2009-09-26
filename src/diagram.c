@@ -151,7 +151,7 @@ void dump_stats(guint32 diff_msecs)
     _("Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, "
       "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %d, "
       "on list %ld). IP cache entries %ld. Refreshed: %u ms"),
-                                   nodes_catalog_size(), 
+                                   node_count(), 
                                    g_tree_nnodes(canvas_nodes), displayed_nodes, 
                                    links_catalog_size(), active_conversations(), 
                                    active_names(), protocol_summary_size(),

@@ -71,7 +71,6 @@ static void add_node_packet (const guint8 * packet,
 			     packet_direction direction);
 
 
-static GString *print_mem (const node_id_t *node_id);
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 
 
@@ -712,10 +711,8 @@ add_node_packet (const guint8 * raw_packet,
   if (node == NULL)
     {
       /* creates the new node, adding it to the catalog */
-      GString *node_id_str = print_mem (node_id);
-      node = node_create(node_id, node_id_str->str);
-      nodes_catalog_insert(node);
-      g_string_free(node_id_str, TRUE);
+      node = nodes_catalog_new(node_id);
+      g_assert(node);
     }
 
   traffic_stats_add_packet(&node->node_stats, packet, direction);
@@ -739,63 +736,3 @@ dns_ready (gpointer data, gint fd, GdkInputCondition cond)
   dns_ack ();
 }
 
-
-/* creates a new string from the given address */
-static GString *
-print_mem (const node_id_t *node_id)
-{
-  static const gchar hex_digits[16] = "0123456789abcdef";
-  gchar cur[50];
-  char punct = ':';
-  gchar *p;
-  int i;
-  guint32 octet;
-  const guint8 *ad = NULL;
-  guint length = 0;
-
-  switch (node_id->node_type)
-    {
-    case ETHERNET:
-      ad = node_id->addr.eth;
-      length = sizeof(node_id->addr.eth);
-      break;
-    case FDDI:
-      ad = node_id->addr.fddi;
-      length = sizeof(node_id->addr.fddi);
-      break;
-    case IEEE802:
-      ad = node_id->addr.i802;
-      length = sizeof(node_id->addr.i802);
-      break;
-    case IP:
-      ad = node_id->addr.ip4;
-      length = sizeof(node_id->addr.ip4);
-      break;
-    case TCP:
-      ad = node_id->addr.tcp4.host;
-      length = sizeof(node_id->addr.tcp4);
-      break;
-    default:
-      g_error (_("Unsopported ape mode in print_mem"));
-    }
-
-  if (length * 3 >= 50)
-     g_error (_("Invalid length in print_mem"));
-    
-  p = &cur[length * 3];
-  *--p = '\0';
-  i = length - 1;
-  for (;;)
-    {
-      octet = ad[i];
-      *--p = hex_digits[octet & 0xF];
-      octet >>= 4;
-      *--p = hex_digits[octet & 0xF];
-      if (i == 0)
-	break;
-      if (punct)
-	*--p = punct;
-      i--;
-    }
-  return g_string_new(p);
-}				/* print_mem */

@@ -86,10 +86,43 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
   return i;
 }				/* node_id_compare */
 
+/* returns a newly allocated string with a human-readable id */
+gchar *node_id_str(const node_id_t *id)
+{
+  gchar *msg;
+  g_assert(id);
+  
+  switch (id->node_type)
+    {
+    case ETHERNET:
+      msg = g_strdup(ether_to_str(id->addr.eth));
+      break;
+    case FDDI:
+      msg = g_strdup(ether_to_str(id->addr.fddi));
+      break;
+    case IEEE802:
+      msg = g_strdup(ether_to_str(id->addr.fddi));
+      break;
+    case IP:
+      msg = g_strdup(ip_to_str (id->addr.ip4));
+      break;
+    case TCP:
+      msg = g_strdup_printf("%s:%d", ip_to_str (id->addr.tcp4.host), 
+                            *(guint16 *) (id->addr.tcp4.port));
+      break;
+    default:
+      g_error("node_id_type %d unknown", (int) (id->node_type));
+      break;
+    }
+
+  return msg;
+}
+
+
 gchar *node_id_dump(const node_id_t *id)
 {
   gchar *msg;
-
+  g_assert(id);
   switch (id->node_type)
     {
     case ETHERNET:
@@ -109,7 +142,7 @@ gchar *node_id_dump(const node_id_t *id)
                             *(guint16 *) (id->addr.tcp4.port));
       break;
     default:
-      msg = g_strdup_printf("node_id_type unknown");
+      msg = g_strdup_printf("node_id_type %d unknown", (int)(id->node_type));
       break;
     }
 
@@ -144,7 +177,8 @@ name_t * node_name_create(const node_id_t *node_id)
   ++node_name_count;
     {
       gchar *gg = node_id_dump(node_id);
-      g_my_info("node name created (%p): >%s<, total %ld", name, gg, node_name_count);
+      g_my_debug("node name created (%p): >%s<, total %ld", name, 
+                 gg, node_name_count);
       g_free(gg);
     }
   return name;
@@ -156,7 +190,8 @@ void node_name_delete(name_t * name)
   {
     {
       gchar *gg = node_id_dump(&name->node_id);
-      g_my_info("node name delete (%p): >%s<, total %ld", name, gg, node_name_count-1);
+      g_my_debug("node name delete (%p): >%s<, total %ld", name, 
+                 gg, node_name_count-1);
       g_free(gg);
     }
     g_string_free (name->name, TRUE);

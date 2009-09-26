@@ -43,6 +43,9 @@ typedef struct
   node_addr_t addr;
 } node_id_t;
 gint node_id_compare (const node_id_t *a, const node_id_t *b);
+/* returns a newly allocated string with a human-readable id */
+gchar *node_id_str(const node_id_t *id); 
+/* returns a newly allocated string with a dump of id */
 gchar *node_id_dump(const node_id_t *id);
 
 /* a node name */

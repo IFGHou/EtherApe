@@ -79,7 +79,8 @@ static void update_link_info_window (GtkWidget *window);
 
 /* ----------------------------------------------------------
 
-   Protocol Info Detail window functions (prot_info_windows)
+   Generic Protocol Info Detail window functions (prot_info_windows)
+   Used to display nodes and links detail data (and protos)
 
    ---------------------------------------------------------- */
 /* Comparison function used to compare prot_info_windows */
@@ -341,12 +342,21 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
   return ret;
 }
 
-static void
-create_protocols_table (GtkWidget *window, GtkTreeView *gv)
+static GtkListStore *create_protocols_table (GtkWidget *window)
 {
+  GtkTreeView *gv;
   GtkListStore *gs;
   GtkTreeViewColumn *gc;
   int i;
+
+  /* get the treeview, if present */
+  gv = retrieve_treeview(window);
+  if (!gv)
+    return NULL; 
+
+  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
+  if (gs)
+    return gs;
 
   /* create the store  - it uses 8 values, six displayable, one proto color 
      and the data pointer */
@@ -387,8 +397,7 @@ create_protocols_table (GtkWidget *window, GtkTreeView *gv)
                                         PROTO_COLUMN_NAME,
 					GTK_SORT_ASCENDING);
 
-  /* register the treeview in the window */
-  g_object_set_data ( G_OBJECT(window), "prot_clist", gv);
+  return gs;
 }
 
 static void protocols_table_clear(GtkListStore *gs)
@@ -441,18 +450,23 @@ static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it,
   g_free(ge);
 }
 
-static void
-update_protocols_table(GtkListStore *gs, const protostack_t *pstk)
+static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
 {
+  GtkListStore *gs;
   GList *item;
   gchar *str;
   gboolean res;
   GtkTreeIter it;
 
-  if (!gs || !pstk)
+  gs = create_protocols_table (window);
+  if (!gs)
     return; /* nothing to do */
 
-  item = pstk->protostack[pref.stack_level];
+  if (pstk)
+    item = pstk->protostack[pref.stack_level];
+  else
+    item = NULL;
+  
   res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
   while (res || item)
     {
@@ -581,29 +595,33 @@ on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
 
 /* ----------------------------------------------------------
 
-   General Protocol Info window functions (protocols_window) 
+   General Protocol Info window functions (protocols_window)
+   Displays the global protocol table
 
    ---------------------------------------------------------- */
 
 static void
 update_protocols_window (void)
 {
+  GtkWidget *window;
+  GtkTreeView *gv;
   GtkListStore *gs = NULL;
 
-  /* retrieve view and model (store) */
-  GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
+  window = glade_xml_get_widget (xml, "protocols_window");
+  gv = retrieve_treeview(window);
   if (!gv)
-    return;			/* error or hidden */
-  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-  if (!gs)
     {
-      create_protocols_table (glade_xml_get_widget (xml, "protocols_window"), gv);
-      gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-      if (!gs)
-        return;			/* error */
+      /* register gv */
+      gv = gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
+      if (!gv)
+        {
+          g_critical("can't find prot_clist");
+          return;
+        }
+      register_treeview(window, gv);
     }
-
-  update_protocols_table(gs, protocol_summary_stack());
+  
+  update_protocols_table(window, protocol_summary_stack());
 }				/* update_protocols_window */
 
 void
@@ -831,11 +849,13 @@ stats_info_create(const gchar *idkey, gpointer key)
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_proto");
+
+  /* get and register the tree view */
+  gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
+  register_treeview(window, gv);
 
   /* create columns of proto list */
-  gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
-  create_protocols_table (window, gv);
+  create_protocols_table (window);
 
   g_object_unref (xml_info_window);
   
@@ -850,7 +870,7 @@ stats_info_create(const gchar *idkey, gpointer key)
 
 
 static void
-stats_info_update(GtkWidget *window, GtkListStore *gs, const traffic_stats_t *stats, 
+stats_info_update(GtkWidget *window, const traffic_stats_t *stats, 
                   gboolean totals_only)
 {
   if (!stats)
@@ -864,7 +884,7 @@ stats_info_update(GtkWidget *window, GtkListStore *gs, const traffic_stats_t *st
           update_gtklabel(window, "node_iproto_accum_in", "X");
           update_gtklabel(window, "node_iproto_accum_out", "X");
         }
-      gtk_list_store_clear(gs);
+      update_protocols_table(window, NULL);
       gtk_widget_queue_resize (GTK_WIDGET (window));
     }
   else
@@ -892,7 +912,7 @@ stats_info_update(GtkWidget *window, GtkListStore *gs, const traffic_stats_t *st
           g_free(str);
         }
       /* update protocol table */
-      update_protocols_table(gs, &stats->stats_protos);
+      update_protocols_table(window, &stats->stats_protos);
     }
 }
 
@@ -929,21 +949,13 @@ update_node_protocols_window (GtkWidget *window)
   const node_id_t *node_id;
   const node_t *node;
 
-  /* retrieve view and model (store) */
-  gv = GTK_TREE_VIEW (g_object_get_data (G_OBJECT (window), "node_iproto_proto"));
-  if (!gv)
-    return;			/* error or hidden */
-  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-  if (!gs)
-     return;			/* error */
-
   node_id = g_object_get_data (G_OBJECT (window), "node_id");
   node = nodes_catalog_find(node_id);
   if (!node)
     {
       /* node expired, clear stats */
       update_gtklabel(window, "node_iproto_numeric_name", _("Node timed out"));
-      stats_info_update(window, gs, NULL, FALSE);
+      stats_info_update(window, NULL, FALSE);
       return;
     }
 
@@ -952,7 +964,7 @@ update_node_protocols_window (GtkWidget *window)
   update_gtklabel(window, "node_iproto_name", node->name->str);
   update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
   
-  stats_info_update(window, gs, &node->node_stats, FALSE);
+  stats_info_update(window, &node->node_stats, FALSE);
 }
 
 /****************************************************************************
@@ -1006,14 +1018,6 @@ update_link_info_window (GtkWidget *window)
   const node_t *node;
   gchar *linkname;
 
-  /* retrieve view and model (store) */
-  gv = GTK_TREE_VIEW (g_object_get_data (G_OBJECT (window), "node_iproto_proto"));
-  if (!gv)
-    return;			/* error or hidden */
-  gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
-  if (!gs)
-     return;			/* error */
-
   /* updates column descriptions */
   show_widget(window, "src_label");
   show_widget(window, "dst_label");
@@ -1028,7 +1032,7 @@ update_link_info_window (GtkWidget *window)
       /* node expired, clear stats */
       update_gtklabel(window, "node_iproto_numeric_name", _("Link timed out"));
       update_gtklabel(window, "node_iproto_numeric_name_b", "");
-      stats_info_update(window, gs, NULL, TRUE);
+      stats_info_update(window, NULL, TRUE);
       return;
     }
 
@@ -1060,5 +1064,5 @@ update_link_info_window (GtkWidget *window)
     update_gtklabel(window, "node_iproto_numeric_name_b", _("Node timed out"));
   }
 
-  stats_info_update(window, gs, &link->link_stats, TRUE);
+  stats_info_update(window, &link->link_stats, TRUE);
 }

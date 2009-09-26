@@ -33,9 +33,10 @@ typedef struct
 }
 node_t;
 
-node_t *node_create(const node_id_t * node_id, const gchar *node_id_str); /* creates a new node */
+node_t *node_create(const node_id_t * node_id); /* creates a new node */
 void node_delete(node_t *node); /* destroys a node, releasing memory */
 gchar *node_dump(const node_t * node);
+gint node_count(void); /* total number of nodes in memory */
 gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
 /* methods to handle every new node not yet handled in the main app */
@@ -48,7 +49,7 @@ node_t *new_nodes_pop(void);	/* Returns a new node that hasn't been heard of */
 void nodes_catalog_open(void); /* initializes the catalog */
 void nodes_catalog_close(void); /* closes the catalog, releasing all nodes */
 node_t *nodes_catalog_find(const node_id_t *key); /* finds a node */
-void nodes_catalog_insert(node_t *new_node); /* inserts a new node */
+node_t *nodes_catalog_new(const node_id_t *node_id); /* creates and inserts a new node */
 void nodes_catalog_remove(const node_id_t *key); /* removes AND DESTROYS the named node from catalog */
 gint nodes_catalog_size(void); /* returns the current number of nodes in catalog */
 void nodes_catalog_foreach(GTraverseFunc func, gpointer data); /* calls the func for every node */

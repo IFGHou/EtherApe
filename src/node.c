@@ -76,6 +76,7 @@ static name_decode_t tcp_sequence[] = {
 };
 
 static GTree *all_nodes = NULL;	/* Has all the nodes heard on the network */
+static gint nodes_num = 0;      /* nodes counter */
 
 /***************************************************************************
  *
@@ -87,27 +88,38 @@ static void set_node_name (node_t * node, const name_decode_t *sequence);
 
 /* Allocates a new node structure */
 node_t *
-node_create(const node_id_t * node_id, const gchar *node_id_str)
+node_create(const node_id_t * node_id)
 {
   node_t *node;
-  guint i = STACK_SIZE;
+  gchar *name;
+  guint i;
 
+  g_assert(node_id);
+  
   node = g_malloc (sizeof (node_t));
   g_assert(node);
 
   node->node_id = *node_id;
 
-  node->name = g_string_new(node_id_str);
-  node->numeric_name = g_string_new(node_id_str);
+  name = node_id_str(node_id);
+  node->name = g_string_new(name);
+  node->numeric_name = g_string_new(name);
+  g_free(name);
 
-  while (i + 1)
-    {
+  for (i = 0 ; i <= STACK_SIZE; ++i)
       node->main_prot[i] = NULL;
-      i--;
-    }
 
   traffic_stats_init(&node->node_stats);
 
+  ++nodes_num;
+
+  if (INFO_ENABLED)
+    {
+      gchar *msg = node_id_dump(&node->node_id);
+      g_my_info(_("New node: %s. Number of nodes %d"),
+                msg, nodes_num);
+      g_free(msg);
+    }
   return node;
 }				/* create_node */
 
@@ -133,7 +145,20 @@ void node_delete(node_t *node)
 
   traffic_stats_reset(&node->node_stats);
 
+  if (INFO_ENABLED)
+    {
+      gchar *msg = node_id_dump(&node->node_id);
+      g_my_info(_("delete node: %s. Number of nodes %d"),
+                msg, nodes_num-1);
+      g_free(msg);
+    }
   g_free (node);
+  --nodes_num;
+}
+
+gint node_count(void)
+{
+  return nodes_num;
 }
 
 gchar *node_dump(const node_t * node)
@@ -458,20 +483,19 @@ void nodes_catalog_close(void)
 }
 
 /* insert a new node */
-void nodes_catalog_insert(node_t *new_node)
+node_t *nodes_catalog_new(const node_id_t *node_id)
 {
+  node_t *new_node;
+  
   g_assert(all_nodes);
-  g_assert(new_node);
- 
-  g_tree_insert (all_nodes, &new_node->node_id, new_node);
+  g_assert(node_id);
 
-  if (INFO_ENABLED)
-    {
-      gchar *msg = node_id_dump(&new_node->node_id);
-      g_my_info(_("New node: %s. Number of nodes %d"),
-                msg, nodes_catalog_size());
-      g_free(msg);
-    }
+  new_node = node_create(node_id);
+  if (!new_node)
+    return NULL;
+  
+  g_tree_insert (all_nodes, &new_node->node_id, new_node);
+  return new_node;
 }
 
 /* removes AND DESTROYS the named node from catalog */
@@ -479,14 +503,6 @@ void nodes_catalog_remove(const node_id_t *key)
 {
   g_assert(all_nodes);
   g_assert(key);
-
-  if (INFO_ENABLED)
-    {
-      gchar *msg = node_id_dump(key);
-      g_my_info(_("About to remove node: %s. Number of nodes %d"),
-                msg, nodes_catalog_size());
-      g_free(msg);
-    }
   g_tree_remove (all_nodes, key);
 }
 

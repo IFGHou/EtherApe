@@ -152,3 +152,16 @@ gchar *traffic_to_str (gdouble traffic, gboolean is_speed)
 
   return str;
 }				/* traffic_to_str */
+
+/* register/get a treeview to/from a window */
+void register_treeview(GtkWidget *window, GtkTreeView *gv)
+{
+  g_assert(window);
+  g_object_set_data ( G_OBJECT(window), "EA_gv", gv);
+}
+GtkTreeView *retrieve_treeview(GtkWidget *window)
+{
+  if (!window)
+    return NULL;
+  return GTK_TREE_VIEW(g_object_get_data ( G_OBJECT(window), "EA_gv"));
+}

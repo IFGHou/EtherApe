@@ -65,6 +65,7 @@ void nodes_wnd_show(void)
   gdk_window_raise (nodes_wnd->window);
   if (nodes_check && !gtk_check_menu_item_get_active(nodes_check))
     gtk_check_menu_item_set_active(nodes_check, TRUE);
+  nodes_wnd_update();
 }
 
 void nodes_wnd_hide(void)
@@ -185,16 +186,16 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   int i;
 
   /* get the treeview */
-  gv = GTK_TREE_VIEW(g_object_get_data ( G_OBJECT(window), "gv"));
+  gv = retrieve_treeview(window);
   if (!gv)
     {
       gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "nodes_table"));
       if (!gv)
         {
-          g_error("can't find nodes_table");
+          g_critical("can't find nodes_table");
           return NULL;
         }
-      g_object_set_data ( G_OBJECT(window), "gv", gv);
+      register_treeview(window, gv);
     }
 
   sort_model = gtk_tree_view_get_model(gv);
@@ -245,7 +246,7 @@ static void nodes_table_clear(GtkWidget *window)
   GtkTreeIter it;
   gboolean res;
 
-  gv = GTK_TREE_VIEW(g_object_get_data ( G_OBJECT(window), "gv"));
+  gv = retrieve_treeview(window);
   if (!gv)
     return; /* gv not registered, store doesn't exists */
   
