@@ -421,30 +421,34 @@ get_tcp_name (name_add_t *nt)
 {
   guint8 th_off_x2;
   guint8 tcp_len;
-  GString *numeric_name, *resolved_name;
 
-  if (nt->dir == OUTBOUND)
-      fill_node_id(&nt->node_id, TCP, nt, -8, 0);
-  else
-      fill_node_id(&nt->node_id, TCP, nt, -4, 2);
+  /* tcp names are useful only if someone uses them ... */
+  if (pref.mode == TCP || pref.mode == UDP)
+    {
+      gchar *numeric_name, *resolved_name;
+      if (nt->dir == OUTBOUND)
+          fill_node_id(&nt->node_id, TCP, nt, -8, 0);
+      else
+          fill_node_id(&nt->node_id, TCP, nt, -4, 2);
 
-  numeric_name = g_string_new("");
-  g_string_printf(numeric_name, "%s:%d",ip_to_str(nt->node_id.addr.tcp4.host),
-                                *(guint16 *) (nt->node_id.addr.tcp4.port));
+      numeric_name = g_strdup_printf("%s:%d",
+                                     ip_to_str(nt->node_id.addr.tcp4.host),
+                                     *(guint16 *) (nt->node_id.addr.tcp4.port));
+
+      resolved_name = g_strdup_printf("%s:%s",
+                                      dns_lookup (
+                                                  pntohl (nt->node_id.addr.tcp4.host), 
+                                                  TRUE),
+                                      get_tcp_port
+                                         (*(guint16 *)(nt->node_id.addr.tcp4.port))
+                                     );
+
+      add_name (numeric_name, resolved_name, TRUE, &nt->node_id, nt);
+
+      g_free (numeric_name);
+      g_free (resolved_name);
+    }
   
-  resolved_name = g_string_new (dns_lookup (pntohl (nt->node_id.addr.tcp4.host), TRUE));
-  resolved_name = g_string_append_c (resolved_name, ':');
-  resolved_name = g_string_append (resolved_name,
-				   get_tcp_port (*(guint16 *)
-						 (nt->node_id.addr.tcp4.port)));
-
-  add_name (numeric_name->str, resolved_name->str, TRUE, &nt->node_id, nt);
-
-  g_string_free (numeric_name, TRUE);
-  numeric_name = NULL;
-  g_string_free (resolved_name, TRUE);
-  resolved_name = NULL;
-
   if (nt->packet_size <= nt->offset + 14)
     {
       missing_data_msg(nt, "TCP");
