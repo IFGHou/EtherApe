@@ -105,6 +105,8 @@ static gboolean need_font_refresh = TRUE;/* Force font refresh during layout */
 static gint diagram_timeout;	/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
 
+static long canvas_obj_count = 0; /* counter of canvas objects */
+
 /***************************************************************************
  *
  * local Function definitions
@@ -150,17 +152,38 @@ void dump_stats(guint32 diff_msecs)
   status_string = g_strdup_printf (
     _("Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, "
       "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %d, "
-      "on list %ld). IP cache entries %ld. Refreshed: %u ms"),
+      "on list %ld). IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"),
                                    node_count(), 
                                    g_tree_nnodes(canvas_nodes), displayed_nodes, 
                                    links_catalog_size(), active_conversations(), 
                                    active_names(), protocol_summary_size(),
                                    n_packets, total_mem_packets, 
-                                   packet_list_item_count(), ipc, 
+                                   packet_list_item_count(), ipc,
+                                   canvas_obj_count,
                                    (unsigned int) diff_msecs);
   
   g_my_info (status_string);
   g_free(status_string);
+}
+
+/* called when a watched object is finalized */
+static void finalize_callback(gpointer data, GObject *obj)
+{
+  --canvas_obj_count;
+}
+/* increase reference to object and optionally register a callback to check 
+ * for reference leaks */
+static void addref_canvas_obj(GObject *obj)
+{
+  g_assert(obj);
+  g_object_ref_sink(obj);
+
+  if (INFO_ENABLED)
+    {
+      /* to check for resource leaks, we ask for a notify ... */
+      g_object_weak_ref(obj, finalize_callback, NULL);
+      ++canvas_obj_count;
+    }
 }
 
 /* It updates controls from values of variables, and connects control
@@ -238,12 +261,6 @@ destroying_idle (gpointer data)
 static void 
 canvas_node_delete(canvas_node_t *canvas_node)
 {
-  if (canvas_node->group_item)
-    {
-      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-      g_object_unref (G_OBJECT (canvas_node->group_item));
-      canvas_node->group_item = NULL;
-    }
   if (canvas_node->node_item)
     {
       gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
@@ -252,9 +269,20 @@ canvas_node_delete(canvas_node_t *canvas_node)
     }
   if (canvas_node->text_item)
     {
+      gnome_canvas_item_set (canvas_node->text_item,
+                             "text", NULL, 
+                             "font", NULL,
+                             "fill_color", NULL,
+                             NULL);
       gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
       g_object_unref (G_OBJECT (canvas_node->text_item));
       canvas_node->text_item = NULL;
+    }
+  if (canvas_node->group_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
+      g_object_unref (G_OBJECT (canvas_node->group_item));
+      canvas_node->group_item = NULL;
     }
 
   g_free (canvas_node);
@@ -580,7 +608,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 							 GNOME_TYPE_CANVAS_GROUP,
 							 "x", 100.0, 
                                                          "y", 100.0, NULL));
-      g_object_ref_sink(G_OBJECT (group));
+      addref_canvas_obj(G_OBJECT (group));
       new_canvas_node->group_item = group;
 
       new_canvas_node->node_item
@@ -593,7 +621,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 				 "fill_color", "white",
 				 "outline_color", "black",
 				 "width_pixels", 0, NULL);
-      g_object_ref_sink(G_OBJECT (new_canvas_node->node_item));
+      addref_canvas_obj(G_OBJECT (new_canvas_node->node_item));
 
       new_canvas_node->text_item =
 	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
@@ -603,7 +631,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 			       "anchor", GTK_ANCHOR_CENTER,
 			       "font", pref.fontname,
 			       "fill_color", pref.text_color, NULL);
-      g_object_ref_sink(G_OBJECT (new_canvas_node->text_item));
+      addref_canvas_obj(G_OBJECT (new_canvas_node->text_item));
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
@@ -716,16 +744,16 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
   /*TODO why is it exactly that sometimes it is NULL? */
   if (canvas_node->text_item)
     {
-      g_object_get (G_OBJECT (canvas_node->text_item), "text", &nametmp,
+      g_object_get (G_OBJECT (canvas_node->text_item), 
+                    "text", &nametmp,
 		    NULL);
       if (strcmp (nametmp, node->name->str))
 	{
 	  gnome_canvas_item_set (canvas_node->text_item,
-				 "text", node->name->str, NULL);
+				 "text", node->name->str, 
+                                 NULL);
 	  gnome_canvas_item_request_update (canvas_node->text_item);
 	}
-
-      /* Memprof is telling us that we have to free the string */
       g_free (nametmp);
     }
 
@@ -1009,7 +1037,7 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 	= gnome_canvas_item_new (group,
 				 gnome_canvas_polygon_get_type (),
 				 "points", points, "fill_color", "tan", NULL);
-      g_object_ref (G_OBJECT (new_canvas_link->link_item));
+      addref_canvas_obj(G_OBJECT (new_canvas_link->link_item));
 
 
       g_tree_insert (canvas_links,
