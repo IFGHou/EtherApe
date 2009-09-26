@@ -307,7 +307,7 @@ log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
 {
   if (mask & pref.debug_mask)
-    g_log_default_handler (NULL, mask, message, user_data);
+    g_log_default_handler ("EtherApe", mask, message, user_data);
 }
 
 /* the gnome session manager may call this function */
