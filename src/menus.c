@@ -307,9 +307,15 @@ void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
+  gchar *msg;
   about = glade_xml_get_widget (xml, "about1");
 
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
+
+  msg = g_strdup_printf("HG revision: %s", 
+                        (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : _("-unknown-"));
+  gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), msg);
+  g_free(msg);
 
   gtk_widget_show (about);
 }				/* on_about1_activate */

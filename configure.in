@@ -165,6 +165,14 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
+dnl get mercurial tip
+AC_CONFIG_COMMANDS_PRE([
+ hg_id=`hg identify -i`
+ AC_DEFINE_UNQUOTED(PACKAGE_SCM_REV, ["${hg_id}"], [mercurial revision])
+ AC_MSG_NOTICE([mercurial id: ${hg_id}])
+])
+
+
 dnl see if the linker allows "--export-dynamic"
 AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
 tmp_LDFLAGS=$LDFLAGS

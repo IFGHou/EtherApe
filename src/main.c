@@ -76,6 +76,7 @@ main (int argc, char *argv[])
   gchar *cl_input_file = NULL;
   gboolean cl_numeric = FALSE;
   glong mdelay = G_MAXLONG;
+  gchar *version;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
@@ -103,7 +104,6 @@ main (int argc, char *argv[])
     {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
-
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
 
@@ -118,10 +118,14 @@ main (int argc, char *argv[])
   if (!getenv ("GNOME_DESKTOP_ICON"))
     putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
 
-
   /* We initiate the application and read command line options */
-  gnome_program_init ("EtherApe", VERSION, LIBGNOMEUI_MODULE, argc, argv,
+  version = g_strdup_printf("%s (hg id %s)", VERSION, 
+                            (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : 
+                              _("-unknown-"));
+  gnome_program_init ("EtherApe", version, 
+                      LIBGNOMEUI_MODULE, argc, argv,
 		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
+  g_free(version);
 
 
   /* We obtain application parameters 
