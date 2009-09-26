@@ -26,7 +26,7 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include "common.h"
+#include "globals.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -46,6 +46,11 @@ extern "C"
   char *safe_strncpy (char *dst, const char *src, size_t maxlen);
   char *safe_strncat (char *dst, const char *src, size_t maxlen);
 
+  /* utility functions */
+  const gchar *ip_to_str (const guint8 * ad);
+  const gchar *ether_to_str (const guint8 * ad);
+  const gchar *ether_to_str_punct (const guint8 * ad, char punct);
+  
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

@@ -75,6 +75,7 @@ main (int argc, char *argv[])
   gchar *cl_interface = NULL;
   gchar *cl_input_file = NULL;
   gboolean cl_numeric = FALSE;
+  glong mdelay = G_MAXLONG;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
@@ -95,9 +96,10 @@ main (int argc, char *argv[])
     {"numeric", 'n', POPT_ARG_NONE, &cl_numeric, 0,
      N_("don't convert addresses to names"), NULL},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
-     N_("Don't show warnings"), NULL},
-    {"zero-delay", 'z', POPT_ARG_NONE, &(pref.zero_delay), 0,
-     N_("zero delay for reading capture files [cli only]"), NULL},
+     N_("Disable informational messages"), NULL},
+    {"max-delay", 0, POPT_ARG_LONG, &mdelay,  0,
+     N_("maximum packet delay in ms for reading capture files [cli only]"),
+      N_("<delay>")},
     {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
@@ -173,13 +175,22 @@ main (int argc, char *argv[])
 	pref.mode = IP;
       else if (strstr (mode_string, "tcp"))
 	pref.mode = TCP;
-      else if (strstr (mode_string, "udp"))
-	pref.mode = UDP;
       else
 	g_warning (_
 		   ("Unrecognized mode. Do etherape --help for a list of modes"));
     }
 
+  if (mdelay >= 0)
+    {
+      if (mdelay < G_MAXLONG)
+        {
+          pref.max_delay = mdelay;
+          g_message("Maximum delay set to %lu ms", pref.max_delay);
+        }
+    }
+  else
+      g_message("Invalid maximum delay %ld, ignored", mdelay);
+  
   /* Glade */
 
   glade_gnome_init ();

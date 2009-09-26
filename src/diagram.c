@@ -238,7 +238,6 @@ void change_refresh_period(guint32 newperiod)
 void
 destroying_timeout (gpointer data)
 {
-/* g_message ("A timeout function has been destroyed"); */
   diagram_timeout = g_idle_add_full (G_PRIORITY_DEFAULT,
 				     (GtkFunction) update_diagram,
 				     data, (GDestroyNotify) destroying_idle);
@@ -248,7 +247,6 @@ destroying_timeout (gpointer data)
 void
 destroying_idle (gpointer data)
 {
-/*   g_message ("An idle function has been destroyed"); */
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					pref.refresh_period,
 					(GtkFunction) update_diagram,
@@ -269,11 +267,6 @@ canvas_node_delete(canvas_node_t *canvas_node)
     }
   if (canvas_node->text_item)
     {
-      gnome_canvas_item_set (canvas_node->text_item,
-                             "text", NULL, 
-                             "font", NULL,
-                             "fill_color", NULL,
-                             NULL);
       gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
       g_object_unref (G_OBJECT (canvas_node->text_item));
       canvas_node->text_item = NULL;

@@ -343,19 +343,8 @@ init_capture (void)
 	  str = g_strdup ("tcp");
 	}
       break;
-    case UDP:
-      if (pref.filter && *pref.filter)
-	str = g_strconcat ("udp and ", pref.filter, NULL);
-      else
-	{
-	  g_free (pref.filter);
-	  pref.filter = NULL;
-	  str = g_strdup ("udp");
-	}
-      break;
     case DEFAULT:
     case ETHERNET:
-    case IPX:
     case FDDI:
     case IEEE802:
       if (pref.filter)
@@ -599,10 +588,12 @@ get_offline_packet (void)
 
       /* diff can be negative when listening to multiple interfaces.
        * In that case the delay is zeroed */
-      if (pref.zero_delay || diff.tv_sec < 0)
+      if (diff.tv_sec < 0)
         ms_to_next = 0; 
       else 
         ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+      if (ms_to_next > pref.max_delay)
+          ms_to_next = pref.max_delay;
 
       last_time = this_time;
       break;

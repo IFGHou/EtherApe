@@ -112,7 +112,7 @@ struct pref_struct
 
   GLogLevelFlags debug_mask;    /* debug mask active */
 
-  gboolean zero_delay;  /* TRUE if delay processing tcpdump files is disabled */
+  guint max_delay;    /* max packet distance when replaying a file */
 
   gchar *glade_file;    /* fullspec of xml glade file */
 }

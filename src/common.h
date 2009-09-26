@@ -121,12 +121,10 @@ typedef enum
 {
   DEFAULT = -1,
   ETHERNET = 0,
-  FDDI = 1,
-  IEEE802 = 2,
-  IP = 3,
-  IPX = 4,
-  TCP = 5,
-  UDP = 6
+  FDDI,
+  IEEE802,
+  IP,
+  TCP
 }
 apemode_t;
 

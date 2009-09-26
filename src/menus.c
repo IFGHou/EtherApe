@@ -180,8 +180,6 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
     new_mode = IP;
   else if (!strcmp ("tcp_radio", menuname))
     new_mode = TCP;
-  else if (!strcmp ("udp_radio", menuname))
-    new_mode = UDP;
   else
     {
       g_my_critical ("Unsopported mode in on_mode_radio_activate");
@@ -430,9 +428,6 @@ gui_start_capture (void)
     case TCP:
       widget = glade_xml_get_widget (xml, "tcp_radio");
       break;
-    case UDP:
-      widget = glade_xml_get_widget (xml, "udp_radio");
-      break;
     default:
       g_warning (_("Invalid mode: %d"), pref.mode);
       return;
@@ -468,9 +463,6 @@ gui_start_capture (void)
       break;
     case TCP:
       g_string_append (status_string, _(" in TCP mode"));
-      break;
-    case UDP:
-      g_string_append (status_string, _(" in UDP mode"));
       break;
     default:
       g_critical (_("Invalid mode: %d"), pref.mode);

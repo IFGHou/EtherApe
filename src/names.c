@@ -19,11 +19,12 @@
 
 #include <netinet/in.h>
 #include "globals.h"
+#include "names.h"
 #include "dns.h"
 #include "eth_resolv.h"
 #include "names_netbios.h"
-#include "names.h"
 #include "protocols.h"
+#include "util.h"
 
 typedef struct
 {
@@ -105,8 +106,9 @@ static void missing_data_msg(const name_add_t *nt, const char *pr)
     
 }
 
-static void add_name (gchar * numeric, gchar * resolved, gboolean solved,
-                      const node_id_t *node_id, const name_add_t *nt);
+static void add_name (const gchar * numeric, const gchar * resolved, 
+                      gboolean solved, const node_id_t *node_id, 
+                      const name_add_t *nt);
 static void decode_next(name_add_t *nt);
 
 void
@@ -273,7 +275,7 @@ get_linux_sll_name (name_add_t *nt)
 /* common handling for ethernet-like data */
 static void eth_name_common(apemode_t ethmode, name_add_t *nt)
 {
-  gchar *numeric = NULL, *solved = NULL;
+  const gchar *numeric, *solved;
   gboolean found_in_ethers = FALSE;
 
   if (nt->dir == INBOUND)
@@ -423,7 +425,7 @@ get_tcp_name (name_add_t *nt)
   guint8 tcp_len;
 
   /* tcp names are useful only if someone uses them ... */
-  if (pref.mode == TCP || pref.mode == UDP)
+  if (pref.mode == TCP)
     {
       gchar *numeric_name, *resolved_name;
       if (nt->dir == OUTBOUND)
@@ -643,8 +645,8 @@ get_nbdgm_name (name_add_t *nt)
 
 
 static void
-add_name (gchar * numeric_name, gchar * resolved_name, gboolean solved, 
-          const node_id_t *node_id, const name_add_t *nt)
+add_name (const gchar * numeric_name, const gchar * resolved_name, 
+          gboolean solved, const node_id_t *node_id, const name_add_t *nt)
 {
   protocol_t *protocol = NULL;
   GList *name_item = NULL;
