@@ -1,44 +1,44 @@
 Known bugs
 
-   For   a  list  of  known  issues  and  bugs,  point  your  browser  to
+   For a list of known issues and bugs, point your browser to
    [1]http://sourceforge.net/bugs/?group_id=2712
 
 How to report a bug
 
-   Having  users is great, not only because it is the purpose of creating
-   this  program in the first place, but because they stress your program
+   Having users is great, not only because it is the purpose of creating
+   this program in the first place, but because they stress your program
    in many different ways and help you make it more robust.
 
-   If  you  do  encounter  a problem with this program, plase write a bug
+   If you do encounter a problem with this program, plase write a bug
    report at [2]http://sourceforge.net/bugs/?group_id=2712
 
-   When  you write your report, I'd be thankful if you could follow these
+   When you write your report, I'd be thankful if you could follow these
    guidelines, in order of importance.
-    1. Make  sure  that  the  most current version does have the bug. Not
-       only  does  this  mean  to  download  the latest version, but also
-       making  sure  that you are _running_ the latest version. Go to src
-       and run as ./etherape
+    1. Make sure that the most current version does have the bug. Not only
+       does this mean to download the latest version, but also making sure
+       that you are _running_ the latest version. Go to src and run as
+       ./etherape
     2. Things to include:
           + Operating system and distribution
           + EtherApe version (etherape --version, or check the about box)
           + pcap version (and package version as well)
           + gtk and gnome libs version (package version as well)
           + If possible, a backtrace (See below)
-          + Please  leave  an email address or log in before posting your
+          + Please leave an email address or log in before posting your
             bug, so that I can later get in contact with you.
     3. Read this link first
-       [3]http://www.chiark.greenend.org.uk/~sgtatham/bugs.html   It   is
-       really  informative,  and  it  will  be really useful not only for
+       [3]http://www.chiark.greenend.org.uk/~sgtatham/bugs.html It is
+       really informative, and it will be really useful not only for
        etherape.
 
-   Please  understand  that I _love_ to receive bug reports, because that
-   means  that  I  will  be  improving the program, but the more info you
+   Please understand that I _love_ to receive bug reports, because that
+   means that I will be improving the program, but the more info you
    provide, the faster I'll be able to solve the problem.
 
 How to provide a backtrace
 
-   In  cases  in  which  etherape  is  crashing (not when it produces bad
-   results),  it  is  most useful if I can see what was the program doing
+   In cases in which etherape is crashing (not when it produces bad
+   results), it is most useful if I can see what was the program doing
    when it crashed.
 
    It is actually simple, you just need to type four instructions.
@@ -48,8 +48,8 @@ How to provide a backtrace
 (gdb) run [options your were using]
 (gdb) backtrace
 
-   Here's  an  example  of  what  it would look like. When you write your
-   report,  you  only  need  to send me from the "Program received signal
+   Here's an example of what it would look like. When you write your
+   report, you only need to send me from the "Program received signal
    SIGSEGV" bit onwards.
 argos:~/etherape/src# gdb ./etherape
 GNU gdb 19990928
@@ -91,9 +91,10 @@ canvas_node=0x80e2ab0, canvas=0x80d0cb0) at diagram.c:333
 #10 0x403ed86c in g_main_run () from /usr/lib/libglib-1.2.so.0
 #11 0x401ced97 in gtk_main () from /usr/lib/libgtk-1.2.so.0
 #12 0x804e158 in main (argc=1, argv=0xbffffd34) at main.c:184
-     _________________________________________________________________
 
-   $Id$
+     __________________________________________________________________
+
+   $Id: bug-reporting.html,v 1.1 2000/03/22 07:21:36 toledo Exp $
 
    [4]sourceforge
 

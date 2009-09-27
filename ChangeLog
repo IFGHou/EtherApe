@@ -1,3 +1,325 @@
+2009-09-26  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/main.c:
+	Qualify messages
+	[b31ab1e659f3] [tip]
+
+	* src/decode_proto.c:
+	typo
+	[9c83c69a11eb]
+
+	* config.h.in, configure.in, glade/etherape.glade, src/main.c,
+	src/menus.c:
+	add mercurial id to build
+	[0563f217cc31]
+
+	* glade/etherape.glade, src/capture.c, src/common.h, src/diagram.c,
+	src/dns.c, src/dns.h, src/globals.h, src/main.c, src/menus.c,
+	src/names.c, src/node_id.c, src/preferences.c, src/util.c,
+	src/util.h:
+	removed half-baked protocol types. Renamed option zero-delay to max-
+	delay, with a long argument representing the maximum packet delay in
+	milliseconds.
+	[37772ed43c3e]
+
+	* src/diagram.c:
+	added check for canvas leaks
+	[d44837e55f7f]
+
+	* src/capture.c, src/diagram.c, src/info_windows.c, src/node.c,
+	src/node.h, src/node_id.c, src/node_id.h, src/node_windows.c,
+	src/ui_utils.c, src/ui_utils.h:
+	uniform nodes creation and info protocols
+	[d7aaaf617081]
+
+	* src/names.c:
+	create tcp names only when using tcp mode.
+	[a3daed62aa3b]
+
+	* src/basic_stats.c, src/basic_stats.h, src/capture.c, src/diagram.c,
+	src/globals.h, src/info_windows.c, src/links.c, src/main.c,
+	src/menus.c, src/node.c, src/node_id.c, src/node_windows.c,
+	src/pkt_info.h, src/preferences.c, src/protocols.c, src/protocols.h,
+	src/traffic_stats.c, src/traffic_stats.h:
+	added other debug counts, revised messages mask, clear protocol
+	table on stop
+	[fc31e9570be7]
+
+2009-09-25  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/basic_stats.c, src/capture.c,
+	src/conversations.c, src/datastructs.c, src/decode_proto.c,
+	src/diagram.c, src/diagram.h, src/info_windows.c, src/links.c,
+	src/main.c, src/menus.c, src/names.c, src/node.c, src/node_id.c,
+	src/node_id.h, src/node_windows.c, src/preferences.c,
+	src/protocols.c, src/resolv.c:
+	revised decoder warnings, fixed a bug with nodes window ordering,
+	added several checks for memory allocation
+	[337c95d92420]
+
+2009-09-22  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/basic_stats.c, src/capture.c, src/decode_proto.c,
+	src/decode_proto.h, src/names.c, src/names.h, src/pkt_info.h,
+	src/protocols.c:
+	remove last traces of protocol decode by single string. Now
+	protocol are decoded directly onto a stack, for later use, avoiding
+	all joining and splitting of previous solution.
+	[32ffa9bd3b3a]
+
+	* src/basic_stats.c, src/capture.c, src/decode_proto.c,
+	src/pkt_info.h, src/protocols.h:
+	refactoring of protocol decode
+	[3620bcfb5f23]
+
+2009-09-20  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/node.c:
+	small performance enhancement
+	[02ad5b95c6c2]
+
+	* src/node.c:
+	debug messages
+	[c307dcbd5468]
+
+	* src/capture.c, src/capture.h, src/datastructs.c, src/decode_proto.c,
+	src/decode_proto.h, src/eth_resolv.h, src/names.c, src/node.c,
+	src/node_id.c, src/node_id.h, src/node_windows.c, src/resolv.c:
+	a bit of refactoring, removed unused data and functions and added
+	debug output
+	[dbf6ae51137b]
+
+2009-09-19  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/Makefile.am, src/basic_stats.c, src/basic_stats.h,
+	src/diagram.c, src/globals.h, src/info_windows.c, src/names.c,
+	src/node.c, src/node.h, src/node_id.c, src/node_id.h,
+	src/node_windows.c, src/pkt_info.h, src/protocols.c,
+	src/protocols.h, src/traffic_stats.c, src/traffic_stats.h,
+	src/ui_utils.c, src/ui_utils.h, src/util.h:
+	added several debug dump functions, splitted some files to better
+	handle dependencies
+	[ae73bc223ed4]
+
+2009-09-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c, src/datastructs.c, src/decode_proto.c, src/diagram.c,
+	src/protocols.c:
+	smaller fixes
+	[8df8f42ee795]
+
+	* src/datastructs.c, src/datastructs.h, src/decode_proto.c,
+	src/decode_proto.h, src/diagram.c, src/info_windows.c, src/main.c,
+	src/node_windows.c, src/prot_types.h:
+	Improve protocol mapping by favoring protocols with a user defined
+	color.
+
+	Now protocol name and color are assigned looking a source and
+	destination ports as follows:
+	- if only one port has a name (i.e. is found in the services file)
+	that port is chosen.
+	- if both ports have a name, but only one has a color assigned by the
+	user, then that port wins.
+	- if both ports have a name and a color the minor port is selected.
+	[489f1ff2b0ee]
+
+	* src/protocols.c:
+	honor "group unknown preference"
+	[5607acabcf63]
+
+2009-09-16  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/common.h, src/decode_proto.c, src/diagram.c, src/globals.h,
+	src/links.c, src/main.c, src/node.c:
+	Removed a memory leak. Should fix 2839050
+	[39b2649edd18]
+
+2009-09-15  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/common.h, src/datastructs.c, src/decode_proto.c,
+	src/decode_proto.h, src/diagram.c, src/globals.h, src/ip-cache.c,
+	src/ip-cache.h, src/main.c:
+	trying to integrate memwatch ...
+	[76750529f821]
+
+2009-09-14  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/node_windows.h:
+	forgot a file
+	[bcb6f39d39a9]
+
+2009-09-13  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/Makefile.am, src/common.h, src/diagram.c,
+	src/diagram.h, src/info_windows.c, src/menus.c, src/node.c,
+	src/node.h, src/node_windows.c, src/preferences.c,
+	src/traffic_stats.h, src/ui_utils.c, src/ui_utils.h:
+	Added a window showing statistics on all nodes, even those no longer
+	displayed, but not expired
+	[abbe27132a35]
+
+2009-09-12  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c, src/conversations.c, src/conversations.h,
+	src/decode_proto.c, src/decode_proto.h, src/diagram.c,
+	src/globals.h, src/main.c, src/node.c, src/node.h:
+	Changed loading of services file to avoid timing issues. Revised
+	debug information.
+	[fa9908f5f28c]
+
+	* src/datastructs.c, src/preferences.c, src/traffic_stats.c:
+	preference dialog: remove color numbers
+	[48cdea79319d]
+
+	* src/datastructs.c, src/datastructs.h, src/preferences.c,
+	src/preferences.h:
+	preference dialog: compact same-color protocols
+	[b7f0912cb863]
+
+	* glade/etherape.glade, src/preferences.c, src/preferences.h,
+	src/util.c, src/util.h:
+	Allows changing protocol color
+	[f15e1e88c1ff]
+
+	* NEWS, src/datastructs.c, src/datastructs.h, src/globals.h,
+	src/preferences.c, src/util.c, src/util.h:
+	allow mapping multiple protocols to a color
+	[dcf8f1873ff4]
+
+2009-09-11  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, glade/etherape.glade:
+	typo
+	[dccd61842236]
+
+	* NEWS, glade/etherape.glade, src/preferences.c:
+	Timeouts now expressed in seconds
+	[82e1ec07c3d3]
+
+	* src/decode_proto.c, src/info_windows.c:
+	Make mapping of proto names to port more consistent with port to
+	names trees.
+	[6a881c62f413]
+
+	* glade/etherape.glade, src/preferences.c, src/preferences.h:
+	Label font button now uses GtkFontButton
+	[b495ad866b17]
+
+	* src/callbacks.c, src/conversations.c, src/conversations.h,
+	src/decode_proto.c, src/diagram.c, src/diagram.h,
+	src/info_windows.c, src/menus.c, src/preferences.c:
+	minor cleanings
+	[65a5336aff76]
+
+2009-09-10  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, glade/etherape.glade, src/decode_proto.c, src/info_windows.c,
+	src/preferences.c, src/prot_types.h, src/protocols.h,
+	src/traffic_stats.h:
+	Added port column to protocol infos
+
+	Updated NEWS file, smaller refactorings here and there.
+	[cf0a00cd5520]
+
+	* src/decode_proto.c:
+	removed erroneous size check.
+	[b825464dca5d]
+
+2009-09-08  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/main.c:
+	feature request 2818525, item 6: Made node name and ip selectable in
+	node/link info
+	[9191246ac69b]
+
+2009-09-07  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/diagram.c, src/globals.h,
+	src/preferences.c:
+	Replaced link widht multiplier with a link width - node radius ratio
+	slider.
+
+	This should allow easier adjustment of the values (assuming someone
+	really needs to adjust the node/link ratio).
+	[fd4b42991d82]
+
+	* glade/etherape.glade:
+	Reduce limits on display refresh
+	[b89176b06973]
+
+	* src/callbacks.c, src/diagram.c, src/diagram.h, src/globals.h,
+	src/main.c, src/preferences.c:
+	Changed default timings to values more suited to instant monitoring.
+
+	Default timings were targeted to medium term analisys, but a casual
+	user is more likely to need a short term monitor, with faster
+	response times. Today machines are usually able to bear the graphic
+	load without problems. Small refactoring to remove variables from
+	globals.h
+	[c775e49a4d59]
+
+	* src/Makefile.am, src/callbacks.c, src/capture.c, src/capture.h,
+	src/common.h, src/decode_proto.c, src/decode_proto.h, src/globals.h,
+	src/info_windows.h, src/main.c, src/menus.c, src/menus.h,
+	src/names.c, src/node.h, src/pkt_info.h, src/preferences.c,
+	src/protocols.c, src/util.c:
+	Added header with common declarations and macros, removed some
+	global variables.
+
+	The previous common header, global.h, has all global variable
+	declarations. The new header, common.h, contains only common types
+	and macros, and doesn't include gui headers. This way some files
+	wich included gnome or gtk headers now include only non-gui headers.
+	[ab6df54c5712]
+
+2009-09-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/capture.c, src/diagram.c, src/globals.h,
+	src/preferences.c, src/preferences.h:
+	Aligned to Gtk 2.12+, removed unused "nofade" preference.
+
+	GnomeEntry is deprecated, replaced remaining instances with
+	GtkComboBoxEntry. Now glade file is aligned with Gtk 2.12 (e.g. it
+	requires at least 2.12)
+	[a2ba7f8a83d2]
+
+	* OVERVIEW, configure.in, glade/etherape.glade, src/diagram.c,
+	src/diagram.h, src/globals.h, src/main.c, src/menus.c:
+	Removed bonobo, replaced with Gtk equivalents
+	[e01feab05975]
+
+	* glade/etherape.glade, src/info_windows.c, src/main.c,
+	src/preferences.c:
+	Renamed infile command line option to replay-file to be more
+	consistent with the shortcut. Polished link and node info dlg a bit,
+	removed useless columns menu. Now diagram text color can be
+	specified in preferences.
+	[96b71c5615cc]
+
+2009-09-05  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/capture.c, src/diagram.c, src/globals.h,
+	src/info_windows.c, src/info_windows.h, src/main.c,
+	src/preferences.c, src/preferences.h:
+	Upgraded preferences dialog. Replaced deprecated GtkOptionsMenu
+	Removed old compatibility options. Today just clutter the
+	preferences dialog.
+	[0eb2f730e57f]
+
+	* src/capture.c, src/capture.h, src/diagram.c, src/globals.h,
+	src/info_windows.c, src/main.c, src/menus.c, src/menus.h,
+	src/preferences.c, src/preferences.h:
+	Removed useless command line options. Some cleanups and refactoring.
+	[9a758b9742a3]
+
+	* ChangeLog, Makefile.am, configure.in, glade/Makefile.am,
+	glade/etherape.glade, glade/etherape.glade2, po/POTFILES.in,
+	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
+	src/globals.h, src/main.c, src/menus.c, src/menus.h:
+	now using glade 3 (still in libglade mode). Converted some gnome
+	deprecated widget to new gtk+ equivalents.
+	[176810017dd5]
+
 2009-09-03  R.Ghetta  <bchiara@users.sf.net>
 
 	* glade/etherape.glade2, src/capture.c, src/capture.h, src/diagram.c,

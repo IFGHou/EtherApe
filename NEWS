@@ -3,38 +3,71 @@
    $Date$
 
 
-  Overview of changes in EtherApe 0.9.8 ():
+  Overview of changes in EtherApe 0.9.8 (Sunday Sep 27 2009):
 
-   Switched to glade-3 removing bonobo dock and several other deprecated
-   widgets in the process. Most of the ui now uses directly Gtk+ instead
-   of Gnome.
-   Removed several outdated preferences: diagram is always anti-aliased,
-   links always fade on timeout and info windows show protocol data.
-   Revised default timings, now geared toward instant monitoring. 
-   Previous values where more suited for mid-term analisys.
-   Since sub-second timeouts aren't very useful, and reading milliseconds
-   less than ideal, all expire periods now are entered in seconds.
-   Etherape could map multiple protocols to a single color, but you had to
-   create multiple row with the same color. Now the preferences dialog
-   accepts protocols separated by ',' for the same color and also compacts
-   automatically previously distinct rows.
+   Apart for the usual bug fixes, this release see a the switch to glade-3, the
+   overdue removal of bonobo dock and several other deprecated widgets. 
+   Most of the ui now uses directly Gtk+ instead of Gnome. At this time
+   there isn't a real alternative to GnomeCanvas, so quite a bit of Gnome 
+   still remains.
+   To make partially up for the long delay, there are some new functionality as
+   well: a node listing window, substantial performance enhancements, and some 
+   improvements here and there. See the details below.
+   Note the new timing defaults: out of the box, Etherape will react faster to 
+   traffic changes and give a better "feel" of current the network state.
+   The faster expiration will also help to reduce memory and cpu requirements.
+   On the other hand, "forgetting" inactive nodes faster makes Etherape less 
+   suited for mid-term monitoring; the new values will be too small.
+   I believe this change will be useful to most people, though, and especially
+   suited to newcomers, who often have difficulties understanding the different 
+   timing types. Experienced users can still easily adapt Etherape to their 
+   needs.
+   I have already mentioned the switch to mercurial. A couple months from now 
+   the CVS repository will be shut down.
 
    Changes summary:
-     * Fixed bug 1713590, bad replaying of out-of-order packets (Bug 
-       report by "haywire_dk")
+     * Fixed bug 1713590, bad replaying of out-of-order packets (Bug report 
+       by "haywire_dk")
      * Fixed bug 1435271, about box doesn't report version (Bug report
        by Cullen Newsom, who had to wait more than three years for this
-       fix).
-     * fixed a bug causing no-data tcp packets to have incorrect port.
-     * Added --glade-file option to load a different glade file
+       fix). 
+     * Fixed bug 2839050, a massive memory leak reported by "psistormyamato".
+     * Fixed a bug causing no-data tcp packets to have incorrect port.
+     * Improved performance in several key areas.
+     * Upgraded to glade-3, removed deprecated widgets and functions, tweaked
+       the looks a bit.
+     * Added --glade-file option to load a different glade file.
      * Renamed --infile to --replay-file to be more consistent with the 
        shortcut (-r).
+     * Option --zero-delay (-z) is now replaced by --max-delay, receiving a
+       maximum delay in ms between packet when replaying from file.
      * Revised preferences dialog. Timeouts now expressed in seconds.
      * Added preference for diagram text color.
      * Added port column to protocol infos (Feature request 2818525).
-     * Made node name and ip selectable in node/link info (FR 2818525).
-     * preference dialog now accepts multiple protocols for a color.
-     
+     * Made node name and ip selectable in node/link info (FR 2818525 again).
+     * Preferences dialog now accepts multiple protocols for a color.
+     * Added a node window, showing a table with all non-expired nodes (i.e.
+       both those visible on diagram and the inactive, hidden, but not removed
+       ones).
+     * Removed several outdated preferences: diagram is always anti-aliased,
+       links always fade on timeout and info windows show protocol data.
+     * Revised default timings, now geared toward instant monitoring. 
+       Previous values where more suited for mid-term analisys.
+       Since sub-second timeouts aren't very useful, and reading milliseconds
+       less than ideal, all expire periods now are entered in seconds.
+     * Etherape had always the ability to map multiple protocols to a single 
+       color, but you had to create multiple rows, manually matching the RGB
+       code. Now the preferences dialog accepts protocols separated by ',' for 
+       the same row and also compacts automatically previously distinct rows. 
+       You can also change the row color.
+     * The link width slider now controls the link width/node radius ratio, so
+       changing both node and link size will be easier, while retaining the
+       ability to have a links smaller or greater than nodes.
+     * Expanded internal consistency checks.
+     * Info and debug levels are now enabled by defining the environment 
+       variable APE_DEBUG with values respectively info or debug (case 
+       insensitive).
+ 
 
   Development repository switched to Mercurial (Tuesday Sep 08 2009):
 

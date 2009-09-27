@@ -1,6 +1,15 @@
 User visible features:
 ----------------------
 
+  * change user and drop privileges. Perhaps use also capabilities.
+
+  * identify nodes from protocol window. It could be done by maintaining a
+    node tree for every global protocol.
+
+  * show all node stats in node window
+
+  * revise preferences dialog; allow filtering out netbios names
+
   * Ability to set per node preferences. Like setting an hour long
     averaging time only for the router.
 
@@ -8,18 +17,18 @@ User visible features:
     Once is done you will be able to open and save your own 
     diagrams.
 
-  * Hitting cancel on the preferences window should undo all
-    changes done.
-
 Issues in the source code
 -------------------------
 
+  * rewrite names handling. Do only packet extraction at capture time, name
+    resolution only at display time for the chosen name.
+
   * Generalize a way to return error messages from capture.c
   
-  * Stablish criteria for the meaning of a function's gboolean 
-    return value. Does it mean it was correct or there was an
-    error? There are examples of opposite cases.
-  
+  * use glib datastructs everywhere, instead of a mix of glib and in-house.
+
+  * refactor stop handling; separate clearing data from updating. 
+
   * Why am I using a global "interface" and a second "device"
     in capture.c? Check that I can just use interface.
 
@@ -27,12 +36,6 @@ Issues in the source code
     stack.
 
   * change all those ugly while (i+1) in capture.c
-
-  * Find out a way to customize the gnome message that pops up
-    if a SIGSEGV crashes us.
-
-  * Define GLADEDIR in config.h the same way that PIXMAPS_DIR is, and not
-    just pass it to the compiler
 
 --
 $Id$
