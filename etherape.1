@@ -1,4 +1,4 @@
-.TH etherape 1 "Etherape Manual Page" ""
+.TH etherape 1 "EtherApe Manual Page" ""
 .SH NAME
 etherape \- graphical network traffic browser
 .SH SYNOPSIS
@@ -36,38 +36,32 @@ libpcap, a packet capture and filtering library.
 .PP
 These options can be supplied to the command:
 .TP
-.BR "-m, --mode " "<ethernet|fddi|ip|tcp>"
-set mode of operation (default is lowest level for current device)
-.TP
-.BR "-i, --interface " "<interface name>"
-set interface to listen to
+.BR "-d, --diagram-only"
+don't display any node text identification
 .TP
 .BR "-f, --filter " "<capture filter>"
 set capture filter
 .TP
-.BR "-r, --infile " "<file name>"
-set input file
+.BR "--glade-file " "<filename>"
+uses the named libglade file to load interface instead of the default.
+.TP
+.BR "-i, --interface " "<interface name>"
+set interface to listen to
+.TP
+.BR "-l, --node-limit " "<number>"
+sets the maximum number of node visible
+.TP
+.BR "-m, --mode " "<ethernet|fddi|ip|tcp>"
+set mode of operation (default is lowest level for current device)
+.TP
+.BR "--max-delay " "<delay in ms>"
+caps timestamps to the provided delay when replaying a capture file.
 .TP
 .BR "-n, --numeric"
 don't convert addresses to names
 .TP
-.BR "-d, --diagram-only"
-don't display any node text identification
-.TP
-.BR "-F, --no-fade"
-do not fade old links
-.TP
-.BR "-N, --node-color " "<color>"
-set the node color
-.TP
-.BR "-L, --link-color " "<color>"
-set the link color
-.TP
-.BR "-T, --text-color " "<color>"
-set the text color
-.TP
-.BR "-z, --zero-delay "
-ignores timestamps when replaying a capture file.
+.BR "-r, --replay-file " "<file name>"
+sets input file to replay
 .TP
 .BR "-?, --help"
 show a brief help message
@@ -90,4 +84,5 @@ The etherape webpage is at http://etherape.sourceforge.net/
 .SH AUTHOR
 
 Juan Toledo <toledo@users.sourceforge.net>
+Riccardo Ghetta <bchiara@users.sourceforge.net>
 

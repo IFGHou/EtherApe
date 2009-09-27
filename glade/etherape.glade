@@ -1945,7 +1945,6 @@ Frederic Peters &lt;fpeters@debian.org&gt;
 
 </property>
     <property name="logo">etherape.png</property>
-    <property name="logo_icon_name">etherape.png</property>
     <signal name="destroy" handler="gtk_widget_hide"/>
     <signal name="response" handler="gtk_widget_hide"/>
     <signal name="delete_event" handler="gtk_widget_hide"/>
