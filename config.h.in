@@ -182,9 +182,6 @@
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
 
-/* mercurial revision */
-#undef PACKAGE_SCM_REV
-
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING
 

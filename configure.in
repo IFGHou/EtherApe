@@ -165,12 +165,12 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
-dnl get mercurial tip
-AC_CONFIG_COMMANDS_PRE([
- hg_id=`hg identify -i`
- AC_DEFINE_UNQUOTED(PACKAGE_SCM_REV, ["${hg_id}"], [mercurial revision])
- AC_MSG_NOTICE([mercurial id: ${hg_id}])
-])
+dnl get mercurial version - sadly, this works only on a developer repo ...
+dnl AC_CONFIG_COMMANDS_PRE([
+dnl hg_id=`hg identify -i`
+dnl AC_DEFINE_UNQUOTED(PACKAGE_SCM_REV, ["${hg_id}"], [mercurial revision])
+dnl AC_MSG_NOTICE([mercurial id: ${hg_id}])
+dnl ])
 
 
 dnl see if the linker allows "--export-dynamic"

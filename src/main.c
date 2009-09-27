@@ -118,10 +118,14 @@ main (int argc, char *argv[])
   if (!getenv ("GNOME_DESKTOP_ICON"))
     putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
 
+#ifdef PACKAGE_SCM_REV
   /* We initiate the application and read command line options */
   version = g_strdup_printf("%s (hg id %s)", VERSION, 
                             (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : 
                               _("-unknown-"));
+#else
+  version = g_strdup(VERSION);
+#endif
   gnome_program_init ("EtherApe", version, 
                       LIBGNOMEUI_MODULE, argc, argv,
 		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
