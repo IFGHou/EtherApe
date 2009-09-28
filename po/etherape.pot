@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 08:40+0200\n"
+"POT-Creation-Date: 2009-09-27 09:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -882,166 +882,166 @@ msgid ""
 "\n"
 msgstr ""
 
-#: glade/etherape.glade:1976
+#: glade/etherape.glade:1975
 msgid "EtherApe"
 msgstr ""
 
-#: glade/etherape.glade:1994
+#: glade/etherape.glade:1993
 msgid "_File"
 msgstr ""
 
-#: glade/etherape.glade:2037
+#: glade/etherape.glade:2036
 msgid "_Capture"
 msgstr ""
 
-#: glade/etherape.glade:2044
+#: glade/etherape.glade:2043
 msgid "_Mode"
 msgstr ""
 
-#: glade/etherape.glade:2053
+#: glade/etherape.glade:2052
 msgid "Set Token Ring mode"
 msgstr ""
 
-#: glade/etherape.glade:2054
+#: glade/etherape.glade:2053
 msgid "Token _Ring"
 msgstr ""
 
-#: glade/etherape.glade:2065
+#: glade/etherape.glade:2064
 msgid "Set FDDI mode"
 msgstr ""
 
-#: glade/etherape.glade:2066
+#: glade/etherape.glade:2065
 msgid "_FDDI"
 msgstr ""
 
-#: glade/etherape.glade:2078
+#: glade/etherape.glade:2077
 msgid "Set Ethernet mode"
 msgstr ""
 
-#: glade/etherape.glade:2079
+#: glade/etherape.glade:2078
 msgid "_Ethernet"
 msgstr ""
 
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2095
 msgid "Set IP mode"
 msgstr ""
 
-#: glade/etherape.glade:2097
+#: glade/etherape.glade:2096
 msgid "_IP"
 msgstr ""
 
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2108
 msgid "Set TCP mode"
 msgstr ""
 
-#: glade/etherape.glade:2110
+#: glade/etherape.glade:2109
 msgid "_TCP"
 msgstr ""
 
-#: glade/etherape.glade:2125
+#: glade/etherape.glade:2124
 msgid "_Interfaces"
 msgstr ""
 
-#: glade/etherape.glade:2142 glade/etherape.glade:2306
+#: glade/etherape.glade:2141 glade/etherape.glade:2305
 msgid "Start capture"
 msgstr ""
 
-#: glade/etherape.glade:2161 glade/etherape.glade:2321
+#: glade/etherape.glade:2160 glade/etherape.glade:2320
 msgid "Pause capture"
 msgstr ""
 
-#: glade/etherape.glade:2179 glade/etherape.glade:2336
+#: glade/etherape.glade:2178 glade/etherape.glade:2335
 msgid "Stop capture"
 msgstr ""
 
-#: glade/etherape.glade:2199
+#: glade/etherape.glade:2198
 msgid "_View"
 msgstr ""
 
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2206
 msgid "Show or hide the protocols window"
 msgstr ""
 
-#: glade/etherape.glade:2208
+#: glade/etherape.glade:2207
 msgid "_Protocols"
 msgstr ""
 
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2215
 msgid "Show or hide the nodes window\t"
 msgstr ""
 
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2216
 msgid "_Nodes"
 msgstr ""
 
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2230
 msgid "Show or hide the toolbar"
 msgstr ""
 
-#: glade/etherape.glade:2232
+#: glade/etherape.glade:2231
 msgid "_Toolbar"
 msgstr ""
 
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2241
 msgid "Show or hide the legend"
 msgstr ""
 
-#: glade/etherape.glade:2243
+#: glade/etherape.glade:2242
 msgid "_Legend"
 msgstr ""
 
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2252
 msgid "Show or hide the status bar"
 msgstr ""
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2253
 msgid "_Status Bar"
 msgstr ""
 
-#: glade/etherape.glade:2267
+#: glade/etherape.glade:2266
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2306
 msgid "Start"
 msgstr ""
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2321
 msgid "Pause"
 msgstr ""
 
-#: glade/etherape.glade:2337
+#: glade/etherape.glade:2336
 msgid "Stop"
 msgstr ""
 
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2358
 msgid "Preferences (Ctrl-P)"
 msgstr ""
 
-#: glade/etherape.glade:2360
+#: glade/etherape.glade:2359
 msgid "Pref."
 msgstr ""
 
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2374
 msgid "Display the protocols window"
 msgstr ""
 
-#: glade/etherape.glade:2376
+#: glade/etherape.glade:2375
 msgid "Prot."
 msgstr ""
 
-#: glade/etherape.glade:2441
+#: glade/etherape.glade:2440
 msgid "Protocols"
 msgstr ""
 
-#: glade/etherape.glade:2499
+#: glade/etherape.glade:2498
 msgid "Nodes"
 msgstr ""
 
-#: glade/etherape.glade:2512
+#: glade/etherape.glade:2511
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2517
+#: glade/etherape.glade:2516
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""

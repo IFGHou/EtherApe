@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 08:40+0200\n"
+"POT-Creation-Date: 2009-09-27 09:37+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -955,171 +955,171 @@ msgstr ""
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 #
-#: glade/etherape.glade:1976
+#: glade/etherape.glade:1975
 msgid "EtherApe"
 msgstr "EtherApe"
 
-#: glade/etherape.glade:1994
+#: glade/etherape.glade:1993
 #, fuzzy
 msgid "_File"
 msgstr "Bestand:"
 
-#: glade/etherape.glade:2037
+#: glade/etherape.glade:2036
 msgid "_Capture"
 msgstr "_Luisteren"
 
-#: glade/etherape.glade:2044
+#: glade/etherape.glade:2043
 msgid "_Mode"
 msgstr "_Modus"
 
-#: glade/etherape.glade:2053
+#: glade/etherape.glade:2052
 msgid "Set Token Ring mode"
 msgstr "Kies Token Ring modus"
 
-#: glade/etherape.glade:2054
+#: glade/etherape.glade:2053
 msgid "Token _Ring"
 msgstr "Token _Ring"
 
-#: glade/etherape.glade:2065
+#: glade/etherape.glade:2064
 msgid "Set FDDI mode"
 msgstr "Kies FDDI modus"
 
-#: glade/etherape.glade:2066
+#: glade/etherape.glade:2065
 msgid "_FDDI"
 msgstr "_FDDI"
 
-#: glade/etherape.glade:2078
+#: glade/etherape.glade:2077
 msgid "Set Ethernet mode"
 msgstr "Kies Ethernet modus"
 
-#: glade/etherape.glade:2079
+#: glade/etherape.glade:2078
 msgid "_Ethernet"
 msgstr "_Ethernet"
 
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2095
 msgid "Set IP mode"
 msgstr "Kies IP modus"
 
-#: glade/etherape.glade:2097
+#: glade/etherape.glade:2096
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2108
 msgid "Set TCP mode"
 msgstr "Kies TCP modus"
 
-#: glade/etherape.glade:2110
+#: glade/etherape.glade:2109
 msgid "_TCP"
 msgstr "_TCP"
 
-#: glade/etherape.glade:2125
+#: glade/etherape.glade:2124
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
-#: glade/etherape.glade:2142 glade/etherape.glade:2306
+#: glade/etherape.glade:2141 glade/etherape.glade:2305
 msgid "Start capture"
 msgstr "Start het luisteren"
 
-#: glade/etherape.glade:2161 glade/etherape.glade:2321
+#: glade/etherape.glade:2160 glade/etherape.glade:2320
 msgid "Pause capture"
 msgstr "Pauzeer het luisteren"
 
-#: glade/etherape.glade:2179 glade/etherape.glade:2336
+#: glade/etherape.glade:2178 glade/etherape.glade:2335
 msgid "Stop capture"
 msgstr "Stop het luisteren"
 
-#: glade/etherape.glade:2199
+#: glade/etherape.glade:2198
 #, fuzzy
 msgid "_View"
 msgstr "Bestand:"
 
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2206
 msgid "Show or hide the protocols window"
 msgstr "Protocolvenster verbergen / weergeven"
 
-#: glade/etherape.glade:2208
+#: glade/etherape.glade:2207
 msgid "_Protocols"
 msgstr "_Protocollen"
 
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2215
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Protocolvenster verbergen / weergeven"
 
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2216
 #, fuzzy
 msgid "_Nodes"
 msgstr "_Knooppunten"
 
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2230
 msgid "Show or hide the toolbar"
 msgstr "Werkbalk verbergen / weergeven"
 
-#: glade/etherape.glade:2232
+#: glade/etherape.glade:2231
 msgid "_Toolbar"
 msgstr "_Werkbalk"
 
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2241
 msgid "Show or hide the legend"
 msgstr "Weergeven / verbergen legenda"
 
-#: glade/etherape.glade:2243
+#: glade/etherape.glade:2242
 msgid "_Legend"
 msgstr "_Legenda"
 
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2252
 msgid "Show or hide the status bar"
 msgstr "Weergeven / verbergen statusbalk"
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2253
 msgid "_Status Bar"
 msgstr "_Statusbalk"
 
-#: glade/etherape.glade:2267
+#: glade/etherape.glade:2266
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2306
 msgid "Start"
 msgstr "Start"
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2321
 msgid "Pause"
 msgstr "Pauze"
 
-#: glade/etherape.glade:2337
+#: glade/etherape.glade:2336
 msgid "Stop"
 msgstr "Stop"
 
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2358
 msgid "Preferences (Ctrl-P)"
 msgstr "Voorkeuren (Ctrl-P)"
 
-#: glade/etherape.glade:2360
+#: glade/etherape.glade:2359
 msgid "Pref."
 msgstr "Voorkeuren"
 
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2374
 msgid "Display the protocols window"
 msgstr "Toon protocollenvenster"
 
-#: glade/etherape.glade:2376
+#: glade/etherape.glade:2375
 msgid "Prot."
 msgstr "Protocollen"
 
-#: glade/etherape.glade:2441
+#: glade/etherape.glade:2440
 msgid "Protocols"
 msgstr "Protocollen"
 
-#: glade/etherape.glade:2499
+#: glade/etherape.glade:2498
 msgid "Nodes"
 msgstr "_Knooppunten"
 
-#: glade/etherape.glade:2512
+#: glade/etherape.glade:2511
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2517
+#: glade/etherape.glade:2516
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 

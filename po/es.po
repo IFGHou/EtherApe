@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 08:40+0200\n"
+"POT-Creation-Date: 2009-09-27 09:37+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -1115,208 +1115,208 @@ msgstr ""
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 # 
-#: glade/etherape.glade:1976
+#: glade/etherape.glade:1975
 msgid "EtherApe"
 msgstr "EtherApe"
 
 # src/glade-strings:116
-#: glade/etherape.glade:1994
+#: glade/etherape.glade:1993
 #, fuzzy
 msgid "_File"
 msgstr "Archivo:"
 
 # src/glade-strings:8
-#: glade/etherape.glade:2037
+#: glade/etherape.glade:2036
 msgid "_Capture"
 msgstr "_Captura"
 
 # src/glade-strings:9
-#: glade/etherape.glade:2044
+#: glade/etherape.glade:2043
 msgid "_Mode"
 msgstr "_Modo"
 
 # src/glade-strings:10
-#: glade/etherape.glade:2053
+#: glade/etherape.glade:2052
 msgid "Set Token Ring mode"
 msgstr "Activar modo Token Ring"
 
 # src/glade-strings:11
-#: glade/etherape.glade:2054
+#: glade/etherape.glade:2053
 msgid "Token _Ring"
 msgstr "Token _Ring"
 
 # src/glade-strings:12
-#: glade/etherape.glade:2065
+#: glade/etherape.glade:2064
 msgid "Set FDDI mode"
 msgstr "Activar modo FDDI"
 
 # src/glade-strings:13
-#: glade/etherape.glade:2066
+#: glade/etherape.glade:2065
 msgid "_FDDI"
 msgstr "_FDDI"
 
 # src/glade-strings:14
-#: glade/etherape.glade:2078
+#: glade/etherape.glade:2077
 msgid "Set Ethernet mode"
 msgstr "Activar modo Ethernet"
 
 # src/glade-strings:15
-#: glade/etherape.glade:2079
+#: glade/etherape.glade:2078
 msgid "_Ethernet"
 msgstr "_Ethernet"
 
 # src/glade-strings:16
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2095
 msgid "Set IP mode"
 msgstr "Activar modo IP"
 
 # src/glade-strings:17
-#: glade/etherape.glade:2097
+#: glade/etherape.glade:2096
 msgid "_IP"
 msgstr "_IP"
 
 # src/glade-strings:18
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2108
 msgid "Set TCP mode"
 msgstr "Activar modo TCP"
 
 # src/glade-strings:19
-#: glade/etherape.glade:2110
+#: glade/etherape.glade:2109
 msgid "_TCP"
 msgstr "_TCP"
 
 # src/glade-strings:22
-#: glade/etherape.glade:2125
+#: glade/etherape.glade:2124
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
 # src/glade-strings:23 src/glade-strings:37
-#: glade/etherape.glade:2142 glade/etherape.glade:2306
+#: glade/etherape.glade:2141 glade/etherape.glade:2305
 msgid "Start capture"
 msgstr "Comenzar captura"
 
 # src/glade-strings:25 src/glade-strings:39
-#: glade/etherape.glade:2161 glade/etherape.glade:2321
+#: glade/etherape.glade:2160 glade/etherape.glade:2320
 msgid "Pause capture"
 msgstr "Pausar captura"
 
 # src/glade-strings:27 src/glade-strings:41
-#: glade/etherape.glade:2179 glade/etherape.glade:2336
+#: glade/etherape.glade:2178 glade/etherape.glade:2335
 msgid "Stop capture"
 msgstr "Parar captura"
 
 # src/glade-strings:116
-#: glade/etherape.glade:2199
+#: glade/etherape.glade:2198
 #, fuzzy
 msgid "_View"
 msgstr "Archivo:"
 
 # src/glade-strings:29
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2206
 msgid "Show or hide the protocols window"
 msgstr "Muestra u oculta la ventana de protocolos"
 
 # src/glade-strings:30
-#: glade/etherape.glade:2208
+#: glade/etherape.glade:2207
 msgid "_Protocols"
 msgstr "_Protocolos"
 
 # src/glade-strings:29
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2215
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Muestra u oculta la ventana de protocolos"
 
 # src/glade-strings:155
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2216
 #, fuzzy
 msgid "_Nodes"
 msgstr "Nodos"
 
 # src/glade-strings:31
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2230
 msgid "Show or hide the toolbar"
 msgstr "Muestra u oculta la barra de herramientas"
 
 # src/glade-strings:32
-#: glade/etherape.glade:2232
+#: glade/etherape.glade:2231
 msgid "_Toolbar"
 msgstr "Barra de _herramientas"
 
 # src/glade-strings:33
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2241
 msgid "Show or hide the legend"
 msgstr "Muestra u oculta la leyenda"
 
 # src/glade-strings:34
-#: glade/etherape.glade:2243
+#: glade/etherape.glade:2242
 msgid "_Legend"
 msgstr "_Leyenda"
 
 # src/glade-strings:35
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2252
 msgid "Show or hide the status bar"
 msgstr "Muestra u oculta la barra de estado"
 
 # src/glade-strings:36
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2253
 msgid "_Status Bar"
 msgstr "Barra de _estado"
 
-#: glade/etherape.glade:2267
+#: glade/etherape.glade:2266
 msgid "_Help"
 msgstr ""
 
 # src/glade-strings:38
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2306
 msgid "Start"
 msgstr "Comenzar"
 
 # src/glade-strings:40
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2321
 msgid "Pause"
 msgstr "Pausa"
 
 # src/glade-strings:42
-#: glade/etherape.glade:2337
+#: glade/etherape.glade:2336
 msgid "Stop"
 msgstr "Parar"
 
 # src/glade-strings:43
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2358
 msgid "Preferences (Ctrl-P)"
 msgstr "Preferencias (Ctrl-P)"
 
 # src/glade-strings:44
-#: glade/etherape.glade:2360
+#: glade/etherape.glade:2359
 msgid "Pref."
 msgstr "Pref."
 
 # src/glade-strings:45
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2374
 msgid "Display the protocols window"
 msgstr "Mostrar la ventana de protocolos"
 
 # src/glade-strings:46
-#: glade/etherape.glade:2376
+#: glade/etherape.glade:2375
 msgid "Prot."
 msgstr "Prot."
 
 # src/glade-strings:47
-#: glade/etherape.glade:2441
+#: glade/etherape.glade:2440
 msgid "Protocols"
 msgstr "Protocolos"
 
 # src/glade-strings:155
-#: glade/etherape.glade:2499
+#: glade/etherape.glade:2498
 msgid "Nodes"
 msgstr "Nodos"
 
-#: glade/etherape.glade:2512
+#: glade/etherape.glade:2511
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2517
+#: glade/etherape.glade:2516
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 

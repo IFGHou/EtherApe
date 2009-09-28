@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 08:40+0200\n"
+"POT-Creation-Date: 2009-09-27 09:37+0200\n"
 "PO-Revision-Date: 2001-08-12 16:37+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Görkem <gorkem@gelecek.com.tr>\n"
@@ -936,174 +936,174 @@ msgstr ""
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 #
-#: glade/etherape.glade:1976
+#: glade/etherape.glade:1975
 msgid "EtherApe"
 msgstr "EtherApe"
 
-#: glade/etherape.glade:1994
+#: glade/etherape.glade:1993
 #, fuzzy
 msgid "_File"
 msgstr "Dosya:"
 
-#: glade/etherape.glade:2037
+#: glade/etherape.glade:2036
 msgid "_Capture"
 msgstr "_Yakala"
 
-#: glade/etherape.glade:2044
+#: glade/etherape.glade:2043
 msgid "_Mode"
 msgstr "_Kaynak"
 
-#: glade/etherape.glade:2053
+#: glade/etherape.glade:2052
 #, fuzzy
 msgid "Set Token Ring mode"
 msgstr " (Token Ring konumunda)"
 
-#: glade/etherape.glade:2054
+#: glade/etherape.glade:2053
 msgid "Token _Ring"
 msgstr "Token _Ring"
 
-#: glade/etherape.glade:2065
+#: glade/etherape.glade:2064
 msgid "Set FDDI mode"
 msgstr "FDDI konumuna getir"
 
-#: glade/etherape.glade:2066
+#: glade/etherape.glade:2065
 msgid "_FDDI"
 msgstr "_FDDI"
 
-#: glade/etherape.glade:2078
+#: glade/etherape.glade:2077
 msgid "Set Ethernet mode"
 msgstr "Ethernet konumuna getir"
 
-#: glade/etherape.glade:2079
+#: glade/etherape.glade:2078
 msgid "_Ethernet"
 msgstr "_Ethernet"
 
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2095
 msgid "Set IP mode"
 msgstr "IP konumuna getir"
 
-#: glade/etherape.glade:2097
+#: glade/etherape.glade:2096
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2108
 msgid "Set TCP mode"
 msgstr "TCP konumuna getir"
 
-#: glade/etherape.glade:2110
+#: glade/etherape.glade:2109
 msgid "_TCP"
 msgstr "_TCP"
 
-#: glade/etherape.glade:2125
+#: glade/etherape.glade:2124
 msgid "_Interfaces"
 msgstr "_Arayüzler"
 
-#: glade/etherape.glade:2142 glade/etherape.glade:2306
+#: glade/etherape.glade:2141 glade/etherape.glade:2305
 msgid "Start capture"
 msgstr "Yakalamaya başla"
 
-#: glade/etherape.glade:2161 glade/etherape.glade:2321
+#: glade/etherape.glade:2160 glade/etherape.glade:2320
 msgid "Pause capture"
 msgstr "Yakalamayı beklet"
 
-#: glade/etherape.glade:2179 glade/etherape.glade:2336
+#: glade/etherape.glade:2178 glade/etherape.glade:2335
 msgid "Stop capture"
 msgstr "Yakalamayı durdur"
 
-#: glade/etherape.glade:2199
+#: glade/etherape.glade:2198
 #, fuzzy
 msgid "_View"
 msgstr "Dosya:"
 
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2206
 msgid "Show or hide the protocols window"
 msgstr "Protokol penceresini göster/gizle"
 
-#: glade/etherape.glade:2208
+#: glade/etherape.glade:2207
 msgid "_Protocols"
 msgstr "_Protokol"
 
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2215
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Protokol penceresini göster/gizle"
 
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2216
 #, fuzzy
 msgid "_Nodes"
 msgstr "Uçlar"
 
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2230
 msgid "Show or hide the toolbar"
 msgstr "Araç çubuğu göster/gizle"
 
-#: glade/etherape.glade:2232
+#: glade/etherape.glade:2231
 msgid "_Toolbar"
 msgstr "_Araç Çubuğu"
 
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2241
 #, fuzzy
 msgid "Show or hide the legend"
 msgstr "Araç çubuğu göster/gizle"
 
-#: glade/etherape.glade:2243
+#: glade/etherape.glade:2242
 msgid "_Legend"
 msgstr "_Ek çubuk"
 
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2252
 #, fuzzy
 msgid "Show or hide the status bar"
 msgstr "Araç çubuğu göster/gizle"
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2253
 msgid "_Status Bar"
 msgstr "_Durum Çubuğu"
 
-#: glade/etherape.glade:2267
+#: glade/etherape.glade:2266
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2306
 msgid "Start"
 msgstr "Başlat"
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2321
 msgid "Pause"
 msgstr "Beklet"
 
-#: glade/etherape.glade:2337
+#: glade/etherape.glade:2336
 msgid "Stop"
 msgstr "Dur"
 
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2358
 msgid "Preferences (Ctrl-P)"
 msgstr "Tercihler (Ctrl-P)"
 
-#: glade/etherape.glade:2360
+#: glade/etherape.glade:2359
 msgid "Pref."
 msgstr "Terc."
 
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2374
 msgid "Display the protocols window"
 msgstr "Protokol penceresini göster"
 
-#: glade/etherape.glade:2376
+#: glade/etherape.glade:2375
 msgid "Prot."
 msgstr "Prot."
 
-#: glade/etherape.glade:2441
+#: glade/etherape.glade:2440
 msgid "Protocols"
 msgstr "Protokoller"
 
-#: glade/etherape.glade:2499
+#: glade/etherape.glade:2498
 msgid "Nodes"
 msgstr "Uçlar"
 
-#: glade/etherape.glade:2512
+#: glade/etherape.glade:2511
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2517
+#: glade/etherape.glade:2516
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 

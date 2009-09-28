@@ -71,6 +71,7 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	debian/docs		\
 	debian/menu		\
 	debian/rules		\
+	debian/etherape.xpm	\
 	src/glade-strings	\
 	$(conf_DATA)		\
 	$(Development_DATA)	\

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 08:40+0200\n"
+"POT-Creation-Date: 2009-09-27 09:37+0200\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -1016,210 +1016,210 @@ msgstr ""
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 # 
-#: glade/etherape.glade:1976
+#: glade/etherape.glade:1975
 #, fuzzy
 msgid "EtherApe"
 msgstr "Etherape"
 
 # src/interface.c:23
-#: glade/etherape.glade:1994
+#: glade/etherape.glade:1993
 #, fuzzy
 msgid "_File"
 msgstr "Nouveau fichier"
 
-#: glade/etherape.glade:2037
+#: glade/etherape.glade:2036
 #, fuzzy
 msgid "_Capture"
 msgstr "Capture"
 
 # src/interface.c:709
-#: glade/etherape.glade:2044
+#: glade/etherape.glade:2043
 #, fuzzy
 msgid "_Mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: glade/etherape.glade:2053
+#: glade/etherape.glade:2052
 #, fuzzy
 msgid "Set Token Ring mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: glade/etherape.glade:2054
+#: glade/etherape.glade:2053
 #, fuzzy
 msgid "Token _Ring"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: glade/etherape.glade:2065
+#: glade/etherape.glade:2064
 #, fuzzy
 msgid "Set FDDI mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2066
+#: glade/etherape.glade:2065
 msgid "_FDDI"
 msgstr ""
 
 # src/interface.c:107
-#: glade/etherape.glade:2078
+#: glade/etherape.glade:2077
 #, fuzzy
 msgid "Set Ethernet mode"
 msgstr "Etherape"
 
 # src/interface.c:107
-#: glade/etherape.glade:2079
+#: glade/etherape.glade:2078
 #, fuzzy
 msgid "_Ethernet"
 msgstr "Etherape"
 
 # src/interface.c:709
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2095
 #, fuzzy
 msgid "Set IP mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2097
+#: glade/etherape.glade:2096
 msgid "_IP"
 msgstr ""
 
 # src/interface.c:709
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2108
 #, fuzzy
 msgid "Set TCP mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2110
+#: glade/etherape.glade:2109
 msgid "_TCP"
 msgstr ""
 
-#: glade/etherape.glade:2125
+#: glade/etherape.glade:2124
 msgid "_Interfaces"
 msgstr ""
 
-#: glade/etherape.glade:2142 glade/etherape.glade:2306
+#: glade/etherape.glade:2141 glade/etherape.glade:2305
 #, fuzzy
 msgid "Start capture"
 msgstr "Capture"
 
-#: glade/etherape.glade:2161 glade/etherape.glade:2321
+#: glade/etherape.glade:2160 glade/etherape.glade:2320
 #, fuzzy
 msgid "Pause capture"
 msgstr "Capture"
 
-#: glade/etherape.glade:2179 glade/etherape.glade:2336
+#: glade/etherape.glade:2178 glade/etherape.glade:2335
 #, fuzzy
 msgid "Stop capture"
 msgstr "Capture"
 
 # src/interface.c:23
-#: glade/etherape.glade:2199
+#: glade/etherape.glade:2198
 #, fuzzy
 msgid "_View"
 msgstr "Nouveau fichier"
 
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2206
 #, fuzzy
 msgid "Show or hide the protocols window"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:278
-#: glade/etherape.glade:2208
+#: glade/etherape.glade:2207
 #, fuzzy
 msgid "_Protocols"
 msgstr "Protocoles"
 
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2215
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:709
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2216
 #, fuzzy
 msgid "_Nodes"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2230
 msgid "Show or hide the toolbar"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:46
-#: glade/etherape.glade:2232
+#: glade/etherape.glade:2231
 msgid "_Toolbar"
 msgstr "Barre d'_outils"
 
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2241
 msgid "Show or hide the legend"
 msgstr "Affiche ou cache la légende"
 
 # src/interface.c:53
-#: glade/etherape.glade:2243
+#: glade/etherape.glade:2242
 msgid "_Legend"
 msgstr "_Légende"
 
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2252
 msgid "Show or hide the status bar"
 msgstr "Affiche ou cache la barre d'état"
 
 # src/interface.c:60
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2253
 msgid "_Status Bar"
 msgstr "Barre d'_état"
 
-#: glade/etherape.glade:2267
+#: glade/etherape.glade:2266
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2306
 msgid "Start"
 msgstr ""
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2321
 msgid "Pause"
 msgstr ""
 
-#: glade/etherape.glade:2337
+#: glade/etherape.glade:2336
 msgid "Stop"
 msgstr ""
 
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2358
 #, fuzzy
 msgid "Preferences (Ctrl-P)"
 msgstr "Préférences enregistrées"
 
 # src/interface.c:278
-#: glade/etherape.glade:2360
+#: glade/etherape.glade:2359
 #, fuzzy
 msgid "Pref."
 msgstr "Protocoles"
 
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2374
 #, fuzzy
 msgid "Display the protocols window"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:278
-#: glade/etherape.glade:2376
+#: glade/etherape.glade:2375
 #, fuzzy
 msgid "Prot."
 msgstr "Protocoles"
 
 # src/interface.c:278
-#: glade/etherape.glade:2441
+#: glade/etherape.glade:2440
 msgid "Protocols"
 msgstr "Protocoles"
 
 # src/interface.c:709
-#: glade/etherape.glade:2499
+#: glade/etherape.glade:2498
 #, fuzzy
 msgid "Nodes"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2512
+#: glade/etherape.glade:2511
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2517
+#: glade/etherape.glade:2516
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 
