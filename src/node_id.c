@@ -46,20 +46,10 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
   /* same node type, compare */
   switch (na->node_type)
     {
-    case ETHERNET:
+    case LINK6:
       ga = na->addr.eth;
       gb = nb->addr.eth;
       i = sizeof(na->addr.eth);
-      break;
-    case FDDI:
-      ga = na->addr.fddi;
-      gb = nb->addr.fddi;
-      i = sizeof(na->addr.fddi);
-      break;
-    case IEEE802:
-      ga = na->addr.i802;
-      gb = nb->addr.i802;
-      i = sizeof(na->addr.i802);
       break;
     case IP:
       ga = na->addr.ip4;
@@ -95,14 +85,8 @@ gchar *node_id_str(const node_id_t *id)
   
   switch (id->node_type)
     {
-    case ETHERNET:
+    case LINK6:      
       msg = g_strdup(ether_to_str(id->addr.eth));
-      break;
-    case FDDI:
-      msg = g_strdup(ether_to_str(id->addr.fddi));
-      break;
-    case IEEE802:
-      msg = g_strdup(ether_to_str(id->addr.fddi));
       break;
     case IP:
       msg = g_strdup(ip_to_str (id->addr.ip4));
@@ -126,14 +110,8 @@ gchar *node_id_dump(const node_id_t *id)
   g_assert(id);
   switch (id->node_type)
     {
-    case ETHERNET:
-      msg = g_strdup_printf("ETH: %s", ether_to_str(id->addr.eth));
-      break;
-    case FDDI:
-      msg = g_strdup_printf("FDDI: %s", ether_to_str(id->addr.fddi));
-      break;
-    case IEEE802:
-      msg = g_strdup_printf("IEEE802: %s", ether_to_str(id->addr.fddi));
+    case LINK6:
+      msg = g_strdup_printf("LINK: %s", ether_to_str(id->addr.eth));
       break;
     case IP:
       msg = g_strdup_printf("IP: %s", ip_to_str (id->addr.ip4));
@@ -174,7 +152,7 @@ name_t * node_name_create(const node_id_t *node_id)
   name->node_id = *node_id;
   name->accumulated = 0;
   name->numeric_name = NULL;
-  name->name = NULL;
+  name->res_name = NULL;
   ++node_name_count;
     {
       gchar *gg = node_id_dump(node_id);
@@ -195,7 +173,7 @@ void node_name_delete(name_t * name)
                  gg, node_name_count-1);
       g_free(gg);
     }
-    g_string_free (name->name, TRUE);
+    g_string_free (name->res_name, TRUE);
     g_string_free (name->numeric_name, TRUE);
     g_free (name);
     --node_name_count;
@@ -218,10 +196,10 @@ void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm,
   else
     g_string_assign (name->numeric_name, num_nm);
 
-  if (!name->name)
-    name->name = g_string_new (nm);
+  if (!name->res_name)
+    name->res_name = g_string_new (nm);
   else
-    g_string_assign (name->name, nm);
+    g_string_assign (name->res_name, nm);
   
   name->solved = slv;
   name->accumulated += sz;
@@ -237,7 +215,7 @@ gchar *node_name_dump(const name_t *name)
   nid = node_id_dump(&name->node_id);
   msg = g_strdup_printf("node id: %s, name: %s, numeric_name: %s, solved: %d, "
                         "accumulated %f",
-                        nid, name->name->str, name->numeric_name->str,
+                        nid, name->res_name->str, name->numeric_name->str,
                         name->solved, name->accumulated);
   g_free(nid);
   return msg;

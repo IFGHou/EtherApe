@@ -24,8 +24,6 @@
 typedef union __attribute__ ((packed))
 {
   guint8 eth[6] ;                 /* ethernet address */
-  guint8 fddi[6];                /* ffdi address */
-  guint8 i802[6];                /* ieee802 address */
   guint8 ip4[4];                  /* ip address */
   struct __attribute__ ((packed))
   {
@@ -52,10 +50,10 @@ gchar *node_id_dump(const node_id_t *id);
 typedef struct
 {
   node_id_t node_id;
-  GString *name;
-  GString *numeric_name;
-  gboolean solved;
-  gdouble accumulated;
+  GString *res_name; /* resolved name */
+  GString *numeric_name; /* readable version of node_id */
+  gboolean solved; /* true if the name was resolved */
+  gdouble accumulated; /* total accumulated traffic */
 }
 name_t;
 

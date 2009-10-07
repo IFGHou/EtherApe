@@ -38,5 +38,6 @@ gboolean pause_capture (void);
 gboolean stop_capture (void);
 void cleanup_capture (void);
 gint set_filter (gchar * filter, gchar * device);
+gboolean has_linklevel(void); /* true if current device captures l2 data */ 
 
 #endif

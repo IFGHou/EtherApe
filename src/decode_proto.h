@@ -26,7 +26,7 @@
 /* extracts the protocol stack from packet, and returs it as a newly allocated
  * packet_protos_t */
 packet_protos_t *get_packet_prot (const guint8 * packet, guint raw_size, 
-                                  link_type_t link_type, guint l3_offset);
+                                  int link_type, guint l3_offset);
 
 
 #endif

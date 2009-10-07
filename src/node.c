@@ -32,6 +32,8 @@ static name_decode_t ethernet_sequence[] = {
     {"ETH_II", TRUE},
     {"802.2",TRUE},
     {"803.3",TRUE},
+    {"FDDI", TRUE},
+    {"IEEE802", TRUE},
     {"NETBIOS-DGM",FALSE},
     {"NETBIOS-SSN",FALSE}, 
     {"IP",FALSE},
@@ -40,25 +42,7 @@ static name_decode_t ethernet_sequence[] = {
     {"ETH_II",FALSE},
     {"802.2",FALSE},
     {"802.3",FALSE},
-    {NULL, FALSE}
-};
-
-static name_decode_t fddi_sequence[] = { 
-    {"FDDI", TRUE},
-    {"NETBIOS-DGM",FALSE},
-    {"NETBIOS-SSN",FALSE}, 
-    {"IP",FALSE},
-    {"ARP",FALSE},
     {"FDDI",FALSE},
-    {NULL, FALSE}
-};
-
-static name_decode_t ieee802_sequence[] = { 
-    {"IEEE802", TRUE},
-    {"NETBIOS-DGM",FALSE},
-    {"NETBIOS-SSN",FALSE}, 
-    {"IP",FALSE},
-    {"ARP",FALSE},
     {"IEEE802",FALSE},
     {NULL, FALSE}
 };
@@ -285,14 +269,8 @@ node_name_update(node_t * node)
 
   switch (pref.mode)
     {
-    case ETHERNET:
+    case LINK6:
       set_node_name (node, ethernet_sequence);
-      break;
-    case FDDI:
-      set_node_name (node, fddi_sequence);
-      break;
-    case IEEE802:
-      set_node_name (node, ieee802_sequence);
       break;
     case IP:
       set_node_name (node, ip_sequence);
@@ -348,7 +326,7 @@ set_node_name (node_t * node, const name_decode_t *sequence)
           if (DEBUG_ENABLED)
             {
               gchar *msgname = node_name_dump(name);
-              if (name->solved || !iter->must_resolve)
+              if (name->solved || !iter->must_resolve || !pref.name_res)
                 g_my_debug("  found protocol with name [%s]", msgname);
               else
                 g_my_debug("  found protocol with UNRESOLVED name [%s], ignored", 
@@ -358,14 +336,14 @@ set_node_name (node_t * node, const name_decode_t *sequence)
 
           /* If we require this protocol to be solved and it's not,
            * the we have to go on */
-          if (name->solved || !iter->must_resolve)
+          if (name->solved || !iter->must_resolve || !pref.name_res)
             {
-              if (!node->name || strcmp (node->name->str, name->name->str))
+              if (!node->name || strcmp (node->name->str, name->res_name->str))
                 {
                   g_my_debug ("  set node name from %s to %s",
                               (node->name) ? node->name->str : "none",
-                              name->name->str);
-                  g_string_assign (node->name, name->name->str);
+                              name->res_name->str);
+                  g_string_assign (node->name, name->res_name->str);
                 }
               if (!node->numeric_name || 
                   strcmp(node->numeric_name->str, name->numeric_name->str))

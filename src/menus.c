@@ -170,12 +170,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) menuname);
 
-  if (!strcmp ("ieee802_radio", menuname))
-    new_mode = IEEE802;
-  else if (!strcmp ("fddi_radio", menuname))
-    new_mode = FDDI;
-  else if (!strcmp ("ethernet_radio", menuname))
-    new_mode = ETHERNET;
+  if (!strcmp ("link_radio", menuname))
+    new_mode = LINK6;
   else if (!strcmp ("ip_radio", menuname))
     new_mode = IP;
   else if (!strcmp ("tcp_radio", menuname))
@@ -196,29 +192,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
   g_my_debug ("Mode menuitem active: %d",
 	      GTK_CHECK_MENU_ITEM (menuitem)->active);
 
-  switch (linktype)
-    {
-    case L_NULL:
-    case L_RAW:
-      if ((new_mode == ETHERNET) || (new_mode == FDDI)
-	  || (new_mode == IEEE802))
-	return;
-      break;
-    case L_EN10MB:
-      if ((new_mode == FDDI) || (new_mode == IEEE802))
-	return;
-      break;
-    case L_FDDI:
-      if (new_mode == ETHERNET || (new_mode == IEEE802))
-	return;
-      break;
-    case L_IEEE802:
-      if (new_mode == ETHERNET || (new_mode == FDDI))
-	return;
-      break;
-    default:
-      return;
-    }
+  if (!has_linklevel() && new_mode == LINK6)
+    return;
 
   if (!gui_stop_capture ())
      return;
@@ -367,66 +342,18 @@ gui_start_capture (void)
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, TRUE);
 
-  /* Enable and disable mode buttons */
-
-  switch (linktype)
-    {
-    case L_NULL:
-    case L_RAW:
-#ifdef DLT_LINUX_SLL
-    case L_LINUX_SLL:
-#endif
-      widget = glade_xml_get_widget (xml, "ieee802_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "fddi_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "ethernet_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      break;
-    case L_FDDI:
-      widget = glade_xml_get_widget (xml, "fddi_radio");
-      gtk_widget_set_sensitive (widget, TRUE);
-      widget = glade_xml_get_widget (xml, "ethernet_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "ieee802_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      break;
-    case L_EN10MB:
-#ifdef DLT_IEEE802_11
-    case L_IEEE802_11:
-#endif
-      widget = glade_xml_get_widget (xml, "fddi_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "ethernet_radio");
-      gtk_widget_set_sensitive (widget, TRUE);
-      widget = glade_xml_get_widget (xml, "ieee802_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      break;
-    case L_IEEE802:
-      widget = glade_xml_get_widget (xml, "fddi_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "ethernet_radio");
-      gtk_widget_set_sensitive (widget, FALSE);
-      widget = glade_xml_get_widget (xml, "ieee802_radio");
-      gtk_widget_set_sensitive (widget, TRUE);
-      break;
-    default:
-      g_warning (_("Invalid link type %d"), linktype);
-      return;
-    }
+  /* Enable and disable link layer menu */
+  widget = glade_xml_get_widget (xml, "link_radio");
+  if (has_linklevel())
+    gtk_widget_set_sensitive (widget, FALSE);
+  else
+    gtk_widget_set_sensitive (widget, TRUE);
 
   /* Set active mode in GUI */
-
   switch (pref.mode)
     {
-    case IEEE802:
-      widget = glade_xml_get_widget (xml, "ieee802_radio");
-      break;
-    case FDDI:
-      widget = glade_xml_get_widget (xml, "fddi_radio");
-      break;
-    case ETHERNET:
-      widget = glade_xml_get_widget (xml, "ethernet_radio");
+    case LINK6:
+      widget = glade_xml_get_widget (xml, "link_radio");
       break;
     case IP:
       widget = glade_xml_get_widget (xml, "ip_radio");
@@ -455,14 +382,8 @@ gui_start_capture (void)
 
   switch (pref.mode)
     {
-    case IEEE802:
-      g_string_append (status_string, _(" in Token Ring mode"));
-      break;
-    case FDDI:
-      g_string_append (status_string, _(" in FDDI mode"));
-      break;
-    case ETHERNET:
-      g_string_append (status_string, _(" in Ethernet mode"));
+    case LINK6:
+      g_string_append (status_string, _(" in Data Link mode"));
       break;
     case IP:
       g_string_append (status_string, _(" in IP mode"));

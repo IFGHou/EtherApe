@@ -134,7 +134,7 @@ void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...)
 
 
 packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size, 
-                                  link_type_t link_type, guint l3_offset)
+                                  int link_type, guint l3_offset)
 {
   decode_proto_t decp;
   guint i;
@@ -146,27 +146,27 @@ packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size,
 
   switch (link_type)
     {
-    case L_EN10MB:
+    case DLT_EN10MB:
       get_eth_type (&decp, l3_offset);
       break;
-    case L_FDDI:
+    case DLT_FDDI:
       decode_proto_add(&decp, "FDDI");
       get_fddi_type (&decp, l3_offset);
       break;
-    case L_IEEE802:
+    case DLT_IEEE802:
       decode_proto_add(&decp, "Token Ring");
       get_ieee802_type (&decp, l3_offset);
       break;
-    case L_RAW:		/* Both for PPP and SLIP */
+    case DLT_RAW:		/* Both for PPP and SLIP */
       decode_proto_add(&decp, "RAW/IP");
       get_ip (&decp, l3_offset);
       break;
-    case L_NULL:
+    case DLT_NULL:
       decode_proto_add(&decp, "NULL/IP");
       get_ip (&decp, l3_offset);
       break;
 #ifdef DLT_LINUX_SLL
-    case L_LINUX_SLL:
+    case DLT_LINUX_SLL:
       decode_proto_add(&decp, "LINUX-SLL");
       get_linux_sll_type (&decp, l3_offset);
       break;

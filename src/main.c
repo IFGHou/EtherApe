@@ -175,10 +175,8 @@ main (int argc, char *argv[])
   /* Find mode of operation */
   if (mode_string)
     {
-      if (strstr (mode_string, "ethernet"))
-	pref.mode = ETHERNET;
-      else if (strstr (mode_string, "fddi"))
-	pref.mode = FDDI;
+      if (strstr (mode_string, "link"))
+	pref.mode = LINK6;
       else if (strstr (mode_string, "ip"))
 	pref.mode = IP;
       else if (strstr (mode_string, "tcp"))

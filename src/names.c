@@ -32,6 +32,7 @@ typedef struct
   guint16 offset;
   guint16 packet_size;
   packet_direction dir;
+  int link_type;
   node_id_t node_id;    /* topmost node_id: if a decoder can't fill it, it will
                          * use the lower level info */
   struct
@@ -52,12 +53,10 @@ typedef struct
 }
 prot_function_t;
 
-static void get_eth_name (name_add_t *nt);
 static void get_raw_name (name_add_t *nt);
 static void get_null_name (name_add_t *nt);
 static void get_linux_sll_name (name_add_t *nt);
-static void get_fddi_name (name_add_t *nt);
-static void get_ieee802_name (name_add_t *nt);
+static void get_link6_name (name_add_t *nt);
 static void get_llc_name (name_add_t *nt);
 static void get_arp_name (name_add_t *nt);
 static void get_ip_name (name_add_t *nt);
@@ -72,15 +71,15 @@ static void get_nbdgm_name (name_add_t *nt);
 #define KNOWN_PROTS 18
 
 static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
-  {"ETH_II", get_eth_name},
-  {"802.2", get_eth_name},
-  {"802.3", get_eth_name},
-  {"ISL", get_eth_name},
+  {"ETH_II", get_link6_name},
+  {"802.2", get_link6_name},
+  {"802.3", get_link6_name},
+  {"ISL", get_link6_name},
   {"RAW", get_raw_name},
   {"NULL", get_null_name},
   {"LINUX-SLL", get_linux_sll_name},
-  {"FDDI", get_fddi_name},
-  {"Token Ring", get_ieee802_name},
+  {"FDDI", get_link6_name},
+  {"Token Ring", get_link6_name},
   {"LLC", get_llc_name},
   {"ARP", get_arp_name},
   {"IP", get_ip_name},
@@ -116,7 +115,8 @@ get_packet_names (protostack_t *pstk,
 		  const guint8 * packet,
 		  guint16 size,
 		  const packet_protos_t * prot_stack, 
-                  packet_direction direction)
+                  packet_direction direction,
+                  int link_type)
 {
   name_add_t nt;
 
@@ -127,6 +127,7 @@ get_packet_names (protostack_t *pstk,
   nt.packet_size = size;
   nt.dir = direction;
   nt.offset = 0;
+  nt.link_type = link_type;
   
   /* initializes decoders info 
    * Note: Level 0 means topmost - first usable is 1 
@@ -192,17 +193,9 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
   
   switch (apemode)
   {
-  case ETHERNET:
+  case LINK6:
     dt = node_id->addr.eth;
     sz = sizeof(node_id->addr.eth);
-    break;
-  case FDDI:
-    dt = node_id->addr.fddi;
-    sz = sizeof(node_id->addr.fddi);
-    break;
-  case IEEE802:
-    dt = node_id->addr.i802;
-    sz = sizeof(node_id->addr.i802);
     break;
   case IP:
     dt = node_id->addr.ip4;
@@ -308,22 +301,10 @@ static void eth_name_common(apemode_t ethmode, name_add_t *nt)
 }
 
 static void
-get_eth_name (name_add_t *nt)
+get_link6_name(name_add_t *nt)
 {
-  eth_name_common(ETHERNET, nt);
-}				/* get_eth_name */
-
-static void
-get_ieee802_name (name_add_t *nt)
-{
-  eth_name_common(IEEE802, nt);
-}				/* get_ieee802_name */
-
-static void
-get_fddi_name (name_add_t *nt)
-{
-  eth_name_common(FDDI, nt);
-}				/* get_fddi_name */
+  eth_name_common(LINK6, nt);
+}
 
 /* LLC is the only supported FDDI link layer type */
 static void
@@ -333,9 +314,9 @@ get_llc_name (name_add_t *nt)
    * We must decode the llc header to calculate the nt->offset
    * We are just doing assumptions by now */
 
-  if ((linktype == L_FDDI) || (linktype == L_IEEE802))
+  if (nt->link_type == DLT_FDDI || nt->link_type == DLT_IEEE802)
     nt->offset += 8;
-  else if (linktype == L_EN10MB)
+  else if (nt->link_type == DLT_EN10MB)
     nt->offset += 3;
   else
     return;

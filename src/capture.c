@@ -51,10 +51,6 @@ static gint capture_source;		/* It's the input tag or the timeout tag,
 static guint ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
-static guint node_id_length;		/* Length of the node_id key. Depends
-				 * on the mode of operation */
-static guint l3_offset;		/* Offset to the level 3 protocol data
-				 * Depends of the linktype */
 static enum status_t capture_status = STOP;
 
 /* Local funtions declarations */
@@ -73,81 +69,142 @@ static void add_node_packet (const guint8 * packet,
 
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 
+/* etherape has to handle several data link layer (OSI L2) packet types.
+ * The following table tries to make easier adding new types.
+ * End of table is signaled by an entry with lt_desc NULL */
+typedef struct
+{
+  const gchar *lt_desc; /* linktype description */
+  int dlt_linktype; /* pcap link type (DLT_xxxx defines) */
+  apemode_t l2_idtype;   /* link level address slot in node_id_t */
+  short l2_dst_ofs; /* offset of level 2 dst addr. -1 if no l2 data */
+  short l2_src_ofs; /* offset of level 2 src addr. -1 if no l2 data */
+  short l3_ofs;  /* offset from start of packet to level 3 layer */
+} linktype_data_t;
+
+static linktype_data_t linktypes[] = {
+ {"Ethernet",     DLT_EN10MB,  LINK6, 0,  6, 14 },
+ {"RAW",          DLT_RAW,     IP,   -1, -1,  0 }, /* raw IP, like PPP o SLIP */
+#ifdef DLT_LINUX_SLL
+ {"LINUX_SLL",    DLT_LINUX_SLL, IP, -1, -1, 16 }, /* Linux cooked */
+#endif  
+ {"BSD Loopback", DLT_NULL,    IP,   -1, -1,  4 }, /* we ignore l2 data */
+ {"FDDI",         DLT_FDDI,    LINK6, 1,  7, 21 },
+ {"IEEE802",      DLT_IEEE802, LINK6, 2,  8, 22 }, /* Token Ring */
+  
+};
+
+const linktype_data_t *lkentry = NULL;
+
 
 /* 
  * FUNCTION DEFINITIONS
  */
 
-/* Returns a pointer to a set of octects that define a link for the
- * current mode in this particular packet */
+/* Sets the correct linktype entry. Returns false if not found */
+static gboolean setup_linktype(int linktype)
+{
+  int i;
+
+  lkentry = NULL;
+  for (i = 0; linktypes[i].lt_desc != NULL ; ++i)
+    {
+      if (linktypes[i].dlt_linktype == linktype)
+        {
+          lkentry = linktypes + i;
+          return TRUE;
+        }
+    }
+  
+  return FALSE; /* link type not supported */
+}
+
+/* true if current device captures l2 data */ 
+gboolean has_linklevel(void)
+{
+  if (lkentry)
+    return lkentry->l2_idtype == LINK6;
+  else
+    return FALSE;
+}
+
+
+/* Returns the node id for the current mode in this particular packet */
 static node_id_t 
 get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node_type)
 {
   node_id_t node_id;
+
   memset( &node_id, 0, sizeof(node_id));
   node_id.node_type = pref.mode;
 
+  if (!lkentry)
+    {
+      g_error (_("Unsupported link type"));
+      return;  /* g_error() aborts, but just to be sure ... */
+    }
+  
   switch (pref.mode)
     {
-    case ETHERNET:
-      if (raw_size >= 6+sizeof(node_id.addr.eth))
+    case LINK6:
+      if (lkentry->l2_idtype == LINK6)
         {
-          if (node_type == SRC)
-            g_memmove(node_id.addr.eth, raw_packet + 6, sizeof(node_id.addr.eth));
+          int minlen = lkentry->l2_dst_ofs;
+          if (minlen < lkentry->l2_src_ofs)
+            minlen = lkentry->l2_src_ofs;
+          
+          if (raw_size < minlen + sizeof(node_id.addr.eth))
+            {
+              g_critical(_("Received subsize %s packet! Forged ?"), 
+                         lkentry->lt_desc);
+            }
           else
-            g_memmove(node_id.addr.eth, raw_packet, sizeof(node_id.addr.eth));
+            {
+              if (node_type == SRC)
+                g_memmove(node_id.addr.eth, raw_packet + lkentry->l2_src_ofs, 
+                          sizeof(node_id.addr.eth));
+              else
+                g_memmove(node_id.addr.eth, raw_packet+lkentry->l2_dst_ofs, 
+                          sizeof(node_id.addr.eth));
+            }
         }
-        else
-          g_critical(_("Received subsize ethernet packet! Forged ?"));
-      break;
-    case FDDI:
-      if (raw_size >= 7+sizeof(node_id.addr.fddi))
+      else
         {
-          if (node_type == SRC)
-            g_memmove(node_id.addr.fddi, raw_packet + 7, sizeof(node_id.addr.fddi));
-          else
-            g_memmove(node_id.addr.fddi, raw_packet + 1, sizeof(node_id.addr.fddi));
+          g_critical(_("Can't handle linktype %d (%s) at link layer level. "
+                       "Please select IP or above"), lkentry->l2_idtype, 
+                                                     lkentry->lt_desc);
         }
-        else
-          g_critical(_("Received subsize FDDI packet! Forged ?"));
-      break;
-    case IEEE802:
-      if (raw_size >= 8+sizeof(node_id.addr.i802))
-        {
-          if (node_type == SRC)
-            g_memmove(node_id.addr.i802, raw_packet + 8, sizeof(node_id.addr.i802));
-          else
-            g_memmove(node_id.addr.i802, raw_packet + 2, sizeof(node_id.addr.i802));
-        }
-        else
-          g_critical(_("Received subsize IEEE802 packet! Forged ?"));
       break;
     case IP:
-      if (raw_size >= 16+sizeof(node_id.addr.ip4))
+      if (raw_size >= lkentry->l3_ofs + 16 + sizeof(node_id.addr.ip4))
         {
           if (node_type == SRC)
-            g_memmove(node_id.addr.ip4, raw_packet + l3_offset + 12, sizeof(node_id.addr.ip4));
+            g_memmove(node_id.addr.ip4, raw_packet + lkentry->l3_ofs + 12, 
+                      sizeof(node_id.addr.ip4));
           else
-            g_memmove(node_id.addr.ip4, raw_packet + l3_offset + 16, sizeof(node_id.addr.ip4));
+            g_memmove(node_id.addr.ip4, raw_packet + lkentry->l3_ofs + 16, 
+                      sizeof(node_id.addr.ip4));
         }
         else
           g_critical(_("Received subsize IP packet! Forged ?"));
       break;
     case TCP:
-      if (raw_size >= l3_offset+24)
+      if (raw_size >= lkentry->l3_ofs + 24)
         {
           if (node_type == SRC)
             {
               guint16 port;
-              g_memmove (node_id.addr.tcp4.host, raw_packet + l3_offset + 12, 4);
-              port = ntohs (*(guint16 *) (raw_packet + l3_offset + 20));
+              g_memmove (node_id.addr.tcp4.host, raw_packet + 
+                         lkentry->l3_ofs + 12, 4);
+              port = ntohs (*(guint16 *) (raw_packet + lkentry->l3_ofs + 20));
               g_memmove (node_id.addr.tcp4.port, &port, 2);
             }
           else
             {
               guint16 port;
-              g_memmove (node_id.addr.tcp4.host, raw_packet + l3_offset + 16, 4);
-              port = ntohs (*(guint16 *) (raw_packet + l3_offset + 22));
+              g_memmove (node_id.addr.tcp4.host, 
+                         raw_packet + lkentry->l3_ofs + 16, 4);
+              port = ntohs (*(guint16 *) (raw_packet + lkentry->l3_ofs + 22));
               g_memmove (node_id.addr.tcp4.port, &port, 2);
             }
         }
@@ -177,7 +234,8 @@ init_capture (void)
   gchar *device;
   gchar ebuf[300];
   gchar *str = NULL;
-  gboolean error = FALSE;
+//  gboolean error = FALSE;
+  int linktype;		/* Type of device we are listening to */
   static gchar errorbuf[300];
   static gboolean data_initialized = FALSE;
 
@@ -253,73 +311,24 @@ init_capture (void)
 
     }
 
-
-  linktype = pcap_datalink (pch_struct);
-
-  /* l3_offset is equal to the size of the link layer header */
-
-  switch (linktype)
+  linktype = pcap_datalink(pch_struct);
+  if (!setup_linktype(linktype))
     {
-    case L_EN10MB:
-      g_my_info (_("Link type is Ethernet"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if (pref.mode == FDDI)
-	error = TRUE;
-      l3_offset = 14;
-      break;
-    case L_RAW:		/* The case for PPP or SLIP, for instance */
-      g_my_info (_("Link type is RAW"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
-	  || (pref.mode == IEEE802))
-	error = TRUE;
-      l3_offset = 0;
-      break;
-    case L_FDDI:		/* We are assuming LLC async frames only */
-      g_my_info (_("Link type is FDDI"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if ((pref.mode == ETHERNET) || (pref.mode == IEEE802))
-	error = TRUE;
-      l3_offset = 21;
-      break;
-    case L_IEEE802:
-      /* As far as I know IEEE802 is Token Ring */
-      g_my_info (_("Link type is Token Ring"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if ((pref.mode == ETHERNET) || (pref.mode == FDDI))
-	error = TRUE;
-      l3_offset = 22;
-      break;
-    case L_NULL:		/* Loopback */
-      g_my_info (_("Link type is NULL"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
-	  || (pref.mode == IEEE802))
-	error = TRUE;
-      l3_offset = 4;
-      break;
-#ifdef DLT_LINUX_SLL
-    case L_LINUX_SLL:		/* Linux cooked sockets (I believe this
-				 * is used for ISDN on linux) */
-      g_my_info (_("Link type is Linux cooked sockets"));
-      if (pref.mode == DEFAULT)
-	pref.mode = IP;
-      if ((pref.mode == ETHERNET) || (pref.mode == FDDI)
-	  || (pref.mode == IEEE802))
-	error = TRUE;
-      l3_offset = 16;
-      break;
-#endif
-    default:
-      snprintf (errorbuf, sizeof(errorbuf), _("Link type not yet supported"));
+        snprintf (errorbuf, sizeof(errorbuf), _("Link type %d not supported"), 
+                  linktype);
+        return errorbuf;
+    }
+  
+  g_my_info (_("Link type is %s"), lkentry->lt_desc);
+
+  if (pref.mode == DEFAULT)
+    pref.mode = IP;
+  if (pref.mode == LINK6 && lkentry->l2_idtype != pref.mode)
+    {
+      snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
       return errorbuf;
     }
-
+  
   /* TODO Shouldn't we free memory somwhere because of the strconcat? */
   switch (pref.mode)
     {
@@ -344,9 +353,7 @@ init_capture (void)
 	}
       break;
     case DEFAULT:
-    case ETHERNET:
-    case FDDI:
-    case IEEE802:
+    case LINK6:
       if (pref.filter)
 	str = g_strdup (pref.filter);
       break;
@@ -358,34 +365,6 @@ init_capture (void)
 
   if (pref.filter)
     set_filter (pref.filter, device);
-
-  if (error)
-    {
-      snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
-      return errorbuf;
-    }
-
-  switch (pref.mode)
-    {
-    case ETHERNET:
-      node_id_length = 6;
-      break;
-    case FDDI:
-      node_id_length = 6;
-      break;
-    case IEEE802:
-      node_id_length = 6;
-      break;
-    case IP:
-      node_id_length = 4;
-      break;
-    case TCP:
-      node_id_length = 6;
-      break;
-    default:
-      snprintf (errorbuf, sizeof(errorbuf), _("Ape mode not yet supported"));
-      return errorbuf;
-    }
 
   return NULL;
 }				/* init_capture */
@@ -627,10 +606,10 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
 {
   struct pcap_pkthdr *pkt_header = NULL;
   const u_char *pkt_data = NULL;
-  int result;
 
   /* Get next packet */
-  result = pcap_next_ex(pch_struct, &pkt_header, &pkt_data);
+  if (pcap_next_ex(pch_struct, &pkt_header, &pkt_data) != 1)
+    return; /* read failed */
 
   /* Redhat's pkt_header.ts is not a timeval, so I can't
    * just copy the structures */
@@ -653,6 +632,12 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   node_id_t dst_node_id;
   link_id_t link_id;
 
+  if (!lkentry)
+    {
+      g_error(_("Data link entry not initialized"));
+      return;  /* g_error() should abort, but just to be sure ... */
+    }
+  
   /* We create a packet structure to hold data */
   packet = g_malloc (sizeof (packet_info_t));
   g_assert(packet);
@@ -663,7 +648,7 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 
   /* Get a string with the protocol tree */
   packet->prot_desc = get_packet_prot (raw_packet, raw_size, 
-                                       linktype, l3_offset);
+                                       lkentry->dlt_linktype, lkentry->l3_ofs);
 
   src_node_id = get_node_id (raw_packet, raw_size, SRC);
   dst_node_id = get_node_id (raw_packet, raw_size, DST);
@@ -716,7 +701,7 @@ add_node_packet (const guint8 * raw_packet,
 
   /* Update names list for this node */
   get_packet_names (&node->node_stats.stats_protos, raw_packet, raw_size,
-		    packet->prot_desc, direction);
+		    packet->prot_desc, direction, lkentry->dlt_linktype);
 
 }				/* add_node_packet */
 

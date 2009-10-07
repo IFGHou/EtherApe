@@ -2045,42 +2045,16 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                             <child>
                               <widget class="GtkMenu" id="mode_menu">
                                 <child>
-                                  <widget class="GtkRadioMenuItem" id="ieee802_radio">
+                                  <widget class="GtkRadioMenuItem" id="link_radio">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip" translatable="yes">Set Token Ring mode</property>
-                                    <property name="label" translatable="yes">Token _Ring</property>
+                                    <property name="tooltip" translatable="yes">Set Link Layer (OSI level 2) mode</property>
+                                    <property name="label" translatable="yes">_Link Layer</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_as_radio">True</property>
                                     <signal name="activate" handler="on_mode_radio_activate"/>
-                                  </widget>
-                                </child>
-                                <child>
-                                  <widget class="GtkRadioMenuItem" id="fddi_radio">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip" translatable="yes">Set FDDI mode</property>
-                                    <property name="label" translatable="yes">_FDDI</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="draw_as_radio">True</property>
-                                    <property name="group">ieee802_radio</property>
-                                    <signal name="activate" handler="on_mode_radio_activate"/>
-                                  </widget>
-                                </child>
-                                <child>
-                                  <widget class="GtkRadioMenuItem" id="ethernet_radio">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip" translatable="yes">Set Ethernet mode</property>
-                                    <property name="label" translatable="yes">_Ethernet</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="draw_as_radio">True</property>
-                                    <property name="group">ieee802_radio</property>
-                                    <signal name="activate" handler="on_mode_radio_activate"/>
-                                    <accelerator key="e" signal="activate" modifiers="GDK_MOD1_MASK"/>
+                                    <accelerator key="l" signal="activate" modifiers="GDK_MOD1_MASK"/>
                                   </widget>
                                 </child>
                                 <child>
@@ -2096,7 +2070,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                                     <property name="label" translatable="yes">_IP</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_as_radio">True</property>
-                                    <property name="group">ieee802_radio</property>
+                                    <property name="group">link_radio</property>
                                     <signal name="activate" handler="on_mode_radio_activate"/>
                                     <accelerator key="i" signal="activate" modifiers="GDK_MOD1_MASK"/>
                                   </widget>
@@ -2109,7 +2083,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                                     <property name="label" translatable="yes">_TCP</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_as_radio">True</property>
-                                    <property name="group">ieee802_radio</property>
+                                    <property name="group">link_radio</property>
                                     <signal name="activate" handler="on_mode_radio_activate"/>
                                     <accelerator key="t" signal="activate" modifiers="GDK_MOD1_MASK"/>
                                   </widget>

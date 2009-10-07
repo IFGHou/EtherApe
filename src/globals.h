@@ -35,8 +35,6 @@ struct timeval now;		/* Set both at each packet capture and
 unsigned long n_packets;	/* Number of total packets received */
 gint total_mem_packets;	        /* Number of packets currently in memory */
 
-link_type_t linktype;		/* Type of device we are listening to */
-
 struct pref_struct
 {
 
