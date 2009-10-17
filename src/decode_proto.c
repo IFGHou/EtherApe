@@ -57,12 +57,14 @@ enum rpc_program
 /* internal types */
 typedef struct 
 {
-  const guint8 *packet;
-  guint capture_len;
-  packet_protos_t *pr;
+  const guint8 *original_packet; /* original start of packet */
+  guint original_len; /* total captured lenght */
 
-  guint offset;
-  guint cur_level;
+  const guint8 *cur_packet; /* pointer to current level start of packet */
+  guint cur_len;        /* current level remaining length */
+
+  packet_protos_t *pr; /* detected protocol stack */
+  guint cur_level;      /* current protocol depth on stack */
 
   /* These are used for conversations */
   guint32 global_src_address;
@@ -78,17 +80,19 @@ void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen);
 /* sets protoname at current level, and passes at next level */
 void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...);
 
-/* internal functions declarations */
+/* advances current packet start to prepare for next protocol */
+static void add_offset(decode_proto_t *dp, guint offset);
 
-static void get_eth_type (decode_proto_t *dp, guint l3_offset);
-static void get_fddi_type (decode_proto_t *dp, guint l3_offset);
-static void get_ieee802_type (decode_proto_t *dp, guint l3_offset);
-static void get_eth_II (decode_proto_t *dp, etype_t etype, guint l3_offset);
+/* specific decoders declarations */
+static void get_eth_type (decode_proto_t *dp);
+static void get_fddi_type (decode_proto_t *dp);
+static void get_ieee802_type (decode_proto_t *dp);
+static void get_eth_II (decode_proto_t *dp, etype_t etype);
 static void get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type);
-static void get_linux_sll_type (decode_proto_t *dp, guint l3_offset);
+static void get_linux_sll_type (decode_proto_t *dp);
 
 static void get_llc (decode_proto_t *dp);
-static void get_ip (decode_proto_t *dp, guint l3_offset);
+static void get_ip (decode_proto_t *dp);
 static void get_ipx (decode_proto_t *dp);
 static void get_tcp (decode_proto_t *dp);
 static void get_udp (decode_proto_t *dp);
@@ -108,11 +112,12 @@ static void append_etype_prot (decode_proto_t *dp, etype_t etype);
 /* starts a new decode, allocating a new packet_protos_t */
 void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen)
 {
-  dp->packet = pkt;
-  dp->capture_len = caplen;
+  dp->original_packet = pkt;
+  dp->original_len = caplen;
+  dp->cur_packet = pkt;
+  dp->cur_len = caplen;
   dp->pr = packet_protos_init();
-  dp->offset = 0;
-  dp->cur_level = 1;
+  dp->cur_level = 1; /* level zero is topmost protocol, will be filled later */
   dp->global_src_address = 0;
   dp->global_dst_address = 0;
   dp->global_src_port = 0;
@@ -132,9 +137,19 @@ void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...)
     g_warning("protocol too deep, higher levels ignored");
 }
 
+static void add_offset(decode_proto_t *dp, guint offset)
+{
+  if (dp->cur_len < offset)
+    dp->cur_len = 0; /* no usable data remaining */
+  else
+    {
+      dp->cur_packet += offset;
+      dp->cur_len -= offset; 
+    }
+}
 
 packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size, 
-                                  int link_type, guint l3_offset)
+                                  int link_type)
 {
   decode_proto_t decp;
   guint i;
@@ -147,38 +162,39 @@ packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size,
   switch (link_type)
     {
     case DLT_EN10MB:
-      get_eth_type (&decp, l3_offset);
+      get_eth_type (&decp);
       break;
     case DLT_IEEE802_11:
     case DLT_IEEE802_11_RADIO:
       decode_proto_add(&decp, "IEE802.11/LLC"); /* experimental */
-      decp.offset = l3_offset;
       get_llc (&decp); 
       break;
     case DLT_FDDI:
       decode_proto_add(&decp, "FDDI");
-      get_fddi_type (&decp, l3_offset);
+      get_fddi_type (&decp);
       break;
     case DLT_IEEE802:
       decode_proto_add(&decp, "Token Ring");
-      get_ieee802_type (&decp, l3_offset);
+      get_ieee802_type (&decp);
       break;
     case DLT_RAW:		/* Both for PPP and SLIP */
       decode_proto_add(&decp, "RAW/IP");
-      get_ip (&decp, l3_offset);
+      get_ip (&decp);
       break;
     case DLT_NULL:
       decode_proto_add(&decp, "NULL/IP");
-      get_ip (&decp, l3_offset);
+      add_offset(&decp, 4);
+      get_ip (&decp);
       break;
     case DLT_LOOP:
       decode_proto_add(&decp, "LOOP/IP");
-      get_ip (&decp, l3_offset);
+      add_offset(&decp, 4);
+      get_ip (&decp);
       break;
 #ifdef DLT_LINUX_SLL
     case DLT_LINUX_SLL:
       decode_proto_add(&decp, "LINUX-SLL");
-      get_linux_sll_type (&decp, l3_offset);
+      get_linux_sll_type (&decp);
       break;
 #endif
     default:
@@ -202,25 +218,26 @@ packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size,
  * Private functions
  * ------------------------------------------------------------*/
 
-static void
-get_eth_type (decode_proto_t *dp, guint l3_offset)
+static void get_eth_type (decode_proto_t *dp)
 {
   etype_t etype;
   ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
 
-  etype = pntohs (&dp->packet[12]);
-
+  if (dp->cur_len < 16)
+    return; /* not big enough */
+  
+  etype = pntohs (dp->cur_packet + 12);
 
   if (etype <= IEEE_802_3_MAX_LEN)
     {
 
       /* Is there an 802.2 layer? I can tell by looking at the first 2
-       *        bytes after the 802.3 header. If they are 0xffff, then what
-       *        follows the 802.3 header is an IPX payload, meaning no 802.2.
-       *        (IPX/SPX is they only thing that can be contained inside a
-       *        straight 802.3 packet). A non-0xffff value means that there's an
-       *        802.2 layer inside the 802.3 layer */
-      if (dp->packet[14] == 0xff && dp->packet[15] == 0xff)
+       *      bytes after the 802.3 header. If they are 0xffff, then what
+       *      follows the 802.3 header is an IPX payload, meaning no 802.2.
+       *      (IPX/SPX is they only thing that can be contained inside a
+       *      straight 802.3 cur_packet). A non-0xffff value means that 
+       *      there's an 802.2 layer inside the 802.3 layer */
+      if (dp->cur_packet[14] == 0xff && dp->cur_packet[15] == 0xff)
 	{
 	  ethhdr_type = ETHERNET_802_3;
 	}
@@ -230,17 +247,20 @@ get_eth_type (decode_proto_t *dp, guint l3_offset)
 	}
 
       /* Oh, yuck.  Cisco ISL frames require special interpretation of the
-       *        destination address field; fortunately, they can be recognized by
-       *        checking the first 5 octets of the destination address, which are
-       *        01-00-0C-00-00 for ISL frames. */
-      if (dp->packet[0] == 0x01 && dp->packet[1] == 0x00 && dp->packet[2] == 0x0C
-	  && dp->packet[3] == 0x00 && dp->packet[4] == 0x00)
+       *     destination address field; fortunately, they can be recognized by
+       *     checking the first 5 octets of the destination address, which are
+       *     01-00-0C-00-00 for ISL frames. */
+      if (dp->cur_packet[0] == 0x01 && dp->cur_packet[1] == 0x00 && 
+          dp->cur_packet[2] == 0x0C && dp->cur_packet[3] == 0x00 && 
+          dp->cur_packet[4] == 0x00)
 	{
 	  /* TODO Analyze ISL frames */
 	  decode_proto_add(dp, "ISL");
 	  return;
 	}
     }
+
+  add_offset(dp, 14);
 
   if (ethhdr_type == ETHERNET_802_3)
     {
@@ -257,14 +277,12 @@ get_eth_type (decode_proto_t *dp, guint l3_offset)
 
   /* Else, it's ETHERNET_II */
   decode_proto_add(dp, "ETH_II");
-  get_eth_II (dp, etype, l3_offset);
+  get_eth_II (dp, etype);
 }				/* get_eth_type */
 
 static void
 get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type)
 {
-  dp->offset = 14;
-
   switch (ethhdr_type)
     {
     case ETHERNET_802_2:
@@ -280,40 +298,42 @@ get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type)
 }				/* get_eth_802_3 */
 
 static void
-get_fddi_type (decode_proto_t *dp, guint l3_offset)
+get_fddi_type (decode_proto_t *dp)
 {
   decode_proto_add(dp, "LLC");
+
   /* Ok, this is only temporary while I truly dissect LLC 
    * and fddi */
-  if ((dp->packet[19] == 0x08) && (dp->packet[20] == 0x00))
-    {
+  if ((dp->cur_packet[19] == 0x08) && (dp->cur_packet[20] == 0x00))
+   {
       decode_proto_add(dp, "IP");
-      get_ip (dp, l3_offset);
+      add_offset(dp, 21);
+      get_ip (dp);
     }
-
 }				/* get_fddi_type */
 
 static void
-get_ieee802_type (decode_proto_t *dp, guint l3_offset)
+get_ieee802_type (decode_proto_t *dp)
 {
   /* As with FDDI, we only support LLC by now */
   decode_proto_add(dp, "LLC");
 
-  if ((dp->packet[20] == 0x08) && (dp->packet[21] == 0x00))
+  if ((dp->cur_packet[20] == 0x08) && (dp->cur_packet[21] == 0x00))
     {
       decode_proto_add(dp, "IP");
-      get_ip (dp, l3_offset);
+      add_offset(dp, 22);
+      get_ip (dp);
     }
 
 }
 
 static void
-get_eth_II (decode_proto_t *dp, etype_t etype, guint l3_offset)
+get_eth_II (decode_proto_t *dp, etype_t etype)
 {
   append_etype_prot (dp, etype);
 
   if (etype == ETHERTYPE_IP)
-    get_ip (dp, l3_offset);
+    get_ip (dp);
   if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
 }				/* get_eth_II */
@@ -322,15 +342,16 @@ get_eth_II (decode_proto_t *dp, etype_t etype, guint l3_offset)
  * I have no real idea of what can be there, but since IP
  * is 0x800 I guess it follows ethernet specifications */
 static void
-get_linux_sll_type (decode_proto_t *dp, guint l3_offset)
+get_linux_sll_type (decode_proto_t *dp)
 {
   etype_t etype;
 
-  etype = pntohs (&dp->packet[14]);
+  etype = pntohs (&dp->cur_packet[14]);
   append_etype_prot (dp, etype);
 
+  add_offset(dp, 16);
   if (etype == ETHERTYPE_IP)
-    get_ip (dp, l3_offset);
+    get_ip (dp);
   if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
 }				/* get_linux_sll_type */
@@ -349,8 +370,11 @@ get_llc (decode_proto_t *dp)
   gboolean is_snap;
   guint16 control;
 
-  dsap = *(guint8 *) (dp->packet + dp->offset);
-  ssap = *(guint8 *) (dp->packet + dp->offset + 1);
+  if (dp->cur_len < 4)
+    return;
+  
+  dsap = dp->cur_packet[0];
+  ssap = dp->cur_packet[1];
 
   is_snap = (dsap == SAP_SNAP) && (ssap == SAP_SNAP);
 
@@ -362,12 +386,12 @@ get_llc (decode_proto_t *dp)
    * complicated than this, see xdlc.c in ethereal,
    * but I'll try like this, it seems it works for my pourposes at
    * least most of the time */
-  control = *(guint8 *) (dp->packet + dp->offset + 2);
+  control = dp->cur_packet[2];
 
   if (!XDLC_IS_INFORMATION (control))
     return;
 
-  dp->offset += 3;
+  add_offset(dp, 3);
 
   switch (dsap)
     {
@@ -457,23 +481,23 @@ get_llc (decode_proto_t *dp)
 }				/* get_llc */
 
 static void
-get_ip (decode_proto_t *dp, guint l3_offset)
+get_ip (decode_proto_t *dp)
 {
   guint16 fragment_offset;
   iptype_t ip_type;
 
-  if (l3_offset < 0)
-    return; /* no l3 data */
+  if (dp->cur_len < 20)
+    return; 
   
-  ip_type = dp->packet[l3_offset + 9];
-  fragment_offset = pntohs (dp->packet + l3_offset + 6);
+  ip_type = dp->cur_packet[9];
+  fragment_offset = pntohs (dp->cur_packet + 6);
   fragment_offset &= 0x0fff;
 
   /*This is used for conversations */
-  dp->global_src_address = pntohl (dp->packet + l3_offset + 12);
-  dp->global_dst_address = pntohl (dp->packet + l3_offset + 16);
+  dp->global_src_address = pntohl (dp->cur_packet + 12);
+  dp->global_dst_address = pntohl (dp->cur_packet + 16);
 
-  dp->offset = l3_offset + 20;
+  add_offset(dp, 20);
 
   switch (ip_type)
     {
@@ -587,16 +611,16 @@ get_ipx (decode_proto_t *dp)
   guint16 ipx_length;
   ipx_type_t ipx_type;
 
-  /* Make sure this is an IPX packet */
-  if ((dp->offset + 30 > dp->capture_len) || *(guint16 *) (dp->packet + dp->offset) != 0xffff)
+  /* Make sure this is an IPX cur_packet */
+  if (dp->cur_len < 30 || *(guint16 *) (dp->cur_packet) != 0xffff)
     return;
 
   decode_proto_add(dp, "IPX");
 
-  ipx_dsocket = pntohs (dp->packet + dp->offset + 16);
-  ipx_ssocket = pntohs (dp->packet + dp->offset + 28);
-  ipx_type = *(guint8 *) (dp->packet + dp->offset + 5);
-  ipx_length = pntohs (dp->packet + dp->offset + 2);
+  ipx_dsocket = pntohs (dp->cur_packet + 16);
+  ipx_ssocket = pntohs (dp->cur_packet + 28);
+  ipx_type = *(guint8 *) (dp->cur_packet + 5);
+  ipx_length = pntohs (dp->cur_packet + 2);
 
   switch (ipx_type)
     {
@@ -700,15 +724,14 @@ get_tcp (decode_proto_t *dp)
   gboolean src_pref = FALSE;
   gboolean dst_pref = FALSE;
 
-  dp->global_src_port = src_port = pntohs (dp->packet + dp->offset);
-  dp->global_dst_port = dst_port = pntohs (dp->packet + dp->offset + 2);
-  th_off_x2 = *(guint8 *) (dp->packet + dp->offset + 12);
+  dp->global_src_port = src_port = pntohs (dp->cur_packet);
+  dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
+  th_off_x2 = *(guint8 *) (dp->cur_packet + 12);
   tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
 
-  dp->offset += tcp_len;
+  add_offset(dp, tcp_len);
 
-
-  /* Check whether this packet belongs to a registered conversation */
+  /* Check whether this cur_packet belongs to a registered conversation */
   if ((str = find_conversation (dp->global_src_address, dp->global_dst_address,
 				src_port, dst_port)))
     {
@@ -717,8 +740,8 @@ get_tcp (decode_proto_t *dp)
     }
 
   /* It's not possible to know in advance whether an UDP
-   * packet is an RPC packet. We'll try */
-  /* False means we are calling rpc from a TCP packet */
+   * cur_packet is an RPC cur_packet. We'll try */
+  /* False means we are calling rpc from a TCP cur_packet */
   if (get_rpc (dp, FALSE))
     return;
 
@@ -778,13 +801,13 @@ get_udp (decode_proto_t *dp)
   gboolean src_pref = FALSE;
   gboolean dst_pref = FALSE;
 
-  dp->global_src_port = src_port = pntohs (dp->packet + dp->offset);
-  dp->global_dst_port = dst_port = pntohs (dp->packet + dp->offset + 2);
+  dp->global_src_port = src_port = pntohs (dp->cur_packet);
+  dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
 
-  dp->offset += 8;
+  add_offset(dp, 8);
 
   /* It's not possible to know in advance whether an UDP
-   * packet is an RPC packet. We'll try */
+   * cur_packet is an RPC cur_packet. We'll try */
   if (get_rpc (dp, TRUE))
     return;
 
@@ -838,20 +861,20 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
   enum rpc_program msg_program;
   const gchar *rpc_prot = NULL;
 
-  /* Determine whether this is an RPC packet */
+  /* Determine whether this is an RPC cur_packet */
 
-  if ((dp->offset + 24) > dp->capture_len)
+  if (dp->cur_len < 24)
     return FALSE;		/* not big enough */
 
   if (is_udp)
     {
-      msg_type = pntohl (dp->packet + dp->offset + 4);
-      msg_program = pntohl (dp->packet + dp->offset + 12);
+      msg_type = pntohl (dp->cur_packet + 4);
+      msg_program = pntohl (dp->cur_packet + 12);
     }
   else
     {
-      msg_type = pntohl (dp->packet + dp->offset + 8);
-      msg_program = pntohl (dp->packet + dp->offset + 16);
+      msg_type = pntohl (dp->cur_packet + 8);
+      msg_program = pntohl (dp->cur_packet + 16);
     }
 
   if (msg_type != RPC_REPLY && msg_type != RPC_CALL)
@@ -917,23 +940,23 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
   return FALSE;
 }				/* get_rpc */
 
-/* This function is only called from a straight llc packet,
- * never from an IP packet */
+/* This function is only called from a straight llc cur_packet,
+ * never from an IP cur_packet */
 void
 get_netbios (decode_proto_t *dp)
 {
   guint16 hdr_len;
 
   /* Check that there is room for the minimum header */
-  if (dp->offset + 5 > dp->capture_len)
+  if (dp->cur_len < 5)
     return;
 
-  hdr_len = pletohs (dp->packet + dp->offset);
+  hdr_len = pletohs (dp->cur_packet);
 
   /* If there is any data at all, it is SMB (or so I understand
-   * from Ethereal's packet-netbios.c */
+   * from Ethereal's cur_packet-netbios.c */
 
-  if (dp->offset + hdr_len < dp->capture_len)
+  if (dp->cur_len > hdr_len)
     decode_proto_add(dp, "SMB");
 
 }				/* get_netbios */
@@ -946,7 +969,7 @@ get_netbios_ssn (decode_proto_t *dp)
 
   decode_proto_add(dp, "NETBIOS-SSN");
 
-  mesg_type = *(guint8 *) (dp->packet + dp->offset);
+  mesg_type = *(guint8 *) (dp->cur_packet);
 
   if (mesg_type == SESSION_MESSAGE)
     decode_proto_add(dp, "SMB");
@@ -962,7 +985,7 @@ get_netbios_dgm (decode_proto_t *dp)
 
   decode_proto_add(dp, "NETBIOS-DGM");
 
-  mesg_type = *(guint8 *) (dp->packet + dp->offset);
+  mesg_type = *(guint8 *) (dp->cur_packet);
 
   /* Magic numbers copied from ethereal, as usual
    * They mean Direct (unique|group|broadcast) datagram */
@@ -977,26 +1000,26 @@ void
 get_ftp (decode_proto_t *dp)
 {
   gchar *mesg = NULL;
-  guint size = dp->capture_len - dp->offset;
   gchar *str;
   guint hi_byte, low_byte;
   guint16 server_port;
+  guint size = dp->cur_len;
   guint i = 0;
 
   decode_proto_add(dp, "FTP");
-  if ((dp->offset + 3) > dp->capture_len)
+  if (dp->cur_len < 3)
     return;			/* not big enough */
 
-  if ((gchar) dp->packet[dp->offset] != '2'
-      || (gchar) dp->packet[dp->offset + 1] != '2'
-      || (gchar) dp->packet[dp->offset + 2] != '7')
+  if ((gchar) dp->cur_packet[0] != '2'
+      || (gchar) dp->cur_packet[1] != '2'
+      || (gchar) dp->cur_packet[2] != '7')
     return;
 
   /* We have a passive message. Get the port */
   mesg = g_malloc (size + 1);
   g_assert(mesg);
 
-  memcpy (mesg, dp->packet + dp->offset, size);
+  memcpy (mesg, dp->cur_packet, size);
   mesg[size] = '\0';
 
   g_my_debug ("Found FTP passive command: %s", mesg);

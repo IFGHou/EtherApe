@@ -789,7 +789,6 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   node_id_t src_node_id;
   node_id_t dst_node_id;
   link_id_t link_id;
-  short l3_ofs;
 
   if (!lkentry || !lkentry->fun)
     {
@@ -805,11 +804,9 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   packet->timestamp = now;
   packet->ref_count = 0;
 
-  l3_ofs = lkentry->fun(LOFS_L3, raw_packet, raw_size, 0);
-  
   /* Get a string with the protocol tree */
   packet->prot_desc = get_packet_prot (raw_packet, raw_size, 
-                                       lkentry->dlt_linktype, l3_ofs);
+                                       lkentry->dlt_linktype);
 
   src_node_id = get_node_id (raw_packet, raw_size, SRC);
   dst_node_id = get_node_id (raw_packet, raw_size, DST);
