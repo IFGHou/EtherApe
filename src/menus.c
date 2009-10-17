@@ -344,7 +344,7 @@ gui_start_capture (void)
 
   /* Enable and disable link layer menu */
   widget = glade_xml_get_widget (xml, "link_radio");
-  if (has_linklevel())
+  if (!has_linklevel())
     gtk_widget_set_sensitive (widget, FALSE);
   else
     gtk_widget_set_sensitive (widget, TRUE);

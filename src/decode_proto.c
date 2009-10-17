@@ -149,6 +149,12 @@ packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size,
     case DLT_EN10MB:
       get_eth_type (&decp, l3_offset);
       break;
+    case DLT_IEEE802_11:
+    case DLT_IEEE802_11_RADIO:
+      decode_proto_add(&decp, "IEE802.11/LLC"); /* experimental */
+      decp.offset = l3_offset;
+      get_llc (&decp); 
+      break;
     case DLT_FDDI:
       decode_proto_add(&decp, "FDDI");
       get_fddi_type (&decp, l3_offset);
@@ -163,6 +169,10 @@ packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size,
       break;
     case DLT_NULL:
       decode_proto_add(&decp, "NULL/IP");
+      get_ip (&decp, l3_offset);
+      break;
+    case DLT_LOOP:
+      decode_proto_add(&decp, "LOOP/IP");
       get_ip (&decp, l3_offset);
       break;
 #ifdef DLT_LINUX_SLL
