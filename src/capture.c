@@ -69,25 +69,20 @@ static void add_node_packet (const guint8 * packet,
 
 static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 
-/* data offsets from start packet */
-typedef struct
+/* requested address types */
+typedef enum
 {
-  short l2_dst_ofs; /* offset of level 2 dst addr. -1 if no l2 data */
-  short l2_src_ofs; /* offset of level 2 src addr. -1 if no l2 data */
-  short l3_ofs;     /* offset of level 3 layer */
-} linktype_ofs_t; 
+  LOFS_L2_DST,  /* requested L2 dst */
+  LOFS_L2_SRC,  /* requested L2 src */
+  LOFS_L3,      /* requested L3 src */
+} linktype_ofs_t;
 
-enum
-{
-  LT_RESULT_OK,     /* packet ok, offsets calculated */
-  LT_RESULT_IGNORE, /* packet to ignore */
-  LT_RESULT_ERROR /* unknown or malformed packet, discard */
-} linktype_result_t;
-
-/* function to calculate offsets from packet data */
-typedef  linktype_result_t (*linktype_func_t)(linktype_ofs_t *ofs, 
-                                              const guint8 *packet, 
-                                              guint raw_size);
+/* function to calculate offsets from packet data. Returns -1 on error or if
+ * requested address type can't be found */
+typedef  short (*linktype_func_t)(linktype_ofs_t type,
+                                  const guint8 *packet, 
+                                  guint raw_size,
+                                  guint curofs);
 
 /* etherape has to handle several data link layer (OSI L2) packet types.
  * The following table tries to make easier adding new types.
@@ -97,29 +92,42 @@ typedef struct linktype_data_tag
   const gchar *lt_desc; /* linktype description */
   int dlt_linktype; /* pcap link type (DLT_xxxx defines) */
   apemode_t l2_idtype;   /* link level address slot in node_id_t */
-  linktype_ofs_t ofs;   /* offsets */
-  linktype_func_t ofsget; /* optional offset calculation function */      
+  short l2_dst_ofs; /* offset of level 2 dst addr. -1 if no l2 data */
+  short l2_src_ofs; /* offset of level 2 src addr. -1 if no l2 data */
+  short l3_ofs;     /* offset of level 3 layer */
+  linktype_func_t fun; /* optional offset calculation function */      
 } linktype_data_t;
+
+
+/* linktype decoding functions */
+static short default_ofs(linktype_ofs_t type, const guint8 *packet, 
+                          guint raw_size, guint curofs);
+static short radiotap_ofs(linktype_ofs_t type, const guint8 *packet, 
+                          guint raw_size, guint curofs);
+static short wlan_ofs(linktype_ofs_t type, const guint8 *packet, 
+                          guint raw_size, guint curofs);
+
 
 /* current link type entry */
 const linktype_data_t *lkentry = NULL;
 
 static linktype_data_t linktypes[] = {
- {"Ethernet",     DLT_EN10MB,  LINK6, {0,  6, 14}, NULL },
- {"RAW",          DLT_RAW,     IP,    {-1, -1,  0}, NULL }, /* raw IP, like PPP o SLIP */
+ {"Ethernet",     DLT_EN10MB,  LINK6, 0,  6, 14, default_ofs },
+ {"RAW",          DLT_RAW,     IP,    -1, -1,  0, default_ofs }, /* raw IP, like PPP o SLIP */
 #ifdef DLT_LINUX_SLL
- {"LINUX_SLL",    DLT_LINUX_SLL, IP, {-1, -1, 16}, NULL }, /* Linux cooked */
+ {"LINUX_SLL",    DLT_LINUX_SLL, IP, -1, -1, 16, default_ofs }, /* Linux cooked */
 #endif  
- {"BSD Loopback", DLT_NULL,    IP,   {-1, -1,  4}, NULL }, /* we ignore l2 data */
- {"OpenBSD Loopback", DLT_LOOP,    IP,   {-1, -1,  4}, NULL }, /* we ignore l2 data */
- {"FDDI",         DLT_FDDI,    LINK6, {1,  7, 21}, NULL },
- {"IEEE802",      DLT_IEEE802, LINK6, {2,  8, 22}, NULL }, /* Token Ring */
- {"WLAN",   DLT_IEEE802_11, LINK6, {4,  10, 30}, NULL }, /* Wireless data frame 
-                                              * perhaps 22bytesTODO: handle non-data frames */
- {"WLAN+RTAP",   DLT_IEEE802_11_RADIO, LINK6, {36,  42, 62}, NULL }, /* Wireless+radiotap, 32bit */
+ {"BSD Loopback", DLT_NULL,    IP,   -1, -1,  4, default_ofs }, /* we ignore l2 data */
+ {"OpenBSD Loopback", DLT_LOOP,    IP,   -1, -1,  4, default_ofs }, /* we ignore l2 data */
+ {"FDDI",         DLT_FDDI,    LINK6, 1,  7, 21, default_ofs },
+ {"IEEE802",      DLT_IEEE802, LINK6, 2,  8, 22, default_ofs }, /* Token Ring */
+
+ /* plain wireless data frame perhaps 22bytesTODO: handle non-data frames */
+ {"WLAN",   DLT_IEEE802_11, LINK6, 4,  10, 38, wlan_ofs }, 
+ /* Wireless with radiotap header */
+ {"WLAN+RTAP",   DLT_IEEE802_11_RADIO, LINK6, -1,  -1, -1, radiotap_ofs }, 
   
-  
- {NULL,   0, 0, {0,  9, 0}, NULL } /* terminating entry, must be last */
+ {NULL,   0, 0, 0,  0, 0, NULL } /* terminating entry, must be last */
 };
 
 
@@ -127,46 +135,124 @@ static linktype_data_t linktypes[] = {
  * FUNCTION DEFINITIONS
  */
 
+/* handles standard packet types */
+static short default_ofs(linktype_ofs_t type, const guint8 *packet, 
+                                      guint raw_size, guint curofs)
+{
+  short ofs = -1;
+  if (!lkentry)
+    return -1;
+  
+  switch (type)
+    {
+      case LOFS_L2_DST:
+        if (lkentry->l2_dst_ofs >= 0 )
+          ofs = curofs + lkentry->l2_dst_ofs; 
+        break;
+      case LOFS_L2_SRC:
+        if (lkentry->l2_src_ofs >= 0 )
+          ofs = curofs + lkentry->l2_src_ofs; 
+        break;
+      case LOFS_L3:
+        if (lkentry->l3_ofs >= 0 )
+          ofs = curofs + lkentry->l3_ofs; 
+        break;
+    }
+
+  if (raw_size < ofs + 6)
+    {
+      g_warning (_("captured size too small, packet discarded"));
+      return -1;
+    }
+  
+  return ofs;
+}
+
 /* handles radiotap header */
-static linktype_result_t radiotap_ofs(linktype_ofs_t *ofs, 
-                                      const guint8 *packet, 
-                                      guint raw_size)
+static short radiotap_ofs(linktype_ofs_t type, const guint8 *packet, 
+                                      guint raw_size, guint curofs)
 {
   guint16 rtlen;
 
   g_assert(lkentry && lkentry->l2_idtype == DLT_IEEE802_11_RADIO);
-  g_assert(ofs && packet);
+  g_assert(packet);
 
   if (raw_size < 32)
     {
       g_warning (_("Radiotap:captured size too small, packet discarded"));
-      return LT_RESULT_ERROR;
+      return -1;
     }
 
   /* radiotap hdr has 8 bit of version, plus 8bit of padding, followed by
-   * 16bit len field. We don't need to parse the header, just skip it */
+   * 16bit len field. We don't need to parse the header, just skip it 
+   * Note: header is in host order */
   rtlen = *(guint16 *)(packet+2);
   if (raw_size <= rtlen)
     {
       g_warning (_("Radiotap:captured size too small, packet discarded"));
-      return LT_RESULT_ERROR;
+      return -1;
     }
     
-  return wlan_ofs(ofs, packet, raw_size);
+  return wlan_ofs(type, packet+rtlen, raw_size-rtlen, rtlen);
 }
 
 /* ieee802.11 wlans */
-static linktype_result_t wlan_ofs(linktype_ofs_t *ofs, 
-                                      const guint8 *packet, 
-                                      guint raw_size)
+static short wlan_ofs(linktype_ofs_t type, const guint8 *packet, 
+                                      guint raw_size, guint curofs)
 {
-  guint16 rtlen;
-  g_assert(ofs && packet);
+  uint16_t fc;
+  short ofs;
+  g_assert(ofs && packet && raw_size);
 
+  if (raw_size < 10)
+    {
+      g_warning (_("wlan:captured size too small, packet discarded"));
+      return -1;
+    }
   
+  ofs = -1;
 
+  /* frame control: two bytes */
+  fc = ntohs(*packet);
+ 
+  /* frame type is in bits 13-14 */
+  switch ( (fc >> 12 ) & 0xff )
+    {
+      case 0x10:
+        /* data frame */
+        switch (type)
+          {
+            case LOFS_L2_DST:
+              ofs = curofs + 4; 
+              break;
+            case LOFS_L2_SRC:
+              ofs = curofs + 10; 
+              break;
+            case LOFS_L3:
+              /* L3 offset depends on LLC/SNAP hdr. For now, just assume ip
+               * payload */
+              ofs = curofs + 30 + 8; 
+              break;
+          }
+        break;
+      case 0x00: /* mgmt frame */
+      case 0x01: /* control frame */
+        if (type == LOFS_L2_DST)
+           ofs = curofs + 4; 
+        break;
+      default:
+        g_warning (_("wlan:captured size too small, packet discarded"));
+        break;
+    }
+
+  if (raw_size < ofs + 8)
+    {
+      g_warning (_("wlan:captured size too small, packet discarded"));
+      return -1;
+    }
+        
+  return ofs;
 }
-
 
 /* Sets the correct linktype entry. Returns false if not found */
 static gboolean setup_linktype(int linktype)
@@ -196,43 +282,45 @@ gboolean has_linklevel(void)
 }
 
 /* Returns the node id for the current mode in this particular packet */
-static node_id_t 
-get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node_type)
+static node_id_t get_node_id (const guint8 * raw_packet, size_t raw_size, 
+                              create_node_type_t node_type)
 {
   node_id_t node_id;
+  short ofs;
 
   memset( &node_id, 0, sizeof(node_id));
   node_id.node_type = pref.mode;
 
-  if (!lkentry)
+  if (!lkentry || !lkentry->fun)
     {
       g_error (_("Unsupported link type"));
       return;  /* g_error() aborts, but just to be sure ... */
     }
-  
+
   switch (pref.mode)
     {
     case LINK6:
       if (lkentry->l2_idtype == LINK6)
         {
-          int minlen = lkentry->ofs.l2_dst_ofs;
-          if (minlen < lkentry->ofs.l2_src_ofs)
-            minlen = lkentry->ofs.l2_src_ofs;
-          
-          if (raw_size < minlen + sizeof(node_id.addr.eth))
+          if (node_type == SRC)
+             ofs = lkentry->fun(LOFS_L2_SRC, raw_packet, raw_size, 0);
+          else
+             ofs = lkentry->fun(LOFS_L2_DST, raw_packet, raw_size, 0);
+              
+          if (ofs < 0)
+            break; 
+          if (raw_size < ofs + sizeof(node_id.addr.eth))
             {
               g_critical(_("Received subsize %s packet! Forged ?"), 
                          lkentry->lt_desc);
+              break;
             }
+          if (node_type == SRC)
+            g_memmove(node_id.addr.eth, raw_packet + ofs, 
+                      sizeof(node_id.addr.eth));
           else
-            {
-              if (node_type == SRC)
-                g_memmove(node_id.addr.eth, raw_packet + lkentry->ofs.l2_src_ofs, 
-                          sizeof(node_id.addr.eth));
-              else
-                g_memmove(node_id.addr.eth, raw_packet+lkentry->ofs.l2_dst_ofs, 
-                          sizeof(node_id.addr.eth));
-            }
+            g_memmove(node_id.addr.eth, raw_packet + ofs, 
+                      sizeof(node_id.addr.eth));
         }
       else
         {
@@ -242,35 +330,41 @@ get_node_id (const guint8 * raw_packet, size_t raw_size, create_node_type_t node
         }
       break;
     case IP:
-      if (raw_size >= lkentry->ofs.l3_ofs + 16 + sizeof(node_id.addr.ip4))
+      ofs = lkentry->fun(LOFS_L3, raw_packet, raw_size, 0);
+      if (ofs < 0)
+          break; /* no ip data found */
+      if (raw_size >= ofs + 16 + sizeof(node_id.addr.ip4))
         {
           if (node_type == SRC)
-            g_memmove(node_id.addr.ip4, raw_packet + lkentry->ofs.l3_ofs + 12, 
+            g_memmove(node_id.addr.ip4, raw_packet + ofs + 12, 
                       sizeof(node_id.addr.ip4));
           else
-            g_memmove(node_id.addr.ip4, raw_packet + lkentry->ofs.l3_ofs + 16, 
+            g_memmove(node_id.addr.ip4, raw_packet + ofs + 16, 
                       sizeof(node_id.addr.ip4));
         }
         else
           g_critical(_("Received subsize IP packet! Forged ?"));
       break;
     case TCP:
-      if (raw_size >= lkentry->ofs.l3_ofs + 24)
+      ofs = lkentry->fun(LOFS_L3, raw_packet, raw_size, 0);
+      if (ofs < 0)
+          break; /* no tcp data found */
+      if (raw_size >= ofs + 24)
         {
           if (node_type == SRC)
             {
               guint16 port;
               g_memmove (node_id.addr.tcp4.host, raw_packet + 
-                         lkentry->ofs.l3_ofs + 12, 4);
-              port = ntohs (*(guint16 *) (raw_packet + lkentry->ofs.l3_ofs + 20));
+                         ofs + 12, 4);
+              port = ntohs (*(guint16 *) (raw_packet + ofs + 20));
               g_memmove (node_id.addr.tcp4.port, &port, 2);
             }
           else
             {
               guint16 port;
               g_memmove (node_id.addr.tcp4.host, 
-                         raw_packet + lkentry->ofs.l3_ofs + 16, 4);
-              port = ntohs (*(guint16 *) (raw_packet + lkentry->ofs.l3_ofs + 22));
+                         raw_packet + ofs + 16, 4);
+              port = ntohs (*(guint16 *) (raw_packet + ofs + 22));
               g_memmove (node_id.addr.tcp4.port, &port, 2);
             }
         }
@@ -294,8 +388,7 @@ enum status_t get_capture_status(void)
  * Sets up dns if needed
  * Sets up callbacks for pcap and dns
  * Creates nodes and links trees */
-gchar *
-init_capture (void)
+gchar *init_capture (void)
 {
   gchar *device;
   gchar ebuf[300];
@@ -696,8 +789,9 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   node_id_t src_node_id;
   node_id_t dst_node_id;
   link_id_t link_id;
+  short l3_ofs;
 
-  if (!lkentry)
+  if (!lkentry || !lkentry->fun)
     {
       g_error(_("Data link entry not initialized"));
       return;  /* g_error() should abort, but just to be sure ... */
@@ -711,9 +805,11 @@ packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   packet->timestamp = now;
   packet->ref_count = 0;
 
+  l3_ofs = lkentry->fun(LOFS_L3, raw_packet, raw_size, 0);
+  
   /* Get a string with the protocol tree */
   packet->prot_desc = get_packet_prot (raw_packet, raw_size, 
-                                       lkentry->dlt_linktype, lkentry->ofs.l3_ofs);
+                                       lkentry->dlt_linktype, l3_ofs);
 
   src_node_id = get_node_id (raw_packet, raw_size, SRC);
   dst_node_id = get_node_id (raw_packet, raw_size, DST);

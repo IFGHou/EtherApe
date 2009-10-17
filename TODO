@@ -20,6 +20,13 @@ User visible features:
 Issues in the source code
 -------------------------
 
+  * unify node_id and packet decoding. Right now ip/tcp nodes can get useless
+    ids, leading to incorrect node splitting for multiproto networks.
+    Node id should be attributed only after packet decoding, by choosing a
+    suitable numeric name.
+    This problem can happen only when default packet filters are disabled, 
+    though, something the user can do only on purpose :-)
+
   * rewrite names handling. Do only packet extraction at capture time, name
     resolution only at display time for the chosen name.
 
@@ -34,8 +41,6 @@ Issues in the source code
 
   * Use a GArray instead of a fixed array for the protocols
     stack.
-
-  * change all those ugly while (i+1) in capture.c
 
 --
 $Id$

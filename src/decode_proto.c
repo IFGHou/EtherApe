@@ -461,6 +461,10 @@ get_ip (decode_proto_t *dp, guint l3_offset)
 {
   guint16 fragment_offset;
   iptype_t ip_type;
+
+  if (l3_offset < 0)
+    return; /* no l3 data */
+  
   ip_type = dp->packet[l3_offset + 9];
   fragment_offset = pntohs (dp->packet + l3_offset + 6);
   fragment_offset &= 0x0fff;
