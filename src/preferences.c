@@ -135,7 +135,7 @@ load_config (const char *prefix)
     ("Diagram/link_node_ratio=1.0", &u);
   if (u)
     pref.link_node_ratio = 1.0;
-  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* DEFAULT */
+  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* APEMODE_DEFAULT */
   pref.refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=100", &u);
 

@@ -22,11 +22,10 @@
 #define DECODE_PROTO_H
 
 #include "pkt_info.h"
+#include "node_id.h"
 
-/* extracts the protocol stack from packet, and returs it as a newly allocated
- * packet_protos_t */
-packet_protos_t *get_packet_prot (const guint8 * packet, guint raw_size, 
-                                  int link_type);
-
+gboolean has_linklevel(void); /* true if current device captures l2 data */ 
+gboolean setup_link_type(int linktype);
+void packet_acquired(guint8 * packet, guint raw_size, guint pkt_size);
 
 #endif

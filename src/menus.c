@@ -156,7 +156,7 @@ on_interface_radio_activate (gchar * gui_device)
 void
 on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  apemode_t new_mode = DEFAULT;
+  apemode_t new_mode = APEMODE_DEFAULT;
   const gchar *menuname = NULL;
 
 

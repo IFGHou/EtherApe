@@ -74,7 +74,7 @@ node_size_variable_t;
 
 typedef enum
 {
-  DEFAULT = -1,
+  APEMODE_DEFAULT = -1,
   LINK6 = 0,        /* data link level with 6 bits of address */
   IP,
   TCP

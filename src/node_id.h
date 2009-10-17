@@ -28,7 +28,7 @@ typedef union __attribute__ ((packed))
   struct __attribute__ ((packed))
   {
       guint8 host[4];            /* tcp/udp address */
-      guint8 port[2];            /* port number */
+      guint16 port;            /* port number */
   } tcp4;
 
 } 
@@ -40,6 +40,7 @@ typedef struct
   apemode_t node_type;
   node_addr_t addr;
 } node_id_t;
+void node_id_clear(node_id_t *a);
 gint node_id_compare (const node_id_t *a, const node_id_t *b);
 /* returns a newly allocated string with a human-readable id */
 gchar *node_id_str(const node_id_t *id); 

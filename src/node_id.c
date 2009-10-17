@@ -27,6 +27,12 @@
  *
  **************************************************************************/
 
+void node_id_clear(node_id_t *a)
+{
+  memset(&a->addr, 0, sizeof(node_addr_t));
+  a->node_type = APEMODE_DEFAULT;
+}
+
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
 gint
@@ -46,6 +52,8 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
   /* same node type, compare */
   switch (na->node_type)
     {
+    case APEMODE_DEFAULT:
+      return 0; /* default has only one value */
     case LINK6:
       ga = na->addr.eth;
       gb = nb->addr.eth;
@@ -85,6 +93,9 @@ gchar *node_id_str(const node_id_t *id)
   
   switch (id->node_type)
     {
+    case APEMODE_DEFAULT:      
+      msg = g_strdup("00:00:00:00:00:00");
+      break;
     case LINK6:      
       msg = g_strdup(ether_to_str(id->addr.eth));
       break;
@@ -93,7 +104,7 @@ gchar *node_id_str(const node_id_t *id)
       break;
     case TCP:
       msg = g_strdup_printf("%s:%d", ip_to_str (id->addr.tcp4.host), 
-                            *(guint16 *) (id->addr.tcp4.port));
+                            id->addr.tcp4.port);
       break;
     default:
       g_error("node_id_type %d unknown", (int) (id->node_type));
@@ -110,6 +121,9 @@ gchar *node_id_dump(const node_id_t *id)
   g_assert(id);
   switch (id->node_type)
     {
+    case APEMODE_DEFAULT:
+      msg = g_strdup_printf("NONE: 00:00:00:00:00:00");
+      break;
     case LINK6:
       msg = g_strdup_printf("LINK: %s", ether_to_str(id->addr.eth));
       break;
@@ -118,7 +132,7 @@ gchar *node_id_dump(const node_id_t *id)
       break;
     case TCP:
       msg = g_strdup_printf("TCP/UDP: %s:%d", ip_to_str (id->addr.tcp4.host), 
-                            *(guint16 *) (id->addr.tcp4.port));
+                            id->addr.tcp4.port);
       break;
     default:
       msg = g_strdup_printf("node_id_type %d unknown", (int)(id->node_type));

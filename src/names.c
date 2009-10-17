@@ -416,14 +416,13 @@ get_tcp_name (name_add_t *nt)
 
       numeric_name = g_strdup_printf("%s:%d",
                                      ip_to_str(nt->node_id.addr.tcp4.host),
-                                     *(guint16 *) (nt->node_id.addr.tcp4.port));
+                                     nt->node_id.addr.tcp4.port);
 
       resolved_name = g_strdup_printf("%s:%s",
                                       dns_lookup (
                                                   pntohl (nt->node_id.addr.tcp4.host), 
                                                   TRUE),
-                                      get_tcp_port
-                                         (*(guint16 *)(nt->node_id.addr.tcp4.port))
+                                      get_tcp_port(nt->node_id.addr.tcp4.port)
                                      );
 
       add_name (numeric_name, resolved_name, TRUE, &nt->node_id, nt);

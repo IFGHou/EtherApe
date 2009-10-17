@@ -23,12 +23,17 @@
 #include "globals.h"
 #include <ctype.h>
 #include <string.h>
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
 #include "prot_types.h"
 #include "util.h"
 #include "decode_proto.h"
 #include "protocols.h"
 #include "conversations.h"
 #include "datastructs.h"
+#include "node.h"
+#include "links.h"
 
 #define TCP_FTP 21
 #define TCP_NETBIOS_SSN 139
@@ -66,6 +71,10 @@ typedef struct
   packet_protos_t *pr; /* detected protocol stack */
   guint cur_level;      /* current protocol depth on stack */
 
+  /* node ids */
+  node_id_t dst_node_id; 
+  node_id_t src_node_id;
+  
   /* These are used for conversations */
   guint32 global_src_address;
   guint32 global_dst_address;
@@ -74,22 +83,38 @@ typedef struct
 
 } decode_proto_t;
 
+/* extracts the protocol stack from packet */
+static void get_packet_prot (decode_proto_t *dp);
+
 /* starts a new decode, allocating a new packet_protos_t */
-void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen);
+static void decode_proto_start(decode_proto_t *dp, 
+                               const guint8 *pkt, guint caplen);
 
 /* sets protoname at current level, and passes at next level */
-void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...);
+static void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...);
 
 /* advances current packet start to prepare for next protocol */
 static void add_offset(decode_proto_t *dp, guint offset);
 
+static void add_node_packet (const guint8 * packet,
+                             guint raw_size,
+			     packet_info_t * packet_info,
+                             const node_id_t *node_id,
+			     packet_direction direction);
+
+/* decoder func proto */
+typedef void (*get_fun)(decode_proto_t *dp);
+
 /* specific decoders declarations */
+static void get_loop(decode_proto_t *dp);
 static void get_eth_type (decode_proto_t *dp);
 static void get_fddi_type (decode_proto_t *dp);
-static void get_ieee802_type (decode_proto_t *dp);
+static void get_ieee802_5_type (decode_proto_t *dp);
 static void get_eth_II (decode_proto_t *dp, etype_t etype);
 static void get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type);
-static void get_linux_sll_type (decode_proto_t *dp);
+static void get_radiotap (decode_proto_t *dp);
+static void get_wlan (decode_proto_t *dp);
+static void get_linux_sll (decode_proto_t *dp);
 
 static void get_llc (decode_proto_t *dp);
 static void get_ip (decode_proto_t *dp);
@@ -100,11 +125,77 @@ static void get_udp (decode_proto_t *dp);
 static void get_netbios (decode_proto_t *dp);
 static void get_netbios_ssn (decode_proto_t *dp);
 static void get_netbios_dgm (decode_proto_t *dp);
-
 static void get_ftp (decode_proto_t *dp);
+
 static gboolean get_rpc (decode_proto_t *dp, gboolean is_udp);
 static guint16 choose_port (guint16 a, guint16 b);
 static void append_etype_prot (decode_proto_t *dp, etype_t etype);
+
+/* etherape has to handle several data link layer (OSI L2) packet types.
+ * The following table tries to make easier adding new types.
+ * End of table is signaled by an entry with lt_desc NULL */
+typedef struct linktype_data_tag
+{
+  const gchar *lt_desc; /* linktype description */
+  int dlt_linktype; /* pcap link type (DLT_xxxx defines) */
+  apemode_t l2_idtype;   /* link level address slot in node_id_t */
+  get_fun fun;  /* linktype base decoder function */
+    
+} linktype_data_t;
+
+
+
+/* current link type entry */
+const linktype_data_t *lkentry = NULL;
+
+static linktype_data_t linktypes[] = {
+ {"Ethernet",     DLT_EN10MB,    LINK6, get_eth_type },
+ {"RAW",          DLT_RAW,       IP,    get_ip    }, /* raw IP like PPP,SLIP */
+#ifdef DLT_LINUX_SLL
+ {"LINUX_SLL",    DLT_LINUX_SLL, IP,    get_linux_sll }, /* Linux cooked */
+#endif  
+ {"BSD Loopback", DLT_NULL,      IP,    get_loop }, /* ignore l2 data */
+ {"OpenBSD Loopback", DLT_LOOP,  IP,    get_loop }, /* ignore l2 data */
+ {"FDDI",         DLT_FDDI,    LINK6,   get_fddi_type },
+ {"IEEE802.5",    DLT_IEEE802, LINK6,   get_ieee802_5_type  }, /* Token Ring */
+ {"WLAN",   DLT_IEEE802_11,    LINK6,   get_wlan }, 
+ /* Wireless with radiotap header */
+ {"WLAN+RTAP",  DLT_IEEE802_11_RADIO, LINK6, get_radiotap }, 
+  
+ {NULL,   0, 0 } /* terminating entry, must be last */
+};
+
+/* ------------------------------------------------------------
+ * L2 offset decoders
+ * ------------------------------------------------------------*/
+
+/* Sets the correct linktype entry. Returns false if not found */
+gboolean setup_link_type(int linktype)
+{
+  int i;
+
+  lkentry = NULL;
+  for (i = 0; linktypes[i].lt_desc != NULL ; ++i)
+    {
+      if (linktypes[i].dlt_linktype == linktype)
+        {
+          lkentry = linktypes + i;
+          g_my_info (_("Link type is %s"), lkentry->lt_desc);
+          return TRUE;
+        }
+    }
+  
+  return FALSE; /* link type not supported */
+}
+
+/* true if current device captures l2 data */ 
+gboolean has_linklevel(void)
+{
+  if (lkentry)
+    return lkentry->l2_idtype == LINK6;
+  else
+    return FALSE;
+}
 
 /* ------------------------------------------------------------
  * Implementation
@@ -118,6 +209,8 @@ void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen)
   dp->cur_len = caplen;
   dp->pr = packet_protos_init();
   dp->cur_level = 1; /* level zero is topmost protocol, will be filled later */
+  node_id_clear(&dp->dst_node_id);
+  node_id_clear(&dp->src_node_id);
   dp->global_src_address = 0;
   dp->global_dst_address = 0;
   dp->global_src_port = 0;
@@ -148,75 +241,128 @@ static void add_offset(decode_proto_t *dp, guint offset)
     }
 }
 
-packet_protos_t *get_packet_prot (const guint8 * p, guint raw_size, 
-                                  int link_type)
+/* This function is called everytime there is a new packet in
+ * the network interface. It then updates traffic information
+ * for the appropriate nodes and links 
+ * Receives both the captured (raw) size and the real packet size */
+void packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
 {
+  packet_info_t *packet;
+  link_id_t link_id;
   decode_proto_t decp;
-  guint i;
-  gchar *prot;
 
-  g_assert (p != NULL);
-
-  decode_proto_start(&decp, p, raw_size);
-
-  switch (link_type)
+  g_assert (raw_packet != NULL);
+  if (!lkentry || !lkentry->fun)
     {
-    case DLT_EN10MB:
-      get_eth_type (&decp);
-      break;
-    case DLT_IEEE802_11:
-    case DLT_IEEE802_11_RADIO:
-      decode_proto_add(&decp, "IEE802.11/LLC"); /* experimental */
-      get_llc (&decp); 
-      break;
-    case DLT_FDDI:
-      decode_proto_add(&decp, "FDDI");
-      get_fddi_type (&decp);
-      break;
-    case DLT_IEEE802:
-      decode_proto_add(&decp, "Token Ring");
-      get_ieee802_type (&decp);
-      break;
-    case DLT_RAW:		/* Both for PPP and SLIP */
-      decode_proto_add(&decp, "RAW/IP");
-      get_ip (&decp);
-      break;
-    case DLT_NULL:
-      decode_proto_add(&decp, "NULL/IP");
-      add_offset(&decp, 4);
-      get_ip (&decp);
-      break;
-    case DLT_LOOP:
-      decode_proto_add(&decp, "LOOP/IP");
-      add_offset(&decp, 4);
-      get_ip (&decp);
-      break;
-#ifdef DLT_LINUX_SLL
-    case DLT_LINUX_SLL:
-      decode_proto_add(&decp, "LINUX-SLL");
-      get_linux_sll_type (&decp);
-      break;
-#endif
-    default:
-      break;
+      g_error(_("Data link entry not initialized"));
+      return;  /* g_error() should abort, but just to be sure ... */
     }
+
+  decode_proto_start(&decp, raw_packet, raw_size);
+                                       
+  /* create a packet structure to hold data */
+  packet = g_malloc (sizeof (packet_info_t));
+  g_assert(packet);
+  
+  packet->size = pkt_size;
+  packet->timestamp = now;
+  packet->ref_count = 0;
+
+  /* Get the protocol tree */
+  get_packet_prot (&decp);
+  if (!decp.pr)
+    {
+      /* fatal error, discard packet */
+      g_free(packet); 
+      return;
+    }
+  packet->prot_desc = decp.pr;
+
+  n_packets++;
+  total_mem_packets++;
+
+  /* Add this packet information to the src and dst nodes. If they
+   * don't exist, create them */
+  add_node_packet (raw_packet, raw_size, packet, &decp.src_node_id, OUTBOUND);
+  add_node_packet (raw_packet, raw_size, packet, &decp.dst_node_id, INBOUND);
+
+  /* And now we update link traffic information for this packet */
+  link_id.src = decp.src_node_id;
+  link_id.dst = decp.dst_node_id;
+  links_catalog_add_packet(&link_id, packet);
+
+  /* finally, update global protocol stats */
+  protocol_summary_add_packet(packet);
+}
+
+
+/* We update node information for each new packet that arrives in the
+ * network. If the node the packet refers to is unknown, we
+ * create it. */
+static void
+add_node_packet (const guint8 * raw_packet,
+                 guint raw_size,
+		 packet_info_t * packet,
+                 const node_id_t *node_id,
+		 packet_direction direction)
+{
+  node_t *node;
+
+  node = nodes_catalog_find(node_id);
+  if (node == NULL)
+    {
+      /* creates the new node, adding it to the catalog */
+      node = nodes_catalog_new(node_id);
+      g_assert(node);
+    }
+
+  traffic_stats_add_packet(&node->node_stats, packet, direction);
+
+  /* If this is the first packet we've heard from the node in a while, 
+   * we add it to the list of new nodes so that the main app know this 
+   * node is active again */
+  if (node->node_stats.n_packets == 1)
+    new_nodes_add(node);
+
+  /* Update names list for this node */
+  get_packet_names (&node->node_stats.stats_protos, raw_packet, raw_size,
+		    packet->prot_desc, direction, lkentry->dlt_linktype);
+
+}				/* add_node_packet */
+
+static void get_packet_prot (decode_proto_t *dp)
+{
+  guint i;
+
+  g_assert(lkentry && lkentry->fun);
+  lkentry->fun(dp);
 
   /* first position is top proto */
   for (i = STACK_SIZE ; i>0 ; --i)
     {
-      if (decp.pr->protonames[i])
+      if (dp->pr->protonames[i])
         {
-          decp.pr->protonames[0] = g_strdup(decp.pr->protonames[i]);
+          dp->pr->protonames[0] = g_strdup(dp->pr->protonames[i]);
           break;
         }
     }
-
-  return decp.pr;
 }				/* get_packet_prot */
 
 /* ------------------------------------------------------------
  * Private functions
  * ------------------------------------------------------------*/
+
+/* bsd loopback */
+static void get_loop(decode_proto_t *dp)
+{
+  if (lkentry->dlt_linktype == DLT_LOOP)
+    decode_proto_add(dp, "LOOP");
+  else
+    decode_proto_add(dp, "NULL");
+  
+  add_offset(dp, 4);
+  get_ip(dp);
+}
 
 static void get_eth_type (decode_proto_t *dp)
 {
@@ -260,6 +406,14 @@ static void get_eth_type (decode_proto_t *dp)
 	}
     }
 
+  /* node ids */
+  dp->dst_node_id.node_type = LINK6;
+  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 0, 
+            sizeof(dp->dst_node_id.addr.eth));
+  dp->src_node_id.node_type = LINK6;
+  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 6, 
+            sizeof(dp->src_node_id.addr.eth));
+  
   add_offset(dp, 14);
 
   if (ethhdr_type == ETHERNET_802_3)
@@ -286,7 +440,6 @@ get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type)
   switch (ethhdr_type)
     {
     case ETHERNET_802_2:
-      decode_proto_add(dp, "LLC");
       get_llc (dp);
       break;
     case ETHERNET_802_3:
@@ -300,27 +453,57 @@ get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type)
 static void
 get_fddi_type (decode_proto_t *dp)
 {
+  decode_proto_add(dp, "FDDI");
+
+  if (dp->cur_len < 14)
+    return; /* not big enough */
+
   decode_proto_add(dp, "LLC");
 
+  /* node ids */
+  dp->dst_node_id.node_type = LINK6;
+  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 1, 
+            sizeof(dp->dst_node_id.addr.eth));
+  dp->src_node_id.node_type = LINK6;
+  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 7, 
+            sizeof(dp->src_node_id.addr.eth));
+  
   /* Ok, this is only temporary while I truly dissect LLC 
    * and fddi */
+  if (dp->cur_len < 21)
+    return; /* not big enough */
+
   if ((dp->cur_packet[19] == 0x08) && (dp->cur_packet[20] == 0x00))
    {
-      decode_proto_add(dp, "IP");
       add_offset(dp, 21);
       get_ip (dp);
     }
 }				/* get_fddi_type */
 
 static void
-get_ieee802_type (decode_proto_t *dp)
+get_ieee802_5_type (decode_proto_t *dp)
 {
+  decode_proto_add(dp, "Token Ring");
+
+  if (dp->cur_len < 15)
+    return; /* not big enough */
+
+  /* node ids */
+  dp->dst_node_id.node_type = LINK6;
+  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 2, 
+            sizeof(dp->dst_node_id.addr.eth));
+  dp->src_node_id.node_type = LINK6;
+  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 8, 
+            sizeof(dp->src_node_id.addr.eth));
+
+  if (dp->cur_len < 22)
+    return; /* not big enough */
+
   /* As with FDDI, we only support LLC by now */
   decode_proto_add(dp, "LLC");
 
   if ((dp->cur_packet[20] == 0x08) && (dp->cur_packet[21] == 0x00))
     {
-      decode_proto_add(dp, "IP");
       add_offset(dp, 22);
       get_ip (dp);
     }
@@ -330,30 +513,156 @@ get_ieee802_type (decode_proto_t *dp)
 static void
 get_eth_II (decode_proto_t *dp, etype_t etype)
 {
-  append_etype_prot (dp, etype);
-
   if (etype == ETHERTYPE_IP)
     get_ip (dp);
-  if (etype == ETHERTYPE_IPX)
+  else if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
+  else
+    append_etype_prot (dp, etype);
+    
 }				/* get_eth_II */
+
+/* handles radiotap header */
+static void get_radiotap(decode_proto_t *dp)
+{
+  guint16 rtlen;
+
+  decode_proto_add(dp, "RADIOTAP");
+  if (dp->cur_len < 32)
+    {
+      g_warning (_("Radiotap:captured size too small, packet discarded"));
+      return;
+    }
+
+  /* radiotap hdr has 8 bit of version, plus 8bit of padding, followed by
+   * 16bit len field. We don't need to parse the header, just skip it 
+   * Note: header is in host order */
+  rtlen = *(guint16 *)(dp->cur_packet+2);
+
+  add_offset(dp, rtlen);
+  get_wlan(dp);
+}
+
+static void decode_wlan_mgmt(decode_proto_t *dp, uint8_t subtype)
+{
+  switch (subtype)
+    {
+      case 0: /* association request */
+      case 1: /* association response */
+      case 2: /* REassociation request */
+      case 3: /* REassociation response */
+        decode_proto_add(dp, "WLAN-ASSOC");
+        break;
+      case 4: /* probe req */
+      case 5: /* probe resp */
+        decode_proto_add(dp, "WLAN-PROBE");
+        break;
+      case 8: 
+        decode_proto_add(dp, "WLAN-BEACON");
+        break;
+      case 9: 
+        decode_proto_add(dp, "WLAN-ATIM");
+        break;
+      case 10: /* deassociation */
+        decode_proto_add(dp, "WLAN-DEASSOC");
+        break;
+      case 11: /* authentication */
+      case 12: /* DEauthentication */
+        decode_proto_add(dp, "WLAN-AUTH");
+        break;
+      default:
+        decode_proto_add(dp, "WLAN-MGMT-UNKN");
+        break;
+    }
+}
+
+/* ieee802.11 wlans */
+static void get_wlan(decode_proto_t *dp)
+{
+  uint16_t fc;
+  uint8_t type;
+  uint8_t subtype;
+  uint8_t wep; 
+
+  decode_proto_add(dp, "IEE802.11"); /* experimental */
+  if (dp->cur_len < 10)
+    {
+      g_warning (_("wlan:captured size too small, packet discarded"));
+      return;
+    }
+  
+  /* frame control: two bytes */
+  fc = ntohs(*(guint16 *)(dp->cur_packet));
+ 
+  /* dst node id is always present */
+
+  /* frame type is in bits 13-14 */
+  type = (fc >> 10 ) & 0x03;
+  subtype = (fc >> 12 ) & 0xff;
+  wep = fc & 0x2;
+  switch ( type )
+    {
+      case 2:
+        /* data frame */
+        dp->dst_node_id.node_type = LINK6;
+        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
+                  sizeof(dp->dst_node_id.addr.eth));
+        dp->src_node_id.node_type = LINK6;
+        g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
+                  sizeof(dp->src_node_id.addr.eth));
+        add_offset(dp, 30);
+        if (!wep)
+          get_llc(dp);
+        else
+          decode_proto_add(dp, "WLAN-CRYPTED");
+        break;
+      case 0: /* mgmt frame */
+        dp->dst_node_id.node_type = LINK6;
+        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
+                  sizeof(dp->dst_node_id.addr.eth));
+        dp->src_node_id.node_type = LINK6;
+        g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
+                  sizeof(dp->src_node_id.addr.eth));
+        decode_wlan_mgmt(dp, subtype);
+        break;
+      case 1: /* control frame */
+        /* these frames may have only a dst addr */
+        dp->dst_node_id.node_type = LINK6;
+        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
+                  sizeof(dp->dst_node_id.addr.eth));
+        if (subtype == 12)
+          {
+            dp->src_node_id.node_type = LINK6;
+            g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
+                      sizeof(dp->src_node_id.addr.eth));
+          }
+        decode_proto_add(dp, "WLAN-CTRL");
+        break;
+      default:
+        g_warning (_("wlan:unknown frame type 0x%x, decode aborted"), type);
+        return;
+    }
+}
 
 /* Gets the protocol type out of the linux-sll header.
  * I have no real idea of what can be there, but since IP
  * is 0x800 I guess it follows ethernet specifications */
 static void
-get_linux_sll_type (decode_proto_t *dp)
+get_linux_sll (decode_proto_t *dp)
 {
   etype_t etype;
 
+  decode_proto_add(dp, "LINUX-SLL");
+
   etype = pntohs (&dp->cur_packet[14]);
-  append_etype_prot (dp, etype);
 
   add_offset(dp, 16);
   if (etype == ETHERTYPE_IP)
     get_ip (dp);
-  if (etype == ETHERTYPE_IPX)
+  else if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
+  else
+    append_etype_prot (dp, etype);
 }				/* get_linux_sll_type */
 
 static void
@@ -370,6 +679,7 @@ get_llc (decode_proto_t *dp)
   gboolean is_snap;
   guint16 control;
 
+  decode_proto_add(dp, "LLC");
   if (dp->cur_len < 4)
     return;
   
@@ -405,7 +715,7 @@ get_llc (decode_proto_t *dp)
       decode_proto_add(dp, "PATHCTRL");
       break;
     case SAP_IP:
-      decode_proto_add(dp, "IP");
+      get_ip(dp);
       break;
     case SAP_SNA1:
       decode_proto_add(dp, "SNA1");
@@ -486,12 +796,24 @@ get_ip (decode_proto_t *dp)
   guint16 fragment_offset;
   iptype_t ip_type;
 
+  decode_proto_add(dp, "IP");
   if (dp->cur_len < 20)
     return; 
   
   ip_type = dp->cur_packet[9];
   fragment_offset = pntohs (dp->cur_packet + 6);
   fragment_offset &= 0x0fff;
+
+  if (pref.mode !=  LINK6)
+    {
+      /* we want node higher level node ids */
+      dp->dst_node_id.node_type = IP;
+      g_memmove(dp->dst_node_id.addr.ip4, dp->cur_packet + 16, 
+                sizeof(dp->dst_node_id.addr.ip4));
+      dp->src_node_id.node_type = IP;
+      g_memmove(dp->src_node_id.addr.ip4, dp->cur_packet + 12, 
+                sizeof(dp->src_node_id.addr.ip4));
+    }
 
   /*This is used for conversations */
   dp->global_src_address = pntohl (dp->cur_packet + 12);
@@ -508,19 +830,13 @@ get_ip (decode_proto_t *dp)
       if (fragment_offset)
 	decode_proto_add(dp, "TCP_FRAGMENT");
       else
-	{
-	  decode_proto_add(dp, "TCP");
-	  get_tcp (dp);
-	}
+        get_tcp (dp);
       break;
     case IP_PROTO_UDP:
       if (fragment_offset)
 	decode_proto_add(dp, "UDP_FRAGMENT");
       else
-	{
-	  decode_proto_add(dp, "UDP");
-	  get_udp (dp);
-	}
+        get_udp (dp);
       break;
     case IP_PROTO_IGMP:
       decode_proto_add(dp, "IGMP");
@@ -715,7 +1031,6 @@ get_ipx (decode_proto_t *dp)
 static void
 get_tcp (decode_proto_t *dp)
 {
-
   const port_service_t *src_service, *dst_service, *chosen_service;
   port_type_t src_port, dst_port, chosen_port;
   guint8 th_off_x2;
@@ -724,8 +1039,27 @@ get_tcp (decode_proto_t *dp)
   gboolean src_pref = FALSE;
   gboolean dst_pref = FALSE;
 
+  decode_proto_add(dp, "TCP");
   dp->global_src_port = src_port = pntohs (dp->cur_packet);
   dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
+
+  if (pref.mode ==  TCP)
+    {
+      /* tcp mode node ids have both addr and port - to work we need 
+       * to already have an IP node id */
+      g_assert(dp->dst_node_id.node_type == IP);
+      dp->dst_node_id.node_type = TCP;
+      g_memmove(dp->dst_node_id.addr.tcp4.host, dp->dst_node_id.addr.ip4, 
+                sizeof(dp->dst_node_id.addr.tcp4.host));
+      dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
+
+      g_assert(dp->src_node_id.node_type == IP);
+      dp->src_node_id.node_type = TCP;
+      g_memmove(dp->src_node_id.addr.tcp4.host, dp->src_node_id.addr.ip4, 
+                sizeof(dp->src_node_id.addr.tcp4.host));
+      dp->src_node_id.addr.tcp4.port = dp->global_src_port;
+    }
+
   th_off_x2 = *(guint8 *) (dp->cur_packet + 12);
   tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
 
@@ -801,8 +1135,26 @@ get_udp (decode_proto_t *dp)
   gboolean src_pref = FALSE;
   gboolean dst_pref = FALSE;
 
+  decode_proto_add(dp, "UDP");
   dp->global_src_port = src_port = pntohs (dp->cur_packet);
   dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
+
+  if (pref.mode ==  TCP)
+    {
+      /* tcp/udp mode node ids have both addr and port - to work we need 
+       * to already have an IP node id */
+      g_assert(dp->dst_node_id.node_type == IP);
+      dp->dst_node_id.node_type = TCP;
+      g_memmove(dp->dst_node_id.addr.tcp4.host, dp->dst_node_id.addr.ip4, 
+                sizeof(dp->dst_node_id.addr.tcp4.host));
+      dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
+
+      g_assert(dp->src_node_id.node_type == IP);
+      dp->src_node_id.node_type = TCP;
+      g_memmove(dp->src_node_id.addr.tcp4.host, dp->src_node_id.addr.ip4, 
+                sizeof(dp->src_node_id.addr.tcp4.host));
+      dp->src_node_id.addr.tcp4.port = dp->global_src_port;
+    }
 
   add_offset(dp, 8);
 
