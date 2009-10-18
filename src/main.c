@@ -21,6 +21,9 @@
 #include <config.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <netinet/in.h>
 #include <signal.h>
 #include <gnome.h>

@@ -18,6 +18,9 @@
  */
 
 #include <netinet/in.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include "globals.h"
 #include "names.h"
 #include "dns.h"
