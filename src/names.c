@@ -24,6 +24,7 @@
 #include "eth_resolv.h"
 #include "names_netbios.h"
 #include "protocols.h"
+#include "datastructs.h"
 #include "util.h"
 
 typedef struct
@@ -263,7 +264,10 @@ static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
   numeric = ether_to_str (nt->node_id.addr.eth);
 
   /* solved is not NULL only if the address is in ethers file */
-  solved = get_ether_name (nt->node_id.addr.eth, TRUE);
+  if (pref.name_res)
+    solved = get_ether_name (nt->node_id.addr.eth, TRUE);
+  else
+    solved = NULL;
 
   add_name (numeric, solved, &nt->node_id, nt);
 
@@ -372,6 +376,7 @@ static gboolean get_tcp_name (name_add_t *nt)
   if (pref.mode == TCP)
     {
       gchar *numeric_name, *resolved_name;
+      
       if (nt->dir == OUTBOUND)
           fill_node_id(&nt->node_id, TCP, nt, -8, 0);
       else
@@ -381,12 +386,20 @@ static gboolean get_tcp_name (name_add_t *nt)
                                      ip_to_str(nt->node_id.addr.tcp4.host),
                                      nt->node_id.addr.tcp4.port);
 
-      resolved_name = g_strdup_printf("%s:%s",
-                                      dns_lookup (
-                                                  pntohl (nt->node_id.addr.tcp4.host), 
-                                                  TRUE),
-                                      get_tcp_port(nt->node_id.addr.tcp4.port)
-                                     );
+      if (pref.name_res)
+        {
+          const gchar *dnsname;
+          const port_service_t *port;
+          dnsname = dns_lookup (pntohl (nt->node_id.addr.tcp4.host), TRUE);
+          port = services_tcp_find(nt->node_id.addr.tcp4.port);
+          if (port)
+            resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);
+          else
+            resolved_name = g_strdup_printf("%s:%d", dnsname, 
+                                            nt->node_id.addr.tcp4.port);
+        }
+      else
+        resolved_name = NULL;
 
       add_name (numeric_name, resolved_name, &nt->node_id, nt);
 

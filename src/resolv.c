@@ -2,12 +2,6 @@
  * Routines for network object lookup
  * $Id$
  *
- * Originally written by Laurent Deniel <deniel@worldnet.fr>
- * Adapted to etherape by Juan Toledo <toledo@users.sourceforge.net>
- * 
- * Each of my changes (Juan) is marked by JTC. This is so
- * because as I need more features, I will be needing more of the file.
- * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -21,6 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*
+ * Originally written by Laurent Deniel <deniel@worldnet.fr>
+ * Adapted to etherape by Juan Toledo <toledo@users.sourceforge.net>
+ * Further changes by Riccardo Ghetta <bchiara@users.sourceforge.net>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -57,19 +57,13 @@
 #include <sys/socket.h>
 #endif
 
-#ifdef AVOID_DNS_TIMEOUT
-#include <setjmp.h>
-#endif
-
 #ifdef NEED_INET_V6DEFS_H
 #include "inet_v6defs.h"
 #endif
 
 #include <glib.h> 
 #include "globals.h"
-#include "eth_resolv.h"		/* JTC name space conflict */
 #include "util.h"
-#include "dns.h"
 
 #define EPATH_ETHERS 		"/etc/ethers"
 #define EPATH_MANUF  		DATAFILE_DIR "/manuf"
@@ -84,17 +78,6 @@
 #define HASHETHSIZE	1024
 #define HASHMANUFSIZE   256
 #define HASHPORTSIZE	256
-
-/* hash table used for host and port lookup */
-
-typedef struct hashname
-{
-  u_int addr;
-  char name[MAXNAMELEN];
-  struct hashname *next;
-}
-hashname_t;
-
 
 /* hash tables used for ethernet and manufacturer lookup */
 
@@ -124,7 +107,6 @@ typedef struct _ether
 }
 ether_t;
 
-static hashname_t *tcp_port_table[HASHPORTSIZE];
 static hashmanuf_t *manuf_table[HASHMANUFSIZE];
 static hashether_t *eth_table[HASHETHSIZE];
 
@@ -138,80 +120,6 @@ static gchar *g_ethers_path = EPATH_ETHERS;
 static gchar *g_pethers_path = NULL;	/* "$HOME"/EPATH_PERSONAL_ETHERS    */
 static gchar *g_manuf_path = EPATH_MANUF;	/* may only be changed before the   */
 					/* first resolving call             */
-
-/*
- *  Local function definitions 
- */
-
-
-static char *
-serv_name_lookup (u_int port, u_int proto)
-{
-
-  hashname_t *tp;
-  hashname_t **table;
-  char *serv_proto = NULL;
-  struct servent *servp;
-  int i;
-
-  switch (proto)
-    {
-    case IPPROTO_TCP:
-      table = tcp_port_table;
-      serv_proto = "tcp";
-      break;
-    default:
-      /* not yet implemented */
-      return NULL;
-      /*NOTREACHED */
-      break;
-    }				/* proto */
-
-  i = port & (HASHPORTSIZE - 1);
-  tp = table[i & (HASHPORTSIZE - 1)];
-
-  if (tp == NULL)
-    {
-      tp = table[i & (HASHPORTSIZE - 1)] =
-	(hashname_t *) g_malloc (sizeof (hashname_t));
-      g_assert(tp);
-    }
-  else
-    {
-      while (1)
-	{
-	  if (tp->addr == port)
-	    {
-	      return tp->name;
-	    }
-	  if (tp->next == NULL)
-	    {
-	      tp->next = (hashname_t *) g_malloc (sizeof (hashname_t));
-              g_assert(tp->next);
-	      tp = tp->next;
-	      break;
-	    }
-	  tp = tp->next;
-	}
-    }
-
-  /* fill in a new entry */
-  tp->addr = port;
-  tp->next = NULL;
-
-  if ((servp = getservbyport (htons (port), serv_proto)) == NULL)
-    {
-      /* unknown port */
-      snprintf (tp->name, MAXNAMELEN, "%d", port);
-    }
-  else
-    safe_strncpy (tp->name, servp->s_name, MAXNAMELEN);
-
-  return (tp->name);
-
-}				/* serv_name_lookup */
-
-
 
 /*
  *  Miscellaneous functions
@@ -586,13 +494,6 @@ eth_name_lookup (const u_char * addr, gboolean only_ethers)
   return NULL; 
 
 }				/* eth_name_lookup */
-
-extern char *
-get_tcp_port (u_int port)
-{
-  return serv_name_lookup (port, IPPROTO_TCP);
-}				/* get_tcp_port */
-
 
 extern const char *
 get_ether_name (const u_char * addr, gboolean only_ethers)

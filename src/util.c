@@ -185,7 +185,6 @@ safe_strncat (char *dst, const char *src, size_t maxlen)
  * by Gerald Combs */
 
 /* Output has to be copied elsewhere */
-/* TODO should I dump this funtion now that I have dns_lookup? */
 const gchar *
 ip_to_str (const guint8 * ad)
 {
@@ -241,7 +240,7 @@ ip_to_str (const guint8 * ad)
  * the resulting string is 5 bytes shorter)
  */
 
-const gchar *
+static const gchar *
 ether_to_str_punct (const guint8 * ad, char punct)
 {
   static gchar str[3][18];

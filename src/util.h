@@ -49,7 +49,6 @@ extern "C"
   /* utility functions */
   const gchar *ip_to_str (const guint8 * ad);
   const gchar *ether_to_str (const guint8 * ad);
-  const gchar *ether_to_str_punct (const guint8 * ad, char punct);
   
 #ifdef __cplusplus
 }

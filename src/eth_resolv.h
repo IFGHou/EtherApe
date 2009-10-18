@@ -31,9 +31,6 @@
 
 /* Functions in resolv.c */
 
-/* get_tcp_port returns the TCP port name or "%d" if not found */
-extern char *get_tcp_port (u_int port);
-
 /* get_ether_name returns the logical name if found in ethers files.
    if only_ethers is false and the name is NOT in the file, it returns
    "<vendor>_%02x:%02x:%02x" if the vendor code is known else
