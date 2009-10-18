@@ -44,7 +44,7 @@ typedef struct
 }
 name_add_t;
 
-typedef void (p_func_t) (name_add_t *);
+typedef gboolean (p_func_t) (name_add_t *);
 
 typedef struct
 {
@@ -53,29 +53,25 @@ typedef struct
 }
 prot_function_t;
 
-static void get_raw_name (name_add_t *nt);
-static void get_null_name (name_add_t *nt);
-static void get_linux_sll_name (name_add_t *nt);
-static void get_link6_name (name_add_t *nt);
-static void get_llc_name (name_add_t *nt);
-static void get_arp_name (name_add_t *nt);
-static void get_ip_name (name_add_t *nt);
-static void get_ipx_name (name_add_t *nt);
-static void get_udp_name (name_add_t *nt);
-static void get_tcp_name (name_add_t *nt);
-static void get_ipxsap_name (name_add_t *nt);
-static void get_nbipx_name (name_add_t *nt);
-static void get_nbss_name (name_add_t *nt);
-static void get_nbdgm_name (name_add_t *nt);
+static gboolean get_null_name (name_add_t *nt);
+static gboolean get_linux_sll_name (name_add_t *nt);
+static gboolean get_link6_name (name_add_t *nt);
+static gboolean get_llc_name (name_add_t *nt);
+static gboolean get_arp_name (name_add_t *nt);
+static gboolean get_ip_name (name_add_t *nt);
+static gboolean get_ipx_name (name_add_t *nt);
+static gboolean get_udp_name (name_add_t *nt);
+static gboolean get_tcp_name (name_add_t *nt);
+static gboolean get_ipxsap_name (name_add_t *nt);
+static gboolean get_nbss_name (name_add_t *nt);
+static gboolean get_nbdgm_name (name_add_t *nt);
 
-#define KNOWN_PROTS 18
-
-static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
+/* not all protocol types can be useful to get a name */
+static prot_function_t prot_functions_table[] = {
   {"ETH_II", get_link6_name},
   {"802.2", get_link6_name},
   {"802.3", get_link6_name},
   {"ISL", get_link6_name},
-  {"RAW", get_raw_name},
   {"NULL", get_null_name},
   {"LINUX-SLL", get_linux_sll_name},
   {"FDDI", get_link6_name},
@@ -87,9 +83,11 @@ static prot_function_t prot_functions_table[KNOWN_PROTS + 1] = {
   {"TCP", get_tcp_name},
   {"UDP", get_udp_name},
   {"IPX-SAP", get_ipxsap_name},
-  {"IPX-NetBIOS", get_nbipx_name},
   {"NETBIOS-SSN", get_nbss_name},
-  {"NETBIOS-DGM", get_nbdgm_name}
+  {"NETBIOS-DGM", get_nbdgm_name},
+
+  /* terminator entry, must be last */
+  {NULL, NULL}
 };
 
 static void missing_data_msg(const name_add_t *nt, const char *pr)
@@ -106,7 +104,7 @@ static void missing_data_msg(const name_add_t *nt, const char *pr)
 }
 
 static void add_name (const gchar * numeric, const gchar * resolved, 
-                      gboolean solved, const node_id_t *node_id, 
+                      const node_id_t *node_id, 
                       const name_add_t *nt);
 static void decode_next(name_add_t *nt);
 
@@ -131,9 +129,8 @@ get_packet_names (protostack_t *pstk,
   
   /* initializes decoders info 
    * Note: Level 0 means topmost - first usable is 1 
-   * We initialize as 0 because decode_next() preincrements
    */
-  nt.decoder.level = 0;
+  nt.decoder.level = 1;
   nt.decoder.tokens = prot_stack;
   nt.decoder.protos = pstk;
 
@@ -152,28 +149,27 @@ static void decode_next(name_add_t *nt)
       /* initializes proto table */
       guint i;
       prot_functions = g_tree_new ((GCompareFunc) strcmp);
-      for (i = 0; i <= KNOWN_PROTS; i++)
+      for (i = 0; prot_functions_table[i].prot != NULL ; ++i)
 	g_tree_insert (prot_functions,
 		       prot_functions_table[i].prot,
 		       &(prot_functions_table[i]));
     }
 
   g_assert(nt);
-  g_assert(nt->decoder.tokens->protonames[nt->decoder.level]); /* current level must be valid */
-
-  nt->decoder.level++;
-
-  if (!nt->decoder.tokens->protonames[nt->decoder.level])
-    return; /* no more levels, exit */
-
-  next_func = g_tree_lookup (prot_functions, nt->decoder.tokens->protonames[nt->decoder.level]);
-  if (next_func)
+  while (nt->decoder.tokens->protonames[nt->decoder.level])
     {
-      /* before calling the next decoder, we check for size overflow */
-      if (nt->packet_size <= nt->offset)
-          return;
-  
-      next_func->function (nt);
+      next_func = g_tree_lookup (prot_functions, nt->decoder.tokens->protonames[nt->decoder.level]);
+      if (next_func)
+        {
+          /* before calling the next decoder, we check for size overflow */
+          if (nt->packet_size <= nt->offset)
+              return;
+      
+          if (! next_func->function (nt))
+            break; /* can't advance further */
+        }
+
+      nt->decoder.level++;
     }
 }
 
@@ -228,32 +224,21 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
     g_memmove(dt, nt->p + nt->offset + disp, sz);
 }
 
-/* Raw is used for ppp and slip. There is actually no information,
- * so we just jump to the next protocol */
-static void
-get_raw_name (name_add_t *nt)
-{
-  decode_next(nt);
-}				/* get_raw_name */
-
 /* Null is used for loopback. There is actually no information,
  * so we just jump to the next protocol */
 /* TODO Are we so sure there is actually no information?
  * Then what are those four bytes? */
-static void
-get_null_name (name_add_t *nt)
+static gboolean get_null_name (name_add_t *nt)
 {
   nt->offset += 4;
-
-  decode_next(nt);
+  return TRUE;
 }				/* get_null_name */
 
 /* linux-sll is used for ISDN on linux, I believe. 
  * Only one of the MAC addresses involved is shown each time,
  * so by now I will simply not try to decode MAC addresses */
 /* TODO Do something useful with the address that shows */
-static void
-get_linux_sll_name (name_add_t *nt)
+static gboolean get_linux_sll_name (name_add_t *nt)
 {
   /* TODO
    * I'm assuming that the header is always size 16. I don't know
@@ -261,12 +246,11 @@ get_linux_sll_name (name_add_t *nt)
    * since ethereal is not decoding a couple of bytes, which then
    * seem to be just padding */
   nt->offset += 16;
-
-  decode_next(nt);
+  return TRUE;
 }				/* get_linux_sll_name */
 
 /* common handling for ethernet-like data */
-static void eth_name_common(apemode_t ethmode, name_add_t *nt)
+static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
 {
   const gchar *numeric, *solved;
   gboolean found_in_ethers = FALSE;
@@ -277,38 +261,23 @@ static void eth_name_common(apemode_t ethmode, name_add_t *nt)
     fill_node_id(&nt->node_id, ethmode, nt, ethmode+6, 0);
 
   numeric = ether_to_str (nt->node_id.addr.eth);
-  solved = get_ether_name (nt->node_id.addr.eth);
 
-  /* get_ether_name will return an ethernet address with
-   * the first three numbers substituted with the manufacter
-   * if it cannot find an /etc/ethers entry. If it is so,
-   * then the last 8 characters (for example ab:cd:ef) will
-   * be the same, and we will note that the name hasn't
-   * been solved */
+  /* solved is not NULL only if the address is in ethers file */
+  solved = get_ether_name (nt->node_id.addr.eth, TRUE);
 
-  if (numeric && solved)
-    found_in_ethers = strcmp (numeric + strlen (numeric) - 8,
-			      solved + strlen (solved) - 8);
-
-  if (found_in_ethers)
-    add_name (numeric, solved, TRUE, &nt->node_id, nt);
-  else
-    add_name (numeric, solved, FALSE, &nt->node_id, nt);
+  add_name (numeric, solved, &nt->node_id, nt);
 
   nt->offset += 14;
-
-  decode_next(nt);
+  return TRUE;
 }
 
-static void
-get_link6_name(name_add_t *nt)
+static gboolean get_link6_name(name_add_t *nt)
 {
-  eth_name_common(LINK6, nt);
+  return eth_name_common(LINK6, nt);
 }
 
 /* LLC is the only supported FDDI link layer type */
-static void
-get_llc_name (name_add_t *nt)
+static gboolean get_llc_name (name_add_t *nt)
 {
   /* TODO IMPORTANT
    * We must decode the llc header to calculate the nt->offset
@@ -319,13 +288,11 @@ get_llc_name (name_add_t *nt)
   else if (nt->link_type == DLT_EN10MB)
     nt->offset += 3;
   else
-    return;
-
-  decode_next(nt);
+    return FALSE; /* no further info */
+  return TRUE;
 }				/* get_llc_name */
 
-static void
-get_arp_name (name_add_t *nt)
+static gboolean get_arp_name (name_add_t *nt)
 {
   guint16 protocol_type;
   guint8 hardware_len, protocol_len;
@@ -335,23 +302,23 @@ get_arp_name (name_add_t *nt)
    * Most of the times the callee will be the broadcast 
    * address */
   if (nt->dir == INBOUND)
-    return;
+    return FALSE;
 
   if (nt->packet_size <= nt->offset + 4)
     {
       missing_data_msg(nt, "ARP");
-      return;
+      return FALSE;
     }
 
   /* We only know about IP ARP queries */
   protocol_type = pntohs ((nt->p + nt->offset + 2));
   if (protocol_type != ARPTYPE_IP)
-    return;
+    return FALSE;
 
   if (nt->packet_size <= nt->offset + 7)
     {
       missing_data_msg(nt, "ARP");
-      return;
+      return FALSE;
     }
 
   hardware_len = *(guint8 *) (nt->p + nt->offset + 4);
@@ -361,14 +328,14 @@ get_arp_name (name_add_t *nt)
 
   add_name (ip_to_str (nt->node_id.addr.ip4), 
             dns_lookup (pntohl (nt->node_id.addr.ip4), TRUE), 
-            TRUE, &nt->node_id, nt);
+            &nt->node_id, nt);
 
   /* ARP doesn't carry any other protocol on top, so we return 
    * directly */
+  return FALSE;
 }				/* get_arp_name */
 
-static void
-get_ip_name (name_add_t *nt)
+static gboolean get_ip_name (name_add_t *nt)
 {
 
   if (nt->dir == INBOUND)
@@ -378,29 +345,25 @@ get_ip_name (name_add_t *nt)
 
   if (!pref.name_res)
     add_name (ip_to_str (nt->node_id.addr.ip4), 
-              ip_to_str (nt->node_id.addr.ip4), FALSE, &nt->node_id, nt);
+              NULL, &nt->node_id, nt);
   else
     {
       add_name (ip_to_str(nt->node_id.addr.ip4), 
                 dns_lookup(pntohl (nt->node_id.addr.ip4), TRUE), 
-                TRUE, &nt->node_id, nt);
+                &nt->node_id, nt);
     }
 
   nt->offset += 20;
-
-  decode_next(nt);
+  return TRUE;
 }				/* get_ip_name */
 
-static void
-get_ipx_name (name_add_t *nt)
+static gboolean get_ipx_name (name_add_t *nt)
 {
   nt->offset += 30;
-
-  decode_next(nt);
+  return TRUE;
 }
 
-static void
-get_tcp_name (name_add_t *nt)
+static gboolean get_tcp_name (name_add_t *nt)
 {
   guint8 th_off_x2;
   guint8 tcp_len;
@@ -425,7 +388,7 @@ get_tcp_name (name_add_t *nt)
                                       get_tcp_port(nt->node_id.addr.tcp4.port)
                                      );
 
-      add_name (numeric_name, resolved_name, TRUE, &nt->node_id, nt);
+      add_name (numeric_name, resolved_name, &nt->node_id, nt);
 
       g_free (numeric_name);
       g_free (resolved_name);
@@ -434,44 +397,40 @@ get_tcp_name (name_add_t *nt)
   if (nt->packet_size <= nt->offset + 14)
     {
       missing_data_msg(nt, "TCP");
-      return;
+      return FALSE;
     }
 
   th_off_x2 = *(guint8 *) (nt->p + nt->offset + 12);
   tcp_len = hi_nibble (th_off_x2) * 4;	/* TCP header length, in bytes */
   nt->offset += tcp_len;
-
-  decode_next(nt);
+  return TRUE;
 }				/* get_tcp_name */
 
 
 /* TODO I still have to properly implement this. Right now it's just
  * a placeholder to get to the UDP/NETBIOS-DGM */
-static void
-get_udp_name (name_add_t *nt)
+static gboolean get_udp_name (name_add_t *nt)
 {
   nt->offset += 8;
-
-  decode_next(nt);
+  return TRUE;
 }				/* get_udp_name */
 
 
 /* TODO SET UP THE id's FOR THIS NETBIOS NAME FUNCTIONS */
-static void
-get_ipxsap_name (name_add_t *nt)
+static gboolean get_ipxsap_name (name_add_t *nt)
 {
   guint16 sap_type;
   guint16 curpos;
   gchar *name;
 
   if (nt->packet_size <= nt->offset + 2)
-      return; /* not a real ipxsap packet */
+      return FALSE; /* not a real ipxsap packet */
 
   sap_type = pntohs (nt->p + nt->offset);
 
   /* we want responses */
   if (sap_type != 0x0002)
-    return;
+    return FALSE;
 
   for (curpos = nt->offset + 4; curpos < nt->packet_size ; ++curpos)
     {
@@ -481,32 +440,26 @@ get_ipxsap_name (name_add_t *nt)
   if (curpos >= nt->packet_size)
     {
       missing_data_msg(nt, "IPXSAP");
-      return;
+      return FALSE;
     }
     
   name = (gchar *) (nt->p + nt->offset + 4);
 
   g_my_debug ("Sap name %s found", name);
 
-  add_name (name, name, TRUE, &nt->node_id, nt);
+  add_name (name, name, &nt->node_id, nt);
 
+  return FALSE; /* no other names */
 }				/* get_ipxsap_name */
 
-static void
-get_nbipx_name (name_add_t *nt)
-{
-
-}
-
-static void
-get_nbss_name (name_add_t *nt)
+static gboolean get_nbss_name (name_add_t *nt)
 {
 #define SESSION_REQUEST 0x81
 
   guint8 mesg_type;
 
   if (nt->packet_size < nt->offset + 1)
-      return; /* not a netbios packet */
+      return FALSE; /* not a netbios packet */
 
   mesg_type = *(guint8 *) (nt->p + nt->offset);
   nt->offset += 2;
@@ -524,7 +477,7 @@ get_nbss_name (name_add_t *nt)
       if (nt->packet_size <= nt->offset + 2)
         {
           missing_data_msg(nt, "NBSS");
-          return;
+          return FALSE;
         }
       length = pntohs ((nt->p + nt->offset + 2));
 
@@ -532,7 +485,7 @@ get_nbss_name (name_add_t *nt)
       if (nt->packet_size <= nt->offset + length)
         {
           missing_data_msg(nt, "NBSS");
-          return;
+          return FALSE;
         }
 
       name_len = ethereal_nbns_name ((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
@@ -555,18 +508,17 @@ get_nbss_name (name_add_t *nt)
 	    g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
 			     get_netbios_host_type (name_type));
 
-	  add_name (numeric_name, name, TRUE, &nt->node_id, nt);
+	  add_name (numeric_name, name, &nt->node_id, nt);
 	  g_free (numeric_name);
 	}
 
       nt->offset += length;
     }
 
-  decode_next(nt);
+  return TRUE;
 }				/* get_nbss_name */
 
-static void
-get_nbdgm_name (name_add_t *nt)
+static gboolean get_nbdgm_name (name_add_t *nt)
 {
   guint8 mesg_type;
   gchar *numeric_name = NULL;
@@ -577,7 +529,7 @@ get_nbdgm_name (name_add_t *nt)
   guint i = 0;
 
   if (nt->packet_size < nt->offset + 1)
-    return; /* not a real nbgdm packet */
+    return FALSE; /* not a real nbgdm packet */
 
   mesg_type = *(guint8 *) (nt->p + nt->offset);
 
@@ -618,15 +570,16 @@ get_nbdgm_name (name_add_t *nt)
 	g_strdup_printf ("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
 			 get_netbios_host_type (name_type));
 
-      add_name (numeric_name, name, TRUE, &nt->node_id, nt);
+      add_name (numeric_name, name, &nt->node_id, nt);
       g_free (numeric_name);
     }
+  return FALSE; /* no other names */
 }				/* get_nbdgm_name */
 
 
 static void
 add_name (const gchar * numeric_name, const gchar * resolved_name, 
-          gboolean solved, const node_id_t *node_id, const name_add_t *nt)
+          const node_id_t *node_id, const name_add_t *nt)
 {
   protocol_t *protocol = NULL;
   GList *name_item = NULL;
@@ -655,7 +608,7 @@ add_name (const gchar * numeric_name, const gchar * resolved_name,
     }
 
   if (!pref.name_res)
-    node_name_assign(name, numeric_name, numeric_name, FALSE, nt->packet_size);
+    node_name_assign(name, NULL, numeric_name, nt->packet_size);
   else
-    node_name_assign(name, resolved_name, numeric_name, solved, nt->packet_size);
+    node_name_assign(name, resolved_name, numeric_name, nt->packet_size);
 }				/* add_name */

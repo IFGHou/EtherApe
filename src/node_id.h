@@ -51,9 +51,8 @@ gchar *node_id_dump(const node_id_t *id);
 typedef struct
 {
   node_id_t node_id;
-  GString *res_name; /* resolved name */
   GString *numeric_name; /* readable version of node_id */
-  gboolean solved; /* true if the name was resolved */
+  GString *res_name; /* resolved name - NULL if not resolved */
   gdouble accumulated; /* total accumulated traffic */
 }
 name_t;
@@ -61,7 +60,7 @@ name_t;
 name_t * node_name_create(const node_id_t *node_id);
 void node_name_delete(name_t * name);
 void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
-                 gboolean slv, gdouble sz);
+                 gdouble sz);
 gint node_name_id_compare(const name_t *a, const name_t *b);
 gint node_name_freq_compare (gconstpointer a, gconstpointer b);
 gchar *node_name_dump(const name_t *name);

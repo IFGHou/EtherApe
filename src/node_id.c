@@ -195,13 +195,13 @@ void node_name_delete(name_t * name)
 }
 
 void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
-                 gboolean slv, gdouble sz)
+                 gdouble sz)
 {
   if (DEBUG_ENABLED)
     {
       gchar *msgid = node_id_dump(&name->node_id);
       g_my_debug(" node_name_assign: id %s, name %s, num.name %s\n", 
-             msgid, nm, num_nm);
+             msgid, (nm) ? nm : "<none>", num_nm);
       g_free(msgid);
     }
   g_assert(name);
@@ -210,12 +210,13 @@ void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm,
   else
     g_string_assign (name->numeric_name, num_nm);
 
-  if (!name->res_name)
-    name->res_name = g_string_new (nm);
-  else
-    g_string_assign (name->res_name, nm);
-  
-  name->solved = slv;
+  if (nm)
+    {
+      if (!name->res_name)
+        name->res_name = g_string_new (nm);
+      else
+        g_string_assign (name->res_name, nm);
+    }
   name->accumulated += sz;
 }
 
@@ -229,8 +230,11 @@ gchar *node_name_dump(const name_t *name)
   nid = node_id_dump(&name->node_id);
   msg = g_strdup_printf("node id: %s, name: %s, numeric_name: %s, solved: %d, "
                         "accumulated %f",
-                        nid, name->res_name->str, name->numeric_name->str,
-                        name->solved, name->accumulated);
+                        nid, 
+                        (name->res_name) ? name->res_name->str : "<none>", 
+                        name->numeric_name->str,
+                        name->res_name != NULL, 
+                        name->accumulated);
   g_free(nid);
   return msg;
 }

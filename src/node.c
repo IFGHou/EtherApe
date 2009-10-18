@@ -326,7 +326,7 @@ set_node_name (node_t * node, const name_decode_t *sequence)
           if (DEBUG_ENABLED)
             {
               gchar *msgname = node_name_dump(name);
-              if (name->solved || !iter->must_resolve || !pref.name_res)
+              if (name->res_name || !iter->must_resolve || !pref.name_res)
                 g_my_debug("  found protocol with name [%s]", msgname);
               else
                 g_my_debug("  found protocol with UNRESOLVED name [%s], ignored", 
@@ -336,14 +336,18 @@ set_node_name (node_t * node, const name_decode_t *sequence)
 
           /* If we require this protocol to be solved and it's not,
            * the we have to go on */
-          if (name->solved || !iter->must_resolve || !pref.name_res)
+          if (name->res_name || !iter->must_resolve || !pref.name_res)
             {
-              if (!node->name || strcmp (node->name->str, name->res_name->str))
+              if (name->res_name)
                 {
-                  g_my_debug ("  set node name from %s to %s",
-                              (node->name) ? node->name->str : "none",
-                              name->res_name->str);
-                  g_string_assign (node->name, name->res_name->str);
+                  if (!node->name || 
+                      strcmp (node->name->str, name->res_name->str))
+                    {
+                      g_my_debug ("  set node name from %s to %s",
+                                  (node->name) ? node->name->str : "<none>",
+                                  name->res_name->str);
+                      g_string_assign (node->name, name->res_name->str);
+                    }
                 }
               if (!node->numeric_name || 
                   strcmp(node->numeric_name->str, name->numeric_name->str))

@@ -398,7 +398,7 @@ get_ethent (int six_bytes)
 
 }				/* get_ethent */
 
-static ether_t *
+static const ether_t *
 get_ethbyaddr (const u_char * addr)
 {
 
@@ -461,10 +461,9 @@ add_manuf_name (u_char * addr, char * name)
 
 }				/* add_manuf_name */
 
-static hashmanuf_t *
+static const hashmanuf_t *
 manuf_name_lookup (const u_char * addr)
 {
-
   hashmanuf_t *tp;
   hashmanuf_t **table = manuf_table;
 
@@ -514,13 +513,13 @@ initialize_ethers (void)
 
 }				/* initialize_ethers */
 
-static char *
-eth_name_lookup (const u_char * addr)
+static const char *
+eth_name_lookup (const u_char * addr, gboolean only_ethers)
 {
-  hashmanuf_t *manufp;
+  const hashmanuf_t *manufp;
   hashether_t *tp;
   hashether_t **table = eth_table;
-  ether_t *eth;
+  const ether_t *eth;
   int i, j;
 
   j = (addr[2] << 8) | addr[3];
@@ -540,7 +539,11 @@ eth_name_lookup (const u_char * addr)
 	{
 	  if (memcmp (tp->addr, addr, sizeof (tp->addr)) == 0)
 	    {
-	      return tp->name;
+              /* addr found */
+              if (!only_ethers || tp->is_name_from_file)
+                return tp->name;
+              else
+                return NULL; /* found, but not in ethers file */
 	    }
 	  if (tp->next == NULL)
 	    {
@@ -554,14 +557,13 @@ eth_name_lookup (const u_char * addr)
     }
 
   /* fill in a new entry */
-
   memcpy (tp->addr, addr, sizeof (tp->addr));
   tp->next = NULL;
 
-  if ((eth = get_ethbyaddr (addr)) == NULL)
+  eth = get_ethbyaddr (addr);
+  if (!eth)
     {
       /* unknown name */
-
       if ((manufp = manuf_name_lookup (addr)) == NULL)
 	snprintf (tp->name, MAXNAMELEN, "%s", ether_to_str ((guint8 *) addr));
       else
@@ -577,7 +579,11 @@ eth_name_lookup (const u_char * addr)
       tp->is_name_from_file = TRUE;
     }
 
-  return (tp->name); 
+  if (!only_ethers || tp->is_name_from_file)
+    return tp->name;
+  
+  /* name not found in ethers file */
+  return NULL; 
 
 }				/* eth_name_lookup */
 
@@ -588,8 +594,8 @@ get_tcp_port (u_int port)
 }				/* get_tcp_port */
 
 
-extern char *
-get_ether_name (const u_char * addr)
+extern const char *
+get_ether_name (const u_char * addr, gboolean only_ethers)
 {
   if (!eth_resolution_initialized)
     {
@@ -597,7 +603,7 @@ get_ether_name (const u_char * addr)
       eth_resolution_initialized = 1;
     }
 
-  return eth_name_lookup (addr);
+  return eth_name_lookup (addr, only_ethers);
 
 }				/* get_ether_name */
 
