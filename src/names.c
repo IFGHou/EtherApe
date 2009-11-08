@@ -160,7 +160,10 @@ static void decode_next(name_add_t *nt)
     }
 
   g_assert(nt);
-  while (nt->decoder.tokens->protonames[nt->decoder.level])
+
+  /* whe decode al most STACK_SIZE levels */
+  while (nt->decoder->level <= STACK_SIZE && 
+         nt->decoder.tokens->protonames[nt->decoder.level])
     {
       next_func = g_tree_lookup (prot_functions, nt->decoder.tokens->protonames[nt->decoder.level]);
       if (next_func)
