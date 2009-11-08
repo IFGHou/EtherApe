@@ -1209,6 +1209,8 @@ get_udp (decode_proto_t *dp)
 static gboolean
 get_rpc (decode_proto_t *dp, gboolean is_udp)
 {
+  int rpcstart;
+  uint32_t rpcver;
   enum rpc_type msg_type;
   enum rpc_program msg_program;
   const gchar *rpc_prot = NULL;
@@ -1218,15 +1220,11 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
     return FALSE;		/* not big enough */
 
   if (is_udp)
-    {
-      msg_type = pntohl (dp->cur_packet + 4);
-      msg_program = pntohl (dp->cur_packet + 12);
-    }
+    rpcstart = 0;
   else
-    {
-      msg_type = pntohl (dp->cur_packet + 8);
-      msg_program = pntohl (dp->cur_packet + 16);
-    }
+    rpcstart = 4;
+
+  msg_type = pntohl (dp->cur_packet + rpcstart + 4);
 
   switch (msg_type)
     {
@@ -1238,11 +1236,16 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       if (!(rpc_prot = find_conversation (dp->global_dst_address, 0,
 					  dp->global_dst_port, 0)))
 	return FALSE;
-      decode_proto_add(dp, "RPC");
+      decode_proto_add(dp, "ONC-RPC");
       decode_proto_add(dp, rpc_prot);
       return TRUE;
 
     case RPC_CALL:
+      rpcver = pntohl (dp->cur_packet + rpcstart + 8);
+      if (rpcver != 2)
+        return FALSE; /* only ONC-RPC v2 */
+  
+      msg_program = pntohl (dp->cur_packet + rpcstart + 12);
       switch (msg_program)
 	{
 	case BOOTPARAMS_PROGRAM:
@@ -1282,7 +1285,7 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
 	add_conversation (dp->global_src_address, 0,
 			  dp->global_src_port, 0, rpc_prot);
 
-      decode_proto_add(dp, "RPC");
+      decode_proto_add(dp, "ONC-RPC");
       decode_proto_add(dp, rpc_prot);
       return TRUE;
 
