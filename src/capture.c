@@ -338,7 +338,7 @@ stop_capture (void)
 
   /* Close the capture */
   pcap_stats (pch_struct, &ps);
-  g_my_debug ("libpcap received %d packets, dropped %d. EtherApe saw %g",
+  g_my_debug ("libpcap received %d packets, dropped %d. EtherApe saw %lu",
 	      ps.ps_recv, ps.ps_drop, n_packets);
   pcap_close (pch_struct);
   g_my_info (_("Capture device stopped or file closed"));

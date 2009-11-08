@@ -48,6 +48,9 @@ etherape_SOURCES = \
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
 etherape_LDFLAGS = 
 
+AM_CPPFLAGS = \
+	$(ETHERAPE_CFLAGS)
+
 .indent: $(etherape_SOURCES)
 	indent $? 
 	touch .indent

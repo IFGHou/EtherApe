@@ -1,3 +1,106 @@
+2009-10-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/eth_resolv.h, src/names.c, src/resolv.c, src/util.c, src/util.h:
+	removed duplicate functionality
+	[d986279f7d3a] [tip]
+
+	* src/eth_resolv.h, src/names.c, src/node.c, src/node_id.c,
+	src/node_id.h, src/resolv.c:
+	name decode refactoring: remove solved flag, add resolved name only
+	if actually resolved
+
+	Polished a bit ethernet name resolving
+	[f9371ed70402]
+
+	* TODO, src/capture.c, src/capture.h, src/common.h,
+	src/decode_proto.c, src/decode_proto.h, src/menus.c, src/names.c,
+	src/node_id.c, src/node_id.h, src/preferences.c:
+	unified node id extraction with protocol decoding. Added
+	experimental wlan/radiotap support
+
+	This change fixes a long standing problem on node ids, namely the
+	need to have fixed positions for node addresses. While protocol
+	decoding had most of the machinery to properly follow variable
+	length protocols, node ids (used as internal keys for nodes) where
+	attributed only on static information. Variable lenght decoding made
+	possibile to support wlan. Decoding is still limited, to basic data,
+	though.
+	[a43a8301dd51]
+
+2009-10-17  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c, src/decode_proto.c, src/decode_proto.h:
+	revorked l3 proto decoding. Now ip position depends only on packet
+	data, allowing for non uniform protocol types (e.g. wlan)
+	[ae26f4abac47]
+
+	* TODO, src/capture.c, src/decode_proto.c:
+	corrected compile errors, unified l2 addr decode
+	[244ab4b3fc9c]
+
+	* src/capture.c, src/decode_proto.c, src/menus.c:
+	revised table to handle variable header protocol types (like
+	wireless)
+
+	Added a bit of wifi mapping (non functional)
+	[52823815cbf8]
+
+2009-10-09  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	fixed tags for 0.9.8
+	[5e05da8b6048]
+
+2009-10-07  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/capture.c, src/capture.h, src/common.h,
+	src/decode_proto.c, src/decode_proto.h, src/globals.h, src/main.c,
+	src/menus.c, src/names.c, src/names.h, src/node.c, src/node_id.c,
+	src/node_id.h:
+	Unified link level types. L2 decoding is now table-driven, to make
+	adding new types easier. Removed the enum mirroring pcap DLT_xxx
+	types
+	[a8d0b33e936a]
+
+	* autogen.sh, etherape.desktop, etherape.desktop.in, etherape.spec.in:
+	update autogen and spec
+	[5e7566d88fc0]
+
+2009-09-28  R.Ghetta  <bchiara@users.sf.net>
+
+	* html/FAQ.html, html/NEWS.html, html/bug-reporting.html,
+	html/etherape.css:
+	removed obsolete files
+	[d60950431152]
+
+	* Makefile.am, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
+	po/tr.po:
+	updated translations, added xpm file to debian
+	[de5ba84c68a4]
+
+2009-09-27  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0-9-8 for changeset 02ecc2219e37
+	[8d465a947049]
+
+	* etherape.1, glade/etherape.glade, src/main.c:
+	forgot manual and logo.
+	[02ecc2219e37] [rel-0-9-8]
+
+	* .hgtags:
+	Added tag rel-0-9-8 for changeset c1fa86faf0f5
+	[7795d474b06b]
+
+	* ChangeLog, FAQ, NEWS, README.CVS, README.bugs, TODO, po/es.po,
+	po/etherape.pot, po/fr.po, po/nl.po, po/tr.po:
+	release 0.9.8
+	[c1fa86faf0f5]
+
+	* config.h.in, configure.in, src/main.c, src/menus.c:
+	mercurial id can be obtained only on a devel repo. Disable for now.
+	[f9fefcf28795]
+
 2009-09-26  R.Ghetta  <bchiara@users.sf.net>
 
 	* src/main.c:

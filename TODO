@@ -8,6 +8,8 @@ User visible features:
 
   * show all node stats in node window
 
+  * find a way to record both ports of a link/connection
+
   * revise preferences dialog; allow filtering out netbios names
 
   * Ability to set per node preferences. Like setting an hour long
@@ -23,8 +25,6 @@ Issues in the source code
   * rewrite names handling. Do only packet extraction at capture time, name
     resolution only at display time for the chosen name.
 
-  * Generalize a way to return error messages from capture.c
-  
   * use glib datastructs everywhere, instead of a mix of glib and in-house.
 
   * refactor stop handling; separate clearing data from updating. 

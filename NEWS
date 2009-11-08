@@ -2,6 +2,14 @@
 
    $Date$
 
+  Overview of changes in EtherApe 0.9.9 ():
+
+   Changes summary:
+     * experimental wlan and wlan/radiotap protocol decoding
+     * unified link level modes
+     * several performance enhancements
+     * refactored and streamlined node id definition.
+     * improved l3 packet deconding, now fully dynamic.  
 
   Overview of changes in EtherApe 0.9.8 (Sunday Sep 27 2009):
 

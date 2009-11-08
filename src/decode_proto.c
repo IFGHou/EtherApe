@@ -1213,8 +1213,7 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
   enum rpc_program msg_program;
   const gchar *rpc_prot = NULL;
 
-  /* Determine whether this is an RPC cur_packet */
-
+  /* Determine whether this is an RPC packet */
   if (dp->cur_len < 24)
     return FALSE;		/* not big enough */
 
@@ -1229,11 +1228,6 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       msg_program = pntohl (dp->cur_packet + 16);
     }
 
-  if (msg_type != RPC_REPLY && msg_type != RPC_CALL)
-    return FALSE;
-
-  decode_proto_add(dp, "RPC");
-
   switch (msg_type)
     {
     case RPC_REPLY:
@@ -1244,51 +1238,58 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       if (!(rpc_prot = find_conversation (dp->global_dst_address, 0,
 					  dp->global_dst_port, 0)))
 	return FALSE;
+      decode_proto_add(dp, "RPC");
       decode_proto_add(dp, rpc_prot);
       return TRUE;
+
     case RPC_CALL:
       switch (msg_program)
 	{
 	case BOOTPARAMS_PROGRAM:
-	  decode_proto_add(dp, "BOOTPARAMS");
+	  rpc_prot = "BOOTPARAMS";
 	  break;
 	case MOUNT_PROGRAM:
-	  decode_proto_add(dp, "MOUNT");
+	  rpc_prot = "MOUNT";
 	  break;
 	case NLM_PROGRAM:
-	  decode_proto_add(dp, "NLM");
+	  rpc_prot = "NLM";
 	  break;
 	case PORTMAP_PROGRAM:
-	  decode_proto_add(dp, "PORTMAP");
+	  rpc_prot = "PORTMAP";
 	  break;
 	case STAT_PROGRAM:
-	  decode_proto_add(dp, "STAT");
+	  rpc_prot = "STAT";
 	  break;
 	case NFS_PROGRAM:
-	  decode_proto_add(dp, "NFS");
+	  rpc_prot = "NFS";
 	  break;
 	case YPBIND_PROGRAM:
-	  decode_proto_add(dp, "YPBIND");
+	  rpc_prot = "YPBIND";
 	  break;
 	case YPSERV_PROGRAM:
-	  decode_proto_add(dp, "YPSERV");
+	  rpc_prot = "YPSERV";
 	  break;
 	case YPXFR_PROGRAM:
-	  decode_proto_add(dp, "YPXFR");
+	  rpc_prot = "YPXFR";
 	  break;
 	default:
 	  return FALSE;
 	}
 
       /* Search for an already existing conversation, if not, create one */
+      g_assert(rpc_prot);
       if (!find_conversation (dp->global_src_address, 0, dp->global_src_port, 0))
 	add_conversation (dp->global_src_address, 0,
 			  dp->global_src_port, 0, rpc_prot);
 
+      decode_proto_add(dp, "RPC");
+      decode_proto_add(dp, rpc_prot);
       return TRUE;
+
     default:
       return FALSE;
     }
+  
   return FALSE;
 }				/* get_rpc */
 
