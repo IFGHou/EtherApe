@@ -48,15 +48,18 @@ enum rpc_type
 
 enum rpc_program
 {
-  BOOTPARAMS_PROGRAM = 1,
-  MOUNT_PROGRAM = 100005,
-  NFS_PROGRAM = 100003,
-  NLM_PROGRAM = 100021,
   PORTMAP_PROGRAM = 100000,
-  STAT_PROGRAM = 100024,
-  YPBIND_PROGRAM = 100007,
+  NFS_PROGRAM = 100003,
   YPSERV_PROGRAM = 100004,
-  YPXFR_PROGRAM = 100069
+  MOUNT_PROGRAM = 100005,
+  YPBIND_PROGRAM = 100007,
+  YPPASSWD_PROGRAM = 100009,
+  REXEC_PROGRAM = 100017,
+  STAT_PROGRAM = 100024,
+  BOOTPARAMS_PROGRAM = 100026,
+  NLM_PROGRAM = 100021,
+  YPXFR_PROGRAM = 100069,
+  KERBPROG_PROGRAM = 100078
 };
 
 /* internal types */
@@ -1275,8 +1278,21 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
 	case YPXFR_PROGRAM:
 	  rpc_prot = "YPXFR";
 	  break;
+	case YPPASSWD_PROGRAM:
+	  rpc_prot = "YPPASSWD";
+	  break;
+	case REXEC_PROGRAM:
+	  rpc_prot = "REXEC";
+	  break;
+	case KERBPROG_PROGRAM:
+	  rpc_prot = "KERBPROG";
+	  break;
 	default:
-	  return FALSE;
+          if (msg_program >= 100000 && msg_program <= 101999)
+            rpc_prot = "RPC-UNKNOWN";
+          else
+            return FALSE;
+          break;
 	}
 
       /* Search for an already existing conversation, if not, create one */
