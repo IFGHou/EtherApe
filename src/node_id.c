@@ -187,8 +187,10 @@ void node_name_delete(name_t * name)
                  gg, node_name_count-1);
       g_free(gg);
     }
-    g_string_free (name->res_name, TRUE);
-    g_string_free (name->numeric_name, TRUE);
+	if (name->res_name)
+      g_string_free (name->res_name, TRUE);
+    if (name->numeric_name)
+      g_string_free (name->numeric_name, TRUE);
     g_free (name);
     --node_name_count;
   }

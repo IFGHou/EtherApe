@@ -45,10 +45,12 @@ init_menus (void)
   if (!interfaces)
     {
       g_my_info (_("No suitables interfaces for capture have been found"));
-      g_string_free(err_str, TRUE);
+      if (err_str)
+         g_string_free(err_str, TRUE);
       return;
     }
-  g_string_free(err_str, TRUE);
+  if (err_str)
+    g_string_free(err_str, TRUE);
 
   widget = glade_xml_get_widget (xml, "interfaces_menu");
 
@@ -79,7 +81,8 @@ init_menus (void)
     }
 
   g_my_info (info_string->str);
-  g_string_free(info_string, TRUE);
+  if (info_string)
+     g_string_free(info_string, TRUE);
 
   interface_list_free(interfaces);
 }				/* init_menus */

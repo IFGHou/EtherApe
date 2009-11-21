@@ -115,9 +115,11 @@ void node_delete(node_t *node)
   if (!node)
     return; /* nothing to do */
 
-  g_string_free (node->name, TRUE);
+  if (node->name)
+    g_string_free (node->name, TRUE);
   node->name = NULL;
-  g_string_free (node->numeric_name, TRUE);
+  if (node->numeric_name)
+    g_string_free (node->numeric_name, TRUE);
   node->numeric_name = NULL;
 
   for (i = 0; i <= STACK_SIZE; ++i)
