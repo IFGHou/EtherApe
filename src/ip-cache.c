@@ -187,11 +187,7 @@ ipcache_init(void)
   for (i = 0; i < BashSize; i++)
     {
       idbash[i] = NULL;
-    }
-
-    for (i = 0; i < BashSize; i++)
-    {
-      idbash[i] = NULL;
+      ipbash[i] = NULL;
     }
 }
 
