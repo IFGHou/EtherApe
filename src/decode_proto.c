@@ -612,14 +612,14 @@ static void get_wlan(decode_proto_t *dp)
     }
   
   /* frame control: two bytes */
-  fc = ntohs(*(guint16 *)(dp->cur_packet));
+  fc = pntohs(dp->cur_packet);
  
   /* dst node id is always present */
 
   /* frame type is in bits 13-14 */
   type = (fc >> 10 ) & 0x03;
   subtype = (fc >> 12 ) & 0xff;
-  wep = fc & 0x2;
+  wep = fc & 0x40;
   switch ( type )
     {
       case 2:
@@ -630,7 +630,7 @@ static void get_wlan(decode_proto_t *dp)
         dp->src_node_id.node_type = LINK6;
         g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
                   sizeof(dp->src_node_id.addr.eth));
-        add_offset(dp, 30);
+        add_offset(dp, 24); /* TODO: handle WDS packets (30 bytes) */
         if (!wep)
           get_llc(dp);
         else
