@@ -688,7 +688,6 @@ get_linux_sll (decode_proto_t *dp)
 static void
 get_llc (decode_proto_t *dp)
 {
-#define SAP_SNAP 0xAA
 #define XDLC_I          0x00	/* Information frames */
 #define XDLC_U          0x03	/* Unnumbered frames */
 #define XDLC_UI         0x00	/* Unnumbered Information */
@@ -696,7 +695,6 @@ get_llc (decode_proto_t *dp)
      (((control) & 0x1) == XDLC_I || (control) == (XDLC_UI|XDLC_U))
 
   sap_type_t dsap, ssap;
-  gboolean is_snap;
   guint16 control;
 
   decode_proto_add(dp, "LLC");
@@ -706,11 +704,15 @@ get_llc (decode_proto_t *dp)
   dsap = dp->cur_packet[0];
   ssap = dp->cur_packet[1];
 
-  is_snap = (dsap == SAP_SNAP) && (ssap == SAP_SNAP);
-
-  /* SNAP not yet supported */
-  if (is_snap)
-    return;
+  if (dsap == 0xAA && ssap == 0xAA)
+    {
+      /* LLC SNAP: has an additional ethernet II type added */
+      etype_t eth2_type;
+      eth2_type = (etype_t) pntohs (dp->cur_packet + 6);
+      add_offset(dp, 8);
+      get_eth_II (dp, eth2_type);
+      return;
+    }
 
   /* To get this control value is actually a lot more
    * complicated than this, see xdlc.c in ethereal,
