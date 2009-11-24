@@ -473,10 +473,10 @@ eth_name_lookup (const u_char * addr, gboolean only_ethers)
     {
       /* unknown name */
       if ((manufp = manuf_name_lookup (addr)) == NULL)
-	snprintf (tp->name, MAXNAMELEN, "%s", ether_to_str ((guint8 *) addr));
+        snprintf (tp->name, MAXNAMELEN, "%s", ether_to_str ((guint8 *) addr));
       else
-	snprintf (tp->name, MAXNAMELEN, "%s_%02x:%02x:%02x",
-		 manufp->name, addr[3], addr[4], addr[5]);
+        snprintf (tp->name, MAXNAMELEN, "%s_%02x:%02x:%02x",
+                    manufp->name, addr[3], addr[4], addr[5]);
 
       tp->is_name_from_file = FALSE;
 

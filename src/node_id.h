@@ -27,11 +27,10 @@ typedef union __attribute__ ((packed))
   guint8 ip4[4];                  /* ip address */
   struct __attribute__ ((packed))
   {
-      guint8 host[4];            /* tcp/udp address */
-      guint16 port;            /* port number */
+    guint8 host[4];            /* tcp/udp address */
+    guint16 port;            /* port number */
   } tcp4;
-
-} 
+}
 node_addr_t;
 
 /* a node identification */

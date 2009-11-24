@@ -174,7 +174,6 @@ main (int argc, char *argv[])
     }
   pref.name_res = !cl_numeric;
 
-
   /* Find mode of operation */
   if (mode_string)
     {

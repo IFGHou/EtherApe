@@ -103,7 +103,7 @@ gchar *node_id_str(const node_id_t *id)
       msg = g_strdup(ip_to_str (id->addr.ip4));
       break;
     case TCP:
-      msg = g_strdup_printf("%s:%d", ip_to_str (id->addr.tcp4.host), 
+      msg = g_strdup_printf("%s:%u", ip_to_str (id->addr.tcp4.host), 
                             id->addr.tcp4.port);
       break;
     default:
@@ -131,7 +131,7 @@ gchar *node_id_dump(const node_id_t *id)
       msg = g_strdup_printf("IP: %s", ip_to_str (id->addr.ip4));
       break;
     case TCP:
-      msg = g_strdup_printf("TCP/UDP: %s:%d", ip_to_str (id->addr.tcp4.host), 
+      msg = g_strdup_printf("TCP/UDP: %s:%u", ip_to_str (id->addr.tcp4.host), 
                             id->addr.tcp4.port);
       break;
     default:
