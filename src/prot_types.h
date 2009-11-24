@@ -26,13 +26,6 @@
 #ifndef __ETYPES_H__
 #define __ETYPES_H__
 
-/*
- * Maximum length of an IEEE 802.3 frame; Ethernet type/length values
- * greater than it are types, Ethernet type/length values less than or
- * equal to it are lengths.
- */
-#define IEEE_802_3_MAX_LEN 1500
-
 typedef enum
 {
   ETHERNET_II = 0,

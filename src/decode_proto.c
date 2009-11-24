@@ -369,31 +369,48 @@ static void get_loop(decode_proto_t *dp)
 
 static void get_eth_type (decode_proto_t *dp)
 {
-  etype_t etype;
+  guint16 ethsize;
+  guint size_offset; /* offset of size field */
   ethhdrtype_t ethhdr_type = ETHERNET_II;	/* Default */
 
-  if (dp->cur_len < 16)
+  if (dp->cur_len < 20)
     return; /* not big enough */
+
+  size_offset = 12; /* in a non VLAN packet offset of size field is 12 bytes */
   
-  etype = pntohs (dp->cur_packet + 12);
+  /* the 16 bit field at offset 12 can have several meanings:
+   * in 802.3 is the packet size (<= 1500 or 0x5DC)
+   * in Ethernet II the size is really a packet type (>=1536/0x600)
+   * a packet with 802.1Q VLAN tag has a type of 0x8100. 
+   * Jumbo frames pose a challenge because they are 802.3, but size > 1500
+   * Right now we don't support jumbo frames.
+   */
+  ethsize = pntohs (dp->cur_packet + size_offset);
 
-  if (etype <= IEEE_802_3_MAX_LEN)
+  if (ethsize == ETHERTYPE_VLAN)
     {
+      /* 802.1Q VLAN tagged packet. The 4 byte VLAN header is inserted between
+       * source addr and length */
+      decode_proto_add(dp, "802.1Q");
+      size_offset = 16; 
+      ethsize = pntohs (dp->cur_packet + size_offset); /* get the real size */
+    }
 
+  if (ethsize <= 1500)
+    {
+      /* 802.3 ethernet */
+      
       /* Is there an 802.2 layer? I can tell by looking at the first 2
        *      bytes after the 802.3 header. If they are 0xffff, then what
        *      follows the 802.3 header is an IPX payload, meaning no 802.2.
        *      (IPX/SPX is they only thing that can be contained inside a
        *      straight 802.3 cur_packet). A non-0xffff value means that 
        *      there's an 802.2 layer inside the 802.3 layer */
-      if (dp->cur_packet[14] == 0xff && dp->cur_packet[15] == 0xff)
-	{
-	  ethhdr_type = ETHERNET_802_3;
-	}
+      if (dp->cur_packet[size_offset+2] == 0xff && 
+          dp->cur_packet[size_offset+3] == 0xff)
+        ethhdr_type = ETHERNET_802_3;
       else
-	{
-	  ethhdr_type = ETHERNET_802_2;
-	}
+        ethhdr_type = ETHERNET_802_2;
 
       /* Oh, yuck.  Cisco ISL frames require special interpretation of the
        *     destination address field; fortunately, they can be recognized by
@@ -402,11 +419,11 @@ static void get_eth_type (decode_proto_t *dp)
       if (dp->cur_packet[0] == 0x01 && dp->cur_packet[1] == 0x00 && 
           dp->cur_packet[2] == 0x0C && dp->cur_packet[3] == 0x00 && 
           dp->cur_packet[4] == 0x00)
-	{
-	  /* TODO Analyze ISL frames */
-	  decode_proto_add(dp, "ISL");
-	  return;
-	}
+        {
+          /* TODO Analyze ISL frames */
+          decode_proto_add(dp, "ISL");
+          return;
+        }
     }
 
   /* node ids */
@@ -416,8 +433,8 @@ static void get_eth_type (decode_proto_t *dp)
   dp->src_node_id.node_type = LINK6;
   g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 6, 
             sizeof(dp->src_node_id.addr.eth));
-  
-  add_offset(dp, 14);
+
+  add_offset(dp, size_offset + 2);
 
   if (ethhdr_type == ETHERNET_802_3)
     {
@@ -432,9 +449,9 @@ static void get_eth_type (decode_proto_t *dp)
       return;
     }
 
-  /* Else, it's ETHERNET_II */
+  /* Else, it's ETHERNET_II, so the size is really a type field */
   decode_proto_add(dp, "ETH_II");
-  get_eth_II (dp, etype);
+  get_eth_II (dp, (etype_t)ethsize);
 }				/* get_eth_type */
 
 static void
