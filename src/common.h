@@ -100,19 +100,9 @@ apemode_t;
 /* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
  * byte array, returns the value of the two or four bytes at the pointer.
  */
-#define pntohs(p)  ((guint16)                       \
-		       ((guint16)*((guint8 *)p+0)<<8|  \
-			   (guint16)*((guint8 *)p+1)<<0))
+#define pntohs(p)  ntohs(*((guint16 *)(p)))
 
-#define pntohl(p)  ((guint32)*((guint8 *)p+0)<<24|  \
-		       (guint32)*((guint8 *)p+1)<<16|  \
-		       (guint32)*((guint8 *)p+2)<<8|   \
-		       (guint32)*((guint8 *)p+3)<<0)
-
-#define pletohs(p)  ((guint16)                       \
-			((guint16)*((guint8 *)(p)+1)<<8|  \
-			    (guint16)*((guint8 *)(p)+0)<<0))
-
+#define pntohl(p)  ntohl(*((guint32 *)(p)))
 
 /* Takes the hi_nibble value from a byte */
 #define hi_nibble(b) ((b & 0xf0) >> 4)

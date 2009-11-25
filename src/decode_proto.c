@@ -547,10 +547,10 @@ static void get_radiotap(decode_proto_t *dp)
 {
   guint16 rtlen;
 
-  decode_proto_add(dp, "RADIOTAP");
   if (dp->cur_len < 32)
     {
       g_warning (_("Radiotap:captured size too small, packet discarded"));
+      decode_proto_add(dp, "RADIOTAP");
       return;
     }
 
@@ -602,7 +602,10 @@ static void get_wlan(decode_proto_t *dp)
   uint16_t fc;
   uint8_t type;
   uint8_t subtype;
-  uint8_t wep; 
+  uint8_t wep;
+  uint8_t fromtods;
+  uint8_t dstofs;
+  uint8_t srcofs;
 
   decode_proto_add(dp, "IEE802.11"); /* experimental */
   if (dp->cur_len < 10)
@@ -610,54 +613,103 @@ static void get_wlan(decode_proto_t *dp)
       g_warning (_("wlan:captured size too small, packet discarded"));
       return;
     }
-  
-  /* frame control: two bytes */
-  fc = pntohs(dp->cur_packet);
- 
-  /* dst node id is always present */
 
-  /* frame type is in bits 13-14 */
-  type = (fc >> 10 ) & 0x03;
-  subtype = (fc >> 12 ) & 0xff;
-  wep = fc & 0x40;
+  /* frame control field: two bytes, network order
+   * frame type is in bits 2-3, subtype 4-7, tods 8, fromds 9, wep 14 */
+  type = (dp->cur_packet[0] >> 2) & 0x03;
+  subtype = (dp->cur_packet[0] >> 4) & 0x0f;
+  fromtods = (dp->cur_packet[1]) & 0x03;
+  wep = (dp->cur_packet[1] >> 6) & 0x01;
+
+  /* WLAN packets can have up to four (!) addresses, while EtherApe handles
+   * only two :-)
+   * We *could* register the packet twice or even three times, to show the full
+   * traffic, but while useful to understand how WLAN really works usually one
+   * prefers to ignore switches, APs and so on, so we try to decode only the
+   * SA/DA addresses. AP ones are used only for station to AP traffic.
+   * Note:
+   * In monitor mode we could pick up a packet multiple times: for example first
+   * from node A to AP, then from AP to node B.
+   * In that case, traffic statistics will be wrong! */
+  if (fromtods > 3)
+    {
+      g_warning (_("Invalid tofromds field in WLAN packet: 0x%x"), fromtods);
+      return;
+    }
+
+  /* a1:4 a2:10 a3:16 a4:24 */
+  switch (fromtods)  
+    {
+      case 0:
+        /* fromds:0, tods:0 ---> DA=addr1, SA=addr2 */
+        dstofs = 4;
+        srcofs = 10;
+        break;
+      case 1:
+        /* fromds:0, tods:1 ---> DA=addr3, SA=addr2 */
+        dstofs = 16;
+        srcofs = 10;
+        break;
+      case 2:
+        /* fromds:1, tods:0 ---> DA=addr1, SA=addr3 */
+        dstofs = 4;
+        srcofs = 16;
+        break;
+      case 3:
+        /* fromds:1, tods:1 ---> DA=addr3, SA=addr4 */
+        dstofs = 16;
+        srcofs = 24;
+        break;
+    }
+
+  if (dp->cur_len < dstofs + 6)
+    {
+      g_warning (_("wlan:captured size too small, packet discarded"));
+      return;
+    }
+  dp->dst_node_id.node_type = LINK6;
+  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + dstofs, 
+              sizeof(dp->dst_node_id.addr.eth));
+
+  /* for type 1 frames (control) only RTS (subtype 12) has two addresses */
+  if (type != 1 || subtype == 12)
+    {
+      /* source addr present */
+      if (dp->cur_len < srcofs + 6)
+        {
+          g_warning (_("wlan:captured size too small, packet discarded"));
+          return;
+        }
+      dp->src_node_id.node_type = LINK6;
+      g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs, 
+                sizeof(dp->src_node_id.addr.eth));
+    }
+
+  if (fromtods != 3)
+    add_offset(dp, 24); 
+  else
+    add_offset(dp, 30); /* fourth address present */
+  
   switch ( type )
     {
       case 2:
         /* data frame */
-        dp->dst_node_id.node_type = LINK6;
-        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
-                  sizeof(dp->dst_node_id.addr.eth));
-        dp->src_node_id.node_type = LINK6;
-        g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
-                  sizeof(dp->src_node_id.addr.eth));
-        add_offset(dp, 24); /* TODO: handle WDS packets (30 bytes) */
         if (!wep)
           get_llc(dp);
         else
           decode_proto_add(dp, "WLAN-CRYPTED");
         break;
-      case 0: /* mgmt frame */
-        dp->dst_node_id.node_type = LINK6;
-        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
-                  sizeof(dp->dst_node_id.addr.eth));
-        dp->src_node_id.node_type = LINK6;
-        g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
-                  sizeof(dp->src_node_id.addr.eth));
+
+      case 0: 
+        /* mgmt frame */
         decode_wlan_mgmt(dp, subtype);
         break;
-      case 1: /* control frame */
-        /* these frames may have only a dst addr */
-        dp->dst_node_id.node_type = LINK6;
-        g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 4, 
-                  sizeof(dp->dst_node_id.addr.eth));
-        if (subtype == 12)
-          {
-            dp->src_node_id.node_type = LINK6;
-            g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 10, 
-                      sizeof(dp->src_node_id.addr.eth));
-          }
+
+      case 1: 
+        /* control frame */
         decode_proto_add(dp, "WLAN-CTRL");
         break;
+
       default:
         g_warning (_("wlan:unknown frame type 0x%x, decode aborted"), type);
         return;
@@ -697,14 +749,13 @@ get_llc (decode_proto_t *dp)
   sap_type_t dsap, ssap;
   guint16 control;
 
-  decode_proto_add(dp, "LLC");
   if (dp->cur_len < 4)
     return;
-  
+
   dsap = dp->cur_packet[0];
   ssap = dp->cur_packet[1];
 
-  if (dsap == 0xAA && ssap == 0xAA)
+  if (dsap == SAP_SNAP && ssap == SAP_SNAP)
     {
       /* LLC SNAP: has an additional ethernet II type added */
       etype_t eth2_type;
@@ -713,6 +764,8 @@ get_llc (decode_proto_t *dp)
       get_eth_II (dp, eth2_type);
       return;
     }
+
+  decode_proto_add(dp, "LLC");
 
   /* To get this control value is actually a lot more
    * complicated than this, see xdlc.c in ethereal,
@@ -1336,6 +1389,10 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
 void
 get_netbios (decode_proto_t *dp)
 {
+#define pletohs(p)  ((guint16)                       \
+			((guint16)*((guint8 *)(p)+1)<<8|  \
+			    (guint16)*((guint8 *)(p)+0)<<0)) 
+
   guint16 hdr_len;
 
   /* Check that there is room for the minimum header */
@@ -1360,7 +1417,7 @@ get_netbios_ssn (decode_proto_t *dp)
 
   decode_proto_add(dp, "NETBIOS-SSN");
 
-  mesg_type = *(guint8 *) (dp->cur_packet);
+  mesg_type = dp->cur_packet[0];
 
   if (mesg_type == SESSION_MESSAGE)
     decode_proto_add(dp, "SMB");
@@ -1376,7 +1433,7 @@ get_netbios_dgm (decode_proto_t *dp)
 
   decode_proto_add(dp, "NETBIOS-DGM");
 
-  mesg_type = *(guint8 *) (dp->cur_packet);
+  mesg_type = dp->cur_packet[0];
 
   /* Magic numbers copied from ethereal, as usual
    * They mean Direct (unique|group|broadcast) datagram */
