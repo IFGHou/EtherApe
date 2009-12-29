@@ -101,8 +101,9 @@ apemode_t;
  * byte array, returns the value of the two or four bytes at the pointer.
  */
 #define pntohs(p)  ntohs(*((guint16 *)(p)))
-
+#define phtons(p)  htons(*((guint16 *)(p)))
 #define pntohl(p)  ntohl(*((guint32 *)(p)))
+#define phtonl(p)  htonl(*((guint32 *)(p)))
 
 /* Takes the hi_nibble value from a byte */
 #define hi_nibble(b) ((b & 0xf0) >> 4)

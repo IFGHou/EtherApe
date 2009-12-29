@@ -116,6 +116,7 @@ static void get_ieee802_5_type (decode_proto_t *dp);
 static void get_eth_II (decode_proto_t *dp, etype_t etype);
 static void get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type);
 static void get_radiotap (decode_proto_t *dp);
+static void get_ppi (decode_proto_t *dp);
 static void get_wlan (decode_proto_t *dp);
 static void get_linux_sll (decode_proto_t *dp);
 
@@ -164,7 +165,7 @@ static linktype_data_t linktypes[] = {
  {"WLAN",   DLT_IEEE802_11,    LINK6,   get_wlan }, 
  /* Wireless with radiotap header */
  {"WLAN+RTAP",  DLT_IEEE802_11_RADIO, LINK6, get_radiotap }, 
-  
+ {"PPI",  DLT_PPI, LINK6, get_ppi }, /* PPI encapsulation */
  {NULL,   0, 0 } /* terminating entry, must be last */
 };
 
@@ -187,7 +188,7 @@ gboolean setup_link_type(int linktype)
           return TRUE;
         }
     }
-  
+
   return FALSE; /* link type not supported */
 }
 
@@ -556,11 +557,62 @@ static void get_radiotap(decode_proto_t *dp)
 
   /* radiotap hdr has 8 bit of version, plus 8bit of padding, followed by
    * 16bit len field. We don't need to parse the header, just skip it 
-   * Note: header is in host order */
+   * Note: header little endian */
+#ifdef WORDS_BIGENDIAN
+  rtlen = phtons(dp->cur_packet+2);
+#else
   rtlen = *(guint16 *)(dp->cur_packet+2);
+#endif
 
   add_offset(dp, rtlen);
   get_wlan(dp);
+}
+
+/* handles PPI (Per Packet Incapsulation) header */
+static void get_ppi(decode_proto_t *dp)
+{
+  static const linktype_data_t *pph_lkentry = NULL;
+  guint16 pph_len;
+  guint32 pph_dlt;
+  int i;
+
+  if (dp->cur_len < 64)
+    {
+      g_warning (_("PPI:captured size too small, packet discarded"));
+      decode_proto_add(dp, "PPI");
+      return;
+    }
+
+  /* PPI hdr has 8 bit of version, plus 8bit of flags, followed by
+   * 16bit len field and finally by a 32 bit DLT number. 
+   * Between header and data there could be some optional information fields.
+   * We don't need to parse header or fields, just skip it 
+   * Note: all ppi dati are in little-endian order */
+#ifdef WORDS_BIGENDIAN
+  pph_len = phtons(dp->cur_packet+2);
+  pph_dlt = phtonl(dp->cur_packet+4);
+#else
+  pph_len = *(guint16 *)(dp->cur_packet+2);
+  pph_dlt = *(guint32 *)(dp->cur_packet+4);
+#endif
+
+  add_offset(dp, pph_len);
+  /* if the last packet seen has a different dlt type, we rescan the table */
+  if (!pph_lkentry || pph_lkentry->dlt_linktype != pph_dlt)
+    {
+      pph_lkentry = NULL;
+      for (i = 0; linktypes[i].lt_desc != NULL ; ++i)
+        {
+          if (linktypes[i].dlt_linktype == pph_dlt)
+            {
+              pph_lkentry = linktypes + i;
+              pph_lkentry->fun(dp);
+            }
+        }
+      g_warning (_("PPI:unsupported link type %lu, packet discarded"), pph_dlt);
+      return;
+    }
+  pph_lkentry->fun(dp);
 }
 
 static void decode_wlan_mgmt(decode_proto_t *dp, uint8_t subtype)
@@ -695,7 +747,11 @@ static void get_wlan(decode_proto_t *dp)
       case 2:
         /* data frame */
         if (!wep)
-          get_llc(dp);
+          {
+            if (subtype == 8)
+               add_offset(dp, 2); /* QOS info present */
+              get_llc(dp);
+          }
         else
           decode_proto_add(dp, "WLAN-CRYPTED");
         break;

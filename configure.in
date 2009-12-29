@@ -172,6 +172,8 @@ dnl AC_DEFINE_UNQUOTED(PACKAGE_SCM_REV, ["${hg_id}"], [mercurial revision])
 dnl AC_MSG_NOTICE([mercurial id: ${hg_id}])
 dnl ])
 
+dnl check for endianess (need it for Per Packet Incapsulation)
+AC_C_BIGENDIAN
 
 dnl see if the linker allows "--export-dynamic"
 AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
