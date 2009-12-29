@@ -36,5 +36,6 @@ gboolean pause_capture (void);
 gboolean stop_capture (void);
 void cleanup_capture (void);
 gint set_filter (gchar * filter, gchar * device);
+gchar *get_default_filter (apemode_t mode);
 
 #endif

@@ -161,7 +161,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   apemode_t new_mode = APEMODE_DEFAULT;
   const gchar *menuname = NULL;
-
+  gchar *filter;
 
   if (in_start_capture)
     return;			/* Disregard when called because
@@ -200,6 +200,14 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 
   if (!gui_stop_capture ())
      return;
+
+  /* if old filter was still default, we can change to default of new mode */
+  filter = get_default_filter(pref.mode);
+  if (!strcmp(pref.filter, filter))
+    {
+      g_free(pref.filter);
+      pref.filter = get_default_filter(new_mode);
+    }
   pref.mode = new_mode;
   g_my_info (_("Mode set to %s in GUI"), (gchar *) menuitem);
   gui_start_capture ();

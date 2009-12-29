@@ -1,10 +1,35 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.9 ():
+   The most interesting change of this release is *basic* 802.11 WLAN support.
+   WLAN is one of the most complex protocols around ('crazy' sometimes seems a 
+   better description) and there's no way to support it completely without a 
+   dedicated display mode.
+   As an example, a single WLAN packet could contain up to four (4) addresses,
+   source and destination, plus AP interchange. Showing the exact packet route
+   could be interesting for someone trying to understand WLANs, but not very
+   useful to monitor application traffic.
+   So EtherApe tries to treat APs like routers, ignoring them if not directly
+   addressed.  Thus a packet starting from node X and ending with node Y will be 
+   shown as a straight link between the two nodes, even if the real path was 
+   X-AP and AP-Y.
+
+   The other notable improvement is 802.1Q VLAN tagging support.  VLAN tags are
+   decoded but ignored, showing all traffic as shown in a single LAN.
+   Filtering a single vlan could be accomplished with pcap expressions.
+   Note:
+   Due to pcap limitations, to correctly filter VLAN traffic the pcap 
+   filter must start with the keyword "vlan" (e.g.  vlan and ip) and *all* 
+   traffic must be VLAN-tagged.
+
+   Important: this release will be the last mirrored on the CVS repository, wich
+   will be shut down as of march 2010.
 
    Changes summary:
-     * experimental wlan and wlan/radiotap protocol decoding
-     * basic 802.1Q VLAN support (FRQ: 1561647)
+     * wlan and wlan/radiotap protocol decoding
+     * wlan QOS support
+     * PPI (Per Packet Incapsulation) decoding
+     * basic 802.1Q VLAN support (FRQ: 1561647).
      * LLC-SNAP support
      * unified link level modes
      * several performance enhancements

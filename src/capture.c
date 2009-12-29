@@ -69,7 +69,6 @@ gchar *init_capture (void)
 {
   gchar *device;
   gchar ebuf[300];
-  gchar *str = NULL;
   int linktype;		/* Type of device we are listening to */
   static gchar errorbuf[300];
   static gboolean data_initialized = FALSE;
@@ -155,46 +154,16 @@ gchar *init_capture (void)
     }
   
   if (pref.mode == APEMODE_DEFAULT)
-    pref.mode = IP;
+    {
+      pref.mode = IP;
+      g_free (pref.filter);
+      pref.filter = get_default_filter(pref.mode);
+    }
   if (pref.mode == LINK6 && !has_linklevel())
     {
       snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
       return errorbuf;
     }
-  
-  /* TODO Shouldn't we free memory somwhere because of the strconcat? */
-  switch (pref.mode)
-    {
-    case IP:
-      if (pref.filter)
-	str = g_strconcat ("ip and ", pref.filter, NULL);
-      else
-	{
-	  g_free (pref.filter);
-	  pref.filter = NULL;
-	  str = g_strdup ("ip");
-	}
-      break;
-    case TCP:
-      if (pref.filter && *pref.filter)
-	str = g_strconcat ("tcp and ", pref.filter, NULL);
-      else
-	{
-	  g_free (pref.filter);
-	  pref.filter = NULL;
-	  str = g_strdup ("tcp");
-	}
-      break;
-    case APEMODE_DEFAULT:
-    case LINK6:
-      if (pref.filter)
-	str = g_strdup (pref.filter);
-      break;
-    }
-  if (pref.filter)
-    g_free (pref.filter);
-  pref.filter = str;
-  str = NULL;
 
   if (pref.filter)
     set_filter (pref.filter, device);
@@ -230,6 +199,26 @@ set_filter (gchar * filter_string, gchar * device)
 
   return 0;
 }				/* set_filter */
+
+/* returns a string with the default filter to use for each mode */
+gchar *get_default_filter (apemode_t mode)
+{
+  switch (pref.mode)
+    {
+    case IP:
+      return g_strdup ("ip");
+      break;
+    case TCP:
+      return g_strdup ("tcp");
+      break;
+    case LINK6:
+      return g_strdup ("");
+      break;
+    }
+  g_error("Invalid apemode %d", mode);
+}
+
+
 
 gboolean
 start_capture (void)
@@ -325,12 +314,6 @@ stop_capture (void)
 
   /* Free the list of new_nodes */
   new_nodes_clear();
-
-  if (pref.filter)
-    {
-      g_free (pref.filter);
-      pref.filter = NULL;
-    }
 
   /* Clean the buffer */
   if (!pref.interface)

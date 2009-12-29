@@ -393,6 +393,11 @@ static void get_eth_type (decode_proto_t *dp)
       /* 802.1Q VLAN tagged packet. The 4 byte VLAN header is inserted between
        * source addr and length */
       decode_proto_add(dp, "802.1Q");
+      if (DEBUG_ENABLED)
+        {
+          guint16 vlanid = pntohs(dp->cur_packet + 14) & 0x0fff;
+          g_my_debug("VLAN id: %u", vlanid);
+        }
       size_offset = 16; 
       ethsize = pntohs (dp->cur_packet + size_offset); /* get the real size */
     }

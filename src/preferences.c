@@ -135,7 +135,8 @@ load_config (const char *prefix)
     ("Diagram/link_node_ratio=1.0", &u);
   if (u)
     pref.link_node_ratio = 1.0;
-  pref.mode = gnome_config_get_int_with_default ("General/mode=-1", &u);	/* APEMODE_DEFAULT */
+  pref.mode = gnome_config_get_int_with_default ("General/mode=1", &u); /* IP */
+  pref.filter = gnome_config_get_string_with_default("General/filter=ip", &u);
   pref.refresh_period =
       gnome_config_get_int_with_default ("Diagram/refresh_period=100", &u);
 
@@ -154,7 +155,7 @@ load_config (const char *prefix)
   pref.text_color = gnome_config_get_string_with_default("Diagram/text_color=#ffff00", &u);
 
   tmpstr = gnome_config_get_string_with_default
-    ("Diagram/colors=#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
+    ("Diagram/colors=#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00#ffff00 #ff00ff#00ffff#ffffff#ff7700#ff0077#ffaa77#7777ff #aaaa33",
     &u);
   pref.colors = g_strsplit(tmpstr, " ", 0);
   if (!pref.colors)

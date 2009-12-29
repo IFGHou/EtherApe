@@ -152,13 +152,6 @@ main (int argc, char *argv[])
     poptGetContext ("Etherape", argc, (const char **) argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
-  if (cl_filter)
-    {
-      if (pref.filter)
-	g_free (pref.filter);
-      pref.filter = g_strdup (cl_filter);
-    }
-
   if (cl_interface)
     {
       if (pref.interface)
@@ -186,6 +179,15 @@ main (int argc, char *argv[])
       else
 	g_warning (_
 		   ("Unrecognized mode. Do etherape --help for a list of modes"));
+      g_free(pref.filter);
+      pref.filter = get_default_filter(pref.mode);
+    }
+
+  if (cl_filter)
+    {
+      if (pref.filter)
+	g_free (pref.filter);
+      pref.filter = g_strdup (cl_filter);
     }
 
   if (mdelay >= 0)
