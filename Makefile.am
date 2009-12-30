@@ -6,25 +6,8 @@ SUBDIRS = src doc glade m4 po
 # standard props
 DATADIR=.
 
-# ignore bogus distcheck errors caused by scrollkeeper lazyness
-distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
-
 indent:
 	cd src && make indent
-
-NEWS: html/NEWS.html
-	lynx --dump html/NEWS.html > NEWS
-
-FAQ: html/FAQ.html
-	lynx --dump html/FAQ.html > FAQ
-
-README.bugs: html/bug-reporting.html
-	lynx --dump html/bug-reporting.html > README.bugs
-
-cvs : NEWS FAQ README.bugs indent
-	test `whoami` = toledo
-	cvs commit
-	touch src/.indent
 
 man_MANS = etherape.1
 
@@ -60,9 +43,6 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	etherape.spec		\
 	etherape.spec.in	\
 	etherape.desktop.in	\
-	html/NEWS.html		\
-	html/FAQ.html		\
-	html/bug-reporting.html \
 	debian/README.debian	\
 	debian/changelog	\
 	debian/control		\
@@ -109,9 +89,6 @@ full-dist :
 	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.src.rpm
 
 	echo ${VERSION} > old.version
-
-#	cd ../www && make
-#	cd ../www && cvs tag `echo rel-${VERSION} | tr . - `
 
 
 dist-hook: etherape.spec

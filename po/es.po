@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 09:37+0200\n"
+"POT-Creation-Date: 2009-12-29 19:59+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -15,140 +15,115 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:49
-#: src/main.c:84
+#: src/main.c:87
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
-#: src/main.c:86
+#: src/main.c:89
 msgid "replay packets from file"
 msgstr ""
 
-#: src/main.c:86
+#: src/main.c:89
 msgid "<file to replay>"
 msgstr ""
 
 # src/main.c:43
-#: src/main.c:88
+#: src/main.c:91
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
 # src/main.c:43
-#: src/main.c:88
+#: src/main.c:91
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
 # src/main.c:41
-#: src/main.c:90
+#: src/main.c:93
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
 # src/main.c:41
-#: src/main.c:90
+#: src/main.c:93
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
 # src/main.c:53
-#: src/main.c:92
+#: src/main.c:95
 msgid "don't move nodes around"
 msgstr "no mover los nodos"
 
 # src/main.c:55
-#: src/main.c:94
+#: src/main.c:97
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
 # src/main.c:55
-#: src/main.c:94
+#: src/main.c:97
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
 # src/main.c:39
-#: src/main.c:96
+#: src/main.c:99
 msgid "mode of operation"
 msgstr "modo de operación"
 
 # src/main.c:39
-#: src/main.c:96
+#: src/main.c:99
 msgid "<ethernet|fddi|ip|tcp>"
 msgstr "<ethernet|fddi|ip|tcp>"
 
 # src/main.c:47
-#: src/main.c:98
+#: src/main.c:101
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
-#: src/main.c:100
+#: src/main.c:103
 msgid "Disable informational messages"
 msgstr ""
 
-#: src/main.c:102
+#: src/main.c:105
 msgid "maximum packet delay in ms for reading capture files [cli only]"
 msgstr ""
 
-#: src/main.c:103
+#: src/main.c:106
 msgid "<delay>"
 msgstr ""
 
-#: src/main.c:105
+#: src/main.c:108
 msgid "uses the named libglade file for widgets"
 msgstr ""
 
 # src/main.c:43
-#: src/main.c:105
+#: src/main.c:108
 #, fuzzy
 msgid "<glade file>"
 msgstr "<filtro de captura>"
 
-#: src/main.c:125 src/menus.c:316
+#: src/main.c:128 src/menus.c:302
 msgid "-unknown-"
 msgstr ""
 
 # src/main.c:157
-#: src/main.c:188
+#: src/main.c:181
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
 # src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 # src/menus.c:372
-#: src/main.c:214
+#: src/main.c:216
 #, fuzzy, c-format
 msgid "We could not load glade interface file! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
 
-#: src/capture.c:101
-msgid "Received subsize ethernet packet! Forged ?"
-msgstr ""
-
-#: src/capture.c:112
-msgid "Received subsize FDDI packet! Forged ?"
-msgstr ""
-
-#: src/capture.c:123
-msgid "Received subsize IEEE802 packet! Forged ?"
-msgstr ""
-
-#: src/capture.c:134
-msgid "Received subsize IP packet! Forged ?"
-msgstr ""
-
-#: src/capture.c:155
-msgid "Received subsize TCP/UDP packet! Forged ?"
-msgstr ""
-
-# src/capture.c:659
-#: src/capture.c:158
-msgid "Reached default in get_node_id"
-msgstr "Se ha alcanzado el por defecto en get_node_id"
-
 # src/capture.c:84
-#: src/capture.c:209
+#: src/capture.c:101
 #, c-format
 msgid "Error getting device: %s"
 msgstr "Error buscando dispositivo: %s"
 
 # src/capture.c:103
-#: src/capture.c:228
+#: src/capture.c:120
 #, fuzzy, c-format
 msgid ""
 "Error opening %s : %s\n"
@@ -156,85 +131,43 @@ msgid ""
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
 # src/capture.c:108
-#: src/capture.c:233
+#: src/capture.c:125
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr "Dispositivo de captura \"en vivo\" %s abierto. pcap_fd: %d"
 
 # src/capture.c:116
-#: src/capture.c:241
+#: src/capture.c:133
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 "No se pueden abrir a la vez %s y el dispositivo %s. Por favor, escoja uno."
 
 # src/capture.c:122
-#: src/capture.c:249
+#: src/capture.c:141
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
 
 # src/capture.c:126
-#: src/capture.c:252
+#: src/capture.c:144
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
 
-# src/capture.c:138
-#: src/capture.c:264
-msgid "Link type is Ethernet"
-msgstr "Tipo de enlace es Ethernet"
-
-# src/capture.c:146
-#  The case for PPP or SLIP, for instance
-#: src/capture.c:272
-msgid "Link type is RAW"
-msgstr "Tipo de enlace es RAW"
-
-# src/capture.c:155
-#  We are assuming LLC async frames only
-#: src/capture.c:281
-msgid "Link type is FDDI"
-msgstr "Tipo de enlace es FDDI"
-
-# src/capture.c:164
-#  As far as I know IEEE802 is Token Ring
-#: src/capture.c:290
-msgid "Link type is Token Ring"
-msgstr "Tipo de enlace es Token Ring"
-
-# src/capture.c:172
-#  Loopback
-#: src/capture.c:298
-msgid "Link type is NULL"
-msgstr "Tipo de enlace es NULL"
-
-# src/capture.c:164
-#  Linux cooked sockets (I believe this
-#  * is used for ISDN on linux)
-#: src/capture.c:309
-msgid "Link type is Linux cooked sockets"
-msgstr "Tipo de enlace es \"Linux cooked sockets\""
-
 # src/capture.c:181
-#: src/capture.c:319
-#, c-format
-msgid "Link type not yet supported"
+#: src/capture.c:151
+#, fuzzy, c-format
+msgid "Link type %d not supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:234
-#: src/capture.c:364
+#: src/capture.c:164
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
-# src/capture.c:256
-#: src/capture.c:386
-#, c-format
-msgid "Ape mode not yet supported"
-msgstr "Modo aún no soportado"
-
-#: src/capture.c:410
+#: src/capture.c:191
 #, c-format
 msgid ""
 "Couldn't obtain netmask info (%s). Filters involving broadcast addresses "
@@ -242,49 +175,49 @@ msgid ""
 msgstr ""
 
 # src/capture.c:288 src/capture.c:314
-#: src/capture.c:415
+#: src/capture.c:196
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
 # src/capture.c:293 src/capture.c:319
-#: src/capture.c:417
+#: src/capture.c:198
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
 # src/capture.c:340
-#: src/capture.c:444
+#: src/capture.c:245
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:347
-#: src/capture.c:451
+#: src/capture.c:252
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:380
-#: src/capture.c:476
+#: src/capture.c:277
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:385
-#: src/capture.c:479
+#: src/capture.c:280
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:410
-#: src/capture.c:499
+#: src/capture.c:300
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:416
-#: src/capture.c:504
+#: src/capture.c:305
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:458
-#: src/capture.c:532
+#: src/capture.c:327
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
@@ -299,103 +232,89 @@ msgid "No suitables interfaces for capture have been found"
 msgstr "No se han encontrado interfaces adecuados para capturar"
 
 # src/menus.c:73
-#: src/menus.c:55
+#: src/menus.c:57
 msgid "Available interfaces for capture:"
 msgstr "Dispositivos de captura disponibles:"
 
 # src/menus.c:205
-#: src/menus.c:153
+#: src/menus.c:156
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Interfaz de captura fijado a %s en el GUI"
 
 # src/menus.c:277
-#: src/menus.c:226
+#: src/menus.c:212
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modo fijado en %s en el GUI"
 
 # src/menus.c:594
-#: src/menus.c:347
+#: src/menus.c:333
 #, fuzzy
 msgid "Status already PLAY at gui_start_capture"
 msgstr "Status no es PLAY en gui_pause_capture"
 
-#: src/menus.c:414
-#, c-format
-msgid "Invalid link type %d"
-msgstr ""
-
-#: src/menus.c:438 src/menus.c:474
+#: src/menus.c:376 src/menus.c:406
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 # src/menus.c:544
 #  Sets the appbar
-#: src/menus.c:447
+#: src/menus.c:385
 msgid "Reading data from "
 msgstr "Leyendo datos de "
 
 # src/menus.c:551 src/menus.c:695
-#: src/menus.c:454 src/menus.c:605
+#: src/menus.c:392 src/menus.c:537
 msgid "default interface"
 msgstr "interfaz por defecto"
 
-# src/menus.c:556
-#: src/menus.c:459
-msgid " in Token Ring mode"
-msgstr " en modo Token Ring"
-
-# src/menus.c:559
-#: src/menus.c:462
-msgid " in FDDI mode"
-msgstr " en modo FDDI"
-
-# src/menus.c:562
-#: src/menus.c:465
-msgid " in Ethernet mode"
-msgstr " en modo Ethernet"
+# src/menus.c:571
+#: src/menus.c:397
+#, fuzzy
+msgid " in Data Link mode"
+msgstr " en modo UDP"
 
 # src/menus.c:565
-#: src/menus.c:468
+#: src/menus.c:400
 msgid " in IP mode"
 msgstr " en modo IP"
 
 # src/menus.c:568
-#: src/menus.c:471
+#: src/menus.c:403
 msgid " in TCP mode"
 msgstr " en modo TCP"
 
 # src/menus.c:581
-#: src/menus.c:483
+#: src/menus.c:415
 msgid "Diagram started"
 msgstr "Diagrama iniciado"
 
 # src/menus.c:623
 #  Sets the appbar
-#: src/menus.c:514
+#: src/menus.c:446
 msgid "Paused"
 msgstr "Pausado"
 
 # src/menus.c:628
-#: src/menus.c:516
+#: src/menus.c:448
 msgid "Diagram paused"
 msgstr "Diagrama pausado"
 
-#: src/menus.c:545
+#: src/menus.c:477
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr ""
 
 # src/menus.c:688
 #  Sets the appbar
-#: src/menus.c:598
+#: src/menus.c:530
 msgid "Ready to capture from "
 msgstr "Listo para capturar de "
 
 # src/menus.c:700
-#: src/menus.c:610
+#: src/menus.c:542
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
@@ -506,6 +425,44 @@ msgstr "Protocolos DDP no soportados en %s"
 msgid "SCTP protocols not supported in %s"
 msgstr "Protocolos DDP no soportados en %s"
 
+# src/capture.c:146
+#  The case for PPP or SLIP, for instance
+#: src/decode_proto.c:187
+#, fuzzy, c-format
+msgid "Link type is %s"
+msgstr "Tipo de enlace es RAW"
+
+#: src/decode_proto.c:261
+msgid "Data link entry not initialized"
+msgstr ""
+
+#: src/decode_proto.c:558
+msgid "Radiotap:captured size too small, packet discarded"
+msgstr ""
+
+#: src/decode_proto.c:586
+msgid "PPI:captured size too small, packet discarded"
+msgstr ""
+
+#: src/decode_proto.c:617
+#, c-format
+msgid "PPI:unsupported link type %lu, packet discarded"
+msgstr ""
+
+#: src/decode_proto.c:670 src/decode_proto.c:724 src/decode_proto.c:737
+msgid "wlan:captured size too small, packet discarded"
+msgstr ""
+
+#: src/decode_proto.c:693
+#, c-format
+msgid "Invalid tofromds field in WLAN packet: 0x%x"
+msgstr ""
+
+#: src/decode_proto.c:775
+#, c-format
+msgid "wlan:unknown frame type 0x%x, decode aborted"
+msgstr ""
+
 #: src/links.c:173
 msgid "Queuing link for remove"
 msgstr ""
@@ -521,47 +478,47 @@ msgstr "Creando enlace: %s-%s. Número de enlaces: %d"
 msgid "Updated links. Active links %d"
 msgstr ""
 
-#: src/names.c:100
+#: src/names.c:101
 #, c-format
 msgid ""
 "not enough captured data, terminating protocol decode for '%s' (level %d)"
 msgstr ""
 
-#: src/names.c:104
+#: src/names.c:105
 #, c-format
 msgid "not enough captured data, terminating protocol decode at level %d"
 msgstr ""
 
 # src/capture.c:711
-#: src/names.c:216
+#: src/names.c:212
 #, fuzzy
 msgid "Unsopported ape mode in fill_node_id"
 msgstr "Modo no soportado en get_link_id"
 
 # src/capture.c:844
-#: src/node.c:119
+#: src/node.c:103
 #, fuzzy, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
 # src/capture.c:844
-#: src/node.c:151
+#: src/node.c:137
 #, fuzzy, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "Creando nodo: %s. Número de nodos: %d"
 
-#: src/node.c:246
+#: src/node.c:232
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:566
+#: src/node.c:550
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
 # src/main.c:291
-#: src/preferences.c:148
+#: src/preferences.c:149
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -571,16 +528,16 @@ msgstr ""
 "quiere"
 
 # src/main.c:386
-#: src/preferences.c:218
+#: src/preferences.c:219
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
-#: src/preferences.c:522
+#: src/preferences.c:523
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/preferences.c:533
+#: src/preferences.c:534
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr ""
@@ -1135,190 +1092,237 @@ msgstr "_Captura"
 msgid "_Mode"
 msgstr "_Modo"
 
-# src/glade-strings:10
 #: glade/etherape.glade:2052
-msgid "Set Token Ring mode"
-msgstr "Activar modo Token Ring"
+msgid "Set Link Layer (OSI level 2) mode"
+msgstr ""
 
-# src/glade-strings:11
 #: glade/etherape.glade:2053
-msgid "Token _Ring"
-msgstr "Token _Ring"
-
-# src/glade-strings:12
-#: glade/etherape.glade:2064
-msgid "Set FDDI mode"
-msgstr "Activar modo FDDI"
-
-# src/glade-strings:13
-#: glade/etherape.glade:2065
-msgid "_FDDI"
-msgstr "_FDDI"
-
-# src/glade-strings:14
-#: glade/etherape.glade:2077
-msgid "Set Ethernet mode"
-msgstr "Activar modo Ethernet"
-
-# src/glade-strings:15
-#: glade/etherape.glade:2078
-msgid "_Ethernet"
-msgstr "_Ethernet"
+msgid "_Link Layer"
+msgstr ""
 
 # src/glade-strings:16
-#: glade/etherape.glade:2095
+#: glade/etherape.glade:2069
 msgid "Set IP mode"
 msgstr "Activar modo IP"
 
 # src/glade-strings:17
-#: glade/etherape.glade:2096
+#: glade/etherape.glade:2070
 msgid "_IP"
 msgstr "_IP"
 
 # src/glade-strings:18
-#: glade/etherape.glade:2108
+#: glade/etherape.glade:2082
 msgid "Set TCP mode"
 msgstr "Activar modo TCP"
 
 # src/glade-strings:19
-#: glade/etherape.glade:2109
+#: glade/etherape.glade:2083
 msgid "_TCP"
 msgstr "_TCP"
 
 # src/glade-strings:22
-#: glade/etherape.glade:2124
+#: glade/etherape.glade:2098
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
 # src/glade-strings:23 src/glade-strings:37
-#: glade/etherape.glade:2141 glade/etherape.glade:2305
+#: glade/etherape.glade:2115 glade/etherape.glade:2279
 msgid "Start capture"
 msgstr "Comenzar captura"
 
 # src/glade-strings:25 src/glade-strings:39
-#: glade/etherape.glade:2160 glade/etherape.glade:2320
+#: glade/etherape.glade:2134 glade/etherape.glade:2294
 msgid "Pause capture"
 msgstr "Pausar captura"
 
 # src/glade-strings:27 src/glade-strings:41
-#: glade/etherape.glade:2178 glade/etherape.glade:2335
+#: glade/etherape.glade:2152 glade/etherape.glade:2309
 msgid "Stop capture"
 msgstr "Parar captura"
 
 # src/glade-strings:116
-#: glade/etherape.glade:2198
+#: glade/etherape.glade:2172
 #, fuzzy
 msgid "_View"
 msgstr "Archivo:"
 
 # src/glade-strings:29
-#: glade/etherape.glade:2206
+#: glade/etherape.glade:2180
 msgid "Show or hide the protocols window"
 msgstr "Muestra u oculta la ventana de protocolos"
 
 # src/glade-strings:30
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2181
 msgid "_Protocols"
 msgstr "_Protocolos"
 
 # src/glade-strings:29
-#: glade/etherape.glade:2215
+#: glade/etherape.glade:2189
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Muestra u oculta la ventana de protocolos"
 
 # src/glade-strings:155
-#: glade/etherape.glade:2216
+#: glade/etherape.glade:2190
 #, fuzzy
 msgid "_Nodes"
 msgstr "Nodos"
 
 # src/glade-strings:31
-#: glade/etherape.glade:2230
+#: glade/etherape.glade:2204
 msgid "Show or hide the toolbar"
 msgstr "Muestra u oculta la barra de herramientas"
 
 # src/glade-strings:32
-#: glade/etherape.glade:2231
+#: glade/etherape.glade:2205
 msgid "_Toolbar"
 msgstr "Barra de _herramientas"
 
 # src/glade-strings:33
-#: glade/etherape.glade:2241
+#: glade/etherape.glade:2215
 msgid "Show or hide the legend"
 msgstr "Muestra u oculta la leyenda"
 
 # src/glade-strings:34
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2216
 msgid "_Legend"
 msgstr "_Leyenda"
 
 # src/glade-strings:35
-#: glade/etherape.glade:2252
+#: glade/etherape.glade:2226
 msgid "Show or hide the status bar"
 msgstr "Muestra u oculta la barra de estado"
 
 # src/glade-strings:36
-#: glade/etherape.glade:2253
+#: glade/etherape.glade:2227
 msgid "_Status Bar"
 msgstr "Barra de _estado"
 
-#: glade/etherape.glade:2266
+#: glade/etherape.glade:2240
 msgid "_Help"
 msgstr ""
 
 # src/glade-strings:38
-#: glade/etherape.glade:2306
+#: glade/etherape.glade:2280
 msgid "Start"
 msgstr "Comenzar"
 
 # src/glade-strings:40
-#: glade/etherape.glade:2321
+#: glade/etherape.glade:2295
 msgid "Pause"
 msgstr "Pausa"
 
 # src/glade-strings:42
-#: glade/etherape.glade:2336
+#: glade/etherape.glade:2310
 msgid "Stop"
 msgstr "Parar"
 
 # src/glade-strings:43
-#: glade/etherape.glade:2358
+#: glade/etherape.glade:2332
 msgid "Preferences (Ctrl-P)"
 msgstr "Preferencias (Ctrl-P)"
 
 # src/glade-strings:44
-#: glade/etherape.glade:2359
+#: glade/etherape.glade:2333
 msgid "Pref."
 msgstr "Pref."
 
 # src/glade-strings:45
-#: glade/etherape.glade:2374
+#: glade/etherape.glade:2348
 msgid "Display the protocols window"
 msgstr "Mostrar la ventana de protocolos"
 
 # src/glade-strings:46
-#: glade/etherape.glade:2375
+#: glade/etherape.glade:2349
 msgid "Prot."
 msgstr "Prot."
 
 # src/glade-strings:47
-#: glade/etherape.glade:2440
+#: glade/etherape.glade:2414
 msgid "Protocols"
 msgstr "Protocolos"
 
 # src/glade-strings:155
-#: glade/etherape.glade:2498
+#: glade/etherape.glade:2472
 msgid "Nodes"
 msgstr "Nodos"
 
-#: glade/etherape.glade:2511
+#: glade/etherape.glade:2485
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2516
+#: glade/etherape.glade:2490
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
+
+# src/capture.c:659
+#~ msgid "Reached default in get_node_id"
+#~ msgstr "Se ha alcanzado el por defecto en get_node_id"
+
+# src/capture.c:138
+#~ msgid "Link type is Ethernet"
+#~ msgstr "Tipo de enlace es Ethernet"
+
+# src/capture.c:155
+#  We are assuming LLC async frames only
+#~ msgid "Link type is FDDI"
+#~ msgstr "Tipo de enlace es FDDI"
+
+# src/capture.c:164
+#  As far as I know IEEE802 is Token Ring
+#~ msgid "Link type is Token Ring"
+#~ msgstr "Tipo de enlace es Token Ring"
+
+# src/capture.c:172
+#  Loopback
+#~ msgid "Link type is NULL"
+#~ msgstr "Tipo de enlace es NULL"
+
+# src/capture.c:164
+#  Linux cooked sockets (I believe this
+#  * is used for ISDN on linux)
+#~ msgid "Link type is Linux cooked sockets"
+#~ msgstr "Tipo de enlace es \"Linux cooked sockets\""
+
+# src/capture.c:256
+#~ msgid "Ape mode not yet supported"
+#~ msgstr "Modo aún no soportado"
+
+# src/menus.c:556
+#~ msgid " in Token Ring mode"
+#~ msgstr " en modo Token Ring"
+
+# src/menus.c:559
+#~ msgid " in FDDI mode"
+#~ msgstr " en modo FDDI"
+
+# src/menus.c:562
+#~ msgid " in Ethernet mode"
+#~ msgstr " en modo Ethernet"
+
+# src/glade-strings:10
+#~ msgid "Set Token Ring mode"
+#~ msgstr "Activar modo Token Ring"
+
+# src/glade-strings:11
+#~ msgid "Token _Ring"
+#~ msgstr "Token _Ring"
+
+# src/glade-strings:12
+#~ msgid "Set FDDI mode"
+#~ msgstr "Activar modo FDDI"
+
+# src/glade-strings:13
+#~ msgid "_FDDI"
+#~ msgstr "_FDDI"
+
+# src/glade-strings:14
+#~ msgid "Set Ethernet mode"
+#~ msgstr "Activar modo Ethernet"
+
+# src/glade-strings:15
+#~ msgid "_Ethernet"
+#~ msgstr "_Ethernet"
 
 # src/main.c:45
 #~ msgid "set input file"
@@ -1365,10 +1369,6 @@ msgstr ""
 # src/menus.c:450
 #~ msgid "Status not STOP or PAUSE at gui_start_capture"
 #~ msgstr "Status no es PLAY ni PAUSE en gui_start_capture"
-
-# src/menus.c:571
-#~ msgid " in UDP mode"
-#~ msgstr " en modo UDP"
 
 # src/diagram.c:318
 #~ msgid "Number of nodes: "

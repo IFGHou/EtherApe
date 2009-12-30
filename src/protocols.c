@@ -349,7 +349,7 @@ gchar *protocol_t_dump(const protocol_t *prot)
           else
             {
               gchar *tmp = msg_names;
-              msg_names = g_strjoin(",", tmp, str_name);
+              msg_names = g_strjoin(",", tmp, str_name, NULL);
               g_free(tmp);
               g_free(str_name);
             }
