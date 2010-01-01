@@ -158,8 +158,7 @@
       <para>Color, on the other hand, is used to represent the protocol being
       used the most by a link or a node. You will find a legend for what a
       particular color means in the left side of the <interface>main
-      window</interface> or in the <interface>Protocol detail
-      dialog</interface>.</para>
+      window</interface> or in the <interface>All Protocols dialog</interface>.</para>
 
       <para>Look closely and you will notice that in fact links are not lines
       between nodes. Rather, every direction of communication is represented
@@ -202,7 +201,10 @@
     <sect2 id="modes">
       <title>Modes</title>
 
-      <para>Modes control how <application>EtherApe</application> captures, decodes and displays network packets.</para>
+      <para>Modes control how <application>EtherApe</application> captures, decodes and 
+            displays network packets.
+      Node identification also depend on the current mode, thus changing mode requires restarting 
+            the capture.</para>
       <para>
 
 
@@ -210,16 +212,25 @@
           <varlistentry>
             <term>Link Layer</term>
             <listitem>
-              <para>Link Layer is the most detailed mode.</para>
-              <para>.</para>
+              <para>Link Layer mode focuses on traffic at link layer (e.g. Ethernet) level.
+              Nodes are identified by their link layer address, highlighting local paths.</para>
+	      <para>In this mode traffic coming from an external network across a router is shown as originating at the router.
+	      Conversely, packets headed outside are shown as consumed by the router.</para>
+	      <para>Default filter: none</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term>IP</term>
             <listitem>
-              <para>The default mode.</para>
-	      <para>The default filter expression is 'ip', discarding all non ip packets.</para>
+              <para>The default mode, focusing on traffic at IP level or above.
+	      Nodes are identified by their IP address, if available.</para>
+	      <para>Unless directly addressed, routers are ignored, showing the final packet destination.</para>
+	      <para>The default filter expression is 'ip', discarding all non IP packets.
+	      Remove the filter to see non-IP traffic (e.g. ARP queries)</para>
+              <warning>
+                <para>Due to pcap limitations, when capturing VLAN-tagged packets, your filter must start with 'vlan' (e.g. vlan and tcp) and all traffic must be tagged, otherwise the filter will not work.</para>
+              </warning>
             </listitem>
           </varlistentry>
 
@@ -229,7 +240,10 @@
               <para>In this mode a node represents an (host, port) pair, with node labels shown as 
 	            "name:port".</para>
               <para>Since the display becomes quickly crowded, this mode is best suited for analyzing a small number of hosts, perhaps by restricting the capture scope with a filter.</para>
-<para>The default filter expression for TCP mode is 'tcp', capturing only tcp packets.</para>
+	      <para>The default filter expression for TCP mode is 'tcp', capturing only 
+	            TCP packets. Removing the filter usually doesn't make much sense, but you
+		    can change it to 'tcp or udp' to see both TCP and UDP traffic.
+</para>
               <warning>
                 <para>Due to pcap limitations, when capturing VLAN-tagged packets, your filter must start with 'vlan' (e.g. vlan and tcp) and all traffic must be tagged, otherwise the filter will not work.</para>
               </warning>
@@ -246,7 +260,7 @@
       <para>The <link linkend="figure-usage-toolbar">toolbar</link> provides
       access to several commonly used routines. <variablelist>
           <varlistentry>
-            <term>Start</term>
+            <term><guimenu>Start</guimenu></term>
 
             <listitem>
               <para>Starts capturing on the selected live interface.</para>
@@ -254,7 +268,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>Pause</term>
+            <term><guimenu>Pause</guimenu></term>
 
             <listitem>
               <para>Pauses capture, freezing both the diagram and any detail
@@ -263,7 +277,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>Stop</term>
+            <term><guimenu>Stop</guimenu></term>
 
             <listitem>
               <para>Stops the capture, clearing diagram and all traffic
@@ -278,7 +292,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>Preferences</term>
+            <term><guimenu>Preferences</guimenu></term>
 
             <listitem>
               <para>Opens the <link
@@ -287,7 +301,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>Protocols</term>
+            <term><guimenu>Protocols</guimenu></term>
 
             <listitem>
               <para>Opens the <link linkend="protodlg">Protocols</link> detail
@@ -328,7 +342,8 @@
           <term><guimenu>File</guimenu></term>
 
           <listitem>
-            <para>This menu contains: <itemizedlist>
+            <para>This menu contains: 
+	    <itemizedlist>
                 <listitem>
                   <para><menuchoice>
                       <shortcut>
@@ -364,10 +379,52 @@
           <listitem>
             <para>This menu contains: <itemizedlist>
                 <listitem>
-                  <para><menuchoice>
+                  <para>
+		    <menuchoice>
                       <guimenuitem>Mode</guimenuitem>
-                    </menuchoice> opens a submenu governing the operating
-                  <link linkend="modes">mode.</link></para>
+                    </menuchoice> 
+		    opens a submenu governing the operating <link linkend="modes">mode</link>.
+		  </para>
+		  <itemizedlist>
+		    <listitem>
+		      <para>
+			<menuchoice>
+			  <shortcut>
+			    <keycap>Alt-L</keycap>
+			  </shortcut>
+
+			  <guimenuitem>Link Layer</guimenuitem>
+			</menuchoice> 
+			Selects Link Layer mode. 
+		      </para>
+		    </listitem>
+
+		    <listitem>
+		      <para>
+			<menuchoice>
+			  <shortcut>
+			    <keycap>Alt-I</keycap>
+			  </shortcut>
+
+			  <guimenuitem>IP</guimenuitem>
+			</menuchoice> 
+			Selects IP mode. 
+		      </para>
+		    </listitem>
+
+		    <listitem>
+		      <para>
+			<menuchoice>
+			  <shortcut>
+			    <keycap>Alt-T</keycap>
+			  </shortcut>
+
+			  <guimenuitem>TCP</guimenuitem>
+			</menuchoice> 
+			Selects TCP mode. 
+		      </para>
+		    </listitem>
+		  </itemizedlist>
                 </listitem>
 
                 <listitem>
@@ -446,10 +503,10 @@
           <listitem>
             <para>This menu contains: <itemizedlist>
                 <listitem>
-                  <para><guimenuitem>About</guimenuitem> This opens the
+                  <para><guimenuitem>About</guimenuitem> Opens the
                   <interface>About</interface> dialog which shows basic
-                  information about <application> EtherApe</application>, such
-                  as the author's names.</para>
+                  information about <application>EtherApe</application>, such
+                  as release number, or the author's names.</para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
@@ -469,7 +526,7 @@
 
     <para>A protocol table depicting data on all protocol traversing the
     chosen node is also displayed. See the <link
-    linkend="protodlg">Protocol</link> detail dialog entry for additional
+    linkend="protodlg">All Protocols dialog</link> entry for additional
     information.</para>
 
     <note>
@@ -509,7 +566,7 @@
 
     <para>A protocol table depicting data on all protocol traversing the
     chosen link is also displayed. See the <link
-    linkend="protodlg">Protocol</link> detail dialog entry for additional
+    linkend="protodlg">All Protocols dialog</link> entry for additional
     information.</para>
 
     <note>
@@ -539,10 +596,10 @@
   </sect1>
 
   <sect1 id="protodlg">
-    <title id="proto-ref">Protocol detail dialog</title>
+    <title id="proto-ref">All Protocols dialog</title>
 
-    <para>The protocol detail dialog shows global traffic statistics for
-    active (i.e. not expired) protocolos. Expiration is controlled by the
+    <para>The Protocols dialog shows global traffic statistics for
+    active (i.e. not expired) protocols. Expiration is controlled by the
     Global Protocol Timeouts preference section.</para>
 
     <para>Double clicking on a column name orders entries by that column data
@@ -550,8 +607,8 @@
     shows the sorting order (in the screenshot, entries are ordered by
     name).</para>
 
-    <para>A column can also be dragged, changing its position in the table. To
-    disable a column deselect it in the <guilabel>Columns</guilabel>
+    <para>A column can also be dragged, changing its position in the table, or 
+          disabled by deselecting it in the <guilabel>Columns</guilabel>
     menu.</para>
 
     <note>
@@ -573,7 +630,46 @@
           </imageobject>
 
           <textobject>
-            <phrase>Protocol detail dialog screenshot</phrase>
+            <phrase>All Protocols dialog screenshot</phrase>
+          </textobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </sect1>
+
+  <sect1 id="allnodesdlg">
+    <title id="allnodes-ref">All Nodes dialog</title>
+
+    <para>The Nodes dialog shows global traffic statistics for all 
+    known (i.e. not expired) nodes. Expiration is controlled by the
+    Node Timeouts preference section.</para>
+
+    <para>Double clicking on a column name orders entries by that column data
+    or reverses the sorting order. A small arrow after the chosen column name
+    shows the sorting order (in the screenshot, entries are ordered by
+    name).</para>
+
+    <para>A column can also be dragged, changing its position in the table.</para>
+
+    <note>
+      <para>This dialog lists all known nodes, even those not shown on the diagram, because their Diagram timeout is expired. A node is fully expired and <application>EtherApe</application> forgets it only when all three timeouts (Diagram, Traffic Statistics, Protocol Statistics) are expired.</para>
+    </note>
+
+    <figure id="figure-allnodes-dlg">
+      <title>All Nodes dialog</title>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figures/all_nodes.png" format="PNG" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="figures/all_nodes.eps" format="EPS" />
+          </imageobject>
+
+          <textobject>
+            <phrase>All Nodes dialog screenshot</phrase>
           </textobject>
         </mediaobject>
       </screenshot>
@@ -581,7 +677,7 @@
   </sect1>
 
   <sect1 id="etherape-prefs">
-    <title id="pref-ref">Settings</title>
+    <title id="pref-ref">Preferences</title>
 
     <para>To change the application settings, select <menuchoice>
         <guimenu>File</guimenu>
@@ -604,15 +700,14 @@
       </listitem>
     </itemizedlist>
 
-    <para>After you have made all the changes you want, click on
-    <guibutton>OK</guibutton> to apply the changes and close the
+    <para>Any change you make will be applied immediately. When satisfied, click on
+    <guibutton>OK</guibutton> to close the
     <interface>Properties</interface> dialog. The <guibutton>Save</guibutton>
     saves current settings (to ~/.gnome2/EtherApe). 
     </para>
     <para>
-    To cancel the changes and return to previous values, click the <guibutton>Cancel</guibutton> 
-    button.
---></para>
+    To abort the changes and return to previous values, click the <guibutton>Cancel</guibutton> 
+    button.</para>
 
     <sect2 id="etherape-prefs-diagram">
       <title>Diagram</title>
@@ -683,19 +778,23 @@
 
                 <para>Size depends on the instantaneous traffic on
                 node.</para>
+		<note>
+		  <para>In this context, "istantaneous" means traffic averaged over the "Averaging Time Period".</para>
+		</note>
+
               </listitem>
 
               <listitem>
                 <para><guilabel>Instant. traffic (Inbound)</guilabel></para>
 
-                <para>Size depends only on instantenous inbound
+                <para>Size depends on instantenous inbound
                 traffic.</para>
               </listitem>
 
               <listitem>
                 <para><guilabel>Instant. traffic (Outbound)</guilabel></para>
 
-                <para>Size depends only on instantaneous outbound
+                <para>Size depends on instantaneous outbound
                 traffic.</para>
               </listitem>
 
@@ -709,13 +808,13 @@
               <listitem>
                 <para><guilabel>Accum. traffic (Inbound)</guilabel></para>
 
-                <para>Size depends only on accumulated inbound traffic.</para>
+                <para>Size depends on accumulated inbound traffic.</para>
               </listitem>
 
               <listitem>
                 <para><guilabel>Accum. traffic (Outbound)</guilabel></para>
 
-                <para>Size depends only on accumulated outbound
+                <para>Size depends on accumulated outbound
                 traffic.</para>
               </listitem>
             </itemizedlist>
@@ -782,7 +881,7 @@
             <para>This drop-down combo box specifies the capture filter to use
             using the standard pcap syntax.</para>
 
-            <para>Default: ip</para>
+            <para>Default: <guilabel>ip</guilabel></para>
           </listitem>
         </varlistentry>
 
@@ -791,6 +890,7 @@
 
           <listitem>
             <para>Selects the font used for node labels.</para>
+            <para>Default: <guilabel>Sans 8 Pts.</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -799,6 +899,7 @@
 
           <listitem>
             <para>Selects the color used for node labels.</para>
+            <para>Default: <guilabel>yellow</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -808,7 +909,7 @@
           <listitem>
             <para>If checked, doesn't show the node names.</para>
 
-            <para>Default: unchecked.</para>
+            <para>Default: <guilabel>unchecked</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -820,7 +921,7 @@
             the services file is accumulated under "UDP-unknown" and
             "TCP-unknown".</para>
 
-            <para>Default: checked.</para>
+            <para>Default: <guilabel>checked</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -831,7 +932,7 @@
             <para>If checked, enables name resolution. If unchecked, show only
             numeric addresses (like the -b command line option).</para>
 
-            <para>Default: unchecked.</para>
+            <para>Default: <guilabel>unchecked</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -1146,9 +1247,6 @@
   <sect1 id="bugs">
     <title>Known Bugs and Limitations</title>
 
-    <para>As default, only IP traffic is shown. To see other protocols use
-    ethernet mode (-m ethernet)</para>
-
     <para>Some libpcap versions have a bug for which a filter "ip" doesn't
     capture icmp traffic.</para>
 
@@ -1174,7 +1272,7 @@
     <title>License</title>
 
     <para>This program is free software; you can redistribute it and/or modify
-    it under the terms of the <ulink type="help" url="gnome-help:gpl">"&gt;
+    it under the terms of the <ulink type="help" url="gnome-help:gpl">
     <citetitle>GNU General Public License</citetitle></ulink> as published by
     the Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.</para>

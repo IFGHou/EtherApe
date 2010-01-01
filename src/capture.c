@@ -203,7 +203,7 @@ set_filter (gchar * filter_string, gchar * device)
 /* returns a string with the default filter to use for each mode */
 gchar *get_default_filter (apemode_t mode)
 {
-  switch (pref.mode)
+  switch (mode)
     {
     case IP:
       return g_strdup ("ip");
