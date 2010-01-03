@@ -4,27 +4,28 @@ etherape \- graphical network traffic browser
 .SH SYNOPSIS
 .B etherape
 [
-.B -m
-operating mode ] [
-.B -i
-interface ] [
+.B -d 
+] [
 .B -f
 filter ] [
+.B --glade-file
+gladefile ] [
+.B -i
+interface ] [
+.B -l
+maxnodes ] [
+.B -m
+operating mode ] [
+.B --max-delay
+delay ] [
+.B -n 
+] [
+.B -q
+] [
 .B -r
 inputfile ] [
-.B -n
-] [
-.B -d
-] [
-.B -F
-] [
-.B -N
-color ] [
-.B -L
-color ] [
-.B -T
-color ]
-.B -z ]
+.B -s
+]
 
 .SH DESCRIPTION
 .PP
@@ -51,35 +52,41 @@ set interface to listen to
 .BR "-l, --node-limit " "<number>"
 sets the maximum number of node visible
 .TP
-.BR "-m, --mode " "<ethernet|fddi|ip|tcp>"
-set mode of operation (default is lowest level for current device)
+.BR "-m, --mode " "<link|ip|tcp>"
+set mode of operation (default is ip)
 .TP
 .BR "--max-delay " "<delay in ms>"
 caps timestamps to the provided delay when replaying a capture file.
 .TP
 .BR "-n, --numeric"
-don't convert addresses to names
+don't convert addresses to names, disables name resolution.
+.TP
+.BR "-q"
+disables informational messages.
 .TP
 .BR "-r, --replay-file " "<file name>"
 sets input file to replay
 .TP
+.BR "-s"
+Place nodes using an alternate algorithm. 
+.B
+Deprecated.
+.TP
 .BR "-?, --help"
 show a brief help message
+.SH ENVIRONMENT VARIABLES
+.TP
+.BR "APE_DEBUG=" "normal|info|debug"
+controls debug output verbosity. Debug informations are printed on
+standard output.
 .SH FILES
 Etherape will use
 .I /etc/ethers
-if there is one. If not, it will
-try to reverse lookup the ip address.
-
-.B IMPORTANT!
-It is particularly important when running in ethernet mode
-to have the ethernet address of your router in  /etc/ethers.
-If not, your router will have as name whatever IP address
-it was forwarding traffic from when it was first heard.
+if there is one to convert MAC addresses to names.
 
 .SH SEE ALSO
 .PP
-The etherape webpage is at http://etherape.sourceforge.net/
+The etherape webpage at http://etherape.sourceforge.net/
 
 .SH AUTHOR
 
