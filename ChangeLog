@@ -1,4 +1,130 @@
+2010-01-03  R.Ghetta  <bchiara@users.sf.net>
+
+	* screenshots merge
+	[5d4083cee512] [tip]
+
+	* doc/C/etherape.xml, doc/etherape.omf.in, etherape.1, src/main.c:
+	Update man page
+	[f5469f5f82fe]
+
+	* doc/C/figures/all_nodes.eps, doc/C/figures/all_nodes.png:
+	nodes dialog screenshots
+	[90ab7798800b]
+
+	* po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
+	src/capture.c:
+	Output clearer message when missing privileges.
+	[e31bb34e6266]
+
+	* .hgignore, doc/etherape.omf.in:
+	ignore documentation generated files, add omf.in
+	[3b505d0900b9]
+
+	* .cvsignore, .hgignore, Makefile.am, autogen.sh, configure.in,
+	debian/.cvsignore, doc/.cvsignore, doc/C/.cvsignore,
+	doc/C/Makefile.am, doc/C/etherape-C.omf, doc/C/etherape.xml,
+	doc/Makefile.am, doc/omf.make, doc/xmldocs.make, glade/.cvsignore,
+	m4/.cvsignore, po/.cvsignore, src/.cvsignore:
+	use gnome-doc-utils to build documentation
+	[3e38cde7c520]
+
+2010-01-01  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, doc/C/figures/pref_colors_dlg.eps,
+	doc/C/figures/pref_colors_dlg.png,
+	doc/C/figures/pref_diagram_dlg.eps,
+	doc/C/figures/pref_diagram_dlg.png,
+	doc/C/figures/pref_timings_dlg.eps,
+	doc/C/figures/pref_timings_dlg.png,
+	doc/C/figures/protocol_edit_dlg.eps,
+	doc/C/figures/protocol_edit_dlg.png, src/capture.c:
+	manual update
+	[bdf342e8ab15]
+
+2009-12-30  R.Ghetta  <bchiara@users.sf.net>
+
+	* Makefile.am, doc/C/etherape.xml, po/es.po, po/etherape.pot,
+	po/fr.po, po/nl.po, po/tr.po, src/preferences.c, src/protocols.c:
+	Cleanups and manual updates
+	[1349532e4967]
+
+2009-12-29  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, configure.in, src/basic_stats.c, src/capture.c, src/capture.h,
+	src/decode_proto.c, src/main.c, src/menus.c, src/preferences.c:
+	More intuitive filtering
+	[51584aab5ce6]
+
+	* config.h.in, configure.in, src/common.h, src/decode_proto.c:
+	support PPI encapsulation, handle WLAN QOS-enhanced packets
+	[c0295c875f4b]
+
+2009-11-25  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/common.h, src/decode_proto.c:
+	improve WLAN decoding, fix some endianess problems
+	[ca06270b8007]
+
+2009-11-24  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, config.h.in, src/decode_proto.c:
+	update, some wlan fixes
+	[6000eca0bb2a]
+
+	* src/decode_proto.c:
+	LLC-SNAP support
+	[4f7ebe3ad7cb]
+
+	* src/decode_proto.c, src/prot_types.h:
+	802.1 VLAN basic support
+	[64c76bf857eb]
+
+	* src/main.c, src/node_id.c, src/node_id.h, src/resolv.c:
+	fix port printing
+	[5c2d568d2b29]
+
+2009-11-22  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/ip-cache.c:
+	Fixed cache initialization. Thanks to Sotiris Sotiropoulos for
+	pointing it out.
+	[b3513e7bf21f]
+
+2009-11-21  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/menus.c, src/node.c, src/node_id.c:
+	g_string_free weirdness
+	[46a048c05893]
+
+2009-11-08  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/decode_proto.c:
+	add some more rcp names
+	[3b82d2f061b1]
+
+	* src/decode_proto.c:
+	more accurate rpc decoding. Since now there are many different RCP
+	protocols and EtherApe handles only ONC-RPC, mark it clearly
+	[601591f1d667]
+
+	* src/names.c:
+	typo
+	[2e9ae57c6fd6]
+
+	* src/names.c:
+	fix fatal bug in names decoding
+	[19f389f0bf7c]
+
+	* ChangeLog, NEWS, TODO, src/Makefile.am, src/capture.c,
+	src/decode_proto.c:
+	fix compilation flags, remove bogus rpc marker
+	[e8a271a690db]
+
 2009-10-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/main.c, src/names.c:
+	apply fixes for compiling on BSD
+	[88e0aaa36720]
 
 	* src/eth_resolv.h, src/names.c, src/resolv.c, src/util.c, src/util.h:
 	removed duplicate functionality

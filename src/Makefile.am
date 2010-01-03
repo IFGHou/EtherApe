@@ -60,4 +60,4 @@ purge:
 	rm -f *~ *.bak
 
 splint:
-	splint -I.. +posixlib +gnuextensions $(INCLUDES) $(etherape_SOURCES)
+	splint -I.. +posixlib +gnuextensions +charintliteral -nullassign $(INCLUDES) $(etherape_SOURCES)
