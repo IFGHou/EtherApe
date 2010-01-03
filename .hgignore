@@ -1,4 +1,6 @@
 syntax: glob
+doc/*.omf
+gnome-doc-utils.make
 
 *.m4
 Makefile.in
