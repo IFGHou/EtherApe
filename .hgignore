@@ -4,7 +4,10 @@ syntax: glob
 Makefile.in
 Makefile
 autom4te.cache/*
-.deps/*
+src/.deps/*
+src/.libs/*
+src/.indent
+src/etherape
 config.*
 configure
 depcomp
@@ -12,11 +15,11 @@ install-sh
 ltmain.sh
 missing
 etherape.spec
-POTFILES
 libtool
 stamp-h1
 *.o
 *.gmo
 *.out
 omf_timestamp
-src/etherape
+po/POTFILES
+po/remove-potcdate.sed

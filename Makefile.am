@@ -6,13 +6,12 @@ SUBDIRS = src doc glade m4 po
 # standard props
 DATADIR=.
 
+DISTCHECK_CONFIGURE_FLAGS=--disable-scrollkeeper
+
 indent:
 	cd src && make indent
 
 man_MANS = etherape.1
-
-full-cvs : cvs
-	cd ../www && make
 
 confdir = $(sysconfdir)/etherape
 conf_DATA =					\
@@ -32,6 +31,8 @@ purge:
 
 splint:
 	cd src && make splint
+
+DISTCLEANFILES=gnome-doc-utils.make
 
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.thanks 		\
@@ -56,7 +57,9 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	$(conf_DATA)		\
 	$(Development_DATA)	\
 	$(pixmaps_DATA)		\
-	$(man_MANS)
+	$(man_MANS)		\
+	m4			\
+	gnome-doc-utils.make
 
 
 full-dist :
@@ -64,9 +67,6 @@ full-dist :
 	test `echo ${VERSION}` != `cat old.version`
 	jed html/NEWS.html
 	make NEWS
-	make cvs
-	cvs2cl --accum
-	cvs tag `echo rel-${VERSION} | tr . - `
 	make dist
 	cp -f ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
 	rpm -ba etherape.spec
@@ -89,7 +89,6 @@ full-dist :
 	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.src.rpm
 
 	echo ${VERSION} > old.version
-
 
 dist-hook: etherape.spec
 	cp etherape.spec $(distdir)

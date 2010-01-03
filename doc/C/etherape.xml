@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article id="index">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY appname          "EtherApe">
+  <!ENTITY app "<application>EtherApe</application>">
+  <!ENTITY appversion   "0.9.9">
+  <!ENTITY manrevision  "0.3">
+  <!ENTITY date "January 2010">
+]>
+<!--
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://live.gnome.org/DocumentationProject
+  Template version: 3.0 beta
+  Template last modified 2006-11-21
+
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
   <articleinfo>
-    <title>EtherApe Manual</title>
+    <title>&app; Manual</title>
+    <abstract role="description">
+      <para>&app; is a graphical network monitor
+      for Unix modeled after etherman. Featuring link level, ip and tcp modes, it
+      displays network activity graphically. Hosts and links change in size with
+      traffic. Protocols are color coded. It supports ethernet, fddi, ppp, slip,
+      wlan devices plus several encapsulated packet types. It can filter traffic
+      to be shown, and can read traffic from a file as well as live from the
+      network.</para>
+    </abstract>         
+
 
     <copyright>
       <year>2001</year>
-
       <year>2002</year>
-
       <year>2003</year>
-
       <year>2004</year>
-
       <year>2005</year>
-
       <year>2006</year>
-
       <year>2007</year>
-
       <year>2008</year>
-
       <year>2009</year>
-
       <year>2010</year>
-
       <holder>Juan Toledo</holder>
-
       <holder>Riccardo Ghetta</holder>
     </copyright>
 
-    <!--
- translators: uncomment this:
+  <xi:include href="legal.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <!-- The file legal.xml contains link to license for the documentation, 
+        and other legal stuff such as "NO WARRANTY" statement. 
+        Please do not change any of this. -->
 
-  <copyright>
-   <year>2002</year>
-   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
-  </copyright>
-
-   
--->
+    <authorgroup> 
+      <author> 
+    		<firstname>Juan</firstname> 
+    		<surname>Toledo</surname> 
+      </author> 
+      <author role="maintainer"> 
+    		<firstname>Riccardo</firstname> 
+    		<surname>Ghetta</surname> 
+      </author> 
+    </authorgroup>
 
     <revhistory>
       <revision>
-        <revnumber>Etherape Manual V0.3</revnumber>
-
-        <date>December 2009</date>
-
-        <revdescription>
-          <para role="author">Riccardo Ghetta
-          <email>bchiara@users.sf.net</email></para>
-        </revdescription>
-      </revision>
-
-      <revision>
-        <revnumber>Etherape Manual V0.2</revnumber>
-
-        <date>January 2006</date>
-
-        <revdescription>
-          <para role="author">Riccardo Ghetta
-          <email>bchiara@users.sf.net</email></para>
-        </revdescription>
-      </revision>
-
-      <revision>
         <revnumber>Etherape Manual V0.1</revnumber>
-
         <date>2001</date>
-
         <revdescription>
           <para role="author">Juan Toledo
           <email>toledo@users.sf.net</email></para>
         </revdescription>
       </revision>
+  
+      <revision>
+        <revnumber>Etherape Manual V0.2</revnumber>
+        <date>January 2006</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
+
+      <revision>
+        <revnumber>EtherApe Manual V0.3</revnumber>
+        <date>January 2010</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
+
+    
     </revhistory>
 
-    <legalnotice id="legalnotice">
-      <para>Permission is granted to copy, distribute and/or modify this
-      document under the terms of the <ulink type="help"
-      url="gnome-help:fdl"><citetitle>GNU Free Documentation
-      License</citetitle></ulink>, Version 1.1 or any later version published
-      by the Free Software Foundation with no Invariant Sections, no
-      Front-Cover Texts, and no Back-Cover Texts. A copy of the license can be
-      found <ulink type="help" url="gnome-help:fdl">here</ulink>.</para>
+    <releaseinfo>This manual describes &appname; release &appversion;.</releaseinfo>
 
-      <para>Many of the names used by companies to distinguish their products
-      and services are claimed as trademarks. Where those names appear in any
-      GNOME documentation, and those trademarks are made aware to the members
-      of the GNOME Documentation Project, the names have been printed in caps
-      or initial caps.</para>
-    </legalnotice>
-
-    <releaseinfo>This is version 0.2 of EtherApe manual.</releaseinfo>
   </articleinfo>
 
   <sect1 id="etherape-introduction">

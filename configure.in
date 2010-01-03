@@ -165,6 +165,9 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
+dnl initialize gnome doc macros
+GNOME_DOC_INIT
+
 dnl get mercurial version - sadly, this works only on a developer repo ...
 dnl AC_CONFIG_COMMANDS_PRE([
 dnl hg_id=`hg identify -i`
@@ -191,6 +194,5 @@ AC_CONFIG_FILES([Makefile
            glade/Makefile
            src/Makefile
 	   m4/Makefile
-           doc/Makefile
- 	   doc/C/Makefile])
+           doc/Makefile])
 AC_OUTPUT
