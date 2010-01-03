@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-29 19:59+0100\n"
+"POT-Creation-Date: 2010-01-03 10:20+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -488,24 +488,24 @@ msgstr ""
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
-#: src/preferences.c:149
+#: src/preferences.c:152
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/preferences.c:219
+#: src/preferences.c:222
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
 # src/callbacks.c:195 src/callbacks.c:206
-#: src/preferences.c:523
+#: src/preferences.c:526
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."
 
 # src/callbacks.c:195 src/callbacks.c:206
-#: src/preferences.c:534
+#: src/preferences.c:537
 #, fuzzy, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."

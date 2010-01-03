@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-29 19:59+0100\n"
+"POT-Creation-Date: 2010-01-03 10:20+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -518,7 +518,7 @@ msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
 # src/main.c:291
-#: src/preferences.c:149
+#: src/preferences.c:152
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -528,16 +528,16 @@ msgstr ""
 "quiere"
 
 # src/main.c:386
-#: src/preferences.c:219
+#: src/preferences.c:222
 msgid "Preferences saved"
 msgstr "Preferencias guardadas"
 
-#: src/preferences.c:523
+#: src/preferences.c:526
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/preferences.c:534
+#: src/preferences.c:537
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-29 19:59+0100\n"
+"POT-Creation-Date: 2010-01-03 10:20+0100\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -444,7 +444,7 @@ msgstr ""
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
-#: src/preferences.c:149
+#: src/preferences.c:152
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
@@ -452,16 +452,16 @@ msgstr ""
 "Stackniveau is niet ingesteld op het hoogste niveau. Controleer in de "
 "voorkeuren of dit echt is wat je wilt."
 
-#: src/preferences.c:219
+#: src/preferences.c:222
 msgid "Preferences saved"
 msgstr "Voorkeuren opgeslagen"
 
-#: src/preferences.c:523
+#: src/preferences.c:526
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/preferences.c:534
+#: src/preferences.c:537
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr ""
