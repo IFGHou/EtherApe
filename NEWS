@@ -22,19 +22,25 @@
    filter must start with the keyword "vlan" (e.g.  vlan and ip) and *all* 
    traffic must be VLAN-tagged.
 
+   Note to packagers: EtherApe now uses gnome-doc-utils. Manual should
+   appear in yelp under 'Internet'.
+
    Important: this release will be the last mirrored on the CVS repository, wich
    will be shut down as of march 2010.
 
    Changes summary:
-     * wlan and wlan/radiotap protocol decoding
-     * wlan QOS support
-     * PPI (Per Packet Incapsulation) decoding
+     * wlan and wlan/radiotap protocol decoding.
+     * wlan QOS support.
+     * PPI (Per Packet Incapsulation) decoding.
      * basic 802.1Q VLAN support (FRQ: 1561647).
-     * LLC-SNAP support
-     * unified link level modes
-     * several performance enhancements
+     * LLC-SNAP support.
+     * unified link level modes.
+     * several performance enhancements.
      * refactored and streamlined node id definition.
      * improved l3 packet deconding, now fully dynamic.
+     * improved documentation, now using gnome-doc-utils.
+     * borrowed some info from Mandriva .desktop file.
+
 
   Overview of changes in EtherApe 0.9.8 (Sunday Sep 27 2009):
 
@@ -120,6 +126,7 @@
    from timestamps and commit messages), there are some differences. 
    So, if you really want to know how the project evolved before release 
    0.9.7, please consult the CVS repo.  
+
 
   Overview of changes in EtherApe 0.9.7 (Saturday Sep 30 2006):
 

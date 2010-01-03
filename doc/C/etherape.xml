@@ -357,6 +357,10 @@
                   to capture on a live interface, see the <link
                   linkend="capture"> <interface>Capture</interface> </link>
                   menu.</para>
+		  <note>
+		    <para>Capture files often contain lengthy sections without traffic. Here the command-line option 
+		    --max-delay is useful to avoid staring for hours to an empty display.</para>
+		  </note>
                 </listitem>
 
                 <listitem>

@@ -1682,7 +1682,7 @@ Square Root</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label1">
+                      <widget class="GtkLabel" id="label2">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Resolved Name:</property>
@@ -1978,7 +1978,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
     <property name="icon">etherape.png</property>
     <signal name="delete_event" handler="cleanup"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
@@ -2242,6 +2242,15 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <child>
                       <widget class="GtkMenu" id="help1_menu">
                         <child>
+                          <widget class="GtkImageMenuItem" id="Manual">
+                            <property name="label">gtk-help</property>
+                            <property name="visible">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <signal name="activate" handler="on_help_activate"/>
+                          </widget>
+                        </child>
+                        <child>
                           <widget class="GtkImageMenuItem" id="about2">
                             <property name="label">gtk-about</property>
                             <property name="visible">True</property>
@@ -2409,7 +2418,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label1">
+                      <widget class="GtkLabel" id="label3">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Protocols</property>
                       </widget>
@@ -2474,11 +2483,11 @@ Frederic Peters &lt;fpeters@debian.org&gt;
     <property name="default_height">200</property>
     <signal name="delete_event" handler="on_nodes_wnd_delete_event"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkVBox" id="vbox7">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkHBox" id="hbox1">
+          <widget class="GtkHBox" id="hbox6">
             <property name="visible">True</property>
             <child>
               <widget class="GtkCheckButton" id="show_all_nodes">
@@ -2503,7 +2512,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
           </packing>
         </child>
         <child>
-          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+          <widget class="GtkScrolledWindow" id="scrolledwindow3">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hscrollbar_policy">automatic</property>

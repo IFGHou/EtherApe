@@ -307,6 +307,19 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 }				/* on_about1_activate */
 
 
+void
+on_help_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  GError *err = NULL;
+  gboolean success = FALSE;
+
+#if GTK_CHECK_VERSION(2, 13, 1)
+  success = gtk_show_uri (NULL, "ghelp:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+#else
+  success = gnome_help_display (PACKAGE_NAME ".xml", NULL, &err);
+#endif
+}
+
 /* Helper functions */
 
 /* Sets up the GUI to reflect changes and calls start_capture() */

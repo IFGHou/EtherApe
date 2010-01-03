@@ -41,6 +41,7 @@ void on_status_bar_check_activate (GtkCheckMenuItem * menuitem,
 				   gpointer user_data);
 
 void on_about1_activate (GtkMenuItem * menuitem, gpointer user_data);
+void on_help_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);
