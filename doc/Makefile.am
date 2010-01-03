@@ -10,6 +10,8 @@ DOC_LINGUAS =
 
 # List of figures to include.  Paths are relative to the C/ subdir
 DOC_FIGURES = \
+		figures/all_nodes.eps \
+		figures/all_nodes.png \
 		figures/appmain.eps \
 		figures/appmain.png \
 		figures/capture_file_dlg.eps \
@@ -31,4 +33,4 @@ DOC_FIGURES = \
 		figures/protocol_edit_dlg.eps \
 		figures/protocol_edit_dlg.png \
 		figures/proto_info.eps \
-		figures/proto_info.png 
+		figures/proto_info.png
