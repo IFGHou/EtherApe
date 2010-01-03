@@ -1,0 +1,61 @@
+Juan Toledo	<toledo@users.sourceforge.net>
+  Original Author
+
+Vincent van Adrighem	<vincent@dirck.mine.nu>
+  Dutch translation
+
+Ben Allen
+  Patch for -z option
+
+Bill Barth	<bbarth@users.sourceforge.net>
+  Code for static mode
+
+Fabrice Bellet
+  Patches for RedHat
+  
+Gôrkem Cetin	<gorkem@gelecek.com.tr>
+  Turkish translation
+  
+Laurent Deniel	<deniel@worldnet.fr>
+  resolv.c
+
+Lars Eggert
+  OSX patches
+
+Pav Lucistnik
+  Several fixes
+
+Riccardo Ghetta <bchiara@users.sourceforge.net>
+  developer
+
+Simon Kirby	<sim@neato.org>
+  dns.c
+
+Eran Mann	<eran@nbase.co.il>
+  RedHat package
+  
+Frederic Peters	<fpeters@debian.org>
+  Debian package, french translation, man page
+
+Eric Stewart
+  OSX patches
+ 
+Jasper Wallace	<jasper@pointless.net>
+  pcap device autodetection
+
+Ted Wright	<ted.wright@grc.nasa.gov>
+  non-overlapping display mode, link fading
+  
+Dave Yearke	<yearke@eng.buffalo.edu>
+  Patches for Solaris
+
+UNKNOWN	
+  EtherApe icon (Anybody knows who the author is?)
+
+
+If you have contributed in any way to the development
+of EtherApe and you are not properly credited, please
+tell me so that I can fix my mistake.
+
+--
+$Id$

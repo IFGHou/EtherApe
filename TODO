@@ -1,0 +1,39 @@
+User visible features:
+----------------------
+
+  * change user and drop privileges. Perhaps use also capabilities.
+
+  * identify nodes from protocol window. It could be done by maintaining a
+    node tree for every global protocol.
+
+  * show all node stats in node window
+
+  * find a way to record both ports of a link/connection
+
+  * revise preferences dialog; allow filtering out netbios names
+
+  * Ability to set per node preferences. Like setting an hour long
+    averaging time only for the router.
+
+  * Ability to manually place nodes. It's dependent on the above.
+    Once is done you will be able to open and save your own 
+    diagrams.
+
+Issues in the source code
+-------------------------
+
+  * rewrite names handling. Do only packet extraction at capture time, name
+    resolution only at display time for the chosen name.
+
+  * use glib datastructs everywhere, instead of a mix of glib and in-house.
+
+  * refactor stop handling; separate clearing data from updating. 
+
+  * Why am I using a global "interface" and a second "device"
+    in capture.c? Check that I can just use interface.
+
+  * Use a GArray instead of a fixed array for the protocols
+    stack.
+
+--
+$Id$

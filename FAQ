@@ -1,0 +1,73 @@
+                                  EtherApe FAQ
+
+     * Why I see only the traffic to/from the EtherApe machine ?
+       Probably you have a switched network.  Unless all traffic goes thru
+       the etherape machine (or you have an hub), etherape sees local
+       traffic.
+       Etherape can "see" only the traffic physically passing on the
+       netcard wire. Many small network use hubs to connect computers, so
+       every packet is physically transmitted to every netcard.
+       A larger network use combinations of switches and routers,
+       sometimes even firewalls to connect nodes, so your network card
+       receives only its own traffic or broadcast.
+       To monitor an entire network you can enable analisys/roving mode on
+       your switch (essentially copies all traffic to a single port). If
+       you have multiple switches, or routers, or the total bandwith
+       exceeds the port maximum, you still will see only part of the
+       traffic.
+       If you only want to monitor internet traffic, a better solution is
+       to place etherape on the (internal) internet gateway.
+     * How can I see the detail dialogs ?
+       Double click on a node or link opens the corrisponding dialog.
+     * Why is one computer constantly changing names?
+       You are running in ethernet mode. Switch to IP mode.
+     * Why can I only see computers on my own network?
+       See question above
+     * I can't see any text, just little squares. What gives?
+       Go to preferences and change the text font. Make sure you save your
+       changes
+     * Is it possible to see just traffic within my network? Is it
+       possible to see just traffic to/from the internet?
+       You can indeed filter traffic. Have a look at the filter entry in
+       preferences->capture->filter
+       Suppose your network address starts with 213.227
+       If you only want to see traffic within your network, then the
+       proper syntax is
+       ip and src net 213.227 and dst net 213.227
+       Or if you want to see connections to/from outside your network then
+       try something like
+       ip and ((not src net 213.227) and dst net 213.227) or (src net
+       213.227 and (not dst net 213.227))
+     * What's the format for /etc/ethers?
+       Just pairs of Ethernet addresses and names, like
+       00:40:33:35:80:5F LAZARO
+       00:40:33:35:80:6D NEBAJ
+       00:C0:26:A2:58:FE ARGOS
+     * How do I find the ether address of an IP node?
+       Here is an example:
+       argos:~# ping lazaro
+       PING lazaro.tattoine.es (192.168.1.1): 56 data bytes
+       64 bytes from 192.168.1.1: icmp_seq=0 ttl=255 time=1.8 ms
+       round-trip min/avg/max = 1.6/1.7/1.8 ms
+       argos:~# arp lazaro
+       Address HWtype HWaddress Iface
+       lazaro.tattoine.es ether 00:40:33:35:80:5F eth0
+       Of course, you can only do this for nodes in your network.
+     * How do I find the IP corresponding to an ether address?
+       You could, for instance, use
+       argos:~# tcpdump -f "ether src 00:40:33:35:80:5F" -n
+       tcpdump: listening on eth0
+       10:34:11.116930 192.168.1.1.7002 > 192.168.1.2.1031: P
+       76753564:76753576(12)
+       There you have it, the IP src is 192.168.1.1
+     * Hosts keep moving because they come and go... What can I do?
+       Set node timeout to 0.
+     __________________________________________________________________
+
+   $Id$
+
+   [1]sourceforge
+
+References
+
+   1. http://sourceforge.net/

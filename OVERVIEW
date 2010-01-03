@@ -1,0 +1,100 @@
+
+ EtherApe Code Overview
+ ======================
+ Current as of 0.4.2
+
+--------------------------------------------------------------------
+
+Here I'll try to explain the workings of EtherApe, both for new
+contributors to have a clearer view of the program and for self
+future reference.
+
+0. Index of files
+-----------------
+
+etherape.glade
+	This file has all of the GUI. Use glade to modify it.
+
+src/globals.h
+	Declaration of all main data structures.
+	
+src/main.c
+	Parses command line options. Calls initialization
+	functions of capture and diagram. Loads and saves
+	configuration. Handles gnome session management.
+	
+src/capture.c
+	Reads packets from the network and keeps track of
+	information gathered.
+
+src/protocols.c
+	Functions used to find the protocol stack of a given
+	packet.
+
+src/dns.c
+	Asynchronously reverse lookup of ip addresses.
+	
+src/resolv.c
+	Several helper functions, mostly to look up the ethernet
+	address in /etc/ethers
+
+src/util.c
+	helper functions for resolv.c
+
+src/diagram.c
+	Updates the diagram, which is a gnome_canvas widget.
+	Takes care of statusbar information and node pop-ups.
+
+src/callbacks.c
+	Handles GUI interaction. Buttons clicked, adjustments
+	changed, etc.
+	
+	
+
+
+1. Basic Architecture
+---------------------
+
+   EtherApe is running on a gtk_look started in main(). There are
+two callbacks functions active that execute code. One is a
+timeout set each refresh_period to update the diagram on the
+screen, update_diagram, and the other is a gdk_input called each
+time there is a new packet available in the network, packet_read.
+
+   I try to clearly separate code and data structures of data
+gathering and presentation. Data gathering is performed in
+capture.c and presentation in diagram.c. capture.c is completely
+independent from presentation, except for the fact that nodes
+and links are updated (deletion of irrelevant packet, nodes and
+links; recalculation of traffic averages, main protocol, etc)
+only if externally called. node_update and link_update are called
+from canvas_node_update and canvas_link_update.
+
+   I also try to keep separate the functions in protocols.c, so
+that more protocol recognition can be added easily without
+further knowledge of the rest of the program. It is used as a
+library with a single api: get_packet_prot. Given a pointer to a
+packet, it returs a slash tokenized string with the protocol
+stack, e.g.: "/ETH_II/IP/TCP/SSH/UNKNOWN/UNKNOWN"
+
+   Each time update_diagram is called, it checks to see how
+nodes, links and protocols have changed, and the diagram is
+updated accordingly.
+
+2. Data Structures
+------------------
+
+   See globals.h for the declaration of all data structures. I'll
+give a short explanation here of the main ones.
+
+   capture.c keeps track of nodes and links using balanced binary
+trees. Each item of the tree is identified with a key which is
+different for each mode. Each time a packet arrives, get_node_id
+is called and it returns whatever constitutes the key. Thus,
+creating new modes is as easy as just setting the global
+node_id_legth and returning the address. Then you'd only have to
+add naming code in fill_names. Look for 'mode' in capture.c
+
+
+   
+TO BE CONTINUED
