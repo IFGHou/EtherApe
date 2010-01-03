@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding='utf-8' standalone="no"?>
+<omf>
+  <resource>
+    <subject category="GNOME|Applications|System Tools"/>
+    <type>manual</type>
+    <relation seriesid="26207ade-85f9-11da-8825-c4740b431a42"/>
+    <rights type="GNU FDL" license.version="1.1" license="http://www.gnu.org/licenses/fdl.html" holder="Riccardo Ghetta"/>
+  </resource>
+</omf>
