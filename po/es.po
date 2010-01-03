@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-03 10:20+0100\n"
+"POT-Creation-Date: 2010-01-03 20:27+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Juan Toledo <toledo@users.sourceforge.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -49,7 +49,8 @@ msgstr "<nombre del interfaz>"
 
 # src/main.c:53
 #: src/main.c:95
-msgid "don't move nodes around"
+#, fuzzy
+msgid "don't move nodes around (deprecated)"
 msgstr "no mover los nodos"
 
 # src/main.c:55
@@ -67,10 +68,9 @@ msgstr "<número de nodos>"
 msgid "mode of operation"
 msgstr "modo de operación"
 
-# src/main.c:39
 #: src/main.c:99
-msgid "<ethernet|fddi|ip|tcp>"
-msgstr "<ethernet|fddi|ip|tcp>"
+msgid "<link|ip|tcp>"
+msgstr ""
 
 # src/main.c:47
 #: src/main.c:101
@@ -116,14 +116,16 @@ msgstr ""
 msgid "We could not load glade interface file! (%s)"
 msgstr "No ha sido posible cargar el interfaz (%s)"
 
-# src/capture.c:84
-#: src/capture.c:101
+#: src/capture.c:102
 #, c-format
-msgid "Error getting device: %s"
-msgstr "Error buscando dispositivo: %s"
+msgid ""
+"No capture device found or insufficient privileges.\n"
+"Only file replay will be available.\n"
+"EtherApe must be run with administrative privileges to enable live capture."
+msgstr ""
 
 # src/capture.c:103
-#: src/capture.c:120
+#: src/capture.c:124
 #, fuzzy, c-format
 msgid ""
 "Error opening %s : %s\n"
@@ -131,43 +133,43 @@ msgid ""
 msgstr "Error al abrir %s : %s (¿Quizás debería ser root?)"
 
 # src/capture.c:108
-#: src/capture.c:125
+#: src/capture.c:129
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr "Dispositivo de captura \"en vivo\" %s abierto. pcap_fd: %d"
 
 # src/capture.c:116
-#: src/capture.c:133
+#: src/capture.c:137
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 "No se pueden abrir a la vez %s y el dispositivo %s. Por favor, escoja uno."
 
 # src/capture.c:122
-#: src/capture.c:141
+#: src/capture.c:145
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "Error buscando dispositivo %s : %s"
 
 # src/capture.c:126
-#: src/capture.c:144
+#: src/capture.c:148
 #, c-format
 msgid "%s opened for offline capture"
 msgstr "%s abierto para captura offline"
 
 # src/capture.c:181
-#: src/capture.c:151
+#: src/capture.c:155
 #, fuzzy, c-format
 msgid "Link type %d not supported"
 msgstr "Tipo de enlace aún no soportado"
 
 # src/capture.c:234
-#: src/capture.c:164
+#: src/capture.c:168
 #, c-format
 msgid "Mode not available in this device"
 msgstr "Modo no disponible para este interfaz"
 
-#: src/capture.c:191
+#: src/capture.c:195
 #, c-format
 msgid ""
 "Couldn't obtain netmask info (%s). Filters involving broadcast addresses "
@@ -175,49 +177,49 @@ msgid ""
 msgstr ""
 
 # src/capture.c:288 src/capture.c:314
-#: src/capture.c:196
+#: src/capture.c:200
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr "Imposible analizar el filtro (%s)."
 
 # src/capture.c:293 src/capture.c:319
-#: src/capture.c:198
+#: src/capture.c:202
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr "Imposible instalar el filtro (%s)."
 
 # src/capture.c:340
-#: src/capture.c:245
+#: src/capture.c:249
 msgid "Starting live capture"
 msgstr "Comenzando captura en vivo"
 
 # src/capture.c:347
-#: src/capture.c:252
+#: src/capture.c:256
 msgid "Starting offline capture"
 msgstr "Comenzando captura offline"
 
 # src/capture.c:380
-#: src/capture.c:277
+#: src/capture.c:281
 msgid "Pausing offline capture"
 msgstr "Pausando captura fuera de línea"
 
 # src/capture.c:385
-#: src/capture.c:280
+#: src/capture.c:284
 msgid "Error while trying to pause capture"
 msgstr "Error al intentar pausar la captura"
 
 # src/capture.c:410
-#: src/capture.c:300
+#: src/capture.c:304
 msgid "Stopping live capture"
 msgstr "Parando captura en vivo"
 
 # src/capture.c:416
-#: src/capture.c:305
+#: src/capture.c:309
 msgid "Stopping offline capture"
 msgstr "Parando captura offline"
 
 # src/capture.c:458
-#: src/capture.c:327
+#: src/capture.c:331
 msgid "Capture device stopped or file closed"
 msgstr "Dispositivo de captura parado of archivo cerrado"
 
@@ -1254,6 +1256,14 @@ msgstr ""
 #: glade/etherape.glade:2490
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
+
+# src/main.c:39
+#~ msgid "<ethernet|fddi|ip|tcp>"
+#~ msgstr "<ethernet|fddi|ip|tcp>"
+
+# src/capture.c:84
+#~ msgid "Error getting device: %s"
+#~ msgstr "Error buscando dispositivo: %s"
 
 # src/capture.c:659
 #~ msgid "Reached default in get_node_id"

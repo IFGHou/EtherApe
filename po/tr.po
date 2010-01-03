@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-03 10:20+0100\n"
+"POT-Creation-Date: 2010-01-03 20:27+0100\n"
 "PO-Revision-Date: 2001-08-12 16:37+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Görkem <gorkem@gelecek.com.tr>\n"
@@ -43,7 +43,7 @@ msgid "<interface name>"
 msgstr "<arayüz adı>"
 
 #: src/main.c:95
-msgid "don't move nodes around"
+msgid "don't move nodes around (deprecated)"
 msgstr ""
 
 #: src/main.c:97
@@ -59,8 +59,8 @@ msgid "mode of operation"
 msgstr "işlem kipi"
 
 #: src/main.c:99
-msgid "<ethernet|fddi|ip|tcp>"
-msgstr "<ethernet|fddi|ip|tcp>"
+msgid "<link|ip|tcp>"
+msgstr ""
 
 #: src/main.c:101
 msgid "don't convert addresses to names"
@@ -100,90 +100,93 @@ msgstr ""
 msgid "We could not load glade interface file! (%s)"
 msgstr ""
 
-#: src/capture.c:101
+#: src/capture.c:102
 #, c-format
-msgid "Error getting device: %s"
-msgstr "Aygıt açılamıyor: %s"
+msgid ""
+"No capture device found or insufficient privileges.\n"
+"Only file replay will be available.\n"
+"EtherApe must be run with administrative privileges to enable live capture."
+msgstr ""
 
-#: src/capture.c:120
+#: src/capture.c:124
 #, fuzzy, c-format
 msgid ""
 "Error opening %s : %s\n"
 "- perhaps you need to be root?"
 msgstr "%s aygıtı açılamıyor: %s - Bu işlemi yapmak için root olmalısınız!"
 
-#: src/capture.c:125
+#: src/capture.c:129
 #, c-format
 msgid "Live device %s opened for capture. pcap_fd: %d"
 msgstr ""
 
-#: src/capture.c:133
+#: src/capture.c:137
 #, c-format
 msgid "Can't open both %s and device %s. Please choose one."
 msgstr ""
 
-#: src/capture.c:141
+#: src/capture.c:145
 #, c-format
 msgid "Error opening %s : %s"
 msgstr "%s açılamadı: %s"
 
-#: src/capture.c:144
+#: src/capture.c:148
 #, c-format
 msgid "%s opened for offline capture"
 msgstr ""
 
-#: src/capture.c:151
+#: src/capture.c:155
 #, fuzzy, c-format
 msgid "Link type %d not supported"
 msgstr "Uç Bağlantı Zaman Aşımı (ms)"
 
-#: src/capture.c:164
+#: src/capture.c:168
 #, c-format
 msgid "Mode not available in this device"
 msgstr ""
 
-#: src/capture.c:191
+#: src/capture.c:195
 #, c-format
 msgid ""
 "Couldn't obtain netmask info (%s). Filters involving broadcast addresses "
 "could behave incorrectly."
 msgstr ""
 
-#: src/capture.c:196
+#: src/capture.c:200
 #, c-format
 msgid "Unable to parse filter string (%s)."
 msgstr ""
 
-#: src/capture.c:198
+#: src/capture.c:202
 #, c-format
 msgid "Can't install filter (%s)."
 msgstr ""
 
-#: src/capture.c:245
+#: src/capture.c:249
 msgid "Starting live capture"
 msgstr ""
 
-#: src/capture.c:252
+#: src/capture.c:256
 msgid "Starting offline capture"
 msgstr ""
 
-#: src/capture.c:277
+#: src/capture.c:281
 msgid "Pausing offline capture"
 msgstr ""
 
-#: src/capture.c:280
+#: src/capture.c:284
 msgid "Error while trying to pause capture"
 msgstr ""
 
-#: src/capture.c:300
+#: src/capture.c:304
 msgid "Stopping live capture"
 msgstr "Canlı yakalama durduruluyor"
 
-#: src/capture.c:305
+#: src/capture.c:309
 msgid "Stopping offline capture"
 msgstr ""
 
-#: src/capture.c:327
+#: src/capture.c:331
 msgid "Capture device stopped or file closed"
 msgstr "Yakalama aygıtı durduruldu"
 
@@ -1055,6 +1058,12 @@ msgstr ""
 #: glade/etherape.glade:2490
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
+
+#~ msgid "<ethernet|fddi|ip|tcp>"
+#~ msgstr "<ethernet|fddi|ip|tcp>"
+
+#~ msgid "Error getting device: %s"
+#~ msgstr "Aygıt açılamıyor: %s"
 
 #~ msgid "Link type is Ethernet"
 #~ msgstr "Bağlantı türü Ethernet"

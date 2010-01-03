@@ -151,7 +151,8 @@ fgetline (char **buf, int *size, FILE * fp)
     {
       if (len + 1 >= *size)
 	{
-	  if ((*buf = g_realloc (*buf, *size += BUFSIZ)) == NULL)
+          *size += BUFSIZ;
+	  if ((*buf = g_realloc (*buf, *size)) == NULL)
 	    return -1;
 	}
       (*buf)[len++] = c;
@@ -203,7 +204,7 @@ parse_ether_line (char *line, ether_t * eth, int six_bytes)
    */
 
   gchar *cp;
-  int a0, a1, a2, a3, a4, a5;
+  unsigned int a0, a1, a2, a3, a4, a5;
 
   if ((cp = strchr (line, '#')))
     *cp = '\0';
