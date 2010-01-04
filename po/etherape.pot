@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-03 20:27+0100\n"
+"POT-Creation-Date: 2010-01-03 23:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,57 +214,57 @@ msgstr ""
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:333
+#: src/menus.c:346
 msgid "Status already PLAY at gui_start_capture"
 msgstr ""
 
-#: src/menus.c:376 src/menus.c:406
+#: src/menus.c:389 src/menus.c:419
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
-#: src/menus.c:385
+#: src/menus.c:398
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:392 src/menus.c:537
+#: src/menus.c:405 src/menus.c:550
 msgid "default interface"
 msgstr ""
 
-#: src/menus.c:397
+#: src/menus.c:410
 msgid " in Data Link mode"
 msgstr ""
 
-#: src/menus.c:400
+#: src/menus.c:413
 msgid " in IP mode"
 msgstr ""
 
-#: src/menus.c:403
+#: src/menus.c:416
 msgid " in TCP mode"
 msgstr ""
 
-#: src/menus.c:415
+#: src/menus.c:428
 msgid "Diagram started"
 msgstr ""
 
-#: src/menus.c:446
+#: src/menus.c:459
 msgid "Paused"
 msgstr ""
 
-#: src/menus.c:448
+#: src/menus.c:461
 msgid "Diagram paused"
 msgstr ""
 
-#: src/menus.c:477
+#: src/menus.c:490
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr ""
 
-#: src/menus.c:530
+#: src/menus.c:543
 msgid "Ready to capture from "
 msgstr ""
 
-#: src/menus.c:542
+#: src/menus.c:555
 msgid "Diagram stopped"
 msgstr ""
 
@@ -899,15 +899,15 @@ msgstr ""
 msgid "_Interfaces"
 msgstr ""
 
-#: glade/etherape.glade:2115 glade/etherape.glade:2279
+#: glade/etherape.glade:2115 glade/etherape.glade:2288
 msgid "Start capture"
 msgstr ""
 
-#: glade/etherape.glade:2134 glade/etherape.glade:2294
+#: glade/etherape.glade:2134 glade/etherape.glade:2303
 msgid "Pause capture"
 msgstr ""
 
-#: glade/etherape.glade:2152 glade/etherape.glade:2309
+#: glade/etherape.glade:2152 glade/etherape.glade:2318
 msgid "Stop capture"
 msgstr ""
 
@@ -959,46 +959,46 @@ msgstr ""
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2280
+#: glade/etherape.glade:2289
 msgid "Start"
 msgstr ""
 
-#: glade/etherape.glade:2295
+#: glade/etherape.glade:2304
 msgid "Pause"
 msgstr ""
 
-#: glade/etherape.glade:2310
+#: glade/etherape.glade:2319
 msgid "Stop"
 msgstr ""
 
-#: glade/etherape.glade:2332
+#: glade/etherape.glade:2341
 msgid "Preferences (Ctrl-P)"
 msgstr ""
 
-#: glade/etherape.glade:2333
+#: glade/etherape.glade:2342
 msgid "Pref."
 msgstr ""
 
-#: glade/etherape.glade:2348
+#: glade/etherape.glade:2357
 msgid "Display the protocols window"
 msgstr ""
 
-#: glade/etherape.glade:2349
+#: glade/etherape.glade:2358
 msgid "Prot."
 msgstr ""
 
-#: glade/etherape.glade:2414
+#: glade/etherape.glade:2423
 msgid "Protocols"
 msgstr ""
 
-#: glade/etherape.glade:2472
+#: glade/etherape.glade:2481
 msgid "Nodes"
 msgstr ""
 
-#: glade/etherape.glade:2485
+#: glade/etherape.glade:2494
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2490
+#: glade/etherape.glade:2499
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""

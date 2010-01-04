@@ -82,7 +82,7 @@ void init_config(struct pref_struct *p)
   p->interface=NULL;
   p->filter=NULL;
   p->debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
-  p->max_delay = G_MAXUINT;
+  p->max_delay = G_MAXULONG;
 }
 
 

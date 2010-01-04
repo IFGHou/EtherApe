@@ -26,6 +26,7 @@
 #include "globals.h"
 #include "conversations.h"
 #include "dns.h"
+#include "util.h"
 
 /* Some protocols add an item here to help identify further packets of the 
  * same protocol */
