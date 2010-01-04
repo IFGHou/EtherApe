@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-03 23:33+0100\n"
+"POT-Creation-Date: 2010-01-04 13:23+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -306,39 +306,39 @@ msgstr "définir le filtre de capture"
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:153
+#: src/diagram.c:154
 #, c-format
 msgid ""
 "Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, names %"
-"ld, protocols %ld. Total Packets seen: %lu (in memory: %d, on list %ld). IP "
+"ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, on list %ld). IP "
 "cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:540
+#: src/diagram.c:541
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:635
+#: src/diagram.c:636
 msgid "Canvas node null"
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:650
+#: src/diagram.c:651
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:706
+#: src/diagram.c:707
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1221
+#: src/diagram.c:1222
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1224
+#: src/diagram.c:1225
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -417,7 +417,7 @@ msgstr ""
 
 #: src/decode_proto.c:617
 #, c-format
-msgid "PPI:unsupported link type %lu, packet discarded"
+msgid "PPI:unsupported link type %u, packet discarded"
 msgstr ""
 
 #: src/decode_proto.c:670 src/decode_proto.c:724 src/decode_proto.c:737
