@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.9 ():
+  Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
    The most interesting change of this release is *basic* 802.11 WLAN support.
    WLAN is one of the most complex protocols around ('crazy' sometimes seems a 
    better description) and there's no way to support it completely without a 
@@ -15,12 +15,12 @@
    X-AP and AP-Y.
 
    The other notable improvement is 802.1Q VLAN tagging support.  VLAN tags are
-   decoded but ignored, showing all traffic as shown in a single LAN.
+   decoded but ignored, showing all traffic as being in a normal LAN.
    Filtering a single vlan could be accomplished with pcap expressions.
    Note:
-   Due to pcap limitations, to correctly filter VLAN traffic the pcap 
-   filter must start with the keyword "vlan" (e.g.  vlan and ip) and *all* 
-   traffic must be VLAN-tagged.
+   Due to pcap limitations, to correctly filter VLAN traffic the pcap filter 
+   must start with the keyword "vlan" (e.g.  vlan and ip) and *all* traffic must
+   be VLAN-tagged.
 
    Note to packagers: EtherApe now uses gnome-doc-utils. Manual should
    appear in yelp under 'Internet'.
@@ -40,6 +40,8 @@
      * improved l3 packet deconding, now fully dynamic.
      * improved documentation, now using gnome-doc-utils.
      * borrowed some info from Mandriva .desktop file.
+     * Mandriva now compiles with -Werror=format-security and EtherApe was
+       failing to compile.  Thanks to Jerome Brenier for the fix.
 
 
   Overview of changes in EtherApe 0.9.8 (Sunday Sep 27 2009):

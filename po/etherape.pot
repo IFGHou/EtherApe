@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-03 23:33+0100\n"
+"POT-Creation-Date: 2010-01-04 13:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,38 +268,38 @@ msgstr ""
 msgid "Diagram stopped"
 msgstr ""
 
-#: src/diagram.c:153
+#: src/diagram.c:154
 #, c-format
 msgid ""
 "Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, names %"
-"ld, protocols %ld. Total Packets seen: %lu (in memory: %d, on list %ld). IP "
+"ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, on list %ld). IP "
 "cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:540
+#: src/diagram.c:541
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:635
+#: src/diagram.c:636
 msgid "Canvas node null"
 msgstr ""
 
-#: src/diagram.c:650
+#: src/diagram.c:651
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:706
+#: src/diagram.c:707
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1221
+#: src/diagram.c:1222
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1224
+#: src/diagram.c:1225
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -373,7 +373,7 @@ msgstr ""
 
 #: src/decode_proto.c:617
 #, c-format
-msgid "PPI:unsupported link type %lu, packet discarded"
+msgid "PPI:unsupported link type %u, packet discarded"
 msgstr ""
 
 #: src/decode_proto.c:670 src/decode_proto.c:724 src/decode_proto.c:737
