@@ -162,7 +162,7 @@ void dump_stats(guint32 diff_msecs)
                                    canvas_obj_count,
                                    (unsigned int) diff_msecs);
   
-  g_my_info (status_string);
+  g_my_info ("%s", status_string);
   g_free(status_string);
 }
 
@@ -1265,7 +1265,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
           if (DEBUG_ENABLED)
             {
               gchar *msg = node_dump(node);
-              g_my_debug(msg);
+              g_my_debug("%s", msg);
               g_free(msg);
             }
         }

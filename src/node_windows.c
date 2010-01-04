@@ -54,7 +54,7 @@ void nodes_wnd_show(void)
   if (DEBUG_ENABLED)
     {
       gchar *nodemsg = nodes_catalog_dump();
-      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, nodemsg);
+      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, "%s", nodemsg);
       g_free(nodemsg);
     }
   
