@@ -51,6 +51,7 @@
 #include <errno.h>
 #include <pthread.h>
 #include "ip-cache.h"
+#include "common.h"
 #include "thread_resolve.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
@@ -70,18 +71,6 @@ static struct ipresolve_link *resolveListTail=NULL;
 
 uint32_t alignedip;
 static int request_stop_thread = 0; /* stop thread flag */
-
-static void
-dbgprint (const char *s, ...)
-{
-#if Debug
-  va_list ap;
-  va_start(ap, l);
-  vfprintf(stderr, s, ap);
-  va_end(ap);
-#endif
-}
-
 
 /* mutexes */
 
@@ -158,7 +147,7 @@ thread_pool_routine(void *dt)
                           &resultbuf, extrabuf, sizeof(extrabuf), 
                           &resultptr, &errnovar);
          if (result != 0)
-            dbgprint("Insufficient memory allocated to gethostbyaddr_r\n");
+            g_my_critical("Insufficient memory allocated to gethostbyaddr_r\n");
 #endif
 
          /* resolving completed or failed, lock again and notify ip-cache */
@@ -252,7 +241,7 @@ sendrequest_inverse (uint32_t ip)
   /* signal the condition and release the mux */
   pthread_cond_signal(&resolvecond);
 
-  dbgprint("Resolver: queued request \"%s\".", strlongip (rp->ip));
+  g_my_debug("Resolver: queued request \"%s\".", strlongip (rp->ip));
 }
 
 
@@ -300,17 +289,17 @@ thread_ack ()
 {
 }
 
-char *
-thread_lookup (uint32_t ip, int fqdn)
+const char *
+thread_lookup (uint32_t ip)
 {
-  char *ipname;
+  const char *ipname;
   int is_expired = 0;
   
   /* locks mutex */ 
   pthread_mutex_lock(&resolvemtx);
    
   /* asks cache */
-  ipname = ipcache_getnameip(ip, fqdn, &is_expired);
+  ipname = ipcache_getnameip(ip, &is_expired);
 
   if (is_expired)
       sendrequest_inverse (ip); /* request needed */ 

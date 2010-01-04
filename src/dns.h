@@ -36,7 +36,6 @@ int dns_waitfd (void);
 /* called when the dns_waitfd socket has available data */
 void dns_ack (void);
 
-/* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
-   or just the hostname (if fqdn is zero) */
-char *dns_lookup (uint32_t address, int fqdn);
+/* resolves address and returns its fqdn */
+const char *dns_lookup (uint32_t address);
 

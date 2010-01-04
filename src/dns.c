@@ -74,14 +74,13 @@ void dns_ack (void)
 #endif   
 }
 
-/* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
-   or just the hostname (if fqdn is zero) */
-char *dns_lookup (uint32_t address, int fqdn)
+/* resolves address and returns its fqdn */
+const char *dns_lookup (uint32_t address)
 {
 #ifdef USE_DIRECTDNS
-   return direct_lookup (address, fqdn);
+   return direct_lookup (address);
 #else
-   return thread_lookup (address, fqdn);
+   return thread_lookup (address);
 #endif   
 }
 

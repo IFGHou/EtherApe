@@ -32,6 +32,5 @@ int thread_waitfd (void);
 /* called when the thread_waitfd socket has available data */
 void thread_ack (void);
 
-/* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
-   or just the hostname (if fqdn is zero) */
-char *thread_lookup (uint32_t address, int fqdn);
+/* resolves address and returns its fqdn */
+const char *thread_lookup (uint32_t address);

@@ -761,14 +761,14 @@ direct_ack ()
     }
 }
 
-char *
-direct_lookup (uint32_t ip, int fqdn)
+const char *
+direct_lookup (uint32_t ip)
 {
   char *ipname;
   int is_expired = 0;
   
   /* asks cache */
-  ipname = ipcache_getnameip(ip, fqdn, &is_expired);
+  ipname = ipcache_getnameip(ip, &is_expired);
 
   if (is_expired)
     {
