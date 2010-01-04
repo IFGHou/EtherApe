@@ -337,7 +337,7 @@ static gboolean get_arp_name (name_add_t *nt)
   fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0);
 
   add_name (ip_to_str (nt->node_id.addr.ip4), 
-            dns_lookup (pntohl (nt->node_id.addr.ip4), TRUE), 
+            dns_lookup (pntohl (nt->node_id.addr.ip4)), 
             &nt->node_id, nt);
 
   /* ARP doesn't carry any other protocol on top, so we return 
@@ -359,7 +359,7 @@ static gboolean get_ip_name (name_add_t *nt)
   else
     {
       add_name (ip_to_str(nt->node_id.addr.ip4), 
-                dns_lookup(pntohl (nt->node_id.addr.ip4), TRUE), 
+                dns_lookup(pntohl (nt->node_id.addr.ip4)), 
                 &nt->node_id, nt);
     }
 
@@ -396,7 +396,7 @@ static gboolean get_tcp_name (name_add_t *nt)
         {
           const gchar *dnsname;
           const port_service_t *port;
-          dnsname = dns_lookup (pntohl (nt->node_id.addr.tcp4.host), TRUE);
+          dnsname = dns_lookup (pntohl (nt->node_id.addr.tcp4.host));
           port = services_tcp_find(nt->node_id.addr.tcp4.port);
           if (port)
             resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);

@@ -401,8 +401,6 @@ ipcache_unlinkresolve (struct ipcache_item *rp)
 
   if (rp->fq_hostname)
     free (rp->fq_hostname);
-  if (rp->only_hostname)
-    free (rp->only_hostname);
 }
 
 struct ipcache_item *
@@ -556,33 +554,16 @@ ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
           }
         strcpy (rp->fq_hostname, ipname); /* safe - buffer allocated */
     }
-  /* extracting the base name from fqdn */
-  if (rp->fq_hostname && !rp->only_hostname)
-    {
-      char *tmp;
-      tmp = strpbrk (rp->fq_hostname, ".");
-      if (tmp)
-	{
-	  rp->only_hostname = (char *) malloc ((tmp - rp->fq_hostname) + 2);
-	  if (rp->only_hostname)
-	    {
-	      /* copies only basename */
-	      safe_strncpy (rp->only_hostname, rp->fq_hostname,
-		       tmp - rp->fq_hostname + 1);
-	    }
-	}
-    }
 
   ipcache_link_activelist (rp);		/* item becomes head of active list */
 }
 
 /* returns the name corresponding to the supplied ip addr or a formatted ip-addr
 if isn't resolved. 
-if fqdn true then returns the fqdn, otherwise only the host name.
 on exit is_expired contains true if the record is expired and must be refreshed 
 */
-char *
-ipcache_getnameip(uint32_t ip, int fqdn, int *is_expired)
+const char *
+ipcache_getnameip(uint32_t ip, int *is_expired)
 {
   struct ipcache_item *rp;
   uint32_t iptofind = ip;
@@ -607,11 +588,8 @@ ipcache_getnameip(uint32_t ip, int fqdn, int *is_expired)
 
 	  if ((rp->state == IPCACHE_STATE_FINISHED) && (rp->fq_hostname))
 	    {
-	      /* item already resolved, return fqdn if requested or basename missing */
-	      if (fqdn || !rp->only_hostname)
-		return rp->fq_hostname;
-	      else
-		return rp->only_hostname;
+	      /* item already resolved, return fqdn */
+              return rp->fq_hostname;
 	    }
 	} 
     }

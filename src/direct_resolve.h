@@ -36,6 +36,5 @@ int direct_waitfd (void);
 /* called when the direct_waitfd socket has available data */
 void direct_ack (void);
 
-/* resolves address and returns its fqdn (if the corresponding parameter is nonzero)
-   or just the hostname (if fqdn is zero) */
-char *direct_lookup (uint32_t address, int fqdn);
+/* resolves address and returns its fqdn */
+const char *direct_lookup (uint32_t address);
