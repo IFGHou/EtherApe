@@ -80,7 +80,7 @@ init_menus (void)
       interfaces = interfaces->next;
     }
 
-  g_my_info (info_string->str);
+  g_my_info ("%s", info_string->str);
   if (info_string)
      g_string_free(info_string, TRUE);
 
@@ -564,7 +564,7 @@ fatal_error_dialog (const gchar * message)
 
   error_messagebox = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
 					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK, message);
+					     GTK_BUTTONS_OK, "%s", message);
   gtk_dialog_run (GTK_DIALOG (error_messagebox));
   gtk_widget_destroy (error_messagebox);
 
