@@ -38,7 +38,7 @@ static pcap_t *pch_struct;		/* pcap structure */
 static gint pcap_fd;			/* The file descriptor used by libpcap */
 static gint capture_source;		/* It's the input tag or the timeout tag,
 				 * in online or offline mode */
-static guint ms_to_next;	/* Used for offline mode to store the amount
+static gulong ms_to_next;	/* Used for offline mode to store the amount
 				 * of time that we have to wait between
 				 * one packet and the next */
 static enum status_t capture_status = STOP;

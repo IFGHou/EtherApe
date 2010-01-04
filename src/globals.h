@@ -33,7 +33,7 @@ GtkStatusbar *statusbar;        /* Main window statusbar */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 unsigned long n_packets;	/* Number of total packets received */
-gint total_mem_packets;	        /* Number of packets currently in memory */
+glong total_mem_packets;	        /* Number of packets currently in memory */
 
 struct pref_struct
 {
@@ -110,7 +110,7 @@ struct pref_struct
 
   GLogLevelFlags debug_mask;    /* debug mask active */
 
-  guint max_delay;    /* max packet distance when replaying a file */
+  gulong max_delay;    /* max packet distance when replaying a file */
 
   gchar *glade_file;    /* fullspec of xml glade file */
 }

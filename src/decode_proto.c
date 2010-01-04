@@ -614,7 +614,7 @@ static void get_ppi(decode_proto_t *dp)
               pph_lkentry->fun(dp);
             }
         }
-      g_warning (_("PPI:unsupported link type %lu, packet discarded"), pph_dlt);
+      g_warning (_("PPI:unsupported link type %u, packet discarded"), pph_dlt);
       return;
     }
   pph_lkentry->fun(dp);

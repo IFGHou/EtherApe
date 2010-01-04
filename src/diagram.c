@@ -31,6 +31,7 @@
 #include "protocols.h"
 #include "datastructs.h"
 #include "capture.h"
+#include "conversations.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000
@@ -151,7 +152,7 @@ void dump_stats(guint32 diff_msecs)
   long ipc=ipcache_active_entries();
   status_string = g_strdup_printf (
     _("Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, "
-      "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %d, "
+      "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, "
       "on list %ld). IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"),
                                    node_count(), 
                                    g_tree_nnodes(canvas_nodes), displayed_nodes, 
