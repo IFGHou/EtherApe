@@ -1,5 +1,14 @@
                             Changelog for EtherApe
 
+  Overview of changes in Etherape 0.9.10 ():
+
+   In 0.9.9 relnotes I forgot to mention a fix from Sotiris Sotiropoulos.
+   Sorry for the mistake.
+
+   Changes summary:
+     * .
+
+
   Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
    The most interesting change of this release is *basic* 802.11 WLAN support.
    WLAN is one of the most complex protocols around ('crazy' sometimes seems a 
