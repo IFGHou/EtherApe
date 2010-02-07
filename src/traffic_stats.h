@@ -25,8 +25,7 @@
 
 typedef struct
 {
-  GList *pkt_list;              /* list of packet_list_item_t - private */
-  gint n_packets;		/* Number of packets in the list */
+  GQueue pkt_list;              /* list of packet_list_item_t - private */
   basic_stats_t stats;        /* total traffic stats */
   basic_stats_t stats_in;     /* inbound traffic stats */
   basic_stats_t stats_out;    /* outbound traffic stats */
