@@ -865,6 +865,9 @@ stats_info_create(const gchar *idkey, gpointer key)
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
   register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize_in");
+  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize_out");
 
   /* get and register the tree view */
   gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
@@ -893,12 +896,15 @@ stats_info_update(GtkWidget *window, const traffic_stats_t *stats,
     {
       update_gtklabel(window, "node_iproto_avg", "X");
       update_gtklabel(window, "node_iproto_accum", "X");
+      update_gtklabel(window, "node_iproto_avgsize", "X");
       if (!totals_only)
         {
           update_gtklabel(window, "node_iproto_avg_in", "X");
           update_gtklabel(window, "node_iproto_avg_out", "X");
           update_gtklabel(window, "node_iproto_accum_in", "X");
           update_gtklabel(window, "node_iproto_accum_out", "X");
+          update_gtklabel(window, "node_iproto_avgsize_in", "X");
+          update_gtklabel(window, "node_iproto_avgsize_out", "X");
         }
       update_protocols_table(window, NULL);
       gtk_widget_queue_resize (GTK_WIDGET (window));
@@ -911,6 +917,9 @@ stats_info_update(GtkWidget *window, const traffic_stats_t *stats,
       g_free(str);
       str = traffic_to_str (stats->stats.accumulated, FALSE);
       update_gtklabel(window, "node_iproto_accum", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats.avg_size, FALSE);
+      update_gtklabel(window, "node_iproto_avgsize", str);
       g_free(str);
       if (!totals_only)
         {
@@ -925,6 +934,12 @@ stats_info_update(GtkWidget *window, const traffic_stats_t *stats,
           g_free(str);
           str = traffic_to_str (stats->stats_out.accumulated, FALSE);
           update_gtklabel(window, "node_iproto_accum_out", str);
+          g_free(str);
+          str = traffic_to_str (stats->stats_in.avg_size, FALSE);
+          update_gtklabel(window, "node_iproto_avgsize_in", str);
+          g_free(str);
+          str = traffic_to_str (stats->stats_out.avg_size, FALSE);
+          update_gtklabel(window, "node_iproto_avgsize_out", str);
           g_free(str);
         }
       /* update protocol table */

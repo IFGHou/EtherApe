@@ -1,12 +1,12 @@
                             Changelog for EtherApe
 
   Overview of changes in Etherape 0.9.10 ():
-
    In 0.9.9 relnotes I forgot to mention a fix from Sotiris Sotiropoulos.
-   Sorry for the mistake.
+   I apologize for the mistake.
+ 
 
    Changes summary:
-     * .
+     * new statistic: average packet size.
 
 
   Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
