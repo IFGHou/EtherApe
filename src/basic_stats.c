@@ -151,7 +151,8 @@ void packet_list_item_delete(packet_list_item_t *pli)
               /* packet now unused, delete it */
               packet_protos_delete(pli->info->prot_desc);
               g_free (pli->info);
-    
+              pli->info = NULL;
+
               /* global packet stats */
               total_mem_packets--;
             }
@@ -160,39 +161,6 @@ void packet_list_item_delete(packet_list_item_t *pli)
       g_free(pli);
       --packet_list_item_n;
     }
-}
-
-/* removes a packet from a list of packets, destroying it if necessary
- * Returns the PREVIOUS item if any, otherwise the NEXT, thus returning NULL
- * if the list is empty */
-GList *
-packet_list_remove(GList *item_to_remove)
-{
-  packet_list_item_t *litem;
-
-  g_assert(item_to_remove);
-  
-  litem = item_to_remove->data;
-
-  packet_list_item_delete(litem);
-  item_to_remove->data = NULL;
-
-  /* TODO I have to come back here and make sure I can't make
-   * this any simpler */
-  if (item_to_remove->prev)
-    {
-      /* current packet is not at head */
-      GList *item = item_to_remove;
-      item_to_remove = item_to_remove->prev; 
-      item_to_remove = g_list_delete_link (item_to_remove, item);
-    }
-  else
-    {
-      /* packet is head of list */
-      item_to_remove=g_list_delete_link(item_to_remove, item_to_remove);
-    }
-
-  return item_to_remove;
 }
 
 /***************************************************************************

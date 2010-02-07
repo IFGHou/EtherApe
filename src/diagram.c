@@ -783,11 +783,11 @@ display_node (node_t * node)
 
   /* Remove canvas_node if node is too old */
   if (IS_OLDER (diff, pref.gui_node_timeout_time)
-      && pref.gui_node_timeout_time && !node->node_stats.n_packets)
+      && pref.gui_node_timeout_time && !node->node_stats.pkt_list.length)
     return FALSE;
 
 #if 1
-  if ((pref.gui_node_timeout_time == 1) && !node->node_stats.n_packets)
+  if ((pref.gui_node_timeout_time == 1) && !node->node_stats.pkt_list.length)
     g_my_critical ("Impossible situation in display node");
 #endif
 

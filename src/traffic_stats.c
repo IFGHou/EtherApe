@@ -37,8 +37,7 @@ void traffic_stats_init(traffic_stats_t *pkt_stat)
 {
   g_assert(pkt_stat);
 
-  pkt_stat->pkt_list = NULL;
-  pkt_stat->n_packets = 0;
+  g_queue_init(&pkt_stat->pkt_list);
 
   basic_stats_reset(&pkt_stat->stats);
   basic_stats_reset(&pkt_stat->stats_in);
@@ -53,10 +52,8 @@ void traffic_stats_reset(traffic_stats_t *pkt_stat)
   g_assert(pkt_stat);
 
   /* release items and free list */
-  g_list_foreach(pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
-  g_list_free(pkt_stat->pkt_list);
-  pkt_stat->pkt_list = NULL;
-  pkt_stat->n_packets = 0;
+  g_queue_foreach(&pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
+  g_queue_clear(&pkt_stat->pkt_list);
 
   /* purges protos */
   protocol_stack_reset(&pkt_stat->stats_protos);
@@ -81,8 +78,7 @@ traffic_stats_add_packet(traffic_stats_t *pkt_stat,
   newit = packet_list_item_create(new_pkt, dir);
 
   /* adds to list */
-  pkt_stat->pkt_list = g_list_prepend (pkt_stat->pkt_list, newit);
-  pkt_stat->n_packets++;
+  g_queue_push_head(&pkt_stat->pkt_list, newit);
 
   basic_stats_add(&pkt_stat->stats, newit->info->size);
   if (newit->direction != OUTBOUND)
@@ -100,15 +96,12 @@ void
 traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
 {
   struct timeval result;
-  GList *packet_l_e = NULL;	/* Packets is a list of packets.
-				 * packet_l_e is always the latest (oldest)
-				 * list element */
+  packet_list_item_t* packet;
 
-  packet_l_e = g_list_last (pkt_stat->pkt_list);
-  while (packet_l_e)
+  /* pkt queue is ordered by arrival time, so older pkts are at tail */
+  while (pkt_stat->pkt_list.head)
   {
-    packet_list_item_t * packet = packet_l_e->data;
-
+    packet = (packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
     result = substract_times (now, packet->info->timestamp);
     if (!IS_OLDER (result, pkt_expire_time))
       break; /* packet valid, subsequent packets are younger, no need to go further */
@@ -123,23 +116,14 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
     /* and protocol stack */
     protocol_stack_sub_pkt(&pkt_stat->stats_protos, packet->info);
 
-    /* and, finally from packet list - gets the new check position 
-     * if this packet is the first of the list, all the previous packets
-     * should be already destroyed. We check that remove never returns a
-     * NEXT packet */
-    GList *next=packet_l_e->next;
-    packet_l_e = packet_list_remove(packet_l_e);
-    g_assert(packet_l_e == NULL || packet_l_e != next );
-    pkt_stat->n_packets--;
+    /* and, finally, from packet queue */
+    g_queue_pop_tail(&pkt_stat->pkt_list);
+    packet_list_item_delete(packet);
   }
 
-  if (!packet_l_e)
+  if (pkt_stat->pkt_list.head == NULL)
     {
       /* removed all packets */
-      if (pkt_stat->n_packets)
-        g_critical("n_packets != 0 in traffic_stats_purge_expired_packets");
-      pkt_stat->n_packets = 0;
-      pkt_stat->pkt_list=NULL;
       pkt_stat->stats.average = 0;
       pkt_stat->stats_in.average = 0;
       pkt_stat->stats_out.average = 0;
@@ -156,7 +140,7 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double proto_ex
 {
   traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time);
 
-  if (pkt_stat->pkt_list)
+  if (!g_queue_is_empty(&pkt_stat->pkt_list))
     {
       /* calculate averages */
       basic_stats_avg(&pkt_stat->stats, avg_time);
@@ -186,14 +170,14 @@ gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat)
   msg_in = basic_stats_dump(&pkt_stat->stats_in);
   msg_out = basic_stats_dump(&pkt_stat->stats_out);
   msg_proto = protocol_stack_dump(&pkt_stat->stats_protos);
-  msg = g_strdup_printf("active_packets: %d\n"
+  msg = g_strdup_printf("active_packets: %u\n"
                         "  in : [%s]\n"
                         "  out: [%s]\n"
                         "  tot: [%s]\n"
                         "  protocols:\n"
                         "  %s",
-                        pkt_stat->n_packets, msg_in, msg_out, msg_tot, 
-                        msg_proto);
+                        pkt_stat->pkt_list.length, 
+                        msg_in, msg_out, msg_tot, msg_proto);
   g_free(msg_tot);
   g_free(msg_in);
   g_free(msg_out);

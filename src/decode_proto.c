@@ -325,7 +325,7 @@ add_node_packet (const guint8 * raw_packet,
   /* If this is the first packet we've heard from the node in a while, 
    * we add it to the list of new nodes so that the main app know this 
    * node is active again */
-  if (node->node_stats.n_packets == 1)
+  if (node->node_stats.pkt_list.length == 1)
     new_nodes_add(node);
 
   /* Update names list for this node */
