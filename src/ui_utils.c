@@ -86,8 +86,12 @@ void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName)
 
 void update_gtklabel(GtkWidget *window, const gchar *lblname, const gchar *value)
 {
-  GtkWidget *widget = g_object_get_data (G_OBJECT (window), lblname);
-  gtk_label_set_text (GTK_LABEL (widget), value);
+  GtkLabel *lbl = GTK_LABEL (g_object_get_data (G_OBJECT (window), lblname));
+  gint start, end;
+  gboolean sel = gtk_label_get_selection_bounds (lbl, &start, &end);
+  gtk_label_set_text (lbl, value);
+  if (sel)
+    gtk_label_select_region (lbl, start, end);
 }
 
 
