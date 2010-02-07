@@ -126,7 +126,7 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
 
 /* calculates averages on protocol stack items */
 void
-protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
+protocol_stack_avg(protostack_t *pstk, gdouble avgtime)
 {
   GList *item;
   protocol_t *protocol;
@@ -140,7 +140,7 @@ protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs)
       while (item)
         {
           protocol = (protocol_t *)item->data;
-          basic_stats_avg(&protocol->stats, avg_usecs);
+          basic_stats_avg(&protocol->stats, avgtime);
           item = item->next;
         }
     }
@@ -418,18 +418,9 @@ void protocol_summary_add_packet(packet_info_t *packet)
 /* update stats on protocol summary */
 void protocol_summary_update_all(void)
 {
-  double pkt_expire_time;
-
-  if (!protosummary_stats)
-    return;
-
-  /* packet expiration timer */
-  if (pref.proto_timeout_time && pref.proto_timeout_time < pref.averaging_time)
-    pkt_expire_time = pref.proto_timeout_time;
-  else
-    pkt_expire_time = pref.averaging_time;
-
-  traffic_stats_update(protosummary_stats, pkt_expire_time, pref.proto_timeout_time);
+  if (protosummary_stats)
+    traffic_stats_update(protosummary_stats, pref.averaging_time, 
+                          pref.proto_timeout_time);
 }
 
 /* number of protos at specified level */

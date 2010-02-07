@@ -152,30 +152,18 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
 /* Update stats, purging expired packets - returns FALSE if there are no 
  * active packets */
 gboolean
-traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
+traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double proto_expire_time)
 {
-  traffic_stats_purge_expired_packets(pkt_stat, pkt_expire_time, proto_expire_time);
+  traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time);
 
   if (pkt_stat->pkt_list)
     {
-      struct timeval diff;
-      gdouble usecs_from_oldest;	/* usecs since the first valid packet */
-      GList *packet_l_e;
-      packet_list_item_t *packet;
-
-      /* the last packet of the list is the oldest */
-      packet_l_e = g_list_last (pkt_stat->pkt_list);
-      packet = (packet_list_item_t *) packet_l_e->data;
-
-      diff = substract_times (now, packet->info->timestamp);
-      usecs_from_oldest = diff.tv_sec * 1000000 + diff.tv_usec;
-
       /* calculate averages */
-      basic_stats_avg(&pkt_stat->stats, usecs_from_oldest);
-      basic_stats_avg(&pkt_stat->stats_in, usecs_from_oldest);
-      basic_stats_avg(&pkt_stat->stats_out, usecs_from_oldest);
+      basic_stats_avg(&pkt_stat->stats, avg_time);
+      basic_stats_avg(&pkt_stat->stats_in, avg_time);
+      basic_stats_avg(&pkt_stat->stats_out, avg_time);
 
-      protocol_stack_avg(&pkt_stat->stats_protos, usecs_from_oldest);
+      protocol_stack_avg(&pkt_stat->stats_protos, avg_time);
 
       return TRUE; /* there are packets active */
     }
