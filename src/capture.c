@@ -353,14 +353,14 @@ get_offline_packet (void)
 {
   static struct pcap_pkthdr *pkt_header = NULL;
   static const u_char *pkt_data = NULL;
-  static struct timeval last_time = { 0, 0 }, this_time, diff;
+  static struct timeval last_read_time = { 0, 0 }, this_time, diff;
   int result;
 
   if (capture_status == STOP)
     {
       pkt_header = NULL;
       pkt_data = NULL;
-      last_time.tv_usec = last_time.tv_sec = 0;
+      last_read_time.tv_usec = last_read_time.tv_sec = 0;
       return FALSE;
     }
 
@@ -374,16 +374,16 @@ get_offline_packet (void)
   switch (result)
     {
     case 1:
-      if (last_time.tv_sec == 0 && last_time.tv_usec == 0)
+      if (last_read_time.tv_sec == 0 && last_read_time.tv_usec == 0)
         {
-          last_time.tv_sec = pkt_header->ts.tv_sec;
-          last_time.tv_usec = pkt_header->ts.tv_usec;
+          last_read_time.tv_sec = pkt_header->ts.tv_sec;
+          last_read_time.tv_usec = pkt_header->ts.tv_usec;
         }
 
       this_time.tv_sec = pkt_header->ts.tv_sec;
       this_time.tv_usec = pkt_header->ts.tv_usec;
 
-      diff = substract_times (this_time, last_time);
+      diff = substract_times (this_time, last_read_time);
 
       /* diff can be negative when listening to multiple interfaces.
        * In that case the delay is zeroed */
@@ -394,7 +394,7 @@ get_offline_packet (void)
       if (ms_to_next > pref.max_delay)
           ms_to_next = pref.max_delay;
 
-      last_time = this_time;
+      last_read_time = this_time;
       break;
     case -2:
       capture_status = CAP_EOF;

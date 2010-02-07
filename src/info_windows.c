@@ -765,13 +765,13 @@ update_stats_info_windows (void)
   GtkWidget *window;
   enum status_t status;
   struct timeval diff;
-  static struct timeval last_time = {
+  static struct timeval last_update_time = {
     0, 0
   };
 
   status = get_capture_status();
 
-  diff = substract_times (now, last_time);
+  diff = substract_times (now, last_update_time);
   /* Update info windows at most twice a second */
   if (pref.refresh_period < 500)
     if (!(IS_OLDER (diff, 500)))
@@ -803,7 +803,7 @@ update_stats_info_windows (void)
 	}
     }
 
-  last_time = now;
+  last_update_time = now;
 }				/* update_stats_info_windows */
 
 
