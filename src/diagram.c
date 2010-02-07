@@ -373,7 +373,7 @@ diagram_update_links(GtkWidget * canvas)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  static struct timeval last_time = { 0, 0 }, diff;
+  static struct timeval last_refresh_time = { 0, 0 }, diff;
   guint32 diff_msecs;
   enum status_t status;
 
@@ -422,17 +422,17 @@ update_diagram (GtkWidget * canvas)
   /* With this we make sure that we don't overload the
    * CPU with redraws */
 
-  if ((last_time.tv_sec == 0) && (last_time.tv_usec == 0))
-    last_time = now;
+  if ((last_refresh_time.tv_sec == 0) && (last_refresh_time.tv_usec == 0))
+    last_refresh_time = now;
 
   /* Force redraw */
   while (gtk_events_pending ())
     gtk_main_iteration ();
 
   gettimeofday (&now, NULL);
-  diff = substract_times (now, last_time);
+  diff = substract_times (now, last_refresh_time);
   diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
-  last_time = now;
+  last_refresh_time = now;
 
   already_updating = FALSE;
 
