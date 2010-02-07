@@ -39,7 +39,7 @@ typedef struct
 void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val); 
 void basic_stats_sub(basic_stats_t *tf_stat, gdouble val); 
-void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs);
+void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs);
 gchar *basic_stats_dump(const basic_stats_t *tf_stat);
 
 #endif

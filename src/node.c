@@ -191,17 +191,12 @@ gchar *node_dump(const node_t * node)
 gboolean
 node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 {
-  double pkt_expire_time;
   struct timeval diff;
 
   g_assert(delete_list_ptr);
 
-  if (pref.node_timeout_time && pref.node_timeout_time < pref.averaging_time)
-    pkt_expire_time = pref.node_timeout_time;
-  else
-    pkt_expire_time = pref.averaging_time;
-
-  if (traffic_stats_update(&node->node_stats, pkt_expire_time, pref.proto_node_timeout_time))
+  if (traffic_stats_update(&node->node_stats, pref.averaging_time, 
+                            pref.proto_node_timeout_time))
     {
       /* packet(s) active, update the most used protocols for this link */
       guint i = STACK_SIZE;

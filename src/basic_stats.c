@@ -231,13 +231,13 @@ void basic_stats_sub(basic_stats_t *tf_stat, gdouble val)
 }
 
 void
-basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_usecs)
+basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs)
 {
   g_assert(tf_stat);
 
-  /* average in bps, so we multiply by 8 and 1000000 */
-  if (avg_usecs != 0)
-    tf_stat->average = 8000000 * tf_stat->aver_accu / avg_usecs;
+  /* average in bps, and timer in ms, so we multiply by 8 and 1000 */
+  if (avg_msecs != 0)
+    tf_stat->average = 8000 * tf_stat->aver_accu / avg_msecs;
 }
 
 /* returns a newly allocated string with a dump of the stats */
