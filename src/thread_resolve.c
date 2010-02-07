@@ -149,6 +149,8 @@ thread_pool_routine(void *dt)
          if (result != 0 && errnovar == ERANGE)
             g_my_critical("Insufficient memory allocated to gethostbyaddr_r\n");
 #endif
+         if (request_stop_thread)
+            break;
 
          /* resolving completed or failed, lock again and notify ip-cache */
          pthread_mutex_lock(&resolvemtx);
@@ -163,16 +165,23 @@ thread_pool_routine(void *dt)
    return NULL;
 }
 
-static void
-start_threads()
+static void start_threads()
 {
    pthread_t curth;
    int i;
    int maxth = ETHERAPE_THREAD_POOL_SIZE;
+   pthread_attr_t attr;
 
    /* reset stop flag */
    request_stop_thread = 0;
 
+   if (pthread_attr_init(&attr) ||
+       pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED))
+     {
+       g_critical("pthread_attr_init failed, resolver will not be available\n");
+       return; 
+     }
+  
   /* if single thread resolving is forced, then start only a single thread,
      else start ETHERAPE_THREAD_POOL_SIZE threads */
 #ifdef FORCE_SINGLE_THREAD
@@ -180,34 +189,31 @@ start_threads()
 #endif
    for (i=0; i<maxth ; ++i)
    {
-       if (pthread_create ( &curth, NULL, thread_pool_routine, NULL))
-       {
-          // error, stop creating threads
-          break;
-       }
-       resolver_threads[i] = curth;
+     if (pthread_create ( &curth, NULL, thread_pool_routine, NULL))
+     {
+       // error, stop creating threads
+       g_critical("pthread_create failed, resolver has only %d threads\n", i);
+       break;
+     }
+     resolver_threads[i] = curth;
    }
 
    resolver_threads_num = i;
 }
 
-static void
-stop_threads()
+static void stop_threads()
 {
   int i;
 
-   /* take mutex, to make sure other thread will be waiting */
-   pthread_mutex_lock(&resolvemtx);
+  /* take mutex, to make sure other thread will be waiting */
+  pthread_mutex_lock(&resolvemtx);
 
-   /* activate variable */
-   request_stop_thread = 1;
-   pthread_cond_broadcast(&resolvecond); /* wake all threads */
-   pthread_mutex_unlock(&resolvemtx);
+  /* activate variable */
+  request_stop_thread = 1;
+  pthread_cond_broadcast(&resolvecond); /* wake all threads */
+  pthread_mutex_unlock(&resolvemtx);
 
-  /* wait for cancellation */
-   for (i=0; i<resolver_threads_num ; ++i)
-     pthread_join(resolver_threads[i], NULL);
-   resolver_threads_num = 0;
+  resolver_threads_num = 0;
 }
 
 /* creates a request, placing in the queue 
