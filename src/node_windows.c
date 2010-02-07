@@ -32,6 +32,7 @@ typedef enum
   NODES_COLUMN_NUMERIC,
   NODES_COLUMN_INSTANTANEOUS,
   NODES_COLUMN_ACCUMULATED,
+  NODES_COLUMN_AVGSIZE,
   NODES_COLUMN_LASTHEARD,
   NODES_COLUMN_PACKETS,
   NODES_COLUMN_N        /* must be the last entry */
@@ -152,6 +153,16 @@ nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
+    case NODES_COLUMN_AVGSIZE:
+      t1 = node1->node_stats.stats.avg_size;
+      t2 = node2->node_stats.stats.avg_size;
+      if (t1 == t2)
+	ret = 0;
+      else if (t1 < t2)
+	ret = -1;
+      else
+	ret = 1;
+      break;
     case NODES_COLUMN_LASTHEARD:
       time1 = node1->node_stats.stats.last_time;
       time2 = node2->node_stats.stats.last_time;
@@ -207,10 +218,10 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
         return gls; 
     }
   
-  /* create the store. it uses 7 values, six displayable and the data pointer */
-  gls = gtk_list_store_new (7, G_TYPE_STRING, G_TYPE_STRING,
+  /* create the store. it uses 8 values, 7 displayable and the data pointer */
+  gls = gtk_list_store_new (8, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
-			   G_TYPE_STRING, G_TYPE_POINTER);
+			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
 
   /* to update successfully, the list store must be unsorted. So we wrap it */
   sort_model = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL(gls));
@@ -220,6 +231,7 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   create_add_text_column(gv, "Address", NODES_COLUMN_NUMERIC, TRUE);
   create_add_text_column(gv, "Inst Traffic", NODES_COLUMN_INSTANTANEOUS, FALSE);
   create_add_text_column(gv, "Accum Traffic", NODES_COLUMN_ACCUMULATED, FALSE);
+  create_add_text_column(gv, "Avg Size", NODES_COLUMN_AVGSIZE, FALSE);
   create_add_text_column(gv, "Last Heard", NODES_COLUMN_LASTHEARD, FALSE);
   create_add_text_column(gv, "Packets", NODES_COLUMN_PACKETS, FALSE);
 
@@ -274,19 +286,21 @@ static void nodes_table_clear(GtkWidget *window)
 static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it, 
                                    const node_t * node)
 {
-  gchar *sa, *sb, *sc, *sd;
+  gchar *sa, *sb, *sc, *sd, *se;
   const basic_stats_t *stats = (const basic_stats_t *) &(node->node_stats.stats);
   
   sa = traffic_to_str (stats->average, TRUE);
   sb = traffic_to_str (stats->accumulated, FALSE);
   sc = g_strdup_printf ("%lu", stats->accu_packets);
   sd = timeval_to_str (stats->last_time);
+  se = traffic_to_str (stats->avg_size, FALSE);
 
   gtk_list_store_set (gs, it, 
                       NODES_COLUMN_NAME, node->name->str, 
                       NODES_COLUMN_NUMERIC, node->numeric_name->str, 
                       NODES_COLUMN_INSTANTANEOUS, sa,
                       NODES_COLUMN_ACCUMULATED, sb,
+                      NODES_COLUMN_AVGSIZE, se,
                       NODES_COLUMN_PACKETS, sc,
                       NODES_COLUMN_LASTHEARD, sd,
                       -1);
@@ -294,6 +308,7 @@ static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it,
   g_free (sb);
   g_free (sc);
   g_free (sd);
+  g_free (se);
 }
 
 struct NTTraverse

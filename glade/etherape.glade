@@ -1299,6 +1299,7 @@ Square Root</property>
     <child>
       <widget class="GtkVBox" id="vbox27">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkFrame" id="frame7">
             <property name="visible">True</property>
@@ -1368,6 +1369,7 @@ Square Root</property>
                 <child>
                   <widget class="GtkVBox" id="vbox28">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkLabel" id="label59">
                         <property name="visible">True</property>
@@ -1403,6 +1405,7 @@ Square Root</property>
                 <child>
                   <widget class="GtkVBox" id="vbox29">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkLabel" id="label61">
                         <property name="visible">True</property>
@@ -1493,6 +1496,7 @@ Square Root</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">8</property>
         <child>
           <widget class="GtkVBox" id="vbox33">
