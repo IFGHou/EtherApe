@@ -146,7 +146,7 @@ thread_pool_routine(void *dt)
          result = gethostbyaddr_r (&addr, sizeof(addr), AF_INET, 
                           &resultbuf, extrabuf, sizeof(extrabuf), 
                           &resultptr, &errnovar);
-         if (result != 0)
+         if (result != 0 && errnovar == ERANGE)
             g_my_critical("Insufficient memory allocated to gethostbyaddr_r\n");
 #endif
 

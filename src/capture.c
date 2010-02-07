@@ -101,8 +101,8 @@ gchar *init_capture (void)
 	  snprintf (errorbuf, sizeof(errorbuf), 
                     _("No capture device found or insufficient privileges.\n"
                       "Only file replay will be available.\n"
-                      "EtherApe must be run with administrative privileges to enable "
-                      "live capture."));
+                      "EtherApe must be run with administrative privileges "
+                      "(e.g. root) to enable live capture."));
 	  return errorbuf;
 	}
       /* TODO I should probably tidy this up, I probably don't
