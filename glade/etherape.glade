@@ -1623,7 +1623,6 @@ Square Root</property>
                       <widget class="GtkLabel" id="node_iproto_numeric_name">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">src numeric node name</property>
                         <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
@@ -1640,7 +1639,6 @@ Square Root</property>
                       <widget class="GtkLabel" id="node_iproto_numeric_name_b">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">dst num. name</property>
                         <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
@@ -1657,7 +1655,6 @@ Square Root</property>
                       <widget class="GtkLabel" id="node_iproto_name_b">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">dst name</property>
                         <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
@@ -1674,7 +1671,6 @@ Square Root</property>
                       <widget class="GtkLabel" id="node_iproto_name">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">src node name</property>
                         <property name="selectable">True</property>
                         <property name="single_line_mode">True</property>
                       </widget>
@@ -1752,7 +1748,7 @@ Square Root</property>
                 <child>
                   <widget class="GtkTable" id="table10">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">4</property>
                     <property name="n_columns">4</property>
                     <property name="column_spacing">4</property>
                     <property name="row_spacing">1</property>
@@ -1898,6 +1894,53 @@ Square Root</property>
                     </child>
                     <child>
                       <placeholder/>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Average size</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="node_iproto_avgsize">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="node_iproto_avgsize_in">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="node_iproto_avgsize_out">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>
