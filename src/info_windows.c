@@ -41,6 +41,7 @@ typedef enum
   PROTO_COLUMN_PORT,
   PROTO_COLUMN_INSTANTANEOUS,
   PROTO_COLUMN_ACCUMULATED,
+  PROTO_COLUMN_AVGSIZE,
   PROTO_COLUMN_LASTHEARD,
   PROTO_COLUMN_PACKETS,
   PROTO_COLUMN_N        /* must be the last entry */
@@ -318,6 +319,16 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
       else
 	ret = 1;
       break;
+    case PROTO_COLUMN_AVGSIZE:
+      t1 = prot1->rowstats.avg_size;
+      t2 = prot2->rowstats.avg_size;
+      if (t1 == t2)
+	ret = 0;
+      else if (t1 < t2)
+	ret = -1;
+      else
+	ret = 1;
+      break;
     case PROTO_COLUMN_LASTHEARD:
       time1 = prot1->rowstats.last_time;
       time2 = prot2->rowstats.last_time;
@@ -358,11 +369,11 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
   if (gs)
     return gs;
 
-  /* create the store  - it uses 8 values, six displayable, one proto color 
+  /* create the store  - it uses 9 values, 7 displayable, one proto color 
      and the data pointer */
-  gs = gtk_list_store_new (8, GDK_TYPE_COLOR, G_TYPE_STRING, G_TYPE_STRING,
+  gs = gtk_list_store_new (9, GDK_TYPE_COLOR, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
-			   G_TYPE_STRING, G_TYPE_POINTER);
+			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (gs));
 
   /* the view columns and cell renderers must be also created ... 
@@ -384,6 +395,7 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
   create_add_text_column(gv, "Port", PROTO_COLUMN_PORT, TRUE);
   create_add_text_column(gv, "Inst Traffic", PROTO_COLUMN_INSTANTANEOUS, FALSE);
   create_add_text_column(gv, "Accum Traffic", PROTO_COLUMN_ACCUMULATED, FALSE);
+  create_add_text_column(gv, "Avg Size", PROTO_COLUMN_AVGSIZE, FALSE);
   create_add_text_column(gv, "Last Heard", PROTO_COLUMN_LASTHEARD, FALSE);
   create_add_text_column(gv, "Packets", PROTO_COLUMN_PACKETS, FALSE);
 
@@ -423,7 +435,7 @@ static void protocols_table_clear(GtkListStore *gs)
 static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it, 
                                  const protocol_list_item_t *row_proto)
 {
-  gchar *ga, *gb, *gc, *gd, *ge;
+  gchar *ga, *gb, *gc, *gd, *ge, *gf;
   const port_service_t *ps;
   
   ga = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
@@ -435,19 +447,23 @@ static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it,
     gc = g_strdup("-");
   gd = traffic_to_str (row_proto->rowstats.average, TRUE);
   ge = timeval_to_str (row_proto->rowstats.last_time);
+  gf = traffic_to_str (row_proto->rowstats.avg_size, FALSE);
 
   gtk_list_store_set (gs, it, 
                       PROTO_COLUMN_ACCUMULATED, ga, 
                       PROTO_COLUMN_PACKETS, gb,
                       PROTO_COLUMN_PORT, gc,
                       PROTO_COLUMN_INSTANTANEOUS, gd,
-                      PROTO_COLUMN_LASTHEARD, ge, -1);
+                      PROTO_COLUMN_LASTHEARD, ge, 
+                      PROTO_COLUMN_AVGSIZE, gf, 
+                      -1);
 
   g_free(ga);
   g_free(gb);
   g_free(gc);
   g_free(gd);
   g_free(ge);
+  g_free(gf);
 }
 
 static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)

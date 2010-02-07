@@ -192,7 +192,8 @@ set_filter (gchar * filter_string, gchar * device)
   if (device && (pcap_lookupnet (device, &netnum, &netmask, ebuf) < 0))
     {
       g_warning (_
-                  ("Couldn't obtain netmask info (%s). Filters involving broadcast addresses could behave incorrectly."),
+                  ("Couldn't obtain netmask info (%s). Filters involving "
+                   "broadcast addresses could behave incorrectly."),
                  ebuf);
       netmask = 0;
     }

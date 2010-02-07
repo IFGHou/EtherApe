@@ -173,8 +173,9 @@ void basic_stats_reset(basic_stats_t *tf_stat)
 {
   g_assert(tf_stat);
   tf_stat->average = 0;
-  tf_stat->accumulated = 0;
   tf_stat->aver_accu = 0;
+  tf_stat->accumulated = 0;
+  tf_stat->avg_size = 0;
   tf_stat->accu_packets = 0;
   tf_stat->last_time = now;
 }
@@ -184,7 +185,8 @@ void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
   g_assert(tf_stat);
   tf_stat->accumulated += val;
   tf_stat->aver_accu += val;
-  tf_stat->accu_packets++;
+  ++tf_stat->accu_packets;
+  tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
   tf_stat->last_time = now;
   /* averages are calculated by basic_stats_avg */
 }
@@ -217,11 +219,12 @@ gchar *basic_stats_dump(const basic_stats_t *tf_stat)
     return g_strdup("basic_stats_t NULL");
 
   msg_time = timeval_to_str (tf_stat->last_time);
-  msg = g_strdup_printf("avg: %f, avg_acc: %f, total: %f, packets: %lu, "
-                        "last heard: %s",
+  msg = g_strdup_printf("avg: %f, avg_acc: %f, total: %f, avg_size: %f, "
+                        "packets: %lu, last heard: %s",
                         tf_stat->average,
                         tf_stat->aver_accu,
                         tf_stat->accumulated,
+                        tf_stat->avg_size,
                         tf_stat->accu_packets,
                         msg_time);
                         
