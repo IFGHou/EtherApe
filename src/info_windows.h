@@ -41,9 +41,3 @@ gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
 gboolean on_delete_protocol_window (GtkWidget * wdg, GdkEvent * e,
 				    gpointer ud);
 void on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
-void on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data);
-void on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data);
-void on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data);
-void on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data);
-void on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data);
-void on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data);

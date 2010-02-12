@@ -133,10 +133,12 @@ gchar *traffic_to_str (gdouble traffic, gboolean is_speed)
   gchar *str;
   if (is_speed)
     {
-      if (traffic > 1000000)
-	str = g_strdup_printf ("%.3f Mbps", traffic / 1000000);
+      if (traffic > 1000000000.0)
+        str = g_strdup_printf ("%.2f Gbps", traffic / 1000000000.0);
+      else if (traffic > 1000000)
+        str = g_strdup_printf ("%.2f Mbps", traffic / 1000000);
       else if (traffic > 1000)
-	str = g_strdup_printf ("%.3f Kbps", traffic / 1000);
+	str = g_strdup_printf ("%.2f Kbps", traffic / 1000);
       else
 	str = g_strdup_printf ("%.0f bps", traffic);
     }
@@ -146,10 +148,12 @@ gchar *traffic_to_str (gdouble traffic, gboolean is_speed)
       if (traffic && traffic < 1)
 	g_warning ("Ill traffic value in traffic_to_str");
 
-      if (traffic > 1024 * 1024)
-	str = g_strdup_printf ("%.3f Mbytes", traffic / 1024 / 1024);
+      if (traffic > 1024.0 * 1024.0 * 1024.0)
+        str = g_strdup_printf ("%.2f Gbytes", traffic / (1024.0*1024.0*1024.0));
+      else if (traffic > 1024 * 1024)
+        str = g_strdup_printf ("%.2f Mbytes", traffic / 1024 / 1024);
       else if (traffic > 1024)
-	str = g_strdup_printf ("%.3f Kbytes", traffic / 1024);
+	str = g_strdup_printf ("%.2f Kbytes", traffic / 1024);
       else
 	str = g_strdup_printf ("%.0f bytes", traffic);
     }
