@@ -549,66 +549,6 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
     }
 }
 
-/* common function to activate the proto columns */
-static void
-activate_protocols_info_column (GtkMenuItem * gm, guint column)
-{
-  GtkTreeViewColumn *gc;
-  GtkTreeView *gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
-  if (!gv)
-    return;			/* no window, no handling */
-
-  gc = gtk_tree_view_get_column (gv, column);
-  if (!gc)
-    return;
-  gtk_tree_view_column_set_visible (gc,
-				    gtk_check_menu_item_get_active
-				    (GTK_CHECK_MENU_ITEM (gm)));
-}				/* on_prot_column_view_activate */
-
-void
-on_prot_color_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_COLOR);
-}
-
-void
-on_protocol_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_NAME);
-}
-
-void
-on_port_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_PORT);
-}
-
-void
-on_instant_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_INSTANTANEOUS);
-}
-
-void
-on_accumulated_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_ACCUMULATED);
-}
-
-void
-on_heard_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_LASTHEARD);
-}
-
-void
-on_packets_column_activate (GtkMenuItem * gm, gpointer * user_data)
-{
-  activate_protocols_info_column (gm, PROTO_COLUMN_PACKETS);
-}
-
-
 /* ----------------------------------------------------------
 
    General Protocol Info window functions (protocols_window)

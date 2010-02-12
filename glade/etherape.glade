@@ -1179,117 +1179,20 @@ Square Root</property>
     <property name="default_height">300</property>
     <signal name="delete_event" handler="on_delete_protocol_window"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkScrolledWindow" id="scrolledwindow4">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <property name="shadow_type">in</property>
         <child>
-          <widget class="GtkHandleBox" id="handlebox1">
-            <property name="visible">True</property>
-            <child>
-              <widget class="GtkMenuBar" id="menubar2">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkMenuItem" id="columns1">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Columns</property>
-                    <property name="use_underline">True</property>
-                    <child>
-                      <widget class="GtkMenu" id="columns1_menu">
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_color_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Color</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_prot_color_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_protocol_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Protocol</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_protocol_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_port_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Port</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_port_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_inst_traffic_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Inst Traffic</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_instant_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_accum_traffic_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Accum Traffic</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_accumulated_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_last_heard_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Last Heard</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_heard_column_activate"/>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="prot_packets_check">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">Pac_kets</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="activate" handler="on_packets_column_activate"/>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkScrolledWindow" id="scrolledwindow4">
+          <widget class="GtkTreeView" id="prot_clist">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <widget class="GtkTreeView" id="prot_clist">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="enable_search">False</property>
-                <signal name="select_cursor_row" handler="on_prot_list_select_row"/>
-                <signal name="row_activated" handler="on_prot_list_select_row"/>
-              </widget>
-            </child>
+            <property name="enable_search">False</property>
+            <signal name="select_cursor_row" handler="on_prot_list_select_row"/>
+            <signal name="row_activated" handler="on_prot_list_select_row"/>
           </widget>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
       </widget>
     </child>
@@ -1893,9 +1796,6 @@ Square Root</property>
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <widget class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
@@ -1941,6 +1841,9 @@ Square Root</property>
                         <property name="top_attach">3</property>
                         <property name="bottom_attach">4</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                   </widget>
                 </child>
