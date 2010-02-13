@@ -17,20 +17,11 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-/* initialize dns interface */
-void thread_open (void);
+/* initialize dns interface - returns 0 on success */
+int thread_open (void);
 
 /* closes dns interface */
 void thread_close(void);
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int thread_hasfd(void);
-
-/* returns the file descriptor associated with dns socket */
-int thread_waitfd (void);
-
-/* called when the thread_waitfd socket has available data */
-void thread_ack (void);
 
 /* resolves address and returns its fqdn */
 const char *thread_lookup (uint32_t address);

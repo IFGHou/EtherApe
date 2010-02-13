@@ -21,20 +21,11 @@
 
 /*  Prototypes for dns.c  */
 
-/* initialize dns interface */
-void direct_open (void);
+/* initialize dns interface; returns 0 on success */
+int direct_open (void);
 
 /* close dns interface */
 void direct_close(void);
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int direct_hasfd(void);
-
-/* returns the file descriptor associated with dns socket */
-int direct_waitfd (void);
-
-/* called when the direct_waitfd socket has available data */
-void direct_ack (void);
 
 /* resolves address and returns its fqdn */
 const char *direct_lookup (uint32_t address);

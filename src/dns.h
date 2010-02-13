@@ -21,20 +21,11 @@
    dns wrapper routines
 */
 
-/* initialize dns interface */
-void dns_open (void);
+/* initialize dns interface. returns 0 on success */
+int dns_open (void);
 
 /* close dns interface */
 void dns_close(void);
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int dns_hasfd(void);
-
-/* returns the file descriptor associated with dns socket */
-int dns_waitfd (void);
-
-/* called when the dns_waitfd socket has available data */
-void dns_ack (void);
 
 /* resolves address and returns its fqdn */
 const char *dns_lookup (uint32_t address);
