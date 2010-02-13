@@ -49,7 +49,6 @@ static void cap_t_o_destroy (gpointer data);
 static void read_packet_live(gpointer dummy, gint source,
 			 GdkInputCondition condition);
 
-static void dns_ready (gpointer data, gint fd, GdkInputCondition cond);
 
 /* 
  * FUNCTION DEFINITIONS
@@ -78,13 +77,8 @@ gchar *init_capture (void)
 
       if (pref.name_res)
 	{
-	  dns_open ();
-          if (dns_hasfd())
-             {
-                g_my_debug ("File descriptor for DNS is %d", dns_waitfd ());
-                gdk_input_add (dns_waitfd (),
-                               GDK_INPUT_READ, (GdkInputFunction) dns_ready, NULL);
-             }
+	  if (dns_open ())
+            g_warning ("Name resolver not available");
 	}
 
       capture_status = STOP;
@@ -439,12 +433,5 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
  
   if (pkt_data)
     packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
-}
-
-/* Callback function everytime a dns_lookup function is finished */
-static void
-dns_ready (gpointer data, gint fd, GdkInputCondition cond)
-{
-  dns_ack ();
 }
 

@@ -33,9 +33,7 @@
 
 
 #include <config.h>
-
-#ifdef USE_DIRECTDNS
-
+#define USE_DIRECTDNS
 
 #include <sys/types.h>
 #include <time.h>
@@ -83,7 +81,6 @@ extern int errno;
 typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned long dword;
-
 
 #define OpcodeCount 3
 char *opcodes[OpcodeCount + 1] = {
@@ -212,8 +209,8 @@ packetheader;
                                           ((x)[-2] <<  8) | ((x)[-1] <<  0))))
 #endif
 
-uint32_t alignedip;
-uint32_t localhost;
+static uint32_t alignedip;
+static uint32_t localhost;
 
 
 /*#define Debug 1*/
@@ -235,22 +232,18 @@ static int resfd = -1;			/* socket file descr. */
 static char tempstring[256];		/* temporary string used as buffer ... */
 
 /* internal funcs fwd decls */
-void direct_events (double *sinterval);
+static void direct_ready (gpointer data, gint fd, GdkInputCondition cond);
+static void direct_ack (void);
 
-static uint32_t
-longipstr (char *s)
+/* Callback function everytime a dns_lookup function is finished */
+static void
+direct_ready (gpointer data, gint fd, GdkInputCondition cond)
 {
-  return inet_addr (s);
-}
-
-int
-direct_waitfd (void)
-{
-  return resfd;
+  direct_ack ();
 }
 
 /* called to activate the resolver */
-void
+int 
 direct_open (void)
 {
   int option, i;
@@ -280,10 +273,16 @@ direct_open (void)
 	       strerror (errno));
       exit (-1);
     }
-  localhost = longipstr ("127.0.0.1");
+  localhost = inet_addr ("127.0.0.1");
 
   /* cache activation */  
   ipcache_init();
+
+  g_my_debug ("File descriptor for DNS is %d", resfd);
+  gdk_input_add (resfd,
+                 GDK_INPUT_READ, direct_ready, NULL);
+
+  return 0;
 }
 
 /* closes the resolver */
@@ -294,12 +293,6 @@ direct_close(void)
       return; /* already closed */
    close(resfd);
    resfd= -1;   
-}
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int direct_hasfd(void)
-{
-   return 1;
 }
 
 static void
@@ -764,7 +757,7 @@ direct_ack ()
 const char *
 direct_lookup (uint32_t ip)
 {
-  char *ipname;
+  const char *ipname;
   int is_expired = 0;
   
   /* asks cache */

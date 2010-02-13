@@ -23,14 +23,13 @@
 #include "direct_resolve.h"
 #include "thread_resolve.h"
 
-
 /* initialize dns interface */
-void dns_open (void)
+int dns_open (void)
 {
 #ifdef USE_DIRECTDNS
-   direct_open();
+   return direct_open();
 #else
-   thread_open();
+   return thread_open();
 #endif   
 }
 
@@ -41,36 +40,6 @@ void dns_close(void)
    direct_close();
 #else
    thread_close();
-#endif   
-}
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int dns_hasfd(void)
-{
-#ifdef USE_DIRECTDNS
-   return direct_hasfd();
-#else
-   return thread_hasfd();
-#endif   
-}
-
-/* returns the file descriptor associated with dns socket */
-int dns_waitfd (void)
-{
-#ifdef USE_DIRECTDNS
-   return direct_waitfd();
-#else
-   return thread_waitfd();
-#endif   
-}
-
-/* called when the dns_waitfd socket has available data */
-void dns_ack (void)
-{
-#ifdef USE_DIRECTDNS
-   return direct_ack();
-#else
-   return thread_ack();
 #endif   
 }
 

@@ -69,7 +69,6 @@ static struct ipresolve_link *resolveListTail=NULL;
 
 
 
-uint32_t alignedip;
 static int request_stop_thread = 0; /* stop thread flag */
 
 /* mutexes */
@@ -77,11 +76,13 @@ static int request_stop_thread = 0; /* stop thread flag */
 static pthread_mutex_t resolvemtx; /* resolve mutex */
 static pthread_cond_t resolvecond; /* resolve condition var */
 
-static void
-open_mutex(void)
+static int open_mutex(void)
 {
-    pthread_mutex_init (&resolvemtx, NULL);
-    pthread_cond_init (&resolvecond, NULL);
+    if (!pthread_mutex_init (&resolvemtx, NULL) &&
+        !pthread_cond_init (&resolvecond, NULL))
+      return 0; /* ok*/
+    else
+      return 1; 
 }
 
 static void
@@ -250,26 +251,21 @@ sendrequest_inverse (uint32_t ip)
   g_my_debug("Resolver: queued request \"%s\".", strlongip (rp->ip));
 }
 
-
-
-int
-thread_waitfd (void)
-{
-  return -1;
-}
-
 /* called to activate the resolver */
-void
+int 
 thread_open (void)
 {
   /* mutex creation */ 
-  open_mutex();
+  if (open_mutex())
+    return 1;
 
   /* cache activation */  
   ipcache_init();
 
   /* thread pool activation */ 
   start_threads();
+
+  return 0;
 }
 
 /* called to close the resolver */
@@ -281,18 +277,6 @@ thread_close(void)
    
   /* close mutex */ 
   close_mutex();
-}
-
-/* returns 1 if the current dns implementation has a socket wich needs a select() */
-int thread_hasfd(void)
-{
-   return 0;
-}
-
-/* called if the socket has some data */
-void
-thread_ack ()
-{
 }
 
 const char *
