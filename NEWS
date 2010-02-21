@@ -3,7 +3,9 @@
   Overview of changes in Etherape 0.9.10 ():
    In 0.9.9 relnotes I forgot to mention a fix from Sotiris Sotiropoulos.
    I apologize for the mistake.
- 
+   
+   Note: the old non-threaded name resolver is deprecated and will be
+   removed on the next release. If you really need it, speak up *now*.
 
    Changes summary:
      * new statistic: average packet size.

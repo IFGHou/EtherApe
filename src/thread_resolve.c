@@ -67,8 +67,6 @@ struct ipresolve_link
 static struct ipresolve_link *resolveListHead=NULL;  
 static struct ipresolve_link *resolveListTail=NULL;  
 
-
-
 static int request_stop_thread = 0; /* stop thread flag */
 
 /* mutexes */
@@ -204,8 +202,6 @@ static void start_threads()
 
 static void stop_threads()
 {
-  int i;
-
   /* take mutex, to make sure other thread will be waiting */
   pthread_mutex_lock(&resolvemtx);
 
