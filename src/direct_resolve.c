@@ -33,7 +33,7 @@
 
 
 #include <config.h>
-#define USE_DIRECTDNS
+#ifdef USE_DIRECTDNS
 
 #include <sys/types.h>
 #include <time.h>

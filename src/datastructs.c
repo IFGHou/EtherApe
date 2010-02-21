@@ -181,6 +181,8 @@ protohash_read_prefvect(gchar **colors)
       int j;
 
       colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
+      if (!colors_protocols[0])
+	continue;
 
       /* converting color */
       gdk_color_parse (colors_protocols[0], &gdk_color);
@@ -233,12 +235,16 @@ gchar **protohash_compact(gchar **colors)
       gchar **colors_protocols;
 
       colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
+      if (!colors_protocols[0])
+	continue;
 
       colors_protocols[1] = remove_spaces(colors_protocols[1]);
       
       for (el = g_list_first(work) ; el ; el = g_list_next(el) )
         {
           gchar **col=(gchar **)(el->data);
+	  if (!col || !col[0])
+	    continue;
           if (!g_ascii_strcasecmp(col[0], colors_protocols[0]))
             {
               /* found same color, append protocol */
