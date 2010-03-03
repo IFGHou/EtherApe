@@ -568,7 +568,7 @@ update_protocols_window (void)
   if (!gv)
     {
       /* register gv */
-      gv = gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
+      gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
       if (!gv)
         {
           g_critical("can't find prot_clist");
