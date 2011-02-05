@@ -42,7 +42,7 @@ long active_conversations(void)
  * two directions */
 /* A zero in any of the ports matches any port number */
 static GList
-  * find_conversation_ptr(guint32 src_address, guint32 dst_address,
+  * find_conversation_ptr(address_t * src_address, address_t * dst_address,
 		       guint16 src_port, guint16 dst_port)
 {
   GList *item = conversations;
@@ -51,13 +51,13 @@ static GList
   while (item)
     {
       conv = item->data;
-      if (((src_address == conv->src_address)
-	   && (dst_address == conv->dst_address)
+      if ((is_addr_eq(src_address, &conv->src_address)
+	   && is_addr_eq(dst_address, &conv->dst_address)
 	   && (!src_port || !conv->src_port || (src_port == conv->src_port))
 	   && (!dst_port || !conv->dst_port || (dst_port == conv->dst_port))
           )
-	  || ((src_address == conv->dst_address)
-	      && (dst_address == conv->src_address)
+	  || (is_addr_eq(src_address, &conv->dst_address)
+	      && is_addr_eq(dst_address, &conv->src_address)
 	      && (!src_port || !conv->dst_port || (src_port == conv->dst_port)) 
               && (!dst_port || !conv->src_port || (dst_port == conv->src_port))
               )
@@ -74,16 +74,11 @@ static GList
 
 
 void
-add_conversation (guint32 src_address, guint32 dst_address,
+add_conversation (address_t * src_address, address_t * dst_address,
 		  guint16 src_port, guint16 dst_port, const gchar * data)
 {
   conversation_t *conv = NULL;
   const gchar *old_data = NULL;
-  guint32 src, dst;
-
-  /* Because that is the way that ip_to_str works */
-  src = htonl (src_address);
-  dst = htonl (dst_address);
 
   /* Make sure there is not one such conversation */
   if ((old_data = find_conversation (src_address, dst_address,
@@ -92,25 +87,25 @@ add_conversation (guint32 src_address, guint32 dst_address,
       if (!strcmp (old_data, data))
 	g_my_critical
 	  ("Conflicting conversations %s:%d-%s:%d in add_conversation",
-	   ip_to_str ((guint8 *) & src), src_port,
-	   ip_to_str ((guint8 *) & dst), dst_port);
+	   address_to_str (src_address), src_port,
+	   address_to_str (dst_address), dst_port);
       else
 	g_my_debug
 	  ("Conversation %s:%d-%s:%d %s already exists in add_conversation",
-	   ip_to_str ((guint8 *) & src), src_port,
-	   ip_to_str ((guint8 *) & dst), dst_port, data);
+	   address_to_str (src_address), src_port,
+	   address_to_str (dst_address), dst_port, data);
       return;
     }
 
   g_my_debug ("Adding new conversation %s:%d-%s:%d %s",
-	      ip_to_str ((guint8 *) & src), src_port,
-	      ip_to_str ((guint8 *) & dst), dst_port, data);
+	      address_to_str (src_address), src_port,
+	      address_to_str (dst_address), dst_port, data);
 
   conv = g_malloc (sizeof (conversation_t));
   g_assert(conv);
   
-  conv->src_address = src_address;
-  conv->dst_address = dst_address;
+  address_copy(&conv->src_address, src_address);
+  address_copy(&conv->dst_address, dst_address);
   conv->src_port = src_port;
   conv->dst_port = dst_port;
   conv->data = g_strdup (data);
@@ -124,8 +119,8 @@ add_conversation (guint32 src_address, guint32 dst_address,
  * two directions */
 /* A zero in any of the ports matches any port number */
 const gchar* 
-find_conversation (guint32 src_address, guint32 dst_address,
-		       guint16 src_port, guint16 dst_port)
+find_conversation (address_t * src_address, address_t * dst_address,
+		      guint16 src_port, guint16 dst_port)
 {
   GList *item;
   item = find_conversation_ptr(src_address, dst_address, src_port, dst_port);
@@ -141,23 +136,17 @@ find_conversation (guint32 src_address, guint32 dst_address,
 
 /* removes all conversations with the specified addresses */
 void
-delete_conversation_link(guint32 src_address, guint32 dst_address)
+delete_conversation_link(address_t * src_address, address_t * dst_address)
 {
   GList *item;
-  guint32 src, dst;
 
-  src = htonl (src_address);
-  dst = htonl (dst_address);
-  while ( (item = find_conversation_ptr(src, dst, 0, 0)) )
+  while ( (item = find_conversation_ptr(src_address, dst_address, 0, 0)) )
     {
       conversation_t *conv = NULL;
       conv = item->data;
-      /* Because that is the way that ip_to_str works */
-      src = htonl (conv->src_address);
-      dst = htonl (conv->dst_address);
       g_my_debug ("Removing conversation %s:%d-%s:%d %s",
-		  ip_to_str ((guint8 *) & src), conv->src_port,
-		  ip_to_str ((guint8 *) & dst), conv->dst_port, conv->data);
+		  address_to_str (&conv->src_address), conv->src_port,
+		  address_to_str (&conv->dst_address), conv->dst_port, conv->data);
       g_free (conv->data);
       g_free (conv);
       conversations = g_list_delete_link(conversations, item);
@@ -170,17 +159,13 @@ delete_conversations (void)
 {
   GList *item = conversations;
   conversation_t *conv = NULL;
-  guint32 src, dst;
 
   while (item)
     {
       conv = item->data;
-      /* Because that is the way that ip_to_str works */
-      src = htonl (conv->src_address);
-      dst = htonl (conv->dst_address);
       g_my_debug ("Removing conversation %s:%d-%s:%d %s",
-		  ip_to_str ((guint8 *) & src), conv->src_port,
-		  ip_to_str ((guint8 *) & dst), conv->dst_port, conv->data);
+		  address_to_str (&conv->src_address), conv->src_port,
+		  address_to_str (&conv->dst_address), conv->dst_port, conv->data);
       g_free (conv->data);
       g_free (conv);
       item = item->next;

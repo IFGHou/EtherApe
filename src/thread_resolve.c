@@ -50,8 +50,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <pthread.h>
-#include "ip-cache.h"
 #include "common.h"
+#include "ip-cache.h"
 #include "thread_resolve.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
@@ -96,7 +96,6 @@ thread_pool_routine(void *dt)
 {
    struct ipcache_item *curitem;
    struct ipresolve_link *el;   
-   struct in_addr addr;
    struct hostent resultbuf;
    struct hostent *resultptr;
    char extrabuf[4096];
@@ -134,15 +133,16 @@ thread_pool_routine(void *dt)
          pthread_mutex_unlock(&resolvemtx);
 
          free(el); /* item saved, link elem now useless, freeing */
-         
-         addr.s_addr = htonl (curitem->ip);
+
 #ifdef FORCE_SINGLE_THREAD
          /* if forced single thread, uses gethostbyaddr */
          result=0;
-         resultptr = gethostbyaddr (&addr, sizeof(addr), AF_INET);
+         resultptr = gethostbyaddr (&curitem->ip.addr8, 
+                          address_len(curitem->ip.type), curitem->ip.type);
 #else
          /* full multithreading, use thread safe gethostbyaddr_r */
-         result = gethostbyaddr_r (&addr, sizeof(addr), AF_INET, 
+         result = gethostbyaddr_r (&curitem->ip.addr8, 
+                          address_len(curitem->ip.type), curitem->ip.type, 
                           &resultbuf, extrabuf, sizeof(extrabuf), 
                           &resultptr, &errnovar);
          if (result != 0 && errnovar == ERANGE)
@@ -217,7 +217,7 @@ static void stop_threads()
    NOTE: mutex locked!
 */
 static void
-sendrequest_inverse (uint32_t ip)
+sendrequest_inverse (address_t *ip)
 {
   struct ipcache_item *rp = NULL;
 
@@ -244,7 +244,7 @@ sendrequest_inverse (uint32_t ip)
   /* signal the condition and release the mux */
   pthread_cond_signal(&resolvecond);
 
-  g_my_debug("Resolver: queued request \"%s\".", strlongip (rp->ip));
+  g_my_debug("Resolver: queued request \"%s\".", strlongip (&rp->ip));
 }
 
 /* called to activate the resolver */
@@ -276,7 +276,7 @@ thread_close(void)
 }
 
 const char *
-thread_lookup (uint32_t ip)
+thread_lookup (address_t *ip)
 {
   const char *ipname;
   int is_expired = 0;

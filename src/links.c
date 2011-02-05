@@ -104,8 +104,8 @@ void link_delete(link_t *link)
   g_assert(link);
 
   /* first, free any conversation belonging to the link */
-  delete_conversation_link( *((guint32 *)(link->link_id.src.addr.ip4)), 
-                            *((guint32 *)(link->link_id.dst.addr.ip4)));
+  delete_conversation_link (&link->link_id.src.addr.ip, 
+                            &link->link_id.dst.addr.ip);
   
   for (i = STACK_SIZE; i + 1; i--)
     if (link->main_prot[i])

@@ -44,7 +44,7 @@ void dns_close(void)
 }
 
 /* resolves address and returns its fqdn */
-const char *dns_lookup (uint32_t address)
+const char *dns_lookup (address_t *address)
 {
 #ifdef USE_DIRECTDNS
    return direct_lookup (address);

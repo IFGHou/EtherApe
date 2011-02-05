@@ -31,6 +31,8 @@
     use sprintf - at your risk!
 */
 
+/* TODO implement IPv6 resolver */
+
 
 #include <config.h>
 #ifdef USE_DIRECTDNS
@@ -58,6 +60,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "common.h"
 #include "ip-cache.h"
 #include "util.h"
 #include "direct_resolve.h"
@@ -235,6 +238,15 @@ static char tempstring[256];		/* temporary string used as buffer ... */
 static void direct_ready (gpointer data, gint fd, GdkInputCondition cond);
 static void direct_ack (void);
 
+static char * strlongip_v4(uint32_t ip)
+{
+  address_t address;
+  address_clear(&address);
+  address.type = AF_INET;
+  address.addr32_v4 = ip;
+  return strlongip(&address);
+}
+
 /* Callback function everytime a dns_lookup function is finished */
 static void
 direct_ready (gpointer data, gint fd, GdkInputCondition cond)
@@ -330,22 +342,21 @@ dorequest (char *s, int type, word id)
 
 /* creates a request, asking DNS for its name */
 static void
-sendrequest_inverse (uint32_t ip)
+sendrequest_inverse (address_t *address)
 {
   struct ipcache_item *rp = NULL;
-  rp = ipcache_prepare_request(ip);
+  rp = ipcache_prepare_request(address);
 
   /* sending the request */
   snprintf (tempstring, sizeof (tempstring), "%u.%u.%u.%u.in-addr.arpa",
-	    ((byte *) & rp->ip)[3],
-	    ((byte *) & rp->ip)[2],
-	    ((byte *) & rp->ip)[1], ((byte *) & rp->ip)[0]);
+	    rp->ip.addr_v4[3], rp->ip.addr_v4[2], 
+	    rp->ip.addr_v4[1], rp->ip.addr_v4[0]);
   dorequest (tempstring, T_PTR, rp->id);
   if (debug)
     {
       snprintf (tempstring, sizeof (tempstring),
 		"Resolver: Sent domain lookup request for \"%s\".",
-		strlongip (rp->ip));
+		strlongip (&rp->ip));
       restell (tempstring);
     } 
 }
@@ -397,10 +408,9 @@ parserespacket_noerror (byte * s, int l, struct ipcache_item *rp,
     {
       /* Construct expected query reply */
       snprintf (stackstring, sizeof (stackstring),
-		"%u.%u.%u.%u.in-addr.arpa",
-		((byte *) & rp->ip)[3],
-		((byte *) & rp->ip)[2],
-		((byte *) & rp->ip)[1], ((byte *) & rp->ip)[0]);
+          "%u.%u.%u.%u.in-addr.arpa",
+          rp->ip.addr_v4[3], rp->ip.addr_v4[2],
+          rp->ip.addr_v4[1], rp->ip.addr_v4[0]);
     }
   else
     *stackstring = '\0';
@@ -554,13 +564,13 @@ parserespacket_noerror (byte * s, int l, struct ipcache_item *rp,
 		    restell (tempstring);
 		    return;
 		  }
-		if (memcmp (&rp->ip, (uint32_t *) c, sizeof (uint32_t)))
+		if (memcmp (&rp->ip.addr32_v4, (uint32_t *) c, sizeof (uint32_t)))
 		  {
 		    snprintf (tempstring, sizeof (tempstring),
 			      "Resolver: Reverse authentication failed: %s != ",
-			      strlongip (rp->ip));
+			      strlongip (&rp->ip));
 		    memcpy (&alignedip, (uint32_t *) c, sizeof (uint32_t));
-		    safe_strncat (tempstring, strlongip (alignedip),
+		    safe_strncat (tempstring, strlongip_v4 (alignedip),
 				  sizeof (tempstring));
 		    restell (tempstring);
 		    res_hostipmismatch++;
@@ -570,7 +580,7 @@ parserespacket_noerror (byte * s, int l, struct ipcache_item *rp,
 		  {
 		    snprintf (tempstring, sizeof (tempstring),
 			      "Resolver: Reverse authentication complete: %s == \"%s\".",
-			      strlongip (rp->ip),
+			      strlongip (&rp->ip),
 			      (rp->fq_hostname) ? rp->fq_hostname : "");
 		    restell (tempstring);
 		    res_reversesuccess++;
@@ -740,7 +750,7 @@ direct_ack ()
 	{
 	  snprintf (tempstring, sizeof (tempstring),
 		    "Resolver error: Received reply from unknown source: %s",
-		    strlongip (from.sin_addr.s_addr));
+		    strlongip_v4 (from.sin_addr.s_addr));
 	  restell (tempstring);
 	}
       else
@@ -755,11 +765,14 @@ direct_ack ()
 }
 
 const char *
-direct_lookup (uint32_t ip)
+direct_lookup (address_t *ip)
 {
   const char *ipname;
   int is_expired = 0;
-  
+
+  if (ip->type != AF_INET)
+    return NULL;
+
   /* asks cache */
   ipname = ipcache_getnameip(ip, &is_expired);
 

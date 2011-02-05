@@ -116,11 +116,9 @@ strtdiff (char *d, size_t lend, long signeddiff)
 }
 
 char *
-strlongip (uint32_t ip)
+strlongip (address_t *ip)
 {
-  struct in_addr a;
-  a.s_addr = htonl (ip);
-  return inet_ntoa (a);
+  return (char *)address_to_str(ip);
 }
 
 /* 
@@ -203,9 +201,13 @@ ipcache_getidbash (unsigned short id)
 }
 
 static unsigned short
-ipcache_getipbash (uint32_t ip)
+ipcache_getipbash (address_t *ip)
 {
-  return (unsigned short) BashModulo (ip);
+  uint32_t bash;
+  bash = ip->addr32[0] ^ ip->addr32[1] ^ ip->addr32[2] ^ ip->addr32[3];
+  bash = (bash >> 16) ^ bash;
+  bash = (bash >> 8) ^ bash;
+  return (unsigned short) BashModulo (bash);
 }
 
 /* removes rp from the active list */
@@ -343,30 +345,30 @@ ipcache_linkresolveip (struct ipcache_item *addrp)
 {
   struct ipcache_item *rp;
   unsigned short bashnum;
-  bashnum = ipcache_getipbash (addrp->ip);
+  bashnum = ipcache_getipbash (&addrp->ip);
   rp = ipbash[bashnum];
   if (rp)
     {
-      while ((rp->nextip) && (addrp->ip > rp->nextip->ip))
-	rp = rp->nextip;
-      while ((rp->previousip) && (addrp->ip < rp->previousip->ip))
-	rp = rp->previousip;
-      if (rp->ip < addrp->ip)
-	{
-	  addrp->previousip = rp;
-	  addrp->nextip = rp->nextip;
-	  if (rp->nextip)
-	    rp->nextip->previousip = addrp;
-	  rp->nextip = addrp;
-	}
+      while ((rp->nextip) && (is_addr_gt(&addrp->ip, &rp->nextip->ip)))
+        rp = rp->nextip;
+      while ((rp->previousip) && (is_addr_lt(&addrp->ip, &rp->previousip->ip)))
+        rp = rp->previousip;
+      if (is_addr_lt(&rp->ip, &addrp->ip))
+        {
+          addrp->previousip = rp;
+          addrp->nextip = rp->nextip;
+          if (rp->nextip)
+            rp->nextip->previousip = addrp;
+          rp->nextip = addrp;
+        }
       else
-	{
-	  addrp->previousip = rp->previousip;
-	  addrp->nextip = rp;
-	  if (rp->previousip)
-	    rp->previousip->nextip = addrp;
-	  rp->previousip = addrp;
-	}
+        {
+          addrp->previousip = rp->previousip;
+          addrp->nextip = rp;
+          if (rp->previousip)
+            rp->previousip->nextip = addrp;
+          rp->previousip = addrp;
+        }
     }
   else
     addrp->nextip = addrp->previousip = NULL;
@@ -377,7 +379,7 @@ static void
 ipcache_unlinkresolveip (struct ipcache_item *rp)
 {
   unsigned short bashnum;
-  bashnum = ipcache_getipbash (rp->ip);
+  bashnum = ipcache_getipbash (&rp->ip);
   if (ipbash[bashnum] == rp)
     {
       if (rp->previousip)
@@ -413,23 +415,23 @@ ipcache_findid (unsigned short id)
   if (rp)
     {
       while ((rp->nextid) && (id >= rp->nextid->id))
-	rp = rp->nextid;
+        rp = rp->nextid;
       while ((rp->previousid) && (id <= rp->previousid->id))
-	rp = rp->previousid;
+        rp = rp->previousid;
       if (id == rp->id)
-	{
-	  idbash[bashnum] = rp;
-	  return rp;
-	}
+        {
+          idbash[bashnum] = rp;
+          return rp;
+        }
       else
-	return NULL;
+        return NULL;
     }
   return rp;			/* NULL */
 }
 
 
 static struct ipcache_item *
-ipcache_findip (uint32_t ip)
+ipcache_findip (address_t *ip)
 {
   struct ipcache_item *rp;
   unsigned short bashnum;
@@ -437,23 +439,23 @@ ipcache_findip (uint32_t ip)
   rp = ipbash[bashnum];
   if (rp)
     {
-      while ((rp->nextip) && (ip >= rp->nextip->ip))
-	rp = rp->nextip;
-      while ((rp->previousip) && (ip <= rp->previousip->ip))
-	rp = rp->previousip;
-      if (ip == rp->ip)
-	{
-	  ipbash[bashnum] = rp;
-	  return rp;
-	}
+      while ((rp->nextip) && (is_addr_ge(ip, &rp->nextip->ip)))
+        rp = rp->nextip;
+      while ((rp->previousip) && (is_addr_le(ip, &rp->previousip->ip)))
+        rp = rp->previousip;
+      if (is_addr_eq(ip, &rp->ip))
+        {
+          ipbash[bashnum] = rp;
+          return rp;
+        }
       else
-	return NULL;
+        return NULL;
     }
   return rp;			/* NULL */
 }
 
 static struct ipcache_item *
-ipcache_alloc_item (uint32_t ip)
+ipcache_alloc_item (address_t *ip)
 {
   struct ipcache_item *rp;
   rp = (struct ipcache_item *) malloc (sizeof (struct ipcache_item));
@@ -465,7 +467,7 @@ ipcache_alloc_item (uint32_t ip)
   memset (rp, 0, sizeof (struct ipcache_item));
 
   rp->state = IPCACHE_STATE_PTRREQ;
-  rp->ip = ip;
+  address_copy(&rp->ip, ip);
   ipcache_linkresolveip (rp);
 
   /* create an id uniquely identifiyng the new item - this id will be used to match the DNS response
@@ -486,7 +488,7 @@ ipcache_alloc_item (uint32_t ip)
 
 /* prepares a request for the specified ip address */
 struct ipcache_item *
-ipcache_prepare_request(uint32_t ip)
+ipcache_prepare_request(address_t *ip)
 {
   struct ipcache_item *rp = NULL;
 
@@ -563,17 +565,17 @@ if isn't resolved.
 on exit is_expired contains true if the record is expired and must be refreshed 
 */
 const char *
-ipcache_getnameip(uint32_t ip, int *is_expired)
+ipcache_getnameip(address_t *ip, int *is_expired)
 {
   struct ipcache_item *rp;
-  uint32_t iptofind = ip;
+  address_t iptofind;
+
+  address_copy(&iptofind, ip);
 
   if (!pref.name_res)
     return strlongip (ip); /* name resolution globally disabled */
 
-  /*iptofind = htonl (ip);*/
-  
-  if ((rp = ipcache_findip (iptofind)))
+  if ((rp = ipcache_findip (&iptofind)))
     {
       /* item found, if expired set the flag */ 
       if (ipcache_is_expired_tick (rp->expire_tick))

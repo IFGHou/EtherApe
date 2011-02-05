@@ -28,4 +28,4 @@ int direct_open (void);
 void direct_close(void);
 
 /* resolves address and returns its fqdn */
-const char *direct_lookup (uint32_t address);
+const char *direct_lookup (address_t *address);

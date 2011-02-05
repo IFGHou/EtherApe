@@ -37,6 +37,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/socket.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -280,8 +281,6 @@ ether_to_str_punct (const guint8 * ad, char punct)
   return p;
 }				/* ether_to_str_punct */
 
-
-
 /* Wrapper for the most common case of asking
  * for a string using a colon as the hex-digit separator.
  */
@@ -290,4 +289,80 @@ ether_to_str (const guint8 * ad)
 {
   return ether_to_str_punct (ad, ':');
 }				/* ether_to_str */
+
+/*
+ * These functions are for IP/IPv6 handling
+ */
+const gchar *
+ipv6_to_str (const guint8 * ad)
+{
+  static gchar str[3][40];
+  static gchar *cur;
+  gchar *p;
+  int i;
+  guint32 octet;
+  static const gchar hex_digits[16] = "0123456789abcdef";
+
+  if (cur == &str[0][0])
+    {
+      cur = &str[1][0];
+    }
+  else if (cur == &str[1][0])
+    {
+      cur = &str[2][0];
+    }
+  else
+    {
+      cur = &str[0][0];
+    }
+  p = &cur[40];
+  *--p = '\0';
+  i = 15;
+  for (;;)
+    {
+      octet = ad[i];
+      *--p = hex_digits[octet & 0xF];
+      octet >>= 4;
+      *--p = hex_digits[octet & 0xF];
+      i--;
+      octet = ad[i];
+      *--p = hex_digits[octet & 0xF];
+      octet >>= 4;
+      *--p = hex_digits[octet & 0xF];
+      if (i == 0)
+    break;
+	  *--p = ':';
+      i--;
+    }
+  return p;
+}				/* ipv6_to_str */
+
+const gchar *
+address_to_str (const address_t * ad)
+{
+  switch (ad->type)
+    {
+    case AF_INET:
+      return ip_to_str(ad->addr_v4);
+    case AF_INET6:
+      return ipv6_to_str(ad->addr_v6);
+    default:
+      return "<invalid address family>";
+    }
+}				/* address_to_str */
+
+const gchar *
+type_to_str (const address_t * ad)
+{
+  switch (ad->type)
+    {
+    case AF_INET:
+      return "IP";
+    case AF_INET6:
+      return "IPv6";
+    default:
+      return "<invalid address family>";
+    }
+}				/* type_to_str */
+
 
