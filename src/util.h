@@ -47,11 +47,11 @@ extern "C"
   char *safe_strncat (char *dst, const char *src, size_t maxlen);
 
   /* utility functions */
-  const gchar *ip_to_str (const guint8 * ad);
-  const gchar *ether_to_str (const guint8 * ad);
-  const gchar *ipv6_to_str (const guint8 * ad);
-  const gchar *address_to_str (const address_t * ad);
-  const gchar *type_to_str (const address_t * ad);
+  const gchar *ipv4_to_str(const guint8 * ad);
+  const gchar *ether_to_str(const guint8 * ad);
+  const gchar *ipv6_to_str(const guint8 *ad);
+  const gchar *address_to_str(const address_t * ad);
+  const gchar *type_to_str(const address_t * ad);
   
 #ifdef __cplusplus
 }

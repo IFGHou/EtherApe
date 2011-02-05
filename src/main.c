@@ -176,7 +176,7 @@ main (int argc, char *argv[])
     {
       if (strstr (mode_string, "link"))
 	pref.mode = LINK6;
-      else if (strstr (mode_string, "ip"))
+      else if (strstr (mode_string, "ip or ip6"))
 	pref.mode = IP;
       else if (strstr (mode_string, "tcp"))
 	pref.mode = TCP;

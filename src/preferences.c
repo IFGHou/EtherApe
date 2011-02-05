@@ -101,7 +101,7 @@ load_config (const char *prefix)
 
   /* for now, those two preferences aren't saved */
   pref.mode = gnome_config_get_int_with_default ("General/mode=1", &u); /* IP */
-  pref.filter = gnome_config_get_string_with_default("General/filter=ip", &u);
+  pref.filter = gnome_config_get_string_with_default("General/filter=ip or ip6", &u);
 
   pref.diagram_only =
     gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);

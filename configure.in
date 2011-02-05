@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.9])
+AC_INIT([etherape],[0.9.10])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
@@ -40,7 +40,7 @@ AC_SUBST(ETHERAPE_LIBS)
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h ])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h math.h])
 
 AC_CHECK_HEADERS([sys/socket.h])
 AC_CHECK_HEADERS([net/if.h], [], [],
@@ -71,11 +71,11 @@ AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
 AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
 AC_ARG_ENABLE(thread-resolver,
-  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes).])],
+  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes). PARAMETER DEPRECATED])],
   [use_multithread=$enableval], [use_multithread=yes])
 
 if test $use_multithread = no; then
-  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver.])
+  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver. DEPRECATED, will be removed next release.])
 fi
 
 # res_init and friends are used only on direct resolver. Otherwhise we need
@@ -122,18 +122,20 @@ AC_ARG_ENABLE(static-pcap,
   STATIC_PCAP=yes)
 AC_ETHEREAL_PCAP_CHECK
 
+# check for other libraries
+AC_SEARCH_LIBS(pow, [m])
+
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
-AC_CHECK_FUNCS([snprintf alarm floor gettimeofday inet_ntoa localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr])
+AC_CHECK_FUNCS([snprintf floor gettimeofday localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr inet_ntop])
 
 # Create DATAFILE_DIR #define for config.h
 DATAFILE_DIR=$sysconfdir
 AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR",[data file directory])
 AC_SUBST(DATAFILE_DIR)
-
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr"
