@@ -386,7 +386,9 @@ get_offline_packet (void)
         ms_to_next = 0; 
       else 
         ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
-      if (ms_to_next > pref.max_delay)
+      if (ms_to_next < pref.min_delay)
+          ms_to_next = pref.min_delay;
+      else if (ms_to_next > pref.max_delay)
           ms_to_next = pref.max_delay;
 
       last_read_time = this_time;

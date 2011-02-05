@@ -231,7 +231,7 @@ void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...)
       dp->cur_level++;
     }
   else
-    g_warning("protocol too deep, higher levels ignored");
+    g_warning("protocol \"%.10s\" too deeply nested, ignored", fmt ? fmt : "");
 }
 
 static void add_offset(decode_proto_t *dp, guint offset)

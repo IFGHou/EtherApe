@@ -82,6 +82,7 @@ void init_config(struct pref_struct *p)
   p->interface=NULL;
   p->filter=NULL;
   p->debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
+  p->min_delay = 0;
   p->max_delay = G_MAXULONG;
 }
 
@@ -307,6 +308,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->filter = g_strdup(src->filter);
 
   tgt->debug_mask = src->debug_mask;
+  tgt->min_delay = src->min_delay;
   tgt->max_delay = src->max_delay;
 }
 

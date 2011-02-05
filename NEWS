@@ -9,6 +9,12 @@
 
    Changes summary:
      * new statistic: average packet size.
+     * added option --min-delay, to complement --max-delay when
+       replaying from file. With this option you can replay a capture
+       in slow-motion.
+     * tweaked default service file, adding some common ports.
+     * added check for invalid proto-color mappings (debian bug 566226).
+     * removed bogus double assignement. Thanks to "johndoe123321".
 
 
   Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
