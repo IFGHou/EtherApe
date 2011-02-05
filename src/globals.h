@@ -110,6 +110,7 @@ struct pref_struct
 
   GLogLevelFlags debug_mask;    /* debug mask active */
 
+  gulong min_delay;    /* min packet distance when replaying a file */
   gulong max_delay;    /* max packet distance when replaying a file */
 
   gchar *glade_file;    /* fullspec of xml glade file */

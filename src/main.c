@@ -78,7 +78,8 @@ main (int argc, char *argv[])
   gchar *cl_interface = NULL;
   gchar *cl_input_file = NULL;
   gboolean cl_numeric = FALSE;
-  glong mdelay = G_MAXLONG;
+  glong midelay = 0;
+  glong madelay = G_MAXLONG;
   gchar *version;
   poptContext poptcon;
 
@@ -101,7 +102,10 @@ main (int argc, char *argv[])
      N_("don't convert addresses to names"), NULL},
     {"quiet", 'q', POPT_ARG_NONE, &quiet, 0,
      N_("Disable informational messages"), NULL},
-    {"max-delay", 0, POPT_ARG_LONG, &mdelay,  0,
+    {"min-delay", 0, POPT_ARG_LONG, &midelay,  0,
+     N_("minimum packet delay in ms for reading capture files [cli only]"),
+      N_("<delay>")},
+    {"max-delay", 0, POPT_ARG_LONG, &madelay,  0,
      N_("maximum packet delay in ms for reading capture files [cli only]"),
       N_("<delay>")},
     {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
@@ -190,16 +194,27 @@ main (int argc, char *argv[])
       pref.filter = g_strdup (cl_filter);
     }
 
-  if (mdelay >= 0)
+  if (midelay >= 0 && midelay <= G_MAXLONG)
     {
-      if (mdelay < G_MAXLONG)
-        {
-          pref.max_delay = mdelay;
-          g_message("Maximum delay set to %lu ms", pref.max_delay);
-        }
+       pref.min_delay = midelay;
+       g_message("Minimum delay set to %lu ms", pref.min_delay);
     }
   else
-      g_message("Invalid maximum delay %ld, ignored", mdelay);
+      g_message("Invalid minimum delay %ld, ignored", midelay);
+  
+  if (madelay >= 0 && madelay <= G_MAXLONG)
+    {
+      if (madelay < pref.min_delay)
+        {
+          g_message("Maximum delay must be less of minimum delay");
+          pref.max_delay = pref.min_delay;
+        }
+      else
+        pref.max_delay = madelay;
+      g_message("Maximum delay set to %lu ms", pref.max_delay);
+    }
+  else
+      g_message("Invalid maximum delay %ld, ignored", madelay);
   
   /* Glade */
 

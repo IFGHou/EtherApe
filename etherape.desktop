@@ -2,6 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=EtherApe
+GenericName=EtherApe
 Comment=Graphical Network Monitor
 Comment[es]=Monitor Gráfico de Red
 Exec=etherape
