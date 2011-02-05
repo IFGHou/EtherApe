@@ -340,7 +340,7 @@ static gboolean get_arp_name (name_add_t *nt)
 
   fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0, AF_INET);
 
-  add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
+  add_name (ipv4_to_str (nt->node_id.addr.ip.addr_v4), 
             dns_lookup (&nt->node_id.addr.ip), 
             &nt->node_id, nt);
 
@@ -358,10 +358,10 @@ static gboolean get_ip_name (name_add_t *nt)
     fill_node_id(&nt->node_id, IP, nt, 12, 0, AF_INET);
 
   if (!pref.name_res)
-    add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
+    add_name (ipv4_to_str (nt->node_id.addr.ip.addr_v4), 
               NULL, &nt->node_id, nt);
   else
-    add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
+    add_name (ipv4_to_str (nt->node_id.addr.ip.addr_v4), 
               dns_lookup (&nt->node_id.addr.ip), 
               &nt->node_id, nt);
 

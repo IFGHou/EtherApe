@@ -205,7 +205,7 @@ gchar *get_default_filter (apemode_t mode)
   switch (mode)
     {
     case IP:
-      return g_strdup ("ip");
+      return g_strdup ("ip or ip6");
       break;
     case TCP:
       return g_strdup ("tcp");

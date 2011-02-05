@@ -1,13 +1,20 @@
                             Changelog for EtherApe
 
-  Overview of changes in Etherape 0.9.10 ():
+  Overview of changes in EtherApe 0.9.10 ():
+   The most notable change is IPV6 support, thanks to David Flamand.
+   EtherApe now computes average packet size, to better estimate network
+   usage.
+   The new option --min-delay allows slow-motion replay of a capture file.
+
    In 0.9.9 relnotes I forgot to mention a fix from Sotiris Sotiropoulos.
-   I apologize for the mistake.
+   Many apologies for the mistake.
    
    Note: the old non-threaded name resolver is deprecated and will be
    removed on the next release. If you really need it, speak up *now*.
+   Works only with IPV4 addresses, anyway.
 
    Changes summary:
+     * IPV6 support, thanks to David Flamand.
      * new statistic: average packet size.
      * added option --min-delay, to complement --max-delay when
        replaying from file. With this option you can replay a capture

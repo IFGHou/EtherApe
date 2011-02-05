@@ -37,8 +37,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -47,6 +48,11 @@
 #endif
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#elif !defined(INET6_ADDRSTRLEN)
+#define INET6_ADDRSTRLEN        46
 #endif
 #include <pwd.h>
 
@@ -187,8 +193,14 @@ safe_strncat (char *dst, const char *src, size_t maxlen)
 
 /* Output has to be copied elsewhere */
 const gchar *
-ip_to_str (const guint8 * ad)
+ipv4_to_str (const guint8 * ad)
 {
+#ifdef HAVE_INET_NTOP
+  static char buf[INET6_ADDRSTRLEN];
+  if (!inet_ntop(AF_INET, ad, buf, sizeof(buf)))
+    return "<invalid IPv4 address>";
+  return buf;
+#else
   static gchar str[3][16];
   static gchar *cur;
   gchar *p;
@@ -228,7 +240,8 @@ ip_to_str (const guint8 * ad)
       i--;
     }
   return p;
-}				/* ip_to_str */
+#endif
+}				/* ipv4_to_str */
 
 /* (toledo) This function I copied from capture.c of ethereal it was
  * without comments, but I believe it keeps three different
@@ -293,9 +306,14 @@ ether_to_str (const guint8 * ad)
 /*
  * These functions are for IP/IPv6 handling
  */
-const gchar *
-ipv6_to_str (const guint8 * ad)
+const gchar *ipv6_to_str (const guint8 *ad)
 {
+#ifdef HAVE_INET_NTOP
+  static char buf[INET6_ADDRSTRLEN];
+  if (!inet_ntop(AF_INET6, ad, buf, sizeof(buf))) 
+    return "<invalid IPv6 address>";
+  return buf;
+#else
   static gchar str[3][40];
   static gchar *cur;
   gchar *p;
@@ -335,6 +353,7 @@ ipv6_to_str (const guint8 * ad)
       i--;
     }
   return p;
+#endif
 }				/* ipv6_to_str */
 
 const gchar *
@@ -343,7 +362,7 @@ address_to_str (const address_t * ad)
   switch (ad->type)
     {
     case AF_INET:
-      return ip_to_str(ad->addr_v4);
+      return ipv4_to_str(ad->addr_v4);
     case AF_INET6:
       return ipv6_to_str(ad->addr_v6);
     default:

@@ -25,14 +25,14 @@ Lars Eggert
 David Flamand	<dflamand@gmail.com>
   Patches for IPv6 support
 
-Pav Lucistnik
-  Several fixes
-
 Riccardo Ghetta <bchiara@users.sourceforge.net>
   developer
 
 Simon Kirby	<sim@neato.org>
   dns.c
+
+Pav Lucistnik
+  Several fixes
 
 Eran Mann	<eran@nbase.co.il>
   RedHat package
