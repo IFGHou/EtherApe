@@ -79,8 +79,8 @@ typedef struct
   node_id_t src_node_id;
   
   /* These are used for conversations */
-  guint32 global_src_address;
-  guint32 global_dst_address;
+  address_t global_src_address;
+  address_t global_dst_address;
   guint16 global_src_port;
   guint16 global_dst_port;
 
@@ -215,8 +215,8 @@ void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen)
   dp->cur_level = 1; /* level zero is topmost protocol, will be filled later */
   node_id_clear(&dp->dst_node_id);
   node_id_clear(&dp->src_node_id);
-  dp->global_src_address = 0;
-  dp->global_dst_address = 0;
+  address_clear(&dp->global_src_address);
+  address_clear(&dp->global_dst_address);
   dp->global_src_port = 0;
   dp->global_dst_port = 0;
 }
@@ -539,7 +539,7 @@ get_ieee802_5_type (decode_proto_t *dp)
 static void
 get_eth_II (decode_proto_t *dp, etype_t etype)
 {
-  if (etype == ETHERTYPE_IP)
+  if (etype == ETHERTYPE_IP || etype == ETHERTYPE_IPv6)
     get_ip (dp);
   else if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
@@ -790,7 +790,7 @@ get_linux_sll (decode_proto_t *dp)
   etype = pntohs (&dp->cur_packet[14]);
 
   add_offset(dp, 16);
-  if (etype == ETHERTYPE_IP)
+  if (etype == ETHERTYPE_IP || etype == ETHERTYPE_IPv6)
     get_ip (dp);
   else if (etype == ETHERTYPE_IPX)
     get_ipx (dp);
@@ -931,31 +931,71 @@ get_ip (decode_proto_t *dp)
 {
   guint16 fragment_offset;
   iptype_t ip_type;
+  int ip_version, ip_hl;
 
-  decode_proto_add(dp, "IP");
   if (dp->cur_len < 20)
     return; 
-  
-  ip_type = dp->cur_packet[9];
-  fragment_offset = pntohs (dp->cur_packet + 6);
-  fragment_offset &= 0x0fff;
 
-  if (pref.mode !=  LINK6)
+  ip_version = (dp->cur_packet[0] >> 4) & 15;
+  switch (ip_version)
     {
-      /* we want node higher level node ids */
-      dp->dst_node_id.node_type = IP;
-      g_memmove(dp->dst_node_id.addr.ip4, dp->cur_packet + 16, 
-                sizeof(dp->dst_node_id.addr.ip4));
-      dp->src_node_id.node_type = IP;
-      g_memmove(dp->src_node_id.addr.ip4, dp->cur_packet + 12, 
-                sizeof(dp->src_node_id.addr.ip4));
+    case 4:
+      ip_hl = (dp->cur_packet[0] & 15) << 2;
+      if (ip_hl < 20)
+        return;
+      decode_proto_add(dp, "IP");
+
+      ip_type = dp->cur_packet[9];
+      fragment_offset = pntohs (dp->cur_packet + 6);
+      fragment_offset &= 0x0fff;
+
+      if (pref.mode !=  LINK6)
+        {
+          /* we want node higher level node ids */
+          dp->dst_node_id.node_type = IP;
+          address_clear(&dp->dst_node_id.addr.ip);
+          dp->dst_node_id.addr.ip.type = AF_INET;
+          g_memmove(dp->dst_node_id.addr.ip.addr_v4, dp->cur_packet + 16, 
+                    sizeof(dp->dst_node_id.addr.ip.addr_v4));
+          dp->src_node_id.node_type = IP;
+          address_clear(&dp->src_node_id.addr.ip);
+          dp->src_node_id.addr.ip.type = AF_INET;
+          g_memmove(dp->src_node_id.addr.ip.addr_v4, dp->cur_packet + 12, 
+                    sizeof(dp->src_node_id.addr.ip.addr_v4));
+        }
+
+      add_offset(dp, ip_hl);
+      break;
+    case 6:
+      if (dp->cur_len < 40)
+        return; 
+      decode_proto_add(dp, "IPV6");
+
+      ip_type = dp->cur_packet[6];
+      fragment_offset = 0;
+
+      if (pref.mode !=  LINK6)
+        {
+          /* we want node higher level node ids */
+          dp->dst_node_id.node_type = IP;
+          dp->dst_node_id.addr.ip.type = AF_INET6;
+          g_memmove(dp->dst_node_id.addr.ip.addr_v6, dp->cur_packet + 24, 
+                    sizeof(dp->dst_node_id.addr.ip.addr_v6));
+          dp->src_node_id.node_type = IP;
+          dp->src_node_id.addr.ip.type = AF_INET6;
+          g_memmove(dp->src_node_id.addr.ip.addr_v6, dp->cur_packet + 8, 
+                    sizeof(dp->src_node_id.addr.ip.addr_v6));
+        }
+
+      add_offset(dp, 40);
+      break;
+    default:
+      return;
     }
 
-  /*This is used for conversations */
-  dp->global_src_address = pntohl (dp->cur_packet + 12);
-  dp->global_dst_address = pntohl (dp->cur_packet + 16);
-
-  add_offset(dp, 20);
+  /* This is used for conversations */
+  address_copy(&dp->global_src_address, &dp->src_node_id.addr.ip);
+  address_copy(&dp->global_dst_address, &dp->dst_node_id.addr.ip);
 
   switch (ip_type)
     {
@@ -1185,14 +1225,12 @@ get_tcp (decode_proto_t *dp)
        * to already have an IP node id */
       g_assert(dp->dst_node_id.node_type == IP);
       dp->dst_node_id.node_type = TCP;
-      g_memmove(dp->dst_node_id.addr.tcp4.host, dp->dst_node_id.addr.ip4, 
-                sizeof(dp->dst_node_id.addr.tcp4.host));
+      address_copy(&dp->dst_node_id.addr.tcp4.host, &dp->global_dst_address);
       dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
 
       g_assert(dp->src_node_id.node_type == IP);
       dp->src_node_id.node_type = TCP;
-      g_memmove(dp->src_node_id.addr.tcp4.host, dp->src_node_id.addr.ip4, 
-                sizeof(dp->src_node_id.addr.tcp4.host));
+      address_copy(&dp->src_node_id.addr.tcp4.host, &dp->global_src_address);
       dp->src_node_id.addr.tcp4.port = dp->global_src_port;
     }
 
@@ -1202,7 +1240,7 @@ get_tcp (decode_proto_t *dp)
   add_offset(dp, tcp_len);
 
   /* Check whether this cur_packet belongs to a registered conversation */
-  if ((str = find_conversation (dp->global_src_address, dp->global_dst_address,
+  if ((str = find_conversation (&dp->global_src_address, &dp->global_dst_address,
 				src_port, dst_port)))
     {
       decode_proto_add(dp, str);
@@ -1281,14 +1319,12 @@ get_udp (decode_proto_t *dp)
        * to already have an IP node id */
       g_assert(dp->dst_node_id.node_type == IP);
       dp->dst_node_id.node_type = TCP;
-      g_memmove(dp->dst_node_id.addr.tcp4.host, dp->dst_node_id.addr.ip4, 
-                sizeof(dp->dst_node_id.addr.tcp4.host));
+      address_copy(&dp->dst_node_id.addr.tcp4.host, &dp->global_dst_address);
       dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
 
       g_assert(dp->src_node_id.node_type == IP);
       dp->src_node_id.node_type = TCP;
-      g_memmove(dp->src_node_id.addr.tcp4.host, dp->src_node_id.addr.ip4, 
-                sizeof(dp->src_node_id.addr.tcp4.host));
+      address_copy(&dp->src_node_id.addr.tcp4.host, &dp->global_src_address);
       dp->src_node_id.addr.tcp4.port = dp->global_src_port;
     }
 
@@ -1369,7 +1405,7 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       /* TODO In order to be able to dissect what is it's 
        * protocol I'd have to keep track of who sent
        * which call */
-      if (!(rpc_prot = find_conversation (dp->global_dst_address, 0,
+      if (!(rpc_prot = find_conversation (&dp->global_dst_address, 0,
 					  dp->global_dst_port, 0)))
 	return FALSE;
       decode_proto_add(dp, "ONC-RPC");
@@ -1430,8 +1466,8 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
 
       /* Search for an already existing conversation, if not, create one */
       g_assert(rpc_prot);
-      if (!find_conversation (dp->global_src_address, 0, dp->global_src_port, 0))
-	add_conversation (dp->global_src_address, 0,
+      if (!find_conversation (&dp->global_src_address, 0, dp->global_src_port, 0))
+	add_conversation (&dp->global_src_address, 0,
 			  dp->global_src_port, 0, rpc_prot);
 
       decode_proto_add(dp, "ONC-RPC");
@@ -1561,7 +1597,7 @@ get_ftp (decode_proto_t *dp)
 	      server_port);
 
   /* A port number zero means any port */
-  add_conversation (dp->global_src_address, dp->global_dst_address,
+  add_conversation (&dp->global_src_address, &dp->global_dst_address,
 		    server_port, 0, "FTP-PASSIVE");
 
   g_free (mesg);
@@ -1600,7 +1636,7 @@ append_etype_prot (decode_proto_t *dp, etype_t etype)
       decode_proto_add(dp, "ARP");
       break;
     case ETHERTYPE_IPv6:
-      decode_proto_add(dp, "IPv6");
+      decode_proto_add(dp, "IPV6");
       break;
     case ETHERTYPE_X25L3:
       decode_proto_add(dp, "X25L3");

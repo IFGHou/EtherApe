@@ -81,7 +81,37 @@ typedef enum
 }
 apemode_t;
 
+typedef struct __attribute__ ((packed))
+{
+  union __attribute__ ((packed))
+  {
+    struct __attribute__ ((packed))
+    {
+      guint32 type; /* address family: AF_INET or AF_INET6 */
+      union __attribute__ ((packed))
+      {
+        guint8 addr8[16];
+        guint32 addr32[4];
+        guint32 addr32_v4;
+        guint8 addr_v4[4];  /* 32-bit  */
+        guint8 addr_v6[16]; /* 128-bit */
+      };
+    };
+    guint8 all8[4*5];
+  };
+}
+address_t;
+
 /* Macros */
+#define address_copy(dst, src) memmove((dst), (src), sizeof(address_t))
+#define address_clear(dst) memset((dst), 0, sizeof(address_t))
+#define address_len(type) ((type)==AF_INET?32/8:(type)==AF_INET6?128/8:0)
+#define is_addr_eq(dst, src) (memcmp((dst), (src), sizeof(address_t))==0)
+#define is_addr_gt(dst, src) (memcmp((dst), (src), sizeof(address_t))>0)
+#define is_addr_lt(dst, src) (memcmp((dst), (src), sizeof(address_t))<0)
+#define is_addr_ge(dst, src) (memcmp((dst), (src), sizeof(address_t))>=0)
+#define is_addr_le(dst, src) (memcmp((dst), (src), sizeof(address_t))<=0)
+
 #define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
 						  G_LOG_LEVEL_DEBUG, \
 						  format, ##args)

@@ -45,7 +45,7 @@ struct ipcache_item
   unsigned long expire_tick;	/* when current_tick > expire_tick this node is expired */
   unsigned long last_expire_tick;	/* used to escalate old timers ... */
   char *fq_hostname;		/* fully qualified hostname */
-  uint32_t ip;			/* ip addr */
+  address_t ip;			/* ip addr */
   unsigned short id;			/* unique item id */
   enum IPCACHE_STATE state;			/* current state */
 };
@@ -54,8 +54,8 @@ struct ipcache_item
 void ipcache_init (void);
 unsigned int ipcache_tick (void);	/* call this more or less every 10 secs */
 
-struct ipcache_item *ipcache_prepare_request(unsigned int ip);
-const char *ipcache_getnameip(uint32_t ip, int *is_expired);
+struct ipcache_item *ipcache_prepare_request(address_t *ip);
+const char *ipcache_getnameip(address_t *ip, int *is_expired);
 void ipcache_request_failed(struct ipcache_item *rp);
 void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
 struct ipcache_item *ipcache_findid (unsigned short id);
@@ -63,4 +63,4 @@ long ipcache_active_entries(void);
 void ipcache_clear(void);
 
 char *strtdiff (char *d, size_t lend, long signeddiff);
-char *strlongip (unsigned int ip);
+char *strlongip (address_t *ip);

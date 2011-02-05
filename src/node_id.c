@@ -60,17 +60,17 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
       i = sizeof(na->addr.eth);
       break;
     case IP:
-      ga = na->addr.ip4;
-      gb = nb->addr.ip4;
-      i = sizeof(na->addr.ip4);
+      ga = na->addr.ip.all8;
+      gb = nb->addr.ip.all8;
+      i = sizeof(na->addr.ip.all8);
       break;
     case TCP:
-      ga = na->addr.tcp4.host;
-      gb = nb->addr.tcp4.host;
-      i = sizeof(na->addr.tcp4.host)+sizeof(na->addr.tcp4.port); 
+      ga = na->addr.tcp4.host.all8;
+      gb = nb->addr.tcp4.host.all8;
+      i = sizeof(na->addr.tcp4.host.all8)+sizeof(na->addr.tcp4.port);
       break;
     default:
-      g_error (_("Unsopported ape mode in node_id_compare"));
+      g_error (_("Unsupported ape mode in node_id_compare"));
       ga = na->addr.eth;
       gb = nb->addr.eth;
       i = sizeof(node_addr_t);
@@ -100,10 +100,10 @@ gchar *node_id_str(const node_id_t *id)
       msg = g_strdup(ether_to_str(id->addr.eth));
       break;
     case IP:
-      msg = g_strdup(ip_to_str (id->addr.ip4));
+      msg = g_strdup(address_to_str (&id->addr.ip));
       break;
     case TCP:
-      msg = g_strdup_printf("%s:%u", ip_to_str (id->addr.tcp4.host), 
+      msg = g_strdup_printf("%s:%u", address_to_str (&id->addr.tcp4.host), 
                             id->addr.tcp4.port);
       break;
     default:
@@ -128,10 +128,12 @@ gchar *node_id_dump(const node_id_t *id)
       msg = g_strdup_printf("LINK: %s", ether_to_str(id->addr.eth));
       break;
     case IP:
-      msg = g_strdup_printf("IP: %s", ip_to_str (id->addr.ip4));
+      msg = g_strdup_printf("%s: %s", type_to_str (&id->addr.ip), 
+                            address_to_str (&id->addr.ip));
       break;
     case TCP:
-      msg = g_strdup_printf("TCP/UDP: %s:%u", ip_to_str (id->addr.tcp4.host), 
+      msg = g_strdup_printf("TCP/UDP: %s:%u", 
+                            address_to_str (&id->addr.tcp4.host), 
                             id->addr.tcp4.port);
       break;
     default:

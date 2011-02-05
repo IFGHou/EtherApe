@@ -63,6 +63,7 @@ static gboolean get_link6_name (name_add_t *nt);
 static gboolean get_llc_name (name_add_t *nt);
 static gboolean get_arp_name (name_add_t *nt);
 static gboolean get_ip_name (name_add_t *nt);
+static gboolean get_ipv6_name (name_add_t *nt);
 static gboolean get_ipx_name (name_add_t *nt);
 static gboolean get_udp_name (name_add_t *nt);
 static gboolean get_tcp_name (name_add_t *nt);
@@ -83,6 +84,7 @@ static prot_function_t prot_functions_table[] = {
   {"LLC", get_llc_name},
   {"ARP", get_arp_name},
   {"IP", get_ip_name},
+  {"IPV6", get_ipv6_name},
   {"IPX", get_ipx_name},
   {"TCP", get_tcp_name},
   {"UDP", get_udp_name},
@@ -186,7 +188,7 @@ static void decode_next(name_add_t *nt)
  * Checks also the packet size against overflow
  */
 static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t *nt, 
-                          int disp, int portdisp)
+                          int disp, int portdisp, int type)
 {
   guint8 *dt = NULL;
   size_t sz = 0;
@@ -201,34 +203,36 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
     sz = sizeof(node_id->addr.eth);
     break;
   case IP:
-    dt = node_id->addr.ip4;
-    sz = sizeof(node_id->addr.ip4);
+    dt = node_id->addr.ip.addr8;
+    sz = address_len(type);
     break;
   case TCP:
-    dt = node_id->addr.tcp4.host;
-    sz = sizeof(node_id->addr.tcp4); /* full size */
+    dt = node_id->addr.tcp4.host.addr8;
+    sz = address_len(type);
     break;
   default:
-    g_error (_("Unsopported ape mode in fill_node_id"));
+    g_error (_("Unsupported ape mode in fill_node_id"));
   }
 
   if (nt->packet_size < nt->offset + disp + sz ||
-     nt->packet_size < nt->offset + portdisp + sz)
+     nt->packet_size < nt->offset + portdisp + 2)
     {
       missing_data_msg(nt, NULL);
       return;
     }
 
-
   if (TCP == apemode)
   {
-    guint16 port;
-    g_memmove(dt, nt->p + nt->offset + disp, sz-2);
-    port = ntohs (*(guint16 *) (nt->p + nt->offset + portdisp));
-    g_memmove(dt+sz-2, &port, 2);
+    node_id->addr.tcp4.host.type = type;
+    g_memmove(dt, nt->p + nt->offset + disp, sz);
+    node_id->addr.tcp4.port = ntohs (*(guint16 *) (nt->p + nt->offset + portdisp));
   }
   else
+  {
+    if (IP == apemode)
+      node_id->addr.ip.type = type;
     g_memmove(dt, nt->p + nt->offset + disp, sz);
+  }
 }
 
 /* Null is used for loopback. There is actually no information,
@@ -263,9 +267,9 @@ static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
   gboolean found_in_ethers = FALSE;
 
   if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, ethmode, nt, ethmode, 0);
+    fill_node_id(&nt->node_id, ethmode, nt, ethmode, 0, 0);
   else
-    fill_node_id(&nt->node_id, ethmode, nt, ethmode+6, 0);
+    fill_node_id(&nt->node_id, ethmode, nt, ethmode+6, 0, 0);
 
   numeric = ether_to_str (nt->node_id.addr.eth);
 
@@ -334,10 +338,10 @@ static gboolean get_arp_name (name_add_t *nt)
   hardware_len = *(guint8 *) (nt->p + nt->offset + 4);
   protocol_len = *(guint8 *) (nt->p + nt->offset + 5);
 
-  fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0);
+  fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0, AF_INET);
 
-  add_name (ip_to_str (nt->node_id.addr.ip4), 
-            dns_lookup (pntohl (nt->node_id.addr.ip4)), 
+  add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
+            dns_lookup (&nt->node_id.addr.ip), 
             &nt->node_id, nt);
 
   /* ARP doesn't carry any other protocol on top, so we return 
@@ -349,23 +353,44 @@ static gboolean get_ip_name (name_add_t *nt)
 {
 
   if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, IP, nt, 16, 0);
+    fill_node_id(&nt->node_id, IP, nt, 16, 0, AF_INET);
   else
-    fill_node_id(&nt->node_id, IP, nt, 12, 0);
+    fill_node_id(&nt->node_id, IP, nt, 12, 0, AF_INET);
 
   if (!pref.name_res)
-    add_name (ip_to_str (nt->node_id.addr.ip4), 
+    add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
               NULL, &nt->node_id, nt);
   else
-    {
-      add_name (ip_to_str(nt->node_id.addr.ip4), 
-                dns_lookup(pntohl (nt->node_id.addr.ip4)), 
-                &nt->node_id, nt);
-    }
+    add_name (ip_to_str (nt->node_id.addr.ip.addr_v4), 
+              dns_lookup (&nt->node_id.addr.ip), 
+              &nt->node_id, nt);
 
-  nt->offset += 20;
+  /* IPv4 header length can be variable */
+  nt->offset += nt->offset < nt->packet_size ?
+            (nt->p[nt->offset] & 15) << 2 : 0;
   return TRUE;
 }				/* get_ip_name */
+
+static gboolean get_ipv6_name (name_add_t *nt)
+{
+
+  if (nt->dir == INBOUND)
+    fill_node_id(&nt->node_id, IP, nt, 24, 0, AF_INET6);
+  else
+    fill_node_id(&nt->node_id, IP, nt, 8, 0, AF_INET6);
+
+  if (!pref.name_res)
+    add_name (ipv6_to_str (nt->node_id.addr.ip.addr_v6), 
+              NULL, &nt->node_id, nt);
+  else
+    add_name (ipv6_to_str (nt->node_id.addr.ip.addr_v6), 
+              dns_lookup (&nt->node_id.addr.ip), 
+              &nt->node_id, nt);
+
+  /* IPv6 header length is always constant */
+  nt->offset += 40;
+  return TRUE;
+}				/* get_ipv6_name */
 
 static gboolean get_ipx_name (name_add_t *nt)
 {
@@ -382,21 +407,23 @@ static gboolean get_tcp_name (name_add_t *nt)
   if (pref.mode == TCP)
     {
       gchar *numeric_name, *resolved_name;
+      int type = nt->node_id.addr.tcp4.host.type;
+      int shift = type == AF_INET6 ? 2 : 0;
       
       if (nt->dir == OUTBOUND)
-          fill_node_id(&nt->node_id, TCP, nt, -8, 0);
+          fill_node_id(&nt->node_id, TCP, nt, -8<<shift, 0, type);
       else
-          fill_node_id(&nt->node_id, TCP, nt, -4, 2);
+          fill_node_id(&nt->node_id, TCP, nt, -4<<shift, 2, type);
 
       numeric_name = g_strdup_printf("%s:%d",
-                                     ip_to_str(nt->node_id.addr.tcp4.host),
-                                     nt->node_id.addr.tcp4.port);
+                      address_to_str(&nt->node_id.addr.tcp4.host),
+                      nt->node_id.addr.tcp4.port);
 
       if (pref.name_res)
         {
           const gchar *dnsname;
           const port_service_t *port;
-          dnsname = dns_lookup (pntohl (nt->node_id.addr.tcp4.host));
+          dnsname = dns_lookup (&nt->node_id.addr.tcp4.host);
           port = services_tcp_find(nt->node_id.addr.tcp4.port);
           if (port)
             resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);

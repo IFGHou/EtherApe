@@ -24,4 +24,4 @@ int thread_open (void);
 void thread_close(void);
 
 /* resolves address and returns its fqdn */
-const char *thread_lookup (uint32_t address);
+const char *thread_lookup (address_t *address);

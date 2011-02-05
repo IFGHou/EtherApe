@@ -37,6 +37,7 @@ static name_decode_t ethernet_sequence[] = {
     {"NETBIOS-DGM",FALSE},
     {"NETBIOS-SSN",FALSE}, 
     {"IP",FALSE},
+    {"IPV6",FALSE},
     {"IPX-SAP",FALSE},
     {"ARP",FALSE},
     {"ETH_II",FALSE},
@@ -51,6 +52,7 @@ static name_decode_t ip_sequence[] = {
     {"NETBIOS-DGM",FALSE},
     {"NETBIOS-SSN",FALSE}, 
     {"IP",FALSE},
+    {"IPV6",FALSE},
     {NULL, FALSE}
 };
 

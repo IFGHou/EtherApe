@@ -23,11 +23,11 @@
 /* address union */
 typedef union __attribute__ ((packed))
 {
-  guint8 eth[6] ;                 /* ethernet address */
-  guint8 ip4[4];                  /* ip address */
+  guint8 eth[6];                  /* ethernet address */
+  address_t ip;                   /* ipv4 and ipv6 address */
   struct __attribute__ ((packed))
   {
-    guint8 host[4];            /* tcp/udp address */
+    address_t host;            /* tcp/udp address */
     guint16 port;            /* port number */
   } tcp4;
 }
