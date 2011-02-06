@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.10 ():
+  Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):
    The most notable change is IPV6 support, thanks to David Flamand.
    EtherApe now computes average packet size, to better estimate network
    usage.
@@ -22,6 +22,10 @@
      * tweaked default service file, adding some common ports.
      * added check for invalid proto-color mappings (debian bug 566226).
      * removed bogus double assignement. Thanks to "johndoe123321".
+
+   Important: CVS repository shutdown
+     Effective from today, EtherApe CVS is no longer accessible.
+     Plese refer to the Mercurial repository.
 
 
   Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
