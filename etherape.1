@@ -18,6 +18,8 @@ maxnodes ] [
 operating mode ] [
 .B --max-delay
 delay ] [
+.B --min-delay
+delay ] [
 .B -n 
 ] [
 .B -q
@@ -57,6 +59,10 @@ set mode of operation (default is ip)
 .TP
 .BR "--max-delay " "<delay in ms>"
 caps timestamps to the provided delay when replaying a capture file.
+.TP
+.BR "--min-delay " "<delay in ms>"
+provides a minimum to inter-packet delay when replaying a capture
+file.
 .TP
 .BR "-n, --numeric"
 don't convert addresses to names, disables name resolution.
