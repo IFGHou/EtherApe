@@ -19,11 +19,16 @@ User visible features:
     Once is done you will be able to open and save your own 
     diagrams.
 
+  * Make OSI level decoding consistent even with encapsulation. Multiple
+    protocols should be shown comma separated at the proper level, instead of
+    being incorrectly bumped up. Example: "ETHII, LLC-SNAP -> IP", instead of
+    "ETHII -> LLC-SNAP -> IP".
+
 Issues in the source code
 -------------------------
 
   * rewrite names handling. Do only packet extraction at capture time, name
-    resolution only at display time for the chosen name.
+    resolution at display time and only for the chosen address.
 
   * use glib datastructs everywhere, instead of a mix of glib and in-house.
 
@@ -32,8 +37,10 @@ Issues in the source code
   * Why am I using a global "interface" and a second "device"
     in capture.c? Check that I can just use interface.
 
+  * Currently a link is monodirectional, i.e. there is one for A->B traffic
+    and another for B->A.  Should be bidirectional, properly accounting
+    packets. At diagram level, both triangles should be drawn simultaneously.
+
   * Use a GArray instead of a fixed array for the protocols
     stack.
 
---
-$Id$

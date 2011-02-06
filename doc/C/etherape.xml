@@ -41,6 +41,7 @@
       <year>2008</year>
       <year>2009</year>
       <year>2010</year>
+      <year>2011</year>
       <holder>Juan Toledo</holder>
       <holder>Riccardo Ghetta</holder>
     </copyright>
@@ -78,6 +79,15 @@
       <revision>
         <revnumber>&appname; Manual V0.3</revnumber>
         <date>January 2010</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
+
+      <revision>
+        <revnumber>&appname; Manual V0.4</revnumber>
+        <date>February 2011</date>
         <revdescription>
           <para role="author">Riccardo Ghetta
           <email>bchiara@users.sf.net</email></para>
@@ -228,10 +238,13 @@
               <para>The default mode, focusing on traffic at IP level or above.
 	      Nodes are identified by their IP address, if available.</para>
 	      <para>Unless directly addressed, routers are ignored, showing the final packet destination.</para>
-	      <para>The default filter expression is 'ip', discarding all non IP packets.
+	      <para>The default filter expression is 'ip or ip6', discarding all non IP packets.
 	      Remove the filter to see non-IP traffic (e.g. ARP queries)</para>
               <warning>
-                <para>Due to pcap limitations, when capturing VLAN-tagged packets, your filter must start with 'vlan' (e.g. vlan and tcp) and all traffic must be tagged, otherwise the filter will not work.</para>
+                <para>Due to pcap limitations, when filtering while
+                capturing VLAN-tagged packets, your filter must start with
+                'vlan' (e.g. 'vlan and (ip or ip6)' ) and all traffic
+                must be tagged, otherwise the filter will not work.</para>
               </warning>
             </listitem>
           </varlistentry>
@@ -247,7 +260,10 @@
 		    can change it to 'tcp or udp' to see both TCP and UDP traffic.
 </para>
               <warning>
-                <para>Due to pcap limitations, when capturing VLAN-tagged packets, your filter must start with 'vlan' (e.g. vlan and tcp) and all traffic must be tagged, otherwise the filter will not work.</para>
+                <para>Due to pcap limitations, when filtering while
+                capturing VLAN-tagged packets, your filter must start
+                with 'vlan' (e.g. 'vlan and tcp') and all traffic must
+                be tagged, otherwise the filter will not work.</para>
               </warning>
             </listitem>
           </varlistentry>
@@ -767,6 +783,14 @@
 
             <para>Default: <guilabel>Topmost recognized
             protocol</guilabel>.</para>
+                  <warning>
+                      <para>Protocol level attribution can be confused by 
+			encapsulation. For instance, when an Ethernet packet
+			containing IP traffic is encapsulated by an LLC-SNAP
+			header, IP data might be incorrectly flagged as ISO level 4 or 5.</para>
+                      <para>The most safe settings is Topmost
+                      recognized protocol.</para>
+                    </warning>
           </listitem>
         </varlistentry>
 
@@ -937,7 +961,7 @@
             <para>If checked, enables name resolution. If unchecked, show only
             numeric addresses (like the -b command line option).</para>
 
-            <para>Default: <guilabel>unchecked</guilabel>.</para>
+            <para>Default: <guilabel>checked</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -1255,9 +1279,18 @@
     <para>Some libpcap versions have a bug for which a filter "ip" doesn't
     capture icmp traffic.</para>
 
-    <para>Due to pcap limitations, when capturing VLAN-tagged packets, your filter 
-    must start with 'vlan' (e.g. vlan and tcp) and all traffic must be tagged, 
+    <para>Due to pcap limitations, VLAN-tagged packets are visible
+    only if the filter expression starts with 'vlan' and in this case
+    only VLAN-tagged traffic will be shown.</para>
+
+    <para>Due to pcap limitations, when filtering while capturing VLAN-tagged packets, your filter 
+    must start with 'vlan' (e.g. 'vlan and tcp') and all traffic must be tagged, 
     otherwise the filter will not work.</para>
+
+    <para>OSI level attribution can be confused by
+    encapsulation. For instance, when an Ethernet packet containing IP
+    traffic is encapsulated by an LLC-SNAP header, IP data might be
+    incorrectly flagged as ISO level 4 or 5.</para>
 
     <para>Most NFS traffic will show up as UDP_FRAGMENT or just RPC</para>
   </sect1>

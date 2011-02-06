@@ -976,7 +976,7 @@ get_ip (decode_proto_t *dp)
 
       if (pref.mode !=  LINK6)
         {
-          /* we want node higher level node ids */
+          /* we want higher level node ids */
           dp->dst_node_id.node_type = IP;
           dp->dst_node_id.addr.ip.type = AF_INET6;
           g_memmove(dp->dst_node_id.addr.ip.addr_v6, dp->cur_packet + 24, 
