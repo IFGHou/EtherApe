@@ -3,8 +3,8 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY appname          "EtherApe">
   <!ENTITY app "<application>EtherApe</application>">
-  <!ENTITY appversion   "0.9.9">
-  <!ENTITY manrevision  "0.3">
+  <!ENTITY appversion   "0.9.11">
+  <!ENTITY manrevision  "0.5">
   <!ENTITY date "January 2010">
 ]>
 <!--
@@ -94,6 +94,16 @@
         </revdescription>
       </revision>
 
+      <revision>
+        <revnumber>&appname; Manual V0.5</revnumber>
+        <date>February 2011</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
+
+    
     
     </revhistory>
 
@@ -375,8 +385,15 @@
                   menu.</para>
 		  <note>
 		    <para>Capture files often contain lengthy sections without traffic. Here the command-line option 
-		    --max-delay is useful to avoid staring for hours to an empty display.</para>
+		    --max-delay can be useful to avoid staring for hours to an empty display.
+Conversely, --min-delay can help analyze many short lived connections.</para>
 		  </note>
+                </listitem>
+
+                <listitem>
+                  <para><menuchoice>
+                      <guimenuitem>Export</guimenuitem>
+                    </menuchoice> creates an xml with a snapshot of current nodes and their statistics.  A sample output file can be found in <xref linkend="appendix-a"/>.</para>
                 </listitem>
 
                 <listitem>
@@ -1276,7 +1293,7 @@
   <sect1 id="bugs">
     <title>Known Bugs and Limitations</title>
 
-    <para>Some libpcap versions have a bug for which a filter "ip" doesn't
+    <para>Some old libpcap versions have a bug for which a filter "ip" doesn't
     capture icmp traffic.</para>
 
     <para>Due to pcap limitations, VLAN-tagged packets are visible
@@ -1293,6 +1310,153 @@
     incorrectly flagged as ISO level 4 or 5.</para>
 
     <para>Most NFS traffic will show up as UDP_FRAGMENT or just RPC</para>
+  </sect1>
+
+  <sect1 id="appendix-a">
+    <title>XML export file format</title>
+
+    <para>This section presents &app; XML export file format followed by a detailed analysis.</para>
+    <warning><para>At this time &app; exports only node informations. Future releases might export also link data.</para></warning>
+<para>This example shows a file containing only a single, simple, node. A real file will contain many nodes, possibly with more involved &lt;protocol&gt; subtags.  The general structure remains the same, however.</para>
+
+    <programlisting linenumbering="numbered">
+&lt;?xml version="1.0"?&gt;
+&lt;!-- traffic data in bytes. last_heard in seconds from dump time --&gt;
+&lt;etherape&gt;
+  &lt;nodes&gt;
+    &lt;node&gt;
+      &lt;name&gt;
+        &lt;id&gt;
+          &lt;IP&gt;10.0.0.98&lt;/IP&gt;
+        &lt;/id&gt;
+        &lt;resolved_name&gt;floss.rulez.example.net&lt;/resolved_name&gt;
+        &lt;numeric_name&gt;10.0.0.98&lt;/numeric_name&gt;
+      &lt;/name&gt;
+      &lt;traffic_stats&gt;
+        &lt;active_packets&gt;12&lt;/active_packets&gt;
+        &lt;in&gt;
+          &lt;stats&gt;
+            &lt;avg&gt;1080&lt;/avg&gt;
+            &lt;total&gt;1027&lt;/total&gt;
+            &lt;avg_size&gt;102&lt;/avg_size&gt;
+            &lt;packets&gt;10&lt;/packets&gt;
+            &lt;last_heard&gt;0.357600&lt;/last_heard&gt;
+          &lt;/stats&gt;
+        &lt;/in&gt;
+        &lt;out&gt;
+          &lt;stats&gt;
+            &lt;avg&gt;34416&lt;/avg&gt;
+            &lt;total&gt;14456&lt;/total&gt;
+            &lt;avg_size&gt;1205&lt;/avg_size&gt;
+            &lt;packets&gt;12&lt;/packets&gt;
+            &lt;last_heard&gt;0.000000&lt;/last_heard&gt;
+          &lt;/stats&gt;
+        &lt;/out&gt;
+        &lt;tot&gt;
+          &lt;stats&gt;
+            &lt;avg&gt;35496&lt;/avg&gt;
+            &lt;total&gt;15483&lt;/total&gt;
+            &lt;avg_size&gt;704&lt;/avg_size&gt;
+            &lt;packets&gt;22&lt;/packets&gt;
+            &lt;last_heard&gt;0.000000&lt;/last_heard&gt;
+          &lt;/stats&gt;
+        &lt;/tot&gt;
+        &lt;protocols&gt;
+          &lt;protocol&gt;
+            &lt;level&gt;1&lt;/level&gt;
+            &lt;key&gt;ETH_II&lt;/key&gt;
+            &lt;stats&gt;
+              &lt;avg&gt;55948&lt;/avg&gt;
+              &lt;total&gt;14049&lt;/total&gt;
+              &lt;avg_size&gt;669&lt;/avg_size&gt;
+              &lt;packets&gt;21&lt;/packets&gt;
+              &lt;last_heard&gt;0.174299&lt;/last_heard&gt;
+            &lt;/stats&gt;
+            &lt;name&gt;
+              &lt;id&gt;
+                &lt;link&gt;fe:ff:20:00:01:00&lt;/link&gt;
+              &lt;/id&gt;
+              &lt;numeric_name&gt;fe:ff:20:00:01:00&lt;/numeric_name&gt;
+              &lt;accumulated&gt;14049&lt;/accumulated&gt;
+            &lt;/name&gt;
+          &lt;/protocol&gt;
+          &lt;protocol&gt;
+            &lt;level&gt;2&lt;/level&gt;
+            &lt;key&gt;IP&lt;/key&gt;
+            &lt;stats&gt;
+              &lt;avg&gt;55948&lt;/avg&gt;
+              &lt;total&gt;14049&lt;/total&gt;
+              &lt;avg_size&gt;669&lt;/avg_size&gt;
+              &lt;packets&gt;21&lt;/packets&gt;
+              &lt;last_heard&gt;0.174299&lt;/last_heard&gt;
+            &lt;/stats&gt;
+            &lt;name&gt;
+              &lt;id&gt;
+                &lt;IP&gt;10.0.0.98&lt;/IP&gt;
+              &lt;/id&gt;
+              &lt;resolved_name&gt;floss.rulez.example.net&lt;/resolved_name&gt;
+              &lt;numeric_name&gt;10.0.0.98&lt;/numeric_name&gt;
+              &lt;accumulated&gt;14049&lt;/accumulated&gt;
+            &lt;/name&gt;
+          &lt;/protocol&gt;
+          &lt;protocol&gt;
+            &lt;level&gt;3&lt;/level&gt;
+            &lt;key&gt;TCP&lt;/key&gt;
+            &lt;stats&gt;
+              &lt;avg&gt;55948&lt;/avg&gt;
+              &lt;total&gt;14049&lt;/total&gt;
+              &lt;avg_size&gt;669&lt;/avg_size&gt;
+              &lt;packets&gt;21&lt;/packets&gt;
+              &lt;last_heard&gt;0.174299&lt;/last_heard&gt;
+            &lt;/stats&gt;
+          &lt;/protocol&gt;
+          &lt;protocol&gt;
+            &lt;level&gt;4&lt;/level&gt;
+            &lt;key&gt;WWW&lt;/key&gt;
+            &lt;stats&gt;
+              &lt;avg&gt;55948&lt;/avg&gt;
+              &lt;total&gt;14049&lt;/total&gt;
+              &lt;avg_size&gt;669&lt;/avg_size&gt;
+              &lt;packets&gt;21&lt;/packets&gt;
+              &lt;last_heard&gt;0.174299&lt;/last_heard&gt;
+            &lt;/stats&gt;
+          &lt;/protocol&gt;
+        &lt;/protocols&gt;
+      &lt;/traffic_stats&gt;
+    &lt;/node&gt;
+  &lt;/nodes&gt;
+&lt;/etherape&gt;
+</programlisting>
+
+
+<para>Node information are, perhaps unsurprisingly, enclosed by &lt;node&gt; tags (lines 5-111).  A node is composed by an identifying header, &lt;name&gt; (lines 6-12) followed by traffic statistics, enclosed by &lt;traffic_stats&gt; (lines 13-103).
+</para>
+<para>Lines 6-12 contain the primary node identifier, i.e. the name/address displayed by &app;. In this example is the IPv4 address 10.0.0.4, along its resolved name.</para>
+<para>While only one &lt;name&gt; can be displayed, a node usually has multiple identities: an Ethernet MAC address, an IP one, perhaps a NETBIOS name. Every identity has a matching &lt;name&gt; element; see lines 53-59 and 71-78.</para>
+<para>A &lt;name&gt; is identified by its &lt;id&gt; i.e. its address, which
+  can be of type IP (an IPv4 dotted decimal address), IPv6 or 'link', a
+  link-level, colon separated, list of octets (e.g. the Ethernet MAC address). You see an example of the latter in lines 54-56.</para>
+<para>&lt;numeric_name&gt; and &lt;resolved_name&gt; are the high level equivalent of &lt;id&gt;; &lt;accumulated&gt; is the total bytes of traffic related with the name. &app; uses this statistic to choose between multiple names.
+</para>
+<para>Traffic statistics (lines 13-103) give a summary of node traffic: first,
+  the number of active packets (line 14), i.e. the packets received during the 'Node traffic statistics' interval (see <xref linkend="etherape-prefs-timings"/>).
+&lt;in&gt; record incoming traffic, &lt;out&gt; outgoing and &lt;tot&gt; the total bytes seen.  The &lt;protocols&gt; element reports traffic broken down by protocol.</para>
+<para>&lt;stats&gt; elements are:
+<itemizedlist>
+<listitem><para>&lt;avg&gt; is the moving average of active packets (see "Averaging Time", <xref linkend="etherape-prefs-timings"/>), in bytes. Shown as 'Instantaneous' traffic in <xref linkend="nodedlg"/> </para></listitem>
+<listitem><para>&lt;total&gt; is the accumulated traffic seen.</para></listitem>
+<listitem><para>&lt;avg_size&gt; is the average packet size.</para></listitem>
+<listitem><para>&lt;packets&gt; is the number of packets received.</para></listitem>
+<listitem><para>&lt;last_heard&gt; is the distance in second between time of exporting and the last packet seen.  I.e. 2.000100 means 2 seconds and 100 microseconds ago.</para></listitem>
+</itemizedlist>
+</para>
+<para>&lt;protocol&gt; elements carry per protocol breakdown of node statistics. A packet might affect multiple protocols: an HTTP request over Ethernet is recorded by protocols "WWW", "TCP", "IP" and "ETH_II", while an Ethernet broadcast is seen only as "ETH_II".</para>
+<para>Here &lt;level&gt; roughly equates to the OSI level, but multiple
+  encapsulation can confuse the engine and introduce additional levels. A
+  protocol level 2 is always lower than one of level 3.</para>
+<para>&lt;key&gt; is a mnemonic identifier of the protocol; for TCP/UDP ports is taken from the services file, if available.</para>
+<para>There can be multiple entries with the same level (e.g. HTTP and
+  IMAP). Only the combination of level and key is unique. </para>
   </sect1>
 
   <sect1 id="authors">

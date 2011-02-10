@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "node.h"
 #include "capture.h"
+#include "util.h"
 
 typedef struct
 {
@@ -183,6 +184,38 @@ gchar *node_dump(const node_t * node)
   g_free(msg_id);
   g_free(msg_stats);
   g_free(msg_mprot);
+
+  return msg;
+}
+
+/* returns a newly allocated string with an xml dump of node 
+ * N.B.
+ * ignores main_prot array (protocol names), because is already dumped
+ * with protostack stats */
+gchar *node_xml(const node_t * node)
+{
+  gchar *msg;
+  gchar *msg_id;
+  gchar *msg_stats;
+  gchar *msg_resolved;
+  gchar *msg_numeric;
+  guint i;
+
+  if (!node)
+    return xmltag("node", "");
+
+  msg_id = node_id_xml(&node->node_id);
+  msg_stats = traffic_stats_xml(&node->node_stats);
+  msg_resolved = xmltag("resolved_name", "%s", node->name->str);
+  msg_numeric = xmltag("numeric_name", "%s", node->numeric_name->str);
+  
+  msg = xmltag("node","\n<name>\n%s%s%s</name>\n%s",
+                        msg_id, msg_resolved, msg_numeric,
+                        msg_stats);
+  g_free(msg_id);
+  g_free(msg_stats);
+  g_free(msg_resolved);
+  g_free(msg_numeric);
 
   return msg;
 }
@@ -569,4 +602,31 @@ gchar *nodes_catalog_dump(void)
   msg = g_strdup("");
   nodes_catalog_foreach(node_dump_tvs, &msg);
   return msg;
+}
+
+static gboolean node_xml_tvs(gpointer key, gpointer value, gpointer data)
+{
+  gchar *msg_node;
+  gchar *tmp;
+  gchar **msg = (gchar **)data;
+  const node_t *node = (const node_t *)value;
+  
+  msg_node = node_xml(node);
+  tmp = *msg;
+  *msg = g_strdup_printf("%s%s", tmp, msg_node);
+  g_free(tmp);
+  g_free(msg_node);
+  return FALSE;
+}
+
+gchar *nodes_catalog_xml(void)
+{
+  gchar *msg;
+  gchar *xml;
+  
+  msg = g_strdup("");
+  nodes_catalog_foreach(node_xml_tvs, &msg);
+  xml = xmltag("nodes","\n%s", msg);
+  g_free(msg);
+  return xml;
 }

@@ -1969,6 +1969,15 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                           </widget>
                         </child>
                         <child>
+                          <widget class="GtkMenuItem" id="export">
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">Export node data as xml</property>
+                            <property name="label" translatable="yes">_export</property>
+                            <property name="use_underline">True</property>
+                            <signal name="activate" handler="on_export_activate"/>
+                          </widget>
+                        </child>
+                        <child>
                           <widget class="GtkImageMenuItem" id="preferences1">
                             <property name="label">gtk-preferences</property>
                             <property name="visible">True</property>

@@ -125,6 +125,38 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
     gtk_widget_destroy (dialog);
 }				/* on_open_activate */
 
+void
+on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  GtkWidget *dialog;
+
+  dialog = gtk_file_chooser_dialog_new ("Export to XML File",
+				      NULL,
+				      GTK_FILE_CHOOSER_ACTION_SAVE,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+				      NULL);
+  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+
+  if (pref.export_file)
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), pref.export_file);
+
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+      GtkRecentManager *manager;
+      manager = gtk_recent_manager_get_default ();
+      gtk_recent_manager_add_item (manager, gtk_file_chooser_get_uri(GTK_FILE_CHOOSER (dialog)));
+
+      g_free(pref.export_file);
+      pref.export_file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+      gtk_widget_destroy (dialog);
+
+      dump_xml(pref.export_file);
+    }
+  else
+    gtk_widget_destroy (dialog);
+}
+
 /* Capture menu */
 
 void
@@ -601,3 +633,33 @@ set_active_interface ()
     }
 
 }				/* set_active_interface */
+
+void dump_xml(gchar *ofile)
+{
+  FILE *fout;
+  gchar *xml;
+  gchar *oldlocale;
+  
+  if (!ofile)
+    return;
+
+  // we want to dump in a known locale, so force it as 'C'
+  oldlocale = g_strdup(setlocale(LC_ALL, NULL));
+  setlocale(LC_ALL, "C");
+  
+  xml = nodes_catalog_xml();
+  fout = fopen(ofile, "wb");
+  if (fout)
+    {
+      fprintf(fout, "<?xml version=\"1.0\"?>\n");
+      fprintf(fout, "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n", xml);
+      fprintf(fout, "<etherape>\n%s</etherape>", xml);
+      fclose(fout);
+    }
+
+  // reset user locale
+  setlocale(LC_ALL, oldlocale);
+
+  g_free(xml);
+  g_free(oldlocale);
+}

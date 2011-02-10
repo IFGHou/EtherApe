@@ -37,6 +37,8 @@ protocol_t *protocol_t_create(const gchar *protocol_name);
 void protocol_t_delete(protocol_t *prot);
 /* returns a new string with a dump of prot */
 gchar *protocol_t_dump(const protocol_t *prot);
+/* returns a new string with an xml dump of prot */
+gchar *protocol_t_xml(const protocol_t *prot, guint level);
 
 typedef struct
 {
@@ -61,7 +63,8 @@ const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, co
 gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
 /* returns a newly allocated string with a dump of pstk */
 gchar *protocol_stack_dump(const protostack_t *pstk);
-
+/* returns a newly allocated string with am xml dump of pstk */
+gchar *protocol_stack_xml(const protostack_t *pstk);
 
 /* protocol summary method */
 void protocol_summary_open(void); /* initializes the summary */

@@ -45,6 +45,8 @@ gint node_id_compare (const node_id_t *a, const node_id_t *b);
 gchar *node_id_str(const node_id_t *id); 
 /* returns a newly allocated string with a dump of id */
 gchar *node_id_dump(const node_id_t *id);
+/* returns a newly allocated string with an xml dump of id */
+gchar *node_id_xml(const node_id_t *id);
 
 /* a node name */
 typedef struct
@@ -63,6 +65,7 @@ void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm,
 gint node_name_id_compare(const name_t *a, const name_t *b);
 gint node_name_freq_compare (gconstpointer a, gconstpointer b);
 gchar *node_name_dump(const name_t *name);
+gchar *node_name_xml(const name_t *name);
 long active_names(void);
 
 #endif

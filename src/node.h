@@ -36,6 +36,7 @@ node_t;
 node_t *node_create(const node_id_t * node_id); /* creates a new node */
 void node_delete(node_t *node); /* destroys a node, releasing memory */
 gchar *node_dump(const node_t * node);
+gchar *node_xml(const node_t * node);
 gint node_count(void); /* total number of nodes in memory */
 gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
@@ -57,5 +58,7 @@ void nodes_catalog_update_all(void);
 
 /* returns a newly allocated str with a dump of all nodes */
 gchar *nodes_catalog_dump(void);
+/* returns a newly allocated str with an xml dump of all nodes */
+gchar *nodes_catalog_xml(void);
 
 #endif

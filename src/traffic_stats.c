@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "traffic_stats.h"
 #include "ui_utils.h"
+#include "util.h"
 
 /***************************************************************************
  *
@@ -178,6 +179,35 @@ gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat)
                         "  %s",
                         pkt_stat->pkt_list.length, 
                         msg_in, msg_out, msg_tot, msg_proto);
+  g_free(msg_tot);
+  g_free(msg_in);
+  g_free(msg_out);
+  g_free(msg_proto);
+  return msg;
+}
+
+/* returns a newly allocated string with an xml dump of pkt_stat */
+gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat)
+{
+  gchar *msg;
+  gchar *msg_tot, *msg_in, *msg_out;
+  gchar *msg_proto;
+
+  if (!pkt_stat)
+    return xmltag("traffic_stats","");
+
+  msg_tot = basic_stats_xml(&pkt_stat->stats);
+  msg_in = basic_stats_xml(&pkt_stat->stats_in);
+  msg_out = basic_stats_xml(&pkt_stat->stats_out);
+  msg_proto = protocol_stack_xml(&pkt_stat->stats_protos);
+  msg = xmltag("traffic_stats",
+               "\n<active_packets>%u</active_packets>\n"
+               "<in>\n%s</in>\n"
+               "<out>\n%s</out>\n"
+               "<tot>\n%s</tot>\n"
+               "%s\n",
+               pkt_stat->pkt_list.length, 
+               msg_in, msg_out, msg_tot, msg_proto);
   g_free(msg_tot);
   g_free(msg_in);
   g_free(msg_out);
