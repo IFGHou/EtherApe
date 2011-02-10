@@ -41,5 +41,6 @@ void traffic_stats_add_packet( traffic_stats_t *pkt_stat,
 void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
 gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat); 
+gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat); 
 
 #endif

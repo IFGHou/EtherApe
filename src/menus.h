@@ -25,7 +25,7 @@
 #include "globals.h"
 
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
-
+void on_export_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_interface_radio_activate (gchar * gui_device);
 void on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
@@ -45,6 +45,7 @@ void on_help_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);
+void dump_xml(gchar *ofile);
 void gui_start_capture (void);
 void gui_pause_capture (void);
 void gui_eof_capture (void);

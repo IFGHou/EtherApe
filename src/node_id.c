@@ -144,6 +144,42 @@ gchar *node_id_dump(const node_id_t *id)
   return msg;
 }
 
+gchar *node_id_xml(const node_id_t *id)
+{
+  gchar *msg;
+  gchar *msgb;
+  gchar *xml;
+  g_assert(id);
+  switch (id->node_type)
+    {
+    case APEMODE_DEFAULT:
+      msg = g_strdup_printf("");
+      break;
+    case LINK6:
+      msg = xmltag("link", "%s", ether_to_str(id->addr.eth));
+      break;
+    case IP:
+      msg = xmltag(type_to_str (&id->addr.ip), "%s", address_to_str (&id->addr.ip));
+      break;
+    case TCP:
+      xml = xmltag(type_to_str (&id->addr.tcp4.host), 
+                   "%s", 
+                   address_to_str (&id->addr.tcp4.host));
+      msgb = xmltag("port", "%u", id->addr.tcp4.port);
+      msg = g_strdup_printf("%s %s", xml, msgb);
+      g_free(xml);
+      g_free(msgb);
+      break;
+    default:
+      msg = xmltag("unknown","node_id_type %d unknown", (int)(id->node_type));
+      break;
+    }
+  xml = xmltag("id", "\n%s", msg);
+  g_free(msg);
+  
+  return xml;
+}
+
 /***************************************************************************
  *
  * name_t implementation
@@ -240,6 +276,32 @@ gchar *node_name_dump(const name_t *name)
                         name->res_name != NULL, 
                         name->accumulated);
   g_free(nid);
+  return msg;
+}
+
+gchar *node_name_xml(const name_t *name)
+{
+  gchar *msg;
+  gchar *nid;
+  gchar *nres;
+
+  if (!name)
+    return xmltag("name", "");
+  
+  nid = node_id_xml(&name->node_id);
+  if (name->res_name) 
+    nres = xmltag("resolved_name", "%s", name->res_name->str);
+  else
+    nres = g_strdup("");
+  msg = xmltag("name",
+               "\n%s%s<numeric_name>%s</numeric_name>\n"
+               "<accumulated>%.0f</accumulated>",
+                nid, 
+                nres, 
+                name->numeric_name->str,
+                name->accumulated);
+  g_free(nid);
+  g_free(nres);
   return msg;
 }
 

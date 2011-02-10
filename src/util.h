@@ -52,7 +52,10 @@ extern "C"
   const gchar *ipv6_to_str(const guint8 *ad);
   const gchar *address_to_str(const address_t * ad);
   const gchar *type_to_str(const address_t * ad);
-  
+
+  /* xml helpers */
+  gchar *xmltag(const gchar *name, const gchar *fmt, ...);
+
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

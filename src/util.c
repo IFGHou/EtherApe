@@ -384,4 +384,19 @@ type_to_str (const address_t * ad)
     }
 }				/* type_to_str */
 
+/* xml helpers */
+
+/* returns a new string containing the named tag */
+gchar *xmltag(const gchar *name, const gchar *fmt, ...)
+{
+  gchar *msg;
+  gchar *xml;
+  va_list ap;
+  va_start(ap, fmt);
+  msg = g_strdup_vprintf(fmt, ap);
+  va_end(ap);
+  xml = g_strdup_printf("<%s>%s</%s>\n", name, msg, name);
+  g_free(msg);
+  return xml;
+}
 

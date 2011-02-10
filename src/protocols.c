@@ -22,6 +22,7 @@
 #include <string.h>
 #include "protocols.h"
 #include "node.h"
+#include "util.h"
 
 static gint 
 protocol_compare (gconstpointer a, gconstpointer b);
@@ -282,6 +283,54 @@ gchar *protocol_stack_dump(const protostack_t *pstk)
   return msg;
 }
 
+/* returns a newly allocated string with an xml dump of pstk */
+gchar *protocol_stack_xml(const protostack_t *pstk)
+{
+  guint i;
+  gchar *msg;
+  gchar *xml;
+
+  if (!pstk)
+    return xmltag("protocols", "");
+
+  msg = g_strdup("");
+  for (i = 1 ; i <= STACK_SIZE ; ++i)
+    {
+      gchar *msg_level;
+      gchar *tmp;
+      if (!pstk->protostack[i])
+        continue;
+
+      const GList *cur_el = pstk->protostack[i];
+      msg_level = NULL;
+      while (cur_el)
+        {
+          gchar *msg_proto;
+          const protocol_t *p = (const protocol_t *)(cur_el->data);
+          g_assert(p);
+
+          msg_proto = protocol_t_xml(p, i);
+          if (!msg_level)
+            msg_level = msg_proto;
+          else
+            {
+              tmp = msg_level;
+              msg_level = g_strdup_printf("%s%s", tmp, msg_proto);
+              g_free(tmp);
+              g_free(msg_proto);
+            }
+          cur_el = cur_el->next;
+        }
+      tmp = msg;
+      msg = g_strdup_printf("%s%s", tmp, msg_level);
+      g_free(tmp);
+      g_free(msg_level);
+    }
+  xml = xmltag("protocols", "\n%s", msg);
+  g_free(msg);
+  return xml;
+}
+
 /***************************************************************************
  *
  * protocol_t implementation
@@ -360,6 +409,56 @@ gchar *protocol_t_dump(const protocol_t *prot)
   msg = g_strdup_printf("protocol name: %s, stats [%s], "
                          "node_names [%s]",
                          prot->name, msg_stats, msg_names);
+                         
+  g_free(msg_stats);
+  g_free(msg_names);
+  return msg;
+}
+
+/* returns a new string with an xml dump of prot */
+gchar *protocol_t_xml(const protocol_t *prot, guint level)
+{
+  gchar *msg;
+  gchar *msg_stats;
+  gchar *msg_names;
+
+  if (!prot)
+    return xmltag("protocol","");
+
+  msg_stats = basic_stats_xml(&prot->stats);
+
+  if (!prot->node_names)
+    msg_names = g_strdup("");
+  else
+    {
+      const GList *cur_el;
+      msg_names = NULL;
+      cur_el = prot->node_names;
+      while (cur_el)
+        {
+          gchar *str_name;
+          const name_t *cur_name;
+
+          cur_name = (const name_t *)(cur_el->data);
+          str_name = node_name_xml(cur_name);
+          if (!msg_names)
+            msg_names = str_name;
+          else
+            {
+              gchar *tmp = msg_names;
+              msg_names = g_strjoin(",", tmp, str_name, NULL);
+              g_free(tmp);
+              g_free(str_name);
+            }
+          cur_el = cur_el->next;
+        }
+    }
+  
+  msg = xmltag("protocol", 
+               "\n<level>%u</level>\n<key>%s</key>\n%s%s",
+               level,
+               prot->name, 
+               msg_stats, msg_names);
                          
   g_free(msg_stats);
   g_free(msg_names);

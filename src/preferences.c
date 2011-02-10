@@ -48,6 +48,7 @@ static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
 void init_config(struct pref_struct *p)
 {
   p->input_file = NULL;
+  p->export_file = NULL;
   p->name_res = TRUE;
   p->mode = IP;
   p->filter = NULL;
@@ -234,6 +235,7 @@ duplicate_config(const struct pref_struct *src)
   g_assert(t);
 
   t->input_file = NULL;
+  t->export_file = NULL;
   t->text_color=NULL;
   t->fontname=NULL;
   t->colors = NULL;
@@ -251,6 +253,8 @@ free_config(struct pref_struct *t)
 {
   g_free(t->input_file);
   t->input_file = NULL;
+  g_free(t->export_file);
+  t->export_file = NULL;
   g_free(t->text_color);
   t->text_color=NULL;
   g_free(t->fontname);
@@ -277,6 +281,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 
   /* then copy */
   tgt->input_file = g_strdup(src->input_file);
+  tgt->export_file = g_strdup(src->export_file);
   tgt->name_res=src->name_res;
   tgt->mode=src->mode;
   tgt->diagram_only = src->diagram_only;

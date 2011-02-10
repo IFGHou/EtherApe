@@ -1,5 +1,15 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.11 ():
+   Several users asked for a way to export traffic statistics.
+   EtherApe now can save a snapshot with all known nodes and relevant
+   informations to an XML file.
+
+   Changes summary:
+     * XML dump of node statistics.
+     * Updated manual.
+
+
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):
    The most notable change is IPV6 support, thanks to David Flamand.
    EtherApe now computes average packet size, to better estimate network
