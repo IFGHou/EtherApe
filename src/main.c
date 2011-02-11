@@ -77,6 +77,7 @@ main (int argc, char *argv[])
   gchar *cl_filter = NULL;
   gchar *cl_interface = NULL;
   gchar *cl_input_file = NULL;
+  gchar *export_file_final = NULL;
   gboolean cl_numeric = FALSE;
   glong midelay = 0;
   glong madelay = G_MAXLONG;
@@ -92,6 +93,8 @@ main (int argc, char *argv[])
      N_("set capture filter"), N_("<capture filter>")},
     {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
      N_("set interface to listen to"), N_("<interface name>")},
+    {"final-export", 'f', POPT_ARG_STRING, &export_file_final, 0,
+     N_("automatic export at end of replay"), N_("<file to export to>")},
     {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
      N_("don't move nodes around (deprecated)"), NULL}, 
     {"node-limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
@@ -145,7 +148,7 @@ main (int argc, char *argv[])
    * Third, whatever given in the command line */
   init_config(&pref);
 
-  set_debug_level ();
+  set_debug_level();
 
   /* Config file */
   load_config ("/Etherape/");
@@ -163,13 +166,20 @@ main (int argc, char *argv[])
       pref.interface = g_strdup (cl_interface);
     }
 
+  if (export_file_final)
+    {
+      if (pref.export_file_final)
+	g_free (pref.export_file_final);
+      pref.export_file_final = g_strdup (export_file_final);
+    }
+  pref.name_res = !cl_numeric;
+
   if (cl_input_file)
     {
       if (pref.input_file)
 	g_free (pref.input_file);
       pref.input_file = g_strdup (cl_input_file);
     }
-  pref.name_res = !cl_numeric;
 
   /* Find mode of operation */
   if (mode_string)

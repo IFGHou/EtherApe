@@ -42,6 +42,7 @@ struct pref_struct
 
   gchar *input_file;		/* Capture file to read from */
   gchar *export_file;		/* file to export to */
+  gchar *export_file_final;     /* file to export to at end of replay */
   gboolean name_res;		/* Whether dns lookups are performed */
   apemode_t mode;		/* Mode of operation. Can be
 				 * T.RING/FDDI/ETHERNET, IP or TCP */

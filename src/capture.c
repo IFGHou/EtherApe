@@ -395,6 +395,9 @@ get_offline_packet (void)
       break;
     case -2:
       capture_status = CAP_EOF;
+      /* xml dump if needed */
+      if (pref.export_file_final)
+        dump_xml(pref.export_file_final);
       break;
     default:
       ms_to_next=0; /* error or timeout, ignore packet */
