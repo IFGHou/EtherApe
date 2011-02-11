@@ -8,6 +8,8 @@ etherape \- graphical network traffic browser
 ] [
 .B -f
 filter ] [
+.B --final-export
+outfile ] [
 .B --glade-file
 gladefile ] [
 .B -i
@@ -44,6 +46,9 @@ don't display any node text identification
 .TP
 .BR "-f, --filter " "<capture filter>"
 set capture filter
+.TP
+.BR "--final-export " "<export file name>"
+when replaying, export to named file at end of replay
 .TP
 .BR "--glade-file " "<filename>"
 uses the named libglade file to load interface instead of the default.
@@ -97,5 +102,6 @@ The etherape webpage at http://etherape.sourceforge.net/
 .SH AUTHOR
 
 Juan Toledo <toledo@users.sourceforge.net>
+.PP
 Riccardo Ghetta <bchiara@users.sourceforge.net>
 
