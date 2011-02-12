@@ -2083,20 +2083,13 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                         </child>
                         <child>
                           <widget class="GtkImageMenuItem" id="start_menuitem">
-                            <property name="label">_Start</property>
+                            <property name="label">gtk-media-play</property>
                             <property name="visible">True</property>
                             <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">Start capture</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">False</property>
+                            <property name="use_stock">True</property>
                             <signal name="activate" handler="on_start_menuitem_activate"/>
                             <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <child internal-child="image">
-                              <widget class="GtkImage" id="image1">
-                                <property name="visible">True</property>
-                                <property name="pixbuf">play.xpm</property>
-                              </widget>
-                            </child>
                           </widget>
                         </child>
                         <child>
@@ -2112,7 +2105,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                             <child internal-child="image">
                               <widget class="GtkImage" id="image2">
                                 <property name="visible">True</property>
-                                <property name="pixbuf">pause.xpm</property>
+                                <property name="stock">gtk-media-pause</property>
                               </widget>
                             </child>
                           </widget>
@@ -2131,7 +2124,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                             <child internal-child="image">
                               <widget class="GtkImage" id="image3">
                                 <property name="visible">True</property>
-                                <property name="pixbuf">stop.xpm</property>
+                                <property name="stock">gtk-media-stop</property>
                               </widget>
                             </child>
                           </widget>
@@ -2262,7 +2255,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <property name="tooltip" translatable="yes">Start capture</property>
                     <property name="label" translatable="yes">Start</property>
                     <property name="use_underline">True</property>
-                    <property name="icon">play.xpm</property>
+                    <property name="stock_id">gtk-media-play</property>
                     <signal name="clicked" handler="on_start_menuitem_activate"/>
                   </widget>
                   <packing>
@@ -2277,7 +2270,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <property name="tooltip" translatable="yes">Pause capture</property>
                     <property name="label" translatable="yes">Pause</property>
                     <property name="use_underline">True</property>
-                    <property name="icon">pause.xpm</property>
+                    <property name="stock_id">gtk-media-pause</property>
                     <signal name="clicked" handler="on_pause_menuitem_activate"/>
                   </widget>
                   <packing>
@@ -2292,7 +2285,7 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <property name="tooltip" translatable="yes">Stop capture</property>
                     <property name="label" translatable="yes">Stop</property>
                     <property name="use_underline">True</property>
-                    <property name="icon">stop.xpm</property>
+                    <property name="stock_id">gtk-media-stop</property>
                     <signal name="clicked" handler="on_stop_menuitem_activate"/>
                   </widget>
                   <packing>
@@ -2333,6 +2326,19 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <property name="use_underline">True</property>
                     <property name="stock_id">gtk-index</property>
                     <signal name="clicked" handler="toggle_protocols_window"/>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkToolButton" id="nodes_toolbar_button">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Nodes</property>
+                    <property name="use_underline">True</property>
+                    <property name="icon">nodes.xpm</property>
+                    <signal name="clicked" handler="on_nodes_toolbar_button_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>

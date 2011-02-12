@@ -413,6 +413,14 @@ void on_nodes_check_toggled(GtkCheckMenuItem *checkmenuitem,  gpointer data)
     nodes_wnd_hide();
 }
 
+void on_nodes_toolbar_button_clicked(void)
+{
+  GtkWidget *nodes_check = glade_xml_get_widget (xml, "nodes_check");
+  if (!nodes_check)
+    return;
+  gtk_menu_item_activate (GTK_MENU_ITEM (nodes_check));
+}
+
 /* double click on row */
 void on_nodes_table_row_activated(GtkTreeView *gv,
                                   GtkTreePath *sorted_path,
