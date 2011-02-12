@@ -3,11 +3,15 @@
   Overview of changes in EtherApe 0.9.11 ():
    Several users asked for a way to export traffic statistics.
    EtherApe now can save a snapshot with all known nodes and relevant
-   informations to an XML file.
+   informations to an XML file. With option --final-export, a dump is
+   automatically generated when a capture file is fully replayed.
 
    Changes summary:
      * XML dump of node statistics.
-     * Updated manual.
+     * added --final-export to export statistics at replay end.
+     * added a toolbar button to open the nodes window.
+     * used stock icons when possible to improve consistency with themes.
+     * Updated documentation.
 
 
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):
