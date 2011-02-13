@@ -10,6 +10,7 @@
      * XML dump of node statistics.
      * added --final-export to export statistics at replay end.
      * added a toolbar button to open the nodes window.
+     * a new button allows skipping lengthy pauses when replaying.
      * used stock icons when possible to improve consistency with themes.
      * Updated documentation.
 
