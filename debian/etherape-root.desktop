@@ -1,12 +1,10 @@
 [Desktop Entry]
 Name=EtherApe (as root)
 Type=Application
-TryExec=ethereal
-BinaryPattern=ethereal
 Categories=GNOME;Application;Network;
 Comment=Graphical Network Monitor
 Comment[es]=Monitor Gráfico de Red
-TryExec=gksu
-Exec=gksu -u root /usr/bin/etherape
+TryExec=su-to-root
+Exec=su-to-root -X -c /usr/bin/etherape
 Icon=etherape.png
 Terminal=0
