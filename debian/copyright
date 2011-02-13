@@ -5,10 +5,20 @@ most of the work on Tue, 29 Feb 2000 20:56:17 +0100.
 It was downloaded from
 	http://sourceforge.net/project/filelist.php?group_id=2712
 
-Upstream Author: Juan Toledo <toledo@users.sourceforge.net>
+Upstream Author: Juan Toledo <toledo@users.sourceforge.net>,
+		 Riccardo Ghetta <bchiara@users.sourceforge.net>
 
-Copyright:
+Copyright: Copyright (C) 2000-2010 Juan Toledo, Riccardo Ghetta
 
-GPL, as evidenced by existence of GPL license file "COPYING".
-(the GNU GPL may be viewed on Debian systems in /usr/share/common-licenses/GPL)
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+On Debian systems the GNU GPL may be viewed in /usr/share/common-licenses/GPL.
 

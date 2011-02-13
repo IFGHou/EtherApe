@@ -1,4 +1,4 @@
-?package(etherape):needs="X11" section="Apps/Net"\
+?package(etherape):needs="X11" section="Applications/Network/Monitoring"\
   title="EtherApe" \
   longtitle="EtherApe: graphical network monitor" \
   command="/usr/bin/etherape" \

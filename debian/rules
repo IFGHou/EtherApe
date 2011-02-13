@@ -5,13 +5,14 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# This is the debhelper compatability version to use.
-export DH_COMPAT=4
-
 build: build-stamp
 build-stamp:
 	dh_testdir
 
+	libtoolize --force --copy
+	cp /usr/share/misc/config.guess config.guess
+	cp /usr/share/misc/config.sub config.sub
+	autoreconf
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --sysconfdir=/etc
 	# Add here commands to compile the package.
 	$(MAKE)
@@ -24,8 +25,9 @@ clean:
 	rm -f build-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	-rm config.log
+	rm -f config.guess config.sub config.log
 
 	dh_clean
 
@@ -42,6 +44,8 @@ install: build
 	rm -rf `pwd`/debian/etherape/etc
 	test -e `pwd`/debian/etherape/usr/bin/etherape || /bin/false
 	cp debian/etherape.xpm `pwd`/debian/etherape/usr/share/pixmaps/
+	# remove scrollkeeper generated files
+	rm -rf `pwd`/debian/etherape/usr/var
 
 
 # Build architecture-independent files here.

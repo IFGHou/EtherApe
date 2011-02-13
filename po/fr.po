@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-06 11:13+0100\n"
+"POT-Creation-Date: 2011-02-13 19:17+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -16,100 +16,108 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/main.c:61
-#: src/main.c:88
+#: src/main.c:89
 msgid "don't display any node text identification"
 msgstr "ne pas afficher d'identification pour les noeuds"
 
-#: src/main.c:90
+#: src/main.c:91
 msgid "replay packets from file"
 msgstr ""
 
-#: src/main.c:90
+#: src/main.c:91
 msgid "<file to replay>"
 msgstr ""
 
 # src/main.c:70
-#: src/main.c:92
+#: src/main.c:93
 msgid "set capture filter"
 msgstr "définir le filtre de capture"
 
 # src/main.c:70
-#: src/main.c:92
+#: src/main.c:93
 msgid "<capture filter>"
 msgstr "<filtre de capture>"
 
 # src/main.c:67
-#: src/main.c:94
+#: src/main.c:95
 msgid "set interface to listen to"
 msgstr "définir l'interface sur laquelle écouter"
 
 # src/main.c:67
-#: src/main.c:94
+#: src/main.c:95
 msgid "<interface name>"
 msgstr "<nom de l'interface>"
 
-#: src/main.c:96
+#: src/main.c:97
+msgid "automatic export at end of replay"
+msgstr ""
+
+#: src/main.c:97
+msgid "<file to export to>"
+msgstr ""
+
+#: src/main.c:99
 msgid "don't move nodes around (deprecated)"
 msgstr ""
 
-#: src/main.c:98
+#: src/main.c:101
 msgid "limits nodes displayed"
 msgstr ""
 
-#: src/main.c:98
+#: src/main.c:101
 msgid "<number of nodes>"
 msgstr ""
 
 # src/main.c:64
-#: src/main.c:100
+#: src/main.c:103
 msgid "mode of operation"
 msgstr "mode d'opération"
 
-#: src/main.c:100
+#: src/main.c:103
 msgid "<link|ip|tcp>"
 msgstr ""
 
 # src/main.c:58
-#: src/main.c:102
+#: src/main.c:105
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
-#: src/main.c:104
+#: src/main.c:107
 msgid "Disable informational messages"
 msgstr ""
 
-#: src/main.c:106
+#: src/main.c:109
 msgid "minimum packet delay in ms for reading capture files [cli only]"
 msgstr ""
 
-#: src/main.c:107 src/main.c:110
+#: src/main.c:110 src/main.c:113
 msgid "<delay>"
 msgstr ""
 
-#: src/main.c:109
+#: src/main.c:112
 msgid "maximum packet delay in ms for reading capture files [cli only]"
 msgstr ""
 
-#: src/main.c:112
+#: src/main.c:115
 msgid "uses the named libglade file for widgets"
 msgstr ""
 
 # src/main.c:70
-#: src/main.c:112
+#: src/main.c:115
 #, fuzzy
 msgid "<glade file>"
 msgstr "<filtre de capture>"
 
-#: src/main.c:132 src/menus.c:302
+#: src/main.c:135 src/menus.c:340
 msgid "-unknown-"
 msgstr ""
 
 # src/main.c:118
-#: src/main.c:185
+#: src/main.c:195
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:231
+#: src/main.c:241
 #, c-format
 msgid "We could not load glade interface file! (%s)"
 msgstr ""
@@ -230,88 +238,88 @@ msgid "Available interfaces for capture:"
 msgstr ""
 
 # src/main.c:67
-#: src/menus.c:156
+#: src/menus.c:188
 #, fuzzy, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "définir l'interface sur laquelle écouter"
 
-#: src/menus.c:212
+#: src/menus.c:244
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr ""
 
-#: src/menus.c:346
+#: src/menus.c:384
 msgid "Status already PLAY at gui_start_capture"
 msgstr ""
 
-#: src/menus.c:389 src/menus.c:419
+#: src/menus.c:431 src/menus.c:461
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 #  Sets the appbar
-#: src/menus.c:398
+#: src/menus.c:440
 msgid "Reading data from "
 msgstr ""
 
-#: src/menus.c:405 src/menus.c:550
+#: src/menus.c:447 src/menus.c:603
 msgid "default interface"
 msgstr ""
 
 # src/interface.c:709
-#: src/menus.c:410
+#: src/menus.c:452
 #, fuzzy
 msgid " in Data Link mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:413
+#: src/menus.c:455
 #, fuzzy
 msgid " in IP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:709
-#: src/menus.c:416
+#: src/menus.c:458
 #, fuzzy
 msgid " in TCP mode"
 msgstr "Mode de la taille"
 
 # src/interface.c:510
-#: src/menus.c:428
+#: src/menus.c:470
 #, fuzzy
 msgid "Diagram started"
 msgstr "Diagramme"
 
 #  Sets the appbar
-#: src/menus.c:459
+#: src/menus.c:505
 msgid "Paused"
 msgstr ""
 
 # src/interface.c:510
-#: src/menus.c:461
+#: src/menus.c:507
 #, fuzzy
 msgid "Diagram paused"
 msgstr "Diagramme"
 
-#: src/menus.c:490
+#: src/menus.c:539
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr ""
 
 # src/main.c:70
 #  Sets the appbar
-#: src/menus.c:543
+#: src/menus.c:596
 #, fuzzy
 msgid "Ready to capture from "
 msgstr "définir le filtre de capture"
 
 # src/interface.c:510
-#: src/menus.c:555
+#: src/menus.c:608
 #, fuzzy
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:154
+#: src/diagram.c:158
 #, c-format
 msgid ""
 "Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, names %"
@@ -319,31 +327,31 @@ msgid ""
 "cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:541
+#: src/diagram.c:545
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:636
+#: src/diagram.c:640
 msgid "Canvas node null"
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:651
+#: src/diagram.c:655
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:707
+#: src/diagram.c:711
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1222
+#: src/diagram.c:1255
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1225
+#: src/diagram.c:1258
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -361,18 +369,22 @@ msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr ""
 
 # src/interface.c:648
-#: src/info_windows.c:928 src/info_windows.c:1022 src/info_windows.c:1023
-#: src/info_windows.c:1034 src/info_windows.c:1035
+#: src/info_windows.c:921 src/info_windows.c:1014 src/info_windows.c:1015
+#: src/info_windows.c:1026 src/info_windows.c:1027
 #, fuzzy
 msgid "Node timed out"
 msgstr "Timeout pour les noeuds (ms)"
 
-#: src/info_windows.c:995
-msgid "Traffic"
+#: src/info_windows.c:988
+msgid "B->A"
+msgstr ""
+
+#: src/info_windows.c:989
+msgid "A->B"
 msgstr ""
 
 # src/interface.c:648
-#: src/info_windows.c:1004
+#: src/info_windows.c:996
 #, fuzzy
 msgid "Link timed out"
 msgstr "Timeout pour les noeuds (ms)"
@@ -412,29 +424,29 @@ msgstr ""
 msgid "Data link entry not initialized"
 msgstr ""
 
-#: src/decode_proto.c:558
+#: src/decode_proto.c:569
 msgid "Radiotap:captured size too small, packet discarded"
 msgstr ""
 
-#: src/decode_proto.c:586
+#: src/decode_proto.c:597
 msgid "PPI:captured size too small, packet discarded"
 msgstr ""
 
-#: src/decode_proto.c:617
+#: src/decode_proto.c:628
 #, c-format
 msgid "PPI:unsupported link type %u, packet discarded"
 msgstr ""
 
-#: src/decode_proto.c:670 src/decode_proto.c:724 src/decode_proto.c:737
+#: src/decode_proto.c:681 src/decode_proto.c:735 src/decode_proto.c:748
 msgid "wlan:captured size too small, packet discarded"
 msgstr ""
 
-#: src/decode_proto.c:693
+#: src/decode_proto.c:704
 #, c-format
 msgid "Invalid tofromds field in WLAN packet: 0x%x"
 msgstr ""
 
-#: src/decode_proto.c:775
+#: src/decode_proto.c:786
 #, c-format
 msgid "wlan:unknown frame type 0x%x, decode aborted"
 msgstr ""
@@ -472,45 +484,45 @@ msgid "Unsupported ape mode in fill_node_id"
 msgstr "Mode ape non supporté dans get_link_id"
 
 # src/capture.c:409
-#: src/node.c:105
+#: src/node.c:106
 #, fuzzy, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
 # src/capture.c:409
-#: src/node.c:139
+#: src/node.c:140
 #, fuzzy, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/node.c:229
+#: src/node.c:262
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/node.c:547
+#: src/node.c:580
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
-#: src/preferences.c:153
+#: src/preferences.c:155
 msgid ""
 "Stack Level is not set to Topmost Recognized Protocol. Please check in the "
 "preferences dialog that this is what you really want"
 msgstr ""
 
-#: src/preferences.c:223
+#: src/preferences.c:225
 msgid "Preferences saved"
 msgstr "Préférences enregistrées"
 
 # src/callbacks.c:195 src/callbacks.c:206
-#: src/preferences.c:528
+#: src/preferences.c:538
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."
 
 # src/callbacks.c:195 src/callbacks.c:206
-#: src/preferences.c:539
+#: src/preferences.c:549
 #, fuzzy, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr "Valeur d'ajustement: %g. Multiplicateur de rayon: %g."
@@ -936,173 +948,192 @@ msgstr "Etherape"
 msgid "_File"
 msgstr "Nouveau fichier"
 
-#: glade/etherape.glade:2001
+#: glade/etherape.glade:1974
+msgid "Export node data as xml"
+msgstr ""
+
+# src/interface.c:278
+#: glade/etherape.glade:1975
+#, fuzzy
+msgid "_export"
+msgstr "Protocoles"
+
+#: glade/etherape.glade:2010
 #, fuzzy
 msgid "_Capture"
 msgstr "Capture"
 
 # src/interface.c:709
-#: glade/etherape.glade:2008
+#: glade/etherape.glade:2017
 #, fuzzy
 msgid "_Mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2017
+#: glade/etherape.glade:2026
 msgid "Set Link Layer (OSI level 2) mode"
 msgstr ""
 
-#: glade/etherape.glade:2018
+#: glade/etherape.glade:2027
 msgid "_Link Layer"
 msgstr ""
 
 # src/interface.c:709
-#: glade/etherape.glade:2034
+#: glade/etherape.glade:2043
 #, fuzzy
 msgid "Set IP mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2035
+#: glade/etherape.glade:2044
 msgid "_IP"
 msgstr ""
 
 # src/interface.c:709
-#: glade/etherape.glade:2047
+#: glade/etherape.glade:2056
 #, fuzzy
 msgid "Set TCP mode"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2048
+#: glade/etherape.glade:2057
 msgid "_TCP"
 msgstr ""
 
-#: glade/etherape.glade:2063
+#: glade/etherape.glade:2072
 msgid "_Interfaces"
 msgstr ""
 
-#: glade/etherape.glade:2080 glade/etherape.glade:2253
+#: glade/etherape.glade:2089 glade/etherape.glade:2266
 #, fuzzy
 msgid "Start capture"
 msgstr "Capture"
 
-#: glade/etherape.glade:2099 glade/etherape.glade:2268
+#: glade/etherape.glade:2100
+msgid "advances to next packet"
+msgstr ""
+
+#: glade/etherape.glade:2112 glade/etherape.glade:2294
 #, fuzzy
 msgid "Pause capture"
 msgstr "Capture"
 
-#: glade/etherape.glade:2117 glade/etherape.glade:2283
+#: glade/etherape.glade:2130 glade/etherape.glade:2309
 #, fuzzy
 msgid "Stop capture"
 msgstr "Capture"
 
 # src/interface.c:23
-#: glade/etherape.glade:2137
+#: glade/etherape.glade:2150
 #, fuzzy
 msgid "_View"
 msgstr "Nouveau fichier"
 
-#: glade/etherape.glade:2145
+#: glade/etherape.glade:2158
 #, fuzzy
 msgid "Show or hide the protocols window"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:278
-#: glade/etherape.glade:2146
+#: glade/etherape.glade:2159
 #, fuzzy
 msgid "_Protocols"
 msgstr "Protocoles"
 
-#: glade/etherape.glade:2154
+#: glade/etherape.glade:2167
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:709
-#: glade/etherape.glade:2155
+#: glade/etherape.glade:2168
 #, fuzzy
 msgid "_Nodes"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2169
+#: glade/etherape.glade:2182
 msgid "Show or hide the toolbar"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:46
-#: glade/etherape.glade:2170
+#: glade/etherape.glade:2183
 msgid "_Toolbar"
 msgstr "Barre d'_outils"
 
-#: glade/etherape.glade:2180
+#: glade/etherape.glade:2193
 msgid "Show or hide the legend"
 msgstr "Affiche ou cache la légende"
 
 # src/interface.c:53
-#: glade/etherape.glade:2181
+#: glade/etherape.glade:2194
 msgid "_Legend"
 msgstr "_Légende"
 
-#: glade/etherape.glade:2191
+#: glade/etherape.glade:2204
 msgid "Show or hide the status bar"
 msgstr "Affiche ou cache la barre d'état"
 
 # src/interface.c:60
-#: glade/etherape.glade:2192
+#: glade/etherape.glade:2205
 msgid "_Status Bar"
 msgstr "Barre d'_état"
 
-#: glade/etherape.glade:2205
+#: glade/etherape.glade:2218
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2267
 msgid "Start"
 msgstr ""
 
-#: glade/etherape.glade:2269
+#: glade/etherape.glade:2280
+#, fuzzy
+msgid "Next"
+msgstr "Pas de texte"
+
+#: glade/etherape.glade:2295
 msgid "Pause"
 msgstr ""
 
-#: glade/etherape.glade:2284
+#: glade/etherape.glade:2310
 msgid "Stop"
 msgstr ""
 
-#: glade/etherape.glade:2306
+#: glade/etherape.glade:2332
 #, fuzzy
 msgid "Preferences (Ctrl-P)"
 msgstr "Préférences enregistrées"
 
 # src/interface.c:278
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2333
 #, fuzzy
 msgid "Pref."
 msgstr "Protocoles"
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2348
 #, fuzzy
 msgid "Display the protocols window"
 msgstr "Affiche ou cache la barre d'outils"
 
 # src/interface.c:278
-#: glade/etherape.glade:2323
+#: glade/etherape.glade:2349
 #, fuzzy
 msgid "Prot."
 msgstr "Protocoles"
 
-# src/interface.c:278
-#: glade/etherape.glade:2388
-msgid "Protocols"
-msgstr "Protocoles"
-
 # src/interface.c:709
-#: glade/etherape.glade:2446
+#: glade/etherape.glade:2362 glade/etherape.glade:2485
 #, fuzzy
 msgid "Nodes"
 msgstr "Mode de la taille"
 
-#: glade/etherape.glade:2459
+# src/interface.c:278
+#: glade/etherape.glade:2427
+msgid "Protocols"
+msgstr "Protocoles"
+
+#: glade/etherape.glade:2498
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2464
+#: glade/etherape.glade:2503
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 
@@ -1119,11 +1150,6 @@ msgstr ""
 # src/interface.c:278
 #, fuzzy
 #~ msgid "_Protocol"
-#~ msgstr "Protocoles"
-
-# src/interface.c:278
-#, fuzzy
-#~ msgid "_Port"
 #~ msgstr "Protocoles"
 
 # src/main.c:64
@@ -1371,9 +1397,6 @@ msgstr ""
 
 #~ msgid "Click to toggle"
 #~ msgstr "Cliquer pour sélectionner"
-
-#~ msgid "No text"
-#~ msgstr "Pas de texte"
 
 # src/capture.c:409
 #, fuzzy

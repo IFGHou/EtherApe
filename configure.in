@@ -138,7 +138,7 @@ AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR",[data file directory])
 AC_SUBST(DATAFILE_DIR)
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="es fr nl tr"
+ALL_LINGUAS="es fr nl tr sv"
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.11.5])
 GETTEXT_PACKAGE=etherape

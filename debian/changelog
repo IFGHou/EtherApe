@@ -1,3 +1,64 @@
+etherape (0.9.8-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 29 Oct 2009 09:02:10 +0100
+
+etherape (0.9.7-2) unstable; urgency=low
+
+  * debian/menu: update to "new" Debian menu policy. (closes: #546553)
+  * debian/control, debian/compat, debian/rules: use debian/compat, not
+    DH_COMPAT, and use debhelper > 5.
+  * debian/control:
+    * fixed spelling of GNOME in description
+    * recommends menu, for su-to-roo
+    * build-depends on autotools-dev, to get config.sub and config.guess
+    * build-depends on libtool, autoconf, automake, to get libtoolize and
+      autoreconf
+    * replace scrollkeeper by rarian-compat
+  * debian/rules:
+    * don't ignore make clean error
+    * remove call to deprecated dh_scrollkeeper
+    * copy config.sub and config.guess from autotools-dev (closes: #546009)
+    * run libtoolize, to avoid rpath
+  * debian/etherape-root.desktop:
+    * remove deprecated BinaryPattern key
+    * remove duplicated TryExec key
+    * remove deprecated Encoding key
+    * switch from gksu to su-to-root (closes: #479811)
+  * debian/copyright:
+    * update with copyright info
+  * etherape.desktop:
+    * remove deprecated Encoding key
+  * configure.in, po/sv.po: add a Swedish translation (closes: #343115)
+
+ -- Frederic Peters <fpeters@debian.org>  Mon, 14 Sep 2009 09:31:35 +0200
+
+etherape (0.9.7-1) unstable; urgency=low
+
+  * New uptream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Thu,  5 Oct 2006 11:09:02 +0200
+
+etherape (0.9.6-3) unstable; urgency=low
+
+  * debian/control: dependency on scrollkeeper should have been added to
+    Build-Depends (really closes: #375971)
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 29 Jun 2006 16:31:42 +0200
+
+etherape (0.9.6-2) unstable; urgency=low
+
+  * debian/control: added dependency on scrollkeeper (closes: #375971)
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 29 Jun 2006 14:24:41 +0200
+
+etherape (0.9.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 28 Jun 2006 00:01:03 +0200
+
 etherape (0.9.4-1) unstable; urgency=low
 
   * New upstream release. (closes: #360001)
