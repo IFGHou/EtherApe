@@ -261,6 +261,12 @@ on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 }				/* on_pause_menuitem_activate */
 
+void on_next_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+{
+  g_my_debug ("on_next_menuitem_activate called");
+  force_next_packet();
+}
+
 void
 on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -397,6 +403,10 @@ gui_start_capture (void)
   gtk_widget_set_sensitive (widget, TRUE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, TRUE);
+  widget = glade_xml_get_widget (xml, "next_button");
+  gtk_widget_set_sensitive (widget, pref.input_file != NULL);
+  widget = glade_xml_get_widget (xml, "next_menuitem");
+  gtk_widget_set_sensitive (widget, pref.input_file != NULL);
 
   /* Enable and disable link layer menu */
   widget = glade_xml_get_widget (xml, "link_radio");
@@ -487,13 +497,16 @@ gui_pause_capture (void)
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_button");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_menuitem");
+  gtk_widget_set_sensitive (widget, FALSE);
 
   set_statusbar_msg (_("Paused"));
 
   g_my_info (_("Diagram paused"));
   dump_stats(0);
 }				/* gui_pause_capture */
-
 
 /* reached eof on a file replay */
 void gui_eof_capture(void)
@@ -515,6 +528,10 @@ void gui_eof_capture(void)
   widget = glade_xml_get_widget (xml, "pause_button");
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_button");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
   /* Sets the statusbar */
@@ -563,6 +580,10 @@ gui_stop_capture (void)
   widget = glade_xml_get_widget (xml, "pause_button");
   gtk_widget_set_sensitive (widget, FALSE);
   widget = glade_xml_get_widget (xml, "pause_menuitem");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_button");
+  gtk_widget_set_sensitive (widget, FALSE);
+  widget = glade_xml_get_widget (xml, "next_menuitem");
   gtk_widget_set_sensitive (widget, FALSE);
 
   /* Delete and free protocol information */

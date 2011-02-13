@@ -405,6 +405,15 @@ get_offline_packet (void)
   return FALSE;
 }				/* get_offline_packet */
 
+/* cancels the current timer, forcing another packet */
+void force_next_packet(void)
+{
+  if (ms_to_next > 20)
+    {
+      ms_to_next = 0;
+      g_source_remove(capture_source);
+    }
+}
 
 static void
 cap_t_o_destroy (gpointer data)

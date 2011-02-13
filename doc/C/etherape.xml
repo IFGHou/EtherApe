@@ -281,8 +281,9 @@
       </variablelist>
       </para>
     </sect2>
+  </sect1>
 
-    <sect2 id="toolbar">
+    <sect1 id="toolbar">
       <title>Toolbar</title>
 
       <para>The <link linkend="figure-usage-toolbar">toolbar</link> provides
@@ -292,6 +293,16 @@
 
             <listitem>
               <para>Starts capturing on the selected live interface.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry id="toolbar-next">
+            <term><guimenu>Next</guimenu></term>
+
+            <listitem>
+              <para>Active only when replaying a capture file, when pressed
+              fast forwards to the next packet, skipping any delay.  Useful
+              for dealing with long pauses in captured data.</para>
             </listitem>
           </varlistentry>
 
@@ -320,7 +331,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term><guimenu>Preferences</guimenu></term>
+            <term><guimenu>Pref.</guimenu></term>
 
             <listitem>
               <para>Opens the <link
@@ -329,10 +340,19 @@
           </varlistentry>
 
           <varlistentry>
-            <term><guimenu>Protocols</guimenu></term>
+            <term><guimenu>Prot.</guimenu></term>
 
             <listitem>
               <para>Opens the <link linkend="protodlg">Protocols</link> detail
+              window.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><guimenu>Nodes</guimenu></term>
+
+            <listitem>
+              <para>Opens the <link linkend="allnodesdlg">All Nodes</link> detail
               window.</para>
             </listitem>
           </varlistentry>
@@ -357,9 +377,9 @@
           </mediaobject>
         </screenshot>
       </figure>
-    </sect2>
+    </sect1>
 
-    <sect2 id="menubar">
+    <sect1 id="menubar">
       <title>Menus</title>
 
       <para>The menu bar, located at the top of the <interface>Main
@@ -385,7 +405,7 @@
                   menu.</para>
 		  <note>
 		    <para>Capture files often contain lengthy sections without traffic. Here the command-line option 
-		    --max-delay can be useful to avoid staring for hours to an empty display.
+		    --max-delay or the <link linkend="toolbar-next">Next button</link> may be useful to avoid staring for hours to an empty display.
 Conversely, --min-delay can help analyze many short lived connections.</para>
 		  </note>
                 </listitem>
@@ -482,6 +502,12 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
                 <listitem>
                   <para><menuchoice>
+                      <guimenuitem>Next</guimenuitem>
+                    </menuchoice> when pressed fast forwards to the next packet, skipping any delay.   Useful for dealing with long pauses in captured data. Active only during replay.</para>
+                </listitem>
+
+                <listitem>
+                  <para><menuchoice>
                       <guimenuitem>Pause</guimenuitem>
                     </menuchoice> temporarily halts the capture, freezing both
                   the diagram and any detail window.</para>
@@ -517,7 +543,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
                 <listitem>
                   <para><guimenuitem>Nodes</guimenuitem> opens the <link
-                  linkend="allnodesdlg"><interface>Nodes
+                  linkend="allnodesdlg"><interface>All Nodes
                   dialog</interface></link>, which allows you see all known nodes with 
                   summary statistics.</para>
                 </listitem>
@@ -551,8 +577,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
           </listitem>
         </varlistentry>
       </variablelist>
-    </sect2>
-  </sect1>
+    </sect1>
 
   <sect1 id="nodedlg">
     <title>Node detail dialog</title>
@@ -561,8 +586,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     traffic statistics for the chosen node.</para>
 
     <para>Averaged realtime traffic is shown in the "Istantaneous" row, while
-    the "Accumulated" one displays long term statistics.</para>
-
+    the "Accumulated" one displays long term statistics. The third row shows average packet size.</para>
     <para>A protocol table depicting data on all protocol traversing the
     chosen node is also displayed. See the <link
     linkend="protodlg">All Protocols dialog</link> entry for additional
@@ -601,7 +625,8 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     traffic statistics for the chosen link.</para>
 
     <para>Averaged realtime traffic is shown in the "Istantaneous" row, while
-    the "Accumulated" one displays long term statistics.</para>
+    the "Accumulated" one displays long term statistics. The third row shows
+    average packet sizes.</para>
 
     <para>A protocol table depicting data on all protocol traversing the
     chosen link is also displayed. See the <link
@@ -649,6 +674,28 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     <para>A column can also be dragged, changing its position in the table, or 
           disabled by deselecting it in the <guilabel>Columns</guilabel>
     menu.</para>
+
+    <para>
+      Available statistics are:
+      <itemizedlist>
+	<listitem><para>Protocol color</para></listitem>
+	<listitem><para>Protocol name. For TCP/UDP traffic, the services file is searched for a matching entry.</para></listitem>
+	<listitem><para>Protocol port (TCP/UDP traffic only).
+	<note><para>&app; assigns the same port to all nodes in a packet using the following heuristic:
+	<orderedlist>
+	  <listitem><para>if only one port of the two matches an entry of the services file, that entry is used.</para></listitem>
+	  <listitem><para>if both ports of packet match, the minor one is choosen.</para></listitem>
+	  <listitem><para>if no ports match an entry, the minor one is chosen. The packet is labelled "unknown traffic" and processed as such (see "Group unknown ports" in <xref linkend="group-unknown"/>). </para></listitem>
+	</orderedlist> 
+	</para></note> 
+	</para></listitem>
+	<listitem><para>Inst Traffic shows the (moving average of) active traffic.</para></listitem>
+	<listitem><para>Accum Traffic shows the accumulated traffic.</para></listitem>
+	<listitem><para>Avg Size is the average packet size computed on the total traffic seen.</para></listitem>
+	<listitem><para>Last Heard reports when the last packet was seen.</para></listitem>
+	<listitem><para>Packets is the total number of packets.</para></listitem>
+      </itemizedlist>
+</para>
 
     <note>
       <para>Only those protocols matching the "Protocol Stack Level"
@@ -959,13 +1006,21 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="group-unknown">
           <term><guilabel>Group unknown ports</guilabel></term>
 
           <listitem>
             <para>If checked, all traffic belonging to ports not specified in
             the services file is accumulated under "UDP-unknown" and
-            "TCP-unknown".</para>
+            "TCP-unknown".  In unchecked, those ports are shown as "UDP-nnnn" or "TCP-nnnn", where nnnn is the port number.
+	<note><para>&app; assigns the same port to all nodes in a packet using the following heuristic:
+	<orderedlist>
+	  <listitem><para>if only one port of the two matches an entry of the services file, that entry is used.</para></listitem>
+	  <listitem><para>if both ports of packet match, the minor one is choosen.</para></listitem>
+	  <listitem><para>if no ports match an entry, the minor one is chosen. The packet is labelled "unknown traffic" and processed as such.</para></listitem>
+	</orderedlist> 
+</para></note> 
+	    </para>
 
             <para>Default: <guilabel>checked</guilabel>.</para>
           </listitem>

@@ -31,6 +31,7 @@ void on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
+void on_next_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_full_screen_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
 void on_toolbar_check_activate (GtkCheckMenuItem * menuitem,

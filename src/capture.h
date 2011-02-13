@@ -34,8 +34,8 @@ gchar *init_capture (void);
 gboolean start_capture (void);
 gboolean pause_capture (void);
 gboolean stop_capture (void);
-gboolean stop_capture (void);
 void cleanup_capture (void);
+void force_next_packet(void);
 gint set_filter (gchar * filter, gchar * device);
 gchar *get_default_filter (apemode_t mode);
 

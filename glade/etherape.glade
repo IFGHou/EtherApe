@@ -2087,9 +2087,20 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                             <property name="visible">True</property>
                             <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">Start capture</property>
+                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                             <signal name="activate" handler="on_start_menuitem_activate"/>
                             <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="next_menuitem">
+                            <property name="label">gtk-media-next</property>
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">advances to next packet</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <signal name="activate" handler="on_next_menuitem_activate"/>
                           </widget>
                         </child>
                         <child>
@@ -2257,6 +2268,19 @@ Frederic Peters &lt;fpeters@debian.org&gt;
                     <property name="use_underline">True</property>
                     <property name="stock_id">gtk-media-play</property>
                     <signal name="clicked" handler="on_start_menuitem_activate"/>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkToolButton" id="next_button">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Next</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-media-next</property>
+                    <signal name="clicked" handler="on_next_menuitem_activate"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
