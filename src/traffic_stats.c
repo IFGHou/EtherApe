@@ -96,15 +96,15 @@ traffic_stats_add_packet(traffic_stats_t *pkt_stat,
 void
 traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
 {
-  struct timeval result;
+  double diffms;
   packet_list_item_t* packet;
 
   /* pkt queue is ordered by arrival time, so older pkts are at tail */
   while (pkt_stat->pkt_list.head)
   {
     packet = (packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
-    result = substract_times (now, packet->info->timestamp);
-    if (!IS_OLDER (result, pkt_expire_time))
+    diffms = substract_times_ms(&now, &packet->info->timestamp);
+    if (diffms < pkt_expire_time)
       break; /* packet valid, subsequent packets are younger, no need to go further */
 
     /* packet expired, remove from stats */
@@ -143,12 +143,23 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double proto_ex
 
   if (!g_queue_is_empty(&pkt_stat->pkt_list))
     {
-      /* calculate averages */
-      basic_stats_avg(&pkt_stat->stats, avg_time);
-      basic_stats_avg(&pkt_stat->stats_in, avg_time);
-      basic_stats_avg(&pkt_stat->stats_out, avg_time);
+      gdouble ms_from_oldest = avg_time;
 
-      protocol_stack_avg(&pkt_stat->stats_protos, avg_time);
+#if CHECK_EXPIRATION
+      /* the last packet of the list is the oldest */
+      const packet_list_item_t* packet;
+      packet = (const packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
+      ms_from_oldest = substract_times_ms (&now, &packet->info->timestamp);
+      if (ms_from_oldest < avg_time)
+        ms_from_oldest = avg_time;
+      else
+        g_warning("ms_to_oldest > avg_time: %f", ms_from_oldest);
+#endif
+
+      basic_stats_avg(&pkt_stat->stats, ms_from_oldest);
+      basic_stats_avg(&pkt_stat->stats_in, ms_from_oldest);
+      basic_stats_avg(&pkt_stat->stats_out, ms_from_oldest);
+      protocol_stack_avg(&pkt_stat->stats_protos, ms_from_oldest);
 
       return TRUE; /* there are packets active */
     }

@@ -40,31 +40,29 @@ gchar *timeval_to_str (struct timeval last_heard)
   struct timeval diff;
   struct tm broken_time;
 
-  diff = substract_times (now, last_heard);
+  diff = substract_times(now, last_heard);
+  if (diff.tv_sec <= 60)
+    {
+      /* Meaning "n seconds" ago */
+      return g_strdup_printf (_("%ld\" ago"), (long) diff.tv_sec);
+    }
+
+  if (diff.tv_sec < 600)
+    {
+      /* Meaning "m minutes, n seconds ago" */
+      return g_strdup_printf (_("%ld'%ld\" ago"),
+			 (long) floor ((double) diff.tv_sec / 60),
+			 (long) diff.tv_sec % 60);
+    }
+
   if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
     {
       g_my_critical ("Time conversion failed in timeval_to_str");
       return NULL;
     }
 
-  if (diff.tv_sec <= 60)
-    {
-      /* Meaning "n seconds" ago */
-      str = g_strdup_printf (_("%d\" ago"), (int) diff.tv_sec);
-    }
-  else if (diff.tv_sec < 600)
-    {
-      /* Meaning "m minutes, n seconds ago" */
-      str =
-	g_strdup_printf (_("%d'%d\" ago"),
-			 (int) floor ((double) diff.tv_sec / 60),
-			 (int) diff.tv_sec % 60);
-    }
-  else if (diff.tv_sec < 3600 * 24)
-    {
-      str =
-	g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
-    }
+  if (diff.tv_sec < 3600 * 24)
+      str = g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
   else
     {
       /* Watch out! The first is month, the second day of the month */

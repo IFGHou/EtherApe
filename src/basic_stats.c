@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <math.h>
 #include "globals.h"
 #include "basic_stats.h"
 #include "ui_utils.h"
@@ -56,6 +57,23 @@ substract_times (struct timeval a, struct timeval b)
   result.tv_usec = a.tv_usec - b.tv_usec;
   return result;
 }				/* substract_times */
+
+/* returns the time difference a-b expressed in ms */
+double substract_times_ms (const struct timeval *a, const struct timeval *b)
+{
+  double result;
+
+  struct timeval t = substract_times(*a, *b);
+  double ck = (double)(t.tv_sec*1000.0 + t.tv_usec/1000.0);
+  
+  result =  (a->tv_sec - b->tv_sec) * 1000.0 + (a->tv_usec - b->tv_usec) / 1000.0;
+
+  if (fabs(ck - result) > 0.000001)
+    g_warning("Errore substract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", result, ck, fabs(ck-result));
+
+  return result;
+}
+
 
 
 /***************************************************************************
@@ -237,12 +255,12 @@ gchar *basic_stats_dump(const basic_stats_t *tf_stat)
 gchar *basic_stats_xml(const basic_stats_t *tf_stat)
 {
   gchar *msg;
-  struct timeval diff;
+  double diffms;
 
   if (!tf_stat)
     return xmltag("stats", "");
 
-  diff = substract_times(now, tf_stat->last_time);
+  diffms = substract_times_ms(&now, &tf_stat->last_time);
   msg = xmltag("stats",
                "\n<avg>%.0f</avg>\n"
                "<total>%.0f</total>\n"
@@ -253,7 +271,7 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
                         tf_stat->accumulated,
                         tf_stat->avg_size,
                         tf_stat->accu_packets,
-                        (double)diff.tv_sec + (double)diff.tv_usec / 1000000.0 );
+                        diffms / 1000.0 );
   return msg;
 }
 

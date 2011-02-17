@@ -129,7 +129,7 @@ gfunc_remove_link(gpointer data, gpointer user_data)
 static gint
 update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
 {
-  struct timeval diff;
+  double diffms;
 
   g_assert(delete_list_ptr);
 
@@ -155,8 +155,8 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
        * link is expired */
       if (pref.link_timeout_time)
         {
-          diff = substract_times (now, link->link_stats.stats.last_time);
-          if (IS_OLDER (diff, pref.link_timeout_time))
+          diffms = substract_times_ms(&now, &link->link_stats.stats.last_time);
+          if (diffms >= pref.link_timeout_time)
             {
               /* link expired, remove */
               GList **delete_list = (GList **)delete_list_ptr;
@@ -165,7 +165,6 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
               *delete_list = g_list_prepend( *delete_list, link_id);
     
               g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,_("Queuing link for remove"));
-    
             }
         }
     }

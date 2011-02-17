@@ -158,7 +158,7 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
       GList *item;
       GList *next_item;
       protocol_t *protocol;
-      struct timeval result;
+      double diffms;
       guint i;
       for (i = 0; i <= STACK_SIZE; i++)
         {
@@ -170,8 +170,8 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
               if (protocol->stats.aver_accu<=0)
                 {
                   /* no traffic active on this proto, check purging */
-                  result = substract_times (now, protocol->stats.last_time);
-                  if (IS_OLDER (result, expire_time))
+                  diffms = substract_times_ms(&now, &protocol->stats.last_time);
+                  if (diffms >= expire_time)
                     {
                       protocol_t_delete(protocol);
                       pstk->protostack[i] = g_list_delete_link(pstk->protostack[i], item);

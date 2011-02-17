@@ -276,7 +276,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 {
   gint ret = 0;
   gdouble t1, t2;
-  struct timeval time1, time2, diff;
+  gdouble diffms;
   gint idcol;
   GtkSortType order;
 
@@ -330,12 +330,11 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case PROTO_COLUMN_LASTHEARD:
-      time1 = prot1->rowstats.last_time;
-      time2 = prot2->rowstats.last_time;
-      diff = substract_times (time1, time2);
-      if ((diff.tv_sec == 0) && (diff.tv_usec == 0))
+      diffms = substract_times_ms(&prot1->rowstats.last_time, 
+                                  &prot2->rowstats.last_time);
+      if (diffms == 0)
 	ret = 0;
-      else if ((diff.tv_sec < 0) || (diff.tv_usec < 0))
+      else if (diffms < 0)
 	ret = -1;
       else
 	ret = 1;
@@ -718,18 +717,19 @@ update_stats_info_windows (void)
   GList *list_item;
   GtkWidget *window;
   enum status_t status;
-  struct timeval diff;
+  double diffms;
   static struct timeval last_update_time = {
     0, 0
   };
 
   status = get_capture_status();
 
-  diff = substract_times (now, last_update_time);
   /* Update info windows at most twice a second */
+  diffms = substract_times_ms(&now, &last_update_time);
   if (pref.refresh_period < 500)
-    if (!(IS_OLDER (diff, 500)))
+    if (diffms < 500)
       return;
+
   list_item = stats_info_windows;
   while (list_item)
     {

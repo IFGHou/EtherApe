@@ -27,6 +27,9 @@
  * other timevals. result = a - b */
 struct timeval substract_times (struct timeval a, struct timeval b);
 
+/* returns the time difference a-b expressed in ms */
+double substract_times_ms (const struct timeval *a, const struct timeval *b);
+
 typedef struct
 {
   gdouble average;		/* Average bytes in or out in the last x ms */
