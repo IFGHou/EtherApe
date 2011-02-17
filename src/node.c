@@ -225,7 +225,7 @@ gchar *node_xml(const node_t * node)
 gboolean
 node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 {
-  struct timeval diff;
+  double diffms;
 
   g_assert(delete_list_ptr);
 
@@ -249,8 +249,8 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
        * node is expired */
       if (pref.node_timeout_time)
         {
-          diff = substract_times (now, node->node_stats.stats.last_time);
-          if (IS_OLDER (diff, pref.node_timeout_time))
+          diffms = substract_times_ms(&now, &node->node_stats.stats.last_time);
+          if (diffms >= pref.node_timeout_time)
             {
               /* node expired, remove */
               GList **delete_list = (GList **)delete_list_ptr;

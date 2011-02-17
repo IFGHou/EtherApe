@@ -352,7 +352,8 @@ get_offline_packet (void)
 {
   static struct pcap_pkthdr *pkt_header = NULL;
   static const u_char *pkt_data = NULL;
-  static struct timeval last_read_time = { 0, 0 }, this_time, diff;
+  static struct timeval last_read_time = { 0, 0 }, this_time;
+  double diffms;
   int result;
 
   if (capture_status == STOP)
@@ -382,14 +383,14 @@ get_offline_packet (void)
       this_time.tv_sec = pkt_header->ts.tv_sec;
       this_time.tv_usec = pkt_header->ts.tv_usec;
 
-      diff = substract_times (this_time, last_read_time);
+      diffms = substract_times_ms(&this_time, &last_read_time);
 
       /* diff can be negative when listening to multiple interfaces.
        * In that case the delay is zeroed */
-      if (diff.tv_sec < 0)
+      if (diffms < 0)
         ms_to_next = 0; 
       else 
-        ms_to_next = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+        ms_to_next = diffms;
       if (ms_to_next < pref.min_delay)
           ms_to_next = pref.min_delay;
       else if (ms_to_next > pref.max_delay)

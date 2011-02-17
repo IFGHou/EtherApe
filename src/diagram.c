@@ -375,8 +375,8 @@ diagram_update_links(GtkWidget * canvas)
 guint
 update_diagram (GtkWidget * canvas)
 {
-  static struct timeval last_refresh_time = { 0, 0 }, diff;
-  guint32 diff_msecs;
+  static struct timeval last_refresh_time = { 0, 0 };
+  double diffms;
   enum status_t status;
 
   status = get_capture_status();
@@ -432,21 +432,20 @@ update_diagram (GtkWidget * canvas)
     gtk_main_iteration ();
 
   gettimeofday (&now, NULL);
-  diff = substract_times (now, last_refresh_time);
-  diff_msecs = diff.tv_sec * 1000 + diff.tv_usec / 1000;
+  diffms = substract_times_ms(&now, &last_refresh_time);
   last_refresh_time = now;
 
   already_updating = FALSE;
 
   if (!is_idle)
     {
-      if (diff_msecs > pref.refresh_period * 1.2)
-	  return FALSE;		/* Removes the timeout */
+      if (diffms > pref.refresh_period * 1.2)
+        return FALSE;		/* Removes the timeout */
     }
   else
     {
-      if (diff_msecs < pref.refresh_period)
-	  return FALSE;		/* removes the idle */
+      if (diffms < pref.refresh_period)
+        return FALSE;		/* removes the idle */
     }
 
   if (stop_requested)
@@ -773,19 +772,20 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
 static gboolean
 display_node (node_t * node)
 {
-  struct timeval diff;
+  double diffms;
 
   if (!node)
     return FALSE;
 
-  diff = substract_times (now, node->node_stats.stats.last_time);
+  diffms = substract_times_ms(&now, &node->node_stats.stats.last_time);
 
   /* There are problems if a canvas_node is deleted if it still
    * has packets, so we have to check that as well */
 
   /* Remove canvas_node if node is too old */
-  if (IS_OLDER (diff, pref.gui_node_timeout_time)
-      && pref.gui_node_timeout_time && !node->node_stats.pkt_list.length)
+  if (diffms >= pref.gui_node_timeout_time
+      && pref.gui_node_timeout_time 
+      && !node->node_stats.pkt_list.length)
     return FALSE;
 
 #if 1
@@ -1124,15 +1124,12 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
    * I have to initialize canvas_link->color to a known value */
   if (link->main_prot[pref.stack_level])
     {
+      double diffms;
       canvas_link->color = protohash_color(link->main_prot[pref.stack_level]);
 
       /* scale color down to 10% at link timeout */
-      struct timeval diff;
-      diff = substract_times (now, link->link_stats.stats.last_time);
-      scale =
-        pow (0.10,
-             (diff.tv_sec * 1000.0 +
-              diff.tv_usec / 1000) / pref.gui_link_timeout_time);
+      diffms = substract_times_ms(&now, &link->link_stats.stats.last_time);
+      scale = pow(0.10, diffms / pref.gui_link_timeout_time);
 
       scaledColor =
         (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |

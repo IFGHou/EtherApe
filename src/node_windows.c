@@ -104,7 +104,7 @@ nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b,
 {
   gint ret = 0;
   gdouble t1, t2;
-  struct timeval time1, time2, diff;
+  double diffms;
   const node_id_t *nodeid1, *nodeid2;
   const node_t *node1, *node2;
 
@@ -164,12 +164,11 @@ nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case NODES_COLUMN_LASTHEARD:
-      time1 = node1->node_stats.stats.last_time;
-      time2 = node2->node_stats.stats.last_time;
-      diff = substract_times (time1, time2);
-      if ((diff.tv_sec == 0) && (diff.tv_usec == 0))
+      diffms = substract_times_ms(&node1->node_stats.stats.last_time,
+                                  &node2->node_stats.stats.last_time);
+      if (diffms == 0)
 	ret = 0;
-      else if ((diff.tv_sec < 0) || (diff.tv_usec < 0))
+      else if (diffms < 0)
 	ret = -1;
       else
 	ret = 1;

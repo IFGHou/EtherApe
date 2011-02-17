@@ -122,9 +122,6 @@ address_t;
 						      G_LOG_LEVEL_CRITICAL, \
 						      format, ##args)
 
-#define IS_OLDER(diff, timeout)        ((diff.tv_sec > timeout/1000) | \
-					    (diff.tv_usec/1000 >= timeout))
-
 
 
 /* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
