@@ -34,6 +34,7 @@
 #include "diagram.h"
 #include "preferences.h"
 #include "info_windows.h"
+#include "menus.h"
 #include "capture.h"
 #include "datastructs.h"
 

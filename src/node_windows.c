@@ -23,6 +23,7 @@
 
 #include <math.h>
 #include "node_windows.h"
+#include "info_windows.h"
 #include "ui_utils.h"
 #include "node.h"
 
@@ -43,7 +44,6 @@ static GtkWidget *nodes_wnd = NULL;	       /* Ptr to nodes window */
 static GtkCheckMenuItem *nodes_check = NULL;   /* Ptr to nodes menu */
 
 /* private functions */
-static void init_all_nodes(GtkWidget *wnd);
 static void nodes_table_clear(GtkWidget *window);
 static void nodes_table_update(GtkWidget *window);
 
@@ -193,7 +193,6 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   GtkTreeView *gv;
   GtkListStore *gls;
   GtkTreeModel *sort_model;
-  GtkTreeViewColumn *gc;
   int i;
 
   /* get the treeview */

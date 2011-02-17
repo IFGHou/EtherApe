@@ -30,6 +30,8 @@
 #include "info_windows.h"
 #include "protocols.h"
 #include "datastructs.h"
+#include "ip-cache.h"
+#include "menus.h"
 #include "capture.h"
 #include "conversations.h"
 

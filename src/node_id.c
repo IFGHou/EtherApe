@@ -153,7 +153,7 @@ gchar *node_id_xml(const node_id_t *id)
   switch (id->node_type)
     {
     case APEMODE_DEFAULT:
-      msg = g_strdup_printf("");
+      msg = g_strdup_printf(" ");
       break;
     case LINK6:
       msg = xmltag("link", "%s", ether_to_str(id->addr.eth));

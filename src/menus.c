@@ -23,6 +23,7 @@
 #include "menus.h"
 #include "util.h"
 #include "diagram.h"
+#include "decode_proto.h"
 #include "info_windows.h"
 #include "capture.h"
 
@@ -331,7 +332,6 @@ void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
-  gchar *msg;
   about = glade_xml_get_widget (xml, "about1");
 
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
@@ -474,7 +474,6 @@ void
 gui_pause_capture (void)
 {
   GtkWidget *widget;
-  GString *status_string = NULL;
 
   /*
    * Make sure the data in the info windows is updated
@@ -655,32 +654,3 @@ set_active_interface ()
 
 }				/* set_active_interface */
 
-void dump_xml(gchar *ofile)
-{
-  FILE *fout;
-  gchar *xml;
-  gchar *oldlocale;
-  
-  if (!ofile)
-    return;
-
-  // we want to dump in a known locale, so force it as 'C'
-  oldlocale = g_strdup(setlocale(LC_ALL, NULL));
-  setlocale(LC_ALL, "C");
-  
-  xml = nodes_catalog_xml();
-  fout = fopen(ofile, "wb");
-  if (fout)
-    {
-      fprintf(fout, "<?xml version=\"1.0\"?>\n");
-      fprintf(fout, "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n", xml);
-      fprintf(fout, "<etherape>\n%s</etherape>", xml);
-      fclose(fout);
-    }
-
-  // reset user locale
-  setlocale(LC_ALL, oldlocale);
-
-  g_free(xml);
-  g_free(oldlocale);
-}
