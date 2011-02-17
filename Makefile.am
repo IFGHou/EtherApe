@@ -35,8 +35,6 @@ splint:
 DISTCLEANFILES=gnome-doc-utils.make
 
 EXTRA_DIST = config.rpath mkinstalldirs  \
-	README.thanks 		\
-	README.help		\
 	README.bugs		\
 	FAQ			\
 	OVERVIEW		\
