@@ -49,6 +49,9 @@
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+#ifdef HAVE_INET_NTOP
+#include <arpa/inet.h>
+#endif
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #elif !defined(INET6_ADDRSTRLEN)

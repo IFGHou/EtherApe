@@ -34,6 +34,7 @@
 #include "datastructs.h"
 #include "node.h"
 #include "links.h"
+#include "names.h"
 
 #define TCP_FTP 21
 #define TCP_NETBIOS_SSN 139
@@ -656,7 +657,6 @@ static void decode_wlan_mgmt(decode_proto_t *dp, uint8_t subtype)
 /* ieee802.11 wlans */
 static void get_wlan(decode_proto_t *dp)
 {
-  uint16_t fc;
   uint8_t type;
   uint8_t subtype;
   uint8_t wep;

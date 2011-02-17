@@ -470,7 +470,6 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
 {
   GtkListStore *gs;
   GList *item;
-  gchar *str;
   gboolean res;
   GtkTreeIter it;
 
@@ -561,7 +560,6 @@ update_protocols_window (void)
 {
   GtkWidget *window;
   GtkTreeView *gv;
-  GtkListStore *gs = NULL;
 
   window = glade_xml_get_widget (xml, "protocols_window");
   gv = retrieve_treeview(window);
@@ -915,8 +913,6 @@ node_protocols_window_create(const node_id_t * node_id)
 static void
 update_node_protocols_window (GtkWidget *window)
 {
-  GtkListStore *gs;
-  GtkTreeView *gv;
   const node_id_t *node_id;
   const node_t *node;
 
@@ -981,9 +977,6 @@ link_info_window_create(const link_id_t * link_id)
 static void
 update_link_info_window (GtkWidget *window)
 {
-  GtkListStore *gs;
-  GtkTreeView *gv;
-  GtkWidget *widget;
   const link_id_t *link_id;
   const link_t *link;
   const node_t *node;

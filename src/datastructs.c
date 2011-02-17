@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include "datastructs.h"
 #include "globals.h"
+#include "util.h"
 
 #define LINESIZE 1024
 

@@ -515,7 +515,6 @@ void
 on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkComboBoxEntry *cbox;
-  gint position = 0;
 
   /* saves current prefs to a temporary */
   tmp_pref = duplicate_config(&pref);
@@ -802,7 +801,7 @@ on_color_change_button_clicked (GtkButton * button, gpointer user_data)
   GtkColorSelectionDialog *dlg;
   GtkColorSelection *csel;
   EATreePos ep;
-  gchar *u;
+
   if (!get_color_store (&ep))
     return;
 
@@ -944,8 +943,8 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
   GtkComboBoxEntry *cbox;
-  int pos = 0;
   EATreePos ep;
+
   if (!get_color_store (&ep))
     return;
 

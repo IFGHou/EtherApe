@@ -199,7 +199,6 @@ gchar *node_xml(const node_t * node)
   gchar *msg_stats;
   gchar *msg_resolved;
   gchar *msg_numeric;
-  guint i;
 
   if (!node)
     return xmltag("node", "");
@@ -310,6 +309,8 @@ node_name_update(node_t * node)
     case TCP:
       set_node_name (node, tcp_sequence);
       break;
+    default:
+      break;
     }
 }				/* update_node_names */
 
@@ -318,7 +319,6 @@ static void
 set_node_name (node_t * node, const name_decode_t *sequence)
 {
   const name_decode_t *iter;
-  guint i;
   gboolean cont;
 
   if (DEBUG_ENABLED)

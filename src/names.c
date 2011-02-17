@@ -264,7 +264,6 @@ static gboolean get_linux_sll_name (name_add_t *nt)
 static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
 {
   const gchar *numeric, *solved;
-  gboolean found_in_ethers = FALSE;
 
   if (nt->dir == INBOUND)
     fill_node_id(&nt->node_id, ethmode, nt, ethmode, 0, 0);
