@@ -372,13 +372,20 @@ diagram_update_links(GtkWidget * canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint
-update_diagram (GtkWidget * canvas)
+guint update_diagram(GtkWidget * canvas)
 {
   static struct timeval last_refresh_time = { 0, 0 };
   double diffms;
   enum status_t status;
 
+  /* if requested and enabled, dump to xml */
+  if (request_dump && pref.export_file_signal)
+    {
+      g_warning (_("SIGUSR1 received: exporting to %s"), pref.export_file_signal);
+      dump_xml(pref.export_file_signal);
+      request_dump = FALSE; 
+    }
+  
   status = get_capture_status();
   if (status == PAUSE)
     return FALSE;

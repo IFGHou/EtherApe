@@ -46,23 +46,27 @@
  *
  **************************************************************************/
 static gboolean quiet = FALSE;
-static void (*oldhandler) (int);
+static void (*old_sighup_handler) (int);
 
 /***************************************************************************
  *
  * internal functions
  *
  **************************************************************************/
+static void init_common_data(void);
 static void free_static_data(void);
 static void set_debug_level (void);
 static void session_die (GnomeClient * client, gpointer client_data);
-static gint
-save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gint is_shutdown, GnomeInteractStyle interact_style,
-	      gint is_fast, gpointer client_data);
-static void
-log_handler (gchar * log_domain,
-	     GLogLevelFlags mask, const gchar * message, gpointer user_data);
+static gint save_session (GnomeClient * client, gint phase, 
+                          GnomeSaveStyle save_style, gint is_shutdown, 
+                          GnomeInteractStyle interact_style, gint is_fast, 
+                          gpointer client_data);
+static void log_handler (gchar * log_domain, GLogLevelFlags mask, 
+                         const gchar * message, gpointer user_data);
+
+/* signal handling */
+static void install_handlers(void);
+static void signal_export(int signum);
 
 /***************************************************************************
  *
@@ -79,6 +83,7 @@ main (int argc, char *argv[])
   gchar *cl_interface = NULL;
   gchar *cl_input_file = NULL;
   gchar *export_file_final = NULL;
+  gchar *export_file_signal = NULL;
   gboolean cl_numeric = FALSE;
   glong midelay = 0;
   glong madelay = G_MAXLONG;
@@ -94,8 +99,10 @@ main (int argc, char *argv[])
      N_("set capture filter"), N_("<capture filter>")},
     {"interface", 'i', POPT_ARG_STRING, &cl_interface, 0,
      N_("set interface to listen to"), N_("<interface name>")},
-    {"final-export", 'f', POPT_ARG_STRING, &export_file_final, 0,
-     N_("automatic export at end of replay"), N_("<file to export to>")},
+    {"final-export", 0, POPT_ARG_STRING, &export_file_final, 0,
+     N_("export to named file at end of replay"), N_("<file to export to>")},
+    {"signal-export", 0, POPT_ARG_STRING, &export_file_signal, 0,
+     N_("export to named file on receiving USR1"), N_("<file to export to>")},
     {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
      N_("don't move nodes around (deprecated)"), NULL}, 
     {"node-limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
@@ -118,6 +125,7 @@ main (int argc, char *argv[])
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
   };
 
+  init_common_data();
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -173,6 +181,13 @@ main (int argc, char *argv[])
 	g_free (pref.export_file_final);
       pref.export_file_final = g_strdup (export_file_final);
     }
+  if (export_file_signal)
+    {
+      if (pref.export_file_signal)
+	g_free (pref.export_file_signal);
+      pref.export_file_signal = g_strdup (export_file_signal);
+    }
+
   pref.name_res = !cl_numeric;
 
   if (cl_input_file)
@@ -262,19 +277,7 @@ main (int argc, char *argv[])
 		    GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (app1);
 
-  /* 
-   * Signal handling
-   * Catch SIGINT and SIGTERM and, if we get either of them, clean up
-   * and exit.
-   * XXX - deal with signal semantics on various platforms.  Or just
-   * use "sigaction()" and be done with it?
-   */
-  signal (SIGTERM, cleanup);
-  signal (SIGINT, cleanup);
-#if !defined(WIN32)
-  if ((oldhandler = signal (SIGHUP, cleanup)) != SIG_DFL)	/* Play nice with nohup */
-    signal (SIGHUP, oldhandler);
-#endif
+  install_handlers();
 
   /* With this we force an update of the diagram every x ms 
    * Data in the diagram is updated, and then the canvas redraws itself when
@@ -300,6 +303,18 @@ main (int argc, char *argv[])
   free_static_data();
   return 0;
 }				/* main */
+
+static void init_common_data(void)
+{
+  xml = NULL;
+  app1 = NULL;
+  statusbar = NULL;
+  gettimeofday (&now, NULL);
+  n_packets = 0;
+  total_mem_packets = 0;
+  request_dump = FALSE;
+}
+
 
 /* releases all static and cached data. Called just before exiting. Obviously 
  * it's not stricly needed, since the memory will be returned to the OS anyway,
@@ -383,15 +398,48 @@ save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
 }				/* save_session */
 
 
+/***************************************************************************
+ *
+ * signal handling
+ *
+ **************************************************************************/
+
+/* installs signal handlers */
+static void install_handlers(void)
+{
+  /* 
+   * Signal handling
+   * Catch SIGINT and SIGTERM and, if we get either of them, clean up
+   * and exit.
+   * XXX - deal with signal semantics on various platforms.  Or just
+   * use "sigaction()" and be done with it?
+   */
+  if (signal(SIGTERM, cleanup) == SIG_IGN)
+     signal(SIGTERM, SIG_IGN);
+  if (signal(SIGINT, cleanup) == SIG_IGN)
+     signal(SIGINT, SIG_IGN);
+#if !defined(WIN32)
+  if ((old_sighup_handler = signal (SIGHUP, cleanup)) != SIG_DFL)	/* Play nice with nohup */
+    signal (SIGHUP, old_sighup_handler);
+#endif
+  if (signal(SIGUSR1, signal_export) == SIG_IGN)
+     signal(SIGUSR1, SIG_IGN);
+}
+
 /*
  * Quit the program.
  * Makes sure that the capture device is closed, or else we might
  * be leaving it in promiscuous mode
  */
-void
-cleanup (int signum)
+void cleanup(int signum)
 {
   cleanup_capture ();
   free_static_data();
   gtk_exit (0);
+}
+
+/* activates a flag requesting an xml dump */
+static void signal_export(int signum)
+{
+  request_dump = TRUE;
 }
