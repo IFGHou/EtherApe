@@ -827,23 +827,19 @@ stats_info_create(const gchar *idkey, gpointer key)
 
 
 static void
-stats_info_update(GtkWidget *window, const traffic_stats_t *stats, 
-                  gboolean totals_only)
+stats_info_update(GtkWidget *window, const traffic_stats_t *stats)
 {
   if (!stats)
     {
       update_gtklabel(window, "node_iproto_avg", "X");
       update_gtklabel(window, "node_iproto_accum", "X");
       update_gtklabel(window, "node_iproto_avgsize", "X");
-      if (!totals_only)
-        {
-          update_gtklabel(window, "node_iproto_avg_in", "X");
-          update_gtklabel(window, "node_iproto_avg_out", "X");
-          update_gtklabel(window, "node_iproto_accum_in", "X");
-          update_gtklabel(window, "node_iproto_accum_out", "X");
-          update_gtklabel(window, "node_iproto_avgsize_in", "X");
-          update_gtklabel(window, "node_iproto_avgsize_out", "X");
-        }
+      update_gtklabel(window, "node_iproto_avg_in", "X");
+      update_gtklabel(window, "node_iproto_avg_out", "X");
+      update_gtklabel(window, "node_iproto_accum_in", "X");
+      update_gtklabel(window, "node_iproto_accum_out", "X");
+      update_gtklabel(window, "node_iproto_avgsize_in", "X");
+      update_gtklabel(window, "node_iproto_avgsize_out", "X");
       update_protocols_table(window, NULL);
       gtk_widget_queue_resize (GTK_WIDGET (window));
     }
@@ -859,27 +855,24 @@ stats_info_update(GtkWidget *window, const traffic_stats_t *stats,
       str = traffic_to_str (stats->stats.avg_size, FALSE);
       update_gtklabel(window, "node_iproto_avgsize", str);
       g_free(str);
-      if (!totals_only)
-        {
-          str = traffic_to_str (stats->stats_in.average, TRUE);
-          update_gtklabel(window, "node_iproto_avg_in", str);
-          g_free(str);
-          str = traffic_to_str (stats->stats_out.average, TRUE);
-          update_gtklabel(window, "node_iproto_avg_out", str);
-          g_free(str);
-          str = traffic_to_str (stats->stats_in.accumulated, FALSE);
-          update_gtklabel(window, "node_iproto_accum_in", str);
-          g_free(str);
-          str = traffic_to_str (stats->stats_out.accumulated, FALSE);
-          update_gtklabel(window, "node_iproto_accum_out", str);
-          g_free(str);
-          str = traffic_to_str (stats->stats_in.avg_size, FALSE);
-          update_gtklabel(window, "node_iproto_avgsize_in", str);
-          g_free(str);
-          str = traffic_to_str (stats->stats_out.avg_size, FALSE);
-          update_gtklabel(window, "node_iproto_avgsize_out", str);
-          g_free(str);
-        }
+      str = traffic_to_str (stats->stats_in.average, TRUE);
+      update_gtklabel(window, "node_iproto_avg_in", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats_out.average, TRUE);
+      update_gtklabel(window, "node_iproto_avg_out", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats_in.accumulated, FALSE);
+      update_gtklabel(window, "node_iproto_accum_in", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats_out.accumulated, FALSE);
+      update_gtklabel(window, "node_iproto_accum_out", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats_in.avg_size, FALSE);
+      update_gtklabel(window, "node_iproto_avgsize_in", str);
+      g_free(str);
+      str = traffic_to_str (stats->stats_out.avg_size, FALSE);
+      update_gtklabel(window, "node_iproto_avgsize_out", str);
+      g_free(str);
       /* update protocol table */
       update_protocols_table(window, &stats->stats_protos);
     }
@@ -922,7 +915,7 @@ update_node_protocols_window (GtkWidget *window)
     {
       /* node expired, clear stats */
       update_gtklabel(window, "node_iproto_numeric_name", _("Node timed out"));
-      stats_info_update(window, NULL, FALSE);
+      stats_info_update(window, NULL);
       return;
     }
 
@@ -931,7 +924,7 @@ update_node_protocols_window (GtkWidget *window)
   update_gtklabel(window, "node_iproto_name", node->name->str);
   update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
   
-  stats_info_update(window, &node->node_stats, FALSE);
+  stats_info_update(window, &node->node_stats);
 }
 
 /****************************************************************************
@@ -985,9 +978,8 @@ update_link_info_window (GtkWidget *window)
   /* updates column descriptions */
   show_widget(window, "src_label");
   show_widget(window, "dst_label");
-  update_gtklabel(window, "total_label", _("Traffic"));
-  hide_widget(window, "inbound_label");
-  hide_widget(window, "outbound_label");
+  update_gtklabel(window, "inbound_label", _("B->A"));
+  update_gtklabel(window, "outbound_label", _("A->B"));
 
   link_id = g_object_get_data (G_OBJECT (window), "link_id");
   link = links_catalog_find(link_id);
@@ -996,7 +988,7 @@ update_link_info_window (GtkWidget *window)
       /* node expired, clear stats */
       update_gtklabel(window, "node_iproto_numeric_name", _("Link timed out"));
       update_gtklabel(window, "node_iproto_numeric_name_b", "");
-      stats_info_update(window, NULL, TRUE);
+      stats_info_update(window, NULL);
       return;
     }
 
@@ -1028,5 +1020,5 @@ update_link_info_window (GtkWidget *window)
     update_gtklabel(window, "node_iproto_numeric_name_b", _("Node timed out"));
   }
 
-  stats_info_update(window, &link->link_stats, TRUE);
+  stats_info_update(window, &link->link_stats);
 }

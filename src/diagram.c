@@ -73,7 +73,8 @@ static gint canvas_node_update(node_id_t  * ether_addr,
 typedef struct
 {
   link_id_t canvas_link_id; /* id of the link */
-  GnomeCanvasItem *link_item;
+  GnomeCanvasItem *src_item;    /* triangle for src side */
+  GnomeCanvasItem *dst_item;    /* triangle for dst side */
   GdkColor color;
 }
 canvas_link_t;
@@ -141,6 +142,9 @@ static gint link_item_event (GnomeCanvasItem * item,
 static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
 static void update_legend(void);
+static void draw_oneside_link(double xs, double ys, double xd, double yd,
+                              const basic_stats_t *link_data, 
+                              guint32 scaledColor, GnomeCanvasItem *item);
 
 
 void ask_reposition(gboolean r_font)
@@ -1037,20 +1041,28 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
       for (; i <= 5; i++)
 	points->coords[i] = 0.0;
 
-      new_canvas_link->link_item
+      new_canvas_link->src_item
 	= gnome_canvas_item_new (group,
 				 gnome_canvas_polygon_get_type (),
 				 "points", points, "fill_color", "tan", NULL);
-      addref_canvas_obj(G_OBJECT (new_canvas_link->link_item));
+      addref_canvas_obj(G_OBJECT (new_canvas_link->src_item));
 
+      new_canvas_link->dst_item
+	= gnome_canvas_item_new (group,
+				 gnome_canvas_polygon_get_type (),
+				 "points", points, "fill_color", "tan", NULL);
+      addref_canvas_obj(G_OBJECT (new_canvas_link->dst_item));
 
       g_tree_insert (canvas_links,
 		     &new_canvas_link->canvas_link_id, new_canvas_link);
-      gnome_canvas_item_lower_to_bottom (new_canvas_link->link_item);
+      gnome_canvas_item_lower_to_bottom (new_canvas_link->src_item);
+      gnome_canvas_item_lower_to_bottom (new_canvas_link->dst_item);
 
       gnome_canvas_points_unref (points);
 
-      g_signal_connect (G_OBJECT (new_canvas_link->link_item), "event",
+      g_signal_connect (G_OBJECT (new_canvas_link->src_item), "event",
+			(GtkSignalFunc) link_item_event, new_canvas_link);
+      g_signal_connect (G_OBJECT (new_canvas_link->dst_item), "event",
 			(GtkSignalFunc) link_item_event, new_canvas_link);
 
     }
@@ -1066,17 +1078,15 @@ static gint
 canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
 		     GList **delete_list)
 {
-  link_t *link;
-  GnomeCanvasPoints *points;
-  canvas_node_t *canvas_node;
-  gdouble link_size, versorx, versory, modulus;
+  const link_t *link;
+  const canvas_node_t *canvas_dst;
+  const canvas_node_t *canvas_src;
   guint32 scaledColor;
-  gdouble scale;
-  double dx, dy;		/* temporary */
+  double xs, ys, xd, yd, scale;
 
-/* We used to run update_link here, but that was a major performance penalty, and now it is done in update_diagram */
+  /* We used to run update_link here, but that was a major performance penalty, 
+   * and now it is done in update_diagram */
   link = links_catalog_find(link_id);
-
   if (!link)
     {
       *delete_list = g_list_prepend( *delete_list, link_id);
@@ -1084,51 +1094,28 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       return FALSE;
     }
 
-
-  points = gnome_canvas_points_new (3);
-
   /* If either source or destination has disappeared, we hide the link
    * until it can be show again */
-  /* TODO: This is a dirty hack. Redo this again later by properly 
-   * deleting the link */
 
   /* We get coords for the destination node */
-  canvas_node = g_tree_lookup (canvas_nodes, &link_id->dst);
-  if (!canvas_node || !canvas_node->shown)
+  canvas_dst = g_tree_lookup (canvas_nodes, &link_id->dst);
+  if (!canvas_dst || !canvas_dst->shown)
     {
-      gnome_canvas_item_hide (canvas_link->link_item);
-      gnome_canvas_points_unref (points);
+      gnome_canvas_item_hide (canvas_link->src_item);
+      gnome_canvas_item_hide (canvas_link->dst_item);
       return FALSE;
     }
-  g_object_get (G_OBJECT (canvas_node->group_item), "x", &points->coords[0],
-		"y", &points->coords[1], NULL);
 
   /* We get coords from source node */
-  canvas_node = g_tree_lookup (canvas_nodes, &link_id->src);
-  if (!canvas_node || !canvas_node->shown)
+  canvas_src = g_tree_lookup (canvas_nodes, &link_id->src);
+  if (!canvas_src || !canvas_src->shown)
     {
-      gnome_canvas_item_hide (canvas_link->link_item);
-      gnome_canvas_points_unref (points);
+      gnome_canvas_item_hide (canvas_link->src_item);
+      gnome_canvas_item_hide (canvas_link->dst_item);
       return FALSE;
     }
 
-  g_object_get (G_OBJECT (canvas_node->group_item), "x", &dx, "y", &dy, NULL);
-  versorx = -(points->coords[1] - dy);
-  versory = points->coords[0] - dx;
-
-  modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
-  link_size = get_link_size (link->link_stats.stats.average) / 2;
-
-  /* limit the maximum size to avoid overload */
-  if (link_size > MAX_LINK_SIZE)
-    link_size = MAX_LINK_SIZE; 
-
-  points->coords[2] = dx + (versorx / modulus) * link_size;
-  points->coords[3] = dy + (versory / modulus) * link_size;
-  points->coords[4] = dx - (versorx / modulus) * link_size;
-  points->coords[5] = dy - (versory / modulus) * link_size;
-
-  /* TODO What if there never is a protocol?
+  /* What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
   if (link->main_prot[pref.stack_level])
     {
@@ -1150,18 +1137,63 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       scaledColor = black;
     }
 
-  gnome_canvas_item_set (canvas_link->link_item, 
-                          "points", points,
-                          "fill_color_rgba", scaledColor, NULL);
+  /* retrieve coordinates of node centers */
+  g_object_get (G_OBJECT (canvas_src->group_item), "x", &xs, "y", &ys, NULL);
+  g_object_get (G_OBJECT (canvas_dst->group_item), "x", &xd, "y", &yd, NULL);
 
-  /* If we got this far, the link can be shown. Make sure it is */
-  gnome_canvas_item_show (canvas_link->link_item);
+  /* first draw triangle for src->dst */
+  draw_oneside_link(xs, ys, xd, yd, &(link->link_stats.stats_out), scaledColor, 
+                    canvas_link->src_item);
 
-  gnome_canvas_points_unref (points);
+  /* then draw triangle for dst->src */
+  draw_oneside_link(xd, yd, xs, ys, &(link->link_stats.stats_in), scaledColor, 
+                    canvas_link->dst_item);
 
   return FALSE;
 
 }				/* update_canvas_links */
+
+/* given the src and dst node centers, plus a size, draws a triangle in the 
+ * specified color on the provided canvas item*/
+static void draw_oneside_link(double xs, double ys, double xd, double yd,
+                              const basic_stats_t *link_stats, 
+                              guint32 scaledColor, GnomeCanvasItem *item)
+{
+  GnomeCanvasPoints *points;
+  gdouble versorx, versory, modulus, link_size;
+
+  link_size = get_link_size(link_stats->average) / 2;
+
+  /* limit the maximum size to avoid overload */
+  if (link_size > MAX_LINK_SIZE)
+    link_size = MAX_LINK_SIZE; 
+
+  versorx = -(yd - ys);
+  versory = xd - xs;
+  modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
+  if (modulus == 0)
+    {
+      link_size = 0;
+      modulus = 1;
+    }
+
+  points = gnome_canvas_points_new (3);
+  points->coords[0] = xd;
+  points->coords[1] = yd;
+  points->coords[2] = xs + versorx * link_size / modulus;
+  points->coords[3] = ys + versory * link_size / modulus;
+  points->coords[4] = xs - versorx * link_size / modulus;
+  points->coords[5] = ys - versory * link_size / modulus;
+
+  gnome_canvas_item_set (item, 
+                          "points", points,
+                          "fill_color_rgba", scaledColor, NULL);
+
+  /* If we got this far, the link can be shown. Make sure it is */
+  gnome_canvas_item_show (item);
+  gnome_canvas_points_unref (points);
+}
+
 
 
 /* Returs the radius in pixels given average traffic and size mode */
@@ -1323,11 +1355,17 @@ canvas_link_delete(canvas_link_t *canvas_link)
 {
    /* Right now I'm not very sure in which cases there could be a canvas_link but not a link_item, but
    * I had a not in update_canvas_nodes that if the test is not done it can lead to corruption */
-  if (canvas_link->link_item)
+  if (canvas_link->src_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-      g_object_unref (G_OBJECT (canvas_link->link_item));
-      canvas_link->link_item = NULL;
+      gtk_object_destroy (GTK_OBJECT (canvas_link->src_item));
+      g_object_unref (G_OBJECT (canvas_link->src_item));
+      canvas_link->src_item = NULL;
+    }
+  if (canvas_link->dst_item)
+    {
+      gtk_object_destroy (GTK_OBJECT (canvas_link->dst_item));
+      g_object_unref (G_OBJECT (canvas_link->dst_item));
+      canvas_link->dst_item = NULL;
     }
 
   g_free (canvas_link);

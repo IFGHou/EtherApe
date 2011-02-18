@@ -300,9 +300,20 @@ void packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   add_node_packet (raw_packet, raw_size, packet, &decp.dst_node_id, INBOUND);
 
   /* And now we update link traffic information for this packet */
-  link_id.src = decp.src_node_id;
-  link_id.dst = decp.dst_node_id;
-  links_catalog_add_packet(&link_id, packet);
+  if (node_id_compare (&decp.src_node_id, &decp.dst_node_id) < 1)
+    {
+      /* src id <= dst id, direct packet */
+      link_id.src = decp.src_node_id;
+      link_id.dst = decp.dst_node_id;
+      links_catalog_add_packet(&link_id, packet, OUTBOUND);
+    } 
+  else
+    {
+      /* src id <= dst id, inverse packet */
+      link_id.src = decp.dst_node_id;
+      link_id.dst = decp.src_node_id;
+      links_catalog_add_packet(&link_id, packet, INBOUND);
+    }
 
   /* finally, update global protocol stats */
   protocol_summary_add_packet(packet);

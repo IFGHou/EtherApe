@@ -5,14 +5,37 @@
    EtherApe now can save a snapshot with all known nodes and relevant
    informations to an XML file. With option --final-export, a dump is
    automatically generated when a capture file is fully replayed.
+   Additionally, option --signal-export enables SIGUSR1 handling, to 
+   dump on signal.
+
+   EtherApe used to have two links for connection, one for each traffic
+   direction. With this release, only one link is needed, gaining more
+   complete statistics and better resource usage.
+
+   Thanks to OpenSUSE Build Service and a new spec file, development rpms can
+   easily be built for OpenSUSE 11.3, SLE11, Centos5/RHEL5, Fedora and
+   Mandriva.
+   The spec file is somewhat generic, lacking the nicer integrations of
+   official packages, so you are advised to build with EtherApe spec file only
+   as a last resort.
 
    Changes summary:
-     * XML dump of node statistics.
+     * XML export of node statistics.
      * added --final-export to export statistics at replay end.
+     * added --signal-export to export statistics on SIGUSR1 (FR 3185920).
+     * improved link statistics
      * added a toolbar button to open the nodes window.
      * a new button allows skipping lengthy pauses when replaying.
+     * fixed a long-standing bug affecting expiry timeouts. EtherApe was
+       overestimating traffic averages.
      * used stock icons when possible to improve consistency with themes.
-     * Updated documentation.
+     * EtherApe now builds natively on CENTOS5/RHEL5. 
+     * rewrote spec file for use with OpenSUSE Build Service.
+     * updated documentation.
+     * removed several (harmless) compiler warnings to make packager's life 
+       easier.
+     * imported debian-specific patches and a swedish translation by Daniel
+       Nylander.
 
 
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):

@@ -56,7 +56,8 @@ gint links_catalog_size(void); /* returns the current number of links in catalog
 void links_catalog_foreach(GTraverseFunc func, gpointer data);  /* calls the func for every link */
 void links_catalog_update_all(void);
 /* adds a new packet to the link, creating it if necessary */
-void links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet);
+void links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet,
+                              packet_direction direction);
 
 
 #endif
