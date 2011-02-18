@@ -69,7 +69,7 @@ enum status_t get_capture_status(void)
 gchar *init_capture (void)
 {
   gchar *device;
-  gchar ebuf[300];
+  gchar ebuf[PCAP_ERRBUF_SIZE];
   int linktype;		/* Type of device we are listening to */
   static gchar errorbuf[300];
   static gboolean data_initialized = FALSE;
@@ -98,7 +98,8 @@ gchar *init_capture (void)
                     _("No capture device found or insufficient privileges.\n"
                       "Only file replay will be available.\n"
                       "EtherApe must be run with administrative privileges "
-                      "(e.g. root) to enable live capture."));
+                      "(e.g. root) to enable live capture.\n"
+                      "Pcap error: %s"), ebuf);
 	  return errorbuf;
 	}
       /* TODO I should probably tidy this up, I probably don't
@@ -148,8 +149,27 @@ gchar *init_capture (void)
   linktype = pcap_datalink(pch_struct);
   if (!setup_link_type(linktype))
     {
-        snprintf (errorbuf, sizeof(errorbuf), _("Link type %d not supported"), 
-                  linktype);
+      if (pref.input_file)
+        {
+          snprintf (errorbuf, sizeof(errorbuf), 
+                    _("File %s contains packets with unsupported "
+                      "link type %d, cannot replay"), 
+                    pref.input_file,
+                    linktype);
+        }
+      else if (device)
+        {
+          snprintf (errorbuf, sizeof(errorbuf), 
+                    _("Device %s uses unsupported link type %d,"
+                      "cannot capture. Please choose another interface."), 
+                    device,
+                    linktype);
+        }
+      else
+        {
+          snprintf (errorbuf, sizeof(errorbuf), _("Unsupported link type %d"), 
+                    linktype);
+        }
         return errorbuf;
     }
   
@@ -161,7 +181,8 @@ gchar *init_capture (void)
     }
   if (pref.mode == LINK6 && !has_linklevel())
     {
-      snprintf (errorbuf, sizeof(errorbuf), _("Mode not available in this device"));
+      snprintf (errorbuf, sizeof(errorbuf), _("This device does not support link-layer mode. "
+                                              "Please use IP or TCP modes."));
       return errorbuf;
     }
 
@@ -194,9 +215,11 @@ set_filter (gchar * filter_string, gchar * device)
       netmask = 0;
     }
   if (pcap_compile (pch_struct, &fp, filter_string, 1, netmask) < 0)
-    g_warning (_("Unable to parse filter string (%s)."), pcap_geterr (pch_struct));
+    g_warning (_("Unable to parse filter string (%s). Filter ignored."), 
+               pcap_geterr (pch_struct));
   else if (pcap_setfilter (pch_struct, &fp) < 0)
-    g_warning (_("Can't install filter (%s)."), pcap_geterr (pch_struct));
+    g_warning (_("Can't install filter (%s). Filter ignored."), 
+               pcap_geterr (pch_struct));
 
   return 0;
 }				/* set_filter */
