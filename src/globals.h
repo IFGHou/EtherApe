@@ -33,7 +33,8 @@ GtkStatusbar *statusbar;        /* Main window statusbar */
 struct timeval now;		/* Set both at each packet capture and 
 				 * in each redraw of the diagram */
 unsigned long n_packets;	/* Number of total packets received */
-glong total_mem_packets;	        /* Number of packets currently in memory */
+glong total_mem_packets;        /* Number of packets currently in memory */
+gboolean request_dump;          /* if true, do an xml dump */
 
 struct pref_struct
 {
@@ -43,6 +44,7 @@ struct pref_struct
   gchar *input_file;		/* Capture file to read from */
   gchar *export_file;		/* file to export to */
   gchar *export_file_final;     /* file to export to at end of replay */
+  gchar *export_file_signal;    /* file to export to at receipt of usr1 */
   gboolean name_res;		/* Whether dns lookups are performed */
   apemode_t mode;		/* Mode of operation. Can be
 				 * T.RING/FDDI/ETHERNET, IP or TCP */

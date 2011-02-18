@@ -326,7 +326,7 @@ gchar *protocol_stack_xml(const protostack_t *pstk)
       g_free(tmp);
       g_free(msg_level);
     }
-  xml = xmltag("protocols", "\n%s", msg);
+  xml = xmltag("protocols", "%s", msg);
   g_free(msg);
   return xml;
 }

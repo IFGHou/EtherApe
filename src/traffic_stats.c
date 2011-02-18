@@ -216,7 +216,7 @@ gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat)
                "<in>\n%s</in>\n"
                "<out>\n%s</out>\n"
                "<tot>\n%s</tot>\n"
-               "%s\n",
+               "%s",
                pkt_stat->pkt_list.length, 
                msg_in, msg_out, msg_tot, msg_proto);
   g_free(msg_tot);

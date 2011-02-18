@@ -414,6 +414,10 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
                   <para><menuchoice>
                       <guimenuitem>Export</guimenuitem>
                     </menuchoice> creates an xml with a snapshot of current nodes and their statistics.  A sample output file can be found in <xref linkend="appendix-a"/>.</para>
+		  <note>
+		    <para>&app; can automatically export to user-chosen files
+		      with two command line options, <option>--final-export</option> and <option>--signal-export</option>. The first writes to file at end of a replay, the second dumps when receiving signal USR1.</para>
+		  </note>
                 </listitem>
 
                 <listitem>
