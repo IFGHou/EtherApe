@@ -37,10 +37,6 @@ Issues in the source code
   * Why am I using a global "interface" and a second "device"
     in capture.c? Check that I can just use interface.
 
-  * Currently a link is monodirectional, i.e. there is one for A->B traffic
-    and another for B->A.  Should be bidirectional, properly accounting
-    packets. At diagram level, both triangles should be drawn simultaneously.
-
   * Use a GArray instead of a fixed array for the protocols
     stack.
 

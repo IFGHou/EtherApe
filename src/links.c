@@ -306,12 +306,13 @@ links_catalog_update_all(void)
 
 /* adds a new packet to the link, creating it if necessary */
 void
-links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet)
+links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet, 
+                         packet_direction direction)
 {
   link_t *link;
 
   /* retrieves link from catalog, creating a new one if necessary */
   link = links_catalog_find_create(link_id);
 
-  traffic_stats_add_packet(&link->link_stats, packet, EITHERBOUND);
+  traffic_stats_add_packet(&link->link_stats, packet, direction);
 }
