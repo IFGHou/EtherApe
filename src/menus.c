@@ -17,8 +17,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
-#include <gtk/gtkcontainer.h>
+#include <gtk/gtk.h>
 #include <glib.h>
 #include "menus.h"
 #include "util.h"

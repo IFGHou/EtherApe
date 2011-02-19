@@ -8,5 +8,5 @@ Comment[es]=Monitor Gráfico de Red
 Exec=etherape
 Terminal=false
 Type=Application
-Icon=etherape.png
+Icon=etherape
 Categories=GNOME;System;Network;

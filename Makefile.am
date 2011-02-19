@@ -18,12 +18,10 @@ conf_DATA =					\
 	services
 
 Developmentdir = $(datadir)/applications
-Development_DATA =			\
-	etherape.desktop
+Development_DATA = etherape.desktop
 
 pixmapsdir = $(datadir)/pixmaps
-pixmaps_DATA =				\
-	etherape.png
+pixmaps_DATA = etherape.png
 
 purge:
 	rm -f *~ *.bak *.tar.gz

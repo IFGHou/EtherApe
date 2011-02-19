@@ -9,18 +9,9 @@ AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
 
 # defines
-#AC_DEFINE([ENABLE_NLS],[],[cmt])
 AC_DEFINE([HAVE_CATGETS],[],[cmt])
-#AC_DEFINE([HAVE_GETTEXT],[],[cmt])
 AC_DEFINE([GETTEXT_PACKAGE],[],[cmt])
-#AC_DEFINE([HAVE_LC_MESSAGES],[],[cmt])
-#AC_DEFINE([HAVE_STPCPY],[],[cmt])
 AC_DEFINE([HAVE_LIBSM],[],[cmt])
-#AC_DEFINE([PACKAGE_LOCALE_DIR],[],[cmt])
-#AC_DEFINE([PACKAGE_DATA_DIR],[],[cmt])
-#AC_DEFINE([PACKAGE_SOURCE_DIR],[],[cmt])
-#AC_DEFINE([DATAFILE_DIR],[],[Directory of data files])
-#AC_DEFINE([PIXMAPS_DIR],[],[cmt])
 AC_DEFINE([HAVE_LIBPCAP],[],[cmt])
 AC_DEFINE([HAVE_U_INT],[],[cmt])
 
@@ -34,7 +25,7 @@ AC_PROG_LIBTOOL
 #AC_PROG_INTLTOOL(0.27)
 
 # Checks for libraries.
-PKG_CHECK_MODULES(ETHERAPE, libglade-2.0 libgnomeui-2.0)
+PKG_CHECK_MODULES(ETHERAPE, glib-2.0 libglade-2.0 libgnomeui-2.0)
 AC_SUBST(ETHERAPE_CFLAGS)
 AC_SUBST(ETHERAPE_LIBS)
 
@@ -122,8 +113,9 @@ AC_ARG_ENABLE(static-pcap,
   STATIC_PCAP=yes)
 AC_ETHEREAL_PCAP_CHECK
 
-# check for other libraries
+# check for other libraries (needed for AC_CHECK_FUNCS)
 AC_SEARCH_LIBS(pow, [m])
+AC_SEARCH_LIBS(glib_check_version, [glib-2.0])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
@@ -131,6 +123,11 @@ AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([snprintf floor gettimeofday localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr inet_ntop])
+
+# check for g_queue_init - if missing, this enables also the gdk_color_to_string
+# replacement. Needed for CENTOS5 (and RHEL5 also)
+# remove when obsolete!
+AC_CHECK_FUNCS([g_queue_init])
 
 # Create DATAFILE_DIR #define for config.h
 DATAFILE_DIR=$sysconfdir
