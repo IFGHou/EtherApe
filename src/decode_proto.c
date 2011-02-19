@@ -20,6 +20,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "globals.h"
 #include <ctype.h>
 #include <string.h>
@@ -117,7 +121,9 @@ static void get_ieee802_5_type (decode_proto_t *dp);
 static void get_eth_II (decode_proto_t *dp, etype_t etype);
 static void get_eth_802_3 (decode_proto_t *dp, ethhdrtype_t ethhdr_type);
 static void get_radiotap (decode_proto_t *dp);
+#if defined(DLT_PPI)  
 static void get_ppi (decode_proto_t *dp);
+#endif
 static void get_wlan (decode_proto_t *dp);
 static void get_linux_sll (decode_proto_t *dp);
 
@@ -166,7 +172,9 @@ static linktype_data_t linktypes[] = {
  {"WLAN",   DLT_IEEE802_11,    LINK6,   get_wlan }, 
  /* Wireless with radiotap header */
  {"WLAN+RTAP",  DLT_IEEE802_11_RADIO, LINK6, get_radiotap }, 
+#if defined(DLT_PPI)  
  {"PPI",  DLT_PPI, LINK6, get_ppi }, /* PPI encapsulation */
+#endif  
  {NULL,   0, 0, NULL } /* terminating entry, must be last */
 };
 
@@ -574,6 +582,7 @@ static void get_radiotap(decode_proto_t *dp)
   get_wlan(dp);
 }
 
+#if defined(DLT_PPI)  
 /* handles PPI (Per Packet Incapsulation) header */
 static void get_ppi(decode_proto_t *dp)
 {
@@ -620,6 +629,7 @@ static void get_ppi(decode_proto_t *dp)
     }
   pph_lkentry->fun(dp);
 }
+#endif
 
 static void decode_wlan_mgmt(decode_proto_t *dp, uint8_t subtype)
 {

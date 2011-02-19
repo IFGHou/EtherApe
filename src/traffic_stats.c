@@ -17,6 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "globals.h"
 #include "traffic_stats.h"
 #include "ui_utils.h"
@@ -27,11 +31,6 @@
  * traffic_stats_t implementation
  *
  **************************************************************************/
-
-static void traffic_stats_list_item_delete(gpointer data, gpointer dum)
-{
-  packet_list_item_delete(data);
-}
 
 /* initializes counters */
 void traffic_stats_init(traffic_stats_t *pkt_stat)
@@ -50,11 +49,13 @@ void traffic_stats_init(traffic_stats_t *pkt_stat)
 /* releases memory */
 void traffic_stats_reset(traffic_stats_t *pkt_stat)
 {
+  gpointer it;
+
   g_assert(pkt_stat);
 
   /* release items and free list */
-  g_queue_foreach(&pkt_stat->pkt_list, traffic_stats_list_item_delete, NULL);
-  g_queue_clear(&pkt_stat->pkt_list);
+  while ( (it = g_queue_pop_head(&pkt_stat->pkt_list)) != NULL)
+      packet_list_item_delete((packet_list_item_t *)it);
 
   /* purges protos */
   protocol_stack_reset(&pkt_stat->stats_protos);

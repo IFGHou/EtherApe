@@ -17,11 +17,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <gnome.h>
 #include "preferences.h"
 #include "diagram.h"
 #include "capture.h"
 #include "datastructs.h"
+#include "util.h"
 
 #define MILLI   (1000.0)
 #define COLSPACES   "        "

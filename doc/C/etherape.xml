@@ -687,9 +687,12 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 	<listitem><para>Protocol port (TCP/UDP traffic only).
 	<note><para>&app; assigns the same port to all nodes in a packet using the following heuristic:
 	<orderedlist>
+	  <listitem><para>if only one port of the two matches is mapped to a
+	  color, that entry is used. This way you can override automatic port assignement.</para></listitem>
+	  <listitem><para>if both ports of packet are mapped, the minor one is choosen.</para></listitem>
 	  <listitem><para>if only one port of the two matches an entry of the services file, that entry is used.</para></listitem>
 	  <listitem><para>if both ports of packet match, the minor one is choosen.</para></listitem>
-	  <listitem><para>if no ports match an entry, the minor one is chosen. The packet is labelled "unknown traffic" and processed as such (see "Group unknown ports" in <xref linkend="group-unknown"/>). </para></listitem>
+	  <listitem><para>if no ports match a services file entry, the minor one is chosen. The packet is labelled "unknown traffic" and processed as such (see "Group unknown ports" in <xref linkend="group-unknown"/>). </para></listitem>
 	</orderedlist> 
 	</para></note> 
 	</para></listitem>
@@ -742,7 +745,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     <para>A column can also be dragged, changing its position in the table.</para>
 
     <note>
-      <para>This dialog lists all known nodes, even those not shown on the diagram, because their Diagram timeout is expired. A node is fully expired and &app; forgets it only when all three timeouts (Diagram, Traffic Statistics, Protocol Statistics) are expired.</para>
+      <para>This dialog lists all known nodes, even those not shown on the diagram because their Diagram timeout is expired. A node is fully expired and &app; forgets it only when all three timeouts (Diagram, Traffic Statistics, Protocol Statistics) are expired.</para>
     </note>
 
     <figure id="figure-allnodes-dlg">
@@ -1369,6 +1372,10 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     incorrectly flagged as ISO level 4 or 5.</para>
 
     <para>Most NFS traffic will show up as UDP_FRAGMENT or just RPC</para>
+
+    <para>Older distributions, (e.g. CentOS 5, or RHEL 5) do not support PPI
+    encapsulation.</para>
+
   </sect1>
 
   <sect1 id="appendix-a">

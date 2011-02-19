@@ -45,6 +45,9 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define to 1 if you have the `g_queue_init' function. */
+#undef HAVE_G_QUEUE_INIT
+
 /* Define if you have the iconv() function. */
 #undef HAVE_ICONV
 

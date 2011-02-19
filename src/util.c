@@ -387,7 +387,11 @@ type_to_str (const address_t * ad)
     }
 }				/* type_to_str */
 
-/* xml helpers */
+/************************************************
+ *
+ * xml helpers 
+ *
+ *************************************************/
 
 /* returns a new string containing the named tag */
 gchar *xmltag(const gchar *name, const gchar *fmt, ...)
@@ -403,3 +407,24 @@ gchar *xmltag(const gchar *name, const gchar *fmt, ...)
   return xml;
 }
 
+/************************************************
+ *
+ * compatibility functions for CENTOS5 and RHEL5
+ *
+ *************************************************/
+#if !defined(HAVE_G_QUEUE_INIT)
+
+void compat_g_queue_init(GQueue *gq)
+{
+  g_assert(gq != NULL);
+  gq->head = NULL;
+  gq->tail = NULL;
+  gq->length = 0;
+}
+
+gchar *compat_gdk_color_to_string(const GdkColor *color)
+{
+  g_assert(color != NULL);
+  return g_strdup_printf("#%4.4x%4.4x%4.4x", color->red, color->green, color->blue);
+}
+#endif 
