@@ -122,7 +122,7 @@ main (int argc, char *argv[])
     {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
-    POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
+    POPT_AUTOHELP {NULL, 0, 0, NULL, 0, NULL, NULL}
   };
 
   init_common_data();
