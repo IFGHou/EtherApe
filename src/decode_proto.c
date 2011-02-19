@@ -142,7 +142,7 @@ static void append_etype_prot (decode_proto_t *dp, etype_t etype);
 typedef struct linktype_data_tag
 {
   const gchar *lt_desc; /* linktype description */
-  int dlt_linktype; /* pcap link type (DLT_xxxx defines) */
+  unsigned int dlt_linktype; /* pcap link type (DLT_xxxx defines) */
   apemode_t l2_idtype;   /* link level address slot in node_id_t */
   get_fun fun;  /* linktype base decoder function */
     
@@ -167,7 +167,7 @@ static linktype_data_t linktypes[] = {
  /* Wireless with radiotap header */
  {"WLAN+RTAP",  DLT_IEEE802_11_RADIO, LINK6, get_radiotap }, 
  {"PPI",  DLT_PPI, LINK6, get_ppi }, /* PPI encapsulation */
- {NULL,   0, 0 } /* terminating entry, must be last */
+ {NULL,   0, 0, NULL } /* terminating entry, must be last */
 };
 
 /* ------------------------------------------------------------
@@ -175,7 +175,7 @@ static linktype_data_t linktypes[] = {
  * ------------------------------------------------------------*/
 
 /* Sets the correct linktype entry. Returns false if not found */
-gboolean setup_link_type(int linktype)
+gboolean setup_link_type(unsigned int linktype)
 {
   int i;
 

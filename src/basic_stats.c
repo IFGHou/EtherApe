@@ -63,13 +63,17 @@ double substract_times_ms (const struct timeval *a, const struct timeval *b)
 {
   double result;
 
-  struct timeval t = substract_times(*a, *b);
-  double ck = (double)(t.tv_sec*1000.0 + t.tv_usec/1000.0);
-  
-  result =  (a->tv_sec - b->tv_sec) * 1000.0 + (a->tv_usec - b->tv_usec) / 1000.0;
+  result = (a->tv_sec - b->tv_sec) * 1000.0 + (a->tv_usec - b->tv_usec) / 1000.0;
 
-  if (fabs(ck - result) > 0.000001)
-    g_warning("Errore substract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", result, ck, fabs(ck-result));
+#if CHECK_EXPIRATION
+  {
+    struct timeval t = substract_times(*a, *b);
+    double ck = (double)(t.tv_sec*1000.0 + t.tv_usec/1000.0);
+    if (fabs(ck - result) > 0.000001)
+      g_warning("Errore substract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", 
+                result, ck, fabs(ck-result));
+  }
+#endif
 
   return result;
 }

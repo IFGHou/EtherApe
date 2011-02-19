@@ -70,7 +70,7 @@ gchar *init_capture (void)
 {
   gchar *device;
   gchar ebuf[PCAP_ERRBUF_SIZE];
-  int linktype;		/* Type of device we are listening to */
+  unsigned int linktype;		/* Type of device we are listening to */
   static gchar errorbuf[300];
   static gboolean data_initialized = FALSE;
 
@@ -199,7 +199,7 @@ set_filter (gchar * filter_string, gchar * device)
 {
   gchar ebuf[300];
   bpf_u_int32 netnum;
-  bpf_u_int32 netmask;
+  bpf_u_int32 netmask = 0;
   struct bpf_program fp;
 
   if (!pch_struct)
