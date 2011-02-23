@@ -93,6 +93,9 @@ _EOF_
 %build
 %if 0%{?suse_version} || 0%{?sles_version}
 %configure --with-pic --disable-scrollkeeper
+# apparently opensuse has a broken xmllib configuration, missing an alias
+# for omf dtd
+%__sed -ie "s#--dtdvalid 'http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd'#--dtdvalidfpi \\\"-//OMF//DTD Scrollkeeper OMF Variant V1.0//EN\\\"#" doc/Makefile
 %else
 %if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
 # fedora/redhat/centos use a different dtd ...
