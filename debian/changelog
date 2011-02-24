@@ -1,3 +1,9 @@
+etherape (0.9.10-1) unstable; urgency=low
+
+  * New upstream release. (closes: #614246)
+
+ -- Frederic Peters <fpeters@debian.org>  Sun, 20 Feb 2011 18:26:05 +0100
+
 etherape (0.9.8-1) unstable; urgency=low
 
   * New upstream release.

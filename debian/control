@@ -3,14 +3,19 @@ Section: gnome
 Priority: optional
 Maintainer: Frederic Peters <fpeters@debian.org>
 Standards-Version: 3.8.3
-Build-Depends: libpcap0.8-dev, libgnomeui-dev, libglade2-dev, debhelper (> 5.0), docbook-utils, autotools-dev, rarian-compat, libtool, autoconf, automake
+Build-Depends: libpcap0.8-dev, libgnomeui-dev, libglade2-dev, debhelper (>= 5.0), autotools-dev, libtool, autoconf, automake, gnome-doc-utils
+Homepage: http://etherape.sourceforge.net
 
 Package: etherape
 Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: menu
-Description: graphical network monitor modeled after etherman
- EtherApe is an etherman clone. It displays network activity
- graphically. Active hosts are shown as circles of varying size,
- and traffic among them is shown as lines of varying width. It's 
- GNOME and libpcap based.
+Description: graphical network monitor
+ EtherApe is a graphical network monitor modeled after etherman. it displays
+ network activity graphically, showing active hosts as circles of varying
+ size, and traffic among them as lines of varying width.
+ .
+ It features link layer, ip and TCP modes, color-color coded protocols
+ display, Ethernet, FDDI, Token Ring, ISDN, PPP and SLIP devices. It can
+ filter traffic to be shown, and can read traffic from a file as well as
+ live from the network.

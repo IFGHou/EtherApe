@@ -8,3 +8,13 @@ TryExec=su-to-root
 Exec=su-to-root -X -c /usr/bin/etherape
 Icon=etherape.png
 Terminal=0
+[Desktop Entry]
+Name=EtherApe (as root)
+Type=Application
+Categories=GNOME;Application;Network;
+Comment=Graphical Network Monitor
+Comment[es]=Monitor Gráfico de Red
+TryExec=gksu
+Exec=gksu -u root /usr/bin/etherape
+Icon=etherape.png
+Terminal=0
