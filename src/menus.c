@@ -30,6 +30,7 @@
 #include "decode_proto.h"
 #include "info_windows.h"
 #include "capture.h"
+#include "export.h"
 
 
 static gboolean in_start_capture = FALSE;

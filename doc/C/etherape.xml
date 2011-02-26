@@ -1389,6 +1389,10 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 &lt;?xml version="1.0"?&gt;
 &lt;!-- traffic data in bytes. last_heard in seconds from dump time --&gt;
 &lt;etherape&gt;
+  &lt;header&gt;
+    &lt;capture_device&gt;eth0&lt;/capture_device&gt;
+    &lt;timestamp&gt;2011-02-26 10:33:27 +0100&lt;/timestamp&gt;
+  &lt;/header&gt;
   &lt;nodes&gt;
     &lt;node&gt;
       &lt;name&gt;
@@ -1495,17 +1499,21 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 </programlisting>
 
 
-<para>Node information are, perhaps unsurprisingly, enclosed by &lt;node&gt; tags (lines 5-111).  A node is composed by an identifying header, &lt;name&gt; (lines 6-12) followed by traffic statistics, enclosed by &lt;traffic_stats&gt; (lines 13-103).
+<para>The export file begins with an header (lines 5-9) containing the file
+  replayed (tag &lt;capture_file&gt;, not shown) or the capture device (tag
+  &lt;capture_device&gt;, line 5), followed by the export timestamp.
 </para>
-<para>Lines 6-12 contain the primary node identifier, i.e. the name/address displayed by &app;. In this example is the IPv4 address 10.0.0.4, along its resolved name.</para>
-<para>While only one &lt;name&gt; can be displayed, a node usually has multiple identities: an Ethernet MAC address, an IP one, perhaps a NETBIOS name. Every identity has a matching &lt;name&gt; element; see lines 53-59 and 71-78.</para>
+<para>Node information are, perhaps unsurprisingly, enclosed by &lt;node&gt; tags (lines 9-115).  A node is composed by an identifying header, &lt;name&gt; (lines 10-16) followed by traffic statistics, enclosed by &lt;traffic_stats&gt; (lines 17-107).
+</para>
+<para>Lines 10-16 contain the primary node identifier, i.e. the name/address displayed by &app;. In this example is the IPv4 address 10.0.0.4, along its resolved name.</para>
+<para>While only one &lt;name&gt; can be displayed, a node usually has multiple identities: an Ethernet MAC address, an IP one, perhaps a NETBIOS name. Every identity has a matching &lt;name&gt; element; see lines 57-63 and 74-82.</para>
 <para>A &lt;name&gt; is identified by its &lt;id&gt; i.e. its address, which
   can be of type IP (an IPv4 dotted decimal address), IPv6 or 'link', a
-  link-level, colon separated, list of octets (e.g. the Ethernet MAC address). You see an example of the latter in lines 54-56.</para>
+  link-level, colon separated, list of octets (e.g. the Ethernet MAC address). You see an example of the latter in lines 58-60.</para>
 <para>&lt;numeric_name&gt; and &lt;resolved_name&gt; are the high level equivalent of &lt;id&gt;; &lt;accumulated&gt; is the total bytes of traffic related with the name. &app; uses this statistic to choose between multiple names.
 </para>
-<para>Traffic statistics (lines 13-103) give a summary of node traffic: first,
-  the number of active packets (line 14), i.e. the packets received during the 'Node traffic statistics' interval (see <xref linkend="etherape-prefs-timings"/>).
+<para>Traffic statistics (lines 17-107) give a summary of node traffic: first,
+  the number of active packets (line 18), i.e. the packets received during the 'Node traffic statistics' interval (see <xref linkend="etherape-prefs-timings"/>).
 &lt;in&gt; record incoming traffic, &lt;out&gt; outgoing and &lt;tot&gt; the total bytes seen.  The &lt;protocols&gt; element reports traffic broken down by protocol.</para>
 <para>&lt;stats&gt; elements are:
 <itemizedlist>

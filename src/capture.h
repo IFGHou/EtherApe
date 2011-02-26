@@ -38,6 +38,5 @@ void cleanup_capture (void);
 void force_next_packet(void);
 gint set_filter (gchar * filter, gchar * device);
 gchar *get_default_filter (apemode_t mode);
-void dump_xml(gchar *ofile);
 
 #endif

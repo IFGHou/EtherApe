@@ -19,6 +19,7 @@ etherape_SOURCES = \
 	common.h \
 	resolv.c eth_resolv.h \
 	util.c util.h \
+	export.c export.h \
 	dns.c dns.h \
 	direct_resolve.c direct_resolve.h \
 	thread_resolve.c thread_resolve.h \

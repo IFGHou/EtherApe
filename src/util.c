@@ -58,6 +58,7 @@
 #define INET6_ADDRSTRLEN        46
 #endif
 #include <pwd.h>
+#include <locale.h>
 
 #include "globals.h"
 #include "util.h"
@@ -406,6 +407,7 @@ gchar *xmltag(const gchar *name, const gchar *fmt, ...)
   g_free(msg);
   return xml;
 }
+
 
 /************************************************
  *
