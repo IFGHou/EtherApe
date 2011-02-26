@@ -26,7 +26,6 @@
 #include <ctype.h>
 #include <netinet/in.h>
 #include <pcap.h>
-#include <locale.h>
 
 #include "globals.h"
 #include "capture.h"
@@ -36,6 +35,7 @@
 #include "dns.h"
 #include "decode_proto.h"
 #include "protocols.h"
+#include "export.h"
 
 #define MAXSIZE 200
 #define PCAP_TIMEOUT 250
@@ -481,32 +481,3 @@ read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
     packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
 }
 
-void dump_xml(gchar *ofile)
-{
-  FILE *fout;
-  gchar *xml;
-  gchar *oldlocale;
-  
-  if (!ofile)
-    return;
-
-  // we want to dump in a known locale, so force it as 'C'
-  oldlocale = g_strdup(setlocale(LC_ALL, NULL));
-  setlocale(LC_ALL, "C");
-  
-  xml = nodes_catalog_xml();
-  fout = fopen(ofile, "wb");
-  if (fout)
-    {
-      fprintf(fout, "<?xml version=\"1.0\"?>\n");
-      fprintf(fout, "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n");
-      fprintf(fout, "<etherape>\n%s</etherape>", xml);
-      fclose(fout);
-    }
-
-  // reset user locale
-  setlocale(LC_ALL, oldlocale);
-
-  g_free(xml);
-  g_free(oldlocale);
-}

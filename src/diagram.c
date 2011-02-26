@@ -34,6 +34,7 @@
 #include "menus.h"
 #include "capture.h"
 #include "conversations.h"
+#include "export.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000
