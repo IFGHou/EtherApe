@@ -36,6 +36,7 @@
        easier.
      * imported debian-specific patches and a swedish translation by Daniel
        Nylander.
+     * removed obsolete preference "cycle assigned colors".
 
 
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):

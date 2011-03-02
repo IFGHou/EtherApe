@@ -223,7 +223,8 @@ main (int argc, char *argv[])
   if (midelay >= 0 && midelay <= G_MAXLONG)
     {
        pref.min_delay = midelay;
-       g_message("Minimum delay set to %lu ms", pref.min_delay);
+       if (pref.min_delay != 0)
+         g_message("Minimum delay set to %lu ms", pref.min_delay);
     }
   else
       g_message("Invalid minimum delay %ld, ignored", midelay);
@@ -237,7 +238,8 @@ main (int argc, char *argv[])
         }
       else
         pref.max_delay = madelay;
-      g_message("Maximum delay set to %lu ms", pref.max_delay);
+      if (pref.max_delay != G_MAXLONG)
+        g_message("Maximum delay set to %lu ms", pref.max_delay);
     }
   else
       g_message("Invalid maximum delay %ld, ignored", madelay);

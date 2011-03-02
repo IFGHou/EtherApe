@@ -53,8 +53,6 @@ struct pref_struct
 
   gboolean diagram_only;	/* Do not use text on the diagram */
   gboolean group_unk;		/* Whether to display as one every unkown port protocol */
-  gboolean cycle;		/* Weather to reuse colors that are assigned to certain
-				 * protocols */
   gboolean stationary;		/* Use alternative algorith for node placing */
   gdouble node_radius_multiplier;	/* used to calculate the radius of the
 					 * displayed nodes. So that the user can
