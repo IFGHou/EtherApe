@@ -65,7 +65,6 @@ void init_config(struct pref_struct *p)
 
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
-  p->cycle = FALSE;
   p->stationary = FALSE;
   p->node_radius_multiplier = 0.0005;
   p->link_node_ratio = 1;
@@ -117,7 +116,6 @@ load_config (const char *prefix)
     gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
   pref.stationary
     = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=FALSE", &u);
   pref.name_res =
     gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
   pref.node_timeout_time =
@@ -190,7 +188,6 @@ save_config (const char *prefix)
   gnome_config_push_prefix (prefix);
   gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
-  gnome_config_set_bool ("Diagram/cycle", pref.cycle);
   gnome_config_set_bool ("Diagram/name_res", pref.name_res);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
@@ -301,7 +298,6 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->mode=src->mode;
   tgt->diagram_only = src->diagram_only;
   tgt->group_unk = src->group_unk;
-  tgt->cycle = src->cycle;
   tgt->stationary = src->stationary;
   tgt->node_radius_multiplier = src->node_radius_multiplier;
   tgt->link_node_ratio = src->link_node_ratio;
@@ -409,8 +405,6 @@ initialize_pref_controls(void)
 				pref.diagram_only);
   widget = glade_xml_get_widget (xml, "group_unk_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.group_unk);
-  widget = glade_xml_get_widget (xml, "cycle_toggle");
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.cycle);
   widget = glade_xml_get_widget (xml, "name_res_check");
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), pref.name_res);
   widget = glade_xml_get_widget (xml, "stack_level");
@@ -724,14 +718,6 @@ on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data)
   g_free (str);
   cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */
-
-void
-on_cycle_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-  pref.cycle = gtk_toggle_button_get_active (togglebutton);
-  colors_changed = TRUE;
-}				/* on_cycle_toggle_toggled */
-
 
 void
 on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)

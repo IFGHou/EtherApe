@@ -109,9 +109,9 @@ protohash_set(gchar *protoname, GdkColor protocolor)
                        g_memdup(&item, sizeof(ColorHashItem)));
     }
 
-  /* Without protocol, or if we want also registered colors in the cycle
-    * list, we add the color to the cycle list. Cycle colors aren't preferred */
-   if (!protoname || !*protoname || pref.cycle)
+  /* Without protocols defined we add the color to the cycle list. Cycle colors 
+     aren't preferred */
+   if (!protoname || !*protoname)
      {
        item.preferred = FALSE;
        cycle_color_list = g_list_prepend(cycle_color_list, 
