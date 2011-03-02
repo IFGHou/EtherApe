@@ -98,7 +98,7 @@ void dump_xml(gchar *ofile)
   fout = fopen(ofile, "wb");
   if (fout)
     {
-      fprintf(fout, xml);
+      fprintf(fout, "%s", xml);
       fclose(fout);
     }
 
