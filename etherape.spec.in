@@ -3,10 +3,30 @@
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 
+# define an appropriate suffix for the packages
+%if 0%{?mdkversion}
+%define sys	mdv%{mandriva_release}
+%endif
+%if 0%{?suse_version} 
+%define sys	suse%{suse_version}
+%endif
+%if 0%{?sles_version}
+%define sys	sles%{sles_version}
+%endif
+%if 0%{?fedora} 
+%define sys	fdv%{fedora}
+%endif
+%if 0%{?rhel_version}
+%define sys	rhel%{rhel_version}
+%endif
+%if 0%{?centos_version}
+%define sys	centos%{centos_version}
+%endif
+
 Name:           etherape
 Summary:        Graphical network viewer modeled after etherman
 Version:        @VERSION@
-Release:        %rel
+Release:        %{rel}.obs%{sys}
 License:        GPLv2+
 URL:            http://etherape.sourceforge.net/
 Source:         http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -48,6 +68,9 @@ BuildRequires: desktop-file-utils
 #%if 0%{?opensuse_bs}
 # only for suse build service
 BuildRequires: polkit-gnome
+%if 0%{?mdkversion} <= 201000
+BuildRequires: pulseaudio-esound-compat
+%endif
 #%endif
 %else
 BuildRequires: libglade2-devel
@@ -125,20 +148,21 @@ autoreconf
 
 %files -f %{name}.lang
 %defattr(-, root, root)
-%doc AUTHORS COPYING TODO ChangeLog NEWS README* FAQ ABOUT-NLS
 %dir %{_sysconfdir}/etherape
-%config %{_sysconfdir}/etherape/services
+%config(noreplace) %{_sysconfdir}/etherape/services
 %{_datadir}/applications/etherape.desktop
 %{_datadir}/%{name}
-%{_mandir}/man1/%{name}.1*
-%{_datadir}/omf/%{name}
 %{_datadir}/pixmaps/etherape.png
 %if 0%{?suse_version} || 0%{?sles_version}
 %{_bindir}/etherape
 %else
 %{_sbindir}/etherape
-%{_datadir}/gnome/help/%{name}/**
 %endif
+%doc AUTHORS COPYING TODO ChangeLog NEWS README* FAQ ABOUT-NLS
+%doc %{_mandir}/man1/%{name}.1*
+%doc %{_datadir}/omf/%{name}
+%docdir %{_datadir}/gnome/help/%{name}
+%doc %{_datadir}/gnome/help/%{name}/**
 
 %post
 %if 0%{?centos_version} && 0%{?centos_version} < 600
