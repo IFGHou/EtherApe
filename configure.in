@@ -69,6 +69,19 @@ if test $use_multithread = no; then
   AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver. DEPRECATED, will be removed next release.])
 fi
 
+# checks for osx or disable-gdk-input-add
+AC_ARG_ENABLE(gdk-input-add,
+  [AC_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
+  [use_gdk_input_add=$enableval], [use_gdk_input_add=yes])
+
+AC_COMPILE_IFELSE([int main(int argc, char *argv[]){return __APPLE__ + __MACH__;}],
+  use_gdk_input_add=no)
+
+if test $use_gdk_input_add = no; then
+  AC_DEFINE([DISABLE_GDKINPUTADD], [1], [disables gdk_input_add])
+  AC_MSG_NOTICE([gtk_input_add disabled])
+fi
+
 # res_init and friends are used only on direct resolver. Otherwhise we need
 # gethostbyaddr_r() 
 if test $use_multithread = no; then

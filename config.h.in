@@ -6,6 +6,9 @@
 /* data file directory */
 #undef DATAFILE_DIR
 
+/* disables gdk_input_add */
+#undef DISABLE_GDKINPUTADD
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
