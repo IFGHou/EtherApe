@@ -38,7 +38,12 @@
 #include "export.h"
 
 #define MAXSIZE 200
+
+#ifdef DISABLE_GDKINPUTADD
+#define PCAP_TIMEOUT 10
+#else
 #define PCAP_TIMEOUT 250
+#endif
 
 static pcap_t *pch_struct;		/* pcap structure */
 static gint pcap_fd;			/* The file descriptor used by libpcap */
@@ -51,8 +56,10 @@ static enum status_t capture_status = STOP;
 
 /* Local funtions declarations */
 static guint get_offline_packet (void);
-static void cap_t_o_destroy (gpointer data);
-static void read_packet_live(gpointer dummy, gint source,
+static void cap_t_o_destroy(gpointer data);
+static guint get_live_packet (void);
+static void live_timeout(gpointer data);
+static void gdk_input_callback(gpointer dummy, gint source,
 			 GdkInputCondition condition);
 
 
@@ -273,9 +280,21 @@ start_capture (void)
   if (pref.interface && (capture_status == STOP))
     {
       g_my_debug (_("Starting live capture"));
+#ifdef DISABLE_GDKINPUTADD
+      /* disabled fd - always use timers */
+      capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					   1,
+					   (GtkFunction) get_live_packet,
+					   NULL,
+					   (GDestroyNotify) live_timeout);
+      g_my_info(_("Using timers for live capture"));
+#else
+      /* default: use the fd obtained from pcap to optimize readings */
       capture_source = gdk_input_add (pcap_fd,
 				      GDK_INPUT_READ,
-				      (GdkInputFunction) read_packet_live, NULL);
+				      (GdkInputFunction)gdk_input_callback, 
+                                      NULL);
+#endif
     }
   else if (!pref.interface)
     {
@@ -463,21 +482,41 @@ cap_t_o_destroy (gpointer data)
 
 /* This function is the gdk callback called when the capture socket holds data */
 static void
-read_packet_live(gpointer dummy, gint source, GdkInputCondition condition)
+gdk_input_callback(gpointer dummy, gint source, GdkInputCondition condition)
+{
+  get_live_packet();
+}
+
+static guint get_live_packet(void)
 {
   struct pcap_pkthdr *pkt_header = NULL;
   const u_char *pkt_data = NULL;
 
-  /* Get next packet */
-  if (pcap_next_ex(pch_struct, &pkt_header, &pkt_data) != 1)
-    return; /* read failed */
+  if (capture_status != PLAY && capture_status != PAUSE )
+    return FALSE; /* stop timer */
 
-  /* Redhat's pkt_header.ts is not a timeval, so I can't
-   * just copy the structures */
-  now.tv_sec = pkt_header->ts.tv_sec;
-  now.tv_usec = pkt_header->ts.tv_usec;
- 
-  if (pkt_data)
-    packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
+  /* Get next packet */
+  if (pcap_next_ex(pch_struct, &pkt_header, &pkt_data) == 1)
+    {
+      /* packet read */
+      
+      /* Redhat's pkt_header.ts is not a timeval, so I can't just copy 
+       * the structures */
+      now.tv_sec = pkt_header->ts.tv_sec;
+      now.tv_usec = pkt_header->ts.tv_usec;
+     
+      if (pkt_data)
+        packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
+    }
+  return FALSE;
 }
 
+static void live_timeout(gpointer data)
+{
+  if (capture_status == PLAY)
+    capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
+                                         1,
+                                         (GtkFunction) get_live_packet,
+                                         data,
+                                         (GDestroyNotify) live_timeout);
+}
