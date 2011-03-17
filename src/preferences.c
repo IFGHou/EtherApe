@@ -49,6 +49,7 @@ static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 static gboolean colors_changed = FALSE;
 static GtkWidget *diag_pref = NULL;		/* Pointer to the diagram configuration window */
 static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
+static const gchar *pref_group = "Diagram";
 
 void init_config(struct pref_struct *p)
 {
@@ -93,140 +94,230 @@ void init_config(struct pref_struct *p)
   p->max_delay = G_MAXULONG;
 }
 
+void set_default_config(struct pref_struct *p)
+{
+  p->mode = IP; /* not saved */
+  p->filter = g_strdup("ip or ip6"); /* not saved */
+  p->diagram_only = FALSE;
+  p->group_unk = TRUE;
+  p->stationary = FALSE;
+  p->name_res = TRUE;
+  p->node_timeout_time = 120000.0;
+  p->gui_node_timeout_time = 60000.0;
+  p->proto_node_timeout_time = 60000.0;
+  p->link_timeout_time = 20000.0;
+  p->gui_link_timeout_time = 20000.0;
+  p->proto_link_timeout_time = 20000.0;
+  p->proto_timeout_time = 600000.0;
+  p->averaging_time = 2000.0;
+  p->node_radius_multiplier = 0.0005;
+  p->link_node_ratio = 1.0;
+  p->refresh_period = 100;
+  p->size_mode = LINEAR;
+  p->node_size_variable = INST_OUTBOUND;
+  p->stack_level = 0;
+
+  g_free(p->fontname);
+  p->fontname = g_strdup("Sans 8");
+
+  g_free(p->text_color);
+  p->text_color = g_strdup("#ffff00");
+
+  g_strfreev(p->colors);
+  p->colors = g_strsplit("#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00 #ffff00 "
+                           "#ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 "
+                           "#7777ff #aaaa33",
+                           " ", 0);
+  p->colors = protohash_compact(p->colors);
+  protohash_read_prefvect(p->colors);
+}
+
+static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
+{
+  gchar *tmp;
+  tmp = g_key_file_get_string(gkey, pref_group, key, NULL);
+  if (!tmp)
+    return;
+
+  /* frees previous value and sets to new pointer */
+  g_free(*item);
+  *item = tmp;
+}
+
+static gchar *config_file_name(void)
+{
+  return g_strdup_printf("%s/%s", g_get_user_config_dir(), "etherape");
+}
+static gchar *old_config_file_name(void)
+{
+  return g_strdup_printf("%s/.gnome2/Etherape", g_get_home_dir());
+}
 
 /* loads configuration from .gnome/Etherape */
-void
-load_config (const char *prefix)
+void load_config(void)
 {
-  gboolean u;
-  gchar *config_file_version, *tmpstr;
+  gchar *pref_file;
+  gchar *tmpstr;
+  gchar **colorarray;
+  GKeyFile *gkey;
 
-  gnome_config_push_prefix (prefix);
+  /* first reset configurations to defaults */
+  set_default_config(&pref);
 
-  config_file_version =
-    gnome_config_get_string_with_default("General/version=0.5.4", &u);
+  gkey = g_key_file_new();
 
-  /* for now, those two preferences aren't saved */
-  pref.mode = gnome_config_get_int_with_default ("General/mode=1", &u); /* IP */
-  pref.filter = gnome_config_get_string_with_default("General/filter=ip or ip6", &u);
+  /* tries to read config from file (~/.config/etherape) */
+  pref_file = config_file_name();
+  if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL))
+    {
+      /* file not found, try old location (~/.gnome2/Etherape) */
+      g_free(pref_file);
+      pref_file = old_config_file_name();
+      if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL))
+        {
+          g_free(pref_file);
+          return; 
+        }
+    }
+  g_free(pref_file);
 
-  pref.diagram_only =
-    gnome_config_get_bool_with_default ("Diagram/diagram_only=FALSE", &u);
-  pref.group_unk =
-    gnome_config_get_bool_with_default ("Diagram/group_unk=TRUE", &u);
-  pref.stationary
-    = gnome_config_get_bool_with_default ("Diagram/stationary=FALSE", &u);
-  pref.name_res =
-    gnome_config_get_bool_with_default ("Diagram/name_res=TRUE", &u);
-  pref.node_timeout_time =
-  gnome_config_get_float_with_default("Diagram/node_timeout_time=120000.0", &u); 
-  pref.gui_node_timeout_time =
-    gnome_config_get_float_with_default("Diagram/gui_node_timeout_time=60000.0", &u);
-  pref.proto_node_timeout_time =
-    gnome_config_get_float_with_default("Diagram/proto_node_timeout_time=60000.0", &u);
+  read_string_config(&pref.filter, gkey, "filter");
+  read_string_config(&pref.fontname, gkey, "fontname");
+  read_string_config(&pref.text_color, gkey, "text_color");
 
-  pref.link_timeout_time =
-      gnome_config_get_float_with_default("Diagram/link_timeout_time=20000.0", &u);
-  pref.gui_link_timeout_time =
-      gnome_config_get_float_with_default("Diagram/gui_link_timeout_time=20000.0", &u);
-  pref.proto_link_timeout_time =
-      gnome_config_get_float_with_default("Diagram/proto_link_timeout_time=20000.0", &u);
+  pref.mode = g_key_file_get_integer(gkey, pref_group, "mode", NULL);
+  pref.diagram_only = g_key_file_get_boolean(gkey, pref_group, 
+                                             "diagram_only", NULL);
+  pref.group_unk = g_key_file_get_boolean(gkey, pref_group, "group_unk", NULL);
+  pref.stationary = g_key_file_get_boolean(gkey, pref_group, 
+                                           "stationary", NULL);
+  pref.name_res = g_key_file_get_boolean(gkey, pref_group, "name_res", NULL);
+  pref.refresh_period = g_key_file_get_integer(gkey, pref_group, 
+                                               "refresh_period", NULL);
+  pref.size_mode = g_key_file_get_integer(gkey, pref_group, 
+                                          "size_mode", NULL);
+  pref.node_size_variable = g_key_file_get_integer(gkey, pref_group, 
+                                                   "node_size_variable", NULL);
+  pref.stack_level = g_key_file_get_integer(gkey, pref_group, 
+                                            "stack_level", NULL);
 
-  pref.proto_timeout_time =
-      gnome_config_get_float_with_default("Diagram/proto_timeout_time=600000.0", &u);
+  pref.node_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                 "node_timeout_time", NULL); 
+  pref.gui_node_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                     "gui_node_timeout_time", 
+                                                     NULL);
+  pref.proto_node_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                       "proto_node_timeout_time", 
+                                                       NULL);
+  pref.link_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                 "link_timeout_time", NULL);
+  pref.gui_link_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                     "gui_link_timeout_time", 
+                                                     NULL);
+  pref.proto_link_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                       "proto_link_timeout_time", 
+                                                       NULL);
+  pref.proto_timeout_time = g_key_file_get_double(gkey, pref_group, 
+                                                  "proto_timeout_time", NULL);
+  pref.averaging_time = g_key_file_get_double(gkey, pref_group, 
+                                              "averaging_time", NULL);
+  pref.node_radius_multiplier = g_key_file_get_double(gkey, pref_group, 
+                                                      "node_radius_multiplier", 
+                                                      NULL);
+  pref.link_node_ratio = g_key_file_get_double(gkey, pref_group, 
+                                               "link_node_ratio", NULL);
 
-  pref.averaging_time =
-    gnome_config_get_float_with_default ("Diagram/averaging_time=2000.0", &u);
-  pref.node_radius_multiplier =
-    gnome_config_get_float_with_default
-    ("Diagram/node_radius_multiplier=0.0005", &u);
-  if (u)
-    pref.node_radius_multiplier = 0.0005;	/* This is a bug with gnome_config */
-  pref.link_node_ratio =
-    gnome_config_get_float_with_default
-    ("Diagram/link_node_ratio=1.0", &u);
-  if (u)
-    pref.link_node_ratio = 1.0;
-  pref.refresh_period =
-      gnome_config_get_int_with_default ("Diagram/refresh_period=100", &u);
+  tmpstr = g_key_file_get_string(gkey, pref_group, "colors", NULL);
+  if (tmpstr)
+    {
+      colorarray = g_strsplit(tmpstr, " ", 0);
+      if (colorarray)
+        {
+          g_strfreev(pref.colors);
+          pref.colors = protohash_compact(colorarray);
+          protohash_read_prefvect(pref.colors);
+        }
+      g_free(tmpstr);
+    }
 
-  pref.size_mode = gnome_config_get_int_with_default ("Diagram/size_mode=0", &u);	/* LINEAR */
-  pref.node_size_variable = gnome_config_get_int_with_default ("Diagram/node_size_variable=2", &u);	/* INST_OUTBOUND */
-  pref.stack_level =
-    gnome_config_get_int_with_default ("Diagram/stack_level=0", &u);
-  if ((pref.stack_level != 0)
-      && (version_compare (config_file_version, "0.5.4") < 0))
-    g_warning (_("Stack Level is not set to Topmost Recognized Protocol. "
-		 "Please check in the preferences dialog that this is what "
-		 "you really want"));
-  pref.fontname =
-    gnome_config_get_string_with_default("Diagram/fontname=Sans 8", &u);
-/*    ("Diagram/fontname=-*-*-*-*-*-*-*-140-*-*-*-*-iso8859-1", &u); */
-  pref.text_color = gnome_config_get_string_with_default("Diagram/text_color=#ffff00", &u);
+  /* if needed, read the config version 
+  version = g_key_file_get_string(gkey, "General", "version", NULL);
+  g_free(version);
+  */
 
-  tmpstr = gnome_config_get_string_with_default
-    ("Diagram/colors=#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00 #ffff00 #ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 #7777ff #aaaa33",
-    &u);
-  pref.colors = g_strsplit(tmpstr, " ", 0);
-  if (!pref.colors)
-     pref.colors = g_strsplit("#7f7f7f", " ", 0); /* color array was empty */
-  pref.colors = protohash_compact(pref.colors);
-
-  g_free (config_file_version);
-  gnome_config_pop_prefix ();
-
-  protohash_read_prefvect(pref.colors);
+  g_key_file_free(gkey);
 }				/* load_config */
 
 /* saves configuration to .gnome/Etherape */
 /* It's not static since it will be called from the GUI */
-void
-save_config (const char *prefix)
+void save_config(void)
 {
-  gchar *tmp;
+  gchar *pref_file;
+  gchar *cfgdata;
+  gchar *tmpstr;
+  gboolean res;
+  GError *error = NULL;
+  GKeyFile *gkey;
+
+  gkey = g_key_file_new();
   
-  gnome_config_push_prefix (prefix);
-  gnome_config_set_bool ("Diagram/diagram_only", pref.diagram_only);
-  gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
-  gnome_config_set_bool ("Diagram/name_res", pref.name_res);
-  gnome_config_set_float ("Diagram/node_timeout_time",
+  g_key_file_set_boolean(gkey, pref_group, "diagram_only", pref.diagram_only);
+  g_key_file_set_boolean(gkey, pref_group, "group_unk", pref.group_unk);
+  g_key_file_set_boolean(gkey, pref_group, "name_res", pref.name_res);
+  g_key_file_set_double(gkey, pref_group, "node_timeout_time",
 			  pref.node_timeout_time);
-  gnome_config_set_float ("Diagram/gui_node_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "gui_node_timeout_time",
 			  pref.gui_node_timeout_time);
-  gnome_config_set_float ("Diagram/proto_node_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "proto_node_timeout_time",
 			  pref.proto_node_timeout_time);
-  gnome_config_set_float ("Diagram/link_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "link_timeout_time",
 			  pref.link_timeout_time);
-  gnome_config_set_float ("Diagram/gui_link_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "gui_link_timeout_time",
 			  pref.gui_link_timeout_time);
-  gnome_config_set_float ("Diagram/proto_link_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "proto_link_timeout_time",
 			  pref.proto_link_timeout_time);
-  gnome_config_set_float ("Diagram/proto_timeout_time",
+  g_key_file_set_double(gkey, pref_group, "proto_timeout_time",
 			  pref.proto_timeout_time);
-  gnome_config_set_float ("Diagram/averaging_time", pref.averaging_time);
-  gnome_config_set_float ("Diagram/node_radius_multiplier",
+  g_key_file_set_double(gkey, pref_group, "averaging_time", pref.averaging_time);
+  g_key_file_set_double(gkey, pref_group, "node_radius_multiplier",
 			  pref.node_radius_multiplier);
-  gnome_config_set_float ("Diagram/link_node_ratio",
+  g_key_file_set_double(gkey, pref_group, "link_node_ratio",
 			  pref.link_node_ratio);
-  gnome_config_set_int ("Diagram/refresh_period", pref.refresh_period);
-  gnome_config_set_int ("Diagram/size_mode", pref.size_mode);
-  gnome_config_set_int ("Diagram/node_size_variable",
+  g_key_file_set_integer(gkey, pref_group, "refresh_period", pref.refresh_period);
+  g_key_file_set_integer(gkey, pref_group, "size_mode", pref.size_mode);
+  g_key_file_set_integer(gkey, pref_group, "node_size_variable",
 			pref.node_size_variable);
-  gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
-  gnome_config_set_string ("Diagram/fontname", pref.fontname);
-  gnome_config_set_string ("Diagram/text_color", pref.text_color);
+  g_key_file_set_integer(gkey, pref_group, "stack_level", pref.stack_level);
+  g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
+  g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
 
-  tmp = g_strjoinv(" ", pref.colors);
-  gnome_config_set_string("Diagram/colors", tmp);
-  g_free(tmp);
+  tmpstr = g_strjoinv(" ", pref.colors);
+  g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
+  g_free(tmpstr);
 
-  gnome_config_set_string ("General/version", VERSION);
+  g_key_file_set_string(gkey, "General", "version", VERSION);
 
-  gnome_config_sync ();
-  gnome_config_pop_prefix ();
+  /* write config to file */
+  cfgdata = g_key_file_to_data(gkey, NULL, NULL);
+  pref_file = config_file_name();
+  res = g_file_set_contents(pref_file, cfgdata, -1, &error);
+  g_free(cfgdata);
 
-  g_my_info (_("Preferences saved"));
-
+  if (res)
+    g_my_info (_("Preferences saved to %s"), pref_file);
+  else
+    {
+      GtkWidget *dialog = gtk_message_dialog_new (NULL,
+                             GTK_DIALOG_DESTROY_WITH_PARENT,
+                             GTK_MESSAGE_ERROR,
+                             GTK_BUTTONS_CLOSE,
+                             _("Error saving preferences to '%s': %s"),
+                             pref_file, 
+                             (error && error->message) ? error->message : "");
+      gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
+    }
+  g_free(pref_file);
 }				/* save_config */
 
 /* duplicates a config */
@@ -696,7 +787,7 @@ void
 on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   confirm_changes();	/* to save we simulate confirmation */
-  save_config ("/Etherape/");
+  save_config ();
   hide_pref_dialog();
 }				/* on_save_pref_button_clicked */
 

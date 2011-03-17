@@ -160,7 +160,7 @@ main (int argc, char *argv[])
   set_debug_level();
 
   /* Config file */
-  load_config ("/Etherape/");
+  load_config();
 
   /* Command line */
   cl_numeric = !pref.name_res;

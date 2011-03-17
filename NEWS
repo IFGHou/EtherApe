@@ -12,6 +12,9 @@
    direction. With this release, only one link is needed, gaining more
    complete statistics and better resource usage.
 
+   EtherApe config file is now ~/.config/etherape, instead of the older,
+   deprecated, ~/.gnome2/Etherape. Migration is automatic.
+
    Thanks to OpenSUSE Build Service and a new spec file, development rpms can
    easily be built for OpenSUSE 11.3, SLE11, Centos5/RHEL5, Fedora and
    Mandriva.
@@ -39,6 +42,7 @@
      * workaround for OSX troubles with gtk_input_add. Thanks to Zack Perry 
        persistence for helping diagnose and fix.
      * removed obsolete preference "cycle assigned colors".
+     * config file now saved to ~/.config/etherape
 
 
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):

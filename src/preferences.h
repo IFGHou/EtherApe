@@ -25,10 +25,11 @@
 #include "globals.h"
 #include "math.h"
 
-void load_config (const char *prefix);
-void save_config (const char * prefix);
+void load_config(void);
+void save_config(void);
 
 void init_config(struct pref_struct *cfg);
+void set_default_config(struct pref_struct *cfg);
 struct pref_struct *duplicate_config(const struct pref_struct *src);
 void free_config(struct pref_struct *t);
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src);
