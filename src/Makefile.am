@@ -26,6 +26,7 @@ etherape_SOURCES = \
 	callbacks.c callbacks.h \
 	menus.c menus.h \
 	preferences.c preferences.h \
+	pref_dialog.c pref_dialog.h \
 	main.c main.h globals.h\
 	diagram.c diagram.h \
 	capture.c capture.h \
