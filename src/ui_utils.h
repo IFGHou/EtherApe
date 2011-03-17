@@ -21,7 +21,7 @@
 #ifndef UI_UTILS_H
 #define UI_UTILS_H
 
-#include "globals.h"
+#include "appdata.h"
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkcheckmenuitem.h>

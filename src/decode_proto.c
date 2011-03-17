@@ -24,7 +24,7 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
+#include "appdata.h"
 #include <ctype.h>
 #include <string.h>
 #ifdef HAVE_ARPA_INET_H
@@ -36,6 +36,7 @@
 #include "protocols.h"
 #include "conversations.h"
 #include "datastructs.h"
+#include "preferences.h"
 #include "node.h"
 #include "links.h"
 #include "names.h"
@@ -278,7 +279,7 @@ void packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
   g_assert(packet);
   
   packet->size = pkt_size;
-  packet->timestamp = now;
+  packet->timestamp = appdata.now;
   packet->ref_count = 0;
 
   /* Get the protocol tree */
@@ -291,8 +292,8 @@ void packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
     }
   packet->prot_desc = decp.pr;
 
-  n_packets++;
-  total_mem_packets++;
+  appdata.n_packets++;
+  appdata.total_mem_packets++;
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
@@ -970,7 +971,7 @@ get_ip (decode_proto_t *dp)
       fragment_offset = pntohs (dp->cur_packet + 6);
       fragment_offset &= 0x0fff;
 
-      if (pref.mode !=  LINK6)
+      if (appdata.mode !=  LINK6)
         {
           /* we want node higher level node ids */
           dp->dst_node_id.node_type = IP;
@@ -995,7 +996,7 @@ get_ip (decode_proto_t *dp)
       ip_type = dp->cur_packet[6];
       fragment_offset = 0;
 
-      if (pref.mode !=  LINK6)
+      if (appdata.mode !=  LINK6)
         {
           /* we want higher level node ids */
           dp->dst_node_id.node_type = IP;
@@ -1240,7 +1241,7 @@ get_tcp (decode_proto_t *dp)
   dp->global_src_port = src_port = pntohs (dp->cur_packet);
   dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
 
-  if (pref.mode ==  TCP)
+  if (appdata.mode ==  TCP)
     {
       /* tcp mode node ids have both addr and port - to work we need 
        * to already have an IP node id */
@@ -1334,7 +1335,7 @@ get_udp (decode_proto_t *dp)
   dp->global_src_port = src_port = pntohs (dp->cur_packet);
   dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
 
-  if (pref.mode ==  TCP)
+  if (appdata.mode ==  TCP)
     {
       /* tcp/udp mode node ids have both addr and port - to work we need 
        * to already have an IP node id */

@@ -22,7 +22,7 @@
 #endif
 
 #include <math.h>
-#include "globals.h"
+#include "appdata.h"
 #include "basic_stats.h"
 #include "ui_utils.h"
 #include "util.h"
@@ -181,7 +181,7 @@ void packet_list_item_delete(packet_list_item_t *pli)
               pli->info = NULL;
 
               /* global packet stats */
-              total_mem_packets--;
+              appdata.total_mem_packets--;
             }
         }
     
@@ -204,7 +204,7 @@ void basic_stats_reset(basic_stats_t *tf_stat)
   tf_stat->accumulated = 0;
   tf_stat->avg_size = 0;
   tf_stat->accu_packets = 0;
-  tf_stat->last_time = now;
+  tf_stat->last_time = appdata.now;
 }
 
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
@@ -214,7 +214,7 @@ void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
   tf_stat->aver_accu += val;
   ++tf_stat->accu_packets;
   tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
-  tf_stat->last_time = now;
+  tf_stat->last_time = appdata.now;
   /* averages are calculated by basic_stats_avg */
 }
 
@@ -268,7 +268,7 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
   if (!tf_stat)
     return xmltag("stats", "");
 
-  diffms = substract_times_ms(&now, &tf_stat->last_time);
+  diffms = substract_times_ms(&appdata.now, &tf_stat->last_time);
   msg = xmltag("stats",
                "\n<avg>%.0f</avg>\n"
                "<total>%.0f</total>\n"

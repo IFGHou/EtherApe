@@ -23,13 +23,14 @@
 
 #include <math.h>
 #include <time.h>
-#include "globals.h"
+#include "appdata.h"
 #include "info_windows.h"
 #include "diagram.h"
 #include "node.h"
 #include "datastructs.h"
 #include "protocols.h"
 #include "capture.h"
+#include "preferences.h"
 #include "prot_types.h"
 #include "ui_utils.h"
 #include "node_windows.h"
@@ -108,11 +109,11 @@ create_prot_info_window (protocol_t * protocol)
 			    protocol->name, prot_info_compare)))
     {
       xml_info_window =
-	glade_xml_new (pref.glade_file, "prot_info", NULL);
+	glade_xml_new (appdata.glade_file, "prot_info", NULL);
       if (!xml_info_window)
 	{
 	  g_error (_("We could not load the interface! (%s)"),
-		   pref.glade_file);
+		   appdata.glade_file);
 	  return;
 	}
       glade_xml_signal_autoconnect (xml_info_window);
@@ -560,12 +561,12 @@ update_protocols_window (void)
   GtkWidget *window;
   GtkTreeView *gv;
 
-  window = glade_xml_get_widget (xml, "protocols_window");
+  window = glade_xml_get_widget (appdata.xml, "protocols_window");
   gv = retrieve_treeview(window);
   if (!gv)
     {
       /* register gv */
-      gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "prot_clist"));
+      gv = GTK_TREE_VIEW (glade_xml_get_widget (appdata.xml, "prot_clist"));
       if (!gv)
         {
           g_critical("can't find prot_clist");
@@ -580,7 +581,7 @@ update_protocols_window (void)
 void
 toggle_protocols_window (void)
 {
-  GtkWidget *protocols_check = glade_xml_get_widget (xml, "protocols_check");
+  GtkWidget *protocols_check = glade_xml_get_widget (appdata.xml, "protocols_check");
   if (!protocols_check)
     return;
   gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
@@ -596,7 +597,7 @@ on_delete_protocol_window (GtkWidget * wdg, GdkEvent * evt, gpointer ud)
 void
 on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  GtkWidget *protocols_window = glade_xml_get_widget (xml, "protocols_window");
+  GtkWidget *protocols_window = glade_xml_get_widget (appdata.xml, "protocols_window");
   if (!protocols_window)
     return;
   if (gtk_check_menu_item_get_active (menuitem))
@@ -609,7 +610,7 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     {
       /* retrieve view and model (store) */
       GtkListStore *gs;
-      GtkTreeView *gv = GTK_TREE_VIEW(glade_xml_get_widget(xml, "prot_clist"));
+      GtkTreeView *gv = GTK_TREE_VIEW(glade_xml_get_widget(appdata.xml, "prot_clist"));
       if (gv)
         {
           gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
@@ -682,7 +683,7 @@ update_info_windows (void)
   if (status != PLAY && status != STOP)
     return TRUE;
 
-  gettimeofday (&now, NULL);
+  gettimeofday (&appdata.now, NULL);
 
   update_protocols_window ();
   update_stats_info_windows ();
@@ -725,7 +726,7 @@ update_stats_info_windows (void)
   status = get_capture_status();
 
   /* Update info windows at most twice a second */
-  diffms = substract_times_ms(&now, &last_update_time);
+  diffms = substract_times_ms(&appdata.now, &last_update_time);
   if (pref.refresh_period < 500)
     if (diffms < 500)
       return;
@@ -757,7 +758,7 @@ update_stats_info_windows (void)
 	}
     }
 
-  last_update_time = now;
+  last_update_time = appdata.now;
 }				/* update_stats_info_windows */
 
 
@@ -774,11 +775,11 @@ stats_info_create(const gchar *idkey, gpointer key)
   GtkTreeView *gv;
 
   xml_info_window =
-    glade_xml_new (pref.glade_file, "node_proto_info", NULL);
+    glade_xml_new (appdata.glade_file, "node_proto_info", NULL);
   if (!xml_info_window)
     {
       g_error (_("We could not load the interface! (%s)"),
-               pref.glade_file);
+               appdata.glade_file);
       return NULL;
     }
   glade_xml_signal_autoconnect (xml_info_window);

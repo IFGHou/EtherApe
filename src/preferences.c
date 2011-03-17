@@ -20,8 +20,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
+#include <gtk/gtk.h>
 #include "preferences.h"
+//#include "appdata.h"
+#include "math.h"
 #include "datastructs.h"
 
 static gboolean get_version_levels (const gchar * version_string,
@@ -31,18 +33,73 @@ static gint version_compare (const gchar * a, const gchar * b);
 
 static const gchar *pref_group = "Diagram";
 
+/***************************************************************
+ *
+ * internal helpers
+ *
+ ***************************************************************/
+
+static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
+{
+  gchar *tmp;
+  tmp = g_key_file_get_string(gkey, pref_group, key, NULL);
+  if (!tmp)
+    return;
+
+  /* frees previous value and sets to new pointer */
+  g_free(*item);
+  *item = tmp;
+}
+
+static void read_boolean_config(gboolean *item, GKeyFile *gkey, const char *key)
+{
+  gboolean tmp;
+  GError *err = NULL;
+  tmp = g_key_file_get_boolean(gkey, pref_group, key, &err);
+  if (err)
+    return; /* key not found, exit */
+  *item = tmp;
+}
+
+static void read_int_config(gint *item, GKeyFile *gkey, const char *key)
+{
+  gint tmp;
+  GError *err = NULL;
+  tmp = g_key_file_get_integer(gkey, pref_group, key, &err);
+  if (err)
+    return; /* key not found, exit */
+  *item = tmp;
+}
+
+static void read_double_config(gdouble *item, GKeyFile *gkey, const char *key)
+{
+  gdouble tmp;
+  GError *err = NULL;
+  tmp = g_key_file_get_double(gkey, pref_group, key, &err);
+  if (err)
+    return; /* key not found, exit */
+  *item = tmp;
+}
+
+static gchar *config_file_name(void)
+{
+  return g_strdup_printf("%s/%s", g_get_user_config_dir(), "etherape");
+}
+static gchar *old_config_file_name(void)
+{
+  return g_strdup_printf("%s/.gnome2/Etherape", g_get_home_dir());
+}
+
+/***************************************************************
+ *
+ * pref handling
+ *
+ ***************************************************************/
 void init_config(struct pref_struct *p)
 {
-  p->input_file = NULL;
-  p->export_file = NULL;
-  p->export_file_final = NULL;
-  p->export_file_signal = NULL;
   p->name_res = TRUE;
-  p->mode = IP;
-  p->filter = NULL;
   p->refresh_period = 800;	/* ms */
   p->text_color = g_strdup ("yellow");
-  p->node_limit = -1;
 
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
@@ -52,7 +109,6 @@ void init_config(struct pref_struct *p)
   p->size_mode = LINEAR;
   p->node_size_variable = INST_OUTBOUND;
   p->stack_level = 0;
-  p->node_limit = -1;
   p->proto_timeout_time=0;
   p->gui_node_timeout_time=0;
   p->node_timeout_time=0;
@@ -62,22 +118,16 @@ void init_config(struct pref_struct *p)
   p->proto_link_timeout_time=0;
   p->refresh_period=0;	
 
+  p->filter = NULL;
   p->text_color=NULL;
   p->fontname=NULL;
   p->colors=NULL;
-  
-  p->averaging_time=3000;	
-  p->interface=NULL;
-  p->filter=NULL;
-  p->debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
-  p->min_delay = 0;
-  p->max_delay = G_MAXULONG;
+
+  p->averaging_time=3000;
 }
 
 void set_default_config(struct pref_struct *p)
 {
-  p->mode = IP; /* not saved */
-  p->filter = g_strdup("ip or ip6"); /* not saved */
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
   p->stationary = FALSE;
@@ -97,6 +147,9 @@ void set_default_config(struct pref_struct *p)
   p->node_size_variable = INST_OUTBOUND;
   p->stack_level = 0;
 
+  g_free(p->filter);
+  p->filter = g_strdup("ip or ip6");
+
   g_free(p->fontname);
   p->fontname = g_strdup("Sans 8");
 
@@ -112,32 +165,11 @@ void set_default_config(struct pref_struct *p)
   protohash_read_prefvect(p->colors);
 }
 
-static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
-{
-  gchar *tmp;
-  tmp = g_key_file_get_string(gkey, pref_group, key, NULL);
-  if (!tmp)
-    return;
-
-  /* frees previous value and sets to new pointer */
-  g_free(*item);
-  *item = tmp;
-}
-
-static gchar *config_file_name(void)
-{
-  return g_strdup_printf("%s/%s", g_get_user_config_dir(), "etherape");
-}
-static gchar *old_config_file_name(void)
-{
-  return g_strdup_printf("%s/.gnome2/Etherape", g_get_home_dir());
-}
-
 /* loads configuration from .gnome/Etherape */
 void load_config(void)
 {
   gchar *pref_file;
-  gchar *tmpstr;
+  gchar *tmpstr = NULL;
   gchar **colorarray;
   GKeyFile *gkey;
 
@@ -165,49 +197,27 @@ void load_config(void)
   read_string_config(&pref.fontname, gkey, "fontname");
   read_string_config(&pref.text_color, gkey, "text_color");
 
-  pref.mode = g_key_file_get_integer(gkey, pref_group, "mode", NULL);
-  pref.diagram_only = g_key_file_get_boolean(gkey, pref_group, 
-                                             "diagram_only", NULL);
-  pref.group_unk = g_key_file_get_boolean(gkey, pref_group, "group_unk", NULL);
-  pref.stationary = g_key_file_get_boolean(gkey, pref_group, 
-                                           "stationary", NULL);
-  pref.name_res = g_key_file_get_boolean(gkey, pref_group, "name_res", NULL);
-  pref.refresh_period = g_key_file_get_integer(gkey, pref_group, 
-                                               "refresh_period", NULL);
-  pref.size_mode = g_key_file_get_integer(gkey, pref_group, 
-                                          "size_mode", NULL);
-  pref.node_size_variable = g_key_file_get_integer(gkey, pref_group, 
-                                                   "node_size_variable", NULL);
-  pref.stack_level = g_key_file_get_integer(gkey, pref_group, 
-                                            "stack_level", NULL);
+  read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
+  read_boolean_config(&pref.group_unk, gkey, "group_unk");
+  read_boolean_config(&pref.stationary, gkey, "stationary");
+  read_boolean_config(&pref.name_res, gkey, "name_res");
+  read_int_config((gint *)&pref.refresh_period, gkey, "refresh_period");
+  read_int_config((gint *)&pref.size_mode, gkey, "size_mode");
+  read_int_config((gint *)&pref.node_size_variable, gkey, "node_size_variable");
+  read_int_config((gint *)&pref.stack_level, gkey, "stack_level");
 
-  pref.node_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                 "node_timeout_time", NULL); 
-  pref.gui_node_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                     "gui_node_timeout_time", 
-                                                     NULL);
-  pref.proto_node_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                       "proto_node_timeout_time", 
-                                                       NULL);
-  pref.link_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                 "link_timeout_time", NULL);
-  pref.gui_link_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                     "gui_link_timeout_time", 
-                                                     NULL);
-  pref.proto_link_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                       "proto_link_timeout_time", 
-                                                       NULL);
-  pref.proto_timeout_time = g_key_file_get_double(gkey, pref_group, 
-                                                  "proto_timeout_time", NULL);
-  pref.averaging_time = g_key_file_get_double(gkey, pref_group, 
-                                              "averaging_time", NULL);
-  pref.node_radius_multiplier = g_key_file_get_double(gkey, pref_group, 
-                                                      "node_radius_multiplier", 
-                                                      NULL);
-  pref.link_node_ratio = g_key_file_get_double(gkey, pref_group, 
-                                               "link_node_ratio", NULL);
+  read_double_config(&pref.node_timeout_time, gkey, "node_timeout_time"); 
+  read_double_config(&pref.gui_node_timeout_time, gkey, "gui_node_timeout_time");
+  read_double_config(&pref.proto_node_timeout_time, gkey, "proto_node_timeout_time");
+  read_double_config(&pref.link_timeout_time, gkey, "link_timeout_time");
+  read_double_config(&pref.gui_link_timeout_time, gkey, "gui_link_timeout_time");
+  read_double_config(&pref.proto_link_timeout_time, gkey, "proto_link_timeout_time");
+  read_double_config(&pref.proto_timeout_time, gkey, "proto_timeout_time");
+  read_double_config(&pref.averaging_time, gkey, "averaging_time");
+  read_double_config(&pref.node_radius_multiplier, gkey, "node_radius_multiplier");
+  read_double_config(&pref.link_node_ratio, gkey, "link_node_ratio");
 
-  tmpstr = g_key_file_get_string(gkey, pref_group, "colors", NULL);
+  read_string_config(&tmpstr, gkey, "colors");
   if (tmpstr)
     {
       colorarray = g_strsplit(tmpstr, " ", 0);
@@ -221,7 +231,8 @@ void load_config(void)
     }
 
   /* if needed, read the config version 
-  version = g_key_file_get_string(gkey, "General", "version", NULL);
+  version = g_key_file_get_string(gkey, "General", "version");
+  ... do processing here ...
   g_free(version);
   */
 
@@ -268,6 +279,8 @@ void save_config(void)
   g_key_file_set_integer(gkey, pref_group, "node_size_variable",
 			pref.node_size_variable);
   g_key_file_set_integer(gkey, pref_group, "stack_level", pref.stack_level);
+
+  g_key_file_set_string(gkey, pref_group, "filter", pref.filter);
   g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
   g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
 
@@ -309,33 +322,20 @@ duplicate_config(const struct pref_struct *src)
   t = g_malloc(sizeof(struct pref_struct));
   g_assert(t);
 
-  t->input_file = NULL;
-  t->export_file = NULL;
-  t->export_file_final = NULL;
-  t->export_file_signal = NULL;
-  t->text_color=NULL;
-  t->fontname=NULL;
+  t->filter = NULL;
+  t->text_color = NULL;
+  t->fontname = NULL;
   t->colors = NULL;
-  t->interface=NULL;
-  t->filter=NULL;
-
   copy_config(t, src);
 
   return t;
 }
 
 /* releases all memory allocated for internal fields */
-void 
-free_config(struct pref_struct *t)
+void free_config(struct pref_struct *t)
 {
-  g_free(t->input_file);
-  t->input_file = NULL;
-  g_free(t->export_file);
-  t->export_file = NULL;
-  g_free(t->export_file_final);
-  t->export_file_final = NULL;
-  g_free(t->export_file_signal);
-  t->export_file_signal = NULL;
+  g_free(t->filter);
+  t->filter=NULL;
   g_free(t->text_color);
   t->text_color=NULL;
   g_free(t->fontname);
@@ -343,16 +343,10 @@ free_config(struct pref_struct *t)
 
   g_strfreev(t->colors);
   t->colors = NULL;
-
-  g_free(t->interface);
-  t->interface=NULL;
-  g_free(t->filter);
-  t->filter=NULL;
 }
 
 /* copies a configuration from src to tgt */
-void 
-copy_config(struct pref_struct *tgt, const struct pref_struct *src)
+void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 {
   if (tgt == src)
 	return;
@@ -361,12 +355,7 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   free_config(tgt);
 
   /* then copy */
-  tgt->input_file = g_strdup(src->input_file);
-  tgt->export_file = g_strdup(src->export_file);
-  tgt->export_file_final = g_strdup(src->export_file_final);
-  tgt->export_file_signal = g_strdup(src->export_file_signal);
   tgt->name_res=src->name_res;
-  tgt->mode=src->mode;
   tgt->diagram_only = src->diagram_only;
   tgt->group_unk = src->group_unk;
   tgt->stationary = src->stationary;
@@ -374,10 +363,10 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->link_node_ratio = src->link_node_ratio;
   tgt->size_mode = src->size_mode;
   tgt->node_size_variable = src->node_size_variable;
+  tgt->filter=g_strdup(src->filter);
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);
   tgt->stack_level = src->stack_level;
-  tgt->node_limit = src->node_limit;
   tgt->colors = g_strdupv(src->colors);
 
   tgt->proto_timeout_time = src->proto_timeout_time;     
@@ -390,13 +379,6 @@ copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 
   tgt->refresh_period = src->refresh_period;
   tgt->averaging_time = src->averaging_time;
-
-  tgt->interface = g_strdup(src->interface);
-  tgt->filter = g_strdup(src->filter);
-
-  tgt->debug_mask = src->debug_mask;
-  tgt->min_delay = src->min_delay;
-  tgt->max_delay = src->max_delay;
 }
 
 static gint

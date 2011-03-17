@@ -62,7 +62,7 @@
 #endif
 
 #include <glib.h> 
-#include "globals.h"
+#include "appdata.h"
 #include "util.h"
 
 #define EPATH_ETHERS 		"/etc/ethers"

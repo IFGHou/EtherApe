@@ -23,7 +23,7 @@
 
 #include <sys/types.h>
 #include <netinet/in.h>
-#include "globals.h"
+#include "appdata.h"
 #include "conversations.h"
 #include "dns.h"
 #include "util.h"

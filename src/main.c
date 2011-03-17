@@ -28,7 +28,7 @@
 #include <signal.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-client.h>
-#include "globals.h"
+#include "appdata.h"
 #include "ip-cache.h"
 #include "main.h"
 #include "diagram.h"
@@ -37,8 +37,6 @@
 #include "menus.h"
 #include "capture.h"
 #include "datastructs.h"
-
-#define ETHERAPE_GLADE_FILE "etherape.glade"	/* glade 3 file */
 
 /***************************************************************************
  *
@@ -53,7 +51,6 @@ static void (*old_sighup_handler) (int);
  * internal functions
  *
  **************************************************************************/
-static void init_common_data(void);
 static void free_static_data(void);
 static void set_debug_level (void);
 static void session_die (GnomeClient * client, gpointer client_data);
@@ -88,6 +85,7 @@ main (int argc, char *argv[])
   glong midelay = 0;
   glong madelay = G_MAXLONG;
   gchar *version;
+  gchar *cl_glade_file = NULL;
   poptContext poptcon;
 
   struct poptOption optionsTable[] = {
@@ -105,7 +103,7 @@ main (int argc, char *argv[])
      N_("export to named file on receiving USR1"), N_("<file to export to>")},
     {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
      N_("don't move nodes around (deprecated)"), NULL}, 
-    {"node-limit", 'l', POPT_ARG_INT, &(pref.node_limit), 0,
+    {"node-limit", 'l', POPT_ARG_INT, &(appdata.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
      N_("mode of operation"), N_("<link|ip|tcp>")},
@@ -119,13 +117,11 @@ main (int argc, char *argv[])
     {"max-delay", 0, POPT_ARG_LONG, &madelay,  0,
      N_("maximum packet delay in ms for reading capture files [cli only]"),
       N_("<delay>")},
-    {"glade-file", 0, POPT_ARG_STRING, &(pref.glade_file), 0,
+    {"glade-file", 0, POPT_ARG_STRING, &(cl_glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0, NULL, NULL}
   };
-
-  init_common_data();
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -150,6 +146,7 @@ main (int argc, char *argv[])
 		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
   g_free(version);
 
+  appdata_init(&appdata);
 
   /* We obtain application parameters 
    * First, absolute defaults
@@ -170,47 +167,47 @@ main (int argc, char *argv[])
 
   if (cl_interface)
     {
-      if (pref.interface)
-	g_free (pref.interface);
-      pref.interface = g_strdup (cl_interface);
+      if (appdata.interface)
+	g_free (appdata.interface);
+      appdata.interface = g_strdup (cl_interface);
     }
 
   if (export_file_final)
     {
-      if (pref.export_file_final)
-	g_free (pref.export_file_final);
-      pref.export_file_final = g_strdup (export_file_final);
+      if (appdata.export_file_final)
+	g_free (appdata.export_file_final);
+      appdata.export_file_final = g_strdup (export_file_final);
     }
   if (export_file_signal)
     {
-      if (pref.export_file_signal)
-	g_free (pref.export_file_signal);
-      pref.export_file_signal = g_strdup (export_file_signal);
+      if (appdata.export_file_signal)
+	g_free (appdata.export_file_signal);
+      appdata.export_file_signal = g_strdup (export_file_signal);
     }
 
   pref.name_res = !cl_numeric;
 
   if (cl_input_file)
     {
-      if (pref.input_file)
-	g_free (pref.input_file);
-      pref.input_file = g_strdup (cl_input_file);
+      if (appdata.input_file)
+	g_free (appdata.input_file);
+      appdata.input_file = g_strdup (cl_input_file);
     }
 
   /* Find mode of operation */
   if (mode_string)
     {
       if (strstr (mode_string, "link"))
-	pref.mode = LINK6;
+	appdata.mode = LINK6;
       else if (strstr (mode_string, "ip"))
-	pref.mode = IP;
+	appdata.mode = IP;
       else if (strstr (mode_string, "tcp"))
-	pref.mode = TCP;
+	appdata.mode = TCP;
       else
 	g_warning (_
 		   ("Unrecognized mode. Do etherape --help for a list of modes"));
       g_free(pref.filter);
-      pref.filter = get_default_filter(pref.mode);
+      pref.filter = get_default_filter(appdata.mode);
     }
 
   if (cl_filter)
@@ -222,54 +219,40 @@ main (int argc, char *argv[])
 
   if (midelay >= 0 && midelay <= G_MAXLONG)
     {
-       pref.min_delay = midelay;
-       if (pref.min_delay != 0)
-         g_message("Minimum delay set to %lu ms", pref.min_delay);
+       appdata.min_delay = midelay;
+       if (appdata.min_delay != 0)
+         g_message("Minimum delay set to %lu ms", appdata.min_delay);
     }
   else
       g_message("Invalid minimum delay %ld, ignored", midelay);
   
   if (madelay >= 0 && madelay <= G_MAXLONG)
     {
-      if (madelay < pref.min_delay)
+      if (madelay < appdata.min_delay)
         {
           g_message("Maximum delay must be less of minimum delay");
-          pref.max_delay = pref.min_delay;
+          appdata.max_delay = appdata.min_delay;
         }
       else
-        pref.max_delay = madelay;
-      if (pref.max_delay != G_MAXLONG)
-        g_message("Maximum delay set to %lu ms", pref.max_delay);
+        appdata.max_delay = madelay;
+      if (appdata.max_delay != G_MAXLONG)
+        g_message("Maximum delay set to %lu ms", appdata.max_delay);
     }
   else
       g_message("Invalid maximum delay %ld, ignored", madelay);
   
   /* Glade */
-
   glade_gnome_init ();
   glade_require("gnome");
   glade_require("canvas");
-
-  if (!pref.glade_file)
-    pref.glade_file = GLADEDIR "/" ETHERAPE_GLADE_FILE;
-
-  xml = glade_xml_new (pref.glade_file, NULL, NULL);
-  if (!xml)
-    {
-      g_error (_("We could not load glade interface file! (%s)"),
-	       pref.glade_file);
-      return 1;
-    }
-  glade_xml_signal_autoconnect (xml);
-
-  app1 = glade_xml_get_widget (xml, "app1");
-  statusbar = GTK_STATUSBAR(glade_xml_get_widget (xml, "statusbar1"));
+  if (!appdata_init_glade(cl_glade_file))
+    return 1;
 
   /* prepare decoders */
   services_init();
   
   /* Sets controls to the values of variables and connects signals */
-  init_diagram (xml);
+  init_diagram (appdata.xml);
 
   /* Session handling */
   client = gnome_master_client ();
@@ -277,7 +260,7 @@ main (int argc, char *argv[])
 		    GTK_SIGNAL_FUNC (save_session), argv[0]);
   g_signal_connect (G_OBJECT (client), "die",
 		    GTK_SIGNAL_FUNC (session_die), NULL);
-  gtk_widget_show (app1);
+  gtk_widget_show (appdata.app1);
 
   install_handlers();
 
@@ -286,7 +269,7 @@ main (int argc, char *argv[])
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
 
-  widget = glade_xml_get_widget (xml, "canvas1");
+  widget = glade_xml_get_widget (appdata.xml, "canvas1");
   destroying_idle (widget);
 
   /* This other timeout makes sure that the info windows are updated */
@@ -306,18 +289,6 @@ main (int argc, char *argv[])
   return 0;
 }				/* main */
 
-static void init_common_data(void)
-{
-  xml = NULL;
-  app1 = NULL;
-  statusbar = NULL;
-  gettimeofday (&now, NULL);
-  n_packets = 0;
-  total_mem_packets = 0;
-  request_dump = FALSE;
-}
-
-
 /* releases all static and cached data. Called just before exiting. Obviously 
  * it's not stricly needed, since the memory will be returned to the OS anyway,
  * but makes finding memory leaks much easier. */
@@ -334,28 +305,28 @@ set_debug_level (void)
   const gchar *env_debug;
   env_debug = g_getenv("APE_DEBUG");
 
-  pref.debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
+  appdata.debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
 
   if (env_debug)
     {
       if (!g_ascii_strcasecmp(env_debug, "INFO"))
-	pref.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
+	appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
       else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
-	pref.debug_mask = G_LOG_LEVEL_MASK;
+	appdata.debug_mask = G_LOG_LEVEL_MASK;
     }
 
   if (quiet)
-    pref.debug_mask = 0;
+    appdata.debug_mask = 0;
 
   g_log_set_handler (NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
-  g_my_debug ("debug_mask %d", pref.debug_mask);
+  g_my_debug ("debug_mask %d", appdata.debug_mask);
 }
 
 static void
 log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
 {
-  if (mask & pref.debug_mask)
+  if (mask & appdata.debug_mask)
     g_log_default_handler ("EtherApe", mask, message, user_data);
 }
 
@@ -443,5 +414,5 @@ void cleanup(int signum)
 /* activates a flag requesting an xml dump */
 static void signal_export(int signum)
 {
-  request_dump = TRUE;
+  appdata.request_dump = TRUE;
 }

@@ -27,7 +27,7 @@
 #include <netinet/in.h>
 #include <pcap.h>
 
-#include "globals.h"
+#include "appdata.h"
 #include "capture.h"
 #include "names.h"
 #include "links.h"
@@ -35,6 +35,7 @@
 #include "dns.h"
 #include "decode_proto.h"
 #include "protocols.h"
+#include "preferences.h"
 #include "export.h"
 
 #define MAXSIZE 200
@@ -98,8 +99,8 @@ gchar *init_capture (void)
       data_initialized = TRUE;
     }
 
-  device = pref.interface;
-  if (!device && !pref.input_file)
+  device = appdata.interface;
+  if (!device && !appdata.input_file)
     {
       *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       device = g_strdup (pcap_lookupdev (ebuf));
@@ -117,11 +118,11 @@ gchar *init_capture (void)
        * need the local variable device. But I need to reset 
        * interface since I need to know whether we are in
        * online or offline mode later on */
-      pref.interface = device;
+      appdata.interface = device;
     }
 
 
-  if (!pref.input_file)
+  if (!appdata.input_file)
     {
       *ebuf = '\0'; /* reset error buffer before calling pcap functions */
       if (!
@@ -143,29 +144,29 @@ gchar *init_capture (void)
 	{
 	  snprintf (errorbuf, sizeof(errorbuf),
 		   _("Can't open both %s and device %s. Please choose one."),
-		   pref.input_file, device);
+		   appdata.input_file, device);
 	  return errorbuf;
 	}
       *ebuf = '\0'; /* reset error buffer before calling pcap functions */
-      if (!(pch_struct = pcap_open_offline (pref.input_file, ebuf)))
+      if (!(pch_struct = pcap_open_offline (appdata.input_file, ebuf)))
 	{
 	  snprintf (errorbuf, sizeof(errorbuf), 
-                  _("Error opening %s : %s"), pref.input_file, ebuf);
+                  _("Error opening %s : %s"), appdata.input_file, ebuf);
 	  return errorbuf;
 	}
-      g_my_info (_("%s opened for offline capture"), pref.input_file);
+      g_my_info (_("%s opened for offline capture"), appdata.input_file);
 
     }
 
   linktype = pcap_datalink(pch_struct);
   if (!setup_link_type(linktype))
     {
-      if (pref.input_file)
+      if (appdata.input_file)
         {
           snprintf (errorbuf, sizeof(errorbuf), 
                     _("File %s contains packets with unsupported "
                       "link type %d, cannot replay"), 
-                    pref.input_file,
+                    appdata.input_file,
                     linktype);
         }
       else if (device)
@@ -184,13 +185,13 @@ gchar *init_capture (void)
         return errorbuf;
     }
   
-  if (pref.mode == APEMODE_DEFAULT)
+  if (appdata.mode == APEMODE_DEFAULT)
     {
-      pref.mode = IP;
+      appdata.mode = IP;
       g_free (pref.filter);
-      pref.filter = get_default_filter(pref.mode);
+      pref.filter = get_default_filter(appdata.mode);
     }
-  if (pref.mode == LINK6 && !has_linklevel())
+  if (appdata.mode == LINK6 && !has_linklevel())
     {
       snprintf (errorbuf, sizeof(errorbuf), _("This device does not support link-layer mode. "
                                               "Please use IP or TCP modes."));
@@ -277,7 +278,7 @@ start_capture (void)
    * See pause_capture for an explanation of why we don't always
    * add the source
    */
-  if (pref.interface && (capture_status == STOP))
+  if (appdata.interface && (capture_status == STOP))
     {
       g_my_debug (_("Starting live capture"));
 #ifdef DISABLE_GDKINPUTADD
@@ -296,7 +297,7 @@ start_capture (void)
                                       NULL);
 #endif
     }
-  else if (!pref.interface)
+  else if (!appdata.interface)
     {
       g_my_debug (_("Starting offline capture"));
       capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
@@ -307,7 +308,7 @@ start_capture (void)
     }
 
   /* set the antialiasing */
-  gc = GNOME_CANVAS (glade_xml_get_widget (xml, "canvas1"));
+  gc = GNOME_CANVAS (glade_xml_get_widget (appdata.xml, "canvas1"));
   if (gc)
     gc->aa = TRUE;
 
@@ -321,7 +322,7 @@ pause_capture (void)
   if (capture_status != PLAY)
     return TRUE;
 
-  if (!pref.interface)
+  if (!appdata.interface)
     {
       g_my_debug (_("Pausing offline capture"));
       if (!g_source_remove (capture_source))
@@ -344,7 +345,7 @@ stop_capture (void)
   if (capture_status == STOP)
       return TRUE;
 
-  if (pref.interface)
+  if (appdata.interface)
     {
       g_my_debug (_("Stopping live capture"));
       gdk_input_remove (capture_source);	/* gdk_input_remove does not
@@ -365,15 +366,15 @@ stop_capture (void)
   new_nodes_clear();
 
   /* Clean the buffer */
-  if (!pref.interface)
+  if (!appdata.interface)
     get_offline_packet ();
 
   /* Close the capture */
   pcap_stats (pch_struct, &ps);
-  g_my_debug ("libpcap received %d packets, dropped %d. EtherApe saw %lu",
-	      ps.ps_recv, ps.ps_drop, n_packets);
+  g_my_info("libpcap received %d packets, dropped %d. EtherApe saw %lu",
+	      ps.ps_recv, ps.ps_drop, appdata.n_packets);
   pcap_close (pch_struct);
-  g_my_info (_("Capture device stopped or file closed"));
+  g_my_info(_("Capture device stopped or file closed"));
 
   return TRUE;
 }				/* stop_capture */
@@ -412,7 +413,7 @@ get_offline_packet (void)
 
   if (pkt_data)
   {
-    gettimeofday (&now, NULL);
+    gettimeofday (&appdata.now, NULL);
     packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
   }
 
@@ -437,18 +438,18 @@ get_offline_packet (void)
         ms_to_next = 0; 
       else 
         ms_to_next = diffms;
-      if (ms_to_next < pref.min_delay)
-          ms_to_next = pref.min_delay;
-      else if (ms_to_next > pref.max_delay)
-          ms_to_next = pref.max_delay;
+      if (ms_to_next < appdata.min_delay)
+          ms_to_next = appdata.min_delay;
+      else if (ms_to_next > appdata.max_delay)
+          ms_to_next = appdata.max_delay;
 
       last_read_time = this_time;
       break;
     case -2:
       capture_status = CAP_EOF;
       /* xml dump if needed */
-      if (pref.export_file_final)
-        dump_xml(pref.export_file_final);
+      if (appdata.export_file_final)
+        dump_xml(appdata.export_file_final);
       break;
     default:
       ms_to_next=0; /* error or timeout, ignore packet */
@@ -502,8 +503,8 @@ static guint get_live_packet(void)
       
       /* Redhat's pkt_header.ts is not a timeval, so I can't just copy 
        * the structures */
-      now.tv_sec = pkt_header->ts.tv_sec;
-      now.tv_usec = pkt_header->ts.tv_usec;
+      appdata.now.tv_sec = pkt_header->ts.tv_sec;
+      appdata.now.tv_usec = pkt_header->ts.tv_usec;
      
       if (pkt_data)
         packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);

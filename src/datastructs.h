@@ -23,7 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "globals.h"
+//#include "appdata.h"
 #include "prot_types.h"
 
 typedef struct

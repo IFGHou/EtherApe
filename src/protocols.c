@@ -21,11 +21,12 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
+#include "appdata.h"
 #include <ctype.h>
 #include <string.h>
 #include "protocols.h"
 #include "node.h"
+#include "preferences.h"
 #include "util.h"
 
 static gint 
@@ -174,7 +175,7 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
               if (protocol->stats.aver_accu<=0)
                 {
                   /* no traffic active on this proto, check purging */
-                  diffms = substract_times_ms(&now, &protocol->stats.last_time);
+                  diffms = substract_times_ms(&appdata.now, &protocol->stats.last_time);
                   if (diffms >= expire_time)
                     {
                       protocol_t_delete(protocol);

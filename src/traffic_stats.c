@@ -21,7 +21,7 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
+#include "appdata.h"
 #include "traffic_stats.h"
 #include "ui_utils.h"
 #include "util.h"
@@ -104,7 +104,7 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
   while (pkt_stat->pkt_list.head)
   {
     packet = (packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
-    diffms = substract_times_ms(&now, &packet->info->timestamp);
+    diffms = substract_times_ms(&appdata.now, &packet->info->timestamp);
     if (diffms < pkt_expire_time)
       break; /* packet valid, subsequent packets are younger, no need to go further */
 

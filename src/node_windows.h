@@ -21,7 +21,7 @@
 #ifndef NODE_WINDOWS_H
 #define NODE_WINDOWS_H
 
-#include "globals.h"
+#include "appdata.h"
 
 void nodes_wnd_show(void);
 void nodes_wnd_hide(void);

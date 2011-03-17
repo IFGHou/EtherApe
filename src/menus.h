@@ -22,7 +22,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "appdata.h"
 
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_export_activate (GtkMenuItem * menuitem, gpointer user_data);

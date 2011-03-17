@@ -26,7 +26,7 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include "globals.h"
+#include "appdata.h"
 
 #ifdef __cplusplus
 extern "C"

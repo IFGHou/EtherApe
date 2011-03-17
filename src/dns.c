@@ -21,7 +21,7 @@
 #endif
 
 #include <stdint.h>
-#include "globals.h"
+#include "appdata.h"
 #include "dns.h"
 #include "direct_resolve.h"
 #include "thread_resolve.h"

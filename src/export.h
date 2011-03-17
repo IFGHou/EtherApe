@@ -20,7 +20,7 @@
 #ifndef __EXPORT_H__
 #define __EXPORT__
 
-#include "globals.h"
+#include "appdata.h"
 
   gchar *generate_xml(void);
   void dump_xml(gchar *ofile);

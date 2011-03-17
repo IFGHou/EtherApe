@@ -22,7 +22,7 @@
 #endif
 
 #include <gnome.h>
-#include "globals.h"
+#include "appdata.h"
 #include "callbacks.h"
 #include "diagram.h"
 #include "preferences.h"
@@ -39,7 +39,7 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.width / 2,
 				  widget->allocation.height / 2);
   ask_reposition(FALSE);
-  canvas = glade_xml_get_widget (xml, "canvas1");
+  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
   update_diagram (canvas);
 }
 

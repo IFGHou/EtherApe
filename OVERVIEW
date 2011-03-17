@@ -15,7 +15,7 @@ future reference.
 etherape.glade
 	This file has all of the GUI. Use glade to modify it.
 
-src/globals.h
+src/appdata.h
 	Declaration of all main data structures.
 	
 src/main.c
@@ -84,7 +84,7 @@ updated accordingly.
 2. Data Structures
 ------------------
 
-   See globals.h for the declaration of all data structures. I'll
+   See appdata.h for the declaration of all data structures. I'll
 give a short explanation here of the main ones.
 
    capture.c keeps track of nodes and links using balanced binary

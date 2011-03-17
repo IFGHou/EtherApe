@@ -27,7 +27,8 @@ etherape_SOURCES = \
 	menus.c menus.h \
 	preferences.c preferences.h \
 	pref_dialog.c pref_dialog.h \
-	main.c main.h globals.h\
+	main.c main.h \
+	appdata.c appdata.h\
 	diagram.c diagram.h \
 	capture.c capture.h \
 	names.c names.h \
