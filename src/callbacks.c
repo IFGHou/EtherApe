@@ -25,9 +25,7 @@
 #include "globals.h"
 #include "callbacks.h"
 #include "diagram.h"
-
-/* Extern functions */
-extern void save_config (gchar * prefix);
+#include "preferences.h"
 
 void
 on_canvas1_size_allocate (GtkWidget * widget,
