@@ -25,13 +25,14 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include "globals.h"
+#include "appdata.h"
 #include "names.h"
 #include "dns.h"
 #include "eth_resolv.h"
 #include "names_netbios.h"
 #include "protocols.h"
 #include "datastructs.h"
+#include "preferences.h"
 #include "util.h"
 
 typedef struct
@@ -407,7 +408,7 @@ static gboolean get_tcp_name (name_add_t *nt)
   guint8 tcp_len;
 
   /* tcp names are useful only if someone uses them ... */
-  if (pref.mode == TCP)
+  if (appdata.mode == TCP)
     {
       gchar *numeric_name, *resolved_name;
       int type = nt->node_id.addr.tcp4.host.type;

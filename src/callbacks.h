@@ -3,7 +3,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "appdata.h"
 
 void
 on_canvas1_size_allocate (GtkWidget * widget,

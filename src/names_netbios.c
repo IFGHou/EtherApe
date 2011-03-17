@@ -206,7 +206,9 @@ process_netbios_name (const gchar * name_ptr, char *outname, size_t outname_size
   static const char hex_digits[16] = "0123456780abcdef";
 
   name_ret = outname;
-  for (i = 0; i < NETBIOS_NAME_LEN - 1 && name_ret-outname<outname_size-1 ; ++i)
+  for (i = 0; 
+       i < NETBIOS_NAME_LEN - 1 && name_ret-outname < outname_size-1 ; 
+       ++i)
     {
       name_char = *name_ptr++;
       if (name_char >= ' ' && name_char <= '~')

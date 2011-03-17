@@ -21,7 +21,7 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
+#include "appdata.h"
 #include "node_id.h"
 #include "util.h"
 

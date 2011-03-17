@@ -60,7 +60,7 @@
 #include <pwd.h>
 #include <locale.h>
 
-#include "globals.h"
+#include "appdata.h"
 #include "util.h"
 
 #include <pcap.h> /*JTC*/

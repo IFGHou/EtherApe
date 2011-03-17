@@ -22,7 +22,7 @@
 #endif
 
 #include <math.h>
-#include "globals.h"
+#include "appdata.h"
 #include "ui_utils.h"
 #include "traffic_stats.h"
 
@@ -40,7 +40,7 @@ gchar *timeval_to_str (struct timeval last_heard)
   struct timeval diff;
   struct tm broken_time;
 
-  diff = substract_times(now, last_heard);
+  diff = substract_times(appdata.now, last_heard);
   if (diff.tv_sec <= 60)
     {
       /* Meaning "n seconds" ago */

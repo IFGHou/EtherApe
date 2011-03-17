@@ -49,8 +49,8 @@ static void nodes_table_update(GtkWidget *window);
 
 void nodes_wnd_show(void)
 {
-  nodes_wnd = glade_xml_get_widget (xml, "nodes_wnd");
-  nodes_check = GTK_CHECK_MENU_ITEM(glade_xml_get_widget (xml, "nodes_check"));
+  nodes_wnd = glade_xml_get_widget (appdata.xml, "nodes_wnd");
+  nodes_check = GTK_CHECK_MENU_ITEM(glade_xml_get_widget (appdata.xml, "nodes_check"));
 
   if (DEBUG_ENABLED)
     {
@@ -198,7 +198,7 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   gv = retrieve_treeview(window);
   if (!gv)
     {
-      gv = GTK_TREE_VIEW (glade_xml_get_widget (xml, "nodes_table"));
+      gv = GTK_TREE_VIEW (glade_xml_get_widget (appdata.xml, "nodes_table"));
       if (!gv)
         {
           g_critical("can't find nodes_table");
@@ -413,7 +413,7 @@ void on_nodes_check_toggled(GtkCheckMenuItem *checkmenuitem,  gpointer data)
 
 void on_nodes_toolbar_button_clicked(void)
 {
-  GtkWidget *nodes_check = glade_xml_get_widget (xml, "nodes_check");
+  GtkWidget *nodes_check = glade_xml_get_widget (appdata.xml, "nodes_check");
   if (!nodes_check)
     return;
   gtk_menu_item_activate (GTK_MENU_ITEM (nodes_check));

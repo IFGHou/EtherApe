@@ -23,9 +23,9 @@
 
 #include <gnome.h>
 
-#include "globals.h"
+#include "appdata.h"
 #include "diagram.h"
-#include "preferences.h"
+#include "pref_dialog.h"
 #include "node.h"
 #include "info_windows.h"
 #include "protocols.h"
@@ -34,6 +34,7 @@
 #include "menus.h"
 #include "capture.h"
 #include "conversations.h"
+#include "preferences.h"
 #include "export.h"
 
 /* maximum node and link size */
@@ -165,7 +166,7 @@ void dump_stats(guint32 diff_msecs)
                                    g_tree_nnodes(canvas_nodes), displayed_nodes, 
                                    links_catalog_size(), active_conversations(), 
                                    active_names(), protocol_summary_size(),
-                                   n_packets, total_mem_packets, 
+                                   appdata.n_packets, appdata.total_mem_packets, 
                                    packet_list_item_count(), ipc,
                                    canvas_obj_count,
                                    (unsigned int) diff_msecs);
@@ -211,7 +212,7 @@ init_diagram (GladeXML *xml)
   initialize_pref_controls();
   
   /* Sets canvas background to black */
-  canvas = glade_xml_get_widget (xml, "canvas1");
+  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
 
   gdk_color_parse ("black", &black_color);
   gdk_colormap_alloc_color (gdk_colormap_get_system (), &black_color,
@@ -231,17 +232,6 @@ init_diagram (GladeXML *xml)
   stop_requested = FALSE;
 }				/* init_diagram */
 
-
-void change_refresh_period(guint32 newperiod)
-{
-  pref.refresh_period = newperiod;
-  /* When removing the source (which could either be an idle or a timeout
-   * function, I'm also forcing the callback for the corresponding 
-   * destroying function, which in turn will install a timeout or idle
-   * function using the new refresh_period. It might take a while for it
-   * to settle down, but I think it works now */
-  g_source_remove (diagram_timeout);
-}
 
 void
 destroying_timeout (gpointer data)
@@ -384,11 +374,11 @@ guint update_diagram(GtkWidget * canvas)
   enum status_t status;
 
   /* if requested and enabled, dump to xml */
-  if (request_dump && pref.export_file_signal)
+  if (appdata.request_dump && appdata.export_file_signal)
     {
-      g_warning (_("SIGUSR1 received: exporting to %s"), pref.export_file_signal);
-      dump_xml(pref.export_file_signal);
-      request_dump = FALSE; 
+      g_warning (_("SIGUSR1 received: exporting to %s"), appdata.export_file_signal);
+      dump_xml(appdata.export_file_signal);
+      appdata.request_dump = FALSE; 
     }
   
   status = get_capture_status();
@@ -416,7 +406,7 @@ guint update_diagram(GtkWidget * canvas)
     }
 
   already_updating = TRUE;
-  gettimeofday (&now, NULL);
+  gettimeofday (&appdata.now, NULL);
 
   /* update nodes */
   diagram_update_nodes(canvas);
@@ -437,15 +427,15 @@ guint update_diagram(GtkWidget * canvas)
    * CPU with redraws */
 
   if ((last_refresh_time.tv_sec == 0) && (last_refresh_time.tv_usec == 0))
-    last_refresh_time = now;
+    last_refresh_time = appdata.now;
 
   /* Force redraw */
   while (gtk_events_pending ())
     gtk_main_iteration ();
 
-  gettimeofday (&now, NULL);
-  diffms = substract_times_ms(&now, &last_refresh_time);
-  last_refresh_time = now;
+  gettimeofday (&appdata.now, NULL);
+  diffms = substract_times_ms(&appdata.now, &last_refresh_time);
+  last_refresh_time = appdata.now;
 
   already_updating = FALSE;
 
@@ -486,7 +476,7 @@ update_legend()
   GtkWidget *prot_table;
 
   /* first, check if there are expired protocols */
-  prot_table = glade_xml_get_widget (xml, "prot_table");
+  prot_table = glade_xml_get_widget (appdata.xml, "prot_table");
   if (!prot_table)
     return;
 
@@ -578,7 +568,7 @@ delete_gui_protocols (void)
   protohash_reset_cycle();
 
   /* remove proto labels from legend */
-  prot_table = GTK_CONTAINER (glade_xml_get_widget (xml, "prot_table"));
+  prot_table = GTK_CONTAINER (glade_xml_get_widget (appdata.xml, "prot_table"));
   item = gtk_container_get_children (GTK_CONTAINER (prot_table));
   while (item)
     {
@@ -588,7 +578,7 @@ delete_gui_protocols (void)
 
   /* resize legend */
   gtk_container_resize_children(prot_table);
-  gtk_widget_queue_resize (GTK_WIDGET (app1));
+  gtk_widget_queue_resize (GTK_WIDGET (appdata.app1));
 }				/* delete_gui_protocols */
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
@@ -789,7 +779,7 @@ display_node (node_t * node)
   if (!node)
     return FALSE;
 
-  diffms = substract_times_ms(&now, &node->node_stats.stats.last_time);
+  diffms = substract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
 
   /* There are problems if a canvas_node is deleted if it still
    * has packets, so we have to check that as well */
@@ -818,13 +808,13 @@ limit_nodes (void)
   displayed_nodes = 0;		/* We'll increment for each node we don't
 				 * limit */
 
-  if (pref.node_limit < 0)
+  if (appdata.node_limit < 0)
     {
       displayed_nodes = g_tree_nnodes (canvas_nodes);
       return;
     }
 
-  limit = pref.node_limit;
+  limit = appdata.node_limit;
 
   ordered_nodes = g_tree_new (traffic_compare);
 
@@ -1123,7 +1113,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       canvas_link->color = protohash_color(link->main_prot[pref.stack_level]);
 
       /* scale color down to 10% at link timeout */
-      diffms = substract_times_ms(&now, &link->link_stats.stats.last_time);
+      diffms = substract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
       scale = pow(0.10, diffms / pref.gui_link_timeout_time);
 
       scaledColor =
@@ -1262,11 +1252,11 @@ link_item_event (GnomeCanvasItem * item, GdkEvent * event,
 			   link->main_prot[pref.stack_level]);
       else
 	str = g_strdup_printf (_("Link main protocol unknown"));
-      gtk_statusbar_push(statusbar, 1, str);
+      gtk_statusbar_push(appdata.statusbar, 1, str);
       g_free (str);
       break;
     case GDK_LEAVE_NOTIFY:
-      gtk_statusbar_pop(statusbar, 1);
+      gtk_statusbar_pop(appdata.statusbar, 1);
       break;
     default:
       break;
@@ -1329,8 +1319,8 @@ set_statusbar_msg (gchar * str)
 
   status_string = g_strdup (str);
 
-  gtk_statusbar_pop(statusbar, 0);
-  gtk_statusbar_push(statusbar, 0, status_string);
+  gtk_statusbar_pop(appdata.statusbar, 0);
+  gtk_statusbar_push(appdata.statusbar, 0, status_string);
 }				/* set_statusbar_msg */
 
 
@@ -1369,4 +1359,14 @@ canvas_link_delete(canvas_link_t *canvas_link)
     }
 
   g_free (canvas_link);
+}
+
+void timeout_changed(void)
+{
+  /* When removing the source (which could either be an idle or a timeout
+   * function, I'm also forcing the callback for the corresponding 
+   * destroying function, which in turn will install a timeout or idle
+   * function using the new refresh_period. It might take a while for it
+   * to settle down, but I think it works now */
+  g_source_remove (diagram_timeout);
 }

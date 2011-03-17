@@ -48,8 +48,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "globals.h"
+#include "appdata.h"
 #include "ip-cache.h"
+#include "preferences.h"
 #include "util.h"
 
 #ifdef NO_STRERROR

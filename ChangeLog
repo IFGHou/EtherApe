@@ -180,7 +180,7 @@
 2009-10-07  R.Ghetta  <bchiara@users.sf.net>
 
 	* glade/etherape.glade, src/capture.c, src/capture.h, src/common.h,
-	src/decode_proto.c, src/decode_proto.h, src/globals.h, src/main.c,
+	src/decode_proto.c, src/decode_proto.h, src/appdata.h, src/main.c,
 	src/menus.c, src/names.c, src/names.h, src/node.c, src/node_id.c,
 	src/node_id.h:
 	Unified link level types. L2 decoding is now table-driven, to make
@@ -243,7 +243,7 @@
 	[0563f217cc31]
 
 	* glade/etherape.glade, src/capture.c, src/common.h, src/diagram.c,
-	src/dns.c, src/dns.h, src/globals.h, src/main.c, src/menus.c,
+	src/dns.c, src/dns.h, src/appdata.h, src/main.c, src/menus.c,
 	src/names.c, src/node_id.c, src/preferences.c, src/util.c,
 	src/util.h:
 	removed half-baked protocol types. Renamed option zero-delay to max-
@@ -266,7 +266,7 @@
 	[a3daed62aa3b]
 
 	* src/basic_stats.c, src/basic_stats.h, src/capture.c, src/diagram.c,
-	src/globals.h, src/info_windows.c, src/links.c, src/main.c,
+	src/appdata.h, src/info_windows.c, src/links.c, src/main.c,
 	src/menus.c, src/node.c, src/node_id.c, src/node_windows.c,
 	src/pkt_info.h, src/preferences.c, src/protocols.c, src/protocols.h,
 	src/traffic_stats.c, src/traffic_stats.h:
@@ -321,7 +321,7 @@
 2009-09-19  R.Ghetta  <bchiara@users.sf.net>
 
 	* src/Makefile.am, src/basic_stats.c, src/basic_stats.h,
-	src/diagram.c, src/globals.h, src/info_windows.c, src/names.c,
+	src/diagram.c, src/appdata.h, src/info_windows.c, src/names.c,
 	src/node.c, src/node.h, src/node_id.c, src/node_id.h,
 	src/node_windows.c, src/pkt_info.h, src/protocols.c,
 	src/protocols.h, src/traffic_stats.c, src/traffic_stats.h,
@@ -358,7 +358,7 @@
 
 2009-09-16  R.Ghetta  <bchiara@users.sf.net>
 
-	* src/common.h, src/decode_proto.c, src/diagram.c, src/globals.h,
+	* src/common.h, src/decode_proto.c, src/diagram.c, src/appdata.h,
 	src/links.c, src/main.c, src/node.c:
 	Removed a memory leak. Should fix 2839050
 	[39b2649edd18]
@@ -366,7 +366,7 @@
 2009-09-15  R.Ghetta  <bchiara@users.sf.net>
 
 	* src/common.h, src/datastructs.c, src/decode_proto.c,
-	src/decode_proto.h, src/diagram.c, src/globals.h, src/ip-cache.c,
+	src/decode_proto.h, src/diagram.c, src/appdata.h, src/ip-cache.c,
 	src/ip-cache.h, src/main.c:
 	trying to integrate memwatch ...
 	[76750529f821]
@@ -391,7 +391,7 @@
 
 	* src/capture.c, src/conversations.c, src/conversations.h,
 	src/decode_proto.c, src/decode_proto.h, src/diagram.c,
-	src/globals.h, src/main.c, src/node.c, src/node.h:
+	src/appdata.h, src/main.c, src/node.c, src/node.h:
 	Changed loading of services file to avoid timing issues. Revised
 	debug information.
 	[fa9908f5f28c]
@@ -410,7 +410,7 @@
 	Allows changing protocol color
 	[f15e1e88c1ff]
 
-	* NEWS, src/datastructs.c, src/datastructs.h, src/globals.h,
+	* NEWS, src/datastructs.c, src/datastructs.h, src/appdata.h,
 	src/preferences.c, src/util.c, src/util.h:
 	allow mapping multiple protocols to a color
 	[dcf8f1873ff4]
@@ -463,7 +463,7 @@
 
 2009-09-07  R.Ghetta  <bchiara@users.sf.net>
 
-	* glade/etherape.glade, src/diagram.c, src/globals.h,
+	* glade/etherape.glade, src/diagram.c, src/appdata.h,
 	src/preferences.c:
 	Replaced link widht multiplier with a link width - node radius ratio
 	slider.
@@ -476,7 +476,7 @@
 	Reduce limits on display refresh
 	[b89176b06973]
 
-	* src/callbacks.c, src/diagram.c, src/diagram.h, src/globals.h,
+	* src/callbacks.c, src/diagram.c, src/diagram.h, src/appdata.h,
 	src/main.c, src/preferences.c:
 	Changed default timings to values more suited to instant monitoring.
 
@@ -484,11 +484,11 @@
 	user is more likely to need a short term monitor, with faster
 	response times. Today machines are usually able to bear the graphic
 	load without problems. Small refactoring to remove variables from
-	globals.h
+	appdata.h
 	[c775e49a4d59]
 
 	* src/Makefile.am, src/callbacks.c, src/capture.c, src/capture.h,
-	src/common.h, src/decode_proto.c, src/decode_proto.h, src/globals.h,
+	src/common.h, src/decode_proto.c, src/decode_proto.h, src/appdata.h,
 	src/info_windows.h, src/main.c, src/menus.c, src/menus.h,
 	src/names.c, src/node.h, src/pkt_info.h, src/preferences.c,
 	src/protocols.c, src/util.c:
@@ -503,7 +503,7 @@
 
 2009-09-06  R.Ghetta  <bchiara@users.sf.net>
 
-	* glade/etherape.glade, src/capture.c, src/diagram.c, src/globals.h,
+	* glade/etherape.glade, src/capture.c, src/diagram.c, src/appdata.h,
 	src/preferences.c, src/preferences.h:
 	Aligned to Gtk 2.12+, removed unused "nofade" preference.
 
@@ -513,7 +513,7 @@
 	[a2ba7f8a83d2]
 
 	* OVERVIEW, configure.in, glade/etherape.glade, src/diagram.c,
-	src/diagram.h, src/globals.h, src/main.c, src/menus.c:
+	src/diagram.h, src/appdata.h, src/main.c, src/menus.c:
 	Removed bonobo, replaced with Gtk equivalents
 	[e01feab05975]
 
@@ -527,7 +527,7 @@
 
 2009-09-05  R.Ghetta  <bchiara@users.sf.net>
 
-	* glade/etherape.glade, src/capture.c, src/diagram.c, src/globals.h,
+	* glade/etherape.glade, src/capture.c, src/diagram.c, src/appdata.h,
 	src/info_windows.c, src/info_windows.h, src/main.c,
 	src/preferences.c, src/preferences.h:
 	Upgraded preferences dialog. Replaced deprecated GtkOptionsMenu
@@ -535,7 +535,7 @@
 	preferences dialog.
 	[0eb2f730e57f]
 
-	* src/capture.c, src/capture.h, src/diagram.c, src/globals.h,
+	* src/capture.c, src/capture.h, src/diagram.c, src/appdata.h,
 	src/info_windows.c, src/main.c, src/menus.c, src/menus.h,
 	src/preferences.c, src/preferences.h:
 	Removed useless command line options. Some cleanups and refactoring.
@@ -544,7 +544,7 @@
 	* ChangeLog, Makefile.am, configure.in, glade/Makefile.am,
 	glade/etherape.glade, glade/etherape.glade2, po/POTFILES.in,
 	po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po,
-	src/globals.h, src/main.c, src/menus.c, src/menus.h:
+	src/appdata.h, src/main.c, src/menus.c, src/menus.h:
 	now using glade 3 (still in libglade mode). Converted some gnome
 	deprecated widget to new gtk+ equivalents.
 	[176810017dd5]
@@ -552,7 +552,7 @@
 2009-09-03  R.Ghetta  <bchiara@users.sf.net>
 
 	* glade/etherape.glade2, src/capture.c, src/capture.h, src/diagram.c,
-	src/diagram.h, src/globals.h, src/info_windows.c, src/main.c,
+	src/diagram.h, src/appdata.h, src/info_windows.c, src/main.c,
 	src/menus.c, src/menus.h, src/preferences.c:
 	small cleanup.
 	[60dcb44f3662] 
@@ -565,7 +565,7 @@
 	update to latest GNU tools
 	[23b56cab6eb5]
 
-	* src/globals.h, src/info_windows.c, src/main.c, src/menus.c:
+	* src/appdata.h, src/info_windows.c, src/main.c, src/menus.c:
 	Added --glade-file
 	[53b6374c4312]
 
@@ -627,7 +627,7 @@
 
 2006-05-14 07:20  bchiara
 
-	* ChangeLog, glade/etherape.glade2, src/diagram.c, src/globals.h,
+	* ChangeLog, glade/etherape.glade2, src/diagram.c, src/appdata.h,
 	src/preferences.c, src/preferences.h: should fix bug 1488215
 	(cancelling prefs doesn't work)
 
@@ -721,13 +721,13 @@
 
 2006-03-25 07:07  bchiara
 
-	* src/: capture.c, globals.h, main.c: Added Ben Allen's patch to
+	* src/: capture.c, appdata.h, main.c: Added Ben Allen's patch to
 	provide the 'zero-delay' when playing back capture files.
 
 2006-03-10 09:29  bchiara
 
 	* acinclude.m4, src/capture.c, src/datastructs.c, src/diagram.c,
-	src/globals.h, src/links.c, src/menus.c, src/node.c,
+	src/appdata.h, src/links.c, src/menus.c, src/node.c,
 	src/protocols.c, src/traffic_stats.c: minor changes. Rephrased
 	pcap-devel check to be more clear.
 
@@ -835,7 +835,7 @@
 2006-01-10 07:43  bchiara
 
 	* ChangeLog, NEWS, src/datastructs.c, src/datastructs.h,
-	src/diagram.c, src/globals.h, src/info_windows.c,
+	src/diagram.c, src/appdata.h, src/info_windows.c,
 	src/info_windows.h, src/preferences.c, src/protocols.c,
 	src/protocols.h: Fixed a bug when closing the preferences window. 
 	Improvments to new node info dialog.  Refactored standard protocol
@@ -844,7 +844,7 @@
 2006-01-08 21:33  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/datastructs.c,
-	src/diagram.c, src/globals.h, src/info_windows.c,
+	src/diagram.c, src/appdata.h, src/info_windows.c,
 	src/info_windows.h, src/links.c, src/node.c, src/preferences.c,
 	src/preferences.h, src/protocols.c, src/protocols.h,
 	src/traffic_stats.c, src/traffic_stats.h: Completed new style node
@@ -890,7 +890,7 @@
 
 	* ChangeLog, glade/etherape.glade2, src/capture.c,
 	src/conversations.c, src/conversations.h, src/diagram.c,
-	src/globals.h, src/links.c, src/links.h, src/main.c, src/names.c,
+	src/appdata.h, src/links.c, src/links.h, src/main.c, src/names.c,
 	src/names.h, src/node.c, src/node.h, src/protocols.c,
 	src/protocols.h: Conversation now expire with the corresponding
 	link. Protocol stack revision.
@@ -898,13 +898,13 @@
 2006-01-03 21:27  bchiara
 
 	* ChangeLog, README.help, TODO, html/FAQ.html, src/capture.c,
-	src/diagram.c, src/globals.h, src/main.c, src/main.h,
+	src/diagram.c, src/appdata.h, src/main.c, src/main.h,
 	src/preferences.c, src/preferences.h: cleanups ...
 
 2006-01-03 19:51  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,
-	src/globals.h, src/ip-cache.c, src/main.c, src/names.c,
+	src/appdata.h, src/ip-cache.c, src/main.c, src/names.c,
 	src/preferences.c: fixes bug 1396236 and tidies up preferences
 	dialog.
 
@@ -939,7 +939,7 @@
 
 2005-12-30 16:36  bchiara
 
-	* src/: capture.c, capture.h, diagram.c, eth_resolv.h, globals.h,
+	* src/: capture.c, capture.h, diagram.c, eth_resolv.h, appdata.h,
 	links.c, names.c, names_netbios.c, names_netbios.h, node.c, node.h,
 	protocols.c, protocols.h, resolv.c: still refactoring ...
 
@@ -956,7 +956,7 @@
 2005-12-29 18:53  bchiara
 
 	* config.h.in, configure.in, src/capture.c, src/capture.h,
-	src/diagram.c, src/globals.h, src/info_windows.c, src/links.c,
+	src/diagram.c, src/appdata.h, src/info_windows.c, src/links.c,
 	src/node.c, src/node.h: source restructuring continues...
 
 2005-12-04 20:18  bchiara
@@ -965,7 +965,7 @@
 	src/capture.c, src/capture.h, src/conversations.c,
 	src/conversations.h, src/diagram.c, src/diagram.h,
 	src/direct_resolve.c, src/dns.c, src/dns.h, src/eth_resolv.h,
-	src/globals.h, src/info_windows.c, src/info_windows.h, src/links.c,
+	src/appdata.h, src/info_windows.c, src/info_windows.h, src/links.c,
 	src/links.h, src/main.c, src/menus.c, src/menus.h, src/names.c,
 	src/names.h, src/node.c, src/node.h, src/preferences.c,
 	src/preferences.h, src/protocols.c, src/protocols.h, src/resolv.c,
@@ -1091,7 +1091,7 @@
 	m4/Makefile, m4/Makefile.am, m4/Makefile.in, m4/compiler-flags.m4,
 	po/Makefile.in.in, src/Makefile.am, src/capture.c,
 	src/datastructs.c, src/datastructs.h, src/diagram.c, src/dns.c,
-	src/dns.h, src/globals.h, src/gnomesupport.h, src/info_windows.c,
+	src/dns.h, src/appdata.h, src/gnomesupport.h, src/info_windows.c,
 	src/info_windows.h, src/main.c, src/main.h, src/menus.c,
 	src/menus.h, src/preferences.c, src/preferences.h, src/protocols.c,
 	src/util.c: 
@@ -1167,14 +1167,14 @@
 
 2003-02-25 22:09  bchiara
 
-	* glade/etherape.glade2, src/globals.h, src/info_windows.c,
+	* glade/etherape.glade2, src/appdata.h, src/info_windows.c,
 	src/info_windows.h, src/menus.c, src/preferences.c, ChangeLog: 
 	Signal handling fixes
 
 2003-02-25 00:05  bchiara
 
 	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,
-	src/globals.h, src/info_windows.c, src/main.c, src/menus.c,
+	src/appdata.h, src/info_windows.c, src/main.c, src/menus.c,
 	src/preferences.c: 
 	More info-windows fixes.  Added canvas antialiasing
 
@@ -1196,7 +1196,7 @@
 2003-02-23 00:10  bchiara
 
 	* config.h.in, glade/etherape.glade2, m4/Makefile, m4/Makefile.in,
-	po/Makefile.in.in, src/capture.c, src/diagram.c, src/globals.h,
+	po/Makefile.in.in, src/capture.c, src/diagram.c, src/appdata.h,
 	src/info_windows.c, src/info_windows.h, src/main.c, src/menus.c,
 	src/preferences.c: 
 	Protocol info window working, aligned indentation.
@@ -1227,7 +1227,7 @@
 	etherape.spec.in, glade/Makefile.am, glade/etherape.glade,
 	glade/etherape.glade1, glade/etherape.glade2, m4/Makefile.am,
 	m4/gnome-gettext.m4, src/Makefile.am, src/capture.c, src/diagram.c,
-	src/dns.c, src/dns.h, src/globals.h, src/info_windows.c,
+	src/dns.c, src/dns.h, src/appdata.h, src/info_windows.c,
 	src/info_windows.h, src/main.c, src/main.h, src/menus.c,
 	src/menus.h, src/preferences.c, src/preferences.h, src/util.c: 
 	Preliminary gnome2 support
@@ -1433,7 +1433,7 @@
 
 2001-08-06 14:44  toledo
 
-	* src/globals.h: Added new link types, including LINUX_SLL for ISDN
+	* src/appdata.h: Added new link types, including LINUX_SLL for ISDN
 
 2001-08-03 12:34  toledo
 
@@ -1449,7 +1449,7 @@
 
 2001-08-03 12:28  toledo
 
-	* src/: diagram.c, glade-strings, globals.h, main.c, preferences.c:
+	* src/: diagram.c, glade-strings, appdata.h, main.c, preferences.c:
 	Added support for cycle and fade settings
 
 2001-08-03 11:01  toledo
@@ -1459,7 +1459,7 @@
 
 2001-08-02 17:40  toledo
 
-	* src/: diagram.c, globals.h, main.c, preferences.c, preferences.h:
+	* src/: diagram.c, appdata.h, main.c, preferences.c, preferences.h:
 	First try at using pref.colors for the diagram. Read changes from
 	the colors table into pref.colors
 
@@ -1486,7 +1486,7 @@
 
 2001-08-02 09:49  toledo
 
-	* src/: capture.c, diagram.c, globals.h, info_windows.c, main.c,
+	* src/: capture.c, diagram.c, appdata.h, info_windows.c, main.c,
 	menus.c, names.c, preferences.c: Turned all preferences into
 	elements of the global structure pref
 
@@ -1572,7 +1572,7 @@
 
 2001-07-06 10:13  toledo
 
-	* src/callbacks.c, src/callbacks.h, src/capture.c, src/globals.h,
+	* src/callbacks.c, src/callbacks.h, src/capture.c, src/appdata.h,
 	src/main.c, src/main.h, src/menus.c, src/menus.h,
 	glade/etherape.glade: Changes to make sure the the capture device
 	is closed before leaving, so as to leave promisc mode. Handles TERM
@@ -1589,7 +1589,7 @@
 
 2001-06-22 08:41  toledo
 
-	* src/: diagram.c, globals.h, menus.c: Turn already_updating into a
+	* src/: diagram.c, appdata.h, menus.c: Turn already_updating into a
 	global variable. gui_stop_capture needs to know its value, so as to
 	fail if its happening
 
@@ -1685,7 +1685,7 @@
 
 2001-05-13 18:51  toledo
 
-	* src/globals.h: One more protocol level is necessary to correctly
+	* src/appdata.h: One more protocol level is necessary to correctly
 	decode fddi frames, for instance
 
 2001-05-13 18:51  toledo
@@ -1719,7 +1719,7 @@
 
 2001-05-13 14:13  toledo
 
-	* src/globals.h: Add another macro to get values from packets. This
+	* src/appdata.h: Add another macro to get values from packets. This
 	one used in nebios over llc
 
 2001-05-13 14:12  toledo
@@ -1739,7 +1739,7 @@
 
 2001-05-12 11:17  toledo
 
-	* src/capture.c, src/diagram.c, src/glade-strings, src/globals.h,
+	* src/capture.c, src/diagram.c, src/glade-strings, src/appdata.h,
 	src/main.c, src/preferences.c, glade/etherape.glade: Add the option
 	to choose between grouping unknown protocols or listing them all
 
@@ -1766,7 +1766,7 @@
 
 2001-05-10 16:27  toledo
 
-	* src/: capture.c, capture.h, globals.h: Made the necessary changes
+	* src/: capture.c, capture.h, appdata.h: Made the necessary changes
 	to keep the list of packets with the global protocols as well, so
 	that the instantaneous per protocol traffic can be calculated
 
@@ -1818,7 +1818,7 @@
 
 2001-05-09 18:55  toledo
 
-	* src/globals.h: Keep the number of packets in global variables
+	* src/appdata.h: Keep the number of packets in global variables
 
 2001-05-09 18:53  toledo
 
@@ -1854,7 +1854,7 @@
 
 2001-05-09 12:50  toledo
 
-	* src/globals.h: Added the global conversations functions
+	* src/appdata.h: Added the global conversations functions
 
 2001-05-09 12:50  toledo
 
@@ -1890,7 +1890,7 @@
 
 2001-05-08 16:40  toledo
 
-	* src/: capture.c, globals.h: Added a timestamp to the protocol_t
+	* src/: capture.c, appdata.h: Added a timestamp to the protocol_t
 	structure to know when it was last heard
 
 2001-05-08 16:38  toledo
@@ -1922,7 +1922,7 @@
 
 2001-05-08 10:42  toledo
 
-	* src/: glade-strings, globals.h, info_windows.c, info_windows.h:
+	* src/: glade-strings, appdata.h, info_windows.c, info_windows.h:
 	Added a toolbar button and a check menuitem to display the
 	protocols window
 
@@ -1944,7 +1944,7 @@
 2001-05-07 21:50  toledo
 
 	* src/: Makefile.am, diagram.c, diagram.h, glade-strings,
-	globals.h, info_windows.c, info_windows.h, main.c: New
+	appdata.h, info_windows.c, info_windows.h, main.c: New
 	update_protocols_window function. A new window pops ups when double
 	clicking the protocol legend. Moved node_info related functions to
 	info_windows.c
@@ -1981,12 +1981,12 @@
 
 2001-05-06 19:48  toledo
 
-	* src/: capture.c, globals.h: update_links and update_protocols
+	* src/: capture.c, appdata.h: update_links and update_protocols
 	used in stop_capture to delete them all
 
 2001-05-06 17:37  toledo
 
-	* src/: capture.c, capture.h, globals.h: Protocols now hold a list
+	* src/: capture.c, capture.h, appdata.h: Protocols now hold a list
 	of nod_ids of all the nodes that have been using this protocol.
 	Also added variables to hold instanteneous traffic information
 
@@ -2002,12 +2002,12 @@
 
 2001-05-06 14:11  toledo
 
-	* src/: capture.c, capture.h, globals.h: Merged the changes from
+	* src/: capture.c, capture.h, appdata.h: Merged the changes from
 	the one packet copy brach
 
 2001-05-06 13:55  toledo
 
-	* src/: capture.c, capture.h, globals.h: Changes to keep a single
+	* src/: capture.c, capture.h, appdata.h: Changes to keep a single
 	copy of the packet_t structure that nodes, links and later
 	protocols will reference
 
@@ -2018,7 +2018,7 @@
 
 2001-05-05 01:05  toledo
 
-	* src/glade-strings, src/globals.h, src/main.c, src/preferences.c,
+	* src/glade-strings, src/appdata.h, src/main.c, src/preferences.c,
 	src/preferences.h, glade/etherape.glade: New specific
 	gui_node_timeout spin control to distinguish the canvas from the
 	capture node
@@ -2056,7 +2056,7 @@
 
 2001-05-04 11:31  toledo
 
-	* src/: capture.c, capture.h, diagram.c, globals.h: Added a
+	* src/: capture.c, capture.h, diagram.c, appdata.h: Added a
 	new_nodes list to capture.c and a ape_get_new_node function so that
 	not every single known node has to be checked in order to see
 	whether a node should be displayed again in the diagram
@@ -2124,7 +2124,7 @@
 
 2001-04-25 16:57  toledo
 
-	* src/: capture.c, diagram.c, diagram.h, glade-strings, globals.h,
+	* src/: capture.c, diagram.c, diagram.h, glade-strings, appdata.h,
 	main.c, preferences.c: Old nodes where reappearing in the diagram
 	because of an overflow in the age comparing code. Now timeout
 	variables are stored in milliseconds, instead of nanoseconds
@@ -2149,13 +2149,13 @@
 
 2001-04-24 22:25  toledo
 
-	* src/: capture.c, globals.h, menus.c, names.c, names.h,
+	* src/: capture.c, appdata.h, menus.c, names.c, names.h,
 	protocols.c, protocols.h: Adds support for Token Ring. Fixes a
 	problem with FDDI names
 
 2001-04-24 20:35  toledo
 
-	* src/: capture.c, capture.h, diagram.c, diagram.h, globals.h,
+	* src/: capture.c, capture.h, diagram.c, diagram.h, appdata.h,
 	gnomesupport.h, names.c, protocols.c: New update_nodes function in
 	capture.c, which calls update_node for each node. That is now the
 	global function called from diagram.c, now directly from
@@ -2204,7 +2204,7 @@
 
 2001-04-23 12:43  toledo
 
-	* src/: diagram.c, globals.h, main.c, preferences.c, preferences.h:
+	* src/: diagram.c, appdata.h, main.c, preferences.c, preferences.h:
 	Added support for the node size variable optionmenu
 
 2001-04-23 11:45  toledo
@@ -2231,7 +2231,7 @@
 
 2001-04-22 20:15  toledo
 
-	* src/: capture.c, diagram.c, diagram.h, globals.h: Don't delete
+	* src/: capture.c, diagram.c, diagram.h, appdata.h: Don't delete
 	nodes after timeout, but rather the canvas_node. Create new
 	variables aver_accu to contain traffic to calculate average, so
 	that the accumulated traffic really contains what it implies
@@ -2288,7 +2288,7 @@
 
 2001-04-20 08:19  toledo
 
-	* src/: capture.c, capture.h, diagram.c, globals.h, names.c: Double
+	* src/: capture.c, capture.h, diagram.c, appdata.h, names.c: Double
 	clicking a node gives you detailed information if you have setup
 	the env variable DEBUG to INFO
 
@@ -2347,7 +2347,7 @@
 
 2001-04-19 10:55  toledo
 
-	* src/: capture.c, globals.h, names.c, names.h: Make it explicitly
+	* src/: capture.c, appdata.h, names.c, names.h: Make it explicitly
 	known whether we have resolved a name or not. It is used for
 	ethernet resolution, in cases in which a name is not found in
 	/etc/ethers but we do know the manufacturer code. In that case
@@ -2416,7 +2416,7 @@
 
 2001-04-18 11:28  toledo
 
-	* src/: globals.h, protocols.c: Only decode the tcp service if the
+	* src/: appdata.h, protocols.c: Only decode the tcp service if the
 	tcp packet does have a payload
 
 2001-04-18 10:49  toledo
@@ -2460,7 +2460,7 @@
 
 2001-04-18 00:58  toledo
 
-	* src/globals.h: Minor change to aid in recognizing RPC. Added
+	* src/appdata.h: Minor change to aid in recognizing RPC. Added
 	init_menus
 
 2001-04-18 00:56  toledo
@@ -2497,7 +2497,7 @@
 
 2001-04-17 10:01  toledo
 
-	* src/globals.h: Moved appbar message setting into its own function
+	* src/appdata.h: Moved appbar message setting into its own function
 	from update_diagram
 
 2001-04-17 09:59  toledo
@@ -2578,7 +2578,7 @@
 
 2001-04-16 01:09  toledo
 
-	* src/globals.h: * Introduced a global state variable to know
+	* src/appdata.h: * Introduced a global state variable to know
 	whether we are stopped,   paused or playing. It's useful when
 	chaging modes of operation     at runtime.  * end_of_file has to be
 	made global for the same last reason.  * New gui start, stop and
@@ -2644,7 +2644,7 @@
 
 2001-04-16 00:05  toledo
 
-	* src/globals.h: Changed init_capture declaration so that it
+	* src/appdata.h: Changed init_capture declaration so that it
 	returns an error message
 
 2001-04-16 00:04  toledo
@@ -2841,7 +2841,7 @@
 
 2000-12-10 23:09  fpeters
 
-	* src/: capture.c, globals.h: added warning dialog when run as
+	* src/: capture.c, appdata.h: added warning dialog when run as
 	non-root
 
 2000-05-11 17:14  fpeters
@@ -2904,7 +2904,7 @@
 	* Makefile.am, configure.in, etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po,
 	src/Makefile.am, src/callbacks.c, src/capture.c, src/capture.h,
-	src/diagram.c, src/diagram.h, src/glade-strings, src/globals.h,
+	src/diagram.c, src/diagram.h, src/glade-strings, src/appdata.h,
 	src/main.c, src/main.h, src/menus.c, src/menus.h, src/names.c,
 	src/preferences.c, src/preferences.h, src/prot_types.h,
 	src/protocols.c, src/protocols.h, src/resolv.c, src/util.c: Added
@@ -2914,7 +2914,7 @@
 
 	* Makefile.am, configure.in, etherape.spec.in, html/NEWS.html,
 	src/Makefile.am, src/callbacks.c, src/capture.c, src/capture.h,
-	src/diagram.c, src/diagram.h, src/globals.h, src/main.c,
+	src/diagram.c, src/diagram.h, src/appdata.h, src/main.c,
 	src/menus.c, src/menus.h, src/names.c, src/preferences.c,
 	src/preferences.h, src/prot_types.h, src/protocols.c,
 	src/protocols.h, src/resolv.c, src/util.c: Added ability to read
@@ -2931,7 +2931,7 @@
 	debian/rules, html/NEWS.html, po/cat-id-tbl.c, po/es.po,
 	po/etherape.pot, po/fr.po, src/Makefile.am, src/callbacks.c,
 	src/callbacks.h, src/capture.c, src/capture.h, src/diagram.c,
-	src/diagram.h, src/glade-strings, src/globals.h, src/main.c,
+	src/diagram.h, src/glade-strings, src/appdata.h, src/main.c,
 	src/names.c, src/resolv.c, src/util.c: Added start and stop
 	buttons. The toolbar is back, since it is now useful. :-)
 
@@ -2943,7 +2943,7 @@
 
 	* OVERVIEW, configure.in, html/NEWS.html, po/cat-id-tbl.c,
 	po/es.po, po/etherape.pot, po/fr.po, src/capture.c, src/capture.h,
-	src/diagram.c, src/diagram.h, src/dns.c, src/globals.h, src/main.c,
+	src/diagram.c, src/diagram.h, src/dns.c, src/appdata.h, src/main.c,
 	src/names.c, src/resolv.c, src/util.c: Added new -l option. You can
 	use it to limit the nodes displayed only to the N most active. GUI
 	configuration and more the ability to use more criteria will come
@@ -3023,7 +3023,7 @@
 
 2000-04-15 18:34  toledo
 
-	* src/: callbacks.c, diagram.c, globals.h, main.c: added new
+	* src/: callbacks.c, diagram.c, appdata.h, main.c: added new
 	legend_protocols list so that the legend works again. Now we count
 	legend protocols using the list, instead of checking directly the
 	legend widgets
@@ -3039,7 +3039,7 @@
 
 2000-04-15 12:57  toledo
 
-	* src/: Makefile.am, callbacks.c, diagram.c, globals.h, main.c:
+	* src/: Makefile.am, callbacks.c, diagram.c, appdata.h, main.c:
 	first attempts at converting to libglade
 
 2000-04-15 10:09  toledo
@@ -3065,7 +3065,7 @@
 
 2000-04-14 17:21  toledo
 
-	* src/: globals.h, main.c, main.h: Added -q (quiet) option,
+	* src/: appdata.h, main.c, main.h: Added -q (quiet) option,
 	set_debug_level and log_handler so that only if DEBUG env variable
 	is set, INFO and DEBUG are shown. Added g_my_debug and g_my_info
 	macros
@@ -3084,7 +3084,7 @@
 
 2000-04-14 15:28  toledo
 
-	* src/globals.h: Added destroying_timeout and destroying_idle
+	* src/appdata.h: Added destroying_timeout and destroying_idle
 
 2000-04-14 15:26  toledo
 
@@ -3133,7 +3133,7 @@
 
 2000-04-09 20:45  toledo
 
-	* src/: diagram.c, globals.h, main.c: Added new option stationary
+	* src/: diagram.c, appdata.h, main.c: Added new option stationary
 	and code to reposition_canvas_nodes to implement it
 
 2000-04-09 20:42  toledo
@@ -3179,7 +3179,7 @@
 
 2000-04-07 19:50  toledo
 
-	* src/: globals.h, names.c, names.h: Finished up ip names as well.
+	* src/: appdata.h, names.c, names.h: Finished up ip names as well.
 	Now on to using those names
 
 2000-04-07 13:45  toledo
@@ -3189,7 +3189,7 @@
 
 2000-04-07 12:15  toledo
 
-	* src/: capture.c, globals.h, names.c, names.h: Initial code for
+	* src/: capture.c, appdata.h, names.c, names.h: Initial code for
 	get_packet_names
 
 2000-04-07 12:07  toledo
@@ -3235,7 +3235,7 @@
 
 2000-04-06 20:17  toledo
 
-	* src/globals.h: Added color attribute to canvas_node
+	* src/appdata.h: Added color attribute to canvas_node
 
 2000-04-06 20:17  toledo
 
@@ -3255,7 +3255,7 @@
 	* Makefile.am, OVERVIEW, README.bugs, README.help, html/FAQ.html,
 	html/NEWS.html, html/bug-reporting.html, html/etherape.css,
 	po/cat-id-tbl.c, po/etherape.pot, src/capture.c, src/capture.h,
-	src/diagram.c, src/globals.h: HTML files have been tidied.  Added
+	src/diagram.c, src/appdata.h: HTML files have been tidied.  Added
 	protocols and main_prot arrays to nodes.  get_packet_prot is now
 	called in packet_read and the result is passed to add_node_packet
 	and add_link_packet, since it will be used in both places.
@@ -3303,7 +3303,7 @@
 2000-04-04 14:01  toledo
 
 	* .cvsignore, FAQ, NEWS, TODO, html/NEWS.html, po/etherape.pot,
-	src/capture.c, src/diagram.c, src/globals.h, src/protocols.c,
+	src/capture.c, src/diagram.c, src/appdata.h, src/protocols.c,
 	src/protocols.h: Added initial support for FDDI. That means: Adding
 	FDDI to ape_modes, adding FDDI to fill_names and get_fddi_type to
 	protocols.c
@@ -3359,7 +3359,7 @@
 
 	* configure.in, etherape.glade, old.version, po/es.po,
 	po/etherape.pot, po/fr.po, src/capture.c, src/capture.h,
-	src/diagram.c, src/globals.h, src/interface.c: 
+	src/diagram.c, src/appdata.h, src/interface.c: 
 	Added Fabrice to the about box.  node_t now has _in and _out
 	versions of average and accumulated.  In order to use it, added
 	packet_direction member to packet_t, and as a parameter to add_node
@@ -3384,7 +3384,7 @@
 2000-03-29 00:41  toledo
 
 	* NEWS, html/NEWS.html, po/etherape.pot, src/callbacks.c,
-	src/capture.c, src/diagram.c, src/diagram.h, src/globals.h,
+	src/capture.c, src/diagram.c, src/diagram.h, src/appdata.h,
 	src/interface.c, src/interface.h, src/main.c, src/support.c,
 	src/support.h: 
 	Popup window data is filled only if node->name is valid (there are
@@ -3403,7 +3403,7 @@
 
 	* README, README.thanks, configure.in, old.version, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, src/capture.c,
-	src/globals.h: [no log message]
+	src/appdata.h: [no log message]
 
 2000-03-26 18:19  fpeters
 
@@ -3432,7 +3432,7 @@
 
 	* configure.in, etherape.glade, old.version, po/es.po,
 	po/etherape.pot, po/fr.po, src/capture.c, src/diagram.c,
-	src/globals.h, src/interface.c, src/interface.h, src/main.c,
+	src/appdata.h, src/interface.c, src/interface.h, src/main.c,
 	src/tcpudp.h: 
 	Added scroll and viewport to the legends. Added -r option and
 	pcap_open_offline, but it doesn't work yet.
@@ -3486,7 +3486,7 @@
 	* NEWS, README.bugs, TODO, etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/es.po, po/etherape.pot, po/fr.po,
 	src/callbacks.c, src/capture.c, src/capture.h, src/diagram.c,
-	src/globals.h, src/interface.c, src/interface.h, src/main.c,
+	src/appdata.h, src/interface.c, src/interface.h, src/main.c,
 	src/protocols.c, src/support.c, src/support.h: 
 	get_packet_prot depends on linktype and not apemode.  If a protocol
 	of a different level has the same name, it is not appended to the
@@ -3507,7 +3507,7 @@
 2000-03-22 07:18  toledo
 
 	* etherape.glade, po/cat-id-tbl.c, po/etherape.pot,
-	src/callbacks.c, src/callbacks.h, src/diagram.c, src/globals.h,
+	src/callbacks.c, src/callbacks.h, src/diagram.c, src/appdata.h,
 	src/interface.c, src/main.c: 
 	Updated diagram.c so that it supports the protocols stack.  When a
 	new protocol is found it is assigned a color from a list of
@@ -3526,7 +3526,7 @@
 
 2000-03-21 13:21  toledo
 
-	* TODO, src/capture.c, src/capture.h, src/diagram.c, src/globals.h:
+	* TODO, src/capture.c, src/capture.h, src/diagram.c, src/appdata.h:
 	
 	update_node and update_link in capture.c are renamed to the more
 	proper names add_node_packet and add_link_packet.  Create new
@@ -3540,7 +3540,7 @@
 
 	* Makefile.am, NEWS, README.bugs, etherape.glade, html/NEWS.html,
 	po/cat-id-tbl.c, po/etherape.pot, src/capture.c, src/capture.h,
-	src/diagram.c, src/globals.h, src/interface.c, src/interface.h,
+	src/diagram.c, src/appdata.h, src/interface.c, src/interface.h,
 	src/protocols.c, src/protocols.h: 
 	protocols and link->protocols _stacks_ are correctly created and
 	updated (I think). What's not working now is the proper deletion
@@ -3551,14 +3551,14 @@
 
 	* FAQ, NEWS, configure.in, html/FAQ.html, html/NEWS.html, po/es.po,
 	po/etherape.pot, po/fr.po, src/capture.c, src/diagram.c,
-	src/globals.h, src/protocols.c: 
+	src/appdata.h, src/protocols.c: 
 	More leak squashing. packet->prot is a string now.
 
 2000-03-20 10:58  toledo
 
 	* NEWS, etherape.glade, html/NEWS.html, po/cat-id-tbl.c, po/es.po,
 	po/etherape.pot, po/fr.po, src/callbacks.c, src/callbacks.h,
-	src/capture.c, src/capture.h, src/globals.h, src/interface.c,
+	src/capture.c, src/capture.h, src/appdata.h, src/interface.c,
 	src/interface.h: 
 	Capture filter may be set in the preferences dialog.  To do so we
 	changed:   Added apply and cancel buttons to the dialog   Filter is
@@ -3568,24 +3568,24 @@
 
 	* configure.in, old.version, po/cat-id-tbl.c, po/etherape.pot,
 	src/capture.c, src/capture.h, src/diagram.c, src/diagram.h,
-	src/globals.h, src/main.c, src/protocols.c, src/resolv.c: 
+	src/appdata.h, src/main.c, src/protocols.c, src/resolv.c: 
 	All globals variables, enums and structures definitions are now in
-	globals.h Capture.c is now fully tidied up, it's exported functions
-	are declared in globals.h, so that only capture.c needs to include
+	appdata.h Capture.c is now fully tidied up, it's exported functions
+	are declared in appdata.h, so that only capture.c needs to include
 	capture.h, which now has all local functions declared.	Besides,
 	functions are ordered in the same order in which they are called in
 	execution time.
 
 2000-03-18 20:12  toledo
 
-	* po/es.po, po/etherape.pot, po/fr.po, src/globals.h: [no log
+	* po/es.po, po/etherape.pot, po/fr.po, src/appdata.h: [no log
 	message]
 
 2000-03-18 20:03  toledo
 
-	* src/globals.h: 
+	* src/appdata.h: 
 	Preferences are loaded at startup and saved using the save button. 
-	All globals are now declared in globals.h
+	All globals are now declared in appdata.h
 
 2000-03-18 20:01  toledo
 
@@ -3597,7 +3597,7 @@
 	* NEWS, configure.in, html/NEWS.html, po/es.po, po/etherape.pot,
 	po/fr.po, src/callbacks.c, src/capture.c, src/diagram.c,
 	src/diagram.h, src/main.c: 
-	Savings of preferences. All globals are now declared in globals.h
+	Savings of preferences. All globals are now declared in appdata.h
 
 2000-03-18 16:42  toledo
 

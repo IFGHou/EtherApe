@@ -21,9 +21,10 @@
 #include <config.h>
 #endif
 
-#include "globals.h"
+#include "appdata.h"
 #include "node.h"
 #include "capture.h"
+#include "preferences.h"
 #include "util.h"
 
 typedef struct
@@ -253,7 +254,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
        * node is expired */
       if (pref.node_timeout_time)
         {
-          diffms = substract_times_ms(&now, &node->node_stats.stats.last_time);
+          diffms = substract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
           if (diffms >= pref.node_timeout_time)
             {
               /* node expired, remove */
@@ -302,7 +303,7 @@ node_name_update(node_t * node)
         }
     }
 
-  switch (pref.mode)
+  switch (appdata.mode)
     {
     case LINK6:
       set_node_name (node, ethernet_sequence);

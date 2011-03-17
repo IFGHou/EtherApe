@@ -22,10 +22,11 @@
 #endif
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "appdata.h"
 #include "math.h"
 
 void initialize_pref_controls(void);
+void change_refresh_period(guint32 newperiod); 
 
 /* callbacks */
 void on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data);
