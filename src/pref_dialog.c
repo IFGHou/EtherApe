@@ -26,6 +26,7 @@
 #include "diagram.h"
 #include "capture.h"
 #include "datastructs.h"
+#include "util.h" /* compat functions */
 
 #define MILLI   (1000.0)
 #define COLSPACES   "        "
