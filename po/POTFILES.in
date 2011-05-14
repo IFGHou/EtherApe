@@ -9,7 +9,6 @@ src/conversations.c
 src/info_windows.c
 src/datastructs.c
 src/decode_proto.c
-src/direct_resolve.c
 src/dns.c
 src/ip-cache.c
 src/links.c
