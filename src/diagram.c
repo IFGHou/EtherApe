@@ -137,7 +137,7 @@ static gint reposition_canvas_nodes (guint8 * ether_addr,
 static gint check_new_link (link_id_t * link_id,
 			    link_t * link, GtkWidget * canvas);
 static gdouble get_node_size (gdouble average);
-static gdouble get_link_size (gdouble average);
+static gdouble get_link_size(const basic_stats_t *link_stats);
 static gint link_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_link_t * canvas_link);
 static gint node_item_event (GnomeCanvasItem * item,
@@ -1161,7 +1161,7 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
   GnomeCanvasPoints *points;
   gdouble versorx, versory, modulus, link_size;
 
-  link_size = get_link_size(link_stats->average) / 2;
+  link_size = get_link_size(link_stats) / 2;
 
   /* limit the maximum size to avoid overload */
   if (link_size > MAX_LINK_SIZE)
@@ -1216,20 +1216,46 @@ get_node_size (gdouble average)
 }
 
 /* Returs the width in pixels given average traffic and size mode */
-static gdouble
-get_link_size (gdouble average)
+static gdouble get_link_size (const basic_stats_t *link_stats)
 {
   gdouble result = 0.0;
+  gdouble data;
+
+  /* since links are one-sided, there's no distinction between inbound/outbound
+     data.   */
+  switch (pref.node_size_variable)
+    {
+    case INST_TOTAL:
+    case INST_INBOUND:
+    case INST_OUTBOUND:
+    case INST_PACKETS: /* active packets stat not available */
+      data = link_stats->average;
+      break;
+    case ACCU_TOTAL:
+    case ACCU_INBOUND:
+    case ACCU_OUTBOUND:
+      data = link_stats->accumulated;
+      break;
+    case ACCU_PACKETS:
+      data = link_stats->accu_packets;
+      break;
+    case ACCU_AVG_SIZE:
+      data = link_stats->avg_size;
+      break;
+    default:
+      data = link_stats->average;
+      g_warning (_("Unknown value for link_size_variable"));
+    }
   switch (pref.size_mode)
     {
     case LINEAR:
-      result = average + 1;
+      result = data + 1;
       break;
     case LOG:
-      result = log (average + 1);
+      result = log(data + 1);
       break;
     case SQRT:
-      result = sqrt (average + 1);
+      result = sqrt(data + 1);
       break;
     }
   return 1.0 + pref.node_radius_multiplier * pref.link_node_ratio * result;

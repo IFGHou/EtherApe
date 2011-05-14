@@ -110,8 +110,9 @@ Level 5 (Eg: HTTP)</property>
                     <child>
                       <widget class="GtkLabel" id="label36">
                         <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">The statistic used to compute node and link sizes</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Node Size _Variable</property>
+                        <property name="label" translatable="yes">Size _Variable</property>
                         <property name="use_underline">True</property>
                       </widget>
                       <packing>
