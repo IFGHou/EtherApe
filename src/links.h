@@ -44,6 +44,7 @@ typedef struct
 link_t;
 link_t *link_create(const link_id_t *link_id); /* creates a new link object */
 void link_delete(link_t *link); /* destroys a link, releasing memory */
+gchar *link_dump(const link_t *link); /* dumps link to newly allocated string */
 
 /* link catalog methods */
 void links_catalog_open(void);
@@ -58,6 +59,6 @@ void links_catalog_update_all(void);
 /* adds a new packet to the link, creating it if necessary */
 void links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet,
                               packet_direction direction);
-
+gchar *links_catalog_dump(void); /* dumps all links to a newly allocated string */
 
 #endif

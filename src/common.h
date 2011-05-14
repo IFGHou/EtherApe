@@ -63,12 +63,17 @@ size_mode_t;
 
 typedef enum
 {
+  /* Beware! The value given by the option widget must be coherent with
+   * the order of string in glade combo! */
   INST_TOTAL = 0,
-  INST_INBOUND = 1,
-  INST_OUTBOUND = 2,
-  ACCU_TOTAL = 3,
-  ACCU_INBOUND = 4,
-  ACCU_OUTBOUND = 5
+  INST_INBOUND,
+  INST_OUTBOUND,
+  INST_PACKETS,
+  ACCU_TOTAL,
+  ACCU_INBOUND,
+  ACCU_OUTBOUND,
+  ACCU_PACKETS,
+  ACCU_AVG_SIZE,
 }
 node_size_variable_t;
 
