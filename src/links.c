@@ -124,6 +124,46 @@ void link_delete(link_t *link)
   g_free (link);
 }
 
+gchar *link_dump(const link_t *link)
+{
+  gchar *msg;
+  gchar *msg_idsrc;
+  gchar *msg_iddst;
+  gchar *msg_stats;
+  gchar *msg_mprot;
+  guint i;
+
+  if (!link)
+    return g_strdup("link_t NULL");
+
+  msg_idsrc = node_id_dump(&link->link_id.src);
+  msg_iddst = node_id_dump(&link->link_id.dst);
+  msg_stats = traffic_stats_dump(&link->link_stats);
+
+  msg_mprot=g_strdup_printf("top: [%s], stack:", 
+                            (link->main_prot[0]) ? 
+                            link->main_prot[0] : "-none-");
+  
+  for (i = 1; i <= STACK_SIZE; i++)
+    {
+      gchar *tmp = msg_mprot;
+      msg_mprot = g_strdup_printf("%s %d:>%s<", msg_mprot, i, 
+                           (link->main_prot[i]) ? 
+                           link->main_prot[i] : "-none-");
+      g_free(tmp);
+    }
+
+  msg = g_strdup_printf("src: %s, dst: %s, main_prot: [%s], stats [%s]",
+                        msg_idsrc, msg_iddst, msg_mprot, msg_stats);
+  g_free(msg_idsrc);
+  g_free(msg_iddst);
+  g_free(msg_stats);
+  g_free(msg_mprot);
+
+  return msg;
+}
+
+
 /* gfunc called by g_list_foreach to remove a link */
 static void
 gfunc_remove_link(gpointer data, gpointer user_data)
@@ -316,4 +356,28 @@ links_catalog_add_packet(const link_id_t *link_id, packet_info_t * packet,
   link = links_catalog_find_create(link_id);
 
   traffic_stats_add_packet(&link->link_stats, packet, direction);
+}
+
+static gboolean link_dump_tvs(gpointer key, gpointer value, gpointer data)
+{
+  gchar *msg_link;
+  gchar *tmp;
+  gchar **msg = (gchar **)data;
+  const link_t *link = (const link_t *)value;
+  
+  msg_link = link_dump(link);
+  tmp = *msg;
+  *msg = g_strdup_printf("%slink %p:\n%s\n", tmp, link, msg_link);
+  g_free(tmp);
+  g_free(msg_link);
+  return FALSE;
+}
+
+gchar *links_catalog_dump(void)
+{
+  gchar *msg;
+
+  msg = g_strdup("");
+  links_catalog_foreach(link_dump_tvs, &msg);
+  return msg;
 }

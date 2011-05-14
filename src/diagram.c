@@ -696,6 +696,9 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
     case INST_OUTBOUND:
       node_size = get_node_size (node->node_stats.stats_out.average);
       break;
+    case INST_PACKETS:
+      node_size = get_node_size (node->node_stats.pkt_list.length);
+      break;
     case ACCU_TOTAL:
       node_size = get_node_size (node->node_stats.stats.accumulated);
       break;
@@ -704,6 +707,12 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
       break;
     case ACCU_OUTBOUND:
       node_size = get_node_size (node->node_stats.stats_out.accumulated);
+      break;
+    case ACCU_PACKETS:
+      node_size = get_node_size (node->node_stats.stats.accu_packets);
+      break;
+    case ACCU_AVG_SIZE:
+      node_size = get_node_size (node->node_stats.stats.avg_size);
       break;
     default:
       node_size = get_node_size (node->node_stats.stats_out.average);

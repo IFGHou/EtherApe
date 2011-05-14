@@ -128,9 +128,12 @@ Level 5 (Eg: HTTP)</property>
                         <property name="items" translatable="yes">Instant. traffic (In+Out)
 Instant. traffic (Inbound)
 Instant. traffic (Outbound)
+Instant. packets (In+Out)
 Accum. traffic (In+Out)
 Accum. traffic (Inbound)
 Accum. traffic (Outbound)
+Accum. packets (In+Out)
+Average pkt size (In+Out)
 </property>
                       </widget>
                       <packing>
