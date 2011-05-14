@@ -23,37 +23,24 @@
 #include <stdint.h>
 #include "appdata.h"
 #include "dns.h"
-#include "direct_resolve.h"
 #include "thread_resolve.h"
 
 /* initialize dns interface */
 int dns_open (void)
 {
-#ifdef USE_DIRECTDNS
-   return direct_open();
-#else
    return thread_open();
-#endif   
 }
 
 /* close dns interface */
 void dns_close(void)
 {
-#ifdef USE_DIRECTDNS
-   direct_close();
-#else
    thread_close();
-#endif   
 }
 
 /* resolves address and returns its fqdn */
 const char *dns_lookup (address_t *address)
 {
-#ifdef USE_DIRECTDNS
-   return direct_lookup (address);
-#else
    return thread_lookup (address);
-#endif   
 }
 
 

@@ -60,17 +60,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `bind' library (-lbind). */
-#undef HAVE_LIBBIND
-
-/* Define to 1 if you have the `c' library (-lc). */
-#undef HAVE_LIBC
-
 /* cmt */
 #undef HAVE_LIBPCAP
-
-/* Define to 1 if you have the `resolv' library (-lresolv). */
-#undef HAVE_LIBRESOLV
 
 /* cmt */
 #undef HAVE_LIBSM
@@ -217,10 +208,6 @@
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
-
-/* Forces the old socket base resolver. DEPRECATED, will be removed next
-   release. */
-#undef USE_DIRECTDNS
 
 /* Version number of package */
 #undef VERSION

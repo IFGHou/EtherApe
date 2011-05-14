@@ -21,7 +21,6 @@ etherape_SOURCES = \
 	util.c util.h \
 	export.c export.h \
 	dns.c dns.h \
-	direct_resolve.c direct_resolve.h \
 	thread_resolve.c thread_resolve.h \
 	callbacks.c callbacks.h \
 	menus.c menus.h \

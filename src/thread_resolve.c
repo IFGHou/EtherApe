@@ -26,8 +26,6 @@
 #include <config.h>
 #endif
 
-#ifndef USE_DIRECTDNS
-
 #include <sys/types.h>
 #include <time.h>
 #include <sys/time.h>
@@ -297,4 +295,3 @@ thread_lookup (address_t *ip)
   return ipname;
 }
 
-#endif /* !USE_DIRECTDNS */
