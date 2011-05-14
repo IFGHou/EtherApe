@@ -194,6 +194,7 @@ AC_LINK_IFELSE([int main(int argc, char *argv[]){return 0;}],
 AC_CONFIG_FILES([Makefile
 	   po/Makefile.in
            etherape.spec
+           etherape-devel.spec
            etherape.desktop
            glade/Makefile
            src/Makefile
