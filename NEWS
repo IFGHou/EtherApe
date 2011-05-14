@@ -23,6 +23,9 @@
    official packages, so you are advised to build with EtherApe spec file only
    as a last resort.
 
+   The old, deprecated, direct resolver was removed. Name resolution is now
+   only done with the full fledged threaded resolver.
+
    Changes summary:
      * XML export of node statistics.
      * added --final-export to export statistics at replay end.
@@ -43,6 +46,7 @@
      * workaround for OSX troubles with gtk_input_add. Thanks to Zack Perry 
        persistence for helping diagnose and fix.
      * removed obsolete preference "cycle assigned colors".
+     * removed deprecated direct resolver
      * config file now saved to ~/.config/etherape
      * filter expression is now saved with the other preferences.
 

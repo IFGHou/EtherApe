@@ -61,14 +61,6 @@ AC_CHECK_TYPES(u_short, ,AC_DEFINE(u_short, unsigned short, [define u_short]))
 AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
 AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
-AC_ARG_ENABLE(thread-resolver,
-  [AC_HELP_STRING([--enable-thread-resolver],[Use the multithreaded resolver (def. yes). PARAMETER DEPRECATED])],
-  [use_multithread=$enableval], [use_multithread=yes])
-
-if test $use_multithread = no; then
-  AC_DEFINE([USE_DIRECTDNS], [1], [Forces the old socket base resolver. DEPRECATED, will be removed next release.])
-fi
-
 # checks for osx or disable-gdk-input-add
 AC_ARG_ENABLE(gdk-input-add,
   [AC_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
@@ -82,43 +74,26 @@ if test $use_gdk_input_add = no; then
   AC_MSG_NOTICE([gtk_input_add disabled])
 fi
 
-# res_init and friends are used only on direct resolver. Otherwhise we need
-# gethostbyaddr_r() 
-if test $use_multithread = no; then
-
-# Copied from mtr to support dns.c
-# After some kind of change in libc, it seems it is
-# required to #include <resolv.h> for the test to succeed.
-# To go around it I included the test for __res_init
-AC_CHECK_FUNC(res_init, , 
-  AC_CHECK_LIB(bind, res_init, , 
-   AC_CHECK_LIB(resolv, res_init, ,
-    AC_CHECK_LIB(c, __res_init, , [AC_MSG_ERROR([No resolver library found])] ))))
-
-AC_CHECK_FUNC(res_mkquery, , 
-  AC_CHECK_LIB(bind, res_mkquery, , 
-   AC_CHECK_LIB(resolv, res_mkquery, , [AC_MSG_ERROR([No resolver library found])] )))
-else
 AC_CHECK_FUNC(gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
   AC_CHECK_LIB(bind, gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
    AC_CHECK_LIB(resolv, gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
     AC_CHECK_LIB(nsl, gethostbyaddr_r, [has_gethostbyaddr_r=yes],[has_gethostbyaddr_r=no]))))
 
-  if test $has_gethostbyaddr_r = no; then
-     AC_MSG_NOTICE([gethostbyaddr_r not found, trying with gethostbyaddr])
-     AC_CHECK_FUNC(gethostbyaddr, [has_gethostbyaddr=yes], 
-      AC_CHECK_LIB(bind, gethostbyaddr, [has_gethostbyaddr=yes], 
-       AC_CHECK_LIB(resolv, gethostbyaddr, [has_gethostbyaddr=yes], 
-         AC_CHECK_LIB(nsl, gethostbyaddr, [has_gethostbyaddr=yes], 
-          [AC_MSG_ERROR([Missing both gethostbyaddr and gethostbyaddr_r. Please install a resolver library.])]
-          ))))
+if test $has_gethostbyaddr_r = no; then
+ AC_MSG_NOTICE([gethostbyaddr_r not found, trying with gethostbyaddr])
+ AC_CHECK_FUNC(gethostbyaddr, [has_gethostbyaddr=yes], 
+  AC_CHECK_LIB(bind, gethostbyaddr, [has_gethostbyaddr=yes], 
+   AC_CHECK_LIB(resolv, gethostbyaddr, [has_gethostbyaddr=yes], 
+     AC_CHECK_LIB(nsl, gethostbyaddr, [has_gethostbyaddr=yes], 
+      [AC_MSG_ERROR([Missing both gethostbyaddr and gethostbyaddr_r. Please install a resolver library.])]
+      ))))
 
-     if test $has_gethostbyaddr = yes; then
-       AC_MSG_WARN([Found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
-       AC_DEFINE([FORCE_SINGLE_THREAD], [1], [found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
-     fi
-  fi
+ if test $has_gethostbyaddr = yes; then
+   AC_MSG_WARN([Found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
+   AC_DEFINE([FORCE_SINGLE_THREAD], [1], [found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
+ fi
 fi
+
 
 # Check for the pcap library.
 AC_ARG_ENABLE(static-pcap,
