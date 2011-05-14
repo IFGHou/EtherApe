@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-14 10:30+0200\n"
+"POT-Creation-Date: 2011-05-14 12:08+0200\n"
 "PO-Revision-Date: 2011-05-14 10:40+0200\n"
 "Last-Translator: R.Ghetta <bchiara@users.sf.net>\n"
 "Language-Team: \n"
@@ -123,7 +123,8 @@ msgid ""
 msgstr ""
 "Nessuna interfaccia di rete trovata o privilegi insufficienti.\n"
 "Sarà possibile solo visualizzare pacchetti da file.\n"
-"EtherApe richiede privilegi di amministratore (cioè root) per leggere da rete.\n"
+"EtherApe richiede privilegi di amministratore (cioè root) per leggere da "
+"rete.\n"
 "Errore pcap: %s"
 
 #: src/capture.c:133
@@ -160,14 +161,18 @@ msgstr "%s aperto in lettura"
 #: src/capture.c:167
 #, c-format
 msgid "File %s contains packets with unsupported link type %d, cannot replay"
-msgstr "File %s contiene pacchetti con il tipo link %d, non supportato. Lettura annullata."
+msgstr ""
+"File %s contiene pacchetti con il tipo link %d, non supportato. Lettura "
+"annullata."
 
 #: src/capture.c:175
 #, c-format
 msgid ""
 "Device %s uses unsupported link type %d,cannot capture. Please choose "
 "another interface."
-msgstr "Dispositivo %s utilizza un tipo link non supportato (%d). Selezionare un'altro dispositivo."
+msgstr ""
+"Dispositivo %s utilizza un tipo link non supportato (%d). Selezionare "
+"un'altro dispositivo."
 
 #: src/capture.c:182
 #, fuzzy, c-format
@@ -178,7 +183,8 @@ msgstr "PPI:tipo link %u non supportato, pacchetto ignorato"
 #, c-format
 msgid ""
 "This device does not support link-layer mode. Please use IP or TCP modes."
-msgstr "Questa interfaccia non supporta il modo Link layer. Selezionare IP o TCP"
+msgstr ""
+"Questa interfaccia non supporta il modo Link layer. Selezionare IP o TCP"
 
 #: src/capture.c:224
 #, c-format
