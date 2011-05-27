@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.11 ():
+  Overview of changes in EtherApe 0.9.11 (Friday May 27, 2011):
    Several users asked for a way to export traffic statistics.
    EtherApe now can save a snapshot with all known nodes and relevant
    informations to an XML file. With option --final-export, a dump is
@@ -20,8 +20,10 @@
    easily be built for OpenSUSE 11.3, SLE11, Centos5/RHEL5, Fedora and
    Mandriva.
    The spec file is somewhat generic, lacking the nicer integrations of
-   official packages, so you are advised to build with EtherApe spec file only
-   as a last resort.
+   official distribution packages, so you are advised to build with EtherApe 
+   spec file only as a last resort.
+
+   OSX compatibility improved, thanks to Zack Perry.
 
    The old, deprecated, direct resolver was removed. Name resolution is now
    only done with the full fledged threaded resolver.
@@ -49,6 +51,9 @@
      * removed deprecated direct resolver
      * config file now saved to ~/.config/etherape
      * filter expression is now saved with the other preferences.
+     * italian translation
+     * link and node sizes now computed with the same variable types.
+     * new size variables: active packets, total packets, average packet size.
 
 
   Overview of changes in EtherApe 0.9.10 (Sunday Feb 06, 2011):
