@@ -1,5 +1,18 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.12 (Tuesday May 31, 2011):
+   This is a bug fix release.
+   David Goldfarb discovered a critical bug in EtherApe, causing a 
+   NULL pointer indirection with RPC traffic.
+   This bug has security implications, because can be exploited to a 
+   (remote) DOS attack.
+   Packet content is not involved, however, so no privilege escalation 
+   should happen (unless the machine is already subverted by other means). 
+
+   Changes summary:
+     * fix bug 3309061
+
+
   Overview of changes in EtherApe 0.9.11 (Friday May 27, 2011):
    Several users asked for a way to export traffic statistics.
    EtherApe now can save a snapshot with all known nodes and relevant

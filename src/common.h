@@ -127,8 +127,6 @@ address_t;
 						      G_LOG_LEVEL_CRITICAL, \
 						      format, ##args)
 
-
-
 /* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
  * byte array, returns the value of the two or four bytes at the pointer.
  */

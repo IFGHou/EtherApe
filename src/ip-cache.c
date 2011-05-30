@@ -95,6 +95,8 @@ strtdiff (char *d, size_t lend, long signeddiff)
   unsigned long diff;
   unsigned long seconds, minutes, hours;
   long days;
+
+  g_assert(d);
   if ((diff = labs (signeddiff)))
     {
       seconds = diff % 60;
@@ -157,6 +159,7 @@ ipcache_tick (void)
 static void
 ipcache_calc_expire_tick (struct ipcache_item *rp, unsigned long delay, int is_request)
 {
+  g_assert(rp);
   if (delay > 86400)
     delay = 86400;
   if (is_request)
@@ -208,6 +211,8 @@ static unsigned short
 ipcache_getipbash (address_t *ip)
 {
   uint32_t bash;
+
+  g_assert(ip);
   bash = ip->addr32[0] ^ ip->addr32[1] ^ ip->addr32[2] ^ ip->addr32[3];
   bash = (bash >> 16) ^ bash;
   bash = (bash >> 8) ^ bash;
@@ -218,6 +223,7 @@ ipcache_getipbash (address_t *ip)
 static void
 ipcache_unlink_activelist (struct ipcache_item *rp)
 {
+  g_assert(rp);
   /* unlink only if linked */
   if (rp->next_active)
     {
@@ -263,6 +269,7 @@ ipcache_link_activelist (struct ipcache_item *rp)
 #endif
 
   /* skip if rp is already the head */
+  g_assert(rp);
   if (active_list != rp)
     {
       if (NULL == active_list)
@@ -296,6 +303,8 @@ ipcache_linkresolveid (struct ipcache_item *addrp)
 {
   struct ipcache_item *rp;
   unsigned short bashnum;
+
+  g_assert(addrp);
   bashnum = ipcache_getidbash (addrp->id);
   rp = idbash[bashnum];
   if (rp)
@@ -330,6 +339,8 @@ static void
 ipcache_unlinkresolveid (struct ipcache_item *rp)
 {
   unsigned short bashnum;
+
+  g_assert(rp);
   bashnum = ipcache_getidbash (rp->id);
   if (idbash[bashnum] == rp)
     {
@@ -349,6 +360,8 @@ ipcache_linkresolveip (struct ipcache_item *addrp)
 {
   struct ipcache_item *rp;
   unsigned short bashnum;
+
+  g_assert(addrp);
   bashnum = ipcache_getipbash (&addrp->ip);
   rp = ipbash[bashnum];
   if (rp)
@@ -383,6 +396,8 @@ static void
 ipcache_unlinkresolveip (struct ipcache_item *rp)
 {
   unsigned short bashnum;
+
+  g_assert(rp);
   bashnum = ipcache_getipbash (&rp->ip);
   if (ipbash[bashnum] == rp)
     {
@@ -401,6 +416,7 @@ ipcache_unlinkresolveip (struct ipcache_item *rp)
 static void
 ipcache_unlinkresolve (struct ipcache_item *rp)
 {
+  g_assert(rp);
   ipcache_unlink_activelist (rp);	/* removes from purge list */
   ipcache_unlinkresolveid (rp);
   ipcache_unlinkresolveip (rp);
@@ -439,6 +455,8 @@ ipcache_findip (address_t *ip)
 {
   struct ipcache_item *rp;
   unsigned short bashnum;
+
+  g_assert(ip);
   bashnum = ipcache_getipbash (ip);
   rp = ipbash[bashnum];
   if (rp)
@@ -462,6 +480,8 @@ static struct ipcache_item *
 ipcache_alloc_item (address_t *ip)
 {
   struct ipcache_item *rp;
+
+  g_assert(ip);
   rp = (struct ipcache_item *) malloc (sizeof (struct ipcache_item));
   if (!rp)
     {
@@ -496,6 +516,7 @@ ipcache_prepare_request(address_t *ip)
 {
   struct ipcache_item *rp = NULL;
 
+  g_assert(ip);
   if (!(rp = ipcache_findip(ip)))
      rp = ipcache_alloc_item (ip); /* ip not found, allocate and fill a new item */
 
@@ -527,6 +548,7 @@ ipcache_prepare_request(address_t *ip)
 void
 ipcache_request_failed(struct ipcache_item *rp)
 {
+  g_assert(rp);
   if (rp->state == IPCACHE_STATE_FINISHED)
     return;			/* already received a good response - ignore failure */
   rp->state = IPCACHE_STATE_FAILED;
@@ -541,6 +563,7 @@ ipcache_request_failed(struct ipcache_item *rp)
 void
 ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
 {
+  g_assert(rp);
   rp->state = IPCACHE_STATE_FINISHED;
   /** using ttl/2 to calculate an expire tick (need to divide by 6 to convert to ticks) 
      Note:  
@@ -573,6 +596,9 @@ ipcache_getnameip(address_t *ip, int *is_expired)
 {
   struct ipcache_item *rp;
   address_t iptofind;
+
+  if (!ip)
+      return "";
 
   address_copy(&iptofind, ip);
 

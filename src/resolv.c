@@ -347,7 +347,6 @@ add_manuf_name (u_char * addr, char * name)
     {
       tp = table[((int) addr[2]) & (HASHMANUFSIZE - 1)] =
 	(hashmanuf_t *) g_malloc (sizeof (hashmanuf_t));
-      g_assert(tp);
     }
   else
     {
@@ -364,6 +363,7 @@ add_manuf_name (u_char * addr, char * name)
 	}
     }
 
+  g_assert(tp);
   memcpy (tp->addr, addr, sizeof (tp->addr));
   safe_strncpy (tp->name, name, MAXMANUFLEN);
   tp->next = NULL;
@@ -440,7 +440,6 @@ eth_name_lookup (const u_char * addr, gboolean only_ethers)
     {
       tp = table[(i ^ j) & (HASHETHSIZE - 1)] =
 	(hashether_t *) g_malloc (sizeof (hashether_t));
-      g_assert(tp);
     }
   else
     {
@@ -464,6 +463,7 @@ eth_name_lookup (const u_char * addr, gboolean only_ethers)
 	  tp = tp->next;
 	}
     }
+  g_assert(tp);
 
   /* fill in a new entry */
   memcpy (tp->addr, addr, sizeof (tp->addr));
