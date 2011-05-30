@@ -1426,8 +1426,9 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       /* RPC_REPLYs don't carry an rpc program tag */
       /* TODO In order to be able to dissect what is it's 
        * protocol I'd have to keep track of who sent
-       * which call */
-      if (!(rpc_prot = find_conversation (&dp->global_dst_address, 0,
+       * which call - we use the same addr for both sides */
+      if (!(rpc_prot = find_conversation (&dp->global_dst_address, 
+                                          &dp->global_dst_address,
 					  dp->global_dst_port, 0)))
 	return FALSE;
       decode_proto_add(dp, "ONC-RPC");
@@ -1486,10 +1487,11 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
           break;
 	}
 
-      /* Search for an already existing conversation, if not, create one */
+      /* Search for an already existing conversation, if not, create one 
+         using the same address for both src and dst */
       g_assert(rpc_prot);
-      if (!find_conversation (&dp->global_src_address, 0, dp->global_src_port, 0))
-	add_conversation (&dp->global_src_address, 0,
+      if (!find_conversation (&dp->global_src_address, &dp->global_src_address, dp->global_src_port, 0))
+	add_conversation (&dp->global_src_address, &dp->global_src_address,
 			  dp->global_src_port, 0, rpc_prot);
 
       decode_proto_add(dp, "ONC-RPC");

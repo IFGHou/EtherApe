@@ -312,6 +312,8 @@ ether_to_str (const guint8 * ad)
  */
 const gchar *ipv6_to_str (const guint8 *ad)
 {
+  if (!ad)
+    return "<null addr>";
 #ifdef HAVE_INET_NTOP
   static char buf[INET6_ADDRSTRLEN];
   if (!inet_ntop(AF_INET6, ad, buf, sizeof(buf))) 
@@ -363,6 +365,8 @@ const gchar *ipv6_to_str (const guint8 *ad)
 const gchar *
 address_to_str (const address_t * ad)
 {
+  if (!ad)
+    return "<null addr>";
   switch (ad->type)
     {
     case AF_INET:
@@ -377,6 +381,8 @@ address_to_str (const address_t * ad)
 const gchar *
 type_to_str (const address_t * ad)
 {
+  if (!ad)
+    return "<null addr>";
   switch (ad->type)
     {
     case AF_INET:

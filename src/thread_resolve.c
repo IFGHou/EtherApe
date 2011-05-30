@@ -221,6 +221,9 @@ sendrequest_inverse (address_t *ip)
 {
   struct ipcache_item *rp = NULL;
 
+  if (!ip)
+      return;
+
   /* allocate a new request */
   rp = ipcache_prepare_request(ip);
 
@@ -280,7 +283,10 @@ thread_lookup (address_t *ip)
 {
   const char *ipname;
   int is_expired = 0;
-  
+
+  if (!ip)
+      return "";
+
   /* locks mutex */ 
   pthread_mutex_lock(&resolvemtx);
    

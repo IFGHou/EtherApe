@@ -48,6 +48,8 @@ static GList
   GList *item = conversations;
   conversation_t *conv = NULL;
 
+  g_assert(src_address);
+  g_assert(dst_address);
   while (item)
     {
       conv = item->data;
@@ -79,6 +81,12 @@ add_conversation (address_t * src_address, address_t * dst_address,
 {
   conversation_t *conv = NULL;
   const gchar *old_data = NULL;
+
+  if (!src_address || !dst_address)
+    {
+      g_my_critical("NULL ptr in add_conversation");
+      return;
+    }
 
   /* Make sure there is not one such conversation */
   if ((old_data = find_conversation (src_address, dst_address,
@@ -123,6 +131,13 @@ find_conversation (address_t * src_address, address_t * dst_address,
 		      guint16 src_port, guint16 dst_port)
 {
   GList *item;
+
+  if (!src_address || !dst_address)
+    {
+      g_my_critical("NULL ptr in find_conversation");
+      return NULL;
+    }
+
   item = find_conversation_ptr(src_address, dst_address, src_port, dst_port);
   if (item)
     {
@@ -139,6 +154,12 @@ void
 delete_conversation_link(address_t * src_address, address_t * dst_address)
 {
   GList *item;
+
+  if (!src_address || !dst_address)
+    {
+      g_my_critical("NULL ptr in delete_conversation_link");
+      return;
+    }
 
   while ( (item = find_conversation_ptr(src_address, dst_address, 0, 0)) )
     {
