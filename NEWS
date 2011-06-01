@@ -1,5 +1,13 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.13 ():
+   should happen (unless the machine is already subverted by other means). 
+
+   Changes summary:
+     * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
+       Peña.
+
+
   Overview of changes in EtherApe 0.9.12 (Tuesday May 31, 2011):
    This is a bug fix release.
    David Goldfarb discovered a critical bug in EtherApe, causing a 
