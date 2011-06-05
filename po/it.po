@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-14 12:08+0200\n"
-"PO-Revision-Date: 2011-05-14 10:40+0200\n"
+"POT-Creation-Date: 2011-06-05 11:15+0200\n"
+"PO-Revision-Date: 2011-06-05 11:07+0200\n"
 "Last-Translator: R.Ghetta <bchiara@users.sf.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -54,7 +54,7 @@ msgstr "<file in cui esportare>"
 
 #: src/main.c:103
 msgid "export to named file on receiving USR1"
-msgstr ""
+msgstr "esporta nel file specificato alla ricezione di SIGUSR1"
 
 #: src/main.c:105
 msgid "don't move nodes around (deprecated)"
@@ -330,7 +330,7 @@ msgstr ""
 #: src/diagram.c:379
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
-msgstr ""
+msgstr "SIGUSR1 ricevuto: scrittura in %s"
 
 #: src/diagram.c:544
 #, c-format
@@ -514,6 +514,21 @@ msgstr "Preferenze salvate su %s"
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr "Impossibile salvare le impostazioni su '%s': %s"
+
+#: src/ui_utils.c:47
+#, c-format
+msgid "%ld\" ago"
+msgstr "%ld\" fa"
+
+#: src/ui_utils.c:53
+#, c-format
+msgid "%ld'%ld\" ago"
+msgstr "%ld'%ld\" fa"
+
+#: src/ui_utils.c:69
+#, c-format
+msgid "%d/%d %d:%d"
+msgstr ""
 
 #: glade/etherape.glade:10
 msgid "Information"
@@ -890,171 +905,172 @@ msgstr "Visualizza il traffico di rete"
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
 msgstr ""
 
-#: glade/etherape.glade:1914
+#: glade/etherape.glade:1915
 msgid "EtherApe"
 msgstr ""
 
-#: glade/etherape.glade:1932
+#: glade/etherape.glade:1933
 msgid "_File"
 msgstr ""
 
-#: glade/etherape.glade:1948
+#: glade/etherape.glade:1949
 msgid "Export node data as xml"
 msgstr "Esporta le statistiche dei nodi in XML"
 
-#: glade/etherape.glade:1949
+#: glade/etherape.glade:1950
 msgid "_export"
 msgstr "_esporta"
 
-#: glade/etherape.glade:1984
+#: glade/etherape.glade:1985
 msgid "_Capture"
 msgstr "_Cattura"
 
-#: glade/etherape.glade:1991
+#: glade/etherape.glade:1992
 msgid "_Mode"
 msgstr "_Modo"
 
-#: glade/etherape.glade:2000
+#: glade/etherape.glade:2001
 msgid "Set Link Layer (OSI level 2) mode"
 msgstr "Imposta modo Link Layer (livello OSI 2)"
 
-#: glade/etherape.glade:2001
+#: glade/etherape.glade:2002
 msgid "_Link Layer"
 msgstr ""
 
-#: glade/etherape.glade:2017
+#: glade/etherape.glade:2018
 msgid "Set IP mode"
 msgstr "Imposta modo IP"
 
-#: glade/etherape.glade:2018
+#: glade/etherape.glade:2019
 msgid "_IP"
 msgstr ""
 
-#: glade/etherape.glade:2030
+#: glade/etherape.glade:2031
 msgid "Set TCP mode"
 msgstr "Imposta modo TCP"
 
-#: glade/etherape.glade:2031
+#: glade/etherape.glade:2032
 msgid "_TCP"
 msgstr ""
 
-#: glade/etherape.glade:2046
+#: glade/etherape.glade:2047
 msgid "_Interfaces"
 msgstr "_Interfacce"
 
-#: glade/etherape.glade:2063 glade/etherape.glade:2240
+#: glade/etherape.glade:2064 glade/etherape.glade:2241
 msgid "Start capture"
 msgstr "Inizio cattura"
 
-#: glade/etherape.glade:2074
+#: glade/etherape.glade:2075
 msgid "advances to next packet"
 msgstr "passa al pacchetto successivo"
 
-#: glade/etherape.glade:2086 glade/etherape.glade:2268
+#: glade/etherape.glade:2087 glade/etherape.glade:2269
 msgid "Pause capture"
 msgstr "Pausa cattura"
 
-#: glade/etherape.glade:2104 glade/etherape.glade:2283
+#: glade/etherape.glade:2105 glade/etherape.glade:2284
 msgid "Stop capture"
 msgstr "Stop cattura"
 
-#: glade/etherape.glade:2124
+#: glade/etherape.glade:2125
 msgid "_View"
 msgstr "_Viste"
 
-#: glade/etherape.glade:2132
+#: glade/etherape.glade:2133
 msgid "Show or hide the protocols window"
 msgstr "Mostra/nasconde la finestra protocolli"
 
-#: glade/etherape.glade:2133
+#: glade/etherape.glade:2134
 msgid "_Protocols"
 msgstr "_Protocolli"
 
-#: glade/etherape.glade:2141
+#: glade/etherape.glade:2142
 msgid "Show or hide the nodes window\t"
 msgstr "Mostra/nasconde la finestra nodi"
 
-#: glade/etherape.glade:2142
+#: glade/etherape.glade:2143
 msgid "_Nodes"
 msgstr "_Nodi"
 
-#: glade/etherape.glade:2156
+#: glade/etherape.glade:2157
 msgid "Show or hide the toolbar"
 msgstr "Mostra/nasconde la toolbar"
 
-#: glade/etherape.glade:2157
+#: glade/etherape.glade:2158
 msgid "_Toolbar"
 msgstr ""
 
-#: glade/etherape.glade:2167
+#: glade/etherape.glade:2168
 msgid "Show or hide the legend"
 msgstr "Mostra/nasconde la legenda"
 
-#: glade/etherape.glade:2168
+#: glade/etherape.glade:2169
 msgid "_Legend"
 msgstr "_Legenda"
 
-#: glade/etherape.glade:2178
+#: glade/etherape.glade:2179
 msgid "Show or hide the status bar"
 msgstr "Mostra/nasconde la barra di stato"
 
-#: glade/etherape.glade:2179
+#: glade/etherape.glade:2180
 msgid "_Status Bar"
 msgstr "Barra di _Stato"
 
-#: glade/etherape.glade:2192
+#: glade/etherape.glade:2193
 msgid "_Help"
 msgstr "_Aiuto"
 
-#: glade/etherape.glade:2241
+#: glade/etherape.glade:2242
 msgid "Start"
 msgstr ""
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2255
 msgid "Next"
 msgstr "Avanti"
 
-#: glade/etherape.glade:2269
+#: glade/etherape.glade:2270
 msgid "Pause"
 msgstr "Pausa"
 
-#: glade/etherape.glade:2284
+#: glade/etherape.glade:2285
 msgid "Stop"
 msgstr ""
 
-#: glade/etherape.glade:2306
+#: glade/etherape.glade:2307
 msgid "Preferences (Ctrl-P)"
 msgstr "Preferenze (Ctrl-P)"
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2308
 msgid "Pref."
 msgstr ""
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2323
 msgid "Display the protocols window"
 msgstr "Visualizza la finestra protocolli"
 
-#: glade/etherape.glade:2323
+#: glade/etherape.glade:2324
 msgid "Prot."
 msgstr ""
 
-#: glade/etherape.glade:2336 glade/etherape.glade:2459
+#: glade/etherape.glade:2337 glade/etherape.glade:2460
 msgid "Nodes"
 msgstr "Nodi"
 
-#: glade/etherape.glade:2401
+#: glade/etherape.glade:2402
 msgid "Protocols"
 msgstr "Protocolli"
 
-#: glade/etherape.glade:2472
+#: glade/etherape.glade:2473
 msgid "_Show all nodes"
 msgstr "_Mostra tutti i nodi"
 
-#: glade/etherape.glade:2477
+#: glade/etherape.glade:2478
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 "Abilita/disabilita la visualizzazione dei nodi non visibili sul grafico, ma "

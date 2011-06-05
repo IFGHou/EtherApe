@@ -18,7 +18,9 @@ src/node.c
 src/preferences.c
 src/resolv.c
 src/thread_resolve.c
+src/basic_stats.c
 src/traffic_stats.c
+src/datastructs.c
 src/util.c
-#src/glade-strings
+src/ui_utils.c
 glade/etherape.glade

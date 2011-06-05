@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape 0.9.0-9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-14 12:08+0200\n"
+"POT-Creation-Date: 2011-06-05 11:15+0200\n"
 "PO-Revision-Date: 2005-12-12 22:23+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -501,6 +501,21 @@ msgstr "Egenskaper sparade"
 msgid "Error saving preferences to '%s': %s"
 msgstr ""
 
+#: src/ui_utils.c:47
+#, fuzzy, c-format
+msgid "%ld\" ago"
+msgstr "%d\" sedan"
+
+#: src/ui_utils.c:53
+#, fuzzy, c-format
+msgid "%ld'%ld\" ago"
+msgstr "%d'%d\" sedan"
+
+#: src/ui_utils.c:69
+#, c-format
+msgid "%d/%d %d:%d"
+msgstr "%d/%d %d:%d"
+
 #: glade/etherape.glade:10
 msgid "Information"
 msgstr "Information"
@@ -879,174 +894,175 @@ msgstr ""
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
 msgstr ""
 
-#: glade/etherape.glade:1914
+#: glade/etherape.glade:1915
 msgid "EtherApe"
 msgstr "EtherApe"
 
-#: glade/etherape.glade:1932
+#: glade/etherape.glade:1933
 #, fuzzy
 msgid "_File"
 msgstr "Fil:"
 
-#: glade/etherape.glade:1948
+#: glade/etherape.glade:1949
 msgid "Export node data as xml"
 msgstr ""
 
-#: glade/etherape.glade:1949
+#: glade/etherape.glade:1950
 msgid "_export"
 msgstr ""
 
-#: glade/etherape.glade:1984
+#: glade/etherape.glade:1985
 msgid "_Capture"
 msgstr "Fånga in"
 
-#: glade/etherape.glade:1991
+#: glade/etherape.glade:1992
 msgid "_Mode"
 msgstr "Läge"
 
-#: glade/etherape.glade:2000
+#: glade/etherape.glade:2001
 msgid "Set Link Layer (OSI level 2) mode"
 msgstr ""
 
-#: glade/etherape.glade:2001
+#: glade/etherape.glade:2002
 msgid "_Link Layer"
 msgstr ""
 
-#: glade/etherape.glade:2017
+#: glade/etherape.glade:2018
 msgid "Set IP mode"
 msgstr "Sätt IP-läge"
 
-#: glade/etherape.glade:2018
+#: glade/etherape.glade:2019
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.glade:2030
+#: glade/etherape.glade:2031
 msgid "Set TCP mode"
 msgstr "Sätt TCP-läge"
 
-#: glade/etherape.glade:2031
+#: glade/etherape.glade:2032
 msgid "_TCP"
 msgstr "_TCP"
 
-#: glade/etherape.glade:2046
+#: glade/etherape.glade:2047
 msgid "_Interfaces"
 msgstr "_Nätverksgränssnitt"
 
-#: glade/etherape.glade:2063 glade/etherape.glade:2240
+#: glade/etherape.glade:2064 glade/etherape.glade:2241
 msgid "Start capture"
 msgstr "Starta infångst"
 
-#: glade/etherape.glade:2074
+#: glade/etherape.glade:2075
 msgid "advances to next packet"
 msgstr ""
 
-#: glade/etherape.glade:2086 glade/etherape.glade:2268
+#: glade/etherape.glade:2087 glade/etherape.glade:2269
 msgid "Pause capture"
 msgstr "Pausa infångst"
 
-#: glade/etherape.glade:2104 glade/etherape.glade:2283
+#: glade/etherape.glade:2105 glade/etherape.glade:2284
 msgid "Stop capture"
 msgstr "Stoppa infångst"
 
-#: glade/etherape.glade:2124
+#: glade/etherape.glade:2125
 msgid "_View"
 msgstr ""
 
-#: glade/etherape.glade:2132
+#: glade/etherape.glade:2133
 msgid "Show or hide the protocols window"
 msgstr "Visa eller göm protokollfönstret"
 
-#: glade/etherape.glade:2133
+#: glade/etherape.glade:2134
 msgid "_Protocols"
 msgstr "_Protokoll"
 
-#: glade/etherape.glade:2141
+#: glade/etherape.glade:2142
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Visa eller göm protokollfönstret"
 
-#: glade/etherape.glade:2142
+#: glade/etherape.glade:2143
 #, fuzzy
 msgid "_Nodes"
 msgstr "Noder"
 
-#: glade/etherape.glade:2156
+#: glade/etherape.glade:2157
 msgid "Show or hide the toolbar"
 msgstr "Visa eller göm verktygslisten"
 
-#: glade/etherape.glade:2157
+#: glade/etherape.glade:2158
 msgid "_Toolbar"
 msgstr "Verk_tygslist"
 
-#: glade/etherape.glade:2167
+#: glade/etherape.glade:2168
 msgid "Show or hide the legend"
 msgstr "Visa eller göm förklarning"
 
-#: glade/etherape.glade:2168
+#: glade/etherape.glade:2169
 msgid "_Legend"
 msgstr "Förk_larning"
 
-#: glade/etherape.glade:2178
+#: glade/etherape.glade:2179
 msgid "Show or hide the status bar"
 msgstr "Visa eller göm statuslisten"
 
-#: glade/etherape.glade:2179
+#: glade/etherape.glade:2180
 msgid "_Status Bar"
 msgstr "_Statuslist"
 
-#: glade/etherape.glade:2192
+#: glade/etherape.glade:2193
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2241
+#: glade/etherape.glade:2242
 msgid "Start"
 msgstr "Start"
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2255
 msgid "Next"
 msgstr ""
 
-#: glade/etherape.glade:2269
+#: glade/etherape.glade:2270
 msgid "Pause"
 msgstr "Paus"
 
-#: glade/etherape.glade:2284
+#: glade/etherape.glade:2285
 msgid "Stop"
 msgstr "Stopp"
 
-#: glade/etherape.glade:2306
+#: glade/etherape.glade:2307
 msgid "Preferences (Ctrl-P)"
 msgstr "Egenskaper (Ctrl-P)"
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2308
 msgid "Pref."
 msgstr "Egensk."
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2323
 msgid "Display the protocols window"
 msgstr "Visa protokollfönstret"
 
-#: glade/etherape.glade:2323
+#: glade/etherape.glade:2324
 msgid "Prot."
 msgstr "Proto"
 
-#: glade/etherape.glade:2336 glade/etherape.glade:2459
+#: glade/etherape.glade:2337 glade/etherape.glade:2460
 msgid "Nodes"
 msgstr "Noder"
 
-#: glade/etherape.glade:2401
+#: glade/etherape.glade:2402
 msgid "Protocols"
 msgstr "Protokoll"
 
-#: glade/etherape.glade:2472
+#: glade/etherape.glade:2473
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2477
+#: glade/etherape.glade:2478
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 
@@ -1426,15 +1442,6 @@ msgstr ""
 #~ msgid ""
 #~ "Type the name of the protocol that will be assigned to the selected color"
 #~ msgstr "Ange namnet på protokollen som ska tilldelas den markerade färgen"
-
-#~ msgid "%d\" ago"
-#~ msgstr "%d\" sedan"
-
-#~ msgid "%d'%d\" ago"
-#~ msgstr "%d'%d\" sedan"
-
-#~ msgid "%d/%d %d:%d"
-#~ msgstr "%d/%d %d:%d"
 
 #~ msgid "No node_id in on_node_info_delete_event"
 #~ msgstr "Inget node_id i on_node_info_delete_event"

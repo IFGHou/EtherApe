@@ -1,11 +1,12 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.13 ():
-   should happen (unless the machine is already subverted by other means). 
+    
 
    Changes summary:
      * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
        Peña.
+     * Added German translation, thanks to Chris Leick (borrowed by Debian).
 
 
   Overview of changes in EtherApe 0.9.12 (Tuesday May 31, 2011):

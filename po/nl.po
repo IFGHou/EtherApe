@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etherape 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-14 12:08+0200\n"
+"POT-Creation-Date: 2011-06-05 11:15+0200\n"
 "PO-Revision-Date: 2001-07-31 15:17+0200\n"
 "Last-Translator: Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -502,6 +502,23 @@ msgstr "Voorkeuren opgeslagen"
 msgid "Error saving preferences to '%s': %s"
 msgstr ""
 
+#  Meaning "n seconds" ago
+#: src/ui_utils.c:47
+#, fuzzy, c-format
+msgid "%ld\" ago"
+msgstr "%d\" geleden"
+
+#: src/ui_utils.c:53
+#, fuzzy, c-format
+msgid "%ld'%ld\" ago"
+msgstr "%d'%d\" geleden"
+
+#  Watch out! The first is month, the second day of the month
+#: src/ui_utils.c:69
+#, c-format
+msgid "%d/%d %d:%d"
+msgstr "%d/%d %d:%d"
+
 #: glade/etherape.glade:10
 msgid "Information"
 msgstr "Informatie"
@@ -888,6 +905,7 @@ msgstr ""
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
 msgstr ""
@@ -898,173 +916,173 @@ msgstr ""
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 #
-#: glade/etherape.glade:1914
+#: glade/etherape.glade:1915
 msgid "EtherApe"
 msgstr "EtherApe"
 
-#: glade/etherape.glade:1932
+#: glade/etherape.glade:1933
 #, fuzzy
 msgid "_File"
 msgstr "Bestand:"
 
-#: glade/etherape.glade:1948
+#: glade/etherape.glade:1949
 msgid "Export node data as xml"
 msgstr ""
 
-#: glade/etherape.glade:1949
+#: glade/etherape.glade:1950
 #, fuzzy
 msgid "_export"
 msgstr "Protocollen"
 
-#: glade/etherape.glade:1984
+#: glade/etherape.glade:1985
 msgid "_Capture"
 msgstr "_Luisteren"
 
-#: glade/etherape.glade:1991
+#: glade/etherape.glade:1992
 msgid "_Mode"
 msgstr "_Modus"
 
-#: glade/etherape.glade:2000
+#: glade/etherape.glade:2001
 msgid "Set Link Layer (OSI level 2) mode"
 msgstr ""
 
-#: glade/etherape.glade:2001
+#: glade/etherape.glade:2002
 msgid "_Link Layer"
 msgstr ""
 
-#: glade/etherape.glade:2017
+#: glade/etherape.glade:2018
 msgid "Set IP mode"
 msgstr "Kies IP modus"
 
-#: glade/etherape.glade:2018
+#: glade/etherape.glade:2019
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.glade:2030
+#: glade/etherape.glade:2031
 msgid "Set TCP mode"
 msgstr "Kies TCP modus"
 
-#: glade/etherape.glade:2031
+#: glade/etherape.glade:2032
 msgid "_TCP"
 msgstr "_TCP"
 
-#: glade/etherape.glade:2046
+#: glade/etherape.glade:2047
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
-#: glade/etherape.glade:2063 glade/etherape.glade:2240
+#: glade/etherape.glade:2064 glade/etherape.glade:2241
 msgid "Start capture"
 msgstr "Start het luisteren"
 
-#: glade/etherape.glade:2074
+#: glade/etherape.glade:2075
 msgid "advances to next packet"
 msgstr ""
 
-#: glade/etherape.glade:2086 glade/etherape.glade:2268
+#: glade/etherape.glade:2087 glade/etherape.glade:2269
 msgid "Pause capture"
 msgstr "Pauzeer het luisteren"
 
-#: glade/etherape.glade:2104 glade/etherape.glade:2283
+#: glade/etherape.glade:2105 glade/etherape.glade:2284
 msgid "Stop capture"
 msgstr "Stop het luisteren"
 
-#: glade/etherape.glade:2124
+#: glade/etherape.glade:2125
 #, fuzzy
 msgid "_View"
 msgstr "Bestand:"
 
-#: glade/etherape.glade:2132
+#: glade/etherape.glade:2133
 msgid "Show or hide the protocols window"
 msgstr "Protocolvenster verbergen / weergeven"
 
-#: glade/etherape.glade:2133
+#: glade/etherape.glade:2134
 msgid "_Protocols"
 msgstr "_Protocollen"
 
-#: glade/etherape.glade:2141
+#: glade/etherape.glade:2142
 #, fuzzy
 msgid "Show or hide the nodes window\t"
 msgstr "Protocolvenster verbergen / weergeven"
 
-#: glade/etherape.glade:2142
+#: glade/etherape.glade:2143
 #, fuzzy
 msgid "_Nodes"
 msgstr "_Knooppunten"
 
-#: glade/etherape.glade:2156
+#: glade/etherape.glade:2157
 msgid "Show or hide the toolbar"
 msgstr "Werkbalk verbergen / weergeven"
 
-#: glade/etherape.glade:2157
+#: glade/etherape.glade:2158
 msgid "_Toolbar"
 msgstr "_Werkbalk"
 
-#: glade/etherape.glade:2167
+#: glade/etherape.glade:2168
 msgid "Show or hide the legend"
 msgstr "Weergeven / verbergen legenda"
 
-#: glade/etherape.glade:2168
+#: glade/etherape.glade:2169
 msgid "_Legend"
 msgstr "_Legenda"
 
-#: glade/etherape.glade:2178
+#: glade/etherape.glade:2179
 msgid "Show or hide the status bar"
 msgstr "Weergeven / verbergen statusbalk"
 
-#: glade/etherape.glade:2179
+#: glade/etherape.glade:2180
 msgid "_Status Bar"
 msgstr "_Statusbalk"
 
-#: glade/etherape.glade:2192
+#: glade/etherape.glade:2193
 msgid "_Help"
 msgstr ""
 
-#: glade/etherape.glade:2241
+#: glade/etherape.glade:2242
 msgid "Start"
 msgstr "Start"
 
-#: glade/etherape.glade:2254
+#: glade/etherape.glade:2255
 #, fuzzy
 msgid "Next"
 msgstr " "
 
-#: glade/etherape.glade:2269
+#: glade/etherape.glade:2270
 msgid "Pause"
 msgstr "Pauze"
 
-#: glade/etherape.glade:2284
+#: glade/etherape.glade:2285
 msgid "Stop"
 msgstr "Stop"
 
-#: glade/etherape.glade:2306
+#: glade/etherape.glade:2307
 msgid "Preferences (Ctrl-P)"
 msgstr "Voorkeuren (Ctrl-P)"
 
-#: glade/etherape.glade:2307
+#: glade/etherape.glade:2308
 msgid "Pref."
 msgstr "Voorkeuren"
 
-#: glade/etherape.glade:2322
+#: glade/etherape.glade:2323
 msgid "Display the protocols window"
 msgstr "Toon protocollenvenster"
 
-#: glade/etherape.glade:2323
+#: glade/etherape.glade:2324
 msgid "Prot."
 msgstr "Protocollen"
 
-#: glade/etherape.glade:2336 glade/etherape.glade:2459
+#: glade/etherape.glade:2337 glade/etherape.glade:2460
 msgid "Nodes"
 msgstr "_Knooppunten"
 
-#: glade/etherape.glade:2401
+#: glade/etherape.glade:2402
 msgid "Protocols"
 msgstr "Protocollen"
 
-#: glade/etherape.glade:2472
+#: glade/etherape.glade:2473
 msgid "_Show all nodes"
 msgstr ""
 
-#: glade/etherape.glade:2477
+#: glade/etherape.glade:2478
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 
@@ -1239,17 +1257,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Creating canvas_link: %s. Number of links %d"
 #~ msgstr "Nieuwe canvas_link: %s-%s. Aantal lijnen %d"
-
-#  Meaning "n seconds" ago
-#~ msgid "%d\" ago"
-#~ msgstr "%d\" geleden"
-
-#~ msgid "%d'%d\" ago"
-#~ msgstr "%d'%d\" geleden"
-
-#  Watch out! The first is month, the second day of the month
-#~ msgid "%d/%d %d:%d"
-#~ msgstr "%d/%d %d:%d"
 
 #, fuzzy
 #~ msgid "Unsopported ape mode in node_id_compare"
