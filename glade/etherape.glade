@@ -125,7 +125,7 @@ Level 5 (Eg: HTTP)</property>
                       <widget class="GtkComboBox" id="size_variable">
                         <property name="visible">True</property>
                         <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">Set the kind of instantenous or accumulated traffic that the node radius indicates</property>
+                        <property name="tooltip" translatable="yes">Set the kind of instantaneous or accumulated traffic that the node radius indicates</property>
                         <property name="items" translatable="yes">Instant. traffic (In+Out)
 Instant. traffic (Inbound)
 Instant. traffic (Outbound)

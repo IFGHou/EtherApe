@@ -159,7 +159,7 @@ void dump_stats(guint32 diff_msecs)
   gchar *status_string;
   long ipc=ipcache_active_entries();
   status_string = g_strdup_printf (
-    _("Nodes: %d (on canvas:%d, shown: %u), Links: %d, Conversations: %ld, "
+    _("Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, "
       "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, "
       "on list %ld). IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"),
                                    node_count(), 
