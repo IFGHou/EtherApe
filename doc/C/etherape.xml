@@ -42,6 +42,7 @@
       <year>2009</year>
       <year>2010</year>
       <year>2011</year>
+      <year>2012</year>
       <holder>Juan Toledo</holder>
       <holder>Riccardo Ghetta</holder>
     </copyright>
@@ -103,6 +104,14 @@
         </revdescription>
       </revision>
 
+      <revision>
+        <revnumber>&appname; Manual V0.6</revnumber>
+        <date>April 2012</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
     
     
     </revhistory>
@@ -1103,10 +1112,9 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
               <listitem>
                 <para>A protocol not appearing in the list will have a color
-                assigned casually from the list. If the <guilabel>Cycle
-                assigned colors</guilabel> checkbox is selected, all listed
-                colors will be considered. Otherwise, only those without an
-                assigned protocol will be used.</para>
+                assigned casually from the items without an
+                assigned protocol.  If all entries have an assigned protocol 
+		unmapped traffic will be shown as gray.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1164,15 +1172,6 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term><guilabel>Cycle assigned colors</guilabel></term>
-
-          <listitem>
-            <para>If checked, unmapped protocol can use all colors.</para>
-
-            <para>Default: unchecked</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
 
       <figure id="figure-pref-colors">
@@ -1362,10 +1361,6 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     only if the filter expression starts with 'vlan' and in this case
     only VLAN-tagged traffic will be shown.</para>
 
-    <para>Due to pcap limitations, when filtering while capturing VLAN-tagged packets, your filter 
-    must start with 'vlan' (e.g. 'vlan and tcp') and all traffic must be tagged, 
-    otherwise the filter will not work.</para>
-
     <para>OSI level attribution can be confused by
     encapsulation. For instance, when an Ethernet packet containing IP
     traffic is encapsulated by an LLC-SNAP header, IP data might be
@@ -1521,7 +1516,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 <listitem><para>&lt;total&gt; is the accumulated traffic seen.</para></listitem>
 <listitem><para>&lt;avg_size&gt; is the average packet size.</para></listitem>
 <listitem><para>&lt;packets&gt; is the number of packets received.</para></listitem>
-<listitem><para>&lt;last_heard&gt; is the distance in second between time of exporting and the last packet seen.  I.e. 2.000100 means 2 seconds and 100 microseconds ago.</para></listitem>
+<listitem><para>&lt;last_heard&gt; is the distance in seconds between time of exporting and the last packet seen.  I.e. 2.000100 means 2 seconds and 100 microseconds ago.</para></listitem>
 </itemizedlist>
 </para>
 <para>&lt;protocol&gt; elements carry per protocol breakdown of node statistics. A packet might affect multiple protocols: an HTTP request over Ethernet is recorded by protocols "WWW", "TCP", "IP" and "ETH_II", while an Ethernet broadcast is seen only as "ETH_II".</para>
@@ -1541,8 +1536,8 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     Ghetta (<email>bchiara@users.sourceforge.net</email>).</para>
 
     <para>To find more information about &app;,
-    please visit the <ulink type="http" url="http://etherape.sourceforge.net">
-    &app; Web page</ulink>. Instructions for submitting bug reports can be
+    please visit <ulink type="http" url="http://etherape.sourceforge.net/">
+    the &app; web page</ulink>. Instructions for submitting bug reports can be
     found <ulink type="http"
     url="http://etherape.sourceforge.net/bug-reporting.html">
     on-line</ulink>.</para>
