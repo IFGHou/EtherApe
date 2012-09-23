@@ -2151,6 +2151,16 @@ Daniel Nylander
                           </widget>
                         </child>
                         <child>
+                          <widget class="GtkCheckMenuItem" id="full_screen">
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">Activate full screen mode</property>
+                            <property name="label" translatable="yes">_Full Screen</property>
+                            <property name="use_underline">True</property>
+                            <signal name="activate" handler="on_full_screen_activate"/>
+                            <accelerator key="F11" signal="activate"/>
+                          </widget>
+                        </child>
+                        <child>
                           <widget class="GtkCheckMenuItem" id="toolbar_check">
                             <property name="visible">True</property>
                             <property name="has_tooltip">True</property>
