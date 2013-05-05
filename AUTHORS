@@ -22,6 +22,9 @@ Laurent Deniel	<deniel@worldnet.fr>
 Lars Eggert
   OSX patches
 
+Javier Fernandez-Sanguino
+  Spanish translation
+
 David Flamand	<dflamand@gmail.com>
   Patches for IPv6 support
 
@@ -30,6 +33,9 @@ Riccardo Ghetta <bchiara@users.sourceforge.net>
 
 Simon Kirby	<sim@neato.org>
   dns.c
+
+Chris Leick	<c.leick@vollbio.de>
+  German translation
 
 Pav Lucistnik
   Several fixes

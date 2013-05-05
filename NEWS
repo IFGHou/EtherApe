@@ -1,12 +1,14 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.13 ():
-    
+   Translations and documentation updates. 
 
    Changes summary:
+     * re-enabled full-screen mode, thanks to nrvale0
      * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
        Peña.
-     * Added German translation, thanks to Chris Leick.
+     * Added German translation, and fixed typos, thanks to Chris Leick.
+     * Updated documentation.
 
 
   Overview of changes in EtherApe 0.9.12 (Tuesday May 31, 2011):
@@ -19,7 +21,7 @@
    should happen (unless the machine is already subverted by other means). 
 
    Changes summary:
-     * fix bug 3309061
+     * fix bug 3309061 (CVE-2011-3369)
 
 
   Overview of changes in EtherApe 0.9.11 (Friday May 27, 2011):
