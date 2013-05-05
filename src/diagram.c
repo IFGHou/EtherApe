@@ -56,6 +56,7 @@ typedef struct
   GdkColor color;
   gboolean is_new;
   gboolean shown;		/* True if it is to be displayed. */
+  gboolean centered;            /* true if is a center node */
 }
 canvas_node_t;
 static gint canvas_node_compare(const node_id_t *a, const node_id_t *b, 
@@ -85,6 +86,26 @@ static void canvas_link_delete(canvas_link_t *canvas_link);
 static gint canvas_link_update(link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
+
+
+typedef struct 
+{
+  GtkWidget * canvas;
+  gfloat angle;
+  guint node_i;
+  guint n_nodes;
+  gdouble xmin;
+  gdouble ymin;
+  gdouble xmax;
+  gdouble ymax;
+  gdouble x_rad_max;
+  gdouble y_rad_max;
+  gdouble x_inner_rad_max;
+  gdouble y_inner_rad_max;
+  
+} reposition_node_t;
+
+
 
 
 /***************************************************************************
@@ -131,9 +152,9 @@ static gint add_ordered_node (node_id_t * node_id,
 static gint check_ordered_node (gdouble * traffic, canvas_node_t * node,
 				guint * count);
 static gint traffic_compare (gconstpointer a, gconstpointer b);
-static gint reposition_canvas_nodes (guint8 * ether_addr,
+static gint reposition_canvas_nodes (node_id_t * node_id,
 				     canvas_node_t * canvas_node,
-				     GtkWidget * canvas);
+				     reposition_node_t *data);
 static gint check_new_link (link_id_t * link_id,
 			    link_t * link, GtkWidget * canvas);
 static gdouble get_node_size (gdouble average);
@@ -146,6 +167,9 @@ static void update_legend(void);
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
                               const basic_stats_t *link_data, 
                               guint32 scaledColor, GnomeCanvasItem *item);
+static void init_reposition(reposition_node_t *data,
+                            GtkWidget * canvas, 
+                            guint total_nodes);
 
 
 void ask_reposition(gboolean r_font)
@@ -329,9 +353,11 @@ diagram_update_nodes(GtkWidget * canvas)
   /* Reposition canvas_nodes */
   if (need_reposition)
     {
+      reposition_node_t rdata;
+      init_reposition(&rdata, canvas, displayed_nodes);
       g_tree_foreach(canvas_nodes,
-		       (GTraverseFunc) reposition_canvas_nodes,
-		       canvas);
+                    (GTraverseFunc) reposition_canvas_nodes,
+                    &rdata);
       need_reposition = FALSE;
       need_font_refresh = FALSE;
     }
@@ -647,6 +673,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
+      new_canvas_node->centered = FALSE;
 
       g_tree_insert (canvas_nodes,
 		     &new_canvas_node->canvas_node_id, new_canvas_node);
@@ -892,19 +919,46 @@ traffic_compare (gconstpointer a, gconstpointer b)
 }				/* traffic_compare */
 
 
+/* initialize reposition struct */
+static void init_reposition(reposition_node_t *data,
+                            GtkWidget * canvas, 
+                            guint total_nodes)
+{
+  gdouble text_compensation = 50;
+
+  data->canvas = canvas;
+  data->angle = 0.0;
+  data->node_i = 0;
+  data->n_nodes = 0;
+  data->n_nodes = total_nodes;
+  data->node_i = total_nodes;
+
+  gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
+				  &data->xmin, &data->ymin, 
+                                  &data->xmax, &data->ymax);
+
+
+  data->xmin += text_compensation;
+  data->xmax -= text_compensation;	/* Reduce the drawable area so that
+				 * the node name is not lost
+				 * TODO: Need a function to calculate
+				 * text_compensation depending on font size */
+  data->x_rad_max = 0.9 * (data->xmax - data->xmin) / 2;
+  data->y_rad_max = 0.9 * (data->ymax - data->ymin) / 2;
+  data->x_inner_rad_max = data->x_rad_max / 2;
+  data->y_inner_rad_max = data->y_rad_max / 2;
+}
+
 /* Called from update_diagram if the global need_reposition
  * is set. It rearranges the nodes*/
 /* TODO I think I should update all links as well, so as not having
  * stale graphics if the diagram has been resized */
-static gint
-reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
-			 GtkWidget * canvas)
+static gint reposition_canvas_nodes(node_id_t * node_id, 
+                                    canvas_node_t * canvas_node,
+                                    reposition_node_t *data)
 {
-  static gfloat angle = 0.0;
-  static guint node_i = 0, n_nodes = 0;
-  gdouble x = 0, y = 0, xmin, ymin, xmax, ymax, text_compensation = 50;
-  gdouble x_rad_max, y_rad_max;
-  gdouble oddAngle = angle;
+  gdouble x = 0, y = 0;
+  gdouble oddAngle;
 
   if (!canvas_node->shown)
     {
@@ -913,19 +967,8 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
       return FALSE;
     }
 
-  gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
-				  &xmin, &ymin, &xmax, &ymax);
-  if (!n_nodes)
-      n_nodes = node_i = displayed_nodes;
-
-  xmin += text_compensation;
-  xmax -= text_compensation;	/* Reduce the drawable area so that
-				 * the node name is not lost
-				 * TODO: Need a function to calculate
-				 * text_compensation depending on font size */
-  x_rad_max = 0.9 * (xmax - xmin) / 2;
-  y_rad_max = 0.9 * (ymax - ymin) / 2;
-
+  oddAngle = data->angle;
+  
   /* TODO I've done all the stationary changes in a hurry
    * I should review it an tidy up all this stuff */
   if (pref.stationary)
@@ -933,11 +976,11 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
       if (canvas_node->is_new)
 	{
 	  static guint count = 0, base = 1;
-	  gdouble angle = 0;
+	  gdouble s_angle = 0;
 
 	  if (count == 0)
 	    {
-	      angle = M_PI * 2.0f;
+	      s_angle = M_PI * 2.0f;
 	      count++;
 	    }
 	  else
@@ -948,34 +991,55 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
 		  base *= 2;
 		  count = 1;
 		}
-	      angle = M_PI * (gdouble) count / ((gdouble) base);
+	      s_angle = M_PI * (gdouble) count / ((gdouble) base);
 	      count += 2;
 	    }
-	  x = x_rad_max * cos (angle);
-	  y = y_rad_max * sin (angle);
+	  x = data->x_rad_max * cos (s_angle);
+	  y = data->y_rad_max * sin (s_angle);
 	}
-
     }
   else
     {
+      if (canvas_node->is_new && *pref.center_node) {
+        node_t * node;
 
-      if (n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
-	oddAngle = (angle * n_nodes) / (n_nodes + 1);
-      if (n_nodes > 7)
-	{
-	  x = x_rad_max * cos (oddAngle);
-	  y = y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
-	}
-      else
-	{
-	  x = x_rad_max * cos (angle);
-	  y = y_rad_max * sin (angle);
-	}
+        /* center node specified, check to see if current node is centered */  
+        node = nodes_catalog_find((const node_id_t *)&canvas_node->canvas_node_id);
+        /* If it is one of the "centered" nodes change the coordinates */
+        if (node) {
+          if (!strcmp(node->name->str, pref.center_node) ||
+              !strcmp(node->numeric_name->str, pref.center_node)) {
+             canvas_node->centered = TRUE;
+          }
+        }
+      }
+
+      if (canvas_node->centered) {
+         /* centered node, reset coordinates */
+         x = ( data->xmax - data->xmin ) / 2 + data->xmin ;
+         y = ( data->ymax - data->ymin ) / 2 + data->ymin ;
+         data->angle -= 2 * M_PI / data->n_nodes;
+      }
+      else {
+        if (data->n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
+            oddAngle = (data->angle * data->n_nodes) / (data->n_nodes + 1);
+        if (data->n_nodes > 7)
+        {
+          x = data->x_rad_max * cos (oddAngle);
+          y = data->y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+        }
+        else
+        {
+          x = data->x_rad_max * cos (data->angle);
+          y = data->y_rad_max * sin (data->angle);
+        }
+      }
     }
+
 
   if (!pref.stationary || canvas_node->is_new)
     {
-      gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_node->group_item),
+      gnome_canvas_item_set(GNOME_CANVAS_ITEM (canvas_node->group_item),
 			     "x", x, "y", y, NULL);
       canvas_node->is_new = FALSE;
     }
@@ -1002,18 +1066,18 @@ reposition_canvas_nodes (guint8 * ether_addr, canvas_node_t * canvas_node,
   gnome_canvas_item_show (canvas_node->node_item);
   gnome_canvas_item_request_update (canvas_node->node_item);
 
-  node_i--;
+  data->node_i--;
 
-  if (node_i)
-    angle += 2 * M_PI / n_nodes;
+  if (data->node_i)
+    data->angle += 2 * M_PI / data->n_nodes;
   else
     {
-      angle = 0.0;
-      n_nodes = 0;
+      data->angle = 0.0;
+      data->n_nodes = 0;
     }
 
   return FALSE;
-}				/* reposition_canvas_nodes */
+}
 
 
 /* Goes through all known links and checks whether there already exists

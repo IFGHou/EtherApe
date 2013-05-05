@@ -45,6 +45,7 @@ struct pref_struct
   gchar *filter;		/* Pcap filter to be used */
   gchar *text_color;		/* text color */
   gchar *fontname;		/* Font to be used for text display */
+  gchar *center_node;           /* Name of center node (optional) */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
 
