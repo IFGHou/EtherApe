@@ -61,7 +61,7 @@
               <widget class="GtkTable" id="table2">
                 <property name="visible">True</property>
                 <property name="border_width">5</property>
-                <property name="n_rows">5</property>
+                <property name="n_rows">6</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">20</property>
                 <property name="row_spacing">10</property>
@@ -356,6 +356,7 @@ Square Root</property>
                     <child>
                       <widget class="GtkLabel" id="label31">
                         <property name="visible">True</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Capture filter</property>
                         <property name="use_underline">True</property>
                       </widget>
@@ -464,6 +465,39 @@ Square Root</property>
                     <property name="x_options">GTK_FILL</property>
                     <property name="y_options">GTK_FILL</property>
                   </packing>
+                </child>
+                <child>
+                  <widget class="GtkVBox" id="vbox1">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <widget class="GtkLabel" id="label5">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">C_entral Node</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBoxEntry" id="center_combo">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">Optional central node</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </widget>
             </child>
@@ -1884,7 +1918,7 @@ Dave Yearke &lt;yearke@eng.buffalo.edu&gt;
 </property>
     <property name="translator_credits" translatable="yes">Vincent van Adrighem &lt;vincent@dirck.mine.nu&gt;
 G&#xF4;rkem Cetin &lt;gorkem@gelecek.com.tr&gt;
-Javier Fernandez-Sanguino
+Javier Fernandez-Sanguino Pe&#xF1;a
 Chris Leick &lt;c.leick@vollbio.de&gt;
 Frederic Peters &lt;fpeters@debian.org&gt;
 Daniel Nylander

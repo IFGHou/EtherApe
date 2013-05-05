@@ -1,9 +1,12 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.13 ():
-   Translations and documentation updates. 
+   Central node option, useful for displaying routers or proxies.
+   Translations and documentation updates, plus some fixes.
 
    Changes summary:
+     * Optional central node, based on work of Javier Fernandez-Sanguino 
+       Peña.
      * re-enabled full-screen mode, thanks to nrvale0
      * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
        Peña.

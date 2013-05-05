@@ -38,7 +38,8 @@ static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
 static void on_text_font_changed(GtkFontButton * wdg, gpointer data);
-static void on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data);
+static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data);
+static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data);
 static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
 
@@ -54,6 +55,9 @@ confirm_changes(void)
 
   widget = glade_xml_get_widget (appdata.xml, "filter_combo");
   on_filter_entry_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
+
+  widget = glade_xml_get_widget (appdata.xml, "center_combo");
+  on_center_node_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
 
   if (colors_changed)
     {
@@ -140,6 +144,15 @@ initialize_pref_controls(void)
   gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), &color);
 
   widget = glade_xml_get_widget (appdata.xml, "filter_combo");
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+  if (!model)
+    {
+      GtkListStore *list_store;
+      list_store=gtk_list_store_new (1, G_TYPE_STRING);
+      gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
+    }
+
+  widget = glade_xml_get_widget (appdata.xml, "center_combo");
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
   if (!model)
     {
@@ -246,6 +259,9 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "filter_combo"));
   cbox_add_select(cbox, pref.filter);
+
+  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "center_combo"));
+  cbox_add_select(cbox, pref.center_node);
 
   gtk_widget_show (diag_pref);
   gdk_window_raise (diag_pref->window);
@@ -421,8 +437,7 @@ on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 
 
 /* Makes a new filter */
-static void
-on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data)
+static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data)
 {
   gchar *str;
   /* TODO should make sure that for each mode the filter is set up
@@ -437,6 +452,17 @@ on_filter_entry_changed (GtkComboBoxEntry * cbox, gpointer user_data)
   g_free (str);
   cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */
+
+/* Makes a new center node */
+static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
+{
+  gchar *str;
+  str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
+  g_free(pref.center_node);
+  pref.center_node = g_strdup (str);
+  g_free (str);
+  cbox_add_select(cbox, pref.center_node);
+}
 
 void
 on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
