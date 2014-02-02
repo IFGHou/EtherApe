@@ -676,6 +676,32 @@ static void decode_wlan_mgmt(decode_proto_t *dp, uint8_t subtype)
     }
 }
 
+static void decode_wlan_ctrl(decode_proto_t *dp, uint8_t subtype)
+{
+  switch (subtype)
+    {
+      case 10: /* PS-Poll */
+        decode_proto_add(dp, "WLAN-PS-POLL");
+        break;
+      case 11: /* RTS */
+        decode_proto_add(dp, "WLAN-RTS");
+        break;
+      case 12: /* CTS */
+        decode_proto_add(dp, "WLAN-CTS");
+        break;
+      case 13: /* ACK */
+        decode_proto_add(dp, "WLAN-ACK");
+        break;
+      case 14: /* CF End */
+      case 15: /* CF End + CF-ACK */
+        decode_proto_add(dp, "WLAN-CF-END");
+        break;
+      default:
+        decode_proto_add(dp, "WLAN-CTRL-UNKN");
+        break;
+    }
+}
+
 /* ieee802.11 wlans */
 static void get_wlan(decode_proto_t *dp)
 {
@@ -689,7 +715,7 @@ static void get_wlan(decode_proto_t *dp)
   decode_proto_add(dp, "IEE802.11"); /* experimental */
   if (dp->cur_len < 10)
     {
-      g_warning (_("wlan:captured size too small, packet discarded"));
+      g_warning (_("wlan:captured size too small (less than 10 bytes), packet discarded"));
       return;
     }
 
@@ -706,6 +732,7 @@ static void get_wlan(decode_proto_t *dp)
    * traffic, but while useful to understand how WLAN really works usually one
    * prefers to ignore switches, APs and so on, so we try to decode only the
    * SA/DA addresses. AP ones are used only for station to AP traffic.
+   * On most modes BSSID is crammed into one of the unused addresses.
    * Note:
    * In monitor mode we could pick up a packet multiple times: for example first
    * from node A to AP, then from AP to node B.
@@ -720,22 +747,22 @@ static void get_wlan(decode_proto_t *dp)
   switch (fromtods)  
     {
       case 0:
-        /* fromds:0, tods:0 ---> DA=addr1, SA=addr2 */
+        /* fromds:0, tods:0 ---> DA=addr1, SA=addr2, BSSID=addr3, no addr4 */
         dstofs = 4;
         srcofs = 10;
         break;
       case 1:
-        /* fromds:0, tods:1 ---> DA=addr3, SA=addr2 */
+        /* fromds:0, tods:1 ---> DA=addr3, SA=addr2, BSSID=addr1, no addr4 */
         dstofs = 16;
         srcofs = 10;
         break;
       case 2:
-        /* fromds:1, tods:0 ---> DA=addr1, SA=addr3 */
+        /* fromds:1, tods:0 ---> DA=addr1, SA=addr3, BSSID=addr2, no addr4 */
         dstofs = 4;
         srcofs = 16;
         break;
       case 3:
-        /* fromds:1, tods:1 ---> DA=addr3, SA=addr4 */
+        /* fromds:1, tods:1 ---> DA=addr3, SA=addr4, RA=addr1, TA=addr2 */
         dstofs = 16;
         srcofs = 24;
         break;
@@ -743,26 +770,46 @@ static void get_wlan(decode_proto_t *dp)
 
   if (dp->cur_len < dstofs + 6)
     {
-      g_warning (_("wlan:captured size too small, packet discarded"));
+      g_warning (_("wlan:captured size too small (read %u, needed %u), packet discarded"), dp->cur_len, dstofs+6);
       return;
     }
   dp->dst_node_id.node_type = LINK6;
   g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + dstofs, 
               sizeof(dp->dst_node_id.addr.eth));
 
-  /* for type 1 frames (control) only RTS (subtype 12) has two addresses */
-  if (type != 1 || subtype == 12)
+  if (type == 1) 
     {
-      /* source addr present */
-      if (dp->cur_len < srcofs + 6)
-        {
-          g_warning (_("wlan:captured size too small, packet discarded"));
-          return;
-        }
-      dp->src_node_id.node_type = LINK6;
-      g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs, 
-                sizeof(dp->src_node_id.addr.eth));
+      /* control frame */
+      if (subtype == 11) 
+	{
+	  /* for type 1 frames (control) only RTS (subtype 11) has two addresses,
+	     while other subtypes have only one address. */
+	  if (dp->cur_len < srcofs + 6)
+	    {
+	      g_warning (_("wlan:captured size too small (read %u, needed %u), RTS packet discarded"), 
+			   dp->cur_len, srcofs+6);
+	      return;
+	    }
+	  dp->src_node_id.node_type = LINK6;
+	  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs, 
+		    sizeof(dp->src_node_id.addr.eth));
+	  add_offset(dp, 16); 
+	}
+      else
+	add_offset(dp, 10); 
+      decode_wlan_ctrl(dp, subtype);
+      return;
+  }
+
+  if (dp->cur_len < srcofs + 6)
+    {
+      g_warning (_("wlan:captured size too small (read %u, needed %u), packet discarded"), 
+		   dp->cur_len, srcofs+6);
+      return;
     }
+  dp->src_node_id.node_type = LINK6;
+  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs, 
+	    sizeof(dp->src_node_id.addr.eth));
 
   if (fromtods != 3)
     add_offset(dp, 24); 
@@ -788,10 +835,10 @@ static void get_wlan(decode_proto_t *dp)
         decode_wlan_mgmt(dp, subtype);
         break;
 
-      case 1: 
-        /* control frame */
-        decode_proto_add(dp, "WLAN-CTRL");
-        break;
+      case 3: 
+        /* reserved frame - AP specific */
+        g_warning (_("wlan:frame type 0x%x is reserved, decode aborted"), type);
+        return;
 
       default:
         g_warning (_("wlan:unknown frame type 0x%x, decode aborted"), type);
